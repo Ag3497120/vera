@@ -484,3 +484,188 @@ def test_c2_stream_is_unchanged_when_the_tower_hooks_are_unused():
     bs = C.BlackStream("RUN", bud, led)
     bs.feed_tier(ts, range(10))
     assert "carry" not in {e["kind"] for e in led.events()} and "C3" in led.header["copy"]
+
+
+# ---------------------------------------------------------------- C3b: pack_overflow = "close" (default) | "defer"
+# sha256 of Ledger / to_bytes of the S300 head (12 sentences, low) computed with the C3 code at HEAD b730efb
+HEAD_SHA = {"RUN": ("112382d093a4b0b90850c4668f848da028e845c338eb81286e20e9cd6873aeef",
+                    "d54957a981ce85ec3081251e1c3cc167dd66db15f2168d847b4e4e33d5a773e4"),
+            "WORD": ("e1be2257b5c004f74d3bf5b07462fd56b2e8eccf347596d86dab94575f311ead",
+                     "0667462f6642432f3ee53c794355a7d1ecc0022df6f11e8bd29144ada7657420")}
+TINY = pl.Budget(max_states=16)          # the S300 head of 40 sentences then has non-empty-black pack overflows
+
+
+@pytest.mark.parametrize("tier", ["RUN", "WORD"])
+def test_default_pack_overflow_is_close_and_byte_identical_to_head(tier):
+    ts = build_space(_rows(12)).tiers[tier]
+    for kw in ({}, {"pack_overflow": "close"}):
+        tw = build_tower(tier, ts, list(range(12)), pl.budget_level("low"), **kw)
+        assert (tw.ledger.sha256(), tw.sha256()) == HEAD_SHA[tier]
+        assert "pack_overflow" not in tw.ledger.header and tw.pack_overflow == "close"
+    assert "pack_overflow" not in stream_header("RUN", [0], pl.budget_level("low"))
+
+
+def test_pack_overflow_value_is_checked():
+    with pytest.raises(ValueError):
+        build_tower("RUN", build_space(_rows(2)).tiers["RUN"], [0, 1], pl.budget_level("low"), pack_overflow="open")
+
+
+class _Spy:
+    """Logs every Black.admit: (unit, black empty?, number of woken packs in the call, ok | collapse, occs)."""
+
+    def __init__(self, monkeypatch):
+        self.log, orig, self.alone_fits = [], C.Black.admit, 0
+        log = self.log
+
+        def admit(b, occs, elements=()):
+            elements, occs = tuple(elements), tuple(occs)
+            n = sum(e.origin == C.ORIGIN_INHERITED for e in elements)
+            try:
+                r = orig(b, occs, elements)
+            except C.Collapse:
+                log.append((b.unit, b.is_empty, n, "collapse", occs))
+                if n and not b.is_empty:                                           # would the occurrence alone fit?
+                    try:
+                        orig(b, occs, [e for e in elements if e.origin != C.ORIGIN_INHERITED])
+                        self.alone_fits += 1
+                    except C.Collapse:
+                        pass
+                raise
+            log.append((b.unit, b.is_empty, n, "ok", occs))
+            return r
+        monkeypatch.setattr(C.Black, "admit", admit)
+
+
+@pytest.fixture(scope="module")
+def run40():
+    return build_space(_rows(40)).tiers["RUN"]
+
+
+def _build40(ts, po):
+    return build_tower("RUN", ts, list(range(40)), TINY, pack_overflow=po)
+
+
+def test_defer_retries_without_the_packs_in_a_non_empty_black(run40, monkeypatch):
+    spy = _Spy(monkeypatch)
+    tw = _build40(run40, "defer")
+    ev = tw.ledger.events()
+    # the deferred packs are retried alone (one retry), in a black that already holds elements
+    nonempty = [i for i, l in enumerate(spy.log) if l[3] == "collapse" and l[2] > 0 and not l[1]]
+    assert nonempty, "the fixture must contain a non-empty-black pack overflow"
+    for i in nonempty:
+        nxt = spy.log[i + 1]
+        assert nxt[0] == spy.log[i][0] and nxt[2] == 0 and nxt[4] == spy.log[i][4]      # same unit, same occurrences, no packs
+    de = [e for e in ev if e["kind"] == "activation_deferred"]
+    assert len(de) >= len(nonempty)
+    for e in de:
+        nxt = ev[e["seq"]]                                                         # the event right after (seq is 1-based)
+        if nxt["kind"] == "admit":                                                 # the occurrence alone fits
+            assert nxt["unit"] == e["unit"] and nxt["activated"] == [] and not set(e["group"]) & set(nxt["group"])
+            assert not any(x in nxt["group"] for x in e["group"])
+        assert e["budget_reason"] and e["group"]
+    assert C.ledger_mismatches(tw) == []
+    assert all(b.verify().is_stable_class for b, _ in tw.units())
+
+
+def test_defer_never_closes_a_black_the_occurrence_alone_fits(run40, monkeypatch):
+    spy = _Spy(monkeypatch)
+    tw = _build40(run40, "defer")
+    ev = tw.ledger.events()
+    # every collapse that is NOT followed by an alone retry (i.e. every one without woken packs) is exactly one rollback
+    final = [l for l in spy.log if l[3] == "collapse" and l[2] == 0]
+    assert len(final) == sum(e["kind"] == "rollback" for e in ev)
+    # and every collapse that had woken packs in a non-empty black was followed by the alone retry (no close by packs only)
+    for i, l in enumerate(spy.log):
+        if l[3] == "collapse" and l[2] > 0 and not l[1]:
+            assert spy.log[i + 1][0] == l[0] and spy.log[i + 1][2] == 0
+    # contrast: under close the same stream does close blacks the occurrence alone would fit
+    spy.alone_fits = 0
+    spy.log.clear()
+    _build40(run40, "close")
+    assert spy.alone_fits > 0
+
+
+def test_defer_alone_collapse_still_closes_as_before():
+    """max_states = 1: nothing but a one-element black fits; a collapse of the occurrence alone closes (OP-2 b), under both rules."""
+    sents = {0: ["a", "b", "c"], 1: ["c", "d", "a"], 2: ["e", "b", "f", "a"], 3: ["a", "g", "c"], 4: ["b", "e", "a"]}
+    tws = {}
+    for po in C.PACK_OVERFLOW:
+        led = Ledger(stream_header("T", list(sents), pl.Budget(max_states=1), copy=C.TOWER_COPY, pack_overflow=po))
+        tw = CarryTower("T", pl.Budget(max_states=1), led, pack_overflow=po)
+        for s, us in sents.items():
+            tw.feed_sentence(s, [Occ(s, i, u) for i, u in enumerate(us)])
+        tws[po] = tw
+        assert C.ledger_mismatches(tw) == []
+    for tw in tws.values():
+        assert any(e["kind"] == "close" for e in tw.ledger.events())
+        assert any(e["kind"] == "split" for e in tw.ledger.events())
+
+
+def test_defer_deferred_pack_wakes_only_through_a_word_of_its_vocab(run40):
+    tw = _build40(run40, "defer")
+    ev = tw.ledger.events()
+    for e in ev:
+        if e["kind"] == "admit" and e["level"] == 0:
+            for pid in e["activated"]:
+                assert e["item"] in tw.packs[pid].vocab                         # nothing else wakes (L-372)
+    assert any(e["kind"] == "activation_deferred" and e["level"] == 0 for e in ev)
+
+
+@pytest.mark.parametrize("tier", ["RUN", "WORD"])
+def test_p1_o1_o2_o3_hold_under_defer(tier):
+    n, bud = 30, pl.Budget(max_states=8)
+    ts = build_space(_rows(n)).tiers[tier]
+    fed = []
+
+    def check(tw, s):                                                              # P-1 after every sentence
+        fed.extend((s, o.pos, o.unit) for o in C.occurrences_of(ts, s))
+        cov = tw.covered_occurrences()
+        assert len(cov) == len(set(cov)) and sorted(cov) == sorted(fed)
+    tw = build_tower(tier, ts, list(range(n)), bud, pack_overflow="defer", after_sentence=check)
+    assert tw.ledger.header["pack_overflow"] == "defer"
+    for lv in range(len(tw.uppers) + 1):                                          # P-1 per level
+        cov = tw.level_covered(lv)
+        assert len(cov) == len(set(cov)) and sorted(cov) == sorted(want0(ts, n))
+    assert C.ledger_mismatches(tw) == []                                           # O-2
+    assert all(b.verify().is_stable_class for b, _ in tw.units())
+    again = build_tower(tier, ts, list(range(n)), bud, pack_overflow="defer")      # O-1
+    assert again.ledger.to_bytes() == tw.ledger.to_bytes() and again.to_bytes() == tw.to_bytes()
+    rp = C.replay_tower(tw.ledger.to_bytes(), ts, tier, list(range(n)), bud, pack_overflow="defer")
+    assert rp.to_bytes() == tw.to_bytes()
+    with pytest.raises(ValueError):                                                # O-3: the other rule is refused
+        C.replay_tower(tw.ledger.to_bytes(), ts, tier, list(range(n)), bud)
+    close = build_tower(tier, ts, list(range(n)), bud)
+    with pytest.raises(ValueError):
+        C.replay_tower(close.ledger.to_bytes(), ts, tier, list(range(n)), bud, pack_overflow="defer")
+    C.replay_tower(close.ledger.to_bytes(), ts, tier, list(range(n)), bud)         # its own rule is accepted
+
+
+def test_cache_key_differs_between_the_rules():
+    ts = build_space(_rows(10)).tiers["RUN"]
+    bud, sids = pl.budget_level("low"), list(range(10))
+    a = build_tower("RUN", ts, sids, bud)
+    b = build_tower("RUN", ts, sids, bud, pack_overflow="defer")
+    assert a.ledger.header != b.ledger.header and a.ledger.sha256() != b.ledger.sha256()
+    C.check_cache_key(a.ledger.header, "RUN", sids, bud)
+    C.check_cache_key(b.ledger.header, "RUN", sids, bud, pack_overflow="defer")
+    with pytest.raises(ValueError, match="pack_overflow"):
+        C.check_cache_key(a.ledger.header, "RUN", sids, bud, pack_overflow="defer")
+    with pytest.raises(ValueError, match="pack_overflow"):
+        C.check_cache_key(b.ledger.header, "RUN", sids, bud)
+    with pytest.raises(ValueError):                                                # only "defer" may be written in a header
+        Ledger(dict(a.ledger.header, pack_overflow="close"))
+
+
+_PROBE_DEFER = _PROBE.replace('[:12]', '[:30]').replace("range(12)", "range(30)").replace(
+    'pl.budget_level("low"))', 'pl.Budget(max_states=8), pack_overflow="defer")')
+
+
+@pytest.mark.parametrize("tier", ["RUN", "WORD"])
+def test_defer_byte_identical_across_hash_seeds(tier):
+    outs = []
+    for seed in ("0", "1", "12345"):
+        env = dict(os.environ, PYTHONHASHSEED=seed, PYTHONPATH=ROOT)
+        r = subprocess.run([sys.executable, "-c", _PROBE_DEFER, tier], cwd=ROOT, env=env, capture_output=True, text=True)
+        assert r.returncode == 0, r.stderr
+        outs.append(r.stdout)
+    assert outs[0] == outs[1] == outs[2] and outs[0].strip()

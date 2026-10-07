@@ -599,3 +599,46 @@ stable-seated boundary distribution: lower reads fast 687, standard 3533 (the sa
   (7) Stable-seated barely differs from stable on S300 and cannot help the main finding: 77-82 % of the restores are at step 0 because the first seated unit already breaks the cross. Whether the step-0 state should instead be read WITHOUT any query (T8c open point (1)(a)), or the unit order should differ (T8c (1)(c): e.g. skip a unit that breaks and go on with the next, or apply the units in another order), is open; stable-seats is the only reading that uses the step-0 state.
   (8) Unanswerable questions: stable-seats gives no single wrong answer (0 vs 4 / 1 off) because it always offers a list, but it also never gives a single answer to an answerable question that has one (rule-B right 1 / 0 vs 4 / 1 off): the longer list is what a user would have to choose from. Whether a candidate that is a bare layout (no path to the question) should be listed as an answer at all, or only as a place to look, is the owner's decision.
   (9) T8 open points 2, 4, 6-9, T8b open points 2-7 and T8c open points 2-8 are unchanged.
+
+## C3b: the pack-overflow rule — `close` (default) or `defer` (verantyx/line3/carry.py, tests/line3/test_carry_tower.py, experiments/line3/carry/c3b/)
+Binding: owner's "C3 の監査後の決定" (2026-10-07: measure both rules on S300 before deciding; nothing is chosen here). Default `close` = C3 byte-identical (ledger, to_bytes, all earlier tests unchanged; sha256 of RUN/WORD 12 sentences at low pinned in the tests from HEAD b730efb).
+
+| id | decision | where |
+|---|---|---|
+| L-400 | Option `pack_overflow` in `{"close", "defer"}` on `BlackStream`, `CarryTower`, `build_tower`, `stream_header`, `check_cache_key`, `replay_tower` (kw); any other value raises ValueError. Default "close". | `PACK_OVERFLOW` |
+| L-401 | Header: the key `pack_overflow` is written ONLY for "defer" (so a default ledger's bytes are unchanged); absence = "close". `check_cache_key` compares header.get("pack_overflow","close") with the requested rule, so O-3 refuses a ledger built with the other rule in both directions; the ledger header validator accepts the key only with the value "defer". | `stream_header`, `_check_header`, `check_cache_key` |
+| L-402 | `defer`: in a NON-empty black (any level), when admitting an occurrence / child pack together with the packs it wakes collapses, ONE retry without the woken packs; they stay asleep (nothing is seated, the dormant set is derived), ledger event `activation_deferred` (group = the woken ids, budget_reason = the collapse reason) exactly as in the empty case (L-357 / L-380). Only if the item alone also collapses does the black close / split as before (OP-2 b). The ledger does not say whether the black was empty (replay can tell from the unit's surviving admits). | `_run`, `_admit_item` |
+| L-403 | A test-injected collapse (L-376) is never deferred: injection forces the close it models. | `forced` flag |
+| L-404 | A deferred pack wakes again only through a later occurrence of a word of its frozen vocab (the rule of L-372, unchanged); a seated word does not wake it. Tested generically: every level-0 activation has its item in the pack's vocab. | `_woken` |
+| L-405 | Measurement spy (c3b.py only, wraps `Black.admit`): on a collapse of a non-empty black with woken packs it re-tests the item alone; "closes caused only by woken packs" = such collapses whose item alone fits and that actually closed the black (close: all of them, defer: 0 by construction). The re-test time is in the reported time under both rules. | `c3b.py` |
+
+Tests (tests/line3/test_carry_tower.py, 12 added; with test_carry_unit.py and test_carry_space.py: 77 passed): default / explicit close byte-identical to HEAD (RUN, WORD), unknown value refused, defer retries in the same unit with the same occurrences and no packs (spy on `Black.admit`, S300 head 40 sentences at max_states=16 has 9 non-empty overflows), defer: every collapse that reaches a rollback is one without woken packs (so no black is closed that the occurrence alone fits) while under close the same stream does close such blacks, an alone collapse still closes / splits (max_states=1), wake only by vocab word, P-1 per sentence and per level / O-1 / O-2 / verify_class under defer (RUN, WORD), O-3 both directions, cache key and header differ, PYTHONHASHSEED 0/1/12345 identical under defer (RUN, WORD).
+
+S300 (experiments/line3/carry/c3b/{c3b.py,run_all.sh,summarize.py,results/,logs/}; results/summary.md has the full table; `close` rerun with the spy reproduces the C3 numbers; CPU seconds, spy re-tests included; 2 worker processes; time columns are not clean timings because other measurements ran at load 8-10):
+| quantity | RUN low close / defer | WORD low close / defer | RUN mid close / defer | WORD mid close / defer |
+|---|---|---|---|---|
+| levels | 4 / 4 | 6 / 4 | 4 / 3 | 5 / 3 |
+| units per level | 560,143,26,1 / 474,79,4,1 | 1086,381,116,27,2,1 / 891,188,12,1 | 437,73,3,1 / 358,39,1 | 951,276,36,2,1 / 656,69,1 |
+| elements per black med/max | 6/11 / 7/13 | 7/9 / 7/9 | 7/14 / 9/13 | 7/13 / 9/13 |
+| sentences per black med/max | 1/2 / 1/3 | 1/2 / 1/2 | 1/3 / 1/3 | 1/2 / 1/2 |
+| sentences split (events) | 202(283) / 165(214) | 277(794) / 272(598) | 157(197) / 107(121) | 264(670) / 237(375) |
+| packs | 726 / 554 | 1607 / 1088 | 510 / 395 | 1261 / 723 |
+| copied / woken / never woken | 10786/1265/9521 / 8123/642/7481 | 21086/4590/16496 / 23607/2517/21090 | 7719/931/6788 / 9556/538/9018 | 22290/3611/18679 / 29388/1582/27806 |
+| distinct packs woken | 82 / 70 | 221 / 157 | 79 / 49 | 187 / 91 |
+| activation_deferred empty / non-empty | 21/0 / 3/264 | 113/0 / 76/1185 | 12/0 / 16/377 | 261/0 / 96/1684 |
+| non-empty pack collapses (alone fits) | 290(207) / 264(188) | 754(513) / 1185(798) | 226(194) / 377(290) | 812(676) / 1684(1359) |
+| closes caused only by woken packs | 207 / 0 | 513 / 0 | 194 / 0 | 676 / 0 |
+| level-0 blacks with a pack centre (any flat of the tied class) | 120 of 559 / 85 of 473 | 268 of 1085 / 166 of 890 | 93 of 436 / 42 of 357 | 189 of 950 / 71 of 655 |
+| pack-centre flats of all flats | 288/1209 / 278/994 | 606/3756 / 331/1946 | 10919/96825 / 6630/119217 | 11524/140752 / 8537/246095 |
+| time CPU s | 52 / 47 | 131 / 148 | 1156 / 1406 | 2353 / 3814 |
+P-1 after every sentence: 0 failures in all 8 runs; `ledger_mismatches` empty in all 8. Verification of every class (`verify_class`) and `replay_tower` were NOT run on these S300 towers (cost); they are in the tests on smaller streams.
+
+### C3b open points (meaning-level; for the owner, nothing is decided by the code)
+  (1) Under defer level-0 blacks fall to 0.74-0.85 of close (RUN low 560 -> 474, WORD low 1086 -> 891, RUN mid 437 -> 358, WORD mid 951 -> 656) and packs / levels shrink more at the top (WORD: 6 -> 4 and 5 -> 3 levels), but are still above C2's no-carry counts (RUN low 422, WORD low 676, RUN mid 319, WORD mid 524): the woken packs that DO fit still take seats. Black size grows slightly (median elements 6-7 -> 7-9).
+  (2) The price: fewer packs wake (woken pairs roughly halve; distinct packs woken WORD mid 187 -> 91). Whether the lost wakings matter for answers is not measurable without the question side (C5).
+  (3) Non-empty deferrals are not rare (264-1684 per run); about 70-80 % of non-empty pack collapses were ones the item alone fits. Under close those were 194-676 closes per run (RUN low 207 of 726 closes, WORD mid 676 of 1261 = 54 %) that came only from woken packs. Under defer 0 by construction; the rest of the closes are real.
+  (4) Pack centres: the share of level-0 blacks whose class has a pack as a centre falls from 21-28 % to 17-19 % (RUN low 120/559 -> 85/473; WORD low 25 % -> 19 %; RUN mid 21 % -> 12 %; WORD mid 20 % -> 11 %); blacks whose centres are ALL packs stay rare (3-15). So packs are centres less often under defer, but not rare, and by this count the centre bias of the packs is not removed.
+  (5) Time: defer cost more CPU at mid (RUN +22 %, WORD +62 %) because blacks hold more elements and the failed first attempt is paid every time; at low it is within noise.
+  (6) Within a sentence, once a pack is deferred it can wake at the next vocab word, and then may be deferred again (a repeated failed attempt); the count of non-empty deferrals includes such repeats. Not counted separately.
+  (7) The ledger does not mark whether a deferral was in an empty or non-empty black (the table classifies it with the spy, which is not part of the ledger); if the owner wants it in the ledger, that is an additional field (a header-format change for defer ledgers only).
+  (8) The header key is written only for defer so that every C3 ledger stays valid and byte-identical; the cost is that "absent = close" is a convention in `check_cache_key`.

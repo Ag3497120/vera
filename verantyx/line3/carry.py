@@ -202,7 +202,9 @@ def _check_header(h: Mapping) -> dict:
     if h.get("format") != LEDGER_FORMAT:
         raise ValueError("header.format must be %r" % LEDGER_FORMAT)
     miss = [k for k in HEADER_FIELDS if k not in h]
-    extra = [k for k in h if k not in HEADER_FIELDS]
+    extra = [k for k in h if k not in HEADER_FIELDS and k != "pack_overflow"]       # L-401: optional, only "defer"
+    if h.get("pack_overflow", "defer") != "defer":
+        raise ValueError("header.pack_overflow is written only for 'defer'")
     if miss or extra:
         raise ValueError("header fields: missing %s, unknown %s" % (miss, extra))
     o = h["order"]
@@ -701,9 +703,10 @@ class ClosedBlack:
 
 def stream_header(tier: str, sids: Sequence[int], budget: pl.Budget, *, data_sha256: Optional[str] = None,
                   unit_filter: Optional[str] = None, order_kind: str = "file", order_seed: Optional[int] = None,
-                  code_commit: Optional[str] = None, copy: Optional[str] = None) -> dict:   # L-360
+                  code_commit: Optional[str] = None, copy: Optional[str] = None,
+                  pack_overflow: str = "close") -> dict:   # L-360, L-401
     lv = pl.level_name(budget)
-    return {"format": LEDGER_FORMAT, "data_sha256": data_sha256, "tier": tier, "unit_filter": unit_filter,
+    hdr = {"format": LEDGER_FORMAT, "data_sha256": data_sha256, "tier": tier, "unit_filter": unit_filter,
             "order": {"kind": order_kind, "seed": order_seed}, "order_sha256": order_sha256(sids),
             "build_level": lv if lv is not None else "max_class=%d,max_states=%d,max_moves=%d" % (
                 budget.max_class, budget.max_states, budget.max_moves),
@@ -711,6 +714,9 @@ def stream_header(tier: str, sids: Sequence[int], budget: pl.Budget, *, data_sha
             "copy": copy if copy is not None else "OP-1(a): carried packs stay asleep (C3)",
             "instability": "OP-3(a): no tied class within the budget",
             "code_commit": code_commit}
+    if pack_overflow != "close":                              # L-401: the default leaves the header bytes unchanged
+        hdr["pack_overflow"] = pack_overflow
+    return hdr
 
 
 class BlackStream:
@@ -721,8 +727,11 @@ class BlackStream:
     `_after_close(closed)` (carry / carry-up; default nothing)."""
 
     def __init__(self, tier: str, budget: pl.Budget, ledger: Ledger,
-                 wake=None, clock=None, inject=None) -> None:
+                 wake=None, clock=None, inject=None, pack_overflow: str = "close") -> None:
+        if pack_overflow not in PACK_OVERFLOW:
+            raise ValueError("pack_overflow: %s" % " | ".join(PACK_OVERFLOW))
         self.tier, self.budget, self.ledger = tier, budget, ledger
+        self.pack_overflow = pack_overflow                       # L-400
         self.wake = wake
         self.inject = inject                                     # L-376: test-only forced collapse
         self.clock = clock                                       # L-359: e.g. time.process_time
@@ -781,13 +790,15 @@ class BlackStream:
             act = tuple(self.wake(self.black, o)) if self.wake is not None else ()
             t0 = self.clock() if self.clock else 0.0
             try:
+                forced = False
                 try:
                     inj = self.inject(0, self.black.unit, o) if (self.inject is not None and not self.black.is_empty) else None
                     if inj is not None:                          # L-376
+                        forced = True
                         raise Collapse(_injected(inj), 0, 0)
                     nb, work = self.black.admit([o], new + list(act))
                 except Collapse as c:
-                    if not (self.black.is_empty and act):
+                    if not (act and (self.black.is_empty or (self.pack_overflow == "defer" and not forced))):   # L-401
                         raise
                     # L-308 / L-357: deferred activation; the occurrence alone is trivially stable
                     self.ledger.append("activation_deferred", level=0, unit=self.black.unit, occ=[o.sid, o.pos],
@@ -835,6 +846,7 @@ class BlackStream:
 # ==========================================================================
 # C3: the tower (design 3.4, 4.2; OP-1 a; conditions 1-3)
 # ==========================================================================
+PACK_OVERFLOW = ("close", "defer")                              # L-400
 TOWER_COPY = ("OP-1(a): the frontier of all levels is copied; packs sleep and seat only when a new "
               "sentence contains a word of their vocab (frozen at copy time)")
 
@@ -866,13 +878,14 @@ class CarryTower(BlackStream):
     item into the open unit of the next level (carry-up, recursive); a unit that opens gets an immutable copy
     of the frontier (OP-1 a) whose packs wake only through new sentences (condition 2)."""
 
-    def __init__(self, tier: str, budget: pl.Budget, ledger: Ledger, clock=None, inject=None) -> None:
+    def __init__(self, tier: str, budget: pl.Budget, ledger: Ledger, clock=None, inject=None,
+                 pack_overflow: str = "close") -> None:
         self.carry: Dict[str, Tuple[Pack, ...]] = {}              # L-371: unit id -> copied packs (immutable)
         self.packs: Dict[str, Pack] = {}                          # pack id -> Pack (all levels)
         self.uppers: List[_Upper] = []                            # uppers[k-1] = level k
         self.upper_secs: List[Tuple[int, float]] = []             # (admit seq, seconds) of successful upper admits
         self.upper_attempt_secs: Dict[int, float] = {}            # level -> seconds of every attempt (also collapsed)
-        super().__init__(tier, budget, ledger, wake=self._wake, clock=clock, inject=inject)
+        super().__init__(tier, budget, ledger, wake=self._wake, clock=clock, inject=inject, pack_overflow=pack_overflow)
         self._new_carry(self.black)                               # U0:0 opens with an empty copy
 
     # -- frontier and copy (L-371) -------------------------------------------
@@ -925,14 +938,16 @@ class CarryTower(BlackStream):
             act = self._woken(b, units)
             el = pk.as_element(ORIGIN_NEW)
             t0 = self.clock() if self.clock else 0.0
+            forced = False
             try:
                 try:
                     inj = self.inject(lv, b.unit, pk.id) if (self.inject is not None and not b.is_empty) else None
                     if inj is not None:                            # L-376
+                        forced = True
                         raise Collapse(_injected(inj), 0, 0)
                     nb, work = b.admit(pk.own_occ, [el] + act)
                 except Collapse as c:
-                    if not (b.is_empty and act):
+                    if not (act and (b.is_empty or (self.pack_overflow == "defer" and not forced))):   # L-401
                         raise
                     self.ledger.append("activation_deferred", level=lv, unit=b.unit, item=pk.id,    # L-380
                                        group=sorted(e.id for e in act), budget_reason=c.reason)
@@ -1025,13 +1040,15 @@ class CarryTower(BlackStream):
 
 def build_tower(tier: str, tier_space: TierSpace, sids: Sequence[int], budget: pl.Budget, *, data_sha256=None,
                 unit_filter=None, order_kind: str = "file", order_seed: Optional[int] = None, code_commit=None,
-                clock=None, inject=None, after_sentence=None) -> CarryTower:
+                clock=None, inject=None, after_sentence=None,
+                pack_overflow: str = "close") -> CarryTower:
     """Feed `sids` (the recorded stream order) into a new tower.  `after_sentence(tower, sid)` is called after
     each sentence (P-1 checks etc.)."""
     sids = list(sids)
     led = Ledger(stream_header(tier, sids, budget, data_sha256=data_sha256, unit_filter=unit_filter,
-                               order_kind=order_kind, order_seed=order_seed, code_commit=code_commit, copy=TOWER_COPY))
-    tw = CarryTower(tier, budget, led, clock=clock, inject=inject)
+                               order_kind=order_kind, order_seed=order_seed, code_commit=code_commit, copy=TOWER_COPY,
+                               pack_overflow=pack_overflow))
+    tw = CarryTower(tier, budget, led, clock=clock, inject=inject, pack_overflow=pack_overflow)
     for s in sids:
         tw.feed_sentence(s, occurrences_of(tier_space, s))
         if after_sentence is not None:
@@ -1044,11 +1061,14 @@ def build_tower(tier: str, tier_space: TierSpace, sids: Sequence[int], budget: p
 # --------------------------------------------------------------------------
 def check_cache_key(header: Mapping, tier: str, sids: Sequence[int], budget: pl.Budget,
                     data_sha256: Optional[str] = None, order_kind: Optional[str] = None,
-                    order_seed: Optional[int] = None) -> None:       # L-378, L-320
+                    order_seed: Optional[int] = None, pack_overflow: str = "close") -> None:       # L-378, L-320, L-401
     want = stream_header(tier, sids, budget, data_sha256=data_sha256, order_kind=order_kind or header["order"]["kind"],
-                         order_seed=order_seed if order_kind is not None else header["order"]["seed"], copy=TOWER_COPY)
+                         order_seed=order_seed if order_kind is not None else header["order"]["seed"], copy=TOWER_COPY,
+                         pack_overflow=pack_overflow)
     bad = [k for k in ("tier", "order_sha256", "build_level", "copy", "admission", "instability")
            if header.get(k) != want[k]]
+    if header.get("pack_overflow", "close") != pack_overflow:      # L-401: absent key = "close"
+        bad.append("pack_overflow")
     if data_sha256 is not None and header.get("data_sha256") != data_sha256:
         bad.append("data_sha256")
     if order_kind is not None and header.get("order") != want["order"]:
@@ -1061,10 +1081,12 @@ def replay_tower(ledger_bytes: bytes, tier_space: TierSpace, tier: str, sids: Se
                  budget: pl.Budget, **kw) -> CarryTower:               # O-1 + O-3
     """Check the key, rebuild the tower from (data, order, budget) and require the same ledger bytes."""
     led = Ledger.from_bytes(ledger_bytes)
-    check_cache_key(led.header, tier, sids, budget, kw.get("data_sha256"))
+    po = kw.get("pack_overflow", "close")
+    check_cache_key(led.header, tier, sids, budget, kw.get("data_sha256"), pack_overflow=po)
     tw = build_tower(tier, tier_space, sids, budget, data_sha256=led.header["data_sha256"],
                      unit_filter=led.header["unit_filter"], order_kind=led.header["order"]["kind"],
-                     order_seed=led.header["order"]["seed"], code_commit=led.header["code_commit"])
+                     order_seed=led.header["order"]["seed"], code_commit=led.header["code_commit"],
+                     pack_overflow=po)
     if tw.ledger.to_bytes() != ledger_bytes:
         raise ValueError("replay does not reproduce the ledger bytes (O-1)")
     return tw
