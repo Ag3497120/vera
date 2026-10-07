@@ -1090,3 +1090,133 @@ def test_a_layer_two_seats_or_seated_candidate_traces_down_to_base_words(space, 
                 for e in r.entries:
                     assert set(e.words) <= set(idx.space.tiers[r.tier].postings)
                     assert e.word_sources is not None and all(ss for _, ss in e.word_sources)
+
+
+# ======================================================================================================================
+# T8e (L-430..): candidate="stable-seats-path" = one candidate per upper entry: its bundles in the upper path's order,
+# each with the seat layout of its restored stable state (as stable-seats builds it)
+# ======================================================================================================================
+@pytest.fixture(scope="module")
+def seatspath_run(small_index):
+    return M.ask_layered(small_index, QUESTION, TIERS, effort="full", options=M.LayerOptions(bounds=BOUNDS, candidate="stable-seats-path"))
+
+
+def test_defaults_and_old_modes_stay_byte_identical_after_t8e(small_index):
+    h = lambda o: hashlib.sha256(M.ask_layered(small_index, QUESTION, TIERS, effort="full", options=o).to_bytes()).hexdigest()
+    assert M.LayerOptions().candidate == "path"
+    assert h(M.LayerOptions(bounds=BOUNDS)) == GOLDEN_PATH["path-default"]
+    assert h(M.LayerOptions(bounds=BOUNDS, variants=("A", "B"), granularity="same")) == GOLDEN_PATH["path-both-same"]
+    assert h(M.LayerOptions(bounds=BOUNDS, candidate="stable")) == GOLDEN_STABLE["stable-A"]
+    assert h(M.LayerOptions(bounds=BOUNDS, candidate="stable", variants=("A", "B"), granularity="same")) == GOLDEN_STABLE["stable-both-same"]
+    assert h(M.LayerOptions(bounds=BOUNDS, candidate="stable", down_query="seed+question")) == GOLDEN_STABLE["stable-seed+question"]
+
+
+def _order_independent(a_entry):
+    """The bundles of an upper entry in the upper path's order, derived again from the answer's items."""
+    out = []
+    for a in a_entry.arrangements:
+        for p in a.paths:
+            out.extend(p.words)
+        out.append(a.centre)
+    out.extend(a_entry.words)
+    return tuple(dict.fromkeys(out))
+
+
+def test_stable_seats_path_is_the_union_of_the_bundles_stable_seats_in_path_order(small_index, seatspath_run, seats_run):
+    seats_by = {}                                   # (tier, k, variant, bundle) -> the layout stable-seats gives that bundle
+    for tl in seats_run.layers:
+        for r in tl.runs:
+            for e in r.entries:
+                for b in e.bundles:
+                    seats_by.setdefault((tl.tier, r.k, r.variant, b), set()).add(e.seats)
+    n = multi = 0
+    for tl in seatspath_run.layers:
+        for r in tl.runs:
+            assert r.candidate == "stable-seats-path" and r.trace["ok"] and r.trace["fraction"] == "1/1"
+            expected = []
+            for ae in r.answer.entries:
+                order = _order_independent(ae)
+                lays = tuple((b, sorted(seats_by[(tl.tier, r.k, r.variant, b)], key=M.seats_key)[0]) for b in order
+                             if (tl.tier, r.k, r.variant, b) in seats_by)
+                if lays:
+                    expected.append(lays)
+            got = [e.layouts for e in r.entries]
+            keyed = lambda L: tuple(M.seats_key(l) for _, l in L)
+            assert sorted(set(map(keyed, expected))) == sorted(map(keyed, got))          # equal candidates are one, nothing else
+            assert len({keyed(L) for L in got}) == len(got)
+            for e in r.entries:
+                assert e.mode == "stable-seats-path" and e.seats is None and e.layouts
+                assert e.words == tuple(sorted({w for _, l in e.layouts for w in M.seats_words(l)}))     # the union of the layouts
+                assert set(e.bundles) == {b for b, _ in e.layouts}
+                assert dict(e.word_sources).keys() == set(e.words) and all(ss for _, ss in e.word_sources)
+                for w, ss in e.word_sources:
+                    assert all(w in small_index.space.tiers[tl.tier].sentence_units[s] for s in ss)
+                for b, l in e.layouts:                                                  # each layout is a stable-seats layout of that bundle
+                    assert l in seats_by[(tl.tier, r.k, r.variant, b)]
+                n += 1
+                multi += len(e.layouts) > 1
+    assert n > 0 and multi > 0                                                           # at least one candidate holds several bundles
+
+
+def test_stable_seats_path_json_records_bundles_words_seats(seatspath_run):
+    obj = seatspath_run.to_json_obj()
+    seen = 0
+    for tl in obj["thought"]["layers"]["per_tier"].values():
+        for r in tl["runs"]:
+            assert r["candidate"] == "stable-seats-path" and r["entries_without_path_words"] >= 0
+            for e in r["entries"]:
+                assert e["candidate"] == "stable-seats-path" and e["words"] == sorted(e["words"])
+                assert e["n_bundles"] == len(e["layouts"]) and e["n_words"] == len(e["words"])
+                assert e["n_seats"] == sum(l["seats"]["n_seats"] for l in e["layouts"])
+                assert all(l["seats"]["n_seats"] == l["seats"]["n_words"] - 1 for l in e["layouts"])
+                assert e["word_sources"].keys() == set(e["words"]) and "seats" not in e
+                seen += 1
+    assert seen > 0
+    assert json.loads(seatspath_run.to_bytes())["thought"]["layers"]["options"]["candidate"] == "stable-seats-path"
+
+    def walk(o):
+        if isinstance(o, dict):
+            for v in o.values():
+                walk(v)
+        elif isinstance(o, list):
+            for v in o:
+                walk(v)
+        else:
+            assert not isinstance(o, float)
+    walk(obj)
+
+
+def test_stable_seats_path_is_exact_and_equal_across_hash_seeds():
+    script = _digest_script().replace("M.LayerOptions(bounds=b,feedback='down')", "M.LayerOptions(bounds=b,candidate='stable-seats-path')")
+    outs = []
+    for seed in ("0", "1", "12345"):
+        env = dict(os.environ, PYTHONHASHSEED=seed, PYTHONDONTWRITEBYTECODE="1", PYTHONPATH=ROOT)
+        r = subprocess.run([sys.executable, "-c", script], capture_output=True, text=True, env=env, cwd=ROOT,
+                           timeout=900, stdin=subprocess.DEVNULL)
+        assert r.returncode == 0, r.stderr
+        outs.append(r.stdout.strip())
+    assert outs[0] == outs[1] == outs[2] and int(outs[0].split()[1]) > 1000
+
+
+def test_cli_accepts_stable_seats_path(tmp_path):
+    p = tmp_path / "toy.jsonl"
+    with open(p, "w", encoding="utf-8") as f:
+        for s in DATA:
+            f.write(json.dumps({"sent": s, "source": "toy"}, ensure_ascii=False) + "\n")
+    r = cli(["ask", "--data", str(p), "--question", QUESTION, "--tiers", "RUN,WORD", "--effort", "fast", "--format", "json",
+             "--show-thought", "--layer-candidate", "stable-seats-path"])
+    assert r.returncode == 0, r.stderr
+    assert json.loads(r.stdout)["thought"]["layers"]["options"]["candidate"] == "stable-seats-path"
+
+
+def test_a_layer_two_stable_seats_path_candidate_traces_down_to_base_words(space, monkeypatch):
+    monkeypatch.setitem(pl.LEVELS, "low", pl.Budget(max_class=2, max_states=30, max_moves=300))
+    idx = make_index(space, SMALL)
+    b3 = M.LayerBounds(3, 6, 8, 3, 6, "low", 2)
+    c = M.ask_layered(idx, QUESTION, ["RUN", "WORD"], effort="full", options=M.LayerOptions(bounds=b3, candidate="stable-seats-path"))
+    for tl in c.layers:
+        for r in tl.runs:
+            assert r.trace["ok"]
+            for e in r.entries:
+                assert set(e.words) <= set(idx.space.tiers[r.tier].postings)
+                assert e.word_sources is not None and all(ss for _, ss in e.word_sources)

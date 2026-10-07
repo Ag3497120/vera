@@ -50,8 +50,8 @@ LAYER_FORMAT = "line3.layers.v1"
 VARIANTS = ("A", "B")                       # I-20: A = initial query + the lower answer, B = the lower answer only
 GRANULARITIES = ("same", "compress")        # M-2
 DOWN_QUERIES = ("question", "seed+question")  # L-252: what the lower cross is read under
-CANDIDATES = ("path", "bag", "stable", "stable-seats", "stable-seated")       # L-250: what an upper-layer candidate shows (path words read under the question / N-19 bag); L-340: "stable" = the path words of the last stable state
-PATHLIKE = ("path", "stable", "stable-seats", "stable-seated")   # modes that read the lower crosses down (L-251, L-340, L-390..)
+CANDIDATES = ("path", "bag", "stable", "stable-seats", "stable-seated", "stable-seats-path")       # L-250: what an upper-layer candidate shows (path words read under the question / N-19 bag); L-340: "stable" = the path words of the last stable state
+PATHLIKE = ("path", "stable", "stable-seats", "stable-seated", "stable-seats-path")   # modes that read the lower crosses down (L-251, L-340, L-390..)
 N_SEATED = cy.N_ARMS                        # L-391: the question units that take a seat = the first 6 attached
 FEEDBACKS = ("none", "down")                # N-12 re-read: see L-239
 UNKNOWN_NOTHING_TO_PASS = "UNKNOWN_NOTHING_TO_PASS"
@@ -309,7 +309,8 @@ class LayerEntry:
     stable: bool = False                   # L-340: the words are the path words of restored / last stable states
     restored: Tuple[Tuple[int, "cy.TierResult"], ...] = field(default=(), compare=False, repr=False)    # (layer, read at the last stable step) for the fixed-point check
     seats: Optional[tuple] = None          # L-390 (stable-seats): (centre, arms) = the restored state as laid out; arms = 6 legs, outer seat first, None = empty seat
-    mode: str = ""                         # L-390 / L-391: "stable-seats" | "stable-seated" ("" = the T8b / T8c modes)
+    mode: str = ""                         # L-390 / L-391 / L-430: "stable-seats" | "stable-seated" | "stable-seats-path" ("" = the T8b / T8c modes)
+    layouts: Tuple[tuple, ...] = ()        # L-430 (stable-seats-path): ((bundle, (centre, arms)), ...) in the upper path's section order
 
     def key(self) -> Tuple[str, int, str, Tuple[str, ...], Tuple[str, ...]]:
         return (self.tier, self.layer, self.variant, self.words, self.bundles)
@@ -324,6 +325,11 @@ class LayerEntry:
             o["path_from"] = [dict(d) for d in self.path_from]
         if self.seats is not None:
             o["seats"] = seats_obj(self.seats)
+        if self.layouts:
+            o["layouts"] = [{"bundle": b, "seats": seats_obj(l)} for b, l in self.layouts]
+            o["n_bundles"] = len(self.layouts)
+            o["n_words"] = len(self.words)
+            o["n_seats"] = sum(seats_obj(l)["n_seats"] for _, l in self.layouts)
         return o
 
 
@@ -362,7 +368,7 @@ class LayerRun:
         if self.candidate in PATHLIKE:
             o["candidate"] = self.candidate
             o["entries_without_path_words"] = self.without_path_words
-        if self.candidate in ("stable", "stable-seats", "stable-seated"):
+        if self.candidate in ("stable", "stable-seats", "stable-seated", "stable-seats-path"):
             o["boundaries"] = [dict(d) for d in self.boundaries]
         return o
 
@@ -685,6 +691,21 @@ def seat_sources(base: TierSpace, seats: tuple) -> Dict[str, Tuple[int, ...]]:
     return {w: tuple(sorted(ss if ss else post.get(w, ()))) for w, ss in src.items()}
 
 
+def entry_bundle_order(e) -> Tuple[str, ...]:
+    """L-430: the bundles of an upper entry in the upper path's own order, as the upper read gives it: the arrangements in
+    their item order, each arrangement's section paths in section order, each path's words as read, then its centre;
+    a bundle is listed at its first occurrence.  Never sorted."""
+    out: Dict[str, None] = {}
+    for a in e.arrangements:
+        for p in a.paths:
+            for w in p.words:
+                out.setdefault(w, None)
+        out.setdefault(a.centre, None)
+    for w in e.words:                      # a bundle of the word set that no path / centre named (none expected) goes last
+        out.setdefault(w, None)
+    return tuple(out)
+
+
 def down_read_seats(stack: "LayerStack", chain: Sequence[Layer], k: int, b: str, ul: Sequence[Tuple[str, ...]],
                     bounds: LayerBounds, budget: cy.QueryBudget, acc: _Acc, down_query: str = "question") -> None:
     """The restored stable state (L-341 boundary) of the lower cross packed in the bundle b, laid out by seats (L-390).
@@ -842,7 +863,72 @@ def _read_layer(tier: str, variant: str, layer: Layer, chain: Sequence[Layer], a
     up_bundles: Optional[Tuple[str, ...]] = None
     without = 0
     bnds: List[dict] = []
-    if ans is not None and candidate == "stable-seats":
+    if ans is not None and candidate == "stable-seats-path":
+        # L-430: ONE candidate per upper entry = the ordered list of its bundles, each with the seat layout of its restored state
+        if stack is None:
+            raise ValueError("candidate='stable-seats-path' needs the layer stack")
+        ul = [()] * layer.k
+        cur = units
+        for j in range(layer.k - 1, -1, -1):
+            cur = lower_units(cur)
+            ul[j] = cur
+        grp = {}
+        order = {}
+        for e in ans.entries:
+            for b in e.words:
+                order.setdefault(b, None)
+            acc = _Acc()
+            lay_of = []
+            for b in entry_bundle_order(e):
+                a1 = _Acc()
+                down_read_seats(stack, chain, layer.k, b, ul, bounds, budget, a1, down_query)
+                for d in a1.reads:
+                    if d not in bnds:
+                        bnds.append(d)
+                    acc.reads.append(d)
+                for st in a1.seats:
+                    lay_of.append((b, st))
+            if not lay_of:
+                without += 1
+                continue
+            src: Dict[str, set] = {}
+            rs: List[Tuple[int, cy.TierResult]] = []
+            for _, st in lay_of:
+                for w, ss in st["src"].items():
+                    src.setdefault(w, set()).update(ss)
+                if st["res"] is not None and not any(st["res"] is y[1] for y in rs):
+                    rs.append((st["j"], st["res"]))
+            ws = tuple(sorted(src))
+            layouts = tuple((b, st["layout"]) for b, st in lay_of)
+            le = LayerEntry(tier, layer.k, variant, ws, tuple(sorted({b for b, _ in layouts})),
+                            tuple(sorted({_centre_word(layer, c) for c in e.centres})), e.stability,
+                            sum(st["arr"] for _, st in lay_of), tuple(sorted({s_ for ss in src.values() for s_ in ss})),
+                            tuple((w, tuple(sorted(src[w]))) for w in ws), tuple(acc.reads), (), True, tuple(rs), None,
+                            candidate, layouts)
+            grp.setdefault(tuple(seats_key(l) for _, l in layouts), []).append(le)
+        up_bundles = tuple(order)
+        for key in sorted(grp):                      # equal candidates (the same bundles' layouts in the same order) are one
+            g = grp[key]
+            src = {}
+            for x in g:
+                for w, ss in x.word_sources:
+                    src.setdefault(w, set()).update(ss)
+            pf = []
+            rs = []
+            for x in g:
+                for d in x.path_from:
+                    if d not in pf:
+                        pf.append(d)
+                for it in x.restored:
+                    if not any(it[1] is y[1] for y in rs):
+                        rs.append(it)
+            ws = g[0].words
+            entries.append(LayerEntry(tier, layer.k, variant, ws, tuple(sorted({b for x in g for b in x.bundles})),
+                                      tuple(sorted({c for x in g for c in x.centres})), max(x.stability for x in g),
+                                      sum(x.arrangements for x in g), tuple(sorted({s_ for ss in src.values() for s_ in ss})),
+                                      tuple((w, tuple(sorted(src[w]))) for w in ws), tuple(pf), (), True, tuple(rs),
+                                      None, candidate, g[0].layouts))
+    elif ans is not None and candidate == "stable-seats":
         if stack is None:
             raise ValueError("candidate='stable-seats' needs the layer stack")
         ul = [()] * layer.k
