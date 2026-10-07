@@ -440,3 +440,30 @@ Candidate quality first. Gold in some candidate (answerable 60): fast: layers of
   (5) Query passing for the lower read (the question units of a lower read in variant B = the lower answer only) and the pass cap apply as in the upper read; the inner query crosses (units from the 7th) are in the energy but only the first 6 attach, so a lower cross that holds none of the first 6 gives no path.
   (6) Layers stay unstable by the same rule (the trigger still fires on every question, L-233), so every question now costs the lower reads; whether a question whose layer-0 read already contains a stable answer should skip them is the owner's decision (N-08 says the check is at every question).
   (7) T8 open points 2 (compress meaning), 4 (feedback `down`, not measured with path words), 6-9 are unchanged.
+
+## C1: local space and order ledger (verantyx/line3/carry.py, tests/line3/test_carry_space.py)
+Binding: docs/LINE3_CARRY_DESIGN.md 3.5, 3.7, 6.2 (I-1, I-2), 9 (C1); owner's answers OP-1 (a), OP-2 (b), OP-3 (a). C1 builds types, the canonical ledger and the local space only; acceptance/closing (C2) and the tower (C3) are not here. Design-numbered choices realised as designed: L-301 (ids are labels), L-302 (occurrence = first position per sentence, `occurrences_of`), L-311 (strict comparison at equal positions), L-319 (canonical JSONL).
+
+| id | decision | where |
+|---|---|---|
+| L-322 | An element is (id, kind, vocab, origin). A word is the element with vocab = {itself}; a pack is an element with a vocab of words. One rule for both: an element is in a sentence iff a scope occurrence of it has a unit in the vocab; its position there is the smallest such position. | carry.py `Element`, `LocalSpace` |
+| L-323 | Local sentences = the sids that have a scope occurrence, numbered in the order of their first occurrence in the scope stream (the recorded stream order); `sids` maps back to the global sid. | `LocalSpace.sids` |
+| L-324 | An occurrence (sid, pos, unit) whose (sid, unit) is already in the scope raises ValueError (the caller applies L-302; no silent skip). sid, pos are ints >= 0. | `_check_inputs`, `Occ` |
+| L-325 | Element ids are unique, vocabs non-empty, and a pack id may not equal a word surface in the scope or in a vocab (ValueError). | `_check_inputs` |
+| L-326 | An element touched by no scope occurrence is allowed (n = 0). | `LocalSpace` |
+| L-327 | Empty scope (N_U = 0): r0 and E_Q are 0 (no evidence; like L-53). | `r0`, `energy` |
+| L-328 | Inside a local sentence the element listing is ordered by (position, id); a label only, no count uses it. | `sentence_elements` |
+| L-329 | `LocalSpace.to_bytes()` = canonical JSON of scope (stream order), elements (sorted by id, a label), N, n, r0 as "a/b", and n(x,y), p(x,y) of every ordered pair. Incremental and from-scratch must give identical bytes (I-1). | `to_bytes` |
+| L-330 | `with_occurrences` / `with_elements` return a NEW immutable LocalSpace; the earlier object never changes (like L-41). | `LocalSpace` |
+| L-331 | Ledger events are numbered seq = 1, 2, ... without gaps; kinds = the design's seven plus `split` (design 4.2) and `activation_deferred` (design 4.3 L-308); unknown kind or field raises. | `Ledger` |
+| L-332 | `Ledger.from_bytes` accepts only exactly the bytes `to_bytes` would write (canonical); reordered, pretty-printed or edited files are rejected, not normalised. | `Ledger.from_bytes` |
+| L-333 | `order_sha256(sids)` = sha256 of the canonical JSON list of the sids in stream order. | `order_sha256` |
+| L-334 | `LocalSpace.to_tier()` gives a `TierSpace` subclass (`LocalTier`, strict first-position p_pair) over local sentence indices so placement's `Weights` (the I-04 key) runs on a local space unchanged; its r0 is 0 when N = 0 (L-327, same as `LocalSpace.r0`). placement.py is not modified. C2's settling will call placement on it. | `LocalTier` |
+| L-335 | Ledger values are dict/list/str/int/bool/None only; floats and Fractions raise (exact values are written as strings). | `canonical_json` |
+| L-336 | `pack()` has no default origin: the caller states `new` (a child pack in its parent unit) or `inherited` (a woken carry). Added in review: the earlier default `inherited` would have mis-marked every child pack at level >= 1. | `pack` |
+
+### C1 open points (meaning-level; not decided by the code)
+  (1) Position of a pack inside a unit (design 3.5: "its minimum"): built as the smallest position of any scope occurrence whose unit is in the vocab. When several elements share that position, p counts neither side (L-311); the design does not say whether such a tie should instead be broken by anything else (it is not).
+  (2) The question side of E_Q (n_U(q,x)) is counted as sentences of the scope where x is present and the word q occurs; a pack in the query position (q a pack) is not defined by the design and is not built.
+  (3) Ledger seq (L-331) numbers EVERY event 1, 2, ... (admit, close, pack, open, ...). Design 4.5 numbers only the admitted occurrences (close / carry rows have "—", rolled-back admissions keep their seq and the replay gets new ones), and 3.2 `admitted_upto` is "the ledger seq" of the restore point. Whether seq is per event or per admitted occurrence, and 0- or 1-based, is for the owner / C2-C3; C1 builds per event, 1-based.
+  (4) Design 6.2 I-2 ("rewrite the past, e.g. add question words; every count of U stays byte-identical") holds only while the inherited pack's vocab does not change. In a tower the vocab IS the past scope's words (3.3), and 3.5 places a pack in a scope sentence through its vocab, so adding a word to the past that also occurs in U's scope legitimately changes n, p, r0, E_Q of the pack in U (measured in review: n 2 -> 3 on a small CHAR case). The C1 test keeps the vocab fixed and adds an absolute check that a past-only query word is never evidence. Whether I-2 should be stated as "past rewritten with the vocab fixed" (C4 check) or the membership rule should change is the owner's decision.
