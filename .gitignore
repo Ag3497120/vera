@@ -39,3 +39,6 @@ experiments/guard/corpus/guard_store.json
 experiments/guard/corpus/_nonint_backup/
 # auditor 2026-10-05: scratch recomputation outputs
 artifacts/w14-bench/run1/tmpcalc/
+
+# T8 raw per-question sweeps (large; the summaries are kept)
+experiments/line3/t8/results/*.jsonl
