@@ -2338,7 +2338,37 @@ def cmd_line3(args) -> int:
     if not args.question:
         print("line3 ask: --question is required", file=sys.stderr)
         return 2
-    res = l3.ask(idx, args.question)
+    effort, nodes = getattr(args, "effort", None), getattr(args, "nodes", None)
+    if effort is None and nodes is None:
+        # T7b (owner: the user chooses the amount of inference per question): no default.  Ask when a person is
+        # at the terminal; otherwise refuse, so a script has to say it.
+        if sys.stdin.isatty():
+            print("速い答え (fast) / ふつう (standard) / 時間をかけた答え (full) / 十字の数 (数字) のどれにしますか? ",
+                  end="", file=sys.stderr, flush=True)
+            ans = sys.stdin.readline().strip()
+            if ans.isdigit():
+                nodes = int(ans)
+            else:
+                effort = ans
+        else:
+            print("line3 ask: choose the amount of inference: --effort fast|standard|full or --nodes N", file=sys.stderr)
+            return 2
+    try:
+        res = l3.ask(idx, args.question, view=args.view, effort=effort, nodes=nodes)
+    except ValueError as e:
+        print(f"line3: {e}", file=sys.stderr)
+        return 2
+    if args.choose is not None or args.record:
+        try:
+            rec = res.memory_record(args.choose)
+        except (ValueError, IndexError) as e:
+            print(f"line3: {e}", file=sys.stderr)
+            return 2
+        line = json.dumps(rec, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+        if args.record:
+            with open(args.record, "a", encoding="utf-8") as f:
+                f.write(line + "\n")
+        print(line, file=sys.stderr)
     if args.format == "json":
         obj = res.to_json_obj()
         if not args.show_thought:
@@ -2963,6 +2993,13 @@ def main(argv: Optional[list] = None) -> int:
     p.add_argument("--question", default=None, help="ask: the question")
     p.add_argument("--show-thought", dest="show_thought", action="store_true", help="ask: also show the thought (internal state; N-08, N-10)")
     p.add_argument("--format", choices=["text", "json"], default="text", help="ask: text (default) or json {answer, thought}")
+    p.add_argument("--effort", choices=["fast", "standard", "full"], default=None,
+                   help="ask: the amount of inference (the user's choice each time; no default): fast / standard read fewer crosses per tier and the answer is marked partial with counts, full = the whole read. Without --effort/--nodes a terminal is asked, a script is refused")
+    p.add_argument("--nodes", type=int, default=None, help="ask: an explicit node budget (crosses read per tier); replaces --effort")
+    p.add_argument("--view", choices=["all", "stable"], default="all",
+                   help="ask: all = every tier's candidates labelled by tier (default); stable = only the most stable tier(s) (I-16)")
+    p.add_argument("--choose", type=int, default=None, help="ask: the index of the candidate you pick; its memory record (with the tier) goes to stderr and --record")
+    p.add_argument("--record", default=None, help="ask: append the chosen candidate's memory record to this jsonl (with --choose, or alone for a single answer)")
     p.set_defaults(fn=cmd_line3)
 
     args = ap.parse_args(argv)

@@ -20,6 +20,14 @@ Binding (ops/decisions/2026-10-06_line3_faithful_build.md):
         of a cross is raised only when a question needs it, the answer is the path words with the
         sentences they trace to, the centre is a reference.
 
+T7b (owner, after T7: ops/decisions "T7 の測定後の決定"):
+  view   the user is shown EVERY tier's candidates, each labelled with its tier, never summed or merged across
+         tiers (view="all"); the I-16 "most stable tier only" view stays as view="stable".
+  effort the amount of inference is the user's choice per question (M-2(a)): a node budget = the number of crosses
+         read per tier (cycle read_cap); fast / standard are presets of that number (EFFORTS, set by measurement,
+         docs L-222), full = the whole read.  When the budget leaves crosses unread the answer is marked partial
+         with the counts (read / left unread / would read in full).
+
 Local decisions (docs/LINE3_LOCAL_DECISIONS.md L-210..):
   the tier's stability = the best stability among its listed entries (exact Fraction); a tier that
   adopted states but whose states have no section path has no entry and takes no part in the ranking
@@ -34,7 +42,7 @@ import multiprocessing as mp
 import os
 import pickle
 import time
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from fractions import Fraction
 from typing import Dict, List, Mapping, Optional, Sequence, Tuple
 
@@ -51,6 +59,30 @@ UNKNOWN_NO_PATH = ro.UNKNOWN_NO_PATH
 DEFAULT_LEVEL = "mid"                         # L-210: the level every S300 measurement of T5..T6ab used
 DEFAULT_BUDGET = cy.QueryBudget(64, 8)        # L-210: the query budget of the T6z / T6ab runs
 CACHE_FORMAT = "line3.placements.v1"
+
+# T7b: the amount of inference = (cap, raise_levels).  cap = crosses read PER TIER (a node budget, M-2(a)), None =
+# the whole read.  raise_levels = the placement levels a cross may be REBUILT at when a question needs it (T6y
+# on-demand raise; one rebuilt cross costs tens of seconds, far more than reading one), () = never.  fast / standard
+# are set by measurement (experiments/line3/t7b, docs L-222); the user-facing command has NO default preset.
+EFFORTS: Dict[str, Tuple[Optional[int], Tuple[str, ...]]] = {
+    "fast": (4, ()), "standard": (10, ()), "full": (None, cy.RAISE_LEVELS_DEFAULT)}
+VIEWS = ("all", "stable")
+
+
+def resolve_effort(effort: Optional[str] = None, nodes: Optional[int] = None):
+    """(name, cap, raise_levels).  `nodes` (an explicit node budget, crosses per tier) wins, is named "nodes" and
+    never rebuilds a cross (raise off); neither given -> (None, None, default levels) = exactly what T7 did
+    (library behaviour; the command line asks the user)."""
+    if nodes is not None:
+        if isinstance(nodes, bool) or not isinstance(nodes, int) or nodes < 0:
+            raise ValueError("nodes must be an integer >= 0")
+        return "nodes", nodes, ()
+    if effort is None:
+        return None, None, cy.RAISE_LEVELS_DEFAULT
+    if effort not in EFFORTS:
+        raise ValueError("unknown effort %r (%s)" % (effort, ", ".join(EFFORTS)))
+    cap, lv = EFFORTS[effort]
+    return effort, cap, lv
 
 
 def _fs(x: Optional[Fraction]) -> Optional[str]:
@@ -214,6 +246,7 @@ class TierOutcome:
     result: cy.TierResult
     answer: Optional[ro.PathAnswer]          # None when no state was adopted
     ms: int = 0                              # wall time (not part of the output bytes)
+    raise_skipped: int = 0                   # T7b: budget-limited crosses read that were NOT rebuilt (no state, raise off)
 
     @property
     def entries(self) -> Tuple[ro.AnswerEntry, ...]:
@@ -226,6 +259,14 @@ class TierOutcome:
     @property
     def verdict(self) -> str:
         return self.answer.verdict if self.answer is not None else self.result.verdict
+
+    @property
+    def read_counts(self) -> dict:
+        """crosses read / left unread by the node budget / would be read in full (the default read)."""
+        p = self.result.plan
+        if p.cap is None:
+            return {"crosses_read": len(p.read), "left_unread": 0, "would_read_in_full": len(p.read)}
+        return {"crosses_read": len(p.read), "left_unread": p.cap_unread, "would_read_in_full": p.cap_total}
 
 
 @dataclass(frozen=True)
@@ -240,6 +281,10 @@ class Combined:
     budget: cy.QueryBudget
     sentences: Mapping[int, Tuple[str, str]]             # sid -> (original text, source) of every sentence cited
     ms: int = 0
+    view: str = "all"                                    # T7b: "all" (every tier's entries, labelled) | "stable" (I-16)
+    effort: Optional[str] = None                         # T7b: preset name / "nodes" / None (whole read)
+    node_budget: Optional[int] = None                    # T7b: crosses read per tier, None = whole read
+    raise_levels: Tuple[str, ...] = cy.RAISE_LEVELS_DEFAULT   # T7b: levels a cross may be rebuilt at ((): never)
 
     # ---- reference helpers ----
     def outcome(self, tier: str) -> TierOutcome:
@@ -269,16 +314,65 @@ class Combined:
                              "shared_centres": sorted(ca & cb)})
         return {"pairs": rows, "used_for_selection": False}
 
+    @property
+    def most_stable_tiers(self) -> Tuple[str, ...]:
+        """Reference label only (I-16 ranking); it selects nothing in view="all"."""
+        ranked = [o for o in self.outcomes if o.stability is not None]
+        if not ranked:
+            return ()
+        best = max(o.stability for o in ranked)
+        return tuple(o.tier for o in ranked if o.stability == best)
+
+    def read_obj(self) -> dict:
+        per = {o.tier: o.read_counts for o in self.outcomes}
+        skipped = {o.tier: o.raise_skipped for o in self.outcomes if o.raise_skipped}
+        return {"effort": self.effort, "node_budget": self.node_budget, "rebuild_levels": list(self.raise_levels),
+                "partial": any(v["left_unread"] > 0 for v in per.values()), "per_tier": per,
+                "rebuild_skipped": skipped}
+
+    def _locate(self, which: int) -> Tuple[TierOutcome, int]:
+        if isinstance(which, bool) or not isinstance(which, int):
+            raise TypeError("choice must be an index")
+        if not 0 <= which < len(self.entries):
+            raise IndexError("choice %d outside the list of %d" % (which, len(self.entries)))
+        tier = self.entries[which][0]
+        local = sum(1 for t, _ in self.entries[:which] if t == tier)     # position among that tier's shown entries
+        return self.outcome(tier), local
+
+    def memory_record(self, which: Optional[int] = None) -> dict:
+        """The user's choice (or the automatic adoption of the single entry) as one memory record (M-4 (a)): the
+        readout record of the chosen tier's entry (which carries `tier`), `choice_index` = the index in the list
+        the user saw (all tiers, labelled), plus the view, the position inside the tier and how much was read."""
+        if which is None:
+            if len(self.entries) != 1 or self.verdict != ANSWER:
+                raise ValueError("nothing to adopt automatically: verdict %s with %d entries" % (self.verdict, len(self.entries)))
+            o, local = self._locate(0)
+            ad = ro.adopt_item(o.answer)
+        else:
+            o, local = self._locate(which)
+            ad = ro.choose_item(o.answer, local)         # a tier's entries are all shown, in the tier's own order
+            ad = replace(ad, listed=len(self.entries), choice_index=which)
+        rec = ad.memory_record()
+        assert rec["tier"] == o.tier
+        rec.update({"view": self.view, "tier_entry_index": local, "tiers_offered": list(self.shown),
+                    "effort": self.effort, "node_budget": self.node_budget,
+                    "partial_read": o.read_counts["left_unread"] > 0, "crosses": o.read_counts})
+        return rec
+
     # ---- output (N-08, N-10) ----
     def answer_obj(self) -> dict:
         one = self.verdict == ANSWER
+        ms_ = set(self.most_stable_tiers)
         ents = []
         for t, e in self.entries:
             ents.append({"tier": t, "words": list(e.words), "arrangements": e.count, "centres": list(e.centres),
-                         "stability": _fs(e.stability), "source_sids": list(e.source_sids)})
+                         "stability": _fs(e.stability), "source_sids": list(e.source_sids),
+                         "tier_is_most_stable": t in ms_})
         sids = sorted({s for _, e in self.entries for s in e.source_sids})
-        o = {"verdict": self.verdict, "tiers": list(self.shown), "tie_between_tiers": self.tie_between_tiers,
-             "listed": len(self.entries),
+        o = {"verdict": self.verdict, "view": self.view, "tiers": list(self.shown),
+             "most_stable_tiers": list(self.most_stable_tiers), "tie_between_tiers": self.tie_between_tiers,
+             "listed": len(self.entries), "per_tier_listed": {x.tier: len(x.entries) for x in self.outcomes},
+             "read": self.read_obj(),
              "answer": ({"tier": ents[0]["tier"], "path_words": list(ents[0]["words"]),
                          "source_sids": ents[0]["source_sids"],
                          "reference_centres": ents[0]["centres"]} if one else None),
@@ -300,7 +394,10 @@ class Combined:
                         key=lambda x: (-x[0], x[1]))
         return {"question": self.question, "tiers_run": [o.tier for o in self.outcomes], "level": self.level,
                 "query_budget": {"max_states": self.budget.max_states, "max_ends": self.budget.max_ends},
-                "rule": "I-16: each tier on its own; the most stable result is taken; a tie between tiers is a list",
+                "rule": ("T7b: each tier on its own; every tier's entries are shown, labelled by tier, nothing summed or merged"
+                         if self.view == "all" else
+                         "I-16: each tier on its own; the most stable result is taken; a tie between tiers is a list"),
+                "view": self.view, "effort": self.effort, "node_budget": self.node_budget, "read": self.read_obj(),
                 "ranking": [{"tier": t, "stability": _fs(s)} for s, t in ranked],
                 "shown_tiers": list(self.shown), "tie_between_tiers": self.tie_between_tiers,
                 "agreement": self.agreement(), "tiers": per}
@@ -314,11 +411,21 @@ class Combined:
 
 
 def combine(question: str, outcomes: Sequence[TierOutcome], space: Space, level: str = DEFAULT_LEVEL,
-            budget: cy.QueryBudget = DEFAULT_BUDGET) -> Combined:
-    """I-16 / I-14 on finished tier outcomes (separate so it can be tested without a search)."""
+            budget: cy.QueryBudget = DEFAULT_BUDGET, view: str = "all", effort: Optional[str] = None,
+            node_budget: Optional[int] = None, raise_levels: Tuple[str, ...] = cy.RAISE_LEVELS_DEFAULT) -> Combined:
+    """T7b view="all" (default): every tier's entries, in the order RUN, WORD, CHAR, each labelled with its tier,
+    nothing summed or merged across tiers; a single entry in total is the ANSWER, otherwise a CHOICE.
+    view="stable": I-16 / I-14 (the most stable tier(s) only).  On finished tier outcomes (testable without a search)."""
+    if view not in VIEWS:
+        raise ValueError("view: %s" % " | ".join(VIEWS))
     outs = tuple(sorted(outcomes, key=lambda o: TIERS.index(o.tier)))
     ranked = [o for o in outs if o.stability is not None]
-    if not ranked:
+    if ranked and view == "all":
+        shown = tuple(o.tier for o in ranked)
+        entries = tuple((o.tier, e) for o in ranked for e in o.entries)
+        tie = False
+        verdict = ANSWER if len(entries) == 1 else CHOICE
+    elif not ranked:
         verdict = UNKNOWN_NO_PATH if any(o.result.candidates for o in outs) else UNKNOWN_NO_STATE
         shown: Tuple[str, ...] = ()
         entries: Tuple[Tuple[str, ro.AnswerEntry], ...] = ()
@@ -333,7 +440,7 @@ def combine(question: str, outcomes: Sequence[TierOutcome], space: Space, level:
     sids = {s for _, e in entries for s in e.source_sids}
     sents = {s: space.sentences[s] for s in sorted(sids)}
     return Combined(question, outs, verdict, shown, entries, tie, level, budget, sents,
-                    sum(o.ms for o in outs))
+                    sum(o.ms for o in outs), view, effort, node_budget, tuple(raise_levels))
 
 
 def ask_tier_outcome(index: Index, tier: str, question: str, budget: cy.QueryBudget = DEFAULT_BUDGET,
@@ -343,18 +450,37 @@ def ask_tier_outcome(index: Index, tier: str, question: str, budget: cy.QueryBud
     ts, facts, store = index.space.tiers[tier], index.facts[tier], index.stores[tier]
     res = cy.ask_tier(ts, question, store, facts=facts, budget=budget, weights=store.w, **kw)
     ans = ro.read_out_result(ts, res, facts) if res.candidates else None
-    return TierOutcome(tier, res, ans, (time.monotonic_ns() - t0) // 1000000)
+    skipped = 0
+    if not res.candidates and not ((res.variant or {}).get("budget_raise") or {}).get("needed"):
+        lv = kw.get("raise_levels", cy.RAISE_LEVELS_DEFAULT)
+        if kw.get("raise_budget", "on_demand") is None or not lv:
+            skipped = sum(1 for sd in res.plan.read if store.cross_for(sd).stop == "budget")
+    return TierOutcome(tier, res, ans, (time.monotonic_ns() - t0) // 1000000, skipped)
 
 
 def ask(index: Index, question: str, tiers: Optional[Sequence[str]] = None,
-        budget: cy.QueryBudget = DEFAULT_BUDGET, **kw) -> Combined:
-    """I-25: every requested tier is run (none is skipped because another one answered); I-16: combine."""
+        budget: cy.QueryBudget = DEFAULT_BUDGET, *, view: str = "all", effort: Optional[str] = None,
+        nodes: Optional[int] = None, **kw) -> Combined:
+    """I-25: every requested tier is run (none is skipped because another one answered).  `view`: every tier's
+    entries labelled (default) or the I-16 most stable tier only.  `effort` (fast | standard | full) or `nodes`
+    (crosses per tier): the amount of inference; neither = the whole read (what T7 did).  A budget that leaves
+    crosses unread marks the answer partial, with counts."""
     names = parse_tiers(tiers) if tiers is not None else index.tiers
     for n in names:
         if n not in index.stores:
             raise ValueError("tier %s is not in this index" % n)
+    if view not in VIEWS:
+        raise ValueError("view: %s" % " | ".join(VIEWS))
+    name, cap, lv = resolve_effort(effort, nodes)
+    if cap is not None:
+        kw["read_cap"] = cap
+    if lv != cy.RAISE_LEVELS_DEFAULT:
+        if lv:
+            kw["raise_levels"] = lv
+        else:
+            kw["raise_budget"] = None
     outs = [ask_tier_outcome(index, t, question, budget, **kw) for t in names]
-    return combine(question, outs, index.space, index.level, budget)
+    return combine(question, outs, index.space, index.level, budget, view, name, cap, lv)
 
 
 # --------------------------------------------------------------------------
@@ -363,16 +489,37 @@ def ask(index: Index, question: str, tiers: Optional[Sequence[str]] = None,
 def format_text(c: Combined, show_thought: bool = False) -> str:
     a = c.answer_obj()
     L: List[str] = []
+    rd = a["read"]
     if a["verdict"] == ANSWER:
         L.append("答え (%s): %s" % (a["answer"]["tier"], " / ".join(a["answer"]["path_words"])))
         L.append("  参考の中心: %s" % ", ".join(a["answer"]["reference_centres"]))
     elif a["verdict"] == CHOICE:
-        L.append("候補 %d 件%s (選んでください):" % (a["listed"], "（段どうしが同点）" if a["tie_between_tiers"] else ""))
+        if a["view"] == "all":
+            L.append("候補 %d 件（全段の候補を段の印つきで並べています。段どうしの票は足していません。選んでください）:" % a["listed"])
+        else:
+            L.append("候補 %d 件%s (選んでください):" % (a["listed"], "（段どうしが同点）" if a["tie_between_tiers"] else ""))
+        last = None
         for i, e in enumerate(a["entries"]):
+            if a["view"] == "all" and e["tier"] != last:
+                last = e["tier"]
+                L.append(" -- 段 %s: %d 件%s" % (e["tier"], a["per_tier_listed"][e["tier"]],
+                                               "（最も安定な段）" if e["tier_is_most_stable"] else ""))
             L.append("  [%d] (%s) %s  中心: %s  並べ方 %d  安定度 %s" % (
                 i, e["tier"], " / ".join(e["words"]), ", ".join(e["centres"]), e["arrangements"], e["stability"]))
     else:
         L.append("答えなし: %s" % a["verdict"])
+    if rd["partial"]:
+        L.append("【部分読み】推論の量 %s（十字 %s 本まで/段）: %s" % (
+            rd["effort"], rd["node_budget"],
+            " ".join("%s=%d/%d 本読み・%d 本は未読" % (t, v["crosses_read"], v["would_read_in_full"], v["left_unread"])
+                     for t, v in rd["per_tier"].items())))
+        L.append("  未読の十字に正解があるかもしれません。時間をかけた答え（--effort full）で読み直せます。")
+    if rd["rebuild_skipped"]:
+        L.append("  配置の作り直しを省いた十字: %s（候補が出なかった段。--effort full なら作り直して再び読みます）" % " ".join(
+            "%s=%d 本" % (t, n) for t, n in rd["rebuild_skipped"].items()))
+    elif rd["effort"] is not None:
+        L.append("推論の量 %s: 予算内で全て読みました（%s）" % (rd["effort"], " ".join(
+            "%s=%d" % (t, v["crosses_read"]) for t, v in rd["per_tier"].items())))
     for s in a["sources"]:
         L.append("  根拠 #%d: %s%s" % (s["sid"], s["text"], " [%s]" % s["source"] if s["source"] else ""))
     if show_thought:
