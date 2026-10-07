@@ -177,6 +177,9 @@ def test_exact_arithmetic_no_floats_in_the_output(index):
 
 # ---- the command ------------------------------------------------------------------------------------------------------
 def cli(args, seed="0", cwd=None):
+    # these tests are about layer 0 (T7b): the command's default is layers ON since T8b (L-250), so they ask for off
+    if args and args[0] == "ask" and "--layers" not in args:
+        args = list(args) + ["--layers", "off"]
     env = dict(os.environ, PYTHONHASHSEED=seed, PYTHONDONTWRITEBYTECODE="1", PYTHONPATH=ROOT)
     for k in [k for k in env if k.startswith("VERA_")]:
         del env[k]

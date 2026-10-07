@@ -2353,14 +2353,15 @@ def cmd_line3(args) -> int:
         else:
             print("line3 ask: choose the amount of inference: --effort fast|standard|full or --nodes N", file=sys.stderr)
             return 2
-    layered = getattr(args, "layers", "off") == "on"
+    layered = getattr(args, "layers", "on") == "on"          # L-250: the owner's default is layers ON
     try:
         if layered:
             # T8 (verantyx/line3/matryoshka.py): stack when the stability was lost at this question; layer 0 is unchanged
             from .line3 import matryoshka as l3m
             vs = {"both": l3m.VARIANTS, "A": ("A",), "B": ("B",)}[args.query_pass]
             lopts = l3m.LayerOptions(variants=vs, granularity=args.layer_granularity, feedback=args.layer_feedback,
-                                     bounds=l3m.bounds_for(effort, nodes))
+                                     bounds=l3m.bounds_for(effort, nodes), candidate=args.layer_candidate,
+                                     down_query=args.layer_down_query)
             res = l3m.ask_layered(idx, args.question, view=args.view, effort=effort, nodes=nodes, options=lopts)
         else:
             res = l3.ask(idx, args.question, view=args.view, effort=effort, nodes=nodes)
@@ -3011,12 +3012,16 @@ def main(argv: Optional[list] = None) -> int:
                    help="ask: all = every tier's candidates labelled by tier (default); stable = only the most stable tier(s) (I-16)")
     p.add_argument("--choose", type=int, default=None, help="ask: the index of the candidate you pick; its memory record (with the tier) goes to stderr and --record")
     p.add_argument("--record", default=None, help="ask: append the chosen candidate's memory record to this jsonl (with --choose, or alone for a single answer)")
-    p.add_argument("--layers", choices=["off", "on"], default="off",
-                   help="ask: T8 layers (matryoshka; decisions 9, I-18, N-08, N-11): on = (EXPERIMENTAL: the upper-layer geometry is awaiting the owner's spec) the stability is checked when the question is asked and, when it was lost, the upper layers' candidates are also shown (labelled by layer and by query variant); off = layer 0 only (T7b)")
-    p.add_argument("--query-pass", dest="query_pass", choices=["both", "A", "B"], default="both",
-                   help="ask --layers on: A = the initial query is passed on with the lower answer, B = the lower answer only, both = build both (I-20)")
-    p.add_argument("--layer-granularity", dest="layer_granularity", choices=["same", "compress"], default="same",
-                   help="ask --layers on: same = bundle every stable state (higher precision), compress = only the states this question touched (faster) (M-2)")
+    p.add_argument("--layers", choices=["off", "on"], default="on",
+                   help="ask: T8 layers (matryoshka; decisions 9, I-18, N-08, N-11), ON by default (owner 2026-10-07): the stability is checked when the question is asked and, when it was lost, the upper layers' candidates are also shown (labelled by layer and by query variant); off = layer 0 only (T7b, the old bytes)")
+    p.add_argument("--query-pass", dest="query_pass", choices=["both", "A", "B"], default="A",
+                   help="ask --layers on: A = the initial query is passed on with the lower answer (default), B = the lower answer only, both = build both (I-20)")
+    p.add_argument("--layer-granularity", dest="layer_granularity", choices=["same", "compress"], default="compress",
+                   help="ask --layers on: compress = only the states this question touched (faster; default), same = bundle every stable state (M-2)")
+    p.add_argument("--layer-candidate", dest="layer_candidate", choices=["path", "bag"], default="path",
+                   help="ask --layers on: path = an upper-layer candidate shows only the path words read under the question from the lower crosses packed in its bundles (default, with sources); bag = every word of the bundled lower states (T8)")
+    p.add_argument("--layer-down-query", dest="layer_down_query", choices=["question", "seed+question"], default="question",
+                   help="ask --layers on --layer-candidate path: what a lower cross packed in a bundle is read under: question = the upper layer's own question units (default), seed+question = the bundle's own seed first, then the question")
     p.add_argument("--layer-feedback", dest="layer_feedback", choices=["none", "down"], default="none",
                    help="ask --layers on: down = re-read the lower layer with the upper layers' words until no layer changes (N-12)")
     p.set_defaults(fn=cmd_line3)

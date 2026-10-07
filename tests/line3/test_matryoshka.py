@@ -57,6 +57,10 @@ def small_index(space):
 
 
 def opts(**kw):
+    # the T8 behaviour, explicitly (the library default is now variant A / compress / path words: L-250, L-251)
+    kw.setdefault("variants", M.VARIANTS)
+    kw.setdefault("granularity", "same")
+    kw.setdefault("candidate", "bag")
     kw.setdefault("bounds", BOUNDS)
     return M.LayerOptions(**kw)
 
@@ -508,3 +512,194 @@ def test_descent_reads_only_crosses_under_the_selected_path_and_never_more_than_
             assert set(d.fine.plan.read) == set(d.fine_seeds)
         d2 = M.descend_tier(small_index, tier, QUESTION, opts(granularity="same"))
         assert d.to_json_obj() == d2.to_json_obj()
+
+
+# ======================================================================================================================
+# T8b (L-250, L-251): layers ON by default (compress, query A); an upper-layer candidate = the PATH WORDS read under the
+# question from the lower crosses packed in its bundles (never the whole bundled state)
+# ======================================================================================================================
+GOLDEN_OLD = {      # sha256 of to_bytes() produced by the T8 tree (bbf85e3) on the toy, BOUNDS, tiers RUN+WORD, effort full
+    "off": "e2a29d889b723f974f981386595fcffc20bc3528ced274baef573718631866aa",
+    "on-old": "f8091391da45068fecdee2b5116aa667ab12c74d3ebfb5f78ee3cac06888b689",
+    "on-old-compress-A": "e93864f46f446b4dd09cfd389ffed946212a58f430acfb7278c9e71be5bb6ebd",
+    "on-old-down": "99c526314fcb069590fbf11ae3ad2346825363569be6361b39d3f391244b2d8b",
+}
+
+
+def test_the_defaults_are_the_owners_choice_and_the_old_behaviour_is_reachable_by_explicit_flags(small_index):
+    d = M.LayerOptions()
+    assert d.variants == ("A",) and d.granularity == "compress" and d.candidate == "path"
+    with pytest.raises(ValueError):
+        M.LayerOptions(candidate="all")
+    h = lambda b: hashlib.sha256(b).hexdigest()
+    assert h(A.ask(small_index, QUESTION, TIERS, effort="full").to_bytes()) == GOLDEN_OLD["off"]       # layers off: untouched
+    old = M.ask_layered(small_index, QUESTION, TIERS, effort="full",
+                        options=M.LayerOptions(candidate="bag", variants=M.VARIANTS, granularity="same", bounds=BOUNDS))
+    assert h(old.to_bytes()) == GOLDEN_OLD["on-old"]
+    old_c = M.ask_layered(small_index, QUESTION, TIERS, effort="full",
+                          options=M.LayerOptions(candidate="bag", variants=("A",), granularity="compress", bounds=BOUNDS))
+    assert h(old_c.to_bytes()) == GOLDEN_OLD["on-old-compress-A"]
+    old_d = M.ask_layered(small_index, QUESTION, TIERS, effort="full",
+                          options=M.LayerOptions(candidate="bag", variants=M.VARIANTS, granularity="same", bounds=BOUNDS, feedback="down"))
+    assert h(old_d.to_bytes()) == GOLDEN_OLD["on-old-down"]
+    # the library default is a different (path-word) result
+    new = M.ask_layered(small_index, QUESTION, TIERS, effort="full", options=M.LayerOptions(bounds=BOUNDS))
+    assert new.options.candidate == "path" and h(new.to_bytes()) != GOLDEN_OLD["on-old-compress-A"]
+
+
+@pytest.fixture(scope="module")
+def pathed(small_index):
+    return M.ask_layered(small_index, QUESTION, TIERS, effort="full", options=M.LayerOptions(bounds=BOUNDS))
+
+
+def _path_words_of(read_ans):
+    """The words on the section paths of a read-out (and its centres), computed from the arrangements, not from entry.words."""
+    out = set()
+    for e in read_ans.entries:
+        for a in e.arrangements:
+            for p in a.paths:
+                out.update(p.words)
+            out.add(a.centre)
+    return out
+
+
+def test_an_upper_candidate_shows_only_the_path_words_read_under_the_question(small_index, pathed):
+    seen = 0
+    for tl in pathed.layers:
+        st = M.stack_of(small_index, tl.tier)
+        for r in tl.runs:
+            assert r.candidate == "path"
+            for e in r.entries:
+                seen += 1
+                assert e.word_sources is not None and e.words and e.path_from
+                # (1) every word is a path word of a lower read the entry records ...
+                recorded = set()
+                for d in e.path_from:
+                    assert d["layer"] == 0 or d["layer"] < e.layer
+                    recorded.update(d["words"])
+                assert set(e.words) <= recorded
+                # (2) ... which a fresh, independent read of that lower cross under the same question reproduces
+                lows = [pa for j, pa in e.path_answers if j == 0]
+                assert lows
+                fresh = set()
+                for pa in lows:
+                    fresh |= _path_words_of(pa)
+                base_words = {w for d in e.path_from if d["layer"] == 0 for w in d["words"]}
+                assert base_words <= fresh
+                # (3) and the trace says every one of them lies in a bundle of the entry (down to a base state)
+                assert r.trace["ok"]
+    assert seen > 0
+
+
+def test_path_candidates_are_smaller_than_the_bags_they_replace_and_are_never_bigger(small_index, layered, pathed):
+    # the same question, bag mode (T8) vs path mode: every path entry is contained in the words of the lower states of its bundles
+    bag = M.ask_layered(small_index, QUESTION, TIERS, effort="full", options=M.LayerOptions(candidate="bag", bounds=BOUNDS))
+    n_bag = sum(len(e.words) for tl in bag.layers for e in tl.entries)
+    n_path = sum(len(e.words) for tl in pathed.layers for e in tl.entries)
+    assert n_path > 0
+    for tl in bag.layers:
+        for e in tl.entries:
+            assert all(0 < len(x) for x in [e.words])
+    assert n_path <= n_bag
+
+
+def test_every_path_word_has_source_sentences_that_hold_it_and_the_trace_is_complete(small_index, pathed):
+    n = 0
+    for tl in pathed.layers:
+        ts = small_index.space.tiers[tl.tier]
+        for r in tl.runs:
+            assert r.trace["ok"] and r.trace["words_traced"] == r.trace["words_checked"] and r.trace["fraction"] == "1/1"
+            for e in r.entries:
+                assert dict(e.word_sources).keys() == set(e.words)
+                for w, ss in e.word_sources:
+                    assert ss
+                    for sid in ss:
+                        assert w in ts.sentence_units[sid]            # the source sentence really contains the word
+                        n += 1
+                assert set(e.source_sids) == {s for _, ss in e.word_sources for s in ss}
+    assert n > 0
+    # the sentences of the sources are given in the answer
+    ans = pathed.answer_obj()
+    for e in ans["entries"]:
+        for s in e["source_sids"]:
+            assert any(x["sid"] == s and x["text"] for x in ans["sources"])
+    # not vacuous: a word the lower reads did not give fails the trace
+    from dataclasses import replace
+    tl = [t for t in pathed.layers if any(r.entries for r in t.runs)][0]
+    r = [r for r in tl.runs if r.entries][0]
+    st = M.stack_of(small_index, tl.tier)
+    lay = st.layer1(r.granularity, [M._strip(x) for x in r.query_units], BOUNDS)
+    e = r.entries[0]
+    bad = replace(e, words=e.words + ("存在しない語",))
+    t = M.trace_run(st.base, [lay], lay, None, [bad], st.store)
+    assert not t["ok"]
+
+
+def test_a_layer_two_candidate_is_read_down_through_layer_one_to_base_path_words(space, monkeypatch):
+    monkeypatch.setitem(pl.LEVELS, "low", pl.Budget(max_class=2, max_states=30, max_moves=300))
+    idx = make_index(space, SMALL)
+    b3 = M.LayerBounds(3, 6, 8, 3, 6, "low", 2)
+    c = M.ask_layered(idx, QUESTION, ["RUN", "WORD"], effort="full", options=M.LayerOptions(bounds=b3))
+    deep = [r for tl in c.layers for r in tl.runs if r.k >= 2 and r.entries]
+    assert deep, "no layer-2 candidate on this toy"
+    for r in deep:
+        assert r.trace["ok"] and r.trace["fraction"] == "1/1"
+        for e in r.entries:
+            layers_read = {d["layer"] for d in e.path_from}
+            assert 0 in layers_read and (r.k - 1) in layers_read          # the lower layer is read, then down to the base
+            base_words = {w for d in e.path_from if d["layer"] == 0 for w in d["words"]}
+            assert set(e.words) == base_words                              # only the base path words, nothing else
+            assert set(e.words) <= set(idx.space.tiers[r.tier].postings)
+
+
+def test_path_mode_has_no_float_and_is_exact(pathed):
+    def walk(o):
+        if isinstance(o, dict):
+            for v in o.values():
+                walk(v)
+        elif isinstance(o, list):
+            for v in o:
+                walk(v)
+        else:
+            assert not isinstance(o, float)
+
+    walk(pathed.to_json_obj())
+    assert json.loads(pathed.to_bytes())["thought"]["layers"]["options"]["candidate"] == "path"
+
+
+def _digest_script_path():
+    return _digest_script().replace("M.LayerOptions(bounds=b,feedback='down')",
+                                    "M.LayerOptions(bounds=b,variants=M.VARIANTS,granularity='same')")
+
+
+def test_path_mode_output_is_byte_identical_across_hash_seeds():
+    for script in (_digest_script(), _digest_script_path()):          # the default options (A, compress, path) and both/same
+        outs = []
+        for seed in ("0", "1", "12345"):
+            env = dict(os.environ, PYTHONHASHSEED=seed, PYTHONDONTWRITEBYTECODE="1", PYTHONPATH=ROOT)
+            r = subprocess.run([sys.executable, "-c", script], capture_output=True, text=True, env=env, cwd=ROOT,
+                               timeout=900, stdin=subprocess.DEVNULL)
+            assert r.returncode == 0, r.stderr
+            outs.append(r.stdout.strip())
+        assert outs[0] == outs[1] == outs[2] and int(outs[0].split()[1]) > 1000
+
+
+def test_cli_defaults_are_layers_on_compress_a_path_and_flags_restore_the_old_output(tmp_path):
+    p = tmp_path / "toy.jsonl"
+    with open(p, "w", encoding="utf-8") as f:
+        for s in DATA:
+            f.write(json.dumps({"sent": s, "source": "toy"}, ensure_ascii=False) + "\n")
+    base = ["ask", "--data", str(p), "--question", QUESTION, "--tiers", "RUN,WORD", "--effort", "fast", "--format", "json",
+            "--show-thought"]
+    dflt = cli(base)
+    assert dflt.returncode == 0, dflt.stderr
+    o = json.loads(dflt.stdout)
+    opt = o["thought"]["layers"]["options"]
+    assert opt["variants"] == ["A"] and opt["granularity"] == "compress" and opt["candidate"] == "path"
+    off = cli(base + ["--layers", "off"])
+    assert off.returncode == 0 and "layers" not in json.loads(off.stdout)["answer"]
+    old = cli(base + ["--query-pass", "both", "--layer-granularity", "same", "--layer-candidate", "bag"])
+    assert old.returncode == 0, old.stderr
+    oo = json.loads(old.stdout)["thought"]["layers"]["options"]
+    assert oo["variants"] == ["A", "B"] and oo["granularity"] == "same" and "candidate" not in oo
+    assert cli(base + ["--layer-candidate", "all"]).returncode == 2

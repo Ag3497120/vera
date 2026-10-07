@@ -27,7 +27,8 @@ Binding decisions (ops/decisions/2026-10-06_line3_faithful_build.md; line 3 of v
         LABELLED by layer (and variant) and never merged, summed or ranked across layers.
 
 Local decisions (docs/LINE3_LOCAL_DECISIONS.md, L-230..): see there.  Everything is exact, deterministic and independent
-of the hash seed.  Layers are OFF in the library (ask.ask); `ask_layered` / the command's --layers switch them on.
+of the hash seed.  `ask.ask` is layer 0 only (T7b, untouched); `ask_layered` and the command (layers ON by default since T8b, L-250) add the layers.
+Upper-layer candidates show only the path words read under the question (L-251); the T8 bags stay as candidate='bag'.
 """
 from __future__ import annotations
 
@@ -48,6 +49,8 @@ from verantyx.line3.space import TierSpace
 LAYER_FORMAT = "line3.layers.v1"
 VARIANTS = ("A", "B")                       # I-20: A = initial query + the lower answer, B = the lower answer only
 GRANULARITIES = ("same", "compress")        # M-2
+DOWN_QUERIES = ("question", "seed+question")  # L-252: what the lower cross is read under
+CANDIDATES = ("path", "bag")                # L-250: what an upper-layer candidate shows (path words read under the question / N-19 bag)
 FEEDBACKS = ("none", "down")                # N-12 re-read: see L-239
 UNKNOWN_NOTHING_TO_PASS = "UNKNOWN_NOTHING_TO_PASS"
 UNKNOWN_NO_FIXED_POINT_LAYERS = "UNKNOWN_NO_FIXED_POINT_LAYERS"
@@ -96,10 +99,12 @@ def bounds_for(effort: Optional[str] = None, nodes: Optional[int] = None) -> Lay
 
 @dataclass(frozen=True)
 class LayerOptions:
-    variants: Tuple[str, ...] = VARIANTS          # I-20: both
-    granularity: str = "same"                     # M-2
+    variants: Tuple[str, ...] = ("A",)            # I-20; L-250: the owner's default is A (B stays an option)
+    granularity: str = "compress"                 # M-2; L-250: the owner's default is compress ("same" stays an option)
     feedback: str = "none"                        # N-12 (L-239)
     bounds: LayerBounds = LAYER_EFFORTS["standard"]
+    candidate: str = "path"                       # L-251: "path" = only the path words read under the question; "bag" = T8's
+    down_query: str = "question"                  # L-252: "question" = the upper layer's own question units; "seed+question" = the bundle's seed first
 
     def __post_init__(self) -> None:
         if not self.variants or any(v not in VARIANTS for v in self.variants):
@@ -108,6 +113,10 @@ class LayerOptions:
             raise ValueError("granularity: %s" % " | ".join(GRANULARITIES))
         if self.feedback not in FEEDBACKS:
             raise ValueError("feedback: %s" % " | ".join(FEEDBACKS))
+        if self.down_query not in DOWN_QUERIES:
+            raise ValueError("down_query: %s" % " | ".join(DOWN_QUERIES))
+        if self.candidate not in CANDIDATES:
+            raise ValueError("candidate: %s" % " | ".join(CANDIDATES))
         if self.bounds.max_layers < 1 or self.bounds.rounds < 1:
             raise ValueError("bounds: max_layers and rounds must be >= 1")
 
@@ -181,6 +190,7 @@ class Layer:
         self.bounds = bounds
         self.budget = pl.budget_level(bounds.level)
         self._cross: Dict[str, pl.Placement] = {}
+        self._down: Dict[tuple, Tuple[Optional[ro.PathAnswer], tuple]] = {}      # L-251: reads of this layer's crosses
         self.builds = 0
 
     def cross_for(self, seed: str) -> pl.Placement:
@@ -198,8 +208,10 @@ class Layer:
 class LayerStack:
     """Caches of one tier of one index: the base word positions and the all-states layer 1 ("same granularity")."""
 
-    def __init__(self, base: TierSpace, store) -> None:
+    def __init__(self, base: TierSpace, store, facts: Optional[cy.TierFacts] = None) -> None:
         self.base, self.store = base, store
+        self.facts = facts if facts is not None else cy.TierFacts(base)
+        self._down: Dict[tuple, Tuple[Optional[ro.PathAnswer], tuple]] = {}      # L-251: reads of lower crosses (a pure cache)
         self._pos: Dict[str, Dict[int, int]] = {}
         self._layer1: Dict[Tuple[str, str, int, Optional[int]], Layer] = {}
         self.layer1_build_ms: Dict[str, int] = {}
@@ -247,7 +259,7 @@ def stack_of(index: "A.Index", tier: str) -> LayerStack:
         d = index._t8_stacks = {}
     s = d.get(tier)
     if s is None:
-        s = d[tier] = LayerStack(index.space.tiers[tier], index.stores[tier])
+        s = d[tier] = LayerStack(index.space.tiers[tier], index.stores[tier], index.facts[tier])
     return s
 
 
@@ -286,14 +298,25 @@ class LayerEntry:
     stability: Fraction
     arrangements: int
     source_sids: Tuple[int, ...]           # sentences evidencing a step between bundles
+    # L-251 (candidate="path"): `words` are the path words read under the question from the lower crosses packed in the
+    # bundles (never the whole lower state); word_sources = per word the base sentences of the steps into/out of it;
+    # path_from = which lower cross was read for which bundle.  None / () in "bag" mode (the bytes of T8 are unchanged).
+    word_sources: Optional[Tuple[Tuple[str, Tuple[int, ...]], ...]] = None
+    path_from: Tuple[dict, ...] = ()
+    path_answers: Tuple[Tuple[int, ro.PathAnswer], ...] = field(default=(), compare=False, repr=False)   # (layer, read) for the trace
 
     def key(self) -> Tuple[str, int, str, Tuple[str, ...], Tuple[str, ...]]:
         return (self.tier, self.layer, self.variant, self.words, self.bundles)
 
     def to_json_obj(self) -> dict:
-        return {"tier": self.tier, "layer": self.layer, "variant": self.variant, "words": list(self.words),
-                "bundles": list(self.bundles), "centres": list(self.centres), "stability": _fs(self.stability),
-                "arrangements": self.arrangements, "source_sids": list(self.source_sids)}
+        o = {"tier": self.tier, "layer": self.layer, "variant": self.variant, "words": list(self.words),
+             "bundles": list(self.bundles), "centres": list(self.centres), "stability": _fs(self.stability),
+             "arrangements": self.arrangements, "source_sids": list(self.source_sids)}
+        if self.word_sources is not None:
+            o["candidate"] = "path"
+            o["word_sources"] = {w: list(ss) for w, ss in self.word_sources}
+            o["path_from"] = [dict(d) for d in self.path_from]
+        return o
 
 
 @dataclass(frozen=True)
@@ -321,8 +344,18 @@ class LayerRun:
     layer_limit: bool                       # the next layer is needed but the effort's bound stopped it
     trace: dict
     ms: int = 0
+    up_bundles: Optional[Tuple[str, ...]] = None     # L-251: the bundles of the answer passed to the next layer (path mode)
+    candidate: str = "bag"
+    without_path_words: int = 0                       # L-251: upper entries from whose lower crosses the question read no path
 
     def to_json_obj(self) -> dict:
+        o = self._json()
+        if self.candidate == "path":
+            o["candidate"] = "path"
+            o["entries_without_path_words"] = self.without_path_words
+        return o
+
+    def _json(self) -> dict:
         return {"tier": self.tier, "variant": self.variant, "layer": self.k, "granularity": self.granularity,
                 "bundles": self.n_bundles, "query_bundles": list(self.query_units),
                 "passed": {"words": list(self.passed_words), "dropped_by_pass_cap": self.passed_left},
@@ -394,6 +427,73 @@ def _expand(layer: Layer, bundles: Iterable[str]) -> Tuple[str, ...]:
     return tuple(sorted(ws))
 
 
+
+# --------------------------------------------------------------------------
+# L-251: an upper-layer candidate = the PATH WORDS read under the question from the lower crosses packed in its bundles
+# (owner 2026-10-07; N-19 "read out the elements along the path").  No bundle is expanded into all its words.
+# --------------------------------------------------------------------------
+def _strip(b: str) -> str:
+    """⟦k:X⟧ -> X (the unit of the lower layer whose cross is packed in the bundle)."""
+    return b[b.index(":") + 1:-1]
+
+
+def lower_units(units: Iterable[str]) -> Tuple[str, ...]:
+    return tuple(dict.fromkeys(_strip(u) for u in units))
+
+
+class _Acc:
+    def __init__(self) -> None:
+        self.words: Dict[str, set] = {}
+        self.reads: List[dict] = []
+        self.answers: List[Tuple[int, ro.PathAnswer]] = []
+        self.seen: set = set()
+
+
+def down_read(stack: "LayerStack", chain: Sequence[Layer], k: int, b: str, ul: Sequence[Tuple[str, ...]],
+              bounds: LayerBounds, budget: cy.QueryBudget, acc: _Acc, down_query: str = "question") -> None:
+    """Read the lower cross packed in the bundle b (layer k) UNDER THE QUESTION (the units ul[k-1] that the upper layer's
+    own question maps to, so the same question the upper layer was asked), exactly as layer 0 reads a cross.  At layer 1
+    the cross is the base cross of the seed and its path words are base words; above, the lower layer's cross is read and
+    each bundle on its paths is read down again, until base words."""
+    j = k - 1
+    X = _strip(b)
+    if j == 0:
+        space, facts, plc, cache = stack.base, stack.facts, stack.store, stack._down
+    else:
+        lay = chain[j - 1]
+        space, facts, plc, cache = lay.space, lay.facts, lay, lay._down
+    units = tuple(ul[j])
+    if down_query == "seed+question":                 # L-252: the bundle's own seed first (so it attaches), then the question
+        units = (X,) + tuple(u for u in units if u != X)
+    key = (X, units, bounds.members, repr(budget))
+    hit = cache.get(key)
+    if hit is None:
+        plan = cy.ReadPlan((("under_the_bundle", (X,)),), (X,), (), 1, None, False, 0, None, 0, 1)
+        res = cy._ask_tier_once(space, "", plc, units=units, facts=facts, budget=budget, scope="whole", unit_filter=None,
+                                plan_override=plan, member_cap=bounds.members, observe=False, lazy_members=True)
+        ans = ro.read_out_result(space, res, facts) if res.candidates else None
+        if len(cache) > 4000:
+            cache.clear()
+        hit = cache[key] = (ans, (res.members_read, res.members_total))
+    ans, mem = hit
+    if (j, X) not in acc.seen:
+        acc.seen.add((j, X))
+        acc.reads.append({"bundle": b, "layer": j, "seed": X, "units": len(units),
+                          "listed": len(ans.entries) if ans is not None else 0,
+                          "members_read": mem[0], "members_total": mem[1],
+                          "words": sorted({w for e in ans.entries for w in e.words}) if ans is not None else []})
+        if ans is not None:
+            acc.answers.append((j, ans))
+    if ans is None:
+        return
+    for e in ans.entries:
+        for w in e.words:
+            if j == 0:
+                acc.words.setdefault(w, set()).update(ro.entry_word_sources(e, w))
+            else:
+                down_read(stack, chain, j, w, ul, bounds, budget, acc, down_query)
+
+
 # --------------------------------------------------------------------------
 # trace through the layers (100%)
 # --------------------------------------------------------------------------
@@ -411,6 +511,23 @@ def trace_run(tier_space: TierSpace, chain: Sequence[Layer], layer: Layer, answe
         traced += rep.words_traced
         failures.extend("bundle-level: " + f for f in rep.failures)
     post = tier_space.postings
+    seen_reads: set = set()
+    for e in entries:
+        for j, pa in e.path_answers:                  # L-251: every lower read an entry's words came from is traced too
+            if id(pa) in seen_reads:
+                continue
+            seen_reads.add(id(pa))
+            _, prep = tc.trace_answer(tier_space if j == 0 else chain[j - 1].space, pa)
+            checked += prep.words_checked
+            traced += prep.words_traced
+            failures.extend("lower read (layer %d): %s" % (j, f) for f in prep.failures)
+        if e.word_sources is not None:
+            ws = {w for w, _ in e.word_sources}
+            if ws != set(e.words):
+                failures.append("path words and the words of an entry differ")
+            for w, ss in e.word_sources:
+                if not ss or any(sid not in tier_space.postings.get(w, ()) for sid in ss):
+                    failures.append("word %r has no (or a foreign) source sentence" % w)
     for e in entries:
         for w in e.words:
             checked += 1
@@ -453,7 +570,8 @@ QB = cy.QueryBudget(64, 8)
 
 def _read_layer(tier: str, variant: str, layer: Layer, chain: Sequence[Layer], attached_order: Sequence[str],
                 passed_words: Sequence[str], passed_left: int, bounds: LayerBounds, tier_space: TierSpace, store,
-                budget: cy.QueryBudget, granularity: str) -> LayerRun:
+                budget: cy.QueryBudget, granularity: str, candidate: str = "bag",
+                stack: Optional[LayerStack] = None, down_query: str = "question") -> LayerRun:
     t0 = time.monotonic_ns()
     units = tuple(dict.fromkeys(attached_order))
     facts = layer.facts
@@ -472,8 +590,56 @@ def _read_layer(tier: str, variant: str, layer: Layer, chain: Sequence[Layer], a
                             lazy_members=True)
     ans = ro.read_out_result(layer.space, res, facts) if res.candidates else None
     entries: List[LayerEntry] = []
-    if ans is not None:
-        grp: Dict[Tuple[str, ...], List[LayerEntry]] = {}
+    up_bundles: Optional[Tuple[str, ...]] = None
+    without = 0
+    if ans is not None and candidate == "path":
+        if stack is None:
+            raise ValueError("candidate='path' needs the layer stack")
+        ul: List[Tuple[str, ...]] = [()] * layer.k            # ul[j] = the question's units in layer j (0 = base words)
+        cur = units
+        for j in range(layer.k - 1, -1, -1):
+            cur = lower_units(cur)
+            ul[j] = cur
+        grp = {}
+        order: Dict[str, None] = {}
+        for e in ans.entries:
+            for b in e.words:
+                order.setdefault(b, None)
+            acc = _Acc()
+            for b in e.words:
+                down_read(stack, chain, layer.k, b, ul, bounds, budget, acc, down_query)
+            if not acc.words:
+                without += 1
+                continue
+            ws = tuple(sorted(acc.words))
+            le = LayerEntry(tier, layer.k, variant, ws, tuple(sorted(e.words)),
+                            tuple(sorted({_centre_word(layer, c) for c in e.centres})), e.stability, e.count,
+                            tuple(sorted({sid for ss in acc.words.values() for sid in ss})),
+                            tuple((w, tuple(sorted(acc.words[w]))) for w in ws), tuple(acc.reads),
+                            tuple(acc.answers))
+            grp.setdefault(ws, []).append(le)
+        up_bundles = tuple(order)
+        for ws in sorted(grp):                       # entries whose path-word SET is the same are one entry (L-235)
+            g = grp[ws]
+            src = {w: set() for w in ws}
+            for x in g:
+                for w, ss in x.word_sources:
+                    src[w].update(ss)
+            pf: List[dict] = []
+            pa: List[Tuple[int, ro.PathAnswer]] = []
+            for x in g:
+                for d in x.path_from:
+                    if d not in pf:
+                        pf.append(d)
+                for it in x.path_answers:
+                    if not any(it[1] is y[1] for y in pa):
+                        pa.append(it)
+            entries.append(LayerEntry(tier, layer.k, variant, ws, tuple(sorted({b for x in g for b in x.bundles})),
+                                      tuple(sorted({c for x in g for c in x.centres})), max(x.stability for x in g),
+                                      sum(x.arrangements for x in g), tuple(sorted({s_ for ss in src.values() for s_ in ss})),
+                                      tuple((w, tuple(sorted(src[w]))) for w in ws), tuple(pf), tuple(pa)))
+    elif ans is not None:
+        grp = {}
         for e in ans.entries:
             le = LayerEntry(tier, layer.k, variant, _expand(layer, e.words), tuple(e.words),
                             tuple(sorted({_centre_word(layer, c) for c in e.centres})), e.stability, e.count,
@@ -490,7 +656,7 @@ def _read_layer(tier: str, variant: str, layer: Layer, chain: Sequence[Layer], a
     return LayerRun(tier, variant, layer.k, granularity, layer.n_bundles(), units, tuple(passed_words), passed_left,
                     tuple(sorted(read)), left, left > 0 or res.members_read < res.members_total, verdict,
                     res.members_read, res.members_total, res, ans, tuple(entries), full,
-                    len(res.stack_points), False, tr, (time.monotonic_ns() - t0) // 1000000)
+                    len(res.stack_points), False, tr, (time.monotonic_ns() - t0) // 1000000, up_bundles, candidate, without)
 
 
 def _variant_chain(stack: LayerStack, res0: cy.TierResult, ans0: Optional[ro.PathAnswer], variant: str,
@@ -519,7 +685,7 @@ def _variant_chain(stack: LayerStack, res0: cy.TierResult, ans0: Optional[ro.Pat
         ab, dropped, _ = take_by_energy(ab_all, rq, room)
         dropped_words = len(cur_q) - len(mapped_q) + dropped
         run = _read_layer(tier, variant, layer, chain, tuple(qb) + tuple(ab), cur_q, dropped_words, bounds,
-                          stack.base, stack.store, budget, opts.granularity)
+                          stack.base, stack.store, budget, opts.granularity, opts.candidate, stack, opts.down_query)
         chain.append(layer)
         need_next = bool(run.full_crosses or run.no_fixed_point)
         if need_next and k >= bounds.max_layers:
@@ -538,6 +704,8 @@ def _variant_chain(stack: LayerStack, res0: cy.TierResult, ans0: Optional[ro.Pat
 
 
 def _answer_units_bundle(run: LayerRun) -> Tuple[str, ...]:
+    if run.up_bundles is not None:
+        return run.up_bundles
     out: Dict[str, None] = {}
     for e in run.entries:
         for b in e.bundles:
@@ -681,6 +849,7 @@ class LayeredCombined:
     layers: Tuple[TierLayers, ...]
     options: LayerOptions
     ms: int = 0
+    extra_sentences: Mapping = field(default_factory=dict, compare=False, repr=False)   # L-251: sources of path words
 
     @property
     def question(self) -> str:
@@ -716,14 +885,16 @@ class LayeredCombined:
                                                     **{"%d%s" % (r.k, r.variant): len(r.entries) for r in tl.runs}}
                                           for tl in self.layers},
                 "entries": list(ent), "layer0": self.base.answer_obj(),
-                "sources": [{"sid": s, "text": self.base.sentences[s][0] if s in self.base.sentences else None}
-                            for s in sids if s in self.base.sentences]}
+                "sources": [{"sid": s, "text": (self.base.sentences[s] if s in self.base.sentences else self.extra_sentences[s])[0]}
+                            for s in sids if s in self.base.sentences or s in self.extra_sentences]}
 
     def thought_obj(self) -> dict:
-        return {"layers": {"format": LAYER_FORMAT, "options": {"variants": list(self.options.variants),
-                                                               "granularity": self.options.granularity,
-                                                               "feedback": self.options.feedback,
-                                                               "bounds": self.options.bounds.to_json_obj()},
+        o = {"variants": list(self.options.variants), "granularity": self.options.granularity,
+             "feedback": self.options.feedback, "bounds": self.options.bounds.to_json_obj()}
+        if self.options.candidate != "bag":          # "bag" = T8: the bytes are the same as before the option existed
+            o["candidate"] = self.options.candidate
+            o["down_query"] = self.options.down_query
+        return {"layers": {"format": LAYER_FORMAT, "options": o,
                            "stacked": self.stacked,
                            "per_tier": {tl.tier: tl.to_json_obj() for tl in self.layers}},
                 "layer0": self.base.thought_obj()}
@@ -788,7 +959,14 @@ def ask_layered(index: "A.Index", question: str, tiers: Optional[Sequence[str]] 
             return r, (ro.read_out_result(ts, r, facts) if r.candidates else None)
 
         out.append(run_layers(st, o.result, o.answer, opts, budget=budget, reask=reask))
-    return LayeredCombined(c0, tuple(out), opts, (time.monotonic_ns() - t0) // 1000000)
+    extra: Dict[int, tuple] = {}
+    if opts.candidate == "path":
+        for tl in out:
+            for e in tl.entries:
+                for sid in e.source_sids:
+                    if sid not in c0.sentences and 0 <= sid < len(index.space.sentences):
+                        extra[sid] = index.space.sentences[sid]
+    return LayeredCombined(c0, tuple(out), opts, (time.monotonic_ns() - t0) // 1000000, extra)
 
 
 def format_layers_text(c: LayeredCombined, show_thought: bool = False) -> str:
@@ -800,9 +978,10 @@ def format_layers_text(c: LayeredCombined, show_thought: bool = False) -> str:
         L.append("層: 安定が崩れたので上の層を積みました（上の層の候補 %d 件。層・問いの渡し方の印つき。足したり束ねたりしていません）:" % len(up))
         n0 = len(c.base.entries)
         for i, e in enumerate(up):
-            L.append("  [%d] (%s 第%d層 %s) %s  中心: %s  並べ方 %d  安定度 %s" % (
+            L.append("  [%d] (%s 第%d層 %s) %s  中心: %s  並べ方 %d  安定度 %s%s" % (
                 n0 + i, e.tier, e.layer, "問いを渡した(A)" if e.variant == "A" else "答えだけ(B)", " / ".join(e.words),
-                ", ".join(e.centres), e.arrangements, _fs(e.stability)))
+                ", ".join(e.centres), e.arrangements, _fs(e.stability),
+                ("  経路の語のみ・出典文 %s" % ",".join(str(x) for x in e.source_sids)) if e.word_sources is not None else ""))
         for tl in c.layers:
             if tl.triggered:
                 ch = tl.choice
