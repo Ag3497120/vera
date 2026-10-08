@@ -65,3 +65,6 @@ experiments/line3/t9/audit/raw/
 
 # F1 raw placement builds (large)
 experiments/line3/f1/raw/
+
+# T5 raw sweep (138 MB; over GitHub's limit) — the summary is kept
+experiments/line3/t5/results/S300_RUN_mid_64x8.jsonl
