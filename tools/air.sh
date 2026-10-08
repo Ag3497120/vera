@@ -13,7 +13,7 @@ set -u
 HOST="${AIR_HOST:-air-tb}"
 REMOTE="~/vera-impl/line3"
 PY="/opt/homebrew/bin/python3.11"
-ENV="cd $REMOTE && export PYTHONPATH=.:\$HOME/vera-impl/pylib PYTHONHASHSEED=\${PYTHONHASHSEED:-0}"
+ENV="cd $REMOTE && export PATH=/opt/homebrew/bin:\$PATH PYTHONPATH=.:\$HOME/vera-impl/pylib PYTHONHASHSEED=\${PYTHONHASHSEED:-0}"
 HERE="$(cd "$(dirname "$0")/.." && pwd)"
 
 case "${1:-}" in
