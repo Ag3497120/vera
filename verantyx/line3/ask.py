@@ -59,6 +59,7 @@ UNKNOWN_NO_PATH = ro.UNKNOWN_NO_PATH
 DEFAULT_LEVEL = "mid"                         # L-210: the level every S300 measurement of T5..T6ab used
 DEFAULT_BUDGET = cy.QueryBudget(64, 8)        # L-210: the query budget of the T6z / T6ab runs
 CACHE_FORMAT = "line3.placements.v1"
+ON_COLLAPSES = ("stop", "skip")              # F1c (L-506): placement.build_cross(on_collapse=...); "stop" = L-463, the default
 GROUP_INSERTS = ("whole", "ordered")          # F1b (L-470): placement.build_cross(group_insert=...); "whole" = L-72, the default
 ORDERS = ("forward", "reverse")               # F1b: the recorded insertion order of a tied share-group (reverse = measurement probe)
 
@@ -115,7 +116,8 @@ def file_sha256(path: str) -> str:
     return h.hexdigest()
 
 
-def check_placement_options(group_insert: str = "whole", order: str = "forward") -> Tuple[str, str]:
+def check_placement_options(group_insert: str = "whole", order: str = "forward",
+                            on_collapse: str = "stop") -> Tuple[str, str]:
     """F1b / L-470: the placement options of an Index, validated like build_cross does.  `order` only means something
     for "ordered"; asking for order="reverse" with "whole" would record an option that has no effect, so it is refused."""
     if group_insert not in GROUP_INSERTS:
@@ -124,24 +126,31 @@ def check_placement_options(group_insert: str = "whole", order: str = "forward")
         raise ValueError("order must be %s" % " or ".join(repr(o) for o in ORDERS))
     if group_insert == "whole" and order != "forward":
         raise ValueError("order=%r needs group_insert='ordered' (the whole-group build has no order)" % order)
+    if on_collapse not in ON_COLLAPSES:                  # F1c (L-506, L-500): returns the same pair as before
+        raise ValueError("on_collapse must be %s" % " or ".join(repr(o) for o in ON_COLLAPSES))
+    if on_collapse == "skip" and group_insert != "ordered":
+        raise ValueError("on_collapse='skip' needs group_insert='ordered' (a whole group is one step: nothing to skip)")
     return group_insert, order
 
 
-def placement_key(group_insert: str = "whole", order: str = "forward") -> str:
+def placement_key(group_insert: str = "whole", order: str = "forward", on_collapse: str = "stop") -> str:
     """F1b / L-471: the part of the cache key that the placement options make.  "" for the default (whole / forward):
     the file name and the pickle of every cache written before F1b stay valid; otherwise "ordered-forward" /
-    "ordered-reverse"."""
-    group_insert, order = check_placement_options(group_insert, order)
-    return "" if group_insert == "whole" else "%s-%s" % (group_insert, order)
+    "ordered-reverse"; F1c (L-506): "-skip" is added for on_collapse="skip" (stop adds nothing: ordered caches stay valid)."""
+    group_insert, order = check_placement_options(group_insert, order, on_collapse)
+    return "" if group_insert == "whole" else "%s-%s%s" % (group_insert, order, "-skip" if on_collapse == "skip" else "")
 
 
-def placement_obj(group_insert: str = "whole", order: str = "forward") -> dict:
-    return {"group_insert": group_insert, "order": order}
+def placement_obj(group_insert: str = "whole", order: str = "forward", on_collapse: str = "stop") -> dict:
+    o = {"group_insert": group_insert, "order": order}
+    if on_collapse != "stop":                            # F1c (L-507): only when not the default, F1b bytes unchanged
+        o["on_collapse"] = on_collapse
+    return o
 
 
 def cache_path(cache_dir: str, data_sha: str, tier: str, level: str,
-               group_insert: str = "whole", order: str = "forward") -> str:
-    k = placement_key(group_insert, order)
+               group_insert: str = "whole", order: str = "forward", on_collapse: str = "stop") -> str:
+    k = placement_key(group_insert, order, on_collapse)
     return os.path.join(cache_dir, "placements_%s_%s_%s%s.pkl" % (data_sha[:12], tier, level, "_" + k if k else ""))
 
 
@@ -154,15 +163,16 @@ def _work(seeds):
     for s in seeds:
         t0 = time.time()
         out.append((s, pl.build_cross(t, s, w, budget=b, group_insert=_G.get("group_insert", "whole"),
-                                      order=_G.get("order", "forward")), time.time() - t0))
+                                      order=_G.get("order", "forward"),
+                                      on_collapse=_G.get("on_collapse", "stop")), time.time() - t0))
     return out
 
 
 def precompute_tier(tier_space, level: str = DEFAULT_LEVEL, workers: int = 1, log=None,
-                    group_insert: str = "whole", order: str = "forward"):
+                    group_insert: str = "whole", order: str = "forward", on_collapse: str = "stop"):
     """The cross of every unit of a tier at a budget level (L-211).  Returns (placements, secs per seed,
     wall seconds).  The placements do not depend on the worker count (every cross is built alone)."""
-    check_placement_options(group_insert, order)
+    check_placement_options(group_insert, order, on_collapse)
     b = pl.budget_level(level)
     w = pl.Weights(tier_space)
     units = tier_space.units()
@@ -170,10 +180,10 @@ def precompute_tier(tier_space, level: str = DEFAULT_LEVEL, workers: int = 1, lo
     res: Dict[str, pl.Placement] = {}
     secs: Dict[str, float] = {}
     if workers <= 1:
-        _G.update(tier=tier_space, w=w, budget=b, group_insert=group_insert, order=order)
+        _G.update(tier=tier_space, w=w, budget=b, group_insert=group_insert, order=order, on_collapse=on_collapse)
         parts = [_work([u]) for u in units]
     else:
-        _G.update(tier=tier_space, w=w, budget=b, group_insert=group_insert, order=order)
+        _G.update(tier=tier_space, w=w, budget=b, group_insert=group_insert, order=order, on_collapse=on_collapse)
         chunks = [units[i:i + 4] for i in range(0, len(units), 4)]
         ctx = mp.get_context("fork")
         with ctx.Pool(workers) as pool:
@@ -186,30 +196,34 @@ def precompute_tier(tier_space, level: str = DEFAULT_LEVEL, workers: int = 1, lo
 
 
 def save_placements(path: str, tier: str, level: str, data_sha: str, placements, secs, wall: float,
-                    group_insert: str = "whole", order: str = "forward") -> None:
-    check_placement_options(group_insert, order)
+                    group_insert: str = "whole", order: str = "forward", on_collapse: str = "stop") -> None:
+    check_placement_options(group_insert, order, on_collapse)
     tmp = path + ".part"
     rec = {"format": CACHE_FORMAT, "data_sha256": data_sha, "tier": tier, "level": level,
            "placements": dict(placements), "secs": dict(secs), "wall_s": wall}
-    if placement_key(group_insert, order):               # F1b: the default file is byte-for-byte what it was
+    if placement_key(group_insert, order, on_collapse):  # F1b: the default file is byte-for-byte what it was
         rec.update({"group_insert": group_insert, "order": order})
+        if on_collapse != "stop":                        # F1c (L-506): an ordered+stop file is what F1b wrote
+            rec["on_collapse"] = on_collapse
     with open(tmp, "wb") as f:
         pickle.dump(rec, f, protocol=pickle.HIGHEST_PROTOCOL)
     os.replace(tmp, path)
 
 
 def load_placements(path: str, tier_space, tier: str, level: str, data_sha: str,
-                    group_insert: str = "whole", order: str = "forward") -> Dict[str, pl.Placement]:
+                    group_insert: str = "whole", order: str = "forward", on_collapse: str = "stop") -> Dict[str, pl.Placement]:
     """Load a cache file; refuses one that is for other data, another tier or level, a different unit set, or
     (F1b, L-471) other placement options.  A file without the option keys is a whole / forward cache."""
-    check_placement_options(group_insert, order)
+    check_placement_options(group_insert, order, on_collapse)
     with open(path, "rb") as f:
         d = pickle.load(f)
     if d.get("format") != CACHE_FORMAT or d["data_sha256"] != data_sha or d["tier"] != tier or d["level"] != level:
         raise ValueError("placement cache %s is not for this data / tier / level" % path)
-    if (d.get("group_insert", "whole"), d.get("order", "forward")) != (group_insert, order):
-        raise ValueError("placement cache %s was built with group_insert=%s order=%s, not group_insert=%s order=%s"
-                         % (path, d.get("group_insert", "whole"), d.get("order", "forward"), group_insert, order))
+    if (d.get("group_insert", "whole"), d.get("order", "forward"), d.get("on_collapse", "stop")) != \
+            (group_insert, order, on_collapse):
+        raise ValueError("placement cache %s was built with group_insert=%s order=%s on_collapse=%s, not group_insert=%s order=%s on_collapse=%s"
+                         % (path, d.get("group_insert", "whole"), d.get("order", "forward"), d.get("on_collapse", "stop"),
+                            group_insert, order, on_collapse))
     if set(d["placements"]) != set(tier_space.units()):
         raise ValueError("placement cache %s does not cover exactly the units of the tier" % path)
     return d["placements"]
@@ -219,10 +233,11 @@ class _Store:
     """cross_for(seed): the loaded cross, else built on demand at the index's level (Placer, L-07)."""
 
     def __init__(self, tier_space, level: str, loaded: Optional[Mapping[str, pl.Placement]] = None,
-                 group_insert: str = "whole", order: str = "forward") -> None:
+                 group_insert: str = "whole", order: str = "forward", on_collapse: str = "stop") -> None:
         self._loaded = dict(loaded or {})
-        self.group_insert, self.order = group_insert, order
-        self.placer = pl.Placer(tier_space, pl.budget_level(level), group_insert=group_insert, order=order)
+        self.group_insert, self.order, self.on_collapse = group_insert, order, on_collapse
+        self.placer = pl.Placer(tier_space, pl.budget_level(level), group_insert=group_insert, order=order,
+                                on_collapse=on_collapse)
         self.on_demand = 0
 
     @property
@@ -242,32 +257,35 @@ class Index:
 
     def __init__(self, space: Space, data_sha: str = "", level: str = DEFAULT_LEVEL,
                  tiers: Sequence[str] = TIERS, loaded: Optional[Mapping[str, Mapping[str, pl.Placement]]] = None,
-                 *, group_insert: str = "whole", order: str = "forward") -> None:
+                 *, group_insert: str = "whole", order: str = "forward", on_collapse: str = "stop") -> None:
         pl.budget_level(level)
-        self.group_insert, self.order = check_placement_options(group_insert, order)     # F1b (L-470)
+        self.group_insert, self.order = check_placement_options(group_insert, order, on_collapse)     # F1b (L-470), F1c (L-506)
+        self.on_collapse = on_collapse
         self.space, self.data_sha, self.level = space, data_sha, level
         self.tiers = parse_tiers(tiers)
         self.facts = {t: cy.TierFacts(space.tiers[t]) for t in self.tiers}
-        self.stores = {t: _Store(space.tiers[t], level, (loaded or {}).get(t), self.group_insert, self.order)
+        self.stores = {t: _Store(space.tiers[t], level, (loaded or {}).get(t), self.group_insert, self.order,
+                                 self.on_collapse)
                        for t in self.tiers}
 
     @property
     def placement_is_default(self) -> bool:
-        return self.group_insert == "whole" and self.order == "forward"
+        return self.group_insert == "whole" and self.order == "forward" and self.on_collapse == "stop"
 
     @classmethod
     def from_jsonl(cls, path: str, cache_dir: Optional[str] = None, level: str = DEFAULT_LEVEL,
-                   tiers: Sequence[str] = TIERS, *, group_insert: str = "whole", order: str = "forward") -> "Index":
-        check_placement_options(group_insert, order)
+                   tiers: Sequence[str] = TIERS, *, group_insert: str = "whole", order: str = "forward",
+                   on_collapse: str = "stop") -> "Index":
+        check_placement_options(group_insert, order, on_collapse)
         sha = file_sha256(path)
         space = build_space(load_jsonl(path))
         loaded = {}
         for t in parse_tiers(tiers):
             if cache_dir:
-                p = cache_path(cache_dir, sha, t, level, group_insert, order)    # F1b: the options are in the file name
+                p = cache_path(cache_dir, sha, t, level, group_insert, order, on_collapse)    # F1b/F1c: the options are in the file name
                 if os.path.exists(p):
-                    loaded[t] = load_placements(p, space.tiers[t], t, level, sha, group_insert, order)
-        return cls(space, sha, level, tiers, loaded, group_insert=group_insert, order=order)
+                    loaded[t] = load_placements(p, space.tiers[t], t, level, sha, group_insert, order, on_collapse)
+        return cls(space, sha, level, tiers, loaded, group_insert=group_insert, order=order, on_collapse=on_collapse)
 
     def precompute(self, cache_dir: Optional[str] = None, workers: int = 1, log=None) -> Dict[str, dict]:
         """Build the crosses of every unit of every tier (replacing what was loaded) and, with a cache
@@ -276,12 +294,14 @@ class Index:
         for t in self.tiers:
             ts = self.space.tiers[t]
             placements, secs, wall = precompute_tier(ts, self.level, workers, group_insert=self.group_insert,
-                                                     order=self.order)
+                                                     order=self.order, on_collapse=self.on_collapse)
             self.stores[t]._loaded = dict(placements)
             if cache_dir:
                 os.makedirs(cache_dir, exist_ok=True)
-                save_placements(cache_path(cache_dir, self.data_sha, t, self.level, self.group_insert, self.order),
-                                t, self.level, self.data_sha, placements, secs, wall, self.group_insert, self.order)
+                save_placements(cache_path(cache_dir, self.data_sha, t, self.level, self.group_insert, self.order,
+                                           self.on_collapse),
+                                t, self.level, self.data_sha, placements, secs, wall, self.group_insert, self.order,
+                                self.on_collapse)
             rep[t] = {"units": len(placements), "seconds_wall": round(wall, 2),
                       "seconds_cpu": round(sum(secs.values()), 2)}
             if log:
@@ -512,7 +532,10 @@ def combine(question: str, outcomes: Sequence[TierOutcome], space: Space, level:
 
 def placement_kw(index: Index) -> dict:
     """F1b (L-474): the keywords that make cycle.ask_tier rebuild a cross (raise_budget) with the index's options."""
-    return {"group_insert": index.group_insert, "order": index.order}
+    kw = {"group_insert": index.group_insert, "order": index.order}
+    if index.on_collapse != "stop":                      # F1c (L-507)
+        kw["on_collapse"] = index.on_collapse
+    return kw
 
 
 def placement_order_records(store: "_Store", seeds) -> Tuple[dict, ...]:
@@ -522,8 +545,11 @@ def placement_order_records(store: "_Store", seeds) -> Tuple[dict, ...]:
     out = []
     for sd in sorted(seeds):
         p = store.cross_for(sd)
-        out.append({"seed": sd, "stop": p.stop, "size": p.size, "left_in_group": p.left_in_group,
-                    "left_after": p.left_after, "groups": [[sh, list(us)] for sh, us in p.order_log]})
+        rec = {"seed": sd, "stop": p.stop, "size": p.size, "left_in_group": p.left_in_group,
+               "left_after": p.left_after, "groups": [[sh, list(us)] for sh, us in p.order_log]}
+        if p.on_collapse != "stop":                      # F1c (L-507): the members skipped, with the budget that stopped each
+            rec["skipped"] = [[sh, u, why] for sh, u, why in p.skipped]
+        out.append(rec)
     return tuple(out)
 
 
@@ -568,7 +594,7 @@ def ask(index: Index, question: str, tiers: Optional[Sequence[str]] = None,
             kw["raise_budget"] = None
     outs = [ask_tier_outcome(index, t, question, budget, **kw) for t in names]
     c = combine(question, outs, index.space, index.level, budget, view, name, cap, lv,
-                None if index.placement_is_default else placement_obj(index.group_insert, index.order))
+                None if index.placement_is_default else placement_obj(index.group_insert, index.order, index.on_collapse))
     if granularity:                                      # F2 (L-485), opt-in: granularity.SCOPES, or True = the default scope
         from verantyx.line3 import granularity as gr
         c = replace(c, assembled=gr.assemble_combined(
@@ -614,8 +640,9 @@ def format_text(c: Combined, show_thought: bool = False) -> str:
         L.append("推論の量 %s: 予算内で全て読みました（%s）" % (rd["effort"], " ".join(
             "%s=%d" % (t, v["crosses_read"]) for t, v in rd["per_tier"].items())))
     if c.placement is not None:                          # F1b (L-472)
-        L.append("配置の入れ方: %s（同点の組は %s の順に 1 つずつ入れ、崩れたら直前で止める）" % (
-            c.placement["group_insert"], "文の語順の逆" if c.placement["order"] == "reverse" else "文の語順"))
+        L.append("配置の入れ方: %s（同点の組は %s の順に 1 つずつ入れ、崩れたら%s）" % (
+            c.placement["group_insert"], "文の語順の逆" if c.placement["order"] == "reverse" else "文の語順",
+            "その 1 つだけ飛ばして続ける" if c.placement.get("on_collapse") == "skip" else "直前で止める"))
     if c.assembled is not None:                          # F2 (L-486)
         from verantyx.line3 import granularity as gr
         L.extend(gr.format_lines(c.assembled))

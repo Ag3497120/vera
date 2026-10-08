@@ -2325,7 +2325,8 @@ def cmd_line3(args) -> int:
 
     try:
         idx = l3.Index.from_jsonl(args.data, args.cache, args.level, args.tiers,
-                                  group_insert=getattr(args, "group_insert", "whole"), order=getattr(args, "order", "forward"))
+                                  group_insert=getattr(args, "group_insert", "whole"), order=getattr(args, "order", "forward"),
+                                  on_collapse=getattr(args, "on_collapse", "stop"))
     except (OSError, ValueError) as e:
         print(f"line3: {e}", file=sys.stderr)
         return 2
@@ -3010,6 +3011,8 @@ def main(argv: Optional[list] = None) -> int:
                    help="F1b (L-470): how a tied share-group enters a cross. whole (default) = all members at once (L-72); ordered = one member at a time in the order of the sentences, settling after each; growth stops just before the member that breaks (owner 2026-10-06). The insertion order is part of the initial placement: it is in the cache key (a whole cache is never read as an ordered one) and is recorded in the answer and the thought")
     p.add_argument("--order", choices=["forward", "reverse"], default="forward",
                    help="F1b: with --group-insert ordered, forward = the sentence order (default); reverse = its exact reverse (a measurement probe)")
+    p.add_argument("--on-collapse", dest="on_collapse", choices=["stop", "skip"], default="stop",
+                   help="F1c (L-506): with --group-insert ordered, what a member that breaks the budget does. stop (default) = growth stops just before it (L-463); skip = only that member is left out (recorded) and the next member / group is tried (owner 2026-10-08). skip with --group-insert whole is refused. Part of the cache key and recorded in the answer and the thought")
     p.add_argument("--question", default=None, help="ask: the question")
     p.add_argument("--show-thought", dest="show_thought", action="store_true", help="ask: also show the thought (internal state; N-08, N-10)")
     p.add_argument("--format", choices=["text", "json"], default="text", help="ask: text (default) or json {answer, thought}")

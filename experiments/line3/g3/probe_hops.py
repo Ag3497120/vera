@@ -98,7 +98,7 @@ for r in recs:
     qa = [idx[s] for s in qs if art[s] in arts]
     ga = [(art[s], idx[s]) for s in gs]
     dist = min((abs(a - b) for a in qs for b in gs if art[a] == art[b]), default=None)
-    print("%s | %s | %s | %s | %s | %s | %s | %s" % (i, r["gold"], [a for a in arts][:2], qa, ga[:4], dist,
+    print("%s | %s | %s | %s | %s | %s | %s | %s" % (i, r["gold"], sorted(arts)[:2], qa, ga[:4], dist,
           hop(i, W2, ("RUN",), ("RUN",)), hop(i, W2, RW, RW)))
 print()
 # sizes: distinct units per pack per tier

@@ -293,3 +293,190 @@ def test_cli_group_insert_and_order(data_file, tmp_path):
     assert with_cache.returncode == 0 and with_cache.stdout == cli(qq + ["--group-insert", "ordered"]).stdout
     # the whole index finds no file there (ignored, built on demand) and answers as without a cache
     assert cli(qq + ["--cache", cache]).stdout == cli(qq).stdout
+
+
+# ======================================================================================================================
+# F1c (L-506, L-507): on_collapse (stop | skip) goes through the question path like group_insert / order
+# ======================================================================================================================
+SKIP_KEY = {"group_insert": "ordered", "order": "forward", "on_collapse": "skip"}
+
+
+@pytest.fixture(scope="module")
+def skip_index(space):
+    return A.Index(space, group_insert="ordered", on_collapse="skip")
+
+
+def test_on_collapse_option_checks(space):
+    assert A.check_placement_options("ordered", "forward", "skip") == ("ordered", "forward")      # same pair as before
+    assert A.check_placement_options("ordered", "reverse", "stop") == ("ordered", "reverse")
+    for bad in (("whole", "forward", "skip"), ("ordered", "forward", "x"), ("whole", "forward", "x")):
+        with pytest.raises(ValueError):
+            A.check_placement_options(*bad)                                                     # L-500: whole + skip
+    with pytest.raises(ValueError):
+        A.Index(space, on_collapse="skip")
+    with pytest.raises(ValueError):
+        A.Index(space, group_insert="whole", on_collapse="skip")
+    d = A.Index(space, group_insert="ordered")
+    assert d.on_collapse == "stop" and not d.placement_is_default
+    assert not A.Index(space, group_insert="ordered", on_collapse="skip").placement_is_default
+    assert A.Index(space).placement_is_default
+
+
+def test_the_index_passes_on_collapse_to_every_placer_and_layer(skip_index):
+    for t in skip_index.tiers:
+        assert skip_index.stores[t].placer.on_collapse == "skip"
+        assert M.stack_of(skip_index, t).on_collapse == "skip"
+    p = skip_index.stores["RUN"].cross_for("東京")
+    assert p.on_collapse == "skip" and p.group_insert == "ordered" and p.order_log
+    lay = M.stack_of(skip_index, "RUN").layer1("same", [], BOUNDS)
+    assert lay.on_collapse == "skip" and lay.cross_for(sorted(lay.words)[0]).on_collapse == "skip"
+
+
+def test_cache_key_has_on_collapse_and_the_stop_names_are_what_they_were(data_file):
+    sha = A.file_sha256(data_file)
+    assert A.placement_key("ordered", "forward", "stop") == A.placement_key("ordered") == "ordered-forward"        # F1b name kept
+    assert A.placement_key("ordered", "forward", "skip") == "ordered-forward-skip"
+    assert A.placement_key("ordered", "reverse", "skip") == "ordered-reverse-skip"
+    names = {os.path.basename(A.cache_path("c", sha, "RUN", "mid", *k)) for k in
+             (("whole", "forward"), ("ordered", "forward"), ("ordered", "forward", "skip"), ("ordered", "reverse"), ("ordered", "reverse", "skip"))}
+    assert len(names) == 5
+    assert A.cache_path("c", sha, "RUN", "mid", "ordered", "forward") == A.cache_path("c", sha, "RUN", "mid", "ordered", "forward", "stop")
+
+
+def test_a_stop_cache_is_never_read_as_skip_and_back(data_file, tmp_path):
+    cache = str(tmp_path / "c")
+    sha = A.file_sha256(data_file)
+    kw = {"stop": dict(group_insert="ordered"), "skip": dict(group_insert="ordered", on_collapse="skip")}
+    for oc, k in kw.items():
+        idx = A.Index.from_jsonl(data_file, None, "mid", ("RUN",), **k)
+        idx.precompute(cache)
+        assert all(p.on_collapse == oc for p in idx.stores["RUN"]._loaded.values())
+    assert len(os.listdir(cache)) == 2
+    ts = A.Index.from_jsonl(data_file, None, "mid", ("RUN",)).space.tiers["RUN"]
+    p_stop, p_skip = (A.cache_path(cache, sha, "RUN", "mid", "ordered", "forward", oc) for oc in ("stop", "skip"))
+    # each reads back exactly its own cache
+    for oc, k in kw.items():
+        again = A.Index.from_jsonl(data_file, cache, "mid", ("RUN",), **k)
+        assert len(again.stores["RUN"]._loaded) == len(ts.units()) and all(p.on_collapse == oc for p in again.stores["RUN"]._loaded.values())
+    # a directory with only the stop cache is ignored by a skip index (built on demand), and vice versa
+    only_stop, only_skip = str(tmp_path / "s"), str(tmp_path / "k")
+    A.Index.from_jsonl(data_file, None, "mid", ("RUN",), **kw["stop"]).precompute(only_stop)
+    A.Index.from_jsonl(data_file, None, "mid", ("RUN",), **kw["skip"]).precompute(only_skip)
+    assert A.Index.from_jsonl(data_file, only_stop, "mid", ("RUN",), **kw["skip"]).stores["RUN"]._loaded == {}
+    assert A.Index.from_jsonl(data_file, only_skip, "mid", ("RUN",), **kw["stop"]).stores["RUN"]._loaded == {}
+    # an explicit load is refused both ways, and a file under the other's name does not fool the loader
+    A.load_placements(p_stop, ts, "RUN", "mid", sha, "ordered", "forward", "stop")
+    A.load_placements(p_skip, ts, "RUN", "mid", sha, "ordered", "forward", "skip")
+    with pytest.raises(ValueError):
+        A.load_placements(p_stop, ts, "RUN", "mid", sha, "ordered", "forward", "skip")
+    with pytest.raises(ValueError):
+        A.load_placements(p_skip, ts, "RUN", "mid", sha, "ordered", "forward", "stop")
+    with pytest.raises(ValueError):
+        A.load_placements(p_skip, ts, "RUN", "mid", sha, "ordered", "forward")                  # on_collapse defaults to stop
+    fake = str(tmp_path / "fake.pkl")
+    with open(p_skip, "rb") as f, open(fake, "wb") as g:
+        g.write(f.read())
+    with pytest.raises(ValueError):
+        A.load_placements(fake, ts, "RUN", "mid", sha, "ordered", "forward", "stop")
+    # the pickle carries the key only for skip: an ordered+stop file is what F1b wrote
+    with open(p_stop, "rb") as f:
+        d = pickle.load(f)
+    assert "on_collapse" not in d and (d["group_insert"], d["order"]) == ("ordered", "forward")
+    with open(p_skip, "rb") as f:
+        d = pickle.load(f)
+    assert d["on_collapse"] == "skip"
+    # a whole cache is still refused as skip (whole + skip cannot be asked at all)
+    pw = A.cache_path(cache, sha, "RUN", "mid")
+    A.Index.from_jsonl(data_file, None, "mid", ("RUN",)).precompute(cache)
+    with pytest.raises(ValueError):
+        A.load_placements(pw, ts, "RUN", "mid", sha, "ordered", "forward", "skip")
+
+
+def test_on_collapse_is_in_the_answer_and_the_thought_only_when_skip(skip_index, ordered_index):
+    c = A.ask(skip_index, QUESTION, effort="full")
+    o = c.to_json_obj()
+    assert o["answer"]["placement"] == SKIP_KEY and o["thought"]["placement"] == SKIP_KEY
+    for t in c.outcomes:
+        for r in o["thought"]["tiers"][t.tier]["placement_order"]:
+            assert set(r) == {"seed", "stop", "size", "left_in_group", "left_after", "groups", "skipped"}
+            p = skip_index.stores[t.tier].cross_for(r["seed"])
+            assert r["skipped"] == [[sh, u, why] for sh, u, why in p.skipped]
+    assert "その 1 つだけ飛ばして続ける" in A.format_text(c) and "直前で止める" not in A.format_text(c)
+    assert json.loads(c.to_bytes()) == o
+    # ordered + stop: exactly the F1b bytes (no on_collapse key, no skipped key, the old line)
+    so = A.ask(ordered_index, QUESTION, effort="full")
+    b = so.to_bytes()
+    assert so.to_json_obj()["answer"]["placement"] == ORD_KEY and b"on_collapse" not in b and b'"skipped"' not in b
+    assert "直前で止める" in A.format_text(so)
+    assert A.placement_kw(ordered_index) == {"group_insert": "ordered", "order": "forward"}
+    assert A.placement_kw(skip_index) == {"group_insert": "ordered", "order": "forward", "on_collapse": "skip"}
+
+
+def test_on_collapse_is_in_the_layered_answer_and_the_thought(skip_index):
+    c = M.ask_layered(skip_index, QUESTION, effort="full", options=M.LayerOptions(bounds=BOUNDS))
+    o = c.to_json_obj()
+    assert o["answer"]["layer0"]["placement"] == SKIP_KEY
+    assert o["thought"]["layers"]["options"]["placement"] == SKIP_KEY and o["thought"]["layer0"]["placement"] == SKIP_KEY
+
+
+def test_the_raise_rebuild_uses_the_same_on_collapse():
+    from test_placement import tier
+    from verantyx.line3 import cycle as cy
+    t = tier(["A B C D E F G H"])
+    w = pl.Weights(t)
+
+    class Store:
+        def __init__(self):
+            self.p = {u: pl.build_cross(t, u, w, budget=pl.budget_level("low")) for u in t.postings}
+
+        def cross_for(self, seed):
+            return self.p[seed]
+
+    b1 = cy.ask_tier(t, "", Store(), units=("A",), group_insert="ordered").thought_obj()["variant"]["budget_raise"]
+    assert b1["needed"] and "on_collapse" not in b1
+    b2 = cy.ask_tier(t, "", Store(), units=("A",), group_insert="ordered", on_collapse="skip").thought_obj()["variant"]["budget_raise"]
+    assert b2["needed"] and b2["on_collapse"] == "skip" and b2["group_insert"] == "ordered"
+    direct = pl.build_cross(t, "A", w, budget=pl.budget_level(b2["steps"][0]["level"]), group_insert="ordered", on_collapse="skip")
+    assert b2["steps"][0]["raised"][0]["capacity_after"] == direct.capacity
+    with pytest.raises(ValueError):                                                              # L-500
+        cy.ask_tier(t, "", Store(), units=("A",), group_insert="whole", on_collapse="skip")
+
+
+def test_defaults_do_not_change_placements_only_the_pickle_bytes_may(space):
+    """The new Placement fields (on_collapse, skipped) change the pickled BYTES of a placement (more state), never its
+    value: "unchanged" is judged on serialize_all / to_bytes, and an old pickle (without the fields) loads as stop."""
+    idx = A.Index(space)
+    plc = {u: idx.stores["RUN"].cross_for(u) for u in space.tiers["RUN"].units()[:20]}
+    j = pl.serialize_all(plc)
+    assert b"on_collapse" not in j and b"skipped" not in j and b"group_insert" not in j
+    p = plc[sorted(plc)[0]]
+    old = pl.Placement.__new__(pl.Placement)                 # what an F1b-era pickle restores: no on_collapse / skipped in __dict__
+    for k, v in p.__dict__.items():
+        if k not in ("on_collapse", "skipped"):
+            object.__setattr__(old, k, v)
+    assert "on_collapse" not in old.__dict__ and old.on_collapse == "stop" and old.skipped == ()
+    assert old.to_bytes() == p.to_bytes() and old == p.__class__(**{**p.__dict__})
+    back = pickle.loads(pickle.dumps(p))
+    assert back.to_bytes() == p.to_bytes() and back.on_collapse == "stop"
+
+
+def test_cli_on_collapse(data_file, tmp_path):
+    q = ["ask", "--data", data_file, "--question", QUESTION, "--format", "json", "--show-thought", "--effort", "fast", "--layers", "off"]
+    base = cli(q + ["--group-insert", "ordered"])
+    assert base.returncode == 0, base.stderr
+    assert base.stdout == cli(q + ["--group-insert", "ordered", "--on-collapse", "stop"]).stdout
+    assert "on_collapse" not in base.stdout
+    s = cli(q + ["--group-insert", "ordered", "--on-collapse", "skip"], "1")
+    assert s.returncode == 0, s.stderr
+    assert json.loads(s.stdout)["answer"]["placement"] == SKIP_KEY
+    assert s.stdout == cli(q + ["--group-insert", "ordered", "--on-collapse", "skip"], "12345").stdout
+    r = cli(q + ["--on-collapse", "skip"])                                                      # L-500: refused with whole
+    assert r.returncode == 2 and "skip" in r.stderr
+    assert cli(q + ["--group-insert", "ordered", "--on-collapse", "x"]).returncode == 2         # argparse choice
+    d0 = cli(q)
+    assert d0.returncode == 0 and d0.stdout == cli(q + ["--on-collapse", "stop"]).stdout and "placement" not in d0.stdout
+    cache = str(tmp_path / "cc")
+    assert cli(["build", "--data", data_file, "--cache", cache, "--tiers", "RUN", "--group-insert", "ordered", "--on-collapse", "skip"]).returncode == 0
+    sha = A.file_sha256(data_file)
+    assert os.listdir(cache) == [os.path.basename(A.cache_path(cache, sha, "RUN", "mid", "ordered", "forward", "skip"))]
+    assert cli(["build", "--data", data_file, "--cache", cache, "--tiers", "RUN", "--on-collapse", "skip"]).returncode == 2
