@@ -1,0 +1,11 @@
+Bank 3 audited check (bank3.tsv; corpora /Users/motonisihikoudai/Projects/vera-impl/wt/line3/experiments/line3/data)
+rows: 91  kinds: two-facts=14, paraphrase=20, unknown-word=18, compare=14, summary-choice=10, unans-kind=15
+corpora: {'fulllead': 76, 's3000': 15}
+audit: {'fixed': 62, 'valid': 29}
+INFO summary-choice gold letters: {'A': 3, 'B': 4, 'C': 3}
+INFO compare answer position: {'gold described first': 7, 'gold described second': 7}
+INFO unknown-word alteration: {'corpus title not a substring of the question surface': 7, 'corpus title verbatim inside the altered surface (suffix added)': 11}
+INFO distinct articles: 68 for 91 rows; reused (>1 row): 18 -> CUBE JUICEx6, ハッシュテーブルx5, フェミニズムx5, 千葉神社x4, ビースティ・ボーイズx4, 2017 FIFA U-17ワールドカップx4, IEEE 488x4, TOI-2285 bx3, レッド計画x3, 内浦町x2, ウルフソン・カレッジx2, デニムx2, ヒルフィギュアx2, 善五郎x2, シリヤンx2, 赤尾ダムx2, LaMDAx2, サンゴーカメラx2
+INFO bank3 articles that are also bank2 subjects: 29
+INFO answerable bank3 items asking a fact already asked in bank2 (same subject, overlapping gold): 16 -> b3_tf07~内浦町:能登町, b3_tf08~千葉神社:九曜紋, b3_tf12~スパイケニッセ:73,921人, b3_tf14~2017 FIFA U-17ワールドカップ:イングランド, b3_pa05~ヒルフィギュア:地上から, b3_pa08~善五郎:永樂, b3_pa11~サウスウェーブ号:和歌山千葉線, b3_pa13~シリヤン:ムーラ, b3_pa14~赤尾ダム:3万2,500キロワット, b3_pa15~LaMDA:チューリング・テスト, b3_pa17~サンゴーカメラ:1981年, b3_pa18~シリヤン:120 m|120, b3_uw02~連結グラフ:連結成分, b3_uw14~風藤松原:落語協会, b3_uw17~CUBE JUICE:BAN BAN, b3_uw20~フットチョーク:ゴゴプラッタ
+errors: 0
