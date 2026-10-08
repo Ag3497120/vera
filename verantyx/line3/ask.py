@@ -59,6 +59,8 @@ UNKNOWN_NO_PATH = ro.UNKNOWN_NO_PATH
 DEFAULT_LEVEL = "mid"                         # L-210: the level every S300 measurement of T5..T6ab used
 DEFAULT_BUDGET = cy.QueryBudget(64, 8)        # L-210: the query budget of the T6z / T6ab runs
 CACHE_FORMAT = "line3.placements.v1"
+GROUP_INSERTS = ("whole", "ordered")          # F1b (L-470): placement.build_cross(group_insert=...); "whole" = L-72, the default
+ORDERS = ("forward", "reverse")               # F1b: the recorded insertion order of a tied share-group (reverse = measurement probe)
 
 # T7b: the amount of inference = (cap, raise_levels).  cap = crosses read PER TIER (a node budget, M-2(a)), None =
 # the whole read.  raise_levels = the placement levels a cross may be REBUILT at when a question needs it (T6y
@@ -113,8 +115,34 @@ def file_sha256(path: str) -> str:
     return h.hexdigest()
 
 
-def cache_path(cache_dir: str, data_sha: str, tier: str, level: str) -> str:
-    return os.path.join(cache_dir, "placements_%s_%s_%s.pkl" % (data_sha[:12], tier, level))
+def check_placement_options(group_insert: str = "whole", order: str = "forward") -> Tuple[str, str]:
+    """F1b / L-470: the placement options of an Index, validated like build_cross does.  `order` only means something
+    for "ordered"; asking for order="reverse" with "whole" would record an option that has no effect, so it is refused."""
+    if group_insert not in GROUP_INSERTS:
+        raise ValueError("group_insert must be %s" % " or ".join(repr(g) for g in GROUP_INSERTS))
+    if order not in ORDERS:
+        raise ValueError("order must be %s" % " or ".join(repr(o) for o in ORDERS))
+    if group_insert == "whole" and order != "forward":
+        raise ValueError("order=%r needs group_insert='ordered' (the whole-group build has no order)" % order)
+    return group_insert, order
+
+
+def placement_key(group_insert: str = "whole", order: str = "forward") -> str:
+    """F1b / L-471: the part of the cache key that the placement options make.  "" for the default (whole / forward):
+    the file name and the pickle of every cache written before F1b stay valid; otherwise "ordered-forward" /
+    "ordered-reverse"."""
+    group_insert, order = check_placement_options(group_insert, order)
+    return "" if group_insert == "whole" else "%s-%s" % (group_insert, order)
+
+
+def placement_obj(group_insert: str = "whole", order: str = "forward") -> dict:
+    return {"group_insert": group_insert, "order": order}
+
+
+def cache_path(cache_dir: str, data_sha: str, tier: str, level: str,
+               group_insert: str = "whole", order: str = "forward") -> str:
+    k = placement_key(group_insert, order)
+    return os.path.join(cache_dir, "placements_%s_%s_%s%s.pkl" % (data_sha[:12], tier, level, "_" + k if k else ""))
 
 
 _G: dict = {}                                   # set before the fork; the children inherit it
@@ -125,13 +153,16 @@ def _work(seeds):
     out = []
     for s in seeds:
         t0 = time.time()
-        out.append((s, pl.build_cross(t, s, w, budget=b), time.time() - t0))
+        out.append((s, pl.build_cross(t, s, w, budget=b, group_insert=_G.get("group_insert", "whole"),
+                                      order=_G.get("order", "forward")), time.time() - t0))
     return out
 
 
-def precompute_tier(tier_space, level: str = DEFAULT_LEVEL, workers: int = 1, log=None):
+def precompute_tier(tier_space, level: str = DEFAULT_LEVEL, workers: int = 1, log=None,
+                    group_insert: str = "whole", order: str = "forward"):
     """The cross of every unit of a tier at a budget level (L-211).  Returns (placements, secs per seed,
     wall seconds).  The placements do not depend on the worker count (every cross is built alone)."""
+    check_placement_options(group_insert, order)
     b = pl.budget_level(level)
     w = pl.Weights(tier_space)
     units = tier_space.units()
@@ -139,10 +170,10 @@ def precompute_tier(tier_space, level: str = DEFAULT_LEVEL, workers: int = 1, lo
     res: Dict[str, pl.Placement] = {}
     secs: Dict[str, float] = {}
     if workers <= 1:
-        _G.update(tier=tier_space, w=w, budget=b)
+        _G.update(tier=tier_space, w=w, budget=b, group_insert=group_insert, order=order)
         parts = [_work([u]) for u in units]
     else:
-        _G.update(tier=tier_space, w=w, budget=b)
+        _G.update(tier=tier_space, w=w, budget=b, group_insert=group_insert, order=order)
         chunks = [units[i:i + 4] for i in range(0, len(units), 4)]
         ctx = mp.get_context("fork")
         with ctx.Pool(workers) as pool:
@@ -154,21 +185,31 @@ def precompute_tier(tier_space, level: str = DEFAULT_LEVEL, workers: int = 1, lo
     return {s: res[s] for s in sorted(res)}, secs, time.time() - t0
 
 
-def save_placements(path: str, tier: str, level: str, data_sha: str, placements, secs, wall: float) -> None:
+def save_placements(path: str, tier: str, level: str, data_sha: str, placements, secs, wall: float,
+                    group_insert: str = "whole", order: str = "forward") -> None:
+    check_placement_options(group_insert, order)
     tmp = path + ".part"
+    rec = {"format": CACHE_FORMAT, "data_sha256": data_sha, "tier": tier, "level": level,
+           "placements": dict(placements), "secs": dict(secs), "wall_s": wall}
+    if placement_key(group_insert, order):               # F1b: the default file is byte-for-byte what it was
+        rec.update({"group_insert": group_insert, "order": order})
     with open(tmp, "wb") as f:
-        pickle.dump({"format": CACHE_FORMAT, "data_sha256": data_sha, "tier": tier, "level": level,
-                     "placements": dict(placements), "secs": dict(secs), "wall_s": wall}, f,
-                    protocol=pickle.HIGHEST_PROTOCOL)
+        pickle.dump(rec, f, protocol=pickle.HIGHEST_PROTOCOL)
     os.replace(tmp, path)
 
 
-def load_placements(path: str, tier_space, tier: str, level: str, data_sha: str) -> Dict[str, pl.Placement]:
-    """Load a cache file; refuses one that is for other data, another tier or level, or a different unit set."""
+def load_placements(path: str, tier_space, tier: str, level: str, data_sha: str,
+                    group_insert: str = "whole", order: str = "forward") -> Dict[str, pl.Placement]:
+    """Load a cache file; refuses one that is for other data, another tier or level, a different unit set, or
+    (F1b, L-471) other placement options.  A file without the option keys is a whole / forward cache."""
+    check_placement_options(group_insert, order)
     with open(path, "rb") as f:
         d = pickle.load(f)
     if d.get("format") != CACHE_FORMAT or d["data_sha256"] != data_sha or d["tier"] != tier or d["level"] != level:
         raise ValueError("placement cache %s is not for this data / tier / level" % path)
+    if (d.get("group_insert", "whole"), d.get("order", "forward")) != (group_insert, order):
+        raise ValueError("placement cache %s was built with group_insert=%s order=%s, not group_insert=%s order=%s"
+                         % (path, d.get("group_insert", "whole"), d.get("order", "forward"), group_insert, order))
     if set(d["placements"]) != set(tier_space.units()):
         raise ValueError("placement cache %s does not cover exactly the units of the tier" % path)
     return d["placements"]
@@ -177,9 +218,11 @@ def load_placements(path: str, tier_space, tier: str, level: str, data_sha: str)
 class _Store:
     """cross_for(seed): the loaded cross, else built on demand at the index's level (Placer, L-07)."""
 
-    def __init__(self, tier_space, level: str, loaded: Optional[Mapping[str, pl.Placement]] = None) -> None:
+    def __init__(self, tier_space, level: str, loaded: Optional[Mapping[str, pl.Placement]] = None,
+                 group_insert: str = "whole", order: str = "forward") -> None:
         self._loaded = dict(loaded or {})
-        self.placer = pl.Placer(tier_space, pl.budget_level(level))
+        self.group_insert, self.order = group_insert, order
+        self.placer = pl.Placer(tier_space, pl.budget_level(level), group_insert=group_insert, order=order)
         self.on_demand = 0
 
     @property
@@ -198,25 +241,33 @@ class Index:
     """The space with the stored placements of every requested tier."""
 
     def __init__(self, space: Space, data_sha: str = "", level: str = DEFAULT_LEVEL,
-                 tiers: Sequence[str] = TIERS, loaded: Optional[Mapping[str, Mapping[str, pl.Placement]]] = None) -> None:
+                 tiers: Sequence[str] = TIERS, loaded: Optional[Mapping[str, Mapping[str, pl.Placement]]] = None,
+                 *, group_insert: str = "whole", order: str = "forward") -> None:
         pl.budget_level(level)
+        self.group_insert, self.order = check_placement_options(group_insert, order)     # F1b (L-470)
         self.space, self.data_sha, self.level = space, data_sha, level
         self.tiers = parse_tiers(tiers)
         self.facts = {t: cy.TierFacts(space.tiers[t]) for t in self.tiers}
-        self.stores = {t: _Store(space.tiers[t], level, (loaded or {}).get(t)) for t in self.tiers}
+        self.stores = {t: _Store(space.tiers[t], level, (loaded or {}).get(t), self.group_insert, self.order)
+                       for t in self.tiers}
+
+    @property
+    def placement_is_default(self) -> bool:
+        return self.group_insert == "whole" and self.order == "forward"
 
     @classmethod
     def from_jsonl(cls, path: str, cache_dir: Optional[str] = None, level: str = DEFAULT_LEVEL,
-                   tiers: Sequence[str] = TIERS) -> "Index":
+                   tiers: Sequence[str] = TIERS, *, group_insert: str = "whole", order: str = "forward") -> "Index":
+        check_placement_options(group_insert, order)
         sha = file_sha256(path)
         space = build_space(load_jsonl(path))
         loaded = {}
         for t in parse_tiers(tiers):
             if cache_dir:
-                p = cache_path(cache_dir, sha, t, level)
+                p = cache_path(cache_dir, sha, t, level, group_insert, order)    # F1b: the options are in the file name
                 if os.path.exists(p):
-                    loaded[t] = load_placements(p, space.tiers[t], t, level, sha)
-        return cls(space, sha, level, tiers, loaded)
+                    loaded[t] = load_placements(p, space.tiers[t], t, level, sha, group_insert, order)
+        return cls(space, sha, level, tiers, loaded, group_insert=group_insert, order=order)
 
     def precompute(self, cache_dir: Optional[str] = None, workers: int = 1, log=None) -> Dict[str, dict]:
         """Build the crosses of every unit of every tier (replacing what was loaded) and, with a cache
@@ -224,12 +275,13 @@ class Index:
         rep = {}
         for t in self.tiers:
             ts = self.space.tiers[t]
-            placements, secs, wall = precompute_tier(ts, self.level, workers)
+            placements, secs, wall = precompute_tier(ts, self.level, workers, group_insert=self.group_insert,
+                                                     order=self.order)
             self.stores[t]._loaded = dict(placements)
             if cache_dir:
                 os.makedirs(cache_dir, exist_ok=True)
-                save_placements(cache_path(cache_dir, self.data_sha, t, self.level), t, self.level, self.data_sha,
-                                placements, secs, wall)
+                save_placements(cache_path(cache_dir, self.data_sha, t, self.level, self.group_insert, self.order),
+                                t, self.level, self.data_sha, placements, secs, wall, self.group_insert, self.order)
             rep[t] = {"units": len(placements), "seconds_wall": round(wall, 2),
                       "seconds_cpu": round(sum(secs.values()), 2)}
             if log:
@@ -247,6 +299,7 @@ class TierOutcome:
     answer: Optional[ro.PathAnswer]          # None when no state was adopted
     ms: int = 0                              # wall time (not part of the output bytes)
     raise_skipped: int = 0                   # T7b: budget-limited crosses read that were NOT rebuilt (no state, raise off)
+    placement_order: Tuple[dict, ...] = ()   # F1b (L-473): the insertion order of every cross read, only when group_insert != "whole"
 
     @property
     def entries(self) -> Tuple[ro.AnswerEntry, ...]:
@@ -286,6 +339,7 @@ class Combined:
     node_budget: Optional[int] = None                    # T7b: crosses read per tier, None = whole read
     raise_levels: Tuple[str, ...] = cy.RAISE_LEVELS_DEFAULT   # T7b: levels a cross may be rebuilt at ((): never)
     assembled: Optional[dict] = None                     # F2 (L-485): granularity.assemble_combined(); None = option off
+    placement: Optional[dict] = None                     # F1b (L-472): {group_insert, order} of the placements; None = the default (whole)
 
     # ---- reference helpers ----
     def outcome(self, tier: str) -> TierOutcome:
@@ -358,6 +412,8 @@ class Combined:
         rec.update({"view": self.view, "tier_entry_index": local, "tiers_offered": list(self.shown),
                     "effort": self.effort, "node_budget": self.node_budget,
                     "partial_read": o.read_counts["left_unread"] > 0, "crosses": o.read_counts})
+        if self.placement is not None:                   # F1b (L-472): the initial placement is part of what was chosen from
+            rec["placement"] = dict(self.placement)
         return rec
 
     # ---- output (N-08, N-10) ----
@@ -381,6 +437,8 @@ class Combined:
              "sources": [{"sid": s, "text": self.sentences[s][0], "source": self.sentences[s][1]} for s in sids]}
         if self.assembled is not None:                   # F2: only with the option on, so default bytes are unchanged
             o["assembled"] = self.assembled
+        if self.placement is not None:                   # F1b (L-472): only when not the default, so default bytes are unchanged
+            o["placement"] = dict(self.placement)
         return o
 
     def thought_obj(self) -> dict:
@@ -392,10 +450,12 @@ class Combined:
             if o.answer is not None:
                 d["readout"] = o.answer.thought_obj()
                 d["readout_answer"] = o.answer.answer_obj()
+            if self.placement is not None:               # F1b (L-473): the recorded insertion order of the crosses read
+                d["placement_order"] = list(o.placement_order)
             per[o.tier] = d
         ranked = sorted(((o.stability, o.tier) for o in self.outcomes if o.stability is not None),
                         key=lambda x: (-x[0], x[1]))
-        return {"question": self.question, "tiers_run": [o.tier for o in self.outcomes], "level": self.level,
+        th = {"question": self.question, "tiers_run": [o.tier for o in self.outcomes], "level": self.level,
                 "query_budget": {"max_states": self.budget.max_states, "max_ends": self.budget.max_ends},
                 "rule": ("T7b: each tier on its own; every tier's entries are shown, labelled by tier, nothing summed or merged"
                          if self.view == "all" else
@@ -404,6 +464,9 @@ class Combined:
                 "ranking": [{"tier": t, "stability": _fs(s)} for s, t in ranked],
                 "shown_tiers": list(self.shown), "tie_between_tiers": self.tie_between_tiers,
                 "agreement": self.agreement(), "tiers": per}
+        if self.placement is not None:                   # F1b (L-472)
+            th["placement"] = dict(self.placement)
+        return th
 
     def to_json_obj(self) -> dict:
         return {"answer": self.answer_obj(), "thought": self.thought_obj()}
@@ -415,7 +478,8 @@ class Combined:
 
 def combine(question: str, outcomes: Sequence[TierOutcome], space: Space, level: str = DEFAULT_LEVEL,
             budget: cy.QueryBudget = DEFAULT_BUDGET, view: str = "all", effort: Optional[str] = None,
-            node_budget: Optional[int] = None, raise_levels: Tuple[str, ...] = cy.RAISE_LEVELS_DEFAULT) -> Combined:
+            node_budget: Optional[int] = None, raise_levels: Tuple[str, ...] = cy.RAISE_LEVELS_DEFAULT,
+            placement: Optional[dict] = None) -> Combined:
     """T7b view="all" (default): every tier's entries, in the order RUN, WORD, CHAR, each labelled with its tier,
     nothing summed or merged across tiers; a single entry in total is the ANSWER, otherwise a CHOICE.
     view="stable": I-16 / I-14 (the most stable tier(s) only).  On finished tier outcomes (testable without a search)."""
@@ -443,7 +507,24 @@ def combine(question: str, outcomes: Sequence[TierOutcome], space: Space, level:
     sids = {s for _, e in entries for s in e.source_sids}
     sents = {s: space.sentences[s] for s in sorted(sids)}
     return Combined(question, outs, verdict, shown, entries, tie, level, budget, sents,
-                    sum(o.ms for o in outs), view, effort, node_budget, tuple(raise_levels))
+                    sum(o.ms for o in outs), view, effort, node_budget, tuple(raise_levels), None, placement)
+
+
+def placement_kw(index: Index) -> dict:
+    """F1b (L-474): the keywords that make cycle.ask_tier rebuild a cross (raise_budget) with the index's options."""
+    return {"group_insert": index.group_insert, "order": index.order}
+
+
+def placement_order_records(store: "_Store", seeds) -> Tuple[dict, ...]:
+    """F1b (L-473): per cross read (ascending seed), the recorded insertion order: the share-groups reached, each with its
+    members in the order they were inserted, where growth stopped and what was left out.  A pure read of the stored
+    (or on-demand) placements."""
+    out = []
+    for sd in sorted(seeds):
+        p = store.cross_for(sd)
+        out.append({"seed": sd, "stop": p.stop, "size": p.size, "left_in_group": p.left_in_group,
+                    "left_after": p.left_after, "groups": [[sh, list(us)] for sh, us in p.order_log]})
+    return tuple(out)
 
 
 def ask_tier_outcome(index: Index, tier: str, question: str, budget: cy.QueryBudget = DEFAULT_BUDGET,
@@ -451,6 +532,8 @@ def ask_tier_outcome(index: Index, tier: str, question: str, budget: cy.QueryBud
     """One tier, separately: the search with the current defaults, then the default read-out."""
     t0 = time.monotonic_ns()
     ts, facts, store = index.space.tiers[tier], index.facts[tier], index.stores[tier]
+    if not index.placement_is_default:                   # F1b (L-474): a rebuild at a higher level uses the same insertion order
+        kw = dict(kw, **placement_kw(index))
     res = cy.ask_tier(ts, question, store, facts=facts, budget=budget, weights=store.w, **kw)
     ans = ro.read_out_result(ts, res, facts) if res.candidates else None
     skipped = 0
@@ -458,7 +541,8 @@ def ask_tier_outcome(index: Index, tier: str, question: str, budget: cy.QueryBud
         lv = kw.get("raise_levels", cy.RAISE_LEVELS_DEFAULT)
         if kw.get("raise_budget", "on_demand") is None or not lv:
             skipped = sum(1 for sd in res.plan.read if store.cross_for(sd).stop == "budget")
-    return TierOutcome(tier, res, ans, (time.monotonic_ns() - t0) // 1000000, skipped)
+    po = () if index.placement_is_default else placement_order_records(store, res.plan.read)
+    return TierOutcome(tier, res, ans, (time.monotonic_ns() - t0) // 1000000, skipped, po)
 
 
 def ask(index: Index, question: str, tiers: Optional[Sequence[str]] = None,
@@ -483,7 +567,8 @@ def ask(index: Index, question: str, tiers: Optional[Sequence[str]] = None,
         else:
             kw["raise_budget"] = None
     outs = [ask_tier_outcome(index, t, question, budget, **kw) for t in names]
-    c = combine(question, outs, index.space, index.level, budget, view, name, cap, lv)
+    c = combine(question, outs, index.space, index.level, budget, view, name, cap, lv,
+                None if index.placement_is_default else placement_obj(index.group_insert, index.order))
     if granularity:                                      # F2 (L-485), opt-in: granularity.SCOPES, or True = the default scope
         from verantyx.line3 import granularity as gr
         c = replace(c, assembled=gr.assemble_combined(
@@ -528,6 +613,9 @@ def format_text(c: Combined, show_thought: bool = False) -> str:
     elif rd["effort"] is not None:
         L.append("推論の量 %s: 予算内で全て読みました（%s）" % (rd["effort"], " ".join(
             "%s=%d" % (t, v["crosses_read"]) for t, v in rd["per_tier"].items())))
+    if c.placement is not None:                          # F1b (L-472)
+        L.append("配置の入れ方: %s（同点の組は %s の順に 1 つずつ入れ、崩れたら直前で止める）" % (
+            c.placement["group_insert"], "文の語順の逆" if c.placement["order"] == "reverse" else "文の語順"))
     if c.assembled is not None:                          # F2 (L-486)
         from verantyx.line3 import granularity as gr
         L.extend(gr.format_lines(c.assembled))

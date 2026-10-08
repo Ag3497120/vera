@@ -1282,7 +1282,8 @@ RAISE_LEVELS_DEFAULT = ("high", "max")
 
 
 def ask_tier(tier: TierSpace, question: str, placements, *, raise_budget: Optional[str] = "on_demand",
-             raise_levels: Sequence[str] = RAISE_LEVELS_DEFAULT, weights=None, **kw) -> TierResult:
+             raise_levels: Sequence[str] = RAISE_LEVELS_DEFAULT, weights=None,
+             group_insert: str = "whole", order: str = "forward", **kw) -> TierResult:
     """`_ask_tier_once` (all its keywords) plus T6y option `raise_budget="on_demand"` (L-171, owner:
     "問いで必要になったときだけ上げる"): the placement budget of a cross is raised only when a query needs
     it.  "Needs" = the question has no adopted state and a cross it read stopped by budget (stop ==
@@ -1298,9 +1299,9 @@ def ask_tier(tier: TierSpace, question: str, placements, *, raise_budget: Option
     if raise_budget != "on_demand":
         raise ValueError("raise_budget: None | on_demand")
     from verantyx.line3 import placement as pl
-    order = pl.LEVEL_ORDER
+    lv_order = pl.LEVEL_ORDER
     for lv in raise_levels:
-        if lv not in order:
+        if lv not in lv_order:
             raise ValueError("raise_levels: names of placement levels")
     steps: List[dict] = []
     repl: Dict[str, Placement] = {}
@@ -1311,17 +1312,17 @@ def ask_tier(tier: TierSpace, question: str, placements, *, raise_budget: Option
             break
         def lvl(sd: str) -> int:        # level index of the cross now in place (a custom budget counts as below "low")
             nm = pl.level_name(repl.get(sd, placements.cross_for(sd)).budget)
-            return order.index(nm) if nm is not None else -1
+            return lv_order.index(nm) if nm is not None else -1
 
         limited = sorted(sd for sd in cur.plan.read
-                         if repl.get(sd, placements.cross_for(sd)).stop == "budget" and lvl(sd) < order.index(lv))
+                         if repl.get(sd, placements.cross_for(sd)).stop == "budget" and lvl(sd) < lv_order.index(lv))
         if not limited:
             break
         w = w or pl.Weights(tier)
         rec = []
         for sd in limited:
             before = repl.get(sd, placements.cross_for(sd))
-            nb = pl.build_cross(tier, sd, w, budget=pl.budget_level(lv))
+            nb = pl.build_cross(tier, sd, w, budget=pl.budget_level(lv), group_insert=group_insert, order=order)   # F1b (L-474)
             repl[sd] = nb
             rec.append({"seed": sd, "capacity_before": before.capacity, "capacity_after": nb.capacity,
                         "stop_after": nb.stop})
@@ -1330,6 +1331,8 @@ def ask_tier(tier: TierSpace, question: str, placements, *, raise_budget: Option
                       "crosses_read": len(cur.plan.read)})
     info = {"mode": "on_demand", "levels": list(raise_levels), "needed": bool(steps), "steps": steps,
             "final_level": steps[-1]["level"] if steps else None}
+    if group_insert != "whole":                          # F1b (L-474): recorded only when not the default
+        info["group_insert"], info["order"] = group_insert, order
     var = dict(cur.variant or {})
     var["budget_raise"] = info
     return replace(cur, variant=var)

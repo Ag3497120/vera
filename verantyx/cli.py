@@ -2324,7 +2324,8 @@ def cmd_line3(args) -> int:
     from .line3 import ask as l3
 
     try:
-        idx = l3.Index.from_jsonl(args.data, args.cache, args.level, args.tiers)
+        idx = l3.Index.from_jsonl(args.data, args.cache, args.level, args.tiers,
+                                  group_insert=getattr(args, "group_insert", "whole"), order=getattr(args, "order", "forward"))
     except (OSError, ValueError) as e:
         print(f"line3: {e}", file=sys.stderr)
         return 2
@@ -3005,6 +3006,10 @@ def main(argv: Optional[list] = None) -> int:
     p.add_argument("--level", default="mid", choices=["low", "mid-low", "mid", "high", "max"], help="placement budget level")
     p.add_argument("--tiers", default="RUN,WORD,CHAR", help="comma-separated tiers to run (I-25: all by default)")
     p.add_argument("--workers", type=int, default=1, help="build: processes")
+    p.add_argument("--group-insert", dest="group_insert", choices=["whole", "ordered"], default="whole",
+                   help="F1b (L-470): how a tied share-group enters a cross. whole (default) = all members at once (L-72); ordered = one member at a time in the order of the sentences, settling after each; growth stops just before the member that breaks (owner 2026-10-06). The insertion order is part of the initial placement: it is in the cache key (a whole cache is never read as an ordered one) and is recorded in the answer and the thought")
+    p.add_argument("--order", choices=["forward", "reverse"], default="forward",
+                   help="F1b: with --group-insert ordered, forward = the sentence order (default); reverse = its exact reverse (a measurement probe)")
     p.add_argument("--question", default=None, help="ask: the question")
     p.add_argument("--show-thought", dest="show_thought", action="store_true", help="ask: also show the thought (internal state; N-08, N-10)")
     p.add_argument("--format", choices=["text", "json"], default="text", help="ask: text (default) or json {answer, thought}")

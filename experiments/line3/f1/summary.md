@@ -35,14 +35,26 @@ Order sensitivity (forward vs reverse): crosses of the SAME size / same unit set
 
 | tier | mode | crosses | bare seed | size 2-3 | size 4-5 | size 6+ | median / p90 / max size | stop budget | exhausted | CPU s | wall s (4 workers) |
 |---|---|---|---|---|---|---|---|---|---|---|---|
+| RUN | whole | 2033 | 1053 (52%) | 63 | 269 | 648 | 1 / 8 / 13 | 1120 | 913 | 1009 | 253 |
+| RUN | ordered | 2033 | 0 (0%) | 23 | 257 | 1753 | 9 / 10 / 20 | 1010 | 1023 | 1968 | 495 |
+| RUN | reverse | 2033 | 0 (0%) | 23 | 257 | 1753 | 9 / 10 / 20 | 859 | 1174 | 2585 | 652 |
+| WORD | whole | 2278 | 1590 (70%) | 141 | 92 | 455 | 1 / 8 / 35 | 1923 | 355 | 1131 | 284 |
+| WORD | ordered | 2278 | 0 (0%) | 4 | 22 | 2252 | 10 / 16 / 59 | 1701 | 577 | 3620 | 910 |
+| CHAR | whole | 1094 | 434 (40%) | 84 | 58 | 518 | 5 / 39 / 104 | 1036 | 58 | 640 | 160 |
+| CHAR | ordered | 1094 | 0 (0%) | 2 | 2 | 1090 | 31 / 85 / 149 | 786 | 308 | 4436 | 1117 |
 
 Budget stops of the ordered build (members left): median members left in the breaking group / after it, and the reason
 
 | tier | mode | stopped | reasons | left in group median / max | left after median / max | stopped with size 1 (first member alone broke) |
 |---|---|---|---|---|---|---|
+| RUN | ordered | 1010 | {'max_class': 983, 'max_moves': 27} | 4 / 120 | 0 / 0 | 0 |
+| RUN | reverse | 859 | {'max_class': 405, 'max_moves': 454} | 5 / 122 | 0 / 0 | 0 |
+| WORD | ordered | 1701 | {'max_class': 1409, 'max_moves': 292} | 7 / 237 | 0 / 627 | 0 |
+| CHAR | ordered | 786 | {'max_moves': 634, 'max_class': 152} | 27 / 197 | 0 / 514 | 0 |
 
 Order sensitivity (forward vs reverse): crosses of the SAME size / same unit set / same size but different units
 
 | tier | crosses | same unit set | same size, other units | different size | median |size diff| among differing |
 |---|---|---|---|---|---|
+| RUN | 2033 | 1019 (50%) | 321 | 693 | 1 |
 

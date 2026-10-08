@@ -183,8 +183,10 @@ class Layer:
     bundled state b; `words[b]` = the base words under b."""
 
     def __init__(self, k: int, base: TierSpace, lower_units: Mapping[str, Tuple[str, ...]],
-                 words: Mapping[str, frozenset], pos_of, bounds: LayerBounds) -> None:
+                 words: Mapping[str, frozenset], pos_of, bounds: LayerBounds,
+                 group_insert: str = "whole", order: str = "forward") -> None:
         self.k = k
+        self.group_insert, self.order = group_insert, order      # F1b (L-475): the index's insertion order, also for upper crosses
         self.lower_units = dict(lower_units)
         self.words = dict(words)
         self.space = build_bundle_tier(base, self.words, pos_of)
@@ -201,7 +203,8 @@ class Layer:
         if p is None:
             self.builds += 1
             p = self._cross[seed] = pl.build_cross(self.space, seed, self.w, budget=self.budget,
-                                                   pool_groups=self.bounds.pool_groups)
+                                                   pool_groups=self.bounds.pool_groups,
+                                                   group_insert=self.group_insert, order=self.order)
         return p
 
     def n_bundles(self) -> int:
@@ -211,8 +214,10 @@ class Layer:
 class LayerStack:
     """Caches of one tier of one index: the base word positions and the all-states layer 1 ("same granularity")."""
 
-    def __init__(self, base: TierSpace, store, facts: Optional[cy.TierFacts] = None) -> None:
+    def __init__(self, base: TierSpace, store, facts: Optional[cy.TierFacts] = None,
+                 group_insert: str = "whole", order: str = "forward") -> None:
         self.base, self.store = base, store
+        self.group_insert, self.order = group_insert, order      # F1b (L-475)
         self.facts = facts if facts is not None else cy.TierFacts(base)
         self._down: Dict[tuple, Tuple[Optional[ro.PathAnswer], tuple]] = {}      # L-251: reads of lower crosses (a pure cache)
         self._pos: Dict[str, Dict[int, int]] = {}
@@ -244,7 +249,7 @@ class LayerStack:
             us = placed_units(self.store.cross_for(s))
             lower[bundle_id(1, s)] = us
             words[bundle_id(1, s)] = frozenset(us)
-        return Layer(1, self.base, lower, words, self.pos_of, bounds)
+        return Layer(1, self.base, lower, words, self.pos_of, bounds, self.group_insert, self.order)
 
     def layer_above(self, k: int, lower: Layer, read_seeds: Sequence[str], bounds: LayerBounds) -> Layer:
         """Layer k from the upper crosses of `lower` that were read (the stable states this question needed)."""
@@ -253,7 +258,7 @@ class LayerStack:
             us = placed_units(lower.cross_for(b))
             lu[bundle_id(k, b)] = us
             words[bundle_id(k, b)] = frozenset().union(*(lower.words[u] for u in us))
-        return Layer(k, self.base, lu, words, self.pos_of, bounds)
+        return Layer(k, self.base, lu, words, self.pos_of, bounds, self.group_insert, self.order)
 
 
 def stack_of(index: "A.Index", tier: str) -> LayerStack:
@@ -262,7 +267,8 @@ def stack_of(index: "A.Index", tier: str) -> LayerStack:
         d = index._t8_stacks = {}
     s = d.get(tier)
     if s is None:
-        s = d[tier] = LayerStack(index.space.tiers[tier], index.stores[tier], index.facts[tier])
+        s = d[tier] = LayerStack(index.space.tiers[tier], index.stores[tier], index.facts[tier],
+                                 index.group_insert, index.order)
     return s
 
 
@@ -1329,6 +1335,8 @@ class LayeredCombined:
         if self.options.candidate != "bag":          # "bag" = T8: the bytes are the same as before the option existed
             o["candidate"] = self.options.candidate
             o["down_query"] = self.options.down_query
+        if self.base.placement is not None:          # F1b (L-475): upper crosses are placed with the same insertion order
+            o["placement"] = dict(self.base.placement)
         return {"layers": {"format": LAYER_FORMAT, "options": o,
                            "stacked": self.stacked,
                            "per_tier": {tl.tier: tl.to_json_obj() for tl in self.layers}},
@@ -1359,10 +1367,13 @@ class LayeredCombined:
             rec.update({"layer": 0, "variant": None, "offered": len(self.listed()), "choice_index": which})
             return rec
         e = self.listed()[which]
-        return {"kind": ro.RECORD_KIND, "source": "user_choice", "tier": e["tier"], "layer": e["layer"],
-                "variant": e["variant"], "words": e["words"], "bundles": e["bundles"], "centres": e["centres"],
-                "stability": e["stability"], "source_sids": e["source_sids"], "offered": len(self.listed()),
-                "choice_index": which, "base_changed": False}
+        rec = {"kind": ro.RECORD_KIND, "source": "user_choice", "tier": e["tier"], "layer": e["layer"],
+               "variant": e["variant"], "words": e["words"], "bundles": e["bundles"], "centres": e["centres"],
+               "stability": e["stability"], "source_sids": e["source_sids"], "offered": len(self.listed()),
+               "choice_index": which, "base_changed": False}
+        if self.base.placement is not None:          # F1b (L-472)
+            rec["placement"] = dict(self.base.placement)
+        return rec
 
 
 def ask_layered(index: "A.Index", question: str, tiers: Optional[Sequence[str]] = None,
@@ -1377,6 +1388,8 @@ def ask_layered(index: "A.Index", question: str, tiers: Optional[Sequence[str]] 
     c0 = base if base is not None else A.ask(index, question, tiers, budget, view=view, effort=effort, nodes=nodes, **kw)
     name, cap, lv = A.resolve_effort(effort, nodes)
     akw = dict(kw)
+    if not index.placement_is_default:                   # F1b (L-474): the re-asks rebuild with the index's insertion order
+        akw.update(A.placement_kw(index))
     if cap is not None:
         akw["read_cap"] = cap
     if lv != cy.RAISE_LEVELS_DEFAULT:
