@@ -1,0 +1,196 @@
+# Vera line 3: a bank sweep on GitHub-hosted runners (free on a public repository: 4 vCPU / 16 GB per job, up to 20 jobs at once, 6 h per job).
+#
+# Stages: probe (byte-identity of placements against the Pro/Air hashes) -> cache (one job per tier builds the placement cache with the
+# chosen insertion rule) -> sweep (N shards of the bank's questions, 4 workers each) -> summarize (merge the shards, write the T10 tables).
+# Everything is deterministic (PYTHONHASHSEED=0, exact Fractions), so sharding does not change any result.
+#
+# Start it from the Actions tab ("Run workflow") or:  gh workflow run line3-sweep.yml -f preset=fast -f shards=10
+name: line3-sweep
+
+on:
+  workflow_dispatch:
+    inputs:
+      corpus:
+        description: "corpus: fulllead (bank2 intra2 + unans, 94 questions) or s3000 (bank2 cross2 + unans, 34)"
+        default: fulllead
+        type: choice
+        options: [fulllead, s3000]
+      preset:
+        description: "effort preset"
+        default: fast
+        type: choice
+        options: [fast, standard]
+      group_insert:
+        description: "placement rule: ordered (F1, one member at a time in sentence order) or whole (L-72)"
+        default: ordered
+        type: choice
+        options: [ordered, whole]
+      layers:
+        description: "layer candidates to run: ssp,path | ssp | none"
+        default: "ssp"
+        type: string
+      shards:
+        description: "number of parallel sweep jobs (max 18; the free plan runs 20 jobs at once)"
+        default: "10"
+        type: string
+      level:
+        description: "placement budget level"
+        default: mid
+        type: choice
+        options: [low, mid-low, mid, high, max]
+
+env:
+  PYTHONHASHSEED: "0"
+  PYTHONPATH: "."
+  PYTHONDONTWRITEBYTECODE: "1"
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.11" }
+      - run: python -m pip install --quiet fugashi unidic-lite
+      - name: determinism probe (must equal the Pro/Air hashes)
+        run: |
+          python tools/determinism_probe.py | tee probe.txt
+          grep -q "RUN .* 79b0a11f444ec220" probe.txt
+          grep -q "WORD .* a44611defdd6bec4" probe.txt
+          grep -q "CHAR .* 51b97f502940dcc2" probe.txt
+      - name: shard list
+        id: shards
+        run: |
+          python - "${{ inputs.shards }}" <<'EOF' >> "$GITHUB_OUTPUT"
+          import json, sys
+          n = max(1, min(18, int(sys.argv[1])))
+          print("matrix=" + json.dumps(list(range(n))))
+          print("n=%d" % n)
+          EOF
+    outputs:
+      matrix: ${{ steps.shards.outputs.matrix }}
+      n: ${{ steps.shards.outputs.n }}
+
+  cache:
+    needs: probe
+    runs-on: ubuntu-latest
+    timeout-minutes: 340
+    strategy:
+      fail-fast: false
+      matrix:
+        tier: [RUN, WORD, CHAR]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.11" }
+      - run: python -m pip install --quiet fugashi unidic-lite
+      - name: data file
+        id: data
+        run: |
+          if [ "${{ inputs.corpus }}" = "fulllead" ]; then echo "path=experiments/line3/bank2/data/fulllead_sents.jsonl" >> "$GITHUB_OUTPUT";
+          else echo "path=experiments/line3/data/S3000.jsonl" >> "$GITHUB_OUTPUT"; fi
+      - name: restore cache (same code, data, rule, tier)
+        id: restore
+        uses: actions/cache/restore@v4
+        with:
+          path: cache
+          key: placements-${{ inputs.corpus }}-${{ inputs.level }}-${{ inputs.group_insert }}-${{ matrix.tier }}-${{ hashFiles('verantyx/line3/placement.py', 'verantyx/line3/space.py', 'verantyx/line3/geometry.py', 'verantyx/line3/energy.py', 'verantyx/line3/funcwords.py', steps.data.outputs.path) }}
+      - name: build the ${{ matrix.tier }} placements
+        if: steps.restore.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p cache
+          python -m verantyx.cli line3 build --data "${{ steps.data.outputs.path }}" --cache cache --level "${{ inputs.level }}" \
+            --tiers "${{ matrix.tier }}" --group-insert "${{ inputs.group_insert }}" --workers 4
+          ls -la cache
+      - name: save cache
+        if: steps.restore.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: cache
+          key: placements-${{ inputs.corpus }}-${{ inputs.level }}-${{ inputs.group_insert }}-${{ matrix.tier }}-${{ hashFiles('verantyx/line3/placement.py', 'verantyx/line3/space.py', 'verantyx/line3/geometry.py', 'verantyx/line3/energy.py', 'verantyx/line3/funcwords.py', steps.data.outputs.path) }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cache-${{ matrix.tier }}
+          path: cache
+          retention-days: 7
+
+  sweep:
+    needs: [probe, cache]
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: ${{ fromJson(needs.probe.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.11" }
+      - run: python -m pip install --quiet fugashi unidic-lite
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: cache-*
+          path: cache
+          merge-multiple: true
+      - name: ids of this shard
+        id: ids
+        run: |
+          python - "${{ inputs.corpus }}" "${{ matrix.shard }}" "${{ needs.probe.outputs.n }}" <<'EOF' >> "$GITHUB_OUTPUT"
+          import sys
+          corpus, k, n = sys.argv[1], int(sys.argv[2]), int(sys.argv[3])
+          ids = [l.split("\t")[0] for l in open("experiments/line3/bank2/bank2.tsv", encoding="utf-8")
+                 if l.strip() and not l.startswith("#") and l.split("\t")[2] == corpus]
+          mine = ids[k::n]
+          print("ids=" + ",".join(mine))
+          print("count=%d" % len(mine))
+          EOF
+      - name: sweep shard ${{ matrix.shard }} (${{ steps.ids.outputs.count }} questions)
+        run: |
+          mkdir -p out
+          python experiments/line3/t10/measure_ask.py "${{ inputs.corpus }}" "${{ inputs.preset }}" \
+            "out/ask_${{ inputs.corpus }}_${{ inputs.preset }}_${{ inputs.group_insert }}-stop.shard${{ matrix.shard }}.jsonl" \
+            --cache cache --group-insert "${{ inputs.group_insert }}" --on-collapse stop --layers "${{ inputs.layers }}" \
+            --workers 4 --ids "${{ steps.ids.outputs.ids }}"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sweep-shard-${{ matrix.shard }}
+          path: out
+          retention-days: 30
+
+  summarize:
+    needs: sweep
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.11" }
+      - run: python -m pip install --quiet fugashi unidic-lite
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: sweep-shard-*
+          path: shards
+          merge-multiple: true
+      - name: merge the shards
+        run: |
+          mkdir -p results
+          out="results/ask_${{ inputs.corpus }}_${{ inputs.preset }}_${{ inputs.group_insert }}-stop.jsonl"
+          cat shards/*.shard*.jsonl > "$out"
+          echo "records: $(wc -l < "$out")"
+          python - "$out" <<'EOF'
+          import json, sys
+          sys.path.insert(0, "experiments/line3/t9")
+          import scorer as S
+          recs = [json.loads(l) for l in open(sys.argv[1], encoding="utf-8")]
+          print("questions:", len(recs), "errors:", sum(1 for r in recs if "error" in r))
+          EOF
+      - name: T10 tables (t9 rows absent on the runner: its raw records are not in git)
+        continue-on-error: true
+        run: python experiments/line3/t10/summarize.py results experiments/line3/t9/results
+      - uses: actions/upload-artifact@v4
+        with:
+          name: results-${{ inputs.corpus }}-${{ inputs.preset }}-${{ inputs.group_insert }}
+          path: results
+          retention-days: 90
