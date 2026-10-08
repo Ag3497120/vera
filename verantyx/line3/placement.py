@@ -660,6 +660,12 @@ class Placement:
     budget: Budget
     twin_sets: Tuple[Tuple[str, ...], ...] = ()   # L-90: placed twin classes with >= 2 units (sorted; [0] = the label shown in members)
     quotient: bool = True            # False = the T4c search (no twins)
+    # F-1 (L-460..): ordered insertion of tied share-groups.  Defaults = the whole-group build.
+    group_insert: str = "whole"      # "whole" (L-72) | "ordered" (L-460)
+    order: str = "forward"           # "forward" | "reverse" (L-464, measurement only)
+    order_log: Tuple[Tuple[int, Tuple[str, ...]], ...] = ()   # F-1: (share, members in the recorded insertion order) per group reached
+    left_in_group: int = 0           # F-1: members of the group that broke, NOT inserted (the breaking one included)
+    left_after: int = 0              # F-1: members of the groups after it, NOT inserted
 
     @property
     def centre(self) -> Optional[str]:
@@ -705,7 +711,11 @@ class Placement:
                 "broke_on": st(self.broke_on), "steps": [st(s) for s in self.steps],
                 "candidates": self.candidates, "budget": self.budget.to_json_obj(),
                 "quotient": self.quotient, "twin_sets": [list(t) for t in self.twin_sets],
-                "expanded_size": self.expanded_size}
+                "expanded_size": self.expanded_size,
+                **({} if self.group_insert == "whole" else
+                   {"group_insert": self.group_insert, "order": self.order,
+                    "order_log": [[sh, list(us)] for sh, us in self.order_log],
+                    "left_in_group": self.left_in_group, "left_after": self.left_after})}
 
     def to_bytes(self) -> bytes:
         return json.dumps(self.to_json_obj(), sort_keys=True, separators=(",", ":"),
@@ -771,19 +781,47 @@ def _groups(tier: TierSpace, seed: str) -> List[Tuple[int, Tuple[str, ...]]]:
 
 
 
+def group_order(tier: TierSpace, seed: str, members: Sequence[str], reverse: bool = False) -> Tuple[str, ...]:
+    """F-1 / L-461: the recorded insertion order of a tied share-group.  The sentences that make
+    the tie are the seed's postings (ascending sid); in each, the group's units in order of their
+    first occurrence in the sentence; a unit counts at the first sentence that holds it.  Every
+    member shares >= 1 sentence with the seed, so the order is complete.  Hash-seed free.
+    reverse=True (L-464, measurement only): the exact reverse list."""
+    left = set(members)
+    out: List[str] = []
+    for sid in tier.postings[seed]:
+        for u in dict.fromkeys(tier.sentence_units[sid]):
+            if u in left:
+                left.discard(u)
+                out.append(u)
+        if not left:
+            break
+    assert not left, "a group member shares no sentence with the seed"
+    return tuple(reversed(out)) if reverse else tuple(out)
+
+
 def _centres(members: Sequence[Flat]) -> Tuple[Optional[str], ...]:
     return tuple(sorted({m[0] for m in members}, key=lambda c: ("", "") if c is None else (c, "x")))
 
 
 def build_cross(tier: TierSpace, seed: str, w: Optional[Weights] = None,
                 max_groups: Optional[int] = None, budget: Budget = Budget(),
-                quotient: bool = True, pool_groups: Optional[int] = None) -> Placement:
+                quotient: bool = True, pool_groups: Optional[int] = None,
+                group_insert: str = "whole", order: str = "forward") -> Placement:
     """Build the stable CLASS around `seed` by search, growing group by group (L-72).
     quotient=True (L-90): interchangeable units are held as one group (labels);
     quotient=False: the T4c search (every unit its own label).
     pool_groups (T8, L-231; default None = unchanged): only the first `pool_groups` share-groups of
     M-1(b) enter the pool (a node budget of an upper layer: whole groups only, a tie is never split);
-    when groups were left out the result's stop is "max_groups" unless the budget stopped it first."""
+    when groups were left out the result's stop is "max_groups" unless the budget stopped it first.
+    group_insert (F-1, L-460; default "whole" = L-72, byte-identical): "ordered" inserts the members of a
+    tied share-group ONE AT A TIME in the recorded order of group_order() (order="reverse": the
+    measurement probe), settling after each; a member that hits the budget is restored away and growth
+    stops there (the later members and groups are not inserted; the counts are recorded)."""
+    if group_insert not in ("whole", "ordered"):
+        raise ValueError("group_insert must be 'whole' or 'ordered'")
+    if order not in ("forward", "reverse"):
+        raise ValueError("order must be 'forward' or 'reverse'")
     if seed not in tier.postings:
         raise KeyError(seed)
     w = w or Weights(tier)
@@ -802,26 +840,43 @@ def build_cross(tier: TierSpace, seed: str, w: Optional[Weights] = None,
     counts: Dict[str, int] = {rep[seed]: 1}          # placed twins per label
     steps: List[Step] = []
     stop, broke = "exhausted", None
+    ordered = group_insert == "ordered"
+    order_log: List[Tuple[int, Tuple[str, ...]]] = []
+    left_in_group = left_after = 0
     for gi, (share, members) in enumerate(groups):
         if max_groups is not None and gi >= max_groups:
             stop = "max_groups"
             break
-        L2 = min_L(size + len(members))
-        bases = [extend(s, L, L2) if L2 > L else s for s in state]
-        work = _Work(budget)
-        try:
-            starts = _insert_group(qw, bases, L2, [rep[u] for u in members], work, budget)
-            new = _settle(qw, starts, L2, work, budget)
-        except _Over as e:
-            broke = Step(share, members, BUDGET, work.n, None, None, str(e))
-            steps.append(broke)
-            stop = BUDGET                                    # N-05: restore `state`
+        if ordered:                                          # F-1 / L-460, L-461
+            seq = group_order(tier, seed, members, order == "reverse")
+            order_log.append((share, seq))
+            batches = [(u,) for u in seq]
+        else:
+            batches = [members]
+        halted = False
+        for bi, batch in enumerate(batches):
+            L2 = min_L(size + len(batch))
+            bases = [extend(s, L, L2) if L2 > L else s for s in state]
+            work = _Work(budget)
+            try:
+                starts = _insert_group(qw, bases, L2, [rep[u] for u in batch], work, budget)
+                new = _settle(qw, starts, L2, work, budget)
+            except _Over as e:
+                broke = Step(share, batch, BUDGET, work.n, None, None, str(e))
+                steps.append(broke)
+                stop = BUDGET                                # N-05: restore `state`
+                if ordered:                                  # L-463
+                    left_in_group = len(batches) - bi
+                    left_after = sum(len(g) for _, g in groups[gi + 1:])
+                halted = True
+                break
+            state, L, size = new, L2, size + len(batch)
+            for u in batch:
+                counts[rep[u]] = counts.get(rep[u], 0) + 1
+            steps.append(Step(share, batch, STABLE, work.n, size, len(new), None,
+                              expanded_count(new, L, counts)))
+        if halted:
             break
-        state, L, size = new, L2, size + len(members)
-        for u in members:
-            counts[rep[u]] = counts.get(rep[u], 0) + 1
-        steps.append(Step(share, members, STABLE, work.n, size, len(new), None,
-                          expanded_count(new, L, counts)))
     score = score_flat(qw, state[0], L)
     # display names: the smallest PLACED unit of each class (a label, L-90)
     placed = {seed}
@@ -844,16 +899,20 @@ def build_cross(tier: TierSpace, seed: str, w: Optional[Weights] = None,
         stop = "max_groups"
     return Placement(seed, to_cross(rep_cross, L), state, L, tuple(cent), size, size,
                      score, stop, broke, tuple(steps),
-                     total_candidates, budget, twin_sets, quotient)
+                     total_candidates, budget, twin_sets, quotient,
+                     group_insert, order, tuple(order_log), left_in_group, left_after)
 
 
 class Placer:
     """On-demand placement with a cache (L-07): results never depend on the cache."""
 
-    def __init__(self, tier: TierSpace, budget: Budget = Budget(), quotient: bool = True) -> None:
+    def __init__(self, tier: TierSpace, budget: Budget = Budget(), quotient: bool = True,
+                 group_insert: str = "whole", order: str = "forward") -> None:
         self.tier = tier
         self.budget = budget
         self.quotient = quotient
+        self.group_insert = group_insert
+        self.order = order
         self.w = Weights(tier)
         self._done: Dict[str, Placement] = {}
 
@@ -861,7 +920,8 @@ class Placer:
         p = self._done.get(seed)
         if p is None:
             p = self._done[seed] = build_cross(self.tier, seed, self.w, budget=self.budget,
-                                               quotient=self.quotient)
+                                               quotient=self.quotient,
+                                               group_insert=self.group_insert, order=self.order)
         return p
 
     def precompute_all(self, seeds: Optional[Iterable[str]] = None) -> Dict[str, Placement]:
