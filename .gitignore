@@ -68,3 +68,10 @@ experiments/line3/f1/raw/
 
 # T5 raw sweep (138 MB; over GitHub's limit) — the summary is kept
 experiments/line3/t5/results/S300_RUN_mid_64x8.jsonl
+# T10 raw measurement output (bank2, new placement); summaries are committed
+experiments/line3/t10/results/*.jsonl
+experiments/line3/t10/results/*.meta.json
+experiments/line3/t10/logs/
+
+# G2 probe outputs
+experiments/line3/g2/raw/

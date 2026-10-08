@@ -1,0 +1,280 @@
+# Trivial keyword baselines for bank 3 (see baselines docstring)
+# bank: bank3.tsv (91 rows); units: fulllead sentences=592, s3000 sentences=3000
+
+### tokenizer=mecab
+two-facts       n= 14  B1 3/14 (21%)  B2 8/14 (57%)  mean|cand| 1.0/1.7  both-evidence-in-B2 5/14
+paraphrase      n= 20  B1 8/20 (40%)  B2 12/20 (60%)  mean|cand| 1.9/3.1
+unknown-word    n= 18  B1 16/18 (89%)  B2 16/18 (89%)  mean|cand| 2.1/3.1
+compare         n= 14  gold-sentence-in-B1 6/14  lookup+year solver 13/14 (93%)  first-described 7/14  chance 50%
+summary-choice  n= 10  option-lookup 9.0/10 (90%)  always-A 3/10 always-B 4/10 always-C 3/10  chance 33%
+unans-kind      n= 15  candidates returned for 15/15 (keyword lookup never abstains)
+
+### tokenizer=bigram
+two-facts       n= 14  B1 1/14 (7%)  B2 6/14 (43%)  mean|cand| 1.0/1.7  both-evidence-in-B2 5/14
+paraphrase      n= 20  B1 6/20 (30%)  B2 10/20 (50%)  mean|cand| 1.2/2.0
+unknown-word    n= 18  B1 14/18 (78%)  B2 15/18 (83%)  mean|cand| 1.5/2.3
+compare         n= 14  gold-sentence-in-B1 5/14  lookup+year solver 12/14 (86%)  first-described 7/14  chance 50%
+summary-choice  n= 10  option-lookup 9.5/10 (95%)  always-A 3/10 always-B 4/10 always-C 3/10  chance 33%
+unans-kind      n= 15  candidates returned for 15/15 (keyword lookup never abstains)
+
+### unknown-word: B1 after NFKC + MeCab-reading (kana) normalisation of question and units
+mecab-kana   n=18  B1-kana 17/18 (94%)
+bigram-kana  n=18  B1-kana 14/18 (78%)
+mecab-nosubj n=18  B1 with the subject surface deleted 16/18 (89%)
+bigram-nosubj n=18  B1 with the subject surface deleted 15/18 (83%)
+
+per-item:
+  mecab b3_tf01 two-facts B1=0 B2=0 |c1|=1 |c2|=2 top=6 both-ev-in-B2=0
+  mecab b3_tf04 two-facts B1=0 B2=1 |c1|=1 |c2|=2 top=10 both-ev-in-B2=1
+  mecab b3_tf07 two-facts B1=1 B2=1 |c1|=1 |c2|=1 top=6 both-ev-in-B2=0
+  mecab b3_tf08 two-facts B1=0 B2=0 |c1|=1 |c2|=2 top=6 both-ev-in-B2=0
+  mecab b3_tf09 two-facts B1=0 B2=0 |c1|=1 |c2|=2 top=5 both-ev-in-B2=0
+  mecab b3_tf10 two-facts B1=0 B2=0 |c1|=1 |c2|=2 top=8 both-ev-in-B2=0
+  mecab b3_tf11 two-facts B1=0 B2=1 |c1|=1 |c2|=2 top=4 both-ev-in-B2=1
+  mecab b3_tf12 two-facts B1=1 B2=1 |c1|=1 |c2|=1 top=6 both-ev-in-B2=0
+  mecab b3_tf13 two-facts B1=1 B2=1 |c1|=1 |c2|=2 top=5 both-ev-in-B2=0
+  mecab b3_tf14 two-facts B1=0 B2=1 |c1|=1 |c2|=2 top=6 both-ev-in-B2=1
+  mecab b3_tf15 two-facts B1=0 B2=1 |c1|=1 |c2|=2 top=7 both-ev-in-B2=1
+  mecab b3_tf16 two-facts B1=0 B2=0 |c1|=1 |c2|=1 top=13 both-ev-in-B2=0
+  mecab b3_tf19 two-facts B1=0 B2=1 |c1|=1 |c2|=2 top=7 both-ev-in-B2=1
+  mecab b3_tf20 two-facts B1=0 B2=0 |c1|=1 |c2|=1 top=5 both-ev-in-B2=0
+  mecab b3_pa01 paraphrase B1=0 B2=0 |c1|=1 |c2|=2 top=3
+  mecab b3_pa02 paraphrase B1=0 B2=0 |c1|=6 |c2|=7 top=4
+  mecab b3_pa03 paraphrase B1=1 B2=1 |c1|=1 |c2|=2 top=2
+  mecab b3_pa04 paraphrase B1=0 B2=0 |c1|=2 |c2|=4 top=2
+  mecab b3_pa05 paraphrase B1=1 B2=1 |c1|=2 |c2|=3 top=2
+  mecab b3_pa06 paraphrase B1=0 B2=1 |c1|=1 |c2|=2 top=3
+  mecab b3_pa07 paraphrase B1=1 B2=1 |c1|=1 |c2|=2 top=2
+  mecab b3_pa08 paraphrase B1=0 B2=0 |c1|=3 |c2|=4 top=2
+  mecab b3_pa09 paraphrase B1=0 B2=0 |c1|=1 |c2|=2 top=5
+  mecab b3_pa10 paraphrase B1=1 B2=1 |c1|=3 |c2|=6 top=2
+  mecab b3_pa11 paraphrase B1=0 B2=0 |c1|=1 |c2|=2 top=4
+  mecab b3_pa12 paraphrase B1=0 B2=1 |c1|=2 |c2|=3 top=2
+  mecab b3_pa13 paraphrase B1=0 B2=0 |c1|=1 |c2|=2 top=2
+  mecab b3_pa14 paraphrase B1=1 B2=1 |c1|=2 |c2|=3 top=3
+  mecab b3_pa15 paraphrase B1=0 B2=1 |c1|=6 |c2|=7 top=1
+  mecab b3_pa16 paraphrase B1=1 B2=1 |c1|=1 |c2|=2 top=4
+  mecab b3_pa17 paraphrase B1=0 B2=1 |c1|=1 |c2|=2 top=3
+  mecab b3_pa18 paraphrase B1=0 B2=0 |c1|=1 |c2|=2 top=2
+  mecab b3_pa19 paraphrase B1=1 B2=1 |c1|=1 |c2|=2 top=5
+  mecab b3_pa20 paraphrase B1=1 B2=1 |c1|=2 |c2|=3 top=2
+  mecab b3_uw01 unknown-word B1=1 B2=1 |c1|=5 |c2|=7 top=2
+  mecab b3_uw02 unknown-word B1=1 B2=1 |c1|=1 |c2|=1 top=4
+  mecab b3_uw03 unknown-word B1=1 B2=1 |c1|=1 |c2|=2 top=3
+  mecab b3_uw04 unknown-word B1=1 B2=1 |c1|=2 |c2|=2 top=4
+  mecab b3_uw06 unknown-word B1=0 B2=0 |c1|=1 |c2|=1 top=5
+  mecab b3_uw07 unknown-word B1=1 B2=1 |c1|=1 |c2|=2 top=5
+  mecab b3_uw08 unknown-word B1=1 B2=1 |c1|=5 |c2|=7 top=2
+  mecab b3_uw09 unknown-word B1=1 B2=1 |c1|=1 |c2|=2 top=3
+  mecab b3_uw10 unknown-word B1=1 B2=1 |c1|=1 |c2|=2 top=4
+  mecab b3_uw11 unknown-word B1=1 B2=1 |c1|=1 |c2|=2 top=4
+  mecab b3_uw13 unknown-word B1=1 B2=1 |c1|=7 |c2|=8 top=2
+  mecab b3_uw14 unknown-word B1=0 B2=0 |c1|=1 |c2|=2 top=4
+  mecab b3_uw15 unknown-word B1=1 B2=1 |c1|=1 |c2|=2 top=5
+  mecab b3_uw16 unknown-word B1=1 B2=1 |c1|=1 |c2|=2 top=6
+  mecab b3_uw17 unknown-word B1=1 B2=1 |c1|=4 |c2|=7 top=1
+  mecab b3_uw18 unknown-word B1=1 B2=1 |c1|=2 |c2|=3 top=4
+  mecab b3_uw19 unknown-word B1=1 B2=1 |c1|=1 |c2|=1 top=5
+  mecab b3_uw20 unknown-word B1=1 B2=1 |c1|=1 |c2|=2 top=3
+  mecab b3_co01 compare gold-sent-in-B1=0 lookup+year=1 (answered ヤン・ソーデック) first-described=1
+  mecab b3_co02 compare gold-sent-in-B1=0 lookup+year=1 (answered チョ・ナムジュ) first-described=0
+  mecab b3_co03 compare gold-sent-in-B1=0 lookup+year=1 (answered ロベルト・カッチャパーリア) first-described=1
+  mecab b3_co04 compare gold-sent-in-B1=0 lookup+year=1 (answered キリストの幕屋) first-described=0
+  mecab b3_co05 compare gold-sent-in-B1=1 lookup+year=1 (answered ブロンソンズ) first-described=1
+  mecab b3_co06 compare gold-sent-in-B1=0 lookup+year=1 (answered ドイツ通信社) first-described=0
+  mecab b3_co08 compare gold-sent-in-B1=0 lookup+year=1 (answered Blue Chip) first-described=1
+  mecab b3_co09 compare gold-sent-in-B1=0 lookup+year=1 (answered プリモプラン) first-described=0
+  mecab b3_co10 compare gold-sent-in-B1=1 lookup+year=1 (answered 日野事件) first-described=1
+  mecab b3_co11 compare gold-sent-in-B1=1 lookup+year=1 (answered 関原地震) first-described=0
+  mecab b3_co12 compare gold-sent-in-B1=1 lookup+year=1 (answered 1979年女子バスケットボール世界選手権) first-described=0
+  mecab b3_co13 compare gold-sent-in-B1=1 lookup+year=1 (answered 2015年アルペンスキー世界選手権) first-described=1
+  mecab b3_co14 compare gold-sent-in-B1=0 lookup+year=1 (answered ウエストひかり) first-described=0
+  mecab b3_co15 compare gold-sent-in-B1=1 lookup+year=0 (answered None) first-described=1
+  mecab b3_sc01 summary-choice option-lookup=1.00 (max options B, gold B)
+  mecab b3_sc02 summary-choice option-lookup=0.50 (max options AC, gold C)
+  mecab b3_sc03 summary-choice option-lookup=1.00 (max options A, gold A)
+  mecab b3_sc04 summary-choice option-lookup=1.00 (max options B, gold B)
+  mecab b3_sc05 summary-choice option-lookup=1.00 (max options C, gold C)
+  mecab b3_sc06 summary-choice option-lookup=1.00 (max options B, gold B)
+  mecab b3_sc07 summary-choice option-lookup=0.50 (max options AB, gold A)
+  mecab b3_sc08 summary-choice option-lookup=1.00 (max options B, gold B)
+  mecab b3_sc09 summary-choice option-lookup=1.00 (max options C, gold C)
+  mecab b3_sc10 summary-choice option-lookup=1.00 (max options A, gold A)
+  mecab b3_uk01 unans returned=2 top=2
+  mecab b3_uk02 unans returned=3 top=4
+  mecab b3_uk03 unans returned=1 top=4
+  mecab b3_uk04 unans returned=2 top=2
+  mecab b3_uk05 unans returned=5 top=3
+  mecab b3_uk06 unans returned=1 top=6
+  mecab b3_uk07 unans returned=6 top=3
+  mecab b3_uk08 unans returned=1 top=4
+  mecab b3_uk09 unans returned=1 top=4
+  mecab b3_uk10 unans returned=37 top=2
+  mecab b3_uk11 unans returned=4 top=1
+  mecab b3_uk12 unans returned=1 top=4
+  mecab b3_uk13 unans returned=1 top=2
+  mecab b3_uk14 unans returned=1 top=4
+  mecab b3_uk15 unans returned=1 top=6
+  bigram b3_tf01 two-facts B1=0 B2=0 |c1|=1 |c2|=2 top=13 both-ev-in-B2=0
+  bigram b3_tf04 two-facts B1=0 B2=1 |c1|=1 |c2|=2 top=26 both-ev-in-B2=1
+  bigram b3_tf07 two-facts B1=0 B2=0 |c1|=1 |c2|=2 top=7 both-ev-in-B2=0
+  bigram b3_tf08 two-facts B1=0 B2=0 |c1|=1 |c2|=2 top=10 both-ev-in-B2=0
+  bigram b3_tf09 two-facts B1=0 B2=0 |c1|=1 |c2|=2 top=15 both-ev-in-B2=0
+  bigram b3_tf10 two-facts B1=0 B2=0 |c1|=1 |c2|=2 top=20 both-ev-in-B2=0
+  bigram b3_tf11 two-facts B1=0 B2=1 |c1|=1 |c2|=2 top=13 both-ev-in-B2=1
+  bigram b3_tf12 two-facts B1=0 B2=1 |c1|=1 |c2|=2 top=11 both-ev-in-B2=1
+  bigram b3_tf13 two-facts B1=0 B2=0 |c1|=1 |c2|=1 top=10 both-ev-in-B2=0
+  bigram b3_tf14 two-facts B1=1 B2=1 |c1|=1 |c2|=1 top=9 both-ev-in-B2=0
+  bigram b3_tf15 two-facts B1=0 B2=1 |c1|=1 |c2|=2 top=19 both-ev-in-B2=1
+  bigram b3_tf16 two-facts B1=0 B2=0 |c1|=1 |c2|=1 top=28 both-ev-in-B2=0
+  bigram b3_tf19 two-facts B1=0 B2=1 |c1|=1 |c2|=2 top=16 both-ev-in-B2=1
+  bigram b3_tf20 two-facts B1=0 B2=0 |c1|=1 |c2|=1 top=9 both-ev-in-B2=0
+  bigram b3_pa01 paraphrase B1=0 B2=0 |c1|=1 |c2|=1 top=5
+  bigram b3_pa02 paraphrase B1=0 B2=0 |c1|=2 |c2|=2 top=8
+  bigram b3_pa03 paraphrase B1=1 B2=1 |c1|=1 |c2|=2 top=3
+  bigram b3_pa04 paraphrase B1=0 B2=0 |c1|=1 |c2|=2 top=3
+  bigram b3_pa05 paraphrase B1=1 B2=1 |c1|=2 |c2|=3 top=6
+  bigram b3_pa06 paraphrase B1=0 B2=1 |c1|=1 |c2|=2 top=12
+  bigram b3_pa07 paraphrase B1=1 B2=1 |c1|=1 |c2|=2 top=7
+  bigram b3_pa08 paraphrase B1=0 B2=0 |c1|=1 |c2|=1 top=3
+  bigram b3_pa09 paraphrase B1=0 B2=0 |c1|=1 |c2|=2 top=10
+  bigram b3_pa10 paraphrase B1=1 B2=1 |c1|=1 |c2|=2 top=4
+  bigram b3_pa11 paraphrase B1=0 B2=0 |c1|=1 |c2|=2 top=8
+  bigram b3_pa12 paraphrase B1=0 B2=1 |c1|=2 |c2|=3 top=3
+  bigram b3_pa13 paraphrase B1=0 B2=0 |c1|=1 |c2|=2 top=4
+  bigram b3_pa14 paraphrase B1=0 B2=0 |c1|=1 |c2|=2 top=4
+  bigram b3_pa15 paraphrase B1=0 B2=0 |c1|=1 |c2|=1 top=5
+  bigram b3_pa16 paraphrase B1=1 B2=1 |c1|=2 |c2|=3 top=7
+  bigram b3_pa17 paraphrase B1=0 B2=1 |c1|=1 |c2|=2 top=6
+  bigram b3_pa18 paraphrase B1=0 B2=0 |c1|=1 |c2|=2 top=4
+  bigram b3_pa19 paraphrase B1=1 B2=1 |c1|=1 |c2|=2 top=8
+  bigram b3_pa20 paraphrase B1=0 B2=1 |c1|=1 |c2|=2 top=4
+  bigram b3_uw01 unknown-word B1=1 B2=1 |c1|=2 |c2|=3 top=6
+  bigram b3_uw02 unknown-word B1=1 B2=1 |c1|=1 |c2|=1 top=11
+  bigram b3_uw03 unknown-word B1=1 B2=1 |c1|=1 |c2|=2 top=7
+  bigram b3_uw04 unknown-word B1=0 B2=0 |c1|=1 |c2|=1 top=11
+  bigram b3_uw06 unknown-word B1=1 B2=1 |c1|=1 |c2|=2 top=9
+  bigram b3_uw07 unknown-word B1=1 B2=1 |c1|=1 |c2|=2 top=8
+  bigram b3_uw08 unknown-word B1=0 B2=0 |c1|=2 |c2|=2 top=5
+  bigram b3_uw09 unknown-word B1=1 B2=1 |c1|=1 |c2|=2 top=6
+  bigram b3_uw10 unknown-word B1=1 B2=1 |c1|=3 |c2|=3 top=6
+  bigram b3_uw11 unknown-word B1=1 B2=1 |c1|=1 |c2|=2 top=7
+  bigram b3_uw13 unknown-word B1=0 B2=1 |c1|=2 |c2|=3 top=5
+  bigram b3_uw14 unknown-word B1=0 B2=0 |c1|=1 |c2|=2 top=5
+  bigram b3_uw15 unknown-word B1=1 B2=1 |c1|=1 |c2|=2 top=12
+  bigram b3_uw16 unknown-word B1=1 B2=1 |c1|=1 |c2|=2 top=12
+  bigram b3_uw17 unknown-word B1=1 B2=1 |c1|=4 |c2|=6 top=4
+  bigram b3_uw18 unknown-word B1=1 B2=1 |c1|=2 |c2|=3 top=6
+  bigram b3_uw19 unknown-word B1=1 B2=1 |c1|=1 |c2|=1 top=7
+  bigram b3_uw20 unknown-word B1=1 B2=1 |c1|=1 |c2|=2 top=11
+  bigram b3_co01 compare gold-sent-in-B1=0 lookup+year=1 (answered ヤン・ソーデック) first-described=1
+  bigram b3_co02 compare gold-sent-in-B1=0 lookup+year=1 (answered チョ・ナムジュ) first-described=0
+  bigram b3_co03 compare gold-sent-in-B1=0 lookup+year=1 (answered ロベルト・カッチャパーリア) first-described=1
+  bigram b3_co04 compare gold-sent-in-B1=1 lookup+year=1 (answered キリストの幕屋) first-described=0
+  bigram b3_co05 compare gold-sent-in-B1=1 lookup+year=0 (answered None) first-described=1
+  bigram b3_co06 compare gold-sent-in-B1=0 lookup+year=1 (answered ドイツ通信社) first-described=0
+  bigram b3_co08 compare gold-sent-in-B1=0 lookup+year=1 (answered Blue Chip) first-described=1
+  bigram b3_co09 compare gold-sent-in-B1=0 lookup+year=1 (answered プリモプラン) first-described=0
+  bigram b3_co10 compare gold-sent-in-B1=0 lookup+year=1 (answered 日野事件) first-described=1
+  bigram b3_co11 compare gold-sent-in-B1=1 lookup+year=0 (answered None) first-described=0
+  bigram b3_co12 compare gold-sent-in-B1=1 lookup+year=1 (answered 1979年女子バスケットボール世界選手権) first-described=0
+  bigram b3_co13 compare gold-sent-in-B1=0 lookup+year=1 (answered 2015年アルペンスキー世界選手権) first-described=1
+  bigram b3_co14 compare gold-sent-in-B1=0 lookup+year=1 (answered ウエストひかり) first-described=0
+  bigram b3_co15 compare gold-sent-in-B1=1 lookup+year=1 (answered TopEye) first-described=1
+  bigram b3_sc01 summary-choice option-lookup=1.00 (max options B, gold B)
+  bigram b3_sc02 summary-choice option-lookup=1.00 (max options C, gold C)
+  bigram b3_sc03 summary-choice option-lookup=1.00 (max options A, gold A)
+  bigram b3_sc04 summary-choice option-lookup=1.00 (max options B, gold B)
+  bigram b3_sc05 summary-choice option-lookup=1.00 (max options C, gold C)
+  bigram b3_sc06 summary-choice option-lookup=1.00 (max options B, gold B)
+  bigram b3_sc07 summary-choice option-lookup=0.50 (max options AB, gold A)
+  bigram b3_sc08 summary-choice option-lookup=1.00 (max options B, gold B)
+  bigram b3_sc09 summary-choice option-lookup=1.00 (max options C, gold C)
+  bigram b3_sc10 summary-choice option-lookup=1.00 (max options A, gold A)
+  bigram b3_uk01 unans returned=1 top=8
+  bigram b3_uk02 unans returned=1 top=9
+  bigram b3_uk03 unans returned=2 top=7
+  bigram b3_uk04 unans returned=2 top=6
+  bigram b3_uk05 unans returned=1 top=7
+  bigram b3_uk06 unans returned=1 top=10
+  bigram b3_uk07 unans returned=2 top=9
+  bigram b3_uk08 unans returned=1 top=8
+  bigram b3_uk09 unans returned=1 top=7
+  bigram b3_uk10 unans returned=1 top=3
+  bigram b3_uk11 unans returned=8 top=2
+  bigram b3_uk12 unans returned=1 top=7
+  bigram b3_uk13 unans returned=1 top=4
+  bigram b3_uk14 unans returned=1 top=4
+  bigram b3_uk15 unans returned=1 top=19
+  mecab-kana b3_uw01 unknown-word B1kana=1 |c1|=2 top=3 surface=ハッシュ テーブル
+  mecab-kana b3_uw02 unknown-word B1kana=1 |c1|=1 top=4 surface=連結 グラフ
+  mecab-kana b3_uw03 unknown-word B1kana=1 |c1|=1 top=3 surface=デニム 生地
+  mecab-kana b3_uw04 unknown-word B1kana=1 |c1|=2 top=4 surface=フェミニズム思想
+  mecab-kana b3_uw06 unknown-word B1kana=1 |c1|=1 top=5 surface=青海町内
+  mecab-kana b3_uw07 unknown-word B1kana=1 |c1|=1 top=6 surface=天満橋地区
+  mecab-kana b3_uw08 unknown-word B1kana=1 |c1|=10 top=2 surface=ボイス
+  mecab-kana b3_uw09 unknown-word B1kana=1 |c1|=1 top=3 surface=内浦町内
+  mecab-kana b3_uw10 unknown-word B1kana=1 |c1|=1 top=5 surface=バダフシャーン地方
+  mecab-kana b3_uw11 unknown-word B1kana=1 |c1|=1 top=4 surface=市川町内
+  mecab-kana b3_uw13 unknown-word B1kana=1 |c1|=32 top=2 surface=ヒル・フィギュア
+  mecab-kana b3_uw14 unknown-word B1kana=0 |c1|=1 top=4 surface=風藤松原コンビ
+  mecab-kana b3_uw15 unknown-word B1kana=1 |c1|=1 top=5 surface=ビースティボーイズ
+  mecab-kana b3_uw16 unknown-word B1kana=1 |c1|=1 top=6 surface=IEEE 488規格
+  mecab-kana b3_uw17 unknown-word B1kana=1 |c1|=4 top=1 surface=Cube Juice
+  mecab-kana b3_uw18 unknown-word B1kana=1 |c1|=4 top=4 surface=善五郎家
+  mecab-kana b3_uw19 unknown-word B1kana=1 |c1|=1 top=5 surface=レッド計画案
+  mecab-kana b3_uw20 unknown-word B1kana=1 |c1|=1 top=3 surface=フット チョーク
+  bigram-kana b3_uw01 unknown-word B1kana=0 |c1|=1 top=9 surface=ハッシュ テーブル
+  bigram-kana b3_uw02 unknown-word B1kana=1 |c1|=1 top=17 surface=連結 グラフ
+  bigram-kana b3_uw03 unknown-word B1kana=1 |c1|=1 top=12 surface=デニム 生地
+  bigram-kana b3_uw04 unknown-word B1kana=1 |c1|=2 top=17 surface=フェミニズム思想
+  bigram-kana b3_uw06 unknown-word B1kana=1 |c1|=1 top=16 surface=青海町内
+  bigram-kana b3_uw07 unknown-word B1kana=1 |c1|=1 top=16 surface=天満橋地区
+  bigram-kana b3_uw08 unknown-word B1kana=1 |c1|=3 top=6 surface=ボイス
+  bigram-kana b3_uw09 unknown-word B1kana=1 |c1|=1 top=13 surface=内浦町内
+  bigram-kana b3_uw10 unknown-word B1kana=1 |c1|=1 top=10 surface=バダフシャーン地方
+  bigram-kana b3_uw11 unknown-word B1kana=1 |c1|=1 top=14 surface=市川町内
+  bigram-kana b3_uw13 unknown-word B1kana=0 |c1|=2 top=7 surface=ヒル・フィギュア
+  bigram-kana b3_uw14 unknown-word B1kana=0 |c1|=1 top=10 surface=風藤松原コンビ
+  bigram-kana b3_uw15 unknown-word B1kana=1 |c1|=1 top=16 surface=ビースティボーイズ
+  bigram-kana b3_uw16 unknown-word B1kana=1 |c1|=1 top=16 surface=IEEE 488規格
+  bigram-kana b3_uw17 unknown-word B1kana=0 |c1|=1 top=5 surface=Cube Juice
+  bigram-kana b3_uw18 unknown-word B1kana=1 |c1|=2 top=9 surface=善五郎家
+  bigram-kana b3_uw19 unknown-word B1kana=1 |c1|=1 top=14 surface=レッド計画案
+  bigram-kana b3_uw20 unknown-word B1kana=1 |c1|=1 top=14 surface=フット チョーク
+  mecab-nosubject b3_uw01 unknown-word B1-without-subject=0 |c1|=3 top=2
+  mecab-nosubject b3_uw02 unknown-word B1-without-subject=1 |c1|=1 top=4
+  mecab-nosubject b3_uw03 unknown-word B1-without-subject=1 |c1|=1 top=3
+  mecab-nosubject b3_uw04 unknown-word B1-without-subject=1 |c1|=1 top=3
+  mecab-nosubject b3_uw06 unknown-word B1-without-subject=1 |c1|=1 top=4
+  mecab-nosubject b3_uw07 unknown-word B1-without-subject=1 |c1|=2 top=3
+  mecab-nosubject b3_uw08 unknown-word B1-without-subject=1 |c1|=5 top=2
+  mecab-nosubject b3_uw09 unknown-word B1-without-subject=1 |c1|=6 top=2
+  mecab-nosubject b3_uw10 unknown-word B1-without-subject=1 |c1|=1 top=4
+  mecab-nosubject b3_uw11 unknown-word B1-without-subject=1 |c1|=1 top=2
+  mecab-nosubject b3_uw13 unknown-word B1-without-subject=0 |c1|=4 top=2
+  mecab-nosubject b3_uw14 unknown-word B1-without-subject=1 |c1|=2 top=2
+  mecab-nosubject b3_uw15 unknown-word B1-without-subject=1 |c1|=2 top=3
+  mecab-nosubject b3_uw16 unknown-word B1-without-subject=1 |c1|=1 top=6
+  mecab-nosubject b3_uw17 unknown-word B1-without-subject=1 |c1|=4 top=1
+  mecab-nosubject b3_uw18 unknown-word B1-without-subject=1 |c1|=1 top=4
+  mecab-nosubject b3_uw19 unknown-word B1-without-subject=1 |c1|=1 top=4
+  mecab-nosubject b3_uw20 unknown-word B1-without-subject=1 |c1|=1 top=3
+  bigram-nosubject b3_uw01 unknown-word B1-without-subject=0 |c1|=1 top=3
+  bigram-nosubject b3_uw02 unknown-word B1-without-subject=1 |c1|=1 top=11
+  bigram-nosubject b3_uw03 unknown-word B1-without-subject=1 |c1|=1 top=7
+  bigram-nosubject b3_uw04 unknown-word B1-without-subject=1 |c1|=3 top=5
+  bigram-nosubject b3_uw06 unknown-word B1-without-subject=1 |c1|=1 top=9
+  bigram-nosubject b3_uw07 unknown-word B1-without-subject=1 |c1|=1 top=6
+  bigram-nosubject b3_uw08 unknown-word B1-without-subject=0 |c1|=2 top=5
+  bigram-nosubject b3_uw09 unknown-word B1-without-subject=1 |c1|=1 top=4
+  bigram-nosubject b3_uw10 unknown-word B1-without-subject=1 |c1|=1 top=6
+  bigram-nosubject b3_uw11 unknown-word B1-without-subject=1 |c1|=1 top=6
+  bigram-nosubject b3_uw13 unknown-word B1-without-subject=1 |c1|=18 top=2
+  bigram-nosubject b3_uw14 unknown-word B1-without-subject=0 |c1|=1 top=3
+  bigram-nosubject b3_uw15 unknown-word B1-without-subject=1 |c1|=1 top=4
+  bigram-nosubject b3_uw16 unknown-word B1-without-subject=1 |c1|=1 top=12
+  bigram-nosubject b3_uw17 unknown-word B1-without-subject=1 |c1|=2 top=4
+  bigram-nosubject b3_uw18 unknown-word B1-without-subject=1 |c1|=2 top=6
+  bigram-nosubject b3_uw19 unknown-word B1-without-subject=1 |c1|=1 top=6
+  bigram-nosubject b3_uw20 unknown-word B1-without-subject=1 |c1|=1 top=11

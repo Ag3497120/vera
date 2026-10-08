@@ -1,0 +1,50 @@
+{
+  "intake": {
+    "recorded_at": "2026-10-08",
+    "note": "G1 intake record: sha256 of bank3.tsv recorded before any Vera system reads it"
+  },
+  "bank": {
+    "path": "bank3.tsv",
+    "sha256": "42b3a1102915b030ca0f250acb68fcf9fe204e605bd4d4196a3dbcd0bb905cd9",
+    "rows": 91,
+    "kinds": {
+      "two-facts": 14,
+      "paraphrase": 20,
+      "unknown-word": 18,
+      "compare": 14,
+      "summary-choice": 10,
+      "unans-kind": 15
+    },
+    "corpora_rows": {
+      "fulllead": 76,
+      "s3000": 15
+    },
+    "audit": {
+      "fixed": 62,
+      "valid": 29
+    },
+    "author_original": {
+      "path": "vera-impl/bank2-author/out/bank3.tsv",
+      "sha256": "c66ac68f802f483a191e54eb1843a2f73b928c27a21cb982b553eabae129e5ca",
+      "rows": 100
+    }
+  },
+  "corpora": {
+    "fulllead": {
+      "path": "../data/S300_fulllead.jsonl",
+      "sha256": "d987fdee0e19283e9c69e461b2ae695e5f2681f7a64e2c486572fcd6d4f419ea",
+      "equals_author_copy": true
+    },
+    "s3000": {
+      "path": "../data/S3000.jsonl",
+      "sha256": "36abce43a6c7a06e693e8e380e6beae486761eba6fd022f9328d5c30c2b716d0",
+      "equals_author_copy": true
+    }
+  },
+  "provenance": {
+    "author": "codex gpt-6-luna (no access to Vera code), prompt PROMPT3.md, 1 round",
+    "auditor": "Claude Opus 5.5",
+    "audit": "AUDIT3.md",
+    "date": "2026-10-08"
+  }
+}
