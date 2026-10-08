@@ -186,7 +186,7 @@ jobs:
           recs = [json.loads(l) for l in open(sys.argv[1], encoding="utf-8")]
           print("questions:", len(recs), "errors:", sum(1 for r in recs if "error" in r))
           EOF
-      - name: T10 tables (t9 rows absent on the runner: its raw records are not in git)
+      - name: "T10 tables (the t9 rows are absent on the runner; its raw records are not in git)"
         continue-on-error: true
         run: python experiments/line3/t10/summarize.py results experiments/line3/t9/results
       - uses: actions/upload-artifact@v4
