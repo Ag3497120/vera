@@ -2362,9 +2362,12 @@ def cmd_line3(args) -> int:
             lopts = l3m.LayerOptions(variants=vs, granularity=args.layer_granularity, feedback=args.layer_feedback,
                                      bounds=l3m.bounds_for(effort, nodes), candidate=args.layer_candidate,
                                      down_query=args.layer_down_query)
-            res = l3m.ask_layered(idx, args.question, view=args.view, effort=effort, nodes=nodes, options=lopts)
+            base = (l3.ask(idx, args.question, view=args.view, effort=effort, nodes=nodes, granularity=args.granularity)
+                    if getattr(args, "granularity", None) else None)          # F2: layer 0 carries the assembled strings
+            res = l3m.ask_layered(idx, args.question, view=args.view, effort=effort, nodes=nodes, options=lopts, base=base)
         else:
-            res = l3.ask(idx, args.question, view=args.view, effort=effort, nodes=nodes)
+            res = l3.ask(idx, args.question, view=args.view, effort=effort, nodes=nodes,
+                         granularity=getattr(args, "granularity", None))
     except ValueError as e:
         print(f"line3: {e}", file=sys.stderr)
         return 2
@@ -3010,6 +3013,8 @@ def main(argv: Optional[list] = None) -> int:
     p.add_argument("--nodes", type=int, default=None, help="ask: an explicit node budget (crosses read per tier); replaces --effort")
     p.add_argument("--view", choices=["all", "stable"], default="all",
                    help="ask: all = every tier's candidates labelled by tier (default); stable = only the most stable tier(s) (I-16)")
+    p.add_argument("--granularity", choices=["entry", "all"], default=None,
+                   help="ask: F2 (off by default) also show strings assembled from the connections between the tiers RUN/WORD/CHAR (units of the listed entries that touch in the same source sentence); entry = within each entry, all = across the entries of all tiers. The listed candidates are not changed")
     p.add_argument("--choose", type=int, default=None, help="ask: the index of the candidate you pick; its memory record (with the tier) goes to stderr and --record")
     p.add_argument("--record", default=None, help="ask: append the chosen candidate's memory record to this jsonl (with --choose, or alone for a single answer)")
     p.add_argument("--layers", choices=["off", "on"], default="on",

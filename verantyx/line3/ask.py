@@ -285,6 +285,7 @@ class Combined:
     effort: Optional[str] = None                         # T7b: preset name / "nodes" / None (whole read)
     node_budget: Optional[int] = None                    # T7b: crosses read per tier, None = whole read
     raise_levels: Tuple[str, ...] = cy.RAISE_LEVELS_DEFAULT   # T7b: levels a cross may be rebuilt at ((): never)
+    assembled: Optional[dict] = None                     # F2 (L-485): granularity.assemble_combined(); None = option off
 
     # ---- reference helpers ----
     def outcome(self, tier: str) -> TierOutcome:
@@ -378,6 +379,8 @@ class Combined:
                          "reference_centres": ents[0]["centres"]} if one else None),
              "entries": ents,
              "sources": [{"sid": s, "text": self.sentences[s][0], "source": self.sentences[s][1]} for s in sids]}
+        if self.assembled is not None:                   # F2: only with the option on, so default bytes are unchanged
+            o["assembled"] = self.assembled
         return o
 
     def thought_obj(self) -> dict:
@@ -460,7 +463,7 @@ def ask_tier_outcome(index: Index, tier: str, question: str, budget: cy.QueryBud
 
 def ask(index: Index, question: str, tiers: Optional[Sequence[str]] = None,
         budget: cy.QueryBudget = DEFAULT_BUDGET, *, view: str = "all", effort: Optional[str] = None,
-        nodes: Optional[int] = None, **kw) -> Combined:
+        nodes: Optional[int] = None, granularity: Optional[str] = None, **kw) -> Combined:
     """I-25: every requested tier is run (none is skipped because another one answered).  `view`: every tier's
     entries labelled (default) or the I-16 most stable tier only.  `effort` (fast | standard | full) or `nodes`
     (crosses per tier): the amount of inference; neither = the whole read (what T7 did).  A budget that leaves
@@ -480,7 +483,12 @@ def ask(index: Index, question: str, tiers: Optional[Sequence[str]] = None,
         else:
             kw["raise_budget"] = None
     outs = [ask_tier_outcome(index, t, question, budget, **kw) for t in names]
-    return combine(question, outs, index.space, index.level, budget, view, name, cap, lv)
+    c = combine(question, outs, index.space, index.level, budget, view, name, cap, lv)
+    if granularity:                                      # F2 (L-485), opt-in: granularity.SCOPES, or True = the default scope
+        from verantyx.line3 import granularity as gr
+        c = replace(c, assembled=gr.assemble_combined(
+            c, index.space, gr.DEFAULT_SCOPE if granularity is True else granularity))
+    return c
 
 
 # --------------------------------------------------------------------------
@@ -520,6 +528,9 @@ def format_text(c: Combined, show_thought: bool = False) -> str:
     elif rd["effort"] is not None:
         L.append("推論の量 %s: 予算内で全て読みました（%s）" % (rd["effort"], " ".join(
             "%s=%d" % (t, v["crosses_read"]) for t, v in rd["per_tier"].items())))
+    if c.assembled is not None:                          # F2 (L-486)
+        from verantyx.line3 import granularity as gr
+        L.extend(gr.format_lines(c.assembled))
     for s in a["sources"]:
         L.append("  根拠 #%d: %s%s" % (s["sid"], s["text"], " [%s]" % s["source"] if s["source"] else ""))
     if show_thought:
