@@ -1,0 +1,98 @@
+intra2 n=69  one-hop (s1, RUN or WORD, same-tier) = 41  two-hop (gold unit exists, not one hop) = 10  tok = 18
+two-hop ids: I2-011 I2-020 I2-039 I2-043 R2-I002 R2-I003 R2-I004 R2-I007 R2-I012 R2-I019
+
+| window | #windows | same-tier RUN|WORD: hop (of 69) | of the 10 two-hop | RUN only: hop | of two-hop | any-tier mix (q any of 3 tiers, gold any of 3) | of two-hop | chance: other golds reached per question, median / mean (of 68) |
+|---|---|---|---|---|---|---|---|---|
+| s1 | 592 | 41 | 0 | 39 | 0 | 51 | 10 | 0 / 0.9 |
+| a2 | 592 | 45 | 4 | 44 | 4 | 51 | 10 | 1 / 1.7 |
+| f2 | 591 | 45 | 4 | 44 | 4 | 51 | 10 | 2 / 2.2 |
+| a3 | 592 | 51 | 10 | 50 | 10 | 51 | 10 | 1 / 1.9 |
+| art | 300 | 51 | 10 | 50 | 10 | 51 | 10 | 1 / 2.0 |
+
+per two-hop item: id | gold | evidence | article sentence idx holding a q unit (RUN|WORD) | gold-unit sentences (idx) | min distance | a2 RUN | a2 RUN|WORD
+I2-011 | 改称 | ['サッカー・ヘッセンリーガ', '改名'] | [0] | [('改名', 1), ('サッカー・ヘッセンリーガ', 1)] | 1 | True | True
+I2-020 | 17代目 | ['善五郎'] | [0, 2, 3, 4, 6] | [('善五郎', 2)] | 0 | False | False
+I2-039 | 愛知県 | ['名古屋市立川原小学校', '大曲輪貝塚'] | [0, 2] | [('大曲輪貝塚', 0), ('ナショナル交通', 0), ('高浜消防署', 0), ('寅ヤス', 2)] | 0 | False | False
+I2-043 | 大和町 | ['宮床村'] | [0, 1] | [('宮床村', 1)] | 0 | True | True
+R2-I002 | 能登町 | ['内浦町'] | [0, 2] | [('内浦町', 2)] | 0 | False | False
+R2-I003 | 中播磨県民センター | ['市川町'] | [0, 1] | [('市川町', 2)] | 1 | False | False
+R2-I004 | 落語協会 | ['風藤松原'] | [0, 2] | [('風藤松原', 2)] | 0 | False | False
+R2-I007 | 日本海側気候|日本海側 | ['数河高原'] | [0, 2] | [('数河高原', 2)] | 0 | False | False
+R2-I012 | 2188人 | ['コィンスコヴォラ'] | [0, 1, 2] | [('コィンスコヴォラ', 2)] | 0 | True | True
+R2-I019 | 15台程度|15台 | ['岡崎建設', 'IEEE 488'] | [0, 0, 1, 2, 4] | [('IEEE 488', 1), ('岡崎建設', 2)] | 0 | True | True
+
+| pack | tier | #packs | units median | p90 | max | min L (6L+1>=n) median / p90 | seat-swap pairs C(6L+1,2) at median L |
+|---|---|---|---|---|---|---|---|
+| s1 | RUN | 592 | 7.0 | 14 | 28 | 1 / 3 | 21 |
+| s1 | WORD | 592 | 11.0 | 20 | 32 | 2 / 4 | 78 |
+| s1 | CHAR | 592 | 19.0 | 35 | 63 | 3 / 6 | 171 |
+| s1 | RUN+WORD+CHAR | 592 | 37.5 | 67 | 112 | 7 / - | - |
+| s1 | RUN+WORD | 592 | 18.0 | 32 | 53 | 3 / - | - |
+| a2 | RUN | 292 | 15.0 | 25 | 42 | 3 / 4 | 171 |
+| a2 | WORD | 292 | 21.0 | 32 | 46 | 4 / 6 | 300 |
+| a2 | CHAR | 292 | 33.0 | 56 | 83 | 6 / 10 | 666 |
+| a2 | RUN+WORD+CHAR | 292 | 68.0 | 111 | 168 | 12 / - | - |
+| a2 | RUN+WORD | 292 | 36.0 | 57 | 85 | 6 / - | - |
+| a3 | RUN | 117 | 23 | 39 | 49 | 4 / 7 | 300 |
+| a3 | WORD | 117 | 29 | 45 | 56 | 5 / 8 | 465 |
+| a3 | CHAR | 117 | 47 | 76 | 95 | 8 / 13 | 1176 |
+| a3 | RUN+WORD+CHAR | 117 | 102 | 154 | 198 | 17 / - | - |
+| a3 | RUN+WORD | 117 | 53 | 81 | 103 | 9 / - | - |
+
+F2 containment links per sentence: RUN>WORD median 11.5 p90 23 max 39; WORD>CHAR median 23.5 p90 50 max 107
+articles 300, sentences 592, articles with 1 sentence 125
+
+question units recomputed from bank2.tsv equal the T9 records: 207 / 207
+two-hop items inside the evidence article: id | evidence | article length | idx of sentences holding a q unit (same tier as a gold unit of that sentence? no: any RUN|WORD q unit) | gold sentence idx | min |q_idx - gold_idx|
+I2-011 | 改名#1 | 2 | [0] | 1 | 1
+I2-020 | 善五郎#2 | 7 | [0, 2, 3, 4, 6] | 2 | 0
+I2-039 | 寅ヤス#2 | 4 | [0, 2] | 2 | 0
+I2-043 | 宮床村#1 | 2 | [0, 1] | 1 | 0
+R2-I002 | 内浦町#2 | 3 | [0, 2] | 2 | 0
+R2-I003 | 市川町#2 | 3 | [0, 1] | 2 | 1
+R2-I004 | 風藤松原#2 | 3 | [0, 2] | 2 | 0
+R2-I007 | 数河高原#2 | 4 | [0, 2] | 2 | 0
+R2-I012 | コィンスコヴォラ#2 | 3 | [0, 1, 2] | 2 | 0
+R2-I019 | 岡崎建設#2 | 5 | [0, 1, 2, 4] | 2 | 0
+
+| window | intra2 pool of RUN units median / p90 | unans pool median / p90 | unans with a non-empty pool |
+|---|---|---|---|
+| s1 | 45 / 127 | 30 / 64 | 25 / 25 |
+| a2 | 71 / 211 | 49 / 112 | 25 / 25 |
+| a3 | 78 / 237 | 49 / 130 | 25 / 25 |
+| art | 78 / 249 | 49 / 133 | 25 / 25 |
+mixed RUN|WORD s1: 49 of 69, 8 of the 10 two-hop
+mixed RUN|WORD a2: 51 of 69, 10 of the 10 two-hop
+mixed RUN|WORD a3: 51 of 69, 10 of the 10 two-hop
+
+two-hop items, evidence sentence: question units present per tier | gold units present per tier
+I2-011 | Q {'RUN': [], 'WORD': []} | G {'RUN': ['改称'], 'WORD': ['改称']} | q in sentence N-1: {'RUN': ['改名'], 'WORD': ['改名']}
+I2-020 | Q {'RUN': [], 'WORD': ['代', '目']} | G {'RUN': ['17代目'], 'WORD': []} | q in sentence N-1: {'RUN': [], 'WORD': []}
+I2-039 | Q {'RUN': [], 'WORD': ['出身']} | G {'RUN': ['愛知県出身'], 'WORD': []} | q in sentence N-1: {'RUN': [], 'WORD': []}
+I2-043 | Q {'RUN': [], 'WORD': ['宮', '床', '現在', '町']} | G {'RUN': ['大和町宮床'], 'WORD': []} | q in sentence N-1: {'RUN': ['宮床村'], 'WORD': ['宮', '床', '村']}
+R2-I002 | Q {'RUN': [], 'WORD': ['現在', '町']} | G {'RUN': ['鳳珠郡能登町'], 'WORD': []} | q in sentence N-1: {'RUN': [], 'WORD': []}
+R2-I003 | Q {'RUN': [], 'WORD': []} | G {'RUN': ['中播磨県民センター'], 'WORD': []} | q in sentence N-1: {'RUN': [], 'WORD': ['市川']}
+R2-I004 | Q {'RUN': [], 'WORD': ['10', '2021', '年']} | G {'RUN': ['落語協会所属'], 'WORD': []} | q in sentence N-1: {'RUN': [], 'WORD': []}
+R2-I007 | Q {'RUN': [], 'WORD': ['属し', '気候']} | G {'RUN': ['日本海側気候'], 'WORD': []} | q in sentence N-1: {'RUN': [], 'WORD': []}
+R2-I012 | Q {'RUN': [], 'WORD': ['2004', '人', '年']} | G {'RUN': ['人口2188人'], 'WORD': []} | q in sentence N-1: {'RUN': ['コィンスコヴォラ'], 'WORD': []}
+R2-I019 | Q {'RUN': [], 'WORD': ['2013', '年']} | G {'RUN': ['年間15台程度'], 'WORD': []} | q in sentence N-1: {'RUN': ['薪ストーブ'], 'WORD': ['ストーブ', '薪']}
+mixed RUN|WORD chance s1: other golds reached per question median 3 mean 4.2 (of 68)
+mixed RUN|WORD chance a2: other golds reached per question median 5 mean 7.1 (of 68)
+
+two-hop items: in the evidence sentence, is an occurrence of a WORD question unit inside the span of the RUN gold unit (F2 containment)?
+I2-011 | gold RUN ['改称'] | WORD q inside the gold span: [] | WORD q elsewhere in the sentence: []
+I2-020 | gold RUN ['17代目'] | WORD q inside the gold span: ['代', '目'] | WORD q elsewhere in the sentence: []
+I2-039 | gold RUN ['愛知県出身'] | WORD q inside the gold span: ['出身'] | WORD q elsewhere in the sentence: []
+I2-043 | gold RUN ['大和町宮床'] | WORD q inside the gold span: ['宮', '床', '町'] | WORD q elsewhere in the sentence: ['現在']
+R2-I002 | gold RUN ['鳳珠郡能登町'] | WORD q inside the gold span: ['町'] | WORD q elsewhere in the sentence: ['現在']
+R2-I003 | gold RUN ['中播磨県民センター'] | WORD q inside the gold span: [] | WORD q elsewhere in the sentence: []
+R2-I004 | gold RUN ['落語協会所属'] | WORD q inside the gold span: [] | WORD q elsewhere in the sentence: ['10', '2021', '年']
+R2-I007 | gold RUN ['日本海側気候'] | WORD q inside the gold span: ['気候'] | WORD q elsewhere in the sentence: ['属し']
+R2-I012 | gold RUN ['人口2188人'] | WORD q inside the gold span: ['人'] | WORD q elsewhere in the sentence: ['2004', '年']
+R2-I019 | gold RUN ['年間15台程度'] | WORD q inside the gold span: [] | WORD q elsewhere in the sentence: ['2013', '年']
+contained: 6 of 10
+y-hop (WORD q inside RUN gold span, one sentence): 17 of 69; new over the 41 one-hop: 6; of the 10 two-hop: 6
+union one-hop(s1) | a2 RUN same-tier | y-hop: 49 of 69; two-hop covered 8 (R2-I003 R2-I004 left)
+y-hop chance: other golds reached per question median 0 mean 0.9 (of 68)
+windows read per question (s1, RUN): intra2 median 5 p90 16 max 23; unans median 3 max 18
+windows read per question (a2, RUN): intra2 median 8 p90 24 max 41; unans median 3 max 26
