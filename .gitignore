@@ -61,3 +61,4 @@ experiments/line3/t8f/results/*.jsonl
 # T9 raw measurement output (bank2); summaries are committed
 experiments/line3/t9/results/*.jsonl
 experiments/line3/t9/logs/
+experiments/line3/t9/audit/raw/
