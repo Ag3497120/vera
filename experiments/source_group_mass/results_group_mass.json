@@ -1,0 +1,84 @@
+{
+ "db": "/Users/motonishikoudai/Projects/vera-corpus/build/vera.db",
+ "arms": {
+  "raw": {
+   "reachable": 289,
+   "correct": 14,
+   "wrong": 212,
+   "refusal": 74,
+   "asked": 300
+  },
+  "group": {
+   "reachable": 290,
+   "correct": 15,
+   "wrong": 212,
+   "refusal": 73,
+   "asked": 300
+  }
+ },
+ "top1_differs": 21,
+ "asked_common": 300,
+ "verdict_transitions": {
+  "WRONG→UNKNOWN_NO_EVIDENCE": 3,
+  "WRONG→AMBIGUOUS": 2,
+  "CORRECT→AMBIGUOUS": 1,
+  "UNKNOWN_NO_EVIDENCE→WRONG": 5,
+  "CORRECT→WRONG": 1,
+  "WRONG→CORRECT": 2,
+  "UNKNOWN_NO_EVIDENCE→CORRECT": 1,
+  "AMBIGUOUS→WRONG": 1
+ },
+ "elapsed_s": 32.5,
+ "examples_top1_diff": [
+  [
+   "公職選挙法施行令第百三十一条",
+   "二",
+   "公職選挙法施行令第百三十一条"
+  ],
+  [
+   "陪審法第九十八条",
+   "二",
+   "陪審法第九十八条"
+  ],
+  [
+   "国有林野台帳規程第六条",
+   "二",
+   "国有林野台帳規程第五条"
+  ],
+  [
+   "政府保管有価証券取扱規程第七条",
+   "二",
+   "政府保管有価証券取扱規程第七条"
+  ],
+  [
+   "スイッチ",
+   "二",
+   "方法"
+  ],
+  [
+   "各国代表",
+   "二",
+   "六"
+  ],
+  [
+   "明使",
+   "二",
+   "明使"
+  ],
+  [
+   "恩給法第十一条",
+   "二",
+   "恩給法第十一条"
+  ],
+  [
+   "結晶性物質",
+   "三",
+   "概念"
+  ],
+  [
+   "行政訴訟",
+   "二",
+   "必要"
+  ]
+ ]
+}

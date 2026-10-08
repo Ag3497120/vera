@@ -1,0 +1,271 @@
+# W1-a5 probe of sentences that are in no data file (written after the implementation, to look for new reads that a reviewer would call misreads). base = df4f001 entry, now = this tree.
+## probe1 (only the sentences whose output changed)
+妹がゆっくり歌った。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : READ [{"predicate": "歌う", "roles": {"agent": "妹"}, "polarity": "+", "tense": "past", "flags": {"adverbs": ["ゆっくり"]}}]  [reread]
+妹がゆっくり歌を歌った。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : READ [{"predicate": "歌う", "roles": {"agent": "妹", "patient": "歌"}, "polarity": "+", "tense": "past", "flags": {"adverbs": ["ゆっくり"]}}]  [reread]
+弟がそっとドアを閉めた。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : READ [{"predicate": "閉める", "roles": {"agent": "弟", "patient": "ドア"}, "polarity": "+", "tense": "past", "flags": {"adverbs": ["そっと"]}}]  [reread]
+先生が生徒をゆっくり見た。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : READ [{"predicate": "見る", "roles": {"agent": "先生", "patient": "生徒"}, "polarity": "+", "tense": "past", "flags": {"adverbs": ["ゆっくり"]}}]  [reread]
+先生が生徒にゆっくり話した。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : READ [{"predicate": "話す", "roles": {"agent": "先生", "recipient": "生徒"}, "polarity": "+", "tense": "past", "flags": {"adverbs": ["ゆっくり"]}}]  [reread]
+父が息子にそっと手紙を渡した。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : READ [{"predicate": "渡す", "roles": {"agent": "父", "patient": "手紙", "recipient": "息子"}, "polarity": "+", "tense": "past", "flags": {"adverbs": ["そっと"]}}]  [reread]
+母が子供をすぐに呼んだ。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : READ [{"predicate": "呼ぶ", "roles": {"agent": "母", "patient": "子供"}, "polarity": "+", "tense": "past", "flags": {"adverbs": ["すぐ"]}}]  [reread]
+母が子供をそっと抱いた。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : READ [{"predicate": "抱く", "roles": {"agent": "母", "patient": "子供"}, "polarity": "+", "tense": "past", "flags": {"adverbs": ["そっと"]}}]  [reread]
+犬がゆっくり歩いた。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : READ [{"predicate": "歩く", "roles": {"agent": "犬"}, "polarity": "+", "tense": "past", "flags": {"adverbs": ["ゆっくり"]}}]  [reread]
+猫がこっそり出てきた。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : ABS NO_SUPPORTED_CLAUSE|ASPECT_NOT_IN_CONVENTION:くる  [reread_refused]
+風がゆっくり吹いた。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : ABS NO_SUPPORTED_CLAUSE|REREAD_ABSTAINS:SUBJECT_TYPE_UNDETERMINED:風  [reread_refused]
+雨がしっかり降った。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : ABS NO_SUPPORTED_CLAUSE|REREAD_ABSTAINS:SUBJECT_TYPE_UNDETERMINED:雨  [reread_refused]
+兄がしっかり食べた。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : READ [{"predicate": "食べる", "roles": {"agent": "兄"}, "polarity": "+", "tense": "past", "flags": {"adverbs": ["しっかり"]}}]  [reread]
+兄がよく食べた。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : ABS NO_SUPPORTED_CLAUSE|ADVERB_MARK_NOT_READ:quant:よく  [reread_refused]
+兄がゆっくり、本を読んだ。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : READ [{"predicate": "読む", "roles": {"agent": "兄", "patient": "本"}, "polarity": "+", "tense": "past", "flags": {"adverbs": ["ゆっくり"]}}]  [reread]
+兄が本をゆっくり読まれた。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : ABS NO_SUPPORTED_CLAUSE|REREAD_ABSTAINS:UNDETERMINED_VOICE:れる/られる with an object  [reread_refused]
+弟が兄にゆっくり本を読まれた。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : ABS NO_SUPPORTED_CLAUSE|REREAD_ABSTAINS:UNDETERMINED_VOICE:れる/られる with an object  [reread_refused]
+兄は本をゆっくり読んだ。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : READ [{"predicate": "読む", "roles": {"agent": "兄", "patient": "本"}, "polarity": "+", "tense": "past", "flags": {"adverbs": ["ゆっくり"]}}]  [reread]
+兄はゆっくり本を読んだ。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : READ [{"predicate": "読む", "roles": {"agent": "兄", "patient": "本"}, "polarity": "+", "tense": "past", "flags": {"adverbs": ["ゆっくり"]}}]  [reread]
+本は兄がゆっくり読んだ。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : READ [{"predicate": "読む", "roles": {"agent": "兄", "patient": "本"}, "polarity": "+", "tense": "past", "flags": {"adverbs": ["ゆっくり"]}}]  [reread]
+ゆっくり兄が本を読んだ。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : READ [{"predicate": "読む", "roles": {"agent": "兄", "patient": "本"}, "polarity": "+", "tense": "past", "flags": {"adverbs": ["ゆっくり"]}}]  [reread]
+ゆっくり本を読んだ。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : READ [{"predicate": "読む", "roles": {"patient": "本"}, "polarity": "+", "tense": "past", "flags": {"adverbs": ["ゆっくり"]}}]  [reread]
+兄がゆっくり走れた。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : READ [{"predicate": "走れる", "roles": {"agent": "兄"}, "polarity": "+", "tense": "past", "flags": {"adverbs": ["ゆっくり"]}}]  [reread]
+兄がゆっくり走りたい。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : ABS NO_SUPPORTED_CLAUSE|REREAD_ABSTAINS:UNDETERMINED_MODALITY:たい  [reread_refused]
+兄がゆっくり走っている。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : READ [{"predicate": "走る", "roles": {"agent": "兄"}, "polarity": "+", "tense": "nonpast", "flags": {"adverbs": ["ゆっくり"]}}]  [reread]
+兄がゆっくり走っていた。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : READ [{"predicate": "走る", "roles": {"agent": "兄"}, "polarity": "+", "tense": "past", "flags": {"adverbs": ["ゆっくり"]}}]  [reread]
+兄がゆっくり走っていない。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : ABS NO_SUPPORTED_CLAUSE|ADVERB_SCOPE_UNDETERMINED:neg  [reread_refused]
+兄がゆっくり走ってしまった。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : READ [{"predicate": "走る", "roles": {"agent": "兄"}, "polarity": "+", "tense": "past", "flags": {"adverbs": ["ゆっくり"]}}]  [reread]
+兄がゆっくり走っていった。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : ABS NO_SUPPORTED_CLAUSE|ASPECT_NOT_IN_CONVENTION:いく  [reread_refused]
+兄がゆっくり走ってきた。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : ABS NO_SUPPORTED_CLAUSE|ASPECT_NOT_IN_CONVENTION:くる  [reread_refused]
+兄がゆっくり走ってみた。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : ABS NO_SUPPORTED_CLAUSE|ASPECT_NOT_IN_CONVENTION:みる  [reread_refused]
+兄がまさに走った。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : READ [{"predicate": "走る", "roles": {"agent": "兄"}, "polarity": "+", "tense": "past", "flags": {"adverbs": ["まさに"]}}]  [reread]
+兄がまさか走った。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : READ [{"predicate": "走る", "roles": {"agent": "兄"}, "polarity": "+", "tense": "past", "flags": {"adverbs": ["まさか"]}}]  [reread]
+兄がたいてい走った。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : ABS NO_SUPPORTED_CLAUSE|REREAD_ABSTAINS:UNDETERMINED_MODALITY:たい  [reread_refused]
+兄がだんだん走った。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : READ [{"predicate": "走る", "roles": {"agent": "兄"}, "polarity": "+", "tense": "past", "flags": {"adverbs": ["だんだん"]}}]  [reread]
+兄がちょっと走った。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : READ [{"predicate": "走る", "roles": {"agent": "兄"}, "polarity": "+", "tense": "past", "flags": {"adverbs": ["ちょっと"]}}]  [reread]
+兄がもっと走った。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : READ [{"predicate": "走る", "roles": {"agent": "兄"}, "polarity": "+", "tense": "past", "flags": {"adverbs": ["もっと"]}}]  [reread]
+兄が最も本を読んだ。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : ABS NO_SUPPORTED_CLAUSE|ADVERB_MARK_NOT_READ:convention:最も  [reread_refused]
+兄がやっと本を読んだ。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : ABS NO_SUPPORTED_CLAUSE|ADVERB_MARK_NOT_READ:time_aspect:やっと  [reread_refused]
+兄がついに本を読んだ。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : ABS NO_SUPPORTED_CLAUSE|ADVERB_MARK_NOT_READ:time_aspect:ついに  [reread_refused]
+兄がなかなか本を読まなかった。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : ABS NO_SUPPORTED_CLAUSE|ADVERB_SCOPE_UNDETERMINED:neg  [reread_refused]
+兄がしばしば本を読んだ。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : READ [{"predicate": "読む", "roles": {"agent": "兄", "patient": "本"}, "polarity": "+", "tense": "past", "flags": {"adverbs": ["しばしば"]}}]  [reread]
+兄がたまたま本を読んだ。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : READ [{"predicate": "読む", "roles": {"agent": "兄", "patient": "本"}, "polarity": "+", "tense": "past", "flags": {"adverbs": ["たまたま"]}}]  [reread]
+兄がわざわざ本を読んだ。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : READ [{"predicate": "読む", "roles": {"agent": "兄", "patient": "本"}, "polarity": "+", "tense": "past", "flags": {"adverbs": ["わざわざ"]}}]  [reread]
+兄がつい本を読んだ。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : READ [{"predicate": "読む", "roles": {"agent": "兄", "patient": "本"}, "polarity": "+", "tense": "past", "flags": {"adverbs": ["つい"]}}]  [reread]
+兄が駅でゆっくり本を読んだ。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : READ [{"predicate": "読む", "roles": {"agent": "兄", "patient": "本", "place": "駅"}, "polarity": "+", "tense": "past", "flags": {"adverbs": ["ゆっくり"]}}]  [reread]
+兄が鉛筆でゆっくり本を読んだ。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : READ [{"predicate": "読む", "roles": {"agent": "兄", "patient": "本", "instrument": "鉛筆"}, "polarity": "+", "tense": "past", "flags": {"adverbs": ["ゆっくり"]}}]  [reread]
+## probe2 (only the sentences whose output changed)
+兄が本を2冊読んだ。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : READ [{"predicate": "読む", "roles": {"agent": "兄", "patient": "本"}, "polarity": "+", "tense": "past", "quantifiers": {"patient": "exactly:2"}}]  [reread]
+兄が本を2冊ずつ読んだ。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : ABS NO_SUPPORTED_CLAUSE|QUANTIFIER_TARGET_UNDETERMINED:position  [reread_refused]
+兄が本を三冊ほど読んだ。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : ABS NO_SUPPORTED_CLAUSE|QUANTIFIER_TARGET_UNDETERMINED:position  [reread_refused]
+兄が本を三冊くらい読んだ。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : ABS NO_SUPPORTED_CLAUSE|QUANTIFIER_TARGET_UNDETERMINED:position  [reread_refused]
+兄が本を三冊持っている。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : READ [{"predicate": "持つ", "roles": {"agent": "兄", "patient": "本"}, "polarity": "+", "tense": "nonpast", "quantifiers": {"patient": "exactly:3"}}]  [reread]
+兄が本を三冊持っていない。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : ABS NO_SUPPORTED_CLAUSE|QUANTIFIER_SCOPE_UNDETERMINED:neg  [reread_refused]
+兄が本を三冊持っていた。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : READ [{"predicate": "持つ", "roles": {"agent": "兄", "patient": "本"}, "polarity": "+", "tense": "past", "quantifiers": {"patient": "exactly:3"}}]  [reread]
+本を兄が三冊読んだ。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : ABS NO_SUPPORTED_CLAUSE|QUANTIFIER_TARGET_UNDETERMINED:scrambled  [reread_refused]
+本が三冊ある。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : ABS NO_SUPPORTED_CLAUSE|REREAD_ABSTAINS:SUBJECT_TYPE_UNDETERMINED:本  [reread_refused]
+机に本が三冊ある。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : ABS NO_SUPPORTED_CLAUSE|REREAD_ABSTAINS:SUBJECT_TYPE_UNDETERMINED:本  [reread_refused]
+兄に本が三冊ある。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : ABS NO_SUPPORTED_CLAUSE|REREAD_ABSTAINS:SUBJECT_TYPE_UNDETERMINED:本  [reread_refused]
+兄が友達に本を三冊貸した。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : READ [{"predicate": "貸す", "roles": {"agent": "兄", "patient": "本", "recipient": "友達"}, "polarity": "+", "tense": "past", "quantifiers": {"patient": "exactly:3"}}]  [reread]
+兄が友達から本を三冊借りた。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : ABS NO_SUPPORTED_CLAUSE|REREAD_ABSTAINS:PREDICATE_NORMALIZED:貸す<-借りる  [reread_refused]
+兄が友達に三回電話した。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : ABS NO_SUPPORTED_CLAUSE|REREAD_ABSTAINS:RECIPIENT_TYPE_UNDETERMINED:電話する  [reread_refused]
+兄が三回も本を読んだ。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : ABS NO_SUPPORTED_CLAUSE|QUANTIFIER_TARGET_UNDETERMINED:position  [reread_refused]
+兄が三回しか本を読まなかった。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : ABS NO_SUPPORTED_CLAUSE|QUANTIFIER_TARGET_UNDETERMINED:position  [reread_refused]
+兄が百回走った。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : READ [{"predicate": "走る", "roles": {"agent": "兄"}, "polarity": "+", "tense": "past", "quantifiers": {"event": "exactly:100"}}]  [reread]
+兄が十回走った。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : READ [{"predicate": "走る", "roles": {"agent": "兄"}, "polarity": "+", "tense": "past", "quantifiers": {"event": "exactly:10"}}]  [reread]
+兄が百五十回走った。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : READ [{"predicate": "走る", "roles": {"agent": "兄"}, "polarity": "+", "tense": "past", "quantifiers": {"event": "exactly:150"}}]  [reread]
+兄が千回走った。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : READ [{"predicate": "走る", "roles": {"agent": "兄"}, "polarity": "+", "tense": "past", "quantifiers": {"event": "exactly:1000"}}]  [reread]
+兄が数回走った。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : ABS NO_SUPPORTED_CLAUSE|QUANTIFIER_VALUE_UNDETERMINED:数  [reread_refused]
+兄が何回走った。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : ABS NO_SUPPORTED_CLAUSE|QUANTIFIER_VALUE_UNDETERMINED:何  [reread_refused]
+兄が三十分走った。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : ABS NO_SUPPORTED_CLAUSE|QUANTIFIER_TARGET_UNDETERMINED:time  [reread_refused]
+兄が三キロ走った。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : ABS NO_SUPPORTED_CLAUSE|QUANTIFIER_TARGET_UNDETERMINED:unit  [reread_refused]
+兄が三メートル走った。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : ABS NO_SUPPORTED_CLAUSE|QUANTIFIER_TARGET_UNDETERMINED:unit  [reread_refused]
+兄が三時走った。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : ABS NO_SUPPORTED_CLAUSE|QUANTIFIER_TARGET_UNDETERMINED:time  [reread_refused]
+兄が三年走った。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : ABS NO_SUPPORTED_CLAUSE|QUANTIFIER_TARGET_UNDETERMINED:time  [reread_refused]
+兄が三日走った。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : ABS NO_SUPPORTED_CLAUSE|QUANTIFIER_TARGET_UNDETERMINED:time  [reread_refused]
+兄が三週間走った。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : ABS NO_SUPPORTED_CLAUSE|QUANTIFIER_TARGET_UNDETERMINED:time  [reread_refused]
+兄が三か月走った。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : ABS NO_SUPPORTED_CLAUSE|QUANTIFIER_TARGET_UNDETERMINED:time  [reread_refused]
+兄が三秒走った。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : ABS NO_SUPPORTED_CLAUSE|QUANTIFIER_TARGET_UNDETERMINED:time  [reread_refused]
+兄が三人来た。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : READ [{"predicate": "来る", "roles": {"agent": "兄"}, "polarity": "+", "tense": "past", "quantifiers": {"agent": "exactly:3"}}]  [reread]
+兄たちが三人来た。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : READ [{"predicate": "来る", "roles": {"agent": "兄たち"}, "polarity": "+", "tense": "past", "quantifiers": {"agent": "exactly:3"}}]  [reread]
+兄が友達に三人会った。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : ABS NO_SUPPORTED_CLAUSE|QUANTIFIER_TARGET_UNDETERMINED:particle  [reread_refused]
+兄が友達を三人呼んだ。
+   base: ABS NO_SUPPORTED_CLAUSE
+   now : READ [{"predicate": "呼ぶ", "roles": {"agent": "兄", "patient": "友達"}, "polarity": "+", "tense": "past", "quantifiers": {"patient": "exactly:3"}}]  [reread]
+## probe3 (only the sentences whose output changed)
+兄が本を読んでいるよ。
+   base: READ [{"predicate": "読む", "roles": {"agent": "兄", "patient": "本"}, "polarity": "+", "tense": "nonpast"}]
+   now : ABS ASPECT_ENDING_NOT_READ  [aspect_refused]
+兄が本を読んでいるね。
+   base: READ [{"predicate": "読む", "roles": {"agent": "兄", "patient": "本"}, "polarity": "+", "tense": "nonpast"}]
+   now : ABS ASPECT_ENDING_NOT_READ  [aspect_refused]
+兄は本を読んでいない。
+   base: READ [{"predicate": "読む", "roles": {"agent": "兄", "patient": "本"}, "polarity": "+", "tense": "nonpast"}]
+   now : READ [{"predicate": "読む", "roles": {"agent": "兄", "patient": "本"}, "polarity": "-", "tense": "nonpast"}]  [aspect_corrected]
+兄は本を読んでいなかった。
+   base: READ [{"predicate": "読む", "roles": {"agent": "兄", "patient": "本"}, "polarity": "+", "tense": "past"}]
+   now : READ [{"predicate": "読む", "roles": {"agent": "兄", "patient": "本"}, "polarity": "-", "tense": "past"}]  [aspect_corrected]
+本を兄が読んでいない。
+   base: READ [{"predicate": "読む", "roles": {"agent": "兄", "patient": "本"}, "polarity": "+", "tense": "nonpast"}]
+   now : READ [{"predicate": "読む", "roles": {"agent": "兄", "patient": "本"}, "polarity": "-", "tense": "nonpast"}]  [aspect_corrected]
+兄が東京に住んでいない。
+   base: READ [{"predicate": "住む", "roles": {"agent": "兄", "place": "東京"}, "polarity": "+", "tense": "nonpast"}]
+   now : READ [{"predicate": "住む", "roles": {"agent": "兄", "place": "東京"}, "polarity": "-", "tense": "nonpast"}]  [aspect_corrected]
+兄が窓を開けて見た。
+   base: READ [{"predicate": "開ける", "roles": {"agent": "兄", "patient": "窓"}, "polarity": "+", "tense": "past"}]
+   now : ABS ASPECT_NOT_IN_CONVENTION:見る  [aspect_refused]

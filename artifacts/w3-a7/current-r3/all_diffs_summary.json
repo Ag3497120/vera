@@ -1,0 +1,18 @@
+{
+  "direct_rows_r9": 992773,
+  "direct_rows_r10": 992773,
+  "direct_changed_rows": 0,
+  "confirmed_role_rows_r9": 2926,
+  "confirmed_role_rows_r10": 2943,
+  "confirmed_role_added": 482,
+  "confirmed_role_removed": 465,
+  "confirmed_role_changed": 84,
+  "role_frame_word_status_r9": {
+    "ESTIMATED": 5621,
+    "CONFIRMED": 2474
+  },
+  "role_frame_word_status_r10": {
+    "ESTIMATED": 5645,
+    "CONFIRMED": 2466
+  }
+}

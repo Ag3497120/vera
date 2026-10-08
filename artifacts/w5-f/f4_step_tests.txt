@@ -1,0 +1,12 @@
+F.....                                                                   [100%]
+=================================== FAILURES ===================================
+E   AssertionError: ('no_ids', {'kind': 'unknown', 'verdict': 'UNKNOWN_ORIGIN_SOURCE', 'text': '出所の分からない出典があるため、答えません。', 'sources': [], ...})
+    assert 'UNKNOWN_ORIGIN' == 'unknown_origin'
+      
+      - unknown_origin
+      + UNKNOWN_ORIGIN
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/tests/test_basis_policy_w5f.py:47: AssertionError: ('no_ids', {'kind': 'unknown', 'verdict': 'UNKNOWN_ORIGIN_SOURCE', 'text': '出所の分からない出典があるため、答えません。', 'sources': [], ...})
+=========================== short test summary info ============================
+FAILED tests/test_basis_policy_w5f.py::test_frozen_self_claim_shapes_abstain_without_answering
+1 failed, 5 passed in 0.17s
+exit=1

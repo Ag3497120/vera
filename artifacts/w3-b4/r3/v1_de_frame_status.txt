@@ -1,0 +1,16 @@
+placement=/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r7/run1 members=/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b4-S/artifacts/w3-b4/r7members/type_members.json
+P_MOVE members=34 frame_status={"CONFIRMED": 10, "NOT_CONFIRMED": 24}
+  CONFIRMED: particles of the frames={"から": 5, "が": 3, "に": 1, "へ": 6}; words whose confirmed frame has で: 0 
+  NOT_CONFIRMED (24): いく くる 上がる 乗る 入る 出る 動く 向かう 回る 寄る 帰る 戻る 来る 歩く 渡る 着く 移る 行く 走る 通る 進む 運ぶ 降りる 飛ぶ
+P_COMMUNICATE members=62 frame_status={"CONFIRMED": 38, "NOT_CONFIRMED": 24}
+  CONFIRMED: particles of the frames={"が": 1, "を": 38}; words whose confirmed frame has で: 0 
+  NOT_CONFIRMED (24): いう 伝える 勧める 名乗る 告げる 呼び出す 呼ぶ 尋ねる 教える 断る 求める 申し込む 答える 表す 褒める 言う 記す 話す 誘う 語る 謝る 述べる 頼む 願う
+P_ACT members=25 frame_status={"NOT_CONFIRMED": 25}
+  CONFIRMED: particles of the frames={}; words whose confirmed frame has で: 0 
+  NOT_CONFIRMED (25): おく する つく つける 並べる 付ける 働く 入れる 切る 取り除く 守る 引く 戦う 打つ 押す 拭く 洗う 続ける 置く 行う 試す 遊ぶ 閉める 開ける 集める
+P_CREATE members=24 frame_status={"NOT_CONFIRMED": 24}
+  CONFIRMED: particles of the frames={}; words whose confirmed frame has で: 0 
+  NOT_CONFIRMED (24): まとめる 作る 定める 建てる 掘る 描く 揚げる 整える 書く 植える 沸かす 炊く 炒める 焼く 煮る 生む 築く 組み立てる 編む 縫う 育てる 蒸す 設ける 起こす
+P_EMOTION members=10 frame_status={"NOT_CONFIRMED": 10}
+  CONFIRMED: particles of the frames={}; words whose confirmed frame has で: 0 
+  NOT_CONFIRMED (10): 喜ぶ 好む 怒る 慌てる 楽しむ 楽しめる 泣く 疲れる 笑う 驚く

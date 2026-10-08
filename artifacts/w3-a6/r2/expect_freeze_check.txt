@@ -1,0 +1,1 @@
+tests/coarse_place/data/w3a6_expect.json: OK

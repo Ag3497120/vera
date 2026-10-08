@@ -1,0 +1,59 @@
+ M artifacts/w3-f1/COMMANDS.md
+ M artifacts/w3-f1/DECISIONS.md
+ M docs/OBSERVATION.md
+ M verantyx/constructions/negation.py
+ M verantyx/semantic_verify.py
+ M verantyx/verdict.py
+?? artifacts/w3-f1/a1_ext_after.txt
+?? artifacts/w3-f1/a1_ext_before.txt
+?? artifacts/w3-f1/a1_ext_before.v1_superseded.txt
+?? artifacts/w3-f1/a1_ext_before_failed.txt
+?? artifacts/w3-f1/after_ext/
+?? artifacts/w3-f1/before2_ext/
+?? artifacts/w3-f1/before_ext/
+?? artifacts/w3-f1/bs_B1_after_ext.txt
+?? artifacts/w3-f1/bs_B1_before_ext.txt
+?? artifacts/w3-f1/bs_B2_after_ext.txt
+?? artifacts/w3-f1/bs_B2_before_ext.txt
+?? artifacts/w3-f1/bs_ext_compare.txt
+?? artifacts/w3-f1/ext_after_failures.txt
+?? artifacts/w3-f1/ext_check_hardcode.txt
+?? artifacts/w3-f1/ext_fixed_failures.txt
+?? artifacts/w3-f1/ext_frames_regression_after.txt
+?? artifacts/w3-f1/ext_frames_regression_before.txt
+?? artifacts/w3-f1/ext_index_search.txt
+?? artifacts/w3-f1/ext_isolation.txt
+?? artifacts/w3-f1/ext_load_start.txt
+?? artifacts/w3-f1/ext_new_failures.txt
+?? artifacts/w3-f1/ext_new_failures_base_check.txt
+?? artifacts/w3-f1/ext_new_failures_classified.txt
+?? artifacts/w3-f1/ext_pytest_full.txt
+?? artifacts/w3-f1/ext_pytest_full_load_before.txt
+?? artifacts/w3-f1/ext_range_after.tsv
+?? artifacts/w3-f1/ext_range_before.tsv
+?? artifacts/w3-f1/ext_range_changed.tsv
+?? artifacts/w3-f1/ext_reason_after.tsv
+?? artifacts/w3-f1/ext_related_after.txt
+?? artifacts/w3-f1/ext_related_before.txt
+?? artifacts/w3-f1/ext_status_final.txt
+?? artifacts/w3-f1/ext_vacuity_probe.txt
+?? artifacts/w3-f1/freeze_ext.sha256
+?? artifacts/w3-f1/freeze_ext.v1_superseded.sha256
+?? artifacts/w3-f1/k342_ext_changed.tsv
+?? artifacts/w3-f1/k342_ext_summary.txt
+?? artifacts/w3-f1/k342_total_changed.tsv
+?? artifacts/w3-f1/k342_total_summary.txt
+?? artifacts/w3-f1/measure_range_ext.py
+?? artifacts/w3-f1/mk_data_ext.py
+?? artifacts/w3-f1/prereg_ext_time.txt
+?? artifacts/w3-f1/repro_ext_after_1.json
+?? artifacts/w3-f1/repro_ext_after_2.json
+?? artifacts/w3-f1/repro_ext_after_3.json
+?? artifacts/w3-f1/repro_ext_before_1.json
+?? artifacts/w3-f1/repro_ext_before_2.json
+?? artifacts/w3-f1/repro_ext_before_3.json
+?? tests/reading_soundness/w3f1_ext_range.jsonl
+?? tests/reading_soundness/w3f1_prohibition.jsonl
+?? tests/reading_soundness/w3f1_time_place.jsonl
+?? tests/test_w3f1_prohibition_answer.py
+?? tests/test_w3f1_time_place_answer.py

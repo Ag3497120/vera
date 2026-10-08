@@ -1,0 +1,26 @@
+# commit a9cad0ab448b649dc6c71584f14d203a5200289d
+# status FAIL
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 15 items / 14 deselected / 1 selected
+
+tests/attack/test_memory_brief_injection.py::test_closed_task_is_dropped_and_reported FAILED [100%]
+
+=== FAILURES ===
+___________________ test_closed_task_is_dropped_and_reported ___________________
+
+    def test_closed_task_is_dropped_and_reported():
+        memory = Memory([record("task-1", "TASK", "Close the gate.", state="completed")])
+    
+        brief = compile_brief(memory, 200)
+    
+>       assert brief == "Dropped record ids: task-1"
+E       AssertionError: assert ContextBrief(text='Dropped record ids: task-1', records=(), dropped_ids=('task-1',)) == 'Dropped record ids: task-1'
+
+tests/attack/test_memory_brief_injection.py:106: AssertionError
+=== short test summary info ===
+FAILED tests/attack/test_memory_brief_injection.py::test_closed_task_is_dropped_and_reported - AssertionError: assert ContextBrief(text='Dropped record ids: task-1', records=(), dropped_ids=('task-1',)) == 'Dropped record ids: task-1'
+=== 1 failed, 14 deselected ===

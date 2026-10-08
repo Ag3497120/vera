@@ -1,0 +1,17 @@
+PASSED_ON_R3 test_n6_question_words_that_do_not_ask_for_a_choice_are_handed_up [\u4fdd\u5b58\u5f62\u5f0f\u306f\u3069\u308c\u304c\u4f7f\u3044\u307e\u3059\u304b\uff1f-opts18]
+PASSED_ON_R3 test_n6_polarity_options_on_an_unreadable_choice_are_handed_up 
+PASSED_ON_R3 test_n7_english_confirm_for_another_operation_subject_or_time_is_handed_up [Could we skip running the dockside simulator?]
+PASSED_ON_R3 test_n7_english_confirm_for_another_operation_subject_or_time_is_handed_up [Can we postpone flashing a field unit?]
+PASSED_ON_R3 test_n7_english_confirm_for_another_operation_subject_or_time_is_handed_up [May we stop running the dockside simulator?]
+PASSED_ON_R3 test_n7_english_confirm_for_another_operation_subject_or_time_is_handed_up [Can the vendor run the dockside simulator?]
+PASSED_ON_R3 test_n7_english_confirm_for_another_operation_subject_or_time_is_handed_up [May we run the dockside simulator at the customer's site?]
+PASSED_ON_R3 test_n7_english_confirm_for_another_operation_subject_or_time_is_handed_up [Can we run the dockside simulator next year?]
+PASSED_ON_R3 test_n7_english_confirm_for_another_operation_subject_or_time_is_handed_up [Can we run the dockside simulator on the old prototype?]
+PASSED_ON_R3 test_n7_japanese_confirm_for_another_operation_subject_or_time_is_handed_up [\u696d\u8005\u304c\u9928\u5185\u3067\u306e\u8a66\u9a13\u904b\u7528\u3092\u3057\u3066\u3082\u3088\u3044\u3067\u3059\u304b\uff1f]
+PASSED_ON_R3 test_n7_japanese_confirm_for_another_operation_subject_or_time_is_handed_up [\u6765\u5e74\u306f\u9928\u5185\u3067\u306e\u8a66\u9a13\u904b\u7528\u3092\u3057\u3066\u3082\u3088\u3044\u3067\u3059\u304b\uff1f]
+PASSED_ON_R3 test_n7_forbidden_operation_asked_as_something_else_is_not_answered_not_permitted [f01_loan-\u4e88\u7d04\u8a18\u9332\u3092\u524a\u9664\u3059\u308b\u306e\u3092\u3084\u3081\u3066\u3082\u3088\u3044\u3067\u3059\u304b\uff1f-opts1]
+PASSED_ON_R3 test_n7_forbidden_operation_asked_as_something_else_is_not_answered_not_permitted [f05_retry-Can we skip retrying a non-idempotent call?-opts8]
+PASSED_ON_R3 test_n8_a_path_outside_the_allowlist_is_still_not_answered 
+PASSED_ON_R3 test_noun_written_forbidden_operation_still_answers_not_permitted [\u500b\u4eba\u60c5\u5831\u306e\u5916\u90e8\u9001\u4fe1\u3092\u3057\u3066\u3088\u3044\u3067\u3059\u304b\uff1f]
+PASSED_ON_R3 test_noun_written_forbidden_operation_still_answers_not_permitted [\u5916\u90e8\u3078\u306e\u6301\u3061\u51fa\u3057\u3092\u3057\u3066\u3088\u3044\u3067\u3059\u304b\uff1f]
+PASSED_ON_R3 test_noun_written_forbidden_operation_still_answers_not_permitted [\u500b\u4eba\u60c5\u5831\u306e\u5916\u90e8\u9001\u4fe1\u3092\u884c\u3063\u3066\u3082\u3088\u3044\u3067\u3059\u304b\uff1f]

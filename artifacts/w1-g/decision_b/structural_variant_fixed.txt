@@ -1,0 +1,3 @@
+FAILED tests/attack/test_memory_merge_injection.py::test_instruction_payload_cannot_hide_a_dangling_supersession
+FAILED tests/attack/test_memory_merge_injection.py::test_instruction_text_does_not_make_a_supersession_cycle_valid
+FAILED tests/attack/test_memory_merge_limits.py::test_active_records_reject_dangling_supersession_reference

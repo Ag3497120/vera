@@ -1,0 +1,34 @@
+B1
+53,54c53,54
+<         "precheck_ms": 217.0,
+<         "vera_calls_ms_total": 6854.2
+---
+>         "precheck_ms": 610.9,
+>         "vera_calls_ms_total": 25462.5
+60c60
+<     "verantyx_untouched": true
+---
+>     "verantyx_untouched": false
+B2
+53,54c53,54
+<         "precheck_ms": 107.7,
+<         "vera_calls_ms_total": 13733.2
+---
+>         "precheck_ms": 359.9,
+>         "vera_calls_ms_total": 32068.7
+60c60
+<     "verantyx_untouched": true
+---
+>     "verantyx_untouched": false
+B3
+53,54c53,54
+<         "precheck_ms": 146.2,
+<         "vera_calls_ms_total": 15953.7
+---
+>         "precheck_ms": 191.5,
+>         "vera_calls_ms_total": 33183.0
+60c60
+<     "verantyx_untouched": true
+---
+>     "verantyx_untouched": false
+(results.jsonl は B1・B2・B3 とも tools.bank_score.compare で一致。run_meta.json の差は上の行だけ)

@@ -1,0 +1,7 @@
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-a-S/verantyx/frames.py
+書く 0.467 trans
+確かめる 0.7 trans
+発行する 0.225 trans
+這う 0.531 trans
+削る 0.646 trans
+壊す 0.607 trans

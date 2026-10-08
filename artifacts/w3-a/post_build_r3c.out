@@ -1,0 +1,23 @@
+{"state": "OK", "placement": "/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r3c/run1", "content_sha256": "ce65b9c2081e8554c170a9984024e5230d410959c361495832c92effe7189bf3", "counts"
+verify exit=0
+{"n": 1072, "correct_rate": 0.5037, "wrong_single_rate": 0.0438, "trap_wrong_single_rate": 0.0455, "non_direct": {"None/other": 284, "estimated/correct": 59, "estimated/wrong_single": 17}, "pass": {"correct>=0.85": false, "wrong<=0.08": true, "trap_wrong<=0.05": true, "n>=800": true, "trap_n>=100": true}}
+{"typed_n": 174, "unknown_n": 60, "correct_rate": 0.4943, "wrong_rate": 0.0517, "unknown_among_typed": 79, "returned_type_rate": 0.15, "leaks_direct_not_notation": [], "pass": {"correct>=0.65": false, "wrong<=0.15": true, "returned_type<=0.20": true, "no_leaks": true, "no_unmarked": true}}
+{"sentences": 2000, "tokens": 21774, "token_cover_rate": 0.7093, "distinct": 8391, "distinct_cover_rate": 0.5259, "by_pos_rate": {"名詞": 0.685, "動詞": 0.8346, "形状詞": 1.0, "形容詞": 1.0}, "placed_direct_headwords": 990470, "pass": {"token_cover>=0.90": false, "placed>=100000": true}}
+{"all": {"n": 119, "correct": 15, "wrong_single": 25, "returned_any": 45}, "non_seed": {"n": 109, "correct": 15, "wrong_single": 22, "returned_any": 41}, "non_seed_now": {"n": 119, "correct": 15, "wrong_single": 25, "returned_any": 45}, "seed_now": {"n": 0, "correct": 0, "wrong_single": 0, "returned_any": 0}}
+{"n_queries": 23083, "mean_ms": 0.09, "p95_ms": 0.199, "max_ms": 2.857, "median_ms": 0.076, "cli_one_call_ms_including_load": 155.2, "python_import_only_ms": 76.2, "placement_bytes": 262848512, "pass": {"mean<=50": true, "p95<=50": true}, "command": ["l5", "--placement", "/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r3c/run1"], "time_utc": "2026-10-03T01:17:34Z", "placement": "/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r3c/run1", "content_sha256": "ce65b9c2081e8554c170a9984024e5230d410959c361495832c92effe7189bf3", "config_sha256": "da1ad2b335d74a00ab0d0392f20a3076e59a9e2a5188a06fb02b65729076942d", "builder_sha256": "233b4ec787a3bc7d68bc2f4aea41b1165ca5b7a6d006722326263f83dbcc52b7", "coarse_types_sha256": "638d4b8bdc10a20357e716785431304f5c16eed1cc2d1b1fa0210bd7ce118291", "data": "frozen"}
+placement: /Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r3c/run1
+小説家 2212 [(('NONE', ''), 1838), (('UNPLACED', ''), 371), (('DECIDED', 'PERSON'), 2), (('DECIDED', 'PLANT'), 1)]
+僧 826 [(('NONE', ''), 640), (('UNPLACED', ''), 185), (('MULTIPLE', 'IDENTIFIER,PERSON'), 1)]
+大名 1566 [(('NONE', ''), 1398), (('UNPLACED', ''), 168)]
+武将 6917 [(('NONE', ''), 5916), (('UNPLACED', ''), 1000), (('DECIDED', 'P_STATE'), 1)]
+僧侶 439 [(('NONE', ''), 380), (('UNPLACED', ''), 58), (('DECIDED', 'P_STATE'), 1)]
+網膜 0 []
+10メートル DECIDED direct None ['QUANTITY']
+2km DECIDED direct None ['QUANTITY']
+30パーセント DECIDED direct None ['QUANTITY']
+40キロメートル DECIDED direct None ['QUANTITY']
+A1-23 DECIDED direct None ['IDENTIFIER']
+ABC-123 DECIDED direct None ['IDENTIFIER']
+潜水艦 UNPLACED None None []
+{"total": 60382, "boundary_freq": 68, "n_at_boundary": 663}
+{"needs_total": 60382, "overlap": {"typed_vocab": 436, "dev_vocab": 193, "unknown_words": 0, "dev_unknown": 0, "predicate_check": 72}, "test_terms": {"typed_vocab": 1075, "dev_vocab": 583, "unknown_words": 234, "dev_unknown": 65, "predicate_check": 119}, "examples": {"typed_vocab": ["こころ", "ご飯", "アインシュタイン", "ウミウシ", "エジソン", "エタノール", "エルニーニョ", "エンジン", "オーロラ", "カタツムリ"], "dev_vocab": ["お盆", "むくみ", "アマゾン川", "アリクイ", "アルマジロ", "イモリ", "ウミガメ", "キャッチコピ�

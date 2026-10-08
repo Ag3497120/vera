@@ -1,0 +1,17 @@
+/build_finished_at_utc 2026-10-03T17:47:01Z 2026-10-03T18:22:00Z
+/build_started_at_utc 2026-10-03T17:42:28Z 2026-10-03T18:17:23Z
+/coarse_types_sha256 e20bbbc780af038a1916e255058ba6e3d66fb8c2ced642982e691f551fbfe5b7 cb7e44f92e3aa6d2a7bc581d7709397fac05bb2368dcfda466cce1e3226abb91
+/compare_to/compare_sec 8.5 8.6
+/duration_sec 272.5 277.0
+/generated/read_sec 2.1 2.2
+/stage_seconds/aliases_sec 22.9 24.0
+/stage_seconds/ctx_sec 25.2 26.7
+/stage_seconds/decide_sec 106.2 108.4
+/stage_seconds/definitions_sec 18.7 19.2
+/stage_seconds/hearst_sec 33.1 33.7
+/stage_seconds/resolve_sec 225.8 230.0
+/stage_seconds/stage_a_sec 102.7 104.8
+/stage_seconds/stage_b_sec 122.1 124.2
+/stage_seconds/units_sec 119.6 121.7
+/stage_seconds/votes_sec 33.0 33.6
+/stage_seconds/write_sec 17.1 17.0

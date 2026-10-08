@@ -1,0 +1,90 @@
+### 語の型 粗い分類 人 場所 時間
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "語の型 粗い分類 人 場所 時間",
+  "searched": 647,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 40,
+    "module": 279,
+    "prereg": 63,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}
+### 未知語 型 推定 近さ
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "未知語 型 推定 近さ",
+  "searched": 647,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 40,
+    "module": 279,
+    "prereg": 63,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}
+### 上位語 定義文 Xは Yである
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "上位語 定義文 Xは Yである",
+  "searched": 647,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 40,
+    "module": 279,
+    "prereg": 63,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}
+### coarse type placement of content words
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "coarse type placement of content words",
+  "searched": 647,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 40,
+    "module": 279,
+    "prereg": 63,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}
+### hypernym from definition sentences
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "hypernym from definition sentences",
+  "searched": 647,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 40,
+    "module": 279,
+    "prereg": 63,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}
+### unknown word type by neighbours
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "unknown word type by neighbours",
+  "searched": 647,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 40,
+    "module": 279,
+    "prereg": 63,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}

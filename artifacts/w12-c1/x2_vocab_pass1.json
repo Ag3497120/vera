@@ -1,0 +1,109 @@
+{
+ "OUT_OF_SCOPE_MIXED_SCRIPT": {
+  "distinct_spans_generated": 34264,
+  "distinct_spans_jawiki": 631595,
+  "distinct_union": 659903
+ },
+ "base_undecided": {
+  "MULTIPLE_total": 5964,
+  "UNPLACED_total": 750572,
+  "confirmed_by_state_class": {
+   "MULTIPLE/both": 1489,
+   "MULTIPLE/generated": 89,
+   "MULTIPLE/human": 544,
+   "UNPLACED/both": 6559,
+   "UNPLACED/generated": 8061,
+   "UNPLACED/human": 198635
+  },
+  "confirmed_total": 215377,
+  "note": "the vocabulary layer confirms that a string is a word; it does not type it. The reader does not consult it yet (docs section 7).",
+  "placement": "/Users/motonisihikoudai/Projects/vera-impl/wt/W3-a6-S/build/coarse-W3a/full/r9/run2"
+ },
+ "candidates": {
+  "distinct_generated": 99272,
+  "distinct_jawiki": 1904406,
+  "distinct_union": 1955418
+ },
+ "documents": {
+  "generated": {
+   "code": {
+    "documents": 469,
+    "rows": 73642,
+    "rows_unreadable": 0,
+    "rows_without_source": 0
+   },
+   "code_qa": {
+    "documents": 1636,
+    "rows": 34523,
+    "rows_unreadable": 0,
+    "rows_without_source": 0
+   },
+   "conversation": {
+    "documents": 1662,
+    "rows": 159676,
+    "rows_unreadable": 0,
+    "rows_without_source": 0
+   },
+   "figurative_commonsense": {
+    "documents": 135,
+    "rows": 25074,
+    "rows_unreadable": 19418,
+    "rows_without_source": 0
+   },
+   "general_qa": {
+    "documents": 526,
+    "rows": 34171,
+    "rows_unreadable": 0,
+    "rows_without_source": 0
+   },
+   "narrative": {
+    "documents": 786,
+    "rows": 18193,
+    "rows_unreadable": 0,
+    "rows_without_source": 0
+   },
+   "paraphrase_entail": {
+    "documents": 274,
+    "rows": 43544,
+    "rows_unreadable": 29785,
+    "rows_without_source": 0
+   }
+  },
+  "jawiki": 1501518
+ },
+ "min_docs": 3,
+ "out": "/Users/motonisihikoudai/Projects/vera-impl/wt/W12-c1-S/build/initial-layers/vocab/vocab.sqlite",
+ "out_bytes": 14872576,
+ "out_sha256": "d2fad4527675c606ec4e97f13cab64737fa5c28b3d2b954c013a88f120f9a39b",
+ "schema": "verantyx.vocab_layer/1",
+ "seconds": {
+  "generated": 6.5,
+  "jawiki": 23.4,
+  "total": 33.5
+ },
+ "skipped": {
+  "generated": {
+   "NO_READABLE_FIELD:figurative_commonsense": 19418,
+   "NO_READABLE_FIELD:paraphrase_entail": 29785
+  },
+  "jawiki": {
+   "NO_TITLE_OR_TEXT": 953955
+  }
+ },
+ "words": {
+  "by_class": {
+   "both": 18771,
+   "generated": 13646,
+   "human": 338249
+  },
+  "by_class_script": {
+   "both/kanji": 15622,
+   "both/katakana": 3149,
+   "generated/kanji": 12977,
+   "generated/katakana": 669,
+   "human/kanji": 227676,
+   "human/katakana": 110573
+  },
+  "total": 370666
+ }
+}

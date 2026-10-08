@@ -1,0 +1,6 @@
+verantyx/conduct_ask.py birth=Oct  3 01:27:46 2026 mtime=Oct  3 01:41:46 2026
+tests/conduct_ask/fixtures/items.jsonl birth=Oct  3 01:18:33 2026 mtime=Oct  3 01:18:33 2026
+tests/conduct_ask/fixtures/holdout.txt birth=Oct  3 01:18:33 2026 mtime=Oct  3 01:18:33 2026
+tests/conduct_ask/fixtures/frames/f01_loan.md birth=Oct  3 01:11:53 2026 mtime=Oct  3 01:11:53 2026
+artifacts/w2-c/fixtures_freeze.txt birth=Oct  3 01:18:38 2026 mtime=Oct  3 01:18:38 2026
+no fixture answer changed after the freeze (no fixture_changes.jsonl needed): items.jsonl, holdout.txt and the 11 frames match the sha256 lines of fixtures_freeze.txt

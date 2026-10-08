@@ -1,0 +1,16 @@
+10メートル DECIDED direct None ['QUANTITY'] number+counter
+2km DECIDED direct None ['QUANTITY'] number+counter
+30パーセント DECIDED direct None ['QUANTITY'] number+counter
+40キロメートル DECIDED direct None ['QUANTITY'] number+counter
+3kg DECIDED direct None ['QUANTITY'] number+counter
+5GHz DECIDED direct None ['QUANTITY'] number+counter
+10ms DECIDED direct None ['QUANTITY'] number+counter
+128MiB DECIDED direct None ['QUANTITY'] number+counter
+4xx DECIDED direct None ['IDENTIFIER'] alnum_code
+5xx DECIDED direct None ['IDENTIFIER'] alnum_code
+2in DECIDED direct None ['IDENTIFIER'] alnum_code
+1of DECIDED direct None ['IDENTIFIER'] alnum_code
+3AND DECIDED direct None ['IDENTIFIER'] alnum_code
+A1-23 DECIDED direct None ['IDENTIFIER'] alnum_code
+ABC-123 DECIDED direct None ['IDENTIFIER'] alnum_code
+潜水艦 UNPLACED None None [] None

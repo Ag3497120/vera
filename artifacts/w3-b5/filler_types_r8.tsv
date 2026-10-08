@@ -1,0 +1,209 @@
+word	spec_used	r8_state	r8_origin	r8_top	r8_decided_by_is_role_only	verdict
+お祭り	{"decided_by": ["role@codex:figurative_commonsense", "role@codex:general_qa", "role@codex:narrative"], "top": ["PLACE"]}	DECIDED	direct	PLACE	True	REAL
+ぬかるみ	{"decided_by": ["seed"], "top": ["PLACE"]}	DECIDED	direct	PLACE	True	OPTIMISTIC_TYPE_IN_R8
+チーム	{"decided_by": ["seed"], "top": ["GROUP_ORG"]}	DECIDED	direct	GROUP_ORG	False	REAL
+テニスコート	{"decided_by": ["hearst@jawiki"], "top": ["PLACE"]}	DECIDED	direct	PLACE	False	REAL
+トラック	{"decided_by": ["hearst@codex:general_qa", "hearst@jawiki"], "top": ["ARTIFACT"]}	DECIDED	direct	ARTIFACT	False	REAL
+ベンチ	{"decided_by": ["hearst@jawiki", "role@codex:conversation", "role@codex:figurative_commonsense", "role@codex:general_qa", "role@codex:narrative", "role@codex:paraphrase_entail", "role@codex:pro"], "top": ["PLACE"]}	DECIDED	direct	PLACE	False	REAL
+ホテル	{"decided_by": ["definition", "hearst@jawiki", "role@codex:conversation", "role@codex:general_qa", "role@codex:paraphrase_entail", "role@codex:pro"], "top": ["PLACE"]}	DECIDED	direct	PLACE	False	REAL
+七夕	{"decided_by": ["role@codex:figurative_commonsense", "role@codex:general_qa"], "top": ["TIME"]}	DECIDED	direct	TIME	True	REAL
+上司	{"decided_by": ["definition", "role@codex:code", "role@codex:figurative_commonsense", "role@codex:general_qa", "role@codex:narrative", "role@codex:paraphrase_entail"], "top": ["PERSON"]}	DECIDED	direct	PERSON	False	REAL
+乾季	{"decided_by": ["definition"], "top": ["TIME"]}	DECIDED	direct	TIME	False	REAL
+交差点	{"decided_by": ["definition", "role@codex:conversation", "role@codex:figurative_commonsense", "role@codex:general_qa", "role@codex:narrative", "role@codex:paraphrase_entail", "role@jawiki"], "top": ["PLACE"]}	DECIDED	direct	PLACE	False	REAL
+京都	{"decided_by": ["hearst@codex:general_qa", "hearst@jawiki", "role@codex:conversation", "role@codex:general_qa", "role@codex:paraphrase_entail", "role@jawiki"], "top": ["PLACE"]}	DECIDED	direct	PLACE	False	REAL
+令和	{"decided_by": ["definition"], "top": ["TIME"]}	DECIDED	direct	TIME	False	REAL
+企業	{"decided_by": ["seed"], "top": ["GROUP_ORG"]}	DECIDED	direct	GROUP_ORG	False	REAL
+休み	{"decided_by": ["role@codex:conversation", "role@codex:general_qa", "role@codex:narrative"], "top": ["TIME"]}	DECIDED	direct	TIME	True	REAL
+会社	{"decided_by": ["seed"], "top": ["GROUP_ORG"]}	DECIDED	direct	GROUP_ORG	False	REAL
+住民	{"decided_by": ["definition", "role@codex:figurative_commonsense", "role@codex:general_qa", "role@codex:narrative", "role@codex:paraphrase_entail"], "top": ["GROUP_ORG", "PERSON", "TIME"]}	MULTIPLE	direct	GROUP_ORG,PERSON,TIME	False	REAL
+体育館	{"decided_by": ["definition", "hearst@jawiki", "role@codex:conversation", "role@codex:figurative_commonsense", "role@codex:paraphrase_entail", "role@codex:pro"], "top": ["PLACE"]}	DECIDED	direct	PLACE	False	REAL
+係員	{"decided_by": ["role@codex:conversation", "role@codex:narrative", "role@codex:paraphrase_entail", "role@codex:pro"], "top": ["PERSON"]}	DECIDED	direct	PERSON	True	REAL
+倉庫	{"decided_by": ["role@codex:conversation", "role@codex:narrative", "role@codex:paraphrase_entail"], "top": ["PLACE"]}	DECIDED	direct	PLACE	True	REAL
+兄	{"decided_by": ["definition_recovered", "role@codex:narrative", "role@codex:paraphrase_entail", "role@jawiki"], "top": ["PERSON"]}	DECIDED	direct	PERSON	False	REAL
+先生	{"decided_by": ["role@codex:figurative_commonsense", "role@codex:general_qa", "role@codex:narrative", "role@codex:paraphrase_entail"], "top": ["PERSON"]}	DECIDED	direct	PERSON	True	REAL
+先輩	{"decided_by": ["role@codex:figurative_commonsense", "role@codex:narrative", "role@codex:paraphrase_entail", "role@codex:pro"], "top": ["PERSON"]}	DECIDED	direct	PERSON	True	REAL
+入口	{"decided_by": ["role@codex:conversation", "role@codex:figurative_commonsense", "role@codex:general_qa", "role@codex:narrative", "role@codex:paraphrase_entail", "role@jawiki"], "top": ["PLACE"]}	DECIDED	direct	PLACE	True	REAL
+全盛期	{"decided_by": ["gen_definition", "role@jawiki"], "top": ["TIME"]}	DECIDED	direct	TIME	False	REAL
+公園	{"decided_by": ["seed"], "top": ["PLACE"]}	DECIDED	direct	PLACE	False	REAL
+公民館	{"decided_by": ["definition", "hearst@jawiki", "role@codex:conversation", "role@codex:narrative", "role@codex:paraphrase_entail", "role@codex:pro"], "top": ["PLACE"]}	DECIDED	direct	PLACE	False	REAL
+内閣	{"decided_by": ["definition"], "top": ["GROUP_ORG"]}	DECIDED	direct	GROUP_ORG	False	REAL
+写真	{"decided_by": ["hearst@codex:general_qa"], "top": ["INFO_LANGUAGE"]}	DECIDED	direct	INFO_LANGUAGE	False	REAL
+劇団	{"decided_by": ["seed"], "top": ["GROUP_ORG"]}	DECIDED	direct	GROUP_ORG	False	REAL
+勉強	{"decided_by": ["role@codex:figurative_commonsense", "role@codex:general_qa", "role@jawiki", "sahen@codex:code", "sahen@codex:conversation", "sahen@codex:figurative_commonsense", "sahen@codex:general_qa", "sahen@codex:narrative", "sahen@codex:paraphrase_entail"], "top": ["EVENT_ACT"]}	DECIDED	direct	EVENT_ACT	False	REAL
+動画	{"decided_by": ["hearst@codex:general_qa"], "top": ["INFO_LANGUAGE"]}	DECIDED	direct	INFO_LANGUAGE	False	REAL
+北海道	{"decided_by": ["hearst@jawiki", "role@codex:conversation", "role@codex:general_qa", "role@codex:paraphrase_entail", "role@jawiki"], "top": ["PLACE"]}	DECIDED	direct	PLACE	False	REAL
+区役所	{"decided_by": ["role@codex:conversation", "role@codex:paraphrase_entail"], "top": ["PLACE"]}	DECIDED	direct	PLACE	True	REAL
+協会	{"decided_by": ["seed"], "top": ["GROUP_ORG"]}	DECIDED	direct	GROUP_ORG	False	REAL
+友人	{"decided_by": ["hearst@codex:general_qa", "role@codex:conversation", "role@codex:general_qa", "role@codex:narrative", "role@codex:paraphrase_entail", "role@jawiki"], "top": ["ABSTRACT", "PERSON"]}	MULTIPLE	direct	ABSTRACT,PERSON	False	REAL
+収穫期	{"decided_by": ["gen_definition", "role@codex:figurative_commonsense"], "top": ["TIME"]}	DECIDED	direct	TIME	False	REAL
+取材	{"decided_by": ["role@codex:paraphrase_entail", "role@jawiki", "sahen@codex:general_qa", "sahen@codex:narrative", "sahen@codex:paraphrase_entail", "sahen@jawiki"], "top": ["EVENT_ACT"]}	DECIDED	direct	EVENT_ACT	False	REAL
+口	{"decided_by": ["role@codex:conversation", "role@codex:general_qa", "role@jawiki"], "top": ["PLACE"]}	DECIDED	direct	PLACE	True	REAL
+口	{"decided_by": ["seed"], "top": ["PLACE"]}	DECIDED	direct	PLACE	True	OPTIMISTIC_TYPE_IN_R8
+台風	{"decided_by": ["seed"], "top": ["NATURAL_PHENOMENON"]}	DECIDED	direct	NATURAL_PHENOMENON	False	REAL
+右	{"decided_by": ["role@codex:figurative_commonsense", "role@codex:general_qa", "role@codex:narrative", "role@codex:paraphrase_entail", "role@codex:pro", "role@jawiki"], "top": ["PLACE"]}	DECIDED	direct	PLACE	True	REAL
+右	{"decided_by": ["seed"], "top": ["PLACE"]}	DECIDED	direct	PLACE	True	OPTIMISTIC_TYPE_IN_R8
+同僚	{"decided_by": ["role@codex:code", "role@codex:figurative_commonsense", "role@codex:general_qa", "role@codex:narrative", "role@codex:paraphrase_entail", "role@codex:pro"], "top": ["PERSON"]}	DECIDED	direct	PERSON	True	REAL
+命日	{"decided_by": ["definition"], "top": ["TIME"]}	DECIDED	direct	TIME	False	REAL
+営業所	{"decided_by": ["definition", "role@codex:conversation", "role@codex:paraphrase_entail"], "top": ["PLACE"]}	DECIDED	direct	PLACE	False	REAL
+国道	{"decided_by": ["definition", "role@codex:pro", "role@jawiki"], "top": ["PLACE"]}	DECIDED	direct	PLACE	False	REAL
+地震	{"decided_by": ["seed"], "top": ["NATURAL_PHENOMENON"]}	DECIDED	direct	NATURAL_PHENOMENON	False	REAL
+坂	{"decided_by": ["role@codex:figurative_commonsense", "role@codex:general_qa", "role@codex:narrative", "role@codex:paraphrase_entail", "role@codex:pro", "role@jawiki"], "top": ["PLACE"]}	DECIDED	direct	PLACE	True	REAL
+坂	{"decided_by": ["seed"], "top": ["PLACE"]}	DECIDED	direct	PLACE	True	OPTIMISTIC_TYPE_IN_R8
+多数決	{"decided_by": ["definition"], "top": ["ABSTRACT"]}	DECIDED	direct	ABSTRACT	False	REAL
+大学	{"decided_by": ["seed"], "top": ["GROUP_ORG"]}	DECIDED	direct	GROUP_ORG	False	REAL
+大正	{"decided_by": ["definition"], "top": ["TIME"]}	DECIDED	direct	TIME	False	REAL
+奈良時代	{"decided_by": ["definition"], "top": ["TIME"]}	DECIDED	direct	TIME	False	REAL
+妹	{"decided_by": ["definition_recovered", "role@codex:narrative", "role@codex:paraphrase_entail", "role@jawiki"], "top": ["PERSON"]}	DECIDED	direct	PERSON	False	REAL
+姉	{"decided_by": ["definition_recovered", "role@codex:narrative", "role@codex:paraphrase_entail", "role@jawiki"], "top": ["PERSON"]}	DECIDED	direct	PERSON	False	REAL
+学生	{"decided_by": ["role@codex:code", "role@codex:narrative", "role@codex:paraphrase_entail"], "top": ["PERSON"]}	DECIDED	direct	PERSON	True	REAL
+室町時代	{"decided_by": ["role@codex:general_qa", "role@jawiki"], "top": ["TIME"]}	DECIDED	direct	TIME	True	REAL
+家族	{"decided_by": ["hearst@jawiki", "role@codex:figurative_commonsense", "role@codex:general_qa", "role@codex:narrative", "role@codex:paraphrase_entail"], "top": ["GROUP_ORG", "PERSON"]}	MULTIPLE	direct	GROUP_ORG,PERSON	False	REAL
+宿	{"decided_by": ["role@codex:conversation", "role@codex:figurative_commonsense", "role@codex:general_qa", "role@codex:narrative", "role@codex:paraphrase_entail", "role@codex:pro", "role@jawiki"], "top": ["PLACE"]}	DECIDED	direct	PLACE	True	REAL
+寺	{"decided_by": ["alias", "role@codex:conversation", "role@codex:figurative_commonsense", "role@codex:general_qa", "role@codex:narrative", "role@codex:paraphrase_entail", "role@codex:pro", "role@jawiki"], "top": ["PLACE"]}	DECIDED	direct	PLACE	False	REAL
+屋上	{"decided_by": ["role@codex:conversation", "role@codex:figurative_commonsense", "role@codex:narrative", "role@codex:paraphrase_entail", "role@codex:pro", "role@jawiki"], "top": ["PLACE"]}	DECIDED	direct	PLACE	True	REAL
+展覧会	{"decided_by": ["role@codex:general_qa", "role@codex:paraphrase_entail"], "top": ["PLACE"]}	DECIDED	direct	PLACE	True	REAL
+山	{"decided_by": ["seed"], "top": ["PLACE"]}	DECIDED	direct	PLACE	False	REAL
+山田	{"decided_by": ["role@codex:narrative", "role@codex:paraphrase_entail", "role@jawiki"], "top": ["PERSON", "PLACE"]}	MULTIPLE	direct	PERSON,PLACE	True	REAL
+山頂	{"decided_by": ["alias", "role@codex:conversation", "role@codex:figurative_commonsense", "role@codex:general_qa", "role@codex:narrative", "role@codex:paraphrase_entail", "role@codex:pro", "role@jawiki"], "top": ["PLACE"]}	DECIDED	direct	PLACE	False	REAL
+島	{"decided_by": ["seed"], "top": ["PLACE"]}	DECIDED	direct	PLACE	False	REAL
+崖	{"decided_by": ["seed"], "top": ["PLACE"]}	DECIDED	direct	PLACE	True	OPTIMISTIC_TYPE_IN_R8
+川	{"decided_by": ["seed"], "top": ["PLACE"]}	DECIDED	direct	PLACE	False	REAL
+工場	{"decided_by": ["hearst@jawiki", "role@codex:conversation", "role@codex:figurative_commonsense", "role@codex:narrative", "role@codex:paraphrase_entail", "role@codex:pro"], "top": ["PLACE"]}	DECIDED	direct	PLACE	False	REAL
+左	{"decided_by": ["role@codex:code_qa", "role@codex:general_qa", "role@codex:narrative", "role@codex:pro", "role@jawiki"], "top": ["PLACE", "TIME"]}	MULTIPLE	direct	PLACE,TIME	True	REAL
+市	{"decided_by": ["seed"], "top": ["PLACE"]}	DECIDED	direct	PLACE	False	REAL
+帽子	{"decided_by": ["role@codex:general_qa", "role@codex:paraphrase_entail"], "top": ["ARTIFACT"]}	DECIDED	direct	ARTIFACT	True	REAL
+幕末	{"decided_by": ["role@codex:general_qa", "role@jawiki"], "top": ["TIME"]}	DECIDED	direct	TIME	True	REAL
+平安時代	{"decided_by": ["role@codex:general_qa", "role@jawiki"], "top": ["TIME"]}	DECIDED	direct	TIME	True	REAL
+平成	{"decided_by": ["definition"], "top": ["TIME"]}	DECIDED	direct	TIME	False	REAL
+広場	{"decided_by": ["definition", "hearst@jawiki", "role@codex:conversation", "role@codex:figurative_commonsense", "role@codex:general_qa", "role@codex:narrative", "role@codex:paraphrase_entail", "role@jawiki"], "top": ["PLACE"]}	DECIDED	direct	PLACE	False	REAL
+店員	{"decided_by": ["hearst@codex:general_qa", "role@codex:figurative_commonsense", "role@codex:narrative", "role@codex:paraphrase_entail", "role@codex:pro"], "top": ["PERSON"]}	DECIDED	direct	PERSON	False	REAL
+店長	{"decided_by": ["role@codex:narrative", "role@codex:paraphrase_entail", "role@jawiki"], "top": ["PERSON"]}	DECIDED	direct	PERSON	True	REAL
+庭	{"decided_by": ["definition", "role@codex:conversation", "role@codex:figurative_commonsense", "role@codex:general_qa", "role@codex:narrative", "role@codex:paraphrase_entail", "role@jawiki"], "top": ["PLACE"]}	DECIDED	direct	PLACE	False	REAL
+廊下	{"decided_by": ["role@codex:conversation", "role@codex:figurative_commonsense", "role@codex:general_qa", "role@codex:narrative", "role@codex:paraphrase_entail", "role@codex:pro"], "top": ["PLACE"]}	DECIDED	direct	PLACE	True	REAL
+弁護士	{"decided_by": ["hearst@codex:general_qa", "hearst@jawiki", "role@codex:general_qa", "role@jawiki"], "top": ["PERSON"]}	DECIDED	direct	PERSON	False	REAL
+弟	{"decided_by": ["definition_recovered", "role@codex:narrative", "role@codex:paraphrase_entail", "role@jawiki"], "top": ["PERSON"]}	DECIDED	direct	PERSON	False	REAL
+弥生時代	{"decided_by": ["role@codex:general_qa", "role@jawiki"], "top": ["TIME"]}	DECIDED	direct	TIME	True	REAL
+後輩	{"decided_by": ["role@codex:narrative", "role@codex:paraphrase_entail", "role@codex:pro"], "top": ["PERSON"]}	DECIDED	direct	PERSON	True	REAL
+戦間期	{"decided_by": ["definition"], "top": ["TIME"]}	DECIDED	direct	TIME	False	REAL
+手紙	{"decided_by": ["definition", "hearst@codex:general_qa", "role@codex:code_qa", "role@codex:general_qa", "role@codex:paraphrase_entail", "role@jawiki"], "top": ["ABSTRACT", "IDENTIFIER", "INFO_LANGUAGE", "WORK"]}	MULTIPLE	direct	ABSTRACT,IDENTIFIER,INFO_LANGUAGE,WORK	False	REAL
+搬出口	{"state": "UNKNOWN"}	UNKNOWN	None		False	REAL
+搭乗口	{"decided_by": ["role@codex:conversation", "role@codex:general_qa", "role@codex:paraphrase_entail"], "top": ["PLACE"]}	DECIDED	direct	PLACE	True	REAL
+支社	{"decided_by": ["role@codex:conversation", "role@codex:paraphrase_entail"], "top": ["PLACE"]}	DECIDED	direct	PLACE	True	REAL
+政府	{"decided_by": ["seed"], "top": ["GROUP_ORG"]}	DECIDED	direct	GROUP_ORG	False	REAL
+教会	{"decided_by": ["hearst@jawiki"], "top": ["PLACE"]}	DECIDED	direct	PLACE	False	REAL
+教室	{"decided_by": ["role@codex:conversation", "role@codex:figurative_commonsense", "role@codex:general_qa", "role@codex:narrative", "role@codex:paraphrase_entail"], "top": ["PLACE"]}	DECIDED	direct	PLACE	True	REAL
+散歩	{"decided_by": ["sahen@codex:paraphrase_entail"], "top": ["EVENT_ACT"]}	DECIDED	direct	EVENT_ACT	False	REAL
+新月	{"decided_by": ["alias"], "top": ["TIME"]}	DECIDED	direct	TIME	False	REAL
+旅館	{"decided_by": ["hearst@jawiki", "role@codex:conversation", "role@codex:general_qa", "role@codex:narrative", "role@codex:paraphrase_entail", "role@codex:pro"], "top": ["PLACE"]}	DECIDED	direct	PLACE	False	REAL
+日没	{"decided_by": ["role@codex:figurative_commonsense", "role@codex:paraphrase_entail"], "top": ["TIME"]}	DECIDED	direct	TIME	True	REAL
+旧暦	{"decided_by": ["gen_definition", "role@codex:general_qa"], "top": ["TIME"]}	DECIDED	direct	TIME	False	REAL
+明治時代	{"decided_by": ["alias", "role@codex:general_qa", "role@jawiki"], "top": ["TIME"]}	DECIDED	direct	TIME	False	REAL
+映像	{"decided_by": ["hearst@codex:general_qa"], "top": ["INFO_LANGUAGE"]}	DECIDED	direct	INFO_LANGUAGE	False	REAL
+昭和	{"decided_by": ["definition"], "top": ["TIME"]}	DECIDED	direct	TIME	False	REAL
+昭和初期	{"decided_by": ["gen_definition", "role@jawiki"], "top": ["TIME"]}	DECIDED	direct	TIME	False	REAL
+暗闇	{"decided_by": ["seed"], "top": ["PLACE"]}	DECIDED	direct	PLACE	True	OPTIMISTIC_TYPE_IN_R8
+曲	{"decided_by": ["seed"], "top": ["WORK"]}	DECIDED	direct	WORK	False	REAL
+書類	{"decided_by": ["seed"], "top": ["INFO_LANGUAGE"]}	DECIDED	direct	INFO_LANGUAGE	False	REAL
+服	{"decided_by": ["role@codex:figurative_commonsense", "role@codex:narrative", "role@codex:paraphrase_entail", "role@jawiki"], "top": ["ARTIFACT"]}	DECIDED	direct	ARTIFACT	True	REAL
+朔日	{"decided_by": ["alias"], "top": ["TIME"]}	DECIDED	direct	TIME	False	REAL
+望遠レンズ	{"state": "UNPLACED"}	UNPLACED	None		False	REAL
+本社	{"decided_by": ["role@codex:conversation", "role@jawiki"], "top": ["GROUP_ORG", "PLACE"]}	MULTIPLE	direct	GROUP_ORG,PLACE	True	REAL
+村	{"decided_by": ["seed"], "top": ["PLACE"]}	DECIDED	direct	PLACE	False	REAL
+東京	{"decided_by": ["definition", "hearst@codex:general_qa", "hearst@jawiki", "role@codex:code_qa", "role@codex:conversation", "role@codex:general_qa", "role@codex:paraphrase_entail", "role@jawiki"], "top": ["PLACE", "TIME"]}	MULTIPLE	direct	PLACE,TIME	False	REAL
+林	{"decided_by": ["role@codex:figurative_commonsense", "role@codex:narrative", "role@codex:paraphrase_entail", "role@codex:pro", "role@jawiki"], "top": ["PLACE"]}	DECIDED	direct	PLACE	True	REAL
+校庭	{"decided_by": ["definition", "role@codex:conversation", "role@codex:figurative_commonsense", "role@codex:narrative", "role@codex:paraphrase_entail"], "top": ["PLACE"]}	DECIDED	direct	PLACE	False	REAL
+校舎	{"decided_by": ["alias", "role@codex:conversation", "role@codex:figurative_commonsense", "role@codex:narrative", "role@codex:paraphrase_entail", "role@codex:pro", "role@jawiki"], "top": ["PLACE"]}	DECIDED	direct	PLACE	False	REAL
+森	{"decided_by": ["role@codex:conversation", "role@codex:figurative_commonsense", "role@codex:general_qa", "role@codex:narrative", "role@codex:pro", "role@jawiki"], "top": ["PLACE"]}	DECIDED	direct	PLACE	True	REAL
+検察	{"decided_by": ["definition"], "top": ["GROUP_ORG"]}	DECIDED	direct	GROUP_ORG	False	REAL
+楽器	{"decided_by": ["seed"], "top": ["ARTIFACT"]}	DECIDED	direct	ARTIFACT	False	REAL
+橋	{"decided_by": ["role@codex:conversation", "role@codex:figurative_commonsense", "role@codex:general_qa", "role@codex:narrative", "role@codex:paraphrase_entail", "role@codex:pro", "role@jawiki"], "top": ["PLACE"]}	DECIDED	direct	PLACE	True	REAL
+機械	{"decided_by": ["seed"], "top": ["ARTIFACT"]}	DECIDED	direct	ARTIFACT	False	REAL
+歩道	{"decided_by": ["definition", "role@codex:conversation", "role@codex:figurative_commonsense", "role@codex:general_qa", "role@codex:narrative", "role@codex:paraphrase_entail", "role@jawiki"], "top": ["PLACE"]}	DECIDED	direct	PLACE	False	REAL
+段差	{"decided_by": ["role@codex:figurative_commonsense", "role@codex:general_qa", "role@codex:paraphrase_entail"], "top": ["PLACE"]}	DECIDED	direct	PLACE	True	REAL
+段差	{"decided_by": ["seed"], "top": ["PLACE"]}	DECIDED	direct	PLACE	True	OPTIMISTIC_TYPE_IN_R8
+母	{"decided_by": ["role@codex:narrative", "role@codex:paraphrase_entail"], "top": ["PERSON"]}	DECIDED	direct	PERSON	True	REAL
+民宿	{"decided_by": ["definition", "hearst@jawiki", "role@codex:narrative", "role@codex:paraphrase_entail"], "top": ["PLACE"]}	DECIDED	direct	PLACE	False	REAL
+氷河期	{"decided_by": ["alias"], "top": ["TIME"]}	DECIDED	direct	TIME	False	REAL
+池	{"decided_by": ["role@codex:conversation", "role@codex:figurative_commonsense", "role@codex:general_qa", "role@codex:narrative", "role@codex:paraphrase_entail", "role@jawiki"], "top": ["PLACE"]}	DECIDED	direct	PLACE	True	REAL
+沖縄	{"decided_by": ["role@codex:conversation", "role@codex:general_qa", "role@codex:paraphrase_entail"], "top": ["PLACE"]}	DECIDED	direct	PLACE	True	REAL
+海	{"decided_by": ["role@codex:code_qa", "role@codex:conversation", "role@codex:figurative_commonsense", "role@codex:general_qa", "role@codex:narrative", "role@codex:paraphrase_entail", "role@codex:pro", "role@jawiki"], "top": ["PLACE"]}	DECIDED	direct	PLACE	True	REAL
+温室	{"decided_by": ["definition", "hearst@jawiki", "role@codex:narrative", "role@codex:paraphrase_entail"], "top": ["PLACE"]}	DECIDED	direct	PLACE	False	REAL
+港	{"decided_by": ["seed"], "top": ["PLACE"]}	DECIDED	direct	PLACE	False	REAL
+満月	{"decided_by": ["definition"], "top": ["TIME"]}	DECIDED	direct	TIME	False	REAL
+溝	{"decided_by": ["role@codex:conversation", "role@codex:narrative", "role@jawiki"], "top": ["PLACE"]}	DECIDED	direct	PLACE	True	REAL
+溝	{"decided_by": ["seed"], "top": ["PLACE"]}	DECIDED	direct	PLACE	True	OPTIMISTIC_TYPE_IN_R8
+父	{"decided_by": ["paren_alias", "role@codex:narrative", "role@codex:paraphrase_entail", "role@jawiki"], "top": ["PERSON"]}	DECIDED	direct	PERSON	False	REAL
+牛	{"decided_by": ["hearst@jawiki"], "top": ["ANIMAL"]}	DECIDED	direct	ANIMAL	False	REAL
+玄関	{"decided_by": ["role@codex:conversation", "role@codex:figurative_commonsense", "role@codex:general_qa", "role@codex:narrative", "role@codex:paraphrase_entail"], "top": ["PLACE"]}	DECIDED	direct	PLACE	True	REAL
+現場	{"decided_by": ["role@codex:conversation", "role@codex:figurative_commonsense", "role@codex:general_qa", "role@codex:narrative", "role@codex:paraphrase_entail", "role@codex:pro"], "top": ["PLACE"]}	DECIDED	direct	PLACE	True	REAL
+球場	{"decided_by": ["alias", "role@codex:conversation", "role@codex:figurative_commonsense", "role@codex:paraphrase_entail", "role@jawiki"], "top": ["PLACE"]}	DECIDED	direct	PLACE	False	REAL
+町	{"decided_by": ["seed"], "top": ["PLACE"]}	DECIDED	direct	PLACE	False	REAL
+畑	{"decided_by": ["role@codex:figurative_commonsense", "role@codex:general_qa", "role@codex:narrative", "role@codex:pro", "role@jawiki"], "top": ["PLACE"]}	DECIDED	direct	PLACE	True	REAL
+病院	{"decided_by": ["definition", "hearst@jawiki", "role@codex:conversation", "role@codex:figurative_commonsense", "role@codex:general_qa", "role@codex:narrative", "role@codex:paraphrase_entail", "role@codex:pro"], "top": ["PLACE"]}	DECIDED	direct	PLACE	False	REAL
+皿	{"decided_by": ["hearst@codex:general_qa"], "top": ["ARTIFACT"]}	DECIDED	direct	ARTIFACT	False	REAL
+監督	{"decided_by": ["role@codex:narrative", "role@codex:paraphrase_entail", "role@jawiki"], "top": ["PERSON"]}	DECIDED	direct	PERSON	True	REAL
+相手	{"decided_by": ["role@codex:code_qa", "role@codex:narrative", "role@codex:paraphrase_entail"], "top": ["IDENTIFIER", "PERSON"]}	MULTIPLE	direct	IDENTIFIER,PERSON	True	REAL
+看護師	{"decided_by": ["role@codex:narrative", "role@codex:paraphrase_entail"], "top": ["PERSON"]}	DECIDED	direct	PERSON	True	REAL
+石畳	{"decided_by": ["role@codex:conversation", "role@codex:figurative_commonsense", "role@codex:narrative", "role@codex:paraphrase_entail"], "top": ["PLACE", "TIME"]}	MULTIPLE	direct	PLACE,TIME	True	REAL
+社員	{"decided_by": ["role@codex:code", "role@codex:narrative", "role@codex:paraphrase_entail", "role@jawiki"], "top": ["PERSON"]}	DECIDED	direct	PERSON	True	REAL
+社長	{"decided_by": ["role@codex:paraphrase_entail", "role@jawiki"], "top": ["PERSON"]}	DECIDED	direct	PERSON	True	REAL
+祖母	{"decided_by": ["role@codex:narrative", "role@codex:paraphrase_entail"], "top": ["PERSON"]}	DECIDED	direct	PERSON	True	REAL
+神社	{"decided_by": ["definition", "hearst@jawiki", "role@codex:conversation", "role@codex:figurative_commonsense", "role@codex:general_qa", "role@codex:narrative", "role@codex:paraphrase_entail", "role@codex:pro", "role@jawiki"], "top": ["PLACE"]}	DECIDED	direct	PLACE	False	REAL
+神社参拝	{"decided_by": ["alias"], "top": ["PLACE"]}	DECIDED	direct	PLACE	False	REAL
+祭日	{"decided_by": ["definition"], "top": ["TIME"]}	DECIDED	direct	TIME	False	REAL
+稽古場	{"decided_by": ["definition"], "top": ["WORK"]}	DECIDED	direct	WORK	False	REAL
+空港	{"decided_by": ["seed"], "top": ["PLACE"]}	DECIDED	direct	PLACE	False	REAL
+立春	{"decided_by": ["gen_definition", "role@codex:general_qa"], "top": ["TIME"]}	DECIDED	direct	TIME	False	REAL
+管理人	{"decided_by": ["role@codex:narrative", "role@codex:paraphrase_entail"], "top": ["PERSON"]}	DECIDED	direct	PERSON	True	REAL
+節分	{"decided_by": ["role@codex:conversation", "role@codex:figurative_commonsense", "role@codex:general_qa"], "top": ["TIME"]}	DECIDED	direct	TIME	True	REAL
+組合	{"decided_by": ["seed"], "top": ["GROUP_ORG"]}	DECIDED	direct	GROUP_ORG	False	REAL
+絵	{"decided_by": ["alias", "hearst@codex:general_qa", "role@codex:general_qa", "role@jawiki"], "top": ["WORK"]}	DECIDED	direct	WORK	False	REAL
+繁忙期	{"decided_by": ["gen_definition", "role@codex:conversation"], "top": ["TIME"]}	DECIDED	direct	TIME	False	REAL
+羊	{"decided_by": ["hearst@jawiki"], "top": ["ANIMAL"]}	DECIDED	direct	ANIMAL	False	REAL
+老人ホーム	{"decided_by": ["definition", "hearst@jawiki"], "top": ["PLACE"]}	DECIDED	direct	PLACE	False	REAL
+職員	{"decided_by": ["role@codex:conversation", "role@codex:narrative", "role@codex:paraphrase_entail", "role@jawiki"], "top": ["PERSON"]}	DECIDED	direct	PERSON	True	REAL
+舞台	{"decided_by": ["role@codex:figurative_commonsense", "role@codex:general_qa", "role@codex:narrative"], "top": ["PLACE"]}	DECIDED	direct	PLACE	True	REAL
+船	{"decided_by": ["seed"], "top": ["ARTIFACT"]}	DECIDED	direct	ARTIFACT	False	REAL
+花	{"decided_by": ["seed"], "top": ["PLANT"]}	DECIDED	direct	PLANT	False	REAL
+花火大会	{"decided_by": ["role@codex:figurative_commonsense", "role@codex:general_qa"], "top": ["PLACE"]}	DECIDED	direct	PLACE	True	REAL
+苗	{"decided_by": ["role@codex:conversation", "role@codex:figurative_commonsense", "role@codex:general_qa", "role@codex:narrative", "role@codex:paraphrase_entail"], "top": ["PLANT"]}	DECIDED	direct	PLANT	True	REAL
+裁判所	{"decided_by": ["definition_recovered", "hearst@codex:general_qa"], "top": ["GROUP_ORG"]}	DECIDED	direct	GROUP_ORG	False	REAL
+見学	{"decided_by": ["sahen@codex:figurative_commonsense", "sahen@codex:paraphrase_entail"], "top": ["EVENT_ACT"]}	DECIDED	direct	EVENT_ACT	False	REAL
+見物	{"decided_by": ["sahen@codex:general_qa"], "top": ["EVENT_ACT"]}	DECIDED	direct	EVENT_ACT	False	REAL
+記事	{"decided_by": ["definition"], "top": ["INFO_LANGUAGE"]}	DECIDED	direct	INFO_LANGUAGE	False	REAL
+記録	{"decided_by": ["definition", "role@codex:general_qa", "role@jawiki", "sahen@codex:code", "sahen@codex:figurative_commonsense", "sahen@codex:general_qa", "sahen@codex:paraphrase_entail", "sahen@codex:pro", "sahen@jawiki"], "top": ["EVENT_ACT", "INFO_LANGUAGE", "WORK"]}	MULTIPLE	direct	EVENT_ACT,INFO_LANGUAGE,WORK	False	REAL
+課長	{"decided_by": ["role@codex:narrative", "role@codex:paraphrase_entail"], "top": ["PERSON"]}	DECIDED	direct	PERSON	True	REAL
+請求書	{"decided_by": ["definition"], "top": ["INFO_LANGUAGE"]}	DECIDED	direct	INFO_LANGUAGE	False	REAL
+警察	{"decided_by": ["definition", "hearst@jawiki", "role@codex:general_qa", "role@codex:paraphrase_entail"], "top": ["GROUP_ORG", "PERSON"]}	MULTIPLE	direct	GROUP_ORG,PERSON	False	REAL
+警察署	{"decided_by": ["role@codex:conversation", "role@codex:general_qa"], "top": ["PLACE"]}	DECIDED	direct	PLACE	True	REAL
+議会	{"decided_by": ["seed"], "top": ["GROUP_ORG"]}	DECIDED	direct	GROUP_ORG	False	REAL
+財団	{"decided_by": ["seed"], "top": ["GROUP_ORG"]}	DECIDED	direct	GROUP_ORG	False	REAL
+買い物	{"decided_by": ["hearst@codex:general_qa"], "top": ["EVENT_ACT"]}	DECIDED	direct	EVENT_ACT	False	REAL
+資料	{"state": "UNPLACED"}	UNPLACED	None		False	REAL
+軍	{"decided_by": ["role@codex:general_qa", "role@jawiki"], "top": ["GROUP_ORG"]}	DECIDED	direct	GROUP_ORG	True	REAL
+農道	{"decided_by": ["definition", "role@codex:paraphrase_entail", "role@codex:pro"], "top": ["PLACE"]}	DECIDED	direct	PLACE	False	REAL
+返事	{"decided_by": ["sahen@codex:general_qa", "sahen@codex:paraphrase_entail"], "top": ["EVENT_ACT"]}	DECIDED	direct	EVENT_ACT	False	REAL
+運動	{"decided_by": ["seed"], "top": ["EVENT_ACT"]}	DECIDED	direct	EVENT_ACT	False	REAL
+遠足	{"decided_by": ["role@codex:figurative_commonsense", "role@codex:narrative"], "top": ["PLACE"]}	DECIDED	direct	PLACE	True	REAL
+選手	{"decided_by": ["seed"], "top": ["PERSON"]}	DECIDED	direct	PERSON	False	REAL
+部品	{"decided_by": ["seed"], "top": ["ARTIFACT"]}	DECIDED	direct	ARTIFACT	False	REAL
+部長	{"decided_by": ["role@codex:narrative", "role@codex:paraphrase_entail", "role@jawiki"], "top": ["PERSON"]}	DECIDED	direct	PERSON	True	REAL
+野菜	{"decided_by": ["seed"], "top": ["SUBSTANCE_FOOD"]}	DECIDED	direct	SUBSTANCE_FOOD	False	REAL
+金	{"decided_by": ["definition", "hearst@codex:general_qa", "hearst@jawiki"], "top": ["STATE_PROPERTY", "SUBSTANCE_FOOD"]}	MULTIPLE	direct	STATE_PROPERTY,SUBSTANCE_FOOD	False	REAL
+釣り堀	{"decided_by": ["definition"], "top": ["PLACE"]}	DECIDED	direct	PLACE	False	REAL
+銭湯	{"decided_by": ["definition", "role@codex:conversation", "role@codex:figurative_commonsense", "role@codex:narrative", "role@codex:paraphrase_entail", "role@codex:pro"], "top": ["PLACE"]}	DECIDED	direct	PLACE	False	REAL
+鎌倉時代	{"decided_by": ["role@codex:general_qa", "role@jawiki"], "top": ["TIME"]}	DECIDED	direct	TIME	True	REAL
+隊員	{"decided_by": ["alias", "role@codex:narrative", "role@codex:paraphrase_entail"], "top": ["PERSON", "QUANTITY"]}	MULTIPLE	direct	PERSON,QUANTITY	False	REAL
+隣人	{"decided_by": ["definition", "role@codex:general_qa", "role@codex:narrative", "role@codex:paraphrase_entail", "role@codex:pro"], "top": ["PERSON"]}	DECIDED	direct	PERSON	False	REAL
+雨	{"decided_by": ["seed"], "top": ["NATURAL_PHENOMENON"]}	DECIDED	direct	NATURAL_PHENOMENON	False	REAL
+雪	{"decided_by": ["seed"], "top": ["NATURAL_PHENOMENON"]}	DECIDED	direct	NATURAL_PHENOMENON	False	REAL
+雷	{"decided_by": ["seed"], "top": ["NATURAL_PHENOMENON"]}	DECIDED	direct	NATURAL_PHENOMENON	False	REAL
+電話口	{"basis": "generated", "origin": "estimated", "top": ["PLACE"]}	DECIDED	estimated	PLACE	False	REAL
+面会	{"decided_by": ["sahen@jawiki"], "top": ["EVENT_ACT"]}	DECIDED	direct	EVENT_ACT	False	REAL
+音楽	{"decided_by": ["role@codex:conversation", "role@codex:figurative_commonsense", "role@codex:general_qa", "role@codex:paraphrase_entail"], "top": ["WORK"]}	DECIDED	direct	WORK	True	REAL
+顧客	{"decided_by": ["definition", "role@codex:figurative_commonsense", "role@codex:paraphrase_entail"], "top": ["GROUP_ORG", "PERSON"]}	MULTIPLE	direct	GROUP_ORG,PERSON	False	REAL
+風	{"decided_by": ["seed"], "top": ["NATURAL_PHENOMENON"]}	DECIDED	direct	NATURAL_PHENOMENON	False	REAL
+飛鳥時代	{"decided_by": ["gen_definition", "role@jawiki"], "top": ["TIME"]}	DECIDED	direct	TIME	False	REAL
+馬	{"decided_by": ["seed"], "top": ["ANIMAL"]}	DECIDED	direct	ANIMAL	False	REAL
+駅	{"decided_by": ["seed"], "top": ["PLACE"]}	DECIDED	direct	PLACE	False	REAL
+魚	{"decided_by": ["seed"], "top": ["ANIMAL"]}	DECIDED	direct	ANIMAL	False	REAL

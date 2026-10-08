@@ -1,0 +1,946 @@
+{
+ "abstained_on_answerable": 27,
+ "by_agree": [
+  {
+   "abstained_on_answerable": 8,
+   "agree": 2,
+   "correct": 5,
+   "correct_abstain": 7,
+   "questions": 20,
+   "right_per_question": "12/20",
+   "wrong": 0
+  },
+  {
+   "abstained_on_answerable": 19,
+   "agree": 3,
+   "correct": 1,
+   "correct_abstain": 10,
+   "questions": 30,
+   "right_per_question": "11/30",
+   "wrong": 0
+  }
+ ],
+ "by_counted": [
+  {
+   "abstained_on_answerable": 8,
+   "correct": 5,
+   "correct_abstain": 7,
+   "counted": 2,
+   "questions": 20,
+   "right_per_question": "12/20",
+   "wrong": 0
+  },
+  {
+   "abstained_on_answerable": 19,
+   "correct": 1,
+   "correct_abstain": 10,
+   "counted": 3,
+   "questions": 30,
+   "right_per_question": "11/30",
+   "wrong": 0
+  }
+ ],
+ "by_set": [
+  {
+   "abstained_on_answerable": 19,
+   "correct": 1,
+   "correct_abstain": 10,
+   "questions": 30,
+   "right_per_question": "11/30",
+   "set": "bicycle",
+   "wrong": 0
+  },
+  {
+   "abstained_on_answerable": 0,
+   "correct": 3,
+   "correct_abstain": 2,
+   "questions": 5,
+   "right_per_question": "5/5",
+   "set": "f01",
+   "wrong": 0
+  },
+  {
+   "abstained_on_answerable": 8,
+   "correct": 2,
+   "correct_abstain": 5,
+   "questions": 15,
+   "right_per_question": "7/15",
+   "set": "pottery",
+   "wrong": 0
+  }
+ ],
+ "conflicts": 0,
+ "correct": 6,
+ "correct_abstain": 17,
+ "llm_called_any": false,
+ "monotone_nondecreasing_by_agree": false,
+ "monotone_note": "right = correct or correct_abstain over all questions of that agree value; ties between neighbouring values count as monotone; one value only is trivially monotone",
+ "per_question": [
+  {
+   "agree": 3,
+   "conflict": false,
+   "counted": 3,
+   "id": "bicycle:a01",
+   "kind": "abstained",
+   "llm_called": false,
+   "outcome": "STRUCTURE_UNDETERMINED",
+   "set": "bicycle",
+   "shown_tier": "law+user",
+   "statuses": {
+    "base": "COUNTED",
+    "law": "COUNTED",
+    "law+user": "COUNTED",
+    "vocab": "NOT_CONSULTED_BY_READER"
+   }
+  },
+  {
+   "agree": 3,
+   "conflict": false,
+   "counted": 3,
+   "id": "bicycle:a02",
+   "kind": "abstained",
+   "llm_called": false,
+   "outcome": "STRUCTURE_UNDETERMINED",
+   "set": "bicycle",
+   "shown_tier": "law+user",
+   "statuses": {
+    "base": "COUNTED",
+    "law": "COUNTED",
+    "law+user": "COUNTED",
+    "vocab": "NOT_CONSULTED_BY_READER"
+   }
+  },
+  {
+   "agree": 3,
+   "conflict": false,
+   "counted": 3,
+   "id": "bicycle:a03",
+   "kind": "abstained",
+   "llm_called": false,
+   "outcome": "STRUCTURE_UNDETERMINED",
+   "set": "bicycle",
+   "shown_tier": "law+user",
+   "statuses": {
+    "base": "COUNTED",
+    "law": "COUNTED",
+    "law+user": "COUNTED",
+    "vocab": "NOT_CONSULTED_BY_READER"
+   }
+  },
+  {
+   "agree": 3,
+   "conflict": false,
+   "counted": 3,
+   "id": "bicycle:a04",
+   "kind": "abstained",
+   "llm_called": false,
+   "outcome": "STRUCTURE_UNDETERMINED",
+   "set": "bicycle",
+   "shown_tier": "law+user",
+   "statuses": {
+    "base": "COUNTED",
+    "law": "COUNTED",
+    "law+user": "COUNTED",
+    "vocab": "NOT_CONSULTED_BY_READER"
+   }
+  },
+  {
+   "agree": 3,
+   "conflict": false,
+   "counted": 3,
+   "id": "bicycle:a05",
+   "kind": "abstained",
+   "llm_called": false,
+   "outcome": "STRUCTURE_UNDETERMINED",
+   "set": "bicycle",
+   "shown_tier": "law+user",
+   "statuses": {
+    "base": "COUNTED",
+    "law": "COUNTED",
+    "law+user": "COUNTED",
+    "vocab": "NOT_CONSULTED_BY_READER"
+   }
+  },
+  {
+   "agree": 3,
+   "conflict": false,
+   "counted": 3,
+   "id": "bicycle:a06",
+   "kind": "abstained",
+   "llm_called": false,
+   "outcome": "STRUCTURE_UNDETERMINED",
+   "set": "bicycle",
+   "shown_tier": "law+user",
+   "statuses": {
+    "base": "COUNTED",
+    "law": "COUNTED",
+    "law+user": "COUNTED",
+    "vocab": "NOT_CONSULTED_BY_READER"
+   }
+  },
+  {
+   "agree": 3,
+   "conflict": false,
+   "counted": 3,
+   "id": "bicycle:a07",
+   "kind": "abstained",
+   "llm_called": false,
+   "outcome": "STRUCTURE_UNDETERMINED",
+   "set": "bicycle",
+   "shown_tier": "law+user",
+   "statuses": {
+    "base": "COUNTED",
+    "law": "COUNTED",
+    "law+user": "COUNTED",
+    "vocab": "NOT_CONSULTED_BY_READER"
+   }
+  },
+  {
+   "agree": 3,
+   "conflict": false,
+   "counted": 3,
+   "id": "bicycle:a08",
+   "kind": "abstained",
+   "llm_called": false,
+   "outcome": "STRUCTURE_UNDETERMINED",
+   "set": "bicycle",
+   "shown_tier": "law+user",
+   "statuses": {
+    "base": "COUNTED",
+    "law": "COUNTED",
+    "law+user": "COUNTED",
+    "vocab": "NOT_CONSULTED_BY_READER"
+   }
+  },
+  {
+   "agree": 3,
+   "conflict": false,
+   "counted": 3,
+   "id": "bicycle:a09",
+   "kind": "abstained",
+   "llm_called": false,
+   "outcome": "STRUCTURE_UNDETERMINED",
+   "set": "bicycle",
+   "shown_tier": "law+user",
+   "statuses": {
+    "base": "COUNTED",
+    "law": "COUNTED",
+    "law+user": "COUNTED",
+    "vocab": "NOT_CONSULTED_BY_READER"
+   }
+  },
+  {
+   "agree": 3,
+   "conflict": false,
+   "counted": 3,
+   "id": "bicycle:a10",
+   "kind": "abstained",
+   "llm_called": false,
+   "outcome": "STRUCTURE_UNDETERMINED",
+   "set": "bicycle",
+   "shown_tier": "law+user",
+   "statuses": {
+    "base": "COUNTED",
+    "law": "COUNTED",
+    "law+user": "COUNTED",
+    "vocab": "NOT_CONSULTED_BY_READER"
+   }
+  },
+  {
+   "agree": 3,
+   "conflict": false,
+   "counted": 3,
+   "id": "bicycle:a11",
+   "kind": "abstained",
+   "llm_called": false,
+   "outcome": "STRUCTURE_UNDETERMINED",
+   "set": "bicycle",
+   "shown_tier": "law+user",
+   "statuses": {
+    "base": "COUNTED",
+    "law": "COUNTED",
+    "law+user": "COUNTED",
+    "vocab": "NOT_CONSULTED_BY_READER"
+   }
+  },
+  {
+   "agree": 3,
+   "conflict": false,
+   "counted": 3,
+   "id": "bicycle:a12",
+   "kind": "abstained",
+   "llm_called": false,
+   "outcome": "STRUCTURE_UNDETERMINED",
+   "set": "bicycle",
+   "shown_tier": "law+user",
+   "statuses": {
+    "base": "COUNTED",
+    "law": "COUNTED",
+    "law+user": "COUNTED",
+    "vocab": "NOT_CONSULTED_BY_READER"
+   }
+  },
+  {
+   "agree": 3,
+   "conflict": false,
+   "counted": 3,
+   "id": "bicycle:a13",
+   "kind": "abstained",
+   "llm_called": false,
+   "outcome": "STRUCTURE_UNDETERMINED",
+   "set": "bicycle",
+   "shown_tier": "law+user",
+   "statuses": {
+    "base": "COUNTED",
+    "law": "COUNTED",
+    "law+user": "COUNTED",
+    "vocab": "NOT_CONSULTED_BY_READER"
+   }
+  },
+  {
+   "agree": 3,
+   "conflict": false,
+   "counted": 3,
+   "id": "bicycle:a14",
+   "kind": "abstained",
+   "llm_called": false,
+   "outcome": "STRUCTURE_UNDETERMINED",
+   "set": "bicycle",
+   "shown_tier": "law+user",
+   "statuses": {
+    "base": "COUNTED",
+    "law": "COUNTED",
+    "law+user": "COUNTED",
+    "vocab": "NOT_CONSULTED_BY_READER"
+   }
+  },
+  {
+   "agree": 3,
+   "conflict": false,
+   "counted": 3,
+   "id": "bicycle:a15",
+   "kind": "abstained",
+   "llm_called": false,
+   "outcome": "STRUCTURE_UNDETERMINED",
+   "set": "bicycle",
+   "shown_tier": "law+user",
+   "statuses": {
+    "base": "COUNTED",
+    "law": "COUNTED",
+    "law+user": "COUNTED",
+    "vocab": "NOT_CONSULTED_BY_READER"
+   }
+  },
+  {
+   "agree": 3,
+   "conflict": false,
+   "counted": 3,
+   "id": "bicycle:a16",
+   "kind": "abstained",
+   "llm_called": false,
+   "outcome": "STRUCTURE_UNDETERMINED",
+   "set": "bicycle",
+   "shown_tier": "law+user",
+   "statuses": {
+    "base": "COUNTED",
+    "law": "COUNTED",
+    "law+user": "COUNTED",
+    "vocab": "NOT_CONSULTED_BY_READER"
+   }
+  },
+  {
+   "agree": 3,
+   "conflict": false,
+   "counted": 3,
+   "id": "bicycle:a17",
+   "kind": "abstained",
+   "llm_called": false,
+   "outcome": "STRUCTURE_UNDETERMINED",
+   "set": "bicycle",
+   "shown_tier": "law+user",
+   "statuses": {
+    "base": "COUNTED",
+    "law": "COUNTED",
+    "law+user": "COUNTED",
+    "vocab": "NOT_CONSULTED_BY_READER"
+   }
+  },
+  {
+   "agree": 3,
+   "conflict": false,
+   "counted": 3,
+   "id": "bicycle:a18",
+   "kind": "abstained",
+   "llm_called": false,
+   "outcome": "STRUCTURE_UNDETERMINED",
+   "set": "bicycle",
+   "shown_tier": "law+user",
+   "statuses": {
+    "base": "COUNTED",
+    "law": "COUNTED",
+    "law+user": "COUNTED",
+    "vocab": "NOT_CONSULTED_BY_READER"
+   }
+  },
+  {
+   "agree": 3,
+   "conflict": false,
+   "counted": 3,
+   "id": "bicycle:a19",
+   "kind": "correct",
+   "llm_called": false,
+   "outcome": "ANSWER_HUMAN_BASIS",
+   "set": "bicycle",
+   "shown_tier": "law+user",
+   "statuses": {
+    "base": "COUNTED",
+    "law": "COUNTED",
+    "law+user": "COUNTED",
+    "vocab": "NOT_CONSULTED_BY_READER"
+   }
+  },
+  {
+   "agree": 3,
+   "conflict": false,
+   "counted": 3,
+   "id": "bicycle:a20",
+   "kind": "abstained",
+   "llm_called": false,
+   "outcome": "STRUCTURE_UNDETERMINED",
+   "set": "bicycle",
+   "shown_tier": "law+user",
+   "statuses": {
+    "base": "COUNTED",
+    "law": "COUNTED",
+    "law+user": "COUNTED",
+    "vocab": "NOT_CONSULTED_BY_READER"
+   }
+  },
+  {
+   "agree": 3,
+   "conflict": false,
+   "counted": 3,
+   "id": "bicycle:n01",
+   "kind": "correct_abstain",
+   "llm_called": false,
+   "outcome": "STRUCTURE_UNDETERMINED",
+   "set": "bicycle",
+   "shown_tier": "law+user",
+   "statuses": {
+    "base": "COUNTED",
+    "law": "COUNTED",
+    "law+user": "COUNTED",
+    "vocab": "NOT_CONSULTED_BY_READER"
+   }
+  },
+  {
+   "agree": 3,
+   "conflict": false,
+   "counted": 3,
+   "id": "bicycle:n02",
+   "kind": "correct_abstain",
+   "llm_called": false,
+   "outcome": "STRUCTURE_UNDETERMINED",
+   "set": "bicycle",
+   "shown_tier": "law+user",
+   "statuses": {
+    "base": "COUNTED",
+    "law": "COUNTED",
+    "law+user": "COUNTED",
+    "vocab": "NOT_CONSULTED_BY_READER"
+   }
+  },
+  {
+   "agree": 3,
+   "conflict": false,
+   "counted": 3,
+   "id": "bicycle:n03",
+   "kind": "correct_abstain",
+   "llm_called": false,
+   "outcome": "STRUCTURE_UNDETERMINED",
+   "set": "bicycle",
+   "shown_tier": "law+user",
+   "statuses": {
+    "base": "COUNTED",
+    "law": "COUNTED",
+    "law+user": "COUNTED",
+    "vocab": "NOT_CONSULTED_BY_READER"
+   }
+  },
+  {
+   "agree": 3,
+   "conflict": false,
+   "counted": 3,
+   "id": "bicycle:n04",
+   "kind": "correct_abstain",
+   "llm_called": false,
+   "outcome": "STRUCTURE_UNDETERMINED",
+   "set": "bicycle",
+   "shown_tier": "law+user",
+   "statuses": {
+    "base": "COUNTED",
+    "law": "COUNTED",
+    "law+user": "COUNTED",
+    "vocab": "NOT_CONSULTED_BY_READER"
+   }
+  },
+  {
+   "agree": 3,
+   "conflict": false,
+   "counted": 3,
+   "id": "bicycle:n05",
+   "kind": "correct_abstain",
+   "llm_called": false,
+   "outcome": "STRUCTURE_UNDETERMINED",
+   "set": "bicycle",
+   "shown_tier": "law+user",
+   "statuses": {
+    "base": "COUNTED",
+    "law": "COUNTED",
+    "law+user": "COUNTED",
+    "vocab": "NOT_CONSULTED_BY_READER"
+   }
+  },
+  {
+   "agree": 3,
+   "conflict": false,
+   "counted": 3,
+   "id": "bicycle:n06",
+   "kind": "correct_abstain",
+   "llm_called": false,
+   "outcome": "STRUCTURE_UNDETERMINED",
+   "set": "bicycle",
+   "shown_tier": "law+user",
+   "statuses": {
+    "base": "COUNTED",
+    "law": "COUNTED",
+    "law+user": "COUNTED",
+    "vocab": "NOT_CONSULTED_BY_READER"
+   }
+  },
+  {
+   "agree": 3,
+   "conflict": false,
+   "counted": 3,
+   "id": "bicycle:n07",
+   "kind": "correct_abstain",
+   "llm_called": false,
+   "outcome": "STRUCTURE_UNDETERMINED",
+   "set": "bicycle",
+   "shown_tier": "law+user",
+   "statuses": {
+    "base": "COUNTED",
+    "law": "COUNTED",
+    "law+user": "COUNTED",
+    "vocab": "NOT_CONSULTED_BY_READER"
+   }
+  },
+  {
+   "agree": 3,
+   "conflict": false,
+   "counted": 3,
+   "id": "bicycle:n08",
+   "kind": "correct_abstain",
+   "llm_called": false,
+   "outcome": "STRUCTURE_UNDETERMINED",
+   "set": "bicycle",
+   "shown_tier": "law+user",
+   "statuses": {
+    "base": "COUNTED",
+    "law": "COUNTED",
+    "law+user": "COUNTED",
+    "vocab": "NOT_CONSULTED_BY_READER"
+   }
+  },
+  {
+   "agree": 3,
+   "conflict": false,
+   "counted": 3,
+   "id": "bicycle:n09",
+   "kind": "correct_abstain",
+   "llm_called": false,
+   "outcome": "STRUCTURE_UNDETERMINED",
+   "set": "bicycle",
+   "shown_tier": "law+user",
+   "statuses": {
+    "base": "COUNTED",
+    "law": "COUNTED",
+    "law+user": "COUNTED",
+    "vocab": "NOT_CONSULTED_BY_READER"
+   }
+  },
+  {
+   "agree": 3,
+   "conflict": false,
+   "counted": 3,
+   "id": "bicycle:n10",
+   "kind": "correct_abstain",
+   "llm_called": false,
+   "outcome": "STRUCTURE_UNDETERMINED",
+   "set": "bicycle",
+   "shown_tier": "law+user",
+   "statuses": {
+    "base": "COUNTED",
+    "law": "COUNTED",
+    "law+user": "COUNTED",
+    "vocab": "NOT_CONSULTED_BY_READER"
+   }
+  },
+  {
+   "agree": 2,
+   "conflict": false,
+   "counted": 2,
+   "id": "pottery:q01",
+   "kind": "abstained",
+   "llm_called": false,
+   "outcome": "STRUCTURE_UNDETERMINED",
+   "set": "pottery",
+   "shown_tier": "law",
+   "statuses": {
+    "base": "COUNTED",
+    "law": "COUNTED",
+    "law+user": "NOT_AVAILABLE",
+    "vocab": "NOT_CONSULTED_BY_READER"
+   }
+  },
+  {
+   "agree": 2,
+   "conflict": false,
+   "counted": 2,
+   "id": "pottery:q02",
+   "kind": "abstained",
+   "llm_called": false,
+   "outcome": "STRUCTURE_UNDETERMINED",
+   "set": "pottery",
+   "shown_tier": "law",
+   "statuses": {
+    "base": "COUNTED",
+    "law": "COUNTED",
+    "law+user": "NOT_AVAILABLE",
+    "vocab": "NOT_CONSULTED_BY_READER"
+   }
+  },
+  {
+   "agree": 2,
+   "conflict": false,
+   "counted": 2,
+   "id": "pottery:q03",
+   "kind": "abstained",
+   "llm_called": false,
+   "outcome": "STRUCTURE_UNDETERMINED",
+   "set": "pottery",
+   "shown_tier": "law",
+   "statuses": {
+    "base": "COUNTED",
+    "law": "COUNTED",
+    "law+user": "NOT_AVAILABLE",
+    "vocab": "NOT_CONSULTED_BY_READER"
+   }
+  },
+  {
+   "agree": 2,
+   "conflict": false,
+   "counted": 2,
+   "id": "pottery:q04",
+   "kind": "abstained",
+   "llm_called": false,
+   "outcome": "STRUCTURE_UNDETERMINED",
+   "set": "pottery",
+   "shown_tier": "law",
+   "statuses": {
+    "base": "COUNTED",
+    "law": "COUNTED",
+    "law+user": "NOT_AVAILABLE",
+    "vocab": "NOT_CONSULTED_BY_READER"
+   }
+  },
+  {
+   "agree": 2,
+   "conflict": false,
+   "counted": 2,
+   "id": "pottery:q05",
+   "kind": "abstained",
+   "llm_called": false,
+   "outcome": "STRUCTURE_UNDETERMINED",
+   "set": "pottery",
+   "shown_tier": "law",
+   "statuses": {
+    "base": "COUNTED",
+    "law": "COUNTED",
+    "law+user": "NOT_AVAILABLE",
+    "vocab": "NOT_CONSULTED_BY_READER"
+   }
+  },
+  {
+   "agree": 2,
+   "conflict": false,
+   "counted": 2,
+   "id": "pottery:q06",
+   "kind": "abstained",
+   "llm_called": false,
+   "outcome": "STRUCTURE_UNDETERMINED",
+   "set": "pottery",
+   "shown_tier": "law",
+   "statuses": {
+    "base": "COUNTED",
+    "law": "COUNTED",
+    "law+user": "NOT_AVAILABLE",
+    "vocab": "NOT_CONSULTED_BY_READER"
+   }
+  },
+  {
+   "agree": 2,
+   "conflict": false,
+   "counted": 2,
+   "id": "pottery:q07",
+   "kind": "abstained",
+   "llm_called": false,
+   "outcome": "STRUCTURE_UNDETERMINED",
+   "set": "pottery",
+   "shown_tier": "law",
+   "statuses": {
+    "base": "COUNTED",
+    "law": "COUNTED",
+    "law+user": "NOT_AVAILABLE",
+    "vocab": "NOT_CONSULTED_BY_READER"
+   }
+  },
+  {
+   "agree": 2,
+   "conflict": false,
+   "counted": 2,
+   "id": "pottery:q08",
+   "kind": "abstained",
+   "llm_called": false,
+   "outcome": "STRUCTURE_UNDETERMINED",
+   "set": "pottery",
+   "shown_tier": "law",
+   "statuses": {
+    "base": "COUNTED",
+    "law": "COUNTED",
+    "law+user": "NOT_AVAILABLE",
+    "vocab": "NOT_CONSULTED_BY_READER"
+   }
+  },
+  {
+   "agree": 2,
+   "conflict": false,
+   "counted": 2,
+   "id": "pottery:q09",
+   "kind": "correct",
+   "llm_called": false,
+   "outcome": "ANSWER_HUMAN_BASIS",
+   "set": "pottery",
+   "shown_tier": "law",
+   "statuses": {
+    "base": "COUNTED",
+    "law": "COUNTED",
+    "law+user": "NOT_AVAILABLE",
+    "vocab": "NOT_CONSULTED_BY_READER"
+   }
+  },
+  {
+   "agree": 2,
+   "conflict": false,
+   "counted": 2,
+   "id": "pottery:q10",
+   "kind": "correct",
+   "llm_called": false,
+   "outcome": "ANSWER_HUMAN_BASIS",
+   "set": "pottery",
+   "shown_tier": "law",
+   "statuses": {
+    "base": "COUNTED",
+    "law": "COUNTED",
+    "law+user": "NOT_AVAILABLE",
+    "vocab": "NOT_CONSULTED_BY_READER"
+   }
+  },
+  {
+   "agree": 2,
+   "conflict": false,
+   "counted": 2,
+   "id": "pottery:u01",
+   "kind": "correct_abstain",
+   "llm_called": false,
+   "outcome": "STRUCTURE_UNDETERMINED",
+   "set": "pottery",
+   "shown_tier": "law",
+   "statuses": {
+    "base": "COUNTED",
+    "law": "COUNTED",
+    "law+user": "NOT_AVAILABLE",
+    "vocab": "NOT_CONSULTED_BY_READER"
+   }
+  },
+  {
+   "agree": 2,
+   "conflict": false,
+   "counted": 2,
+   "id": "pottery:u02",
+   "kind": "correct_abstain",
+   "llm_called": false,
+   "outcome": "STRUCTURE_UNDETERMINED",
+   "set": "pottery",
+   "shown_tier": "law",
+   "statuses": {
+    "base": "COUNTED",
+    "law": "COUNTED",
+    "law+user": "NOT_AVAILABLE",
+    "vocab": "NOT_CONSULTED_BY_READER"
+   }
+  },
+  {
+   "agree": 2,
+   "conflict": false,
+   "counted": 2,
+   "id": "pottery:u03",
+   "kind": "correct_abstain",
+   "llm_called": false,
+   "outcome": "STRUCTURE_UNDETERMINED",
+   "set": "pottery",
+   "shown_tier": "law",
+   "statuses": {
+    "base": "COUNTED",
+    "law": "COUNTED",
+    "law+user": "NOT_AVAILABLE",
+    "vocab": "NOT_CONSULTED_BY_READER"
+   }
+  },
+  {
+   "agree": 2,
+   "conflict": false,
+   "counted": 2,
+   "id": "pottery:u04",
+   "kind": "correct_abstain",
+   "llm_called": false,
+   "outcome": "STRUCTURE_UNDETERMINED",
+   "set": "pottery",
+   "shown_tier": "law",
+   "statuses": {
+    "base": "COUNTED",
+    "law": "COUNTED",
+    "law+user": "NOT_AVAILABLE",
+    "vocab": "NOT_CONSULTED_BY_READER"
+   }
+  },
+  {
+   "agree": 2,
+   "conflict": false,
+   "counted": 2,
+   "id": "pottery:u05",
+   "kind": "correct_abstain",
+   "llm_called": false,
+   "outcome": "STRUCTURE_UNDETERMINED",
+   "set": "pottery",
+   "shown_tier": "law",
+   "statuses": {
+    "base": "COUNTED",
+    "law": "COUNTED",
+    "law+user": "NOT_AVAILABLE",
+    "vocab": "NOT_CONSULTED_BY_READER"
+   }
+  },
+  {
+   "agree": 2,
+   "conflict": false,
+   "counted": 2,
+   "id": "f01:Q036",
+   "kind": "correct",
+   "llm_called": false,
+   "outcome": "ANSWER_HUMAN_BASIS",
+   "set": "f01",
+   "shown_tier": "law",
+   "statuses": {
+    "base": "COUNTED",
+    "law": "COUNTED",
+    "law+user": "NOT_AVAILABLE",
+    "vocab": "NOT_CONSULTED_BY_READER"
+   }
+  },
+  {
+   "agree": 2,
+   "conflict": false,
+   "counted": 2,
+   "id": "f01:Q070",
+   "kind": "correct_abstain",
+   "llm_called": false,
+   "outcome": "STRUCTURE_UNDETERMINED",
+   "set": "f01",
+   "shown_tier": "law",
+   "statuses": {
+    "base": "COUNTED",
+    "law": "COUNTED",
+    "law+user": "NOT_AVAILABLE",
+    "vocab": "NOT_CONSULTED_BY_READER"
+   }
+  },
+  {
+   "agree": 2,
+   "conflict": false,
+   "counted": 2,
+   "id": "f01:Q038",
+   "kind": "correct",
+   "llm_called": false,
+   "outcome": "ANSWER_HUMAN_BASIS",
+   "set": "f01",
+   "shown_tier": "law",
+   "statuses": {
+    "base": "COUNTED",
+    "law": "COUNTED",
+    "law+user": "NOT_AVAILABLE",
+    "vocab": "NOT_CONSULTED_BY_READER"
+   }
+  },
+  {
+   "agree": 2,
+   "conflict": false,
+   "counted": 2,
+   "id": "f01:Q052",
+   "kind": "correct_abstain",
+   "llm_called": false,
+   "outcome": "NO_RECORD",
+   "set": "f01",
+   "shown_tier": "law",
+   "statuses": {
+    "base": "COUNTED",
+    "law": "COUNTED",
+    "law+user": "NOT_AVAILABLE",
+    "vocab": "NOT_CONSULTED_BY_READER"
+   }
+  },
+  {
+   "agree": 2,
+   "conflict": false,
+   "counted": 2,
+   "id": "f01:Q020",
+   "kind": "correct",
+   "llm_called": false,
+   "outcome": "ANSWER_HUMAN_BASIS",
+   "set": "f01",
+   "shown_tier": "law",
+   "statuses": {
+    "base": "COUNTED",
+    "law": "COUNTED",
+    "law+user": "NOT_AVAILABLE",
+    "vocab": "NOT_CONSULTED_BY_READER"
+   }
+  }
+ ],
+ "questions": 50,
+ "shown_answers_by_agree": [
+  {
+   "agree": 2,
+   "answers": 5,
+   "correct": 5,
+   "wrong": 0
+  },
+  {
+   "agree": 3,
+   "answers": 1,
+   "correct": 1,
+   "wrong": 0
+  }
+ ],
+ "wrong": 0
+}

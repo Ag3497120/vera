@@ -1,0 +1,1024 @@
+.FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF                     [100%]
+=================================== FAILURES ===================================
+_______________________________ test_case[C1-01] _______________________________
+
+case = {'id': 'C1-01', 'type': 'C1', 'docs': {'doc.txt': '発注先は凜翔商事である。'}, 'question': '発注先はどこですか', ...}
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2112/test_case_C1_01_0')
+
+    @pytest.mark.parametrize("case", CASES, ids=[c["id"] for c in CASES])
+    def test_case(case, tmp_path):
+        paths = []
+        for name, body in case["docs"].items():
+            p = tmp_path / name
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_text(body + "\n", encoding="utf-8")
+            paths.append(str(p))
+        rec = G.load_records(paths)
+>       res = QC.check(case["answer"], case["quotes"], rec, question=case["question"])
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: check() got an unexpected keyword argument 'question'
+
+tests/test_w16t3_content.py:33: TypeError
+_______________________________ test_case[C1-02] _______________________________
+
+case = {'id': 'C1-02', 'type': 'C1', 'docs': {'doc.txt': '資材は鳳凰電機から仕入れた。'}, 'question': '資材はどこから仕入れましたか', ...}
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2112/test_case_C1_02_0')
+
+    @pytest.mark.parametrize("case", CASES, ids=[c["id"] for c in CASES])
+    def test_case(case, tmp_path):
+        paths = []
+        for name, body in case["docs"].items():
+            p = tmp_path / name
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_text(body + "\n", encoding="utf-8")
+            paths.append(str(p))
+        rec = G.load_records(paths)
+>       res = QC.check(case["answer"], case["quotes"], rec, question=case["question"])
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: check() got an unexpected keyword argument 'question'
+
+tests/test_w16t3_content.py:33: TypeError
+_______________________________ test_case[C1-03] _______________________________
+
+case = {'id': 'C1-03', 'type': 'C1', 'docs': {'doc.txt': '納入元は玄武産業と決まった。'}, 'question': '納入元はどこですか', ...}
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2112/test_case_C1_03_0')
+
+    @pytest.mark.parametrize("case", CASES, ids=[c["id"] for c in CASES])
+    def test_case(case, tmp_path):
+        paths = []
+        for name, body in case["docs"].items():
+            p = tmp_path / name
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_text(body + "\n", encoding="utf-8")
+            paths.append(str(p))
+        rec = G.load_records(paths)
+>       res = QC.check(case["answer"], case["quotes"], rec, question=case["question"])
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: check() got an unexpected keyword argument 'question'
+
+tests/test_w16t3_content.py:33: TypeError
+_______________________________ test_case[C1-04] _______________________________
+
+case = {'id': 'C1-04', 'type': 'C1', 'docs': {'doc.txt': '保守は朱雀設備が担当する。'}, 'question': '保守は誰が担当しますか', ...}
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2112/test_case_C1_04_0')
+
+    @pytest.mark.parametrize("case", CASES, ids=[c["id"] for c in CASES])
+    def test_case(case, tmp_path):
+        paths = []
+        for name, body in case["docs"].items():
+            p = tmp_path / name
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_text(body + "\n", encoding="utf-8")
+            paths.append(str(p))
+        rec = G.load_records(paths)
+>       res = QC.check(case["answer"], case["quotes"], rec, question=case["question"])
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: check() got an unexpected keyword argument 'question'
+
+tests/test_w16t3_content.py:33: TypeError
+_______________________________ test_case[C1-05] _______________________________
+
+case = {'id': 'C1-05', 'type': 'C1', 'docs': {'doc.txt': '契約は麒麟物産と結んだ。'}, 'question': '契約は誰と結びましたか', ...}
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2112/test_case_C1_05_0')
+
+    @pytest.mark.parametrize("case", CASES, ids=[c["id"] for c in CASES])
+    def test_case(case, tmp_path):
+        paths = []
+        for name, body in case["docs"].items():
+            p = tmp_path / name
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_text(body + "\n", encoding="utf-8")
+            paths.append(str(p))
+        rec = G.load_records(paths)
+>       res = QC.check(case["answer"], case["quotes"], rec, question=case["question"])
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: check() got an unexpected keyword argument 'question'
+
+tests/test_w16t3_content.py:33: TypeError
+_______________________________ test_case[C1-06] _______________________________
+
+case = {'id': 'C1-06', 'type': 'C1', 'docs': {'doc.txt': '取引先は暁星化学である。'}, 'question': '取引先はどこですか', ...}
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2112/test_case_C1_06_0')
+
+    @pytest.mark.parametrize("case", CASES, ids=[c["id"] for c in CASES])
+    def test_case(case, tmp_path):
+        paths = []
+        for name, body in case["docs"].items():
+            p = tmp_path / name
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_text(body + "\n", encoding="utf-8")
+            paths.append(str(p))
+        rec = G.load_records(paths)
+>       res = QC.check(case["answer"], case["quotes"], rec, question=case["question"])
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: check() got an unexpected keyword argument 'question'
+
+tests/test_w16t3_content.py:33: TypeError
+_______________________________ test_case[C1-07] _______________________________
+
+case = {'id': 'C1-07', 'type': 'C1', 'docs': {'doc.txt': '委託先はヴェルモント社である。'}, 'question': '委託先はどこですか', ...}
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2112/test_case_C1_07_0')
+
+    @pytest.mark.parametrize("case", CASES, ids=[c["id"] for c in CASES])
+    def test_case(case, tmp_path):
+        paths = []
+        for name, body in case["docs"].items():
+            p = tmp_path / name
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_text(body + "\n", encoding="utf-8")
+            paths.append(str(p))
+        rec = G.load_records(paths)
+>       res = QC.check(case["answer"], case["quotes"], rec, question=case["question"])
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: check() got an unexpected keyword argument 'question'
+
+tests/test_w16t3_content.py:33: TypeError
+_______________________________ test_case[C1-08] _______________________________
+
+case = {'id': 'C1-08', 'type': 'C1', 'docs': {'doc.txt': '請負は旭光建設株式会社である。'}, 'question': '請負はどこですか', ...}
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2112/test_case_C1_08_0')
+
+    @pytest.mark.parametrize("case", CASES, ids=[c["id"] for c in CASES])
+    def test_case(case, tmp_path):
+        paths = []
+        for name, body in case["docs"].items():
+            p = tmp_path / name
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_text(body + "\n", encoding="utf-8")
+            paths.append(str(p))
+        rec = G.load_records(paths)
+>       res = QC.check(case["answer"], case["quotes"], rec, question=case["question"])
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: check() got an unexpected keyword argument 'question'
+
+tests/test_w16t3_content.py:33: TypeError
+_______________________________ test_case[C1-09] _______________________________
+
+case = {'id': 'C1-09', 'type': 'C1', 'docs': {'doc.txt': 'この件は営業部が受け持つ。'}, 'question': 'この件は誰が受け持ちますか', ...}
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2112/test_case_C1_09_0')
+
+    @pytest.mark.parametrize("case", CASES, ids=[c["id"] for c in CASES])
+    def test_case(case, tmp_path):
+        paths = []
+        for name, body in case["docs"].items():
+            p = tmp_path / name
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_text(body + "\n", encoding="utf-8")
+            paths.append(str(p))
+        rec = G.load_records(paths)
+>       res = QC.check(case["answer"], case["quotes"], rec, question=case["question"])
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: check() got an unexpected keyword argument 'question'
+
+tests/test_w16t3_content.py:33: TypeError
+_______________________________ test_case[C1-10] _______________________________
+
+case = {'id': 'C1-10', 'type': 'C1', 'docs': {'doc.txt': '設置は琥珀電工が行った。'}, 'question': '設置は誰が行いましたか', ...}
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2112/test_case_C1_10_0')
+
+    @pytest.mark.parametrize("case", CASES, ids=[c["id"] for c in CASES])
+    def test_case(case, tmp_path):
+        paths = []
+        for name, body in case["docs"].items():
+            p = tmp_path / name
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_text(body + "\n", encoding="utf-8")
+            paths.append(str(p))
+        rec = G.load_records(paths)
+>       res = QC.check(case["answer"], case["quotes"], rec, question=case["question"])
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: check() got an unexpected keyword argument 'question'
+
+tests/test_w16t3_content.py:33: TypeError
+_______________________________ test_case[C2-01] _______________________________
+
+case = {'id': 'C2-01', 'type': 'C2', 'docs': {'doc.txt': '担当は林である。'}, 'question': '担当は誰ですか', ...}
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2112/test_case_C2_01_0')
+
+    @pytest.mark.parametrize("case", CASES, ids=[c["id"] for c in CASES])
+    def test_case(case, tmp_path):
+        paths = []
+        for name, body in case["docs"].items():
+            p = tmp_path / name
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_text(body + "\n", encoding="utf-8")
+            paths.append(str(p))
+        rec = G.load_records(paths)
+>       res = QC.check(case["answer"], case["quotes"], rec, question=case["question"])
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: check() got an unexpected keyword argument 'question'
+
+tests/test_w16t3_content.py:33: TypeError
+_______________________________ test_case[C2-02] _______________________________
+
+case = {'id': 'C2-02', 'type': 'C2', 'docs': {'doc.txt': '窓口は楠である。'}, 'question': '窓口は誰ですか', ...}
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2112/test_case_C2_02_0')
+
+    @pytest.mark.parametrize("case", CASES, ids=[c["id"] for c in CASES])
+    def test_case(case, tmp_path):
+        paths = []
+        for name, body in case["docs"].items():
+            p = tmp_path / name
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_text(body + "\n", encoding="utf-8")
+            paths.append(str(p))
+        rec = G.load_records(paths)
+>       res = QC.check(case["answer"], case["quotes"], rec, question=case["question"])
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: check() got an unexpected keyword argument 'question'
+
+tests/test_w16t3_content.py:33: TypeError
+_______________________________ test_case[C2-03] _______________________________
+
+case = {'id': 'C2-03', 'type': 'C2', 'docs': {'doc.txt': '受付は梶である。'}, 'question': '受付は誰ですか', ...}
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2112/test_case_C2_03_0')
+
+    @pytest.mark.parametrize("case", CASES, ids=[c["id"] for c in CASES])
+    def test_case(case, tmp_path):
+        paths = []
+        for name, body in case["docs"].items():
+            p = tmp_path / name
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_text(body + "\n", encoding="utf-8")
+            paths.append(str(p))
+        rec = G.load_records(paths)
+>       res = QC.check(case["answer"], case["quotes"], rec, question=case["question"])
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: check() got an unexpected keyword argument 'question'
+
+tests/test_w16t3_content.py:33: TypeError
+_______________________________ test_case[C2-04] _______________________________
+
+case = {'id': 'C2-04', 'type': 'C2', 'docs': {'doc.txt': '責任者は葵である。'}, 'question': '責任者は誰ですか', ...}
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2112/test_case_C2_04_0')
+
+    @pytest.mark.parametrize("case", CASES, ids=[c["id"] for c in CASES])
+    def test_case(case, tmp_path):
+        paths = []
+        for name, body in case["docs"].items():
+            p = tmp_path / name
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_text(body + "\n", encoding="utf-8")
+            paths.append(str(p))
+        rec = G.load_records(paths)
+>       res = QC.check(case["answer"], case["quotes"], rec, question=case["question"])
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: check() got an unexpected keyword argument 'question'
+
+tests/test_w16t3_content.py:33: TypeError
+_______________________________ test_case[C2-05] _______________________________
+
+case = {'id': 'C2-05', 'type': 'C2', 'docs': {'doc.txt': '点検は柏が行う。'}, 'question': '点検は誰が行いますか', ...}
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2112/test_case_C2_05_0')
+
+    @pytest.mark.parametrize("case", CASES, ids=[c["id"] for c in CASES])
+    def test_case(case, tmp_path):
+        paths = []
+        for name, body in case["docs"].items():
+            p = tmp_path / name
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_text(body + "\n", encoding="utf-8")
+            paths.append(str(p))
+        rec = G.load_records(paths)
+>       res = QC.check(case["answer"], case["quotes"], rec, question=case["question"])
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: check() got an unexpected keyword argument 'question'
+
+tests/test_w16t3_content.py:33: TypeError
+_______________________________ test_case[C2-06] _______________________________
+
+case = {'id': 'C2-06', 'type': 'C2', 'docs': {'doc.txt': '係は桐山である。'}, 'question': '係は誰ですか', ...}
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2112/test_case_C2_06_0')
+
+    @pytest.mark.parametrize("case", CASES, ids=[c["id"] for c in CASES])
+    def test_case(case, tmp_path):
+        paths = []
+        for name, body in case["docs"].items():
+            p = tmp_path / name
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_text(body + "\n", encoding="utf-8")
+            paths.append(str(p))
+        rec = G.load_records(paths)
+>       res = QC.check(case["answer"], case["quotes"], rec, question=case["question"])
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: check() got an unexpected keyword argument 'question'
+
+tests/test_w16t3_content.py:33: TypeError
+_______________________________ test_case[C2-07] _______________________________
+
+case = {'id': 'C2-07', 'type': 'C2', 'docs': {'doc.txt': '運転は菅である。'}, 'question': '運転は誰ですか', ...}
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2112/test_case_C2_07_0')
+
+    @pytest.mark.parametrize("case", CASES, ids=[c["id"] for c in CASES])
+    def test_case(case, tmp_path):
+        paths = []
+        for name, body in case["docs"].items():
+            p = tmp_path / name
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_text(body + "\n", encoding="utf-8")
+            paths.append(str(p))
+        rec = G.load_records(paths)
+>       res = QC.check(case["answer"], case["quotes"], rec, question=case["question"])
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: check() got an unexpected keyword argument 'question'
+
+tests/test_w16t3_content.py:33: TypeError
+_______________________________ test_case[C2-08] _______________________________
+
+case = {'id': 'C2-08', 'type': 'C2', 'docs': {'doc.txt': '担当は林である。'}, 'question': '担当は誰ですか', ...}
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2112/test_case_C2_08_0')
+
+    @pytest.mark.parametrize("case", CASES, ids=[c["id"] for c in CASES])
+    def test_case(case, tmp_path):
+        paths = []
+        for name, body in case["docs"].items():
+            p = tmp_path / name
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_text(body + "\n", encoding="utf-8")
+            paths.append(str(p))
+        rec = G.load_records(paths)
+>       res = QC.check(case["answer"], case["quotes"], rec, question=case["question"])
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: check() got an unexpected keyword argument 'question'
+
+tests/test_w16t3_content.py:33: TypeError
+_______________________________ test_case[C2-09] _______________________________
+
+case = {'id': 'C2-09', 'type': 'C2', 'docs': {'doc.txt': '担当は小林である。'}, 'question': '担当は誰ですか', ...}
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2112/test_case_C2_09_0')
+
+    @pytest.mark.parametrize("case", CASES, ids=[c["id"] for c in CASES])
+    def test_case(case, tmp_path):
+        paths = []
+        for name, body in case["docs"].items():
+            p = tmp_path / name
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_text(body + "\n", encoding="utf-8")
+            paths.append(str(p))
+        rec = G.load_records(paths)
+>       res = QC.check(case["answer"], case["quotes"], rec, question=case["question"])
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: check() got an unexpected keyword argument 'question'
+
+tests/test_w16t3_content.py:33: TypeError
+_______________________________ test_case[C3-01] _______________________________
+
+case = {'id': 'C3-01', 'type': 'C3', 'docs': {'doc.txt': '会場は大会議室である。'}, 'question': '会場はどこですか', ...}
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2112/test_case_C3_01_0')
+
+    @pytest.mark.parametrize("case", CASES, ids=[c["id"] for c in CASES])
+    def test_case(case, tmp_path):
+        paths = []
+        for name, body in case["docs"].items():
+            p = tmp_path / name
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_text(body + "\n", encoding="utf-8")
+            paths.append(str(p))
+        rec = G.load_records(paths)
+>       res = QC.check(case["answer"], case["quotes"], rec, question=case["question"])
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: check() got an unexpected keyword argument 'question'
+
+tests/test_w16t3_content.py:33: TypeError
+_______________________________ test_case[C3-02] _______________________________
+
+case = {'id': 'C3-02', 'type': 'C3', 'docs': {'doc.txt': '会場は小会議室である。'}, 'question': '会場はどこですか', ...}
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2112/test_case_C3_02_0')
+
+    @pytest.mark.parametrize("case", CASES, ids=[c["id"] for c in CASES])
+    def test_case(case, tmp_path):
+        paths = []
+        for name, body in case["docs"].items():
+            p = tmp_path / name
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_text(body + "\n", encoding="utf-8")
+            paths.append(str(p))
+        rec = G.load_records(paths)
+>       res = QC.check(case["answer"], case["quotes"], rec, question=case["question"])
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: check() got an unexpected keyword argument 'question'
+
+tests/test_w16t3_content.py:33: TypeError
+_______________________________ test_case[C3-03] _______________________________
+
+case = {'id': 'C3-03', 'type': 'C3', 'docs': {'doc.txt': '提出するのは申請書である。'}, 'question': '提出するのは何ですか', ...}
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2112/test_case_C3_03_0')
+
+    @pytest.mark.parametrize("case", CASES, ids=[c["id"] for c in CASES])
+    def test_case(case, tmp_path):
+        paths = []
+        for name, body in case["docs"].items():
+            p = tmp_path / name
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_text(body + "\n", encoding="utf-8")
+            paths.append(str(p))
+        rec = G.load_records(paths)
+>       res = QC.check(case["answer"], case["quotes"], rec, question=case["question"])
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: check() got an unexpected keyword argument 'question'
+
+tests/test_w16t3_content.py:33: TypeError
+_______________________________ test_case[C3-04] _______________________________
+
+case = {'id': 'C3-04', 'type': 'C3', 'docs': {'doc.txt': '保管場所は倉庫である。'}, 'question': '保管場所はどこですか', ...}
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2112/test_case_C3_04_0')
+
+    @pytest.mark.parametrize("case", CASES, ids=[c["id"] for c in CASES])
+    def test_case(case, tmp_path):
+        paths = []
+        for name, body in case["docs"].items():
+            p = tmp_path / name
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_text(body + "\n", encoding="utf-8")
+            paths.append(str(p))
+        rec = G.load_records(paths)
+>       res = QC.check(case["answer"], case["quotes"], rec, question=case["question"])
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: check() got an unexpected keyword argument 'question'
+
+tests/test_w16t3_content.py:33: TypeError
+_______________________________ test_case[C3-05] _______________________________
+
+case = {'id': 'C3-05', 'type': 'C3', 'docs': {'doc.txt': '資料は書庫にある。'}, 'question': '資料はどこにありますか', ...}
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2112/test_case_C3_05_0')
+
+    @pytest.mark.parametrize("case", CASES, ids=[c["id"] for c in CASES])
+    def test_case(case, tmp_path):
+        paths = []
+        for name, body in case["docs"].items():
+            p = tmp_path / name
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_text(body + "\n", encoding="utf-8")
+            paths.append(str(p))
+        rec = G.load_records(paths)
+>       res = QC.check(case["answer"], case["quotes"], rec, question=case["question"])
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: check() got an unexpected keyword argument 'question'
+
+tests/test_w16t3_content.py:33: TypeError
+_______________________________ test_case[C3-06] _______________________________
+
+case = {'id': 'C3-06', 'type': 'C3', 'docs': {'doc.txt': '受け取りは窓口である。'}, 'question': '受け取りはどこですか', ...}
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2112/test_case_C3_06_0')
+
+    @pytest.mark.parametrize("case", CASES, ids=[c["id"] for c in CASES])
+    def test_case(case, tmp_path):
+        paths = []
+        for name, body in case["docs"].items():
+            p = tmp_path / name
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_text(body + "\n", encoding="utf-8")
+            paths.append(str(p))
+        rec = G.load_records(paths)
+>       res = QC.check(case["answer"], case["quotes"], rec, question=case["question"])
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: check() got an unexpected keyword argument 'question'
+
+tests/test_w16t3_content.py:33: TypeError
+_______________________________ test_case[C3-07] _______________________________
+
+case = {'id': 'C3-07', 'type': 'C3', 'docs': {'doc.txt': '保存先は金庫である。'}, 'question': '保存先はどこですか', ...}
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2112/test_case_C3_07_0')
+
+    @pytest.mark.parametrize("case", CASES, ids=[c["id"] for c in CASES])
+    def test_case(case, tmp_path):
+        paths = []
+        for name, body in case["docs"].items():
+            p = tmp_path / name
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_text(body + "\n", encoding="utf-8")
+            paths.append(str(p))
+        rec = G.load_records(paths)
+>       res = QC.check(case["answer"], case["quotes"], rec, question=case["question"])
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: check() got an unexpected keyword argument 'question'
+
+tests/test_w16t3_content.py:33: TypeError
+_______________________________ test_case[C3-08] _______________________________
+
+case = {'id': 'C3-08', 'type': 'C3', 'docs': {'doc.txt': '道具は箱に入れる。'}, 'question': '道具はどこに入れますか', ...}
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2112/test_case_C3_08_0')
+
+    @pytest.mark.parametrize("case", CASES, ids=[c["id"] for c in CASES])
+    def test_case(case, tmp_path):
+        paths = []
+        for name, body in case["docs"].items():
+            p = tmp_path / name
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_text(body + "\n", encoding="utf-8")
+            paths.append(str(p))
+        rec = G.load_records(paths)
+>       res = QC.check(case["answer"], case["quotes"], rec, question=case["question"])
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: check() got an unexpected keyword argument 'question'
+
+tests/test_w16t3_content.py:33: TypeError
+_______________________________ test_case[C4-a1] _______________________________
+
+case = {'id': 'C4-a1', 'type': 'C4a', 'docs': {'doc.txt': '定例会議を行った。'}, 'question': '何をしましたか', ...}
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2112/test_case_C4_a1_0')
+
+    @pytest.mark.parametrize("case", CASES, ids=[c["id"] for c in CASES])
+    def test_case(case, tmp_path):
+        paths = []
+        for name, body in case["docs"].items():
+            p = tmp_path / name
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_text(body + "\n", encoding="utf-8")
+            paths.append(str(p))
+        rec = G.load_records(paths)
+>       res = QC.check(case["answer"], case["quotes"], rec, question=case["question"])
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: check() got an unexpected keyword argument 'question'
+
+tests/test_w16t3_content.py:33: TypeError
+_______________________________ test_case[C4-a2] _______________________________
+
+case = {'id': 'C4-a2', 'type': 'C4a', 'docs': {'doc.txt': '窓口は朝に開く。'}, 'question': '窓口はいつ開きますか', ...}
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2112/test_case_C4_a2_0')
+
+    @pytest.mark.parametrize("case", CASES, ids=[c["id"] for c in CASES])
+    def test_case(case, tmp_path):
+        paths = []
+        for name, body in case["docs"].items():
+            p = tmp_path / name
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_text(body + "\n", encoding="utf-8")
+            paths.append(str(p))
+        rec = G.load_records(paths)
+>       res = QC.check(case["answer"], case["quotes"], rec, question=case["question"])
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: check() got an unexpected keyword argument 'question'
+
+tests/test_w16t3_content.py:33: TypeError
+_______________________________ test_case[C4-a3] _______________________________
+
+case = {'id': 'C4-a3', 'type': 'C4a', 'docs': {'doc.txt': '書類を受け取った。'}, 'question': '書類をどうしましたか', ...}
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2112/test_case_C4_a3_0')
+
+    @pytest.mark.parametrize("case", CASES, ids=[c["id"] for c in CASES])
+    def test_case(case, tmp_path):
+        paths = []
+        for name, body in case["docs"].items():
+            p = tmp_path / name
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_text(body + "\n", encoding="utf-8")
+            paths.append(str(p))
+        rec = G.load_records(paths)
+>       res = QC.check(case["answer"], case["quotes"], rec, question=case["question"])
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: check() got an unexpected keyword argument 'question'
+
+tests/test_w16t3_content.py:33: TypeError
+_______________________________ test_case[C4-a4] _______________________________
+
+case = {'id': 'C4-a4', 'type': 'C4a', 'docs': {'doc.txt': '部会を設ける。'}, 'question': '何をしますか', ...}
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2112/test_case_C4_a4_0')
+
+    @pytest.mark.parametrize("case", CASES, ids=[c["id"] for c in CASES])
+    def test_case(case, tmp_path):
+        paths = []
+        for name, body in case["docs"].items():
+            p = tmp_path / name
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_text(body + "\n", encoding="utf-8")
+            paths.append(str(p))
+        rec = G.load_records(paths)
+>       res = QC.check(case["answer"], case["quotes"], rec, question=case["question"])
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: check() got an unexpected keyword argument 'question'
+
+tests/test_w16t3_content.py:33: TypeError
+_______________________________ test_case[C4-a5] _______________________________
+
+case = {'id': 'C4-a5', 'type': 'C4a', 'docs': {'doc.txt': '報告書を提出した。'}, 'question': '何をしましたか', ...}
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2112/test_case_C4_a5_0')
+
+    @pytest.mark.parametrize("case", CASES, ids=[c["id"] for c in CASES])
+    def test_case(case, tmp_path):
+        paths = []
+        for name, body in case["docs"].items():
+            p = tmp_path / name
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_text(body + "\n", encoding="utf-8")
+            paths.append(str(p))
+        rec = G.load_records(paths)
+>       res = QC.check(case["answer"], case["quotes"], rec, question=case["question"])
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: check() got an unexpected keyword argument 'question'
+
+tests/test_w16t3_content.py:33: TypeError
+_______________________________ test_case[C4-b1] _______________________________
+
+case = {'id': 'C4-b1', 'type': 'C4b', 'docs': {'doc.txt': '説明会を開く。'}, 'question': '何をしますか', ...}
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2112/test_case_C4_b1_0')
+
+    @pytest.mark.parametrize("case", CASES, ids=[c["id"] for c in CASES])
+    def test_case(case, tmp_path):
+        paths = []
+        for name, body in case["docs"].items():
+            p = tmp_path / name
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_text(body + "\n", encoding="utf-8")
+            paths.append(str(p))
+        rec = G.load_records(paths)
+>       res = QC.check(case["answer"], case["quotes"], rec, question=case["question"])
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: check() got an unexpected keyword argument 'question'
+
+tests/test_w16t3_content.py:33: TypeError
+_______________________________ test_case[C4-b2] _______________________________
+
+case = {'id': 'C4-b2', 'type': 'C4b', 'docs': {'doc.txt': '打ち合わせは月末にある。'}, 'question': '打ち合わせはいつですか', ...}
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2112/test_case_C4_b2_0')
+
+    @pytest.mark.parametrize("case", CASES, ids=[c["id"] for c in CASES])
+    def test_case(case, tmp_path):
+        paths = []
+        for name, body in case["docs"].items():
+            p = tmp_path / name
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_text(body + "\n", encoding="utf-8")
+            paths.append(str(p))
+        rec = G.load_records(paths)
+>       res = QC.check(case["answer"], case["quotes"], rec, question=case["question"])
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: check() got an unexpected keyword argument 'question'
+
+tests/test_w16t3_content.py:33: TypeError
+_______________________________ test_case[C4-b3] _______________________________
+
+case = {'id': 'C4-b3', 'type': 'C4b', 'docs': {'doc.txt': '荷物を運び込む。'}, 'question': '荷物をどうしますか', ...}
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2112/test_case_C4_b3_0')
+
+    @pytest.mark.parametrize("case", CASES, ids=[c["id"] for c in CASES])
+    def test_case(case, tmp_path):
+        paths = []
+        for name, body in case["docs"].items():
+            p = tmp_path / name
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_text(body + "\n", encoding="utf-8")
+            paths.append(str(p))
+        rec = G.load_records(paths)
+>       res = QC.check(case["answer"], case["quotes"], rec, question=case["question"])
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: check() got an unexpected keyword argument 'question'
+
+tests/test_w16t3_content.py:33: TypeError
+_______________________________ test_case[C4-b4] _______________________________
+
+case = {'id': 'C4-b4', 'type': 'C4b', 'docs': {'doc.txt': '申込みは受け付けない。'}, 'question': '申込みはどうなりますか', ...}
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2112/test_case_C4_b4_0')
+
+    @pytest.mark.parametrize("case", CASES, ids=[c["id"] for c in CASES])
+    def test_case(case, tmp_path):
+        paths = []
+        for name, body in case["docs"].items():
+            p = tmp_path / name
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_text(body + "\n", encoding="utf-8")
+            paths.append(str(p))
+        rec = G.load_records(paths)
+>       res = QC.check(case["answer"], case["quotes"], rec, question=case["question"])
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: check() got an unexpected keyword argument 'question'
+
+tests/test_w16t3_content.py:33: TypeError
+______________________________ test_case[CC1-01] _______________________________
+
+case = {'id': 'CC1-01', 'type': 'CC1', 'docs': {'doc.txt': '発注先は凜翔商事である。'}, 'question': '発注先はどこですか', ...}
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2112/test_case_CC1_01_0')
+
+    @pytest.mark.parametrize("case", CASES, ids=[c["id"] for c in CASES])
+    def test_case(case, tmp_path):
+        paths = []
+        for name, body in case["docs"].items():
+            p = tmp_path / name
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_text(body + "\n", encoding="utf-8")
+            paths.append(str(p))
+        rec = G.load_records(paths)
+>       res = QC.check(case["answer"], case["quotes"], rec, question=case["question"])
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: check() got an unexpected keyword argument 'question'
+
+tests/test_w16t3_content.py:33: TypeError
+______________________________ test_case[CC1-02] _______________________________
+
+case = {'id': 'CC1-02', 'type': 'CC1', 'docs': {'doc.txt': '契約は麒麟物産と結んだ。'}, 'question': '契約は誰と結びましたか', ...}
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2112/test_case_CC1_02_0')
+
+    @pytest.mark.parametrize("case", CASES, ids=[c["id"] for c in CASES])
+    def test_case(case, tmp_path):
+        paths = []
+        for name, body in case["docs"].items():
+            p = tmp_path / name
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_text(body + "\n", encoding="utf-8")
+            paths.append(str(p))
+        rec = G.load_records(paths)
+>       res = QC.check(case["answer"], case["quotes"], rec, question=case["question"])
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: check() got an unexpected keyword argument 'question'
+
+tests/test_w16t3_content.py:33: TypeError
+______________________________ test_case[CC1-03] _______________________________
+
+case = {'id': 'CC1-03', 'type': 'CC1', 'docs': {'doc.txt': '取引先は暁星化学である。'}, 'question': '取引先はどこですか', ...}
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2112/test_case_CC1_03_0')
+
+    @pytest.mark.parametrize("case", CASES, ids=[c["id"] for c in CASES])
+    def test_case(case, tmp_path):
+        paths = []
+        for name, body in case["docs"].items():
+            p = tmp_path / name
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_text(body + "\n", encoding="utf-8")
+            paths.append(str(p))
+        rec = G.load_records(paths)
+>       res = QC.check(case["answer"], case["quotes"], rec, question=case["question"])
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: check() got an unexpected keyword argument 'question'
+
+tests/test_w16t3_content.py:33: TypeError
+______________________________ test_case[CC2-01] _______________________________
+
+case = {'id': 'CC2-01', 'type': 'CC2', 'docs': {'doc.txt': '担当は林である。'}, 'question': '担当は誰ですか', ...}
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2112/test_case_CC2_01_0')
+
+    @pytest.mark.parametrize("case", CASES, ids=[c["id"] for c in CASES])
+    def test_case(case, tmp_path):
+        paths = []
+        for name, body in case["docs"].items():
+            p = tmp_path / name
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_text(body + "\n", encoding="utf-8")
+            paths.append(str(p))
+        rec = G.load_records(paths)
+>       res = QC.check(case["answer"], case["quotes"], rec, question=case["question"])
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: check() got an unexpected keyword argument 'question'
+
+tests/test_w16t3_content.py:33: TypeError
+______________________________ test_case[CC2-02] _______________________________
+
+case = {'id': 'CC2-02', 'type': 'CC2', 'docs': {'doc.txt': '係は桐山である。'}, 'question': '係は誰ですか', ...}
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2112/test_case_CC2_02_0')
+
+    @pytest.mark.parametrize("case", CASES, ids=[c["id"] for c in CASES])
+    def test_case(case, tmp_path):
+        paths = []
+        for name, body in case["docs"].items():
+            p = tmp_path / name
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_text(body + "\n", encoding="utf-8")
+            paths.append(str(p))
+        rec = G.load_records(paths)
+>       res = QC.check(case["answer"], case["quotes"], rec, question=case["question"])
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: check() got an unexpected keyword argument 'question'
+
+tests/test_w16t3_content.py:33: TypeError
+______________________________ test_case[CC2-03] _______________________________
+
+case = {'id': 'CC2-03', 'type': 'CC2', 'docs': {'doc.txt': '点検は柏が行う。'}, 'question': '点検は誰が行いますか', ...}
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2112/test_case_CC2_03_0')
+
+    @pytest.mark.parametrize("case", CASES, ids=[c["id"] for c in CASES])
+    def test_case(case, tmp_path):
+        paths = []
+        for name, body in case["docs"].items():
+            p = tmp_path / name
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_text(body + "\n", encoding="utf-8")
+            paths.append(str(p))
+        rec = G.load_records(paths)
+>       res = QC.check(case["answer"], case["quotes"], rec, question=case["question"])
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: check() got an unexpected keyword argument 'question'
+
+tests/test_w16t3_content.py:33: TypeError
+______________________________ test_case[CC3-01] _______________________________
+
+case = {'id': 'CC3-01', 'type': 'CC3', 'docs': {'doc.txt': '会場は大会議室である。'}, 'question': '会場はどこですか', ...}
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2112/test_case_CC3_01_0')
+
+    @pytest.mark.parametrize("case", CASES, ids=[c["id"] for c in CASES])
+    def test_case(case, tmp_path):
+        paths = []
+        for name, body in case["docs"].items():
+            p = tmp_path / name
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_text(body + "\n", encoding="utf-8")
+            paths.append(str(p))
+        rec = G.load_records(paths)
+>       res = QC.check(case["answer"], case["quotes"], rec, question=case["question"])
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: check() got an unexpected keyword argument 'question'
+
+tests/test_w16t3_content.py:33: TypeError
+______________________________ test_case[CC3-02] _______________________________
+
+case = {'id': 'CC3-02', 'type': 'CC3', 'docs': {'doc.txt': '提出するのは申請書である。'}, 'question': '提出するのは何ですか', ...}
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2112/test_case_CC3_02_0')
+
+    @pytest.mark.parametrize("case", CASES, ids=[c["id"] for c in CASES])
+    def test_case(case, tmp_path):
+        paths = []
+        for name, body in case["docs"].items():
+            p = tmp_path / name
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_text(body + "\n", encoding="utf-8")
+            paths.append(str(p))
+        rec = G.load_records(paths)
+>       res = QC.check(case["answer"], case["quotes"], rec, question=case["question"])
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: check() got an unexpected keyword argument 'question'
+
+tests/test_w16t3_content.py:33: TypeError
+______________________________ test_case[CC3-03] _______________________________
+
+case = {'id': 'CC3-03', 'type': 'CC3', 'docs': {'doc.txt': '保管場所は倉庫である。'}, 'question': '保管場所はどこですか', ...}
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2112/test_case_CC3_03_0')
+
+    @pytest.mark.parametrize("case", CASES, ids=[c["id"] for c in CASES])
+    def test_case(case, tmp_path):
+        paths = []
+        for name, body in case["docs"].items():
+            p = tmp_path / name
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_text(body + "\n", encoding="utf-8")
+            paths.append(str(p))
+        rec = G.load_records(paths)
+>       res = QC.check(case["answer"], case["quotes"], rec, question=case["question"])
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: check() got an unexpected keyword argument 'question'
+
+tests/test_w16t3_content.py:33: TypeError
+______________________________ test_case[CR3-01] _______________________________
+
+case = {'id': 'CR3-01', 'type': 'CR3', 'docs': {'doc.txt': '東雲商事から購入した。'}, 'question': '購入先はどこですか', ...}
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2112/test_case_CR3_01_0')
+
+    @pytest.mark.parametrize("case", CASES, ids=[c["id"] for c in CASES])
+    def test_case(case, tmp_path):
+        paths = []
+        for name, body in case["docs"].items():
+            p = tmp_path / name
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_text(body + "\n", encoding="utf-8")
+            paths.append(str(p))
+        rec = G.load_records(paths)
+>       res = QC.check(case["answer"], case["quotes"], rec, question=case["question"])
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: check() got an unexpected keyword argument 'question'
+
+tests/test_w16t3_content.py:33: TypeError
+______________________________ test_case[CR3-02] _______________________________
+
+case = {'id': 'CR3-02', 'type': 'CR3', 'docs': {'doc.txt': '契約は麒麟物産と結んだ。'}, 'question': '契約先はどこですか', ...}
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2112/test_case_CR3_02_0')
+
+    @pytest.mark.parametrize("case", CASES, ids=[c["id"] for c in CASES])
+    def test_case(case, tmp_path):
+        paths = []
+        for name, body in case["docs"].items():
+            p = tmp_path / name
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_text(body + "\n", encoding="utf-8")
+            paths.append(str(p))
+        rec = G.load_records(paths)
+>       res = QC.check(case["answer"], case["quotes"], rec, question=case["question"])
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: check() got an unexpected keyword argument 'question'
+
+tests/test_w16t3_content.py:33: TypeError
+______________________________ test_case[CR3-03] _______________________________
+
+case = {'id': 'CR3-03', 'type': 'CR3', 'docs': {'doc.txt': '倉庫に保管する。'}, 'question': '保管場所はどこですか', ...}
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2112/test_case_CR3_03_0')
+
+    @pytest.mark.parametrize("case", CASES, ids=[c["id"] for c in CASES])
+    def test_case(case, tmp_path):
+        paths = []
+        for name, body in case["docs"].items():
+            p = tmp_path / name
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_text(body + "\n", encoding="utf-8")
+            paths.append(str(p))
+        rec = G.load_records(paths)
+>       res = QC.check(case["answer"], case["quotes"], rec, question=case["question"])
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: check() got an unexpected keyword argument 'question'
+
+tests/test_w16t3_content.py:33: TypeError
+_______________________________ test_case[R6-1] ________________________________
+
+case = {'id': 'R6-1', 'type': 'R6', 'docs': {'a.txt': '予算は300万円である。', 'b.txt': '予算は500万円である。'}, 'question': '予算はいくらですか', ...}
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2112/test_case_R6_1_0')
+
+    @pytest.mark.parametrize("case", CASES, ids=[c["id"] for c in CASES])
+    def test_case(case, tmp_path):
+        paths = []
+        for name, body in case["docs"].items():
+            p = tmp_path / name
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_text(body + "\n", encoding="utf-8")
+            paths.append(str(p))
+        rec = G.load_records(paths)
+>       res = QC.check(case["answer"], case["quotes"], rec, question=case["question"])
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: check() got an unexpected keyword argument 'question'
+
+tests/test_w16t3_content.py:33: TypeError
+_______________________________ test_case[R6-2] ________________________________
+
+case = {'id': 'R6-2', 'type': 'R6', 'docs': {'a.txt': '納期は20日である。', 'b.txt': '納期は20日である。', 'c.txt': '納期は30日である。'}, 'question': '納期はいつですか', ...}
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2112/test_case_R6_2_0')
+
+    @pytest.mark.parametrize("case", CASES, ids=[c["id"] for c in CASES])
+    def test_case(case, tmp_path):
+        paths = []
+        for name, body in case["docs"].items():
+            p = tmp_path / name
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_text(body + "\n", encoding="utf-8")
+            paths.append(str(p))
+        rec = G.load_records(paths)
+>       res = QC.check(case["answer"], case["quotes"], rec, question=case["question"])
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: check() got an unexpected keyword argument 'question'
+
+tests/test_w16t3_content.py:33: TypeError
+_______________________________ test_case[R6-3] ________________________________
+
+case = {'id': 'R6-3', 'type': 'R6', 'docs': {'a/doc.txt': '予算は300万円である。', 'b/doc.txt': '予算は500万円である。'}, 'question': '予算はいくらですか', ...}
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2112/test_case_R6_3_0')
+
+    @pytest.mark.parametrize("case", CASES, ids=[c["id"] for c in CASES])
+    def test_case(case, tmp_path):
+        paths = []
+        for name, body in case["docs"].items():
+            p = tmp_path / name
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_text(body + "\n", encoding="utf-8")
+            paths.append(str(p))
+        rec = G.load_records(paths)
+>       res = QC.check(case["answer"], case["quotes"], rec, question=case["question"])
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: check() got an unexpected keyword argument 'question'
+
+tests/test_w16t3_content.py:33: TypeError
+=========================== short test summary info ============================
+FAILED tests/test_w16t3_content.py::test_case[C1-01] - TypeError: check() got...
+FAILED tests/test_w16t3_content.py::test_case[C1-02] - TypeError: check() got...
+FAILED tests/test_w16t3_content.py::test_case[C1-03] - TypeError: check() got...
+FAILED tests/test_w16t3_content.py::test_case[C1-04] - TypeError: check() got...
+FAILED tests/test_w16t3_content.py::test_case[C1-05] - TypeError: check() got...
+FAILED tests/test_w16t3_content.py::test_case[C1-06] - TypeError: check() got...
+FAILED tests/test_w16t3_content.py::test_case[C1-07] - TypeError: check() got...
+FAILED tests/test_w16t3_content.py::test_case[C1-08] - TypeError: check() got...
+FAILED tests/test_w16t3_content.py::test_case[C1-09] - TypeError: check() got...
+FAILED tests/test_w16t3_content.py::test_case[C1-10] - TypeError: check() got...
+FAILED tests/test_w16t3_content.py::test_case[C2-01] - TypeError: check() got...
+FAILED tests/test_w16t3_content.py::test_case[C2-02] - TypeError: check() got...
+FAILED tests/test_w16t3_content.py::test_case[C2-03] - TypeError: check() got...
+FAILED tests/test_w16t3_content.py::test_case[C2-04] - TypeError: check() got...
+FAILED tests/test_w16t3_content.py::test_case[C2-05] - TypeError: check() got...
+FAILED tests/test_w16t3_content.py::test_case[C2-06] - TypeError: check() got...
+FAILED tests/test_w16t3_content.py::test_case[C2-07] - TypeError: check() got...
+FAILED tests/test_w16t3_content.py::test_case[C2-08] - TypeError: check() got...
+FAILED tests/test_w16t3_content.py::test_case[C2-09] - TypeError: check() got...
+FAILED tests/test_w16t3_content.py::test_case[C3-01] - TypeError: check() got...
+FAILED tests/test_w16t3_content.py::test_case[C3-02] - TypeError: check() got...
+FAILED tests/test_w16t3_content.py::test_case[C3-03] - TypeError: check() got...
+FAILED tests/test_w16t3_content.py::test_case[C3-04] - TypeError: check() got...
+FAILED tests/test_w16t3_content.py::test_case[C3-05] - TypeError: check() got...
+FAILED tests/test_w16t3_content.py::test_case[C3-06] - TypeError: check() got...
+FAILED tests/test_w16t3_content.py::test_case[C3-07] - TypeError: check() got...
+FAILED tests/test_w16t3_content.py::test_case[C3-08] - TypeError: check() got...
+FAILED tests/test_w16t3_content.py::test_case[C4-a1] - TypeError: check() got...
+FAILED tests/test_w16t3_content.py::test_case[C4-a2] - TypeError: check() got...
+FAILED tests/test_w16t3_content.py::test_case[C4-a3] - TypeError: check() got...
+FAILED tests/test_w16t3_content.py::test_case[C4-a4] - TypeError: check() got...
+FAILED tests/test_w16t3_content.py::test_case[C4-a5] - TypeError: check() got...
+FAILED tests/test_w16t3_content.py::test_case[C4-b1] - TypeError: check() got...
+FAILED tests/test_w16t3_content.py::test_case[C4-b2] - TypeError: check() got...
+FAILED tests/test_w16t3_content.py::test_case[C4-b3] - TypeError: check() got...
+FAILED tests/test_w16t3_content.py::test_case[C4-b4] - TypeError: check() got...
+FAILED tests/test_w16t3_content.py::test_case[CC1-01] - TypeError: check() go...
+FAILED tests/test_w16t3_content.py::test_case[CC1-02] - TypeError: check() go...
+FAILED tests/test_w16t3_content.py::test_case[CC1-03] - TypeError: check() go...
+FAILED tests/test_w16t3_content.py::test_case[CC2-01] - TypeError: check() go...
+FAILED tests/test_w16t3_content.py::test_case[CC2-02] - TypeError: check() go...
+FAILED tests/test_w16t3_content.py::test_case[CC2-03] - TypeError: check() go...
+FAILED tests/test_w16t3_content.py::test_case[CC3-01] - TypeError: check() go...
+FAILED tests/test_w16t3_content.py::test_case[CC3-02] - TypeError: check() go...
+FAILED tests/test_w16t3_content.py::test_case[CC3-03] - TypeError: check() go...
+FAILED tests/test_w16t3_content.py::test_case[CR3-01] - TypeError: check() go...
+FAILED tests/test_w16t3_content.py::test_case[CR3-02] - TypeError: check() go...
+FAILED tests/test_w16t3_content.py::test_case[CR3-03] - TypeError: check() go...
+FAILED tests/test_w16t3_content.py::test_case[R6-1] - TypeError: check() got ...
+FAILED tests/test_w16t3_content.py::test_case[R6-2] - TypeError: check() got ...
+FAILED tests/test_w16t3_content.py::test_case[R6-3] - TypeError: check() got ...
+51 failed, 1 passed in 0.48s

@@ -1,0 +1,21 @@
+{
+ "after": "PASS",
+ "apply": "OK",
+ "before": "FAIL",
+ "bundle": "B04",
+ "bundle_tests_passing_after": [
+  "tests/attack/test_memory_revalidate_injection.py::test_matching_file_hash_keeps_only_the_grounded_value"
+ ],
+ "diff": "artifacts/w1-f/fixes/B04.diff",
+ "newly_failing": [],
+ "newly_failing_confirmed": [],
+ "newly_passing": [
+  "tests/attack/test_memory_revalidate_injection.py::test_matching_file_hash_keeps_only_the_grounded_value"
+ ],
+ "only_product_files": true,
+ "summary_line": "123 failed, 3685 passed, 28 skipped, 82 xfailed, 68 xpassed, 37 subtests passed",
+ "test": "tests/attack/test_memory_revalidate_injection.py::test_matching_file_hash_keeps_only_the_grounded_value",
+ "touched": [
+  "verantyx/memory_frame.py"
+ ]
+}

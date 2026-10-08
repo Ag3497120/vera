@@ -1,0 +1,5 @@
+tests/reading_soundness/w3b3_relative.jsonl: OK
+tests/reading_soundness/w3b3_connective.jsonl: OK
+tests/reading_soundness/w3b3_parallel.jsonl: OK
+tests/reading_soundness/w3b3_w1a4.jsonl: OK
+tests/reading_soundness/w3b3_mk_data.py: OK

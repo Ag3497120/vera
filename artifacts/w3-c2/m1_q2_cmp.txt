@@ -1,0 +1,5 @@
+round2 vs round1 (same frozen data, after the M1 fix in _question_en)
+q2_outputs.jsonl: byte same (185 questions, none changed)
+b90c7bbf41bd744eab1c0a54d37a3d68c6d64a4c0c63b2168c49d3fff1e424a9  /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w3c2-r2/q2/q2_outputs.jsonl
+b90c7bbf41bd744eab1c0a54d37a3d68c6d64a4c0c63b2168c49d3fff1e424a9  artifacts/w3-c2/q2_outputs.jsonl
+{'totals': {'CORRECT': 99, 'WRONG': 0, 'FALSE_NONE': 4, 'ABSTAINED': 82, 'UNSCORED': 0, 'n': 185}, 'totals_with_corrections': {'CORRECT': 99, 'WRONG': 0, 'FALSE_NONE': 4, 'ABSTAINED': 82, 'UNSCORED': 

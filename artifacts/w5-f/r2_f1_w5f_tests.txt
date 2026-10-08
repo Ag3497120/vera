@@ -1,0 +1,100 @@
+....FFFF...                                                              [100%]
+=================================== FAILURES ===================================
+____ test_quoted_focus_cases_abstain_with_the_registered_reason[fake-A054] _____
+
+case_id = 'A054', placement_kind = 'fake'
+
+    @pytest.mark.parametrize("case_id", ["A054", "A059"])
+    @pytest.mark.parametrize("placement_kind", ["fake", "r8"])
+    def test_quoted_focus_cases_abstain_with_the_registered_reason(case_id, placement_kind):
+        attack = _load_attack_w3b4()
+        probe = next(item for item in attack.probes() if item.case_id == case_id)
+        placement = attack.query_for(probe) if placement_kind == "fake" else str(R8)
+        if placement_kind == "r8" and not R8.is_dir():
+            pytest.skip("ENV_MISSING[r8_placement]: %s" % R8)
+        out = SR.read(probe.text, "ja", placement=placement)
+        explanation = SR.typed_explain_ja(probe.text, placement)
+        assert not out["readable"], out
+>       assert explanation["w3b2"] == "PLACEMENT_QUOTED_PARTICLE_AFTER_CASE:へ", explanation
+E       AssertionError: {'w3b1_trigger': None, 'w3b1': None, 'w3b2_trigger': None, 'w3b2': 'PLACEMENT_W3B2_NOT_TRIGGERED', ...}
+E       assert 'PLACEMENT_W3B2_NOT_TRIGGERED' == 'PLACEMENT_QU..._AFTER_CASE:へ'
+E         
+E         - PLACEMENT_QUOTED_PARTICLE_AFTER_CASE:へ
+E         + PLACEMENT_W3B2_NOT_TRIGGERED
+
+tests/test_semantic_read_w5f.py:99: AssertionError
+____ test_quoted_focus_cases_abstain_with_the_registered_reason[fake-A059] _____
+
+case_id = 'A059', placement_kind = 'fake'
+
+    @pytest.mark.parametrize("case_id", ["A054", "A059"])
+    @pytest.mark.parametrize("placement_kind", ["fake", "r8"])
+    def test_quoted_focus_cases_abstain_with_the_registered_reason(case_id, placement_kind):
+        attack = _load_attack_w3b4()
+        probe = next(item for item in attack.probes() if item.case_id == case_id)
+        placement = attack.query_for(probe) if placement_kind == "fake" else str(R8)
+        if placement_kind == "r8" and not R8.is_dir():
+            pytest.skip("ENV_MISSING[r8_placement]: %s" % R8)
+        out = SR.read(probe.text, "ja", placement=placement)
+        explanation = SR.typed_explain_ja(probe.text, placement)
+        assert not out["readable"], out
+>       assert explanation["w3b2"] == "PLACEMENT_QUOTED_PARTICLE_AFTER_CASE:へ", explanation
+E       AssertionError: {'w3b1_trigger': None, 'w3b1': None, 'w3b2_trigger': None, 'w3b2': 'PLACEMENT_W3B2_NOT_TRIGGERED', ...}
+E       assert 'PLACEMENT_W3B2_NOT_TRIGGERED' == 'PLACEMENT_QU..._AFTER_CASE:へ'
+E         
+E         - PLACEMENT_QUOTED_PARTICLE_AFTER_CASE:へ
+E         + PLACEMENT_W3B2_NOT_TRIGGERED
+
+tests/test_semantic_read_w5f.py:99: AssertionError
+_____ test_quoted_focus_cases_abstain_with_the_registered_reason[r8-A054] ______
+
+case_id = 'A054', placement_kind = 'r8'
+
+    @pytest.mark.parametrize("case_id", ["A054", "A059"])
+    @pytest.mark.parametrize("placement_kind", ["fake", "r8"])
+    def test_quoted_focus_cases_abstain_with_the_registered_reason(case_id, placement_kind):
+        attack = _load_attack_w3b4()
+        probe = next(item for item in attack.probes() if item.case_id == case_id)
+        placement = attack.query_for(probe) if placement_kind == "fake" else str(R8)
+        if placement_kind == "r8" and not R8.is_dir():
+            pytest.skip("ENV_MISSING[r8_placement]: %s" % R8)
+        out = SR.read(probe.text, "ja", placement=placement)
+        explanation = SR.typed_explain_ja(probe.text, placement)
+        assert not out["readable"], out
+>       assert explanation["w3b2"] == "PLACEMENT_QUOTED_PARTICLE_AFTER_CASE:へ", explanation
+E       AssertionError: {'w3b1_trigger': None, 'w3b1': None, 'w3b2_trigger': None, 'w3b2': 'PLACEMENT_W3B2_NOT_TRIGGERED', ...}
+E       assert 'PLACEMENT_W3B2_NOT_TRIGGERED' == 'PLACEMENT_QU..._AFTER_CASE:へ'
+E         
+E         - PLACEMENT_QUOTED_PARTICLE_AFTER_CASE:へ
+E         + PLACEMENT_W3B2_NOT_TRIGGERED
+
+tests/test_semantic_read_w5f.py:99: AssertionError
+_____ test_quoted_focus_cases_abstain_with_the_registered_reason[r8-A059] ______
+
+case_id = 'A059', placement_kind = 'r8'
+
+    @pytest.mark.parametrize("case_id", ["A054", "A059"])
+    @pytest.mark.parametrize("placement_kind", ["fake", "r8"])
+    def test_quoted_focus_cases_abstain_with_the_registered_reason(case_id, placement_kind):
+        attack = _load_attack_w3b4()
+        probe = next(item for item in attack.probes() if item.case_id == case_id)
+        placement = attack.query_for(probe) if placement_kind == "fake" else str(R8)
+        if placement_kind == "r8" and not R8.is_dir():
+            pytest.skip("ENV_MISSING[r8_placement]: %s" % R8)
+        out = SR.read(probe.text, "ja", placement=placement)
+        explanation = SR.typed_explain_ja(probe.text, placement)
+        assert not out["readable"], out
+>       assert explanation["w3b2"] == "PLACEMENT_QUOTED_PARTICLE_AFTER_CASE:へ", explanation
+E       AssertionError: {'w3b1_trigger': None, 'w3b1': None, 'w3b2_trigger': None, 'w3b2': 'PLACEMENT_W3B2_NOT_TRIGGERED', ...}
+E       assert 'PLACEMENT_W3B2_NOT_TRIGGERED' == 'PLACEMENT_QU..._AFTER_CASE:へ'
+E         
+E         - PLACEMENT_QUOTED_PARTICLE_AFTER_CASE:へ
+E         + PLACEMENT_W3B2_NOT_TRIGGERED
+
+tests/test_semantic_read_w5f.py:99: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_semantic_read_w5f.py::test_quoted_focus_cases_abstain_with_the_registered_reason[fake-A054]
+FAILED tests/test_semantic_read_w5f.py::test_quoted_focus_cases_abstain_with_the_registered_reason[fake-A059]
+FAILED tests/test_semantic_read_w5f.py::test_quoted_focus_cases_abstain_with_the_registered_reason[r8-A054]
+FAILED tests/test_semantic_read_w5f.py::test_quoted_focus_cases_abstain_with_the_registered_reason[r8-A059]
+4 failed, 7 passed in 1.64s

@@ -1,0 +1,26 @@
+ docs/COARSE_PLACEMENT.md              |  37 +++++++++
+ docs/FUSION.md                        |   9 +++
+ tests/attack/w3a3/r6_48_queries.jsonl |  96 +++++++++++-----------
+ verantyx/cli.py                       | 146 ++++++++++++++++++++++++++++++++--
+ verantyx/coarse_place.py              |  16 +++-
+ verantyx/fill_candidates.py           |  53 ++++++++++--
+ verantyx/testimony_ledger.py          |  58 +++++++++++++-
+ verantyx/vera_server.py               |  30 ++++++-
+ 8 files changed, 381 insertions(+), 64 deletions(-)
+ M docs/COARSE_PLACEMENT.md
+ M docs/FUSION.md
+ M tests/attack/w3a3/r6_48_queries.jsonl
+ M verantyx/cli.py
+ M verantyx/coarse_place.py
+ M verantyx/fill_candidates.py
+ M verantyx/testimony_ledger.py
+ M verantyx/vera_server.py
+?? artifacts/w10-f05/
+?? tests/fusion/w10f05/
+?? tests/test_w10f05_cli.py
+?? tests/test_w10f05_grow.py
+?? tests/test_w10f05_layer.py
+?? tests/test_w10f05_promote.py
+?? tests/test_w10f05_sovereign.py
+?? verantyx/placement_grow.py
+?? verantyx/placement_layer.py

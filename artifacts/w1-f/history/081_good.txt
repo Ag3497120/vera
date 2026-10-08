@@ -1,0 +1,15 @@
+# commit 5801559b4a7364c745b5857026a4a39ef8e9ea09
+# status PASS
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 14 items / 13 deselected / 1 selected
+
+tests/attack/test_semantic_reader_realtext.py::test_quantifier_scope_is_retained_as_unsupported PASSED [100%]
+
+=== PASSES ===
+=== short test summary info ===
+PASSED tests/attack/test_semantic_reader_realtext.py::test_quantifier_scope_is_retained_as_unsupported
+=== 1 passed, 13 deselected ===

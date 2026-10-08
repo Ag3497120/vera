@@ -1,0 +1,533 @@
+{
+  "doors": 132,
+  "list": [
+    {
+      "door": "accept_ai_fact",
+      "about": "Promote one pending AI-proposed fact (by index from list_pending_ai_facts) into the truste"
+    },
+    {
+      "door": "accept_capacity_limit",
+      "about": "Apply one pending limit increase (by index) to VeraConfig. The ONLY path by which a propos"
+    },
+    {
+      "door": "accept_domain_module",
+      "about": "Promote one pending domain module (by index from list_pending_domain_modules) into the liv"
+    },
+    {
+      "door": "accept_pack_verdict",
+      "about": "Write one pending verdict into the overlay pack directory and reload the registry. The ONL"
+    },
+    {
+      "door": "accept_tool_call",
+      "about": "Actually RUN one pending tool call (by index from list_pending_tool_calls) now, with curre"
+    },
+    {
+      "door": "add_conversation_turn",
+      "about": "Ingest one utterance into the conversation's SPACE (not a window). Each sentence becomes a"
+    },
+    {
+      "door": "adopt_covenant",
+      "about": "Adopt a quarantined candidate into enforcement — the gate. With infer=True the store is re"
+    },
+    {
+      "door": "arc_observe_transition",
+      "about": "Milestone R1: feed one action->observation step from a 2D dynamic-puzzle environment (ARC-"
+    },
+    {
+      "door": "arm_completeness",
+      "about": "The six-question checklist for a topic: which arms hold knowledge (support/oppose, cause/e"
+    },
+    {
+      "door": "ask",
+      "about": "Ask the knowledge store. Returns a typed verdict — ANSWER with provenance-backed facets, o"
+    },
+    {
+      "door": "assess_field_reports",
+      "about": "Turn structured field reports into typed findings. `reports_json` is a list of {place, cat"
+    },
+    {
+      "door": "assets_for",
+      "about": "Which assets on this machine could close a stated need. The plan side of the gap loop. A G"
+    },
+    {
+      "door": "attest_claim",
+      "about": "Judge whether THIS store supports what a claim says about a subject. Built for grading an "
+    },
+    {
+      "door": "audit_required",
+      "about": "Required-side audit by WITNESS, not by wording. 「必ずテストを 実行して」 cannot be enforced by readin"
+    },
+    {
+      "door": "bootstrap_unknown_task",
+      "about": "Milestone R2: turn an unfamiliar task (ARC-AGI-3, an unknown CLI/ library, an unknown repo"
+    },
+    {
+      "door": "capability_index",
+      "about": "**Ask this before building anything.** Does the capability already exist here? One search "
+    },
+    {
+      "door": "check_context_drift",
+      "about": "Is the reply about something this conversation already settled, while using none of what w"
+    },
+    {
+      "door": "check_drift",
+      "about": "Compare the store against a recorded baseline. Reports added / removed / changed cores, ea"
+    },
+    {
+      "door": "check_reply",
+      "about": "Does this reply still honour what the user settled? Pass `asked` — the question that promp"
+    },
+    {
+      "door": "code_ingest",
+      "about": "Ingest a Python repo (AST): one cross per function with file/class/args/calls facets."
+    },
+    {
+      "door": "code_query",
+      "about": "Code reasoning: 'who calls X' | 'what does X call' | 'impact of X'."
+    },
+    {
+      "door": "compile_documents",
+      "about": "Read the user's documents (.txt/.md files or folders, comma separated) into a checkable st"
+    },
+    {
+      "door": "conversation_stats",
+      "about": "Turns, layers, total cores, speakers."
+    },
+    {
+      "door": "deep_report",
+      "about": "What is actually known about a topic, in three UNBLENDED parts: settled every source that "
+    },
+    {
+      "door": "explain_placement",
+      "about": "Where would this sentence land, and why — core, facets, poles, the subject gate's verdict,"
+    },
+    {
+      "door": "export_failure_pack",
+      "about": "The pack as editable JSON — the exact on-disk form. Edit it and save to the overlay direct"
+    },
+    {
+      "door": "extract_covenants",
+      "about": "Instruction text → covenant CANDIDATES, by closed surface rules (ja: 〜を使わないで / 必ず〜して; en: "
+    },
+    {
+      "door": "fading_covenants",
+      "about": "Which rules have STARTED being broken — the only ones worth re-injecting. Re-sending every"
+    },
+    {
+      "door": "failure_stats",
+      "about": "Histogram of typed failures across all recorded UNKNOWN buckets, plus what the boundary de"
+    },
+    {
+      "door": "field_report_categories",
+      "about": "The posting categories and their closed status sets, with how many minutes each takes to g"
+    },
+    {
+      "door": "field_report_needs",
+      "about": "What someone might need, and which categories answer it. Keyed on NEED, never on who the p"
+    },
+    {
+      "door": "find_similar_gaps",
+      "about": "Structural (not text/vector) similarity against other GapNodes' role/failure_type/input_ty"
+    },
+    {
+      "door": "forget",
+      "about": "Delete a core cross entirely. Deletion is real and immediate — unlike model weights, nothi"
+    },
+    {
+      "door": "goal_recipe",
+      "about": "Turn \"what I want to do\" into the ordered settings that get there. Use this BEFORE setting"
+    },
+    {
+      "door": "grammar_status",
+      "about": "The Japanese grammar currently in force: bundled counts, which overlay (if any) loaded fro"
+    },
+    {
+      "door": "graph_snapshot",
+      "about": "Structural snapshot of the store for visualization -- NOT for grounded QA (that's `ask`). "
+    },
+    {
+      "door": "harness_ask_back",
+      "about": "The run is underdetermined — the question to put to a PERSON. Not a prompt for the model. "
+    },
+    {
+      "door": "harness_begin",
+      "about": "Start a run. The engine reads the instruction and owns the loop. The instruction is framed"
+    },
+    {
+      "door": "harness_deliver",
+      "about": "Hand back what was actually seen. Progress is arms placed. Same shape as `observe`, becaus"
+    },
+    {
+      "door": "harness_next",
+      "about": "What the engine wants done next. The model does not choose. An empty result never becomes "
+    },
+    {
+      "door": "harness_vary",
+      "about": "One success, several methods — by single change, for attribution. Every variant differs fr"
+    },
+    {
+      "door": "heartbeat",
+      "about": "Milestone M's autonomous growth tick (closed-domain modules, unchanged) plus, when cogniti"
+    },
+    {
+      "door": "how_to_resolve",
+      "about": "What an expert should register so a refusal becomes an answer. Every refusal here is typed"
+    },
+    {
+      "door": "ingest_documents",
+      "about": "Ingest several source documents about one event and PRESERVE their disagreements. `documen"
+    },
+    {
+      "door": "list_baselines",
+      "about": "Every baseline recorded beside this store."
+    },
+    {
+      "door": "list_covenants",
+      "about": "Every covenant in force, with the turn it came from."
+    },
+    {
+      "door": "list_failure_domains",
+      "about": "The registered failure-domain packs: name, maturity (verified = validated against confirme"
+    },
+    {
+      "door": "list_gaps",
+      "about": "欠落台帳の一覧(2026-08-19)。拒否のたびに登録される「どの知識が 不足か」の名指しを、人が見て埋められる形で返す。status で絞り込み (DETECTED/ACQUI"
+    },
+    {
+      "door": "list_goals",
+      "about": "Every task recipe available — the \"what can I actually do with this\" list, for a first-run"
+    },
+    {
+      "door": "list_modes",
+      "about": "Every mode family in the IDE, in one list. The interface shows six independent families on"
+    },
+    {
+      "door": "list_pending_ai_facts",
+      "about": "List AI-proposed facts awaiting human review (index, text, source, timestamp). Use the ind"
+    },
+    {
+      "door": "list_pending_capacity_limits",
+      "about": "List calibrated limit increases awaiting human review. Each entry carries the probe eviden"
+    },
+    {
+      "door": "list_pending_domain_modules",
+      "about": "List LLM-drafted domain modules awaiting human review (index, name, source code, verify te"
+    },
+    {
+      "door": "list_pending_pack_verdicts",
+      "about": "Proposed failure-pack verdicts awaiting review. Each carries the real log examples the aut"
+    },
+    {
+      "door": "list_pending_tool_calls",
+      "about": "Milestone R4: mutating tool calls the Vera-harness chat (IDE) proposed but could not run w"
+    },
+    {
+      "door": "list_transfer_outcomes",
+      "about": "The raw log this milestone exists to build up — every recorded structural-match reuse atte"
+    },
+    {
+      "door": "list_verified_ui_elements",
+      "about": "Lists every UI element registered for `app` via `record_verified_ui_element` -- used by a "
+    },
+    {
+      "door": "load_documents",
+      "about": "Read files (or a folder) into the store — PDF, Word, HTML, CSV, JSON, plain text. `paths` "
+    },
+    {
+      "door": "locate_conversation_topic",
+      "about": "Is a topic still in context? The typed answer an LLM cannot give: ACTIVE (top layer), FROZ"
+    },
+    {
+      "door": "log_transfer_attempt",
+      "about": "Milestone R3: record that a structurally-matched resolution (from find_similar_gaps' sourc"
+    },
+    {
+      "door": "lookup_verified_ui_element",
+      "about": "Deterministic lookup for a UI element registered via `record_verified_ui_element`. Returns"
+    },
+    {
+      "door": "lookup_verified_url",
+      "about": "Deterministic lookup for a URL registered via `record_verified_url` -- bypasses `ask`'s co"
+    },
+    {
+      "door": "math",
+      "about": "Exact wire arithmetic / typed equation solving (never approximate: ANSWER, AMBIGUOUS, or U"
+    },
+    {
+      "door": "memory_ledger",
+      "about": "The memory as a LEDGER a person can read and act on. `recall` answers about one core; this"
+    },
+    {
+      "door": "memory_review",
+      "about": "Mark a memory as reviewed by a person, or edit it. `state` is the label an agent will see."
+    },
+    {
+      "door": "observe",
+      "about": "Place an observation on the six arms. This is not a gate. Anything a caller looked at — a "
+    },
+    {
+      "door": "own_ai_guide",
+      "about": "The build-your-own-AI guide: how placement works (core / facet / pole / arm), the explain→"
+    },
+    {
+      "door": "pending_decisions",
+      "about": "人の判断を待っているものを、**1つの窓**にまとめて返す。 欠けを隠さずに見せるための読むだけの扉(2026-08-22、PREREG8)。 待ち行列は既に22本の扉として在る "
+    },
+    {
+      "door": "propose_ai_facts",
+      "about": "Quarantine sentence-level fact candidates split out of an assistant's FINAL reply text — n"
+    },
+    {
+      "door": "propose_covenant",
+      "about": "Put a covenant CANDIDATE in quarantine. Meant for the LLM-handoff path: closed extraction "
+    },
+    {
+      "door": "propose_domain_module",
+      "about": "Manually quarantine a hand- or externally-drafted domain module (bypassing heartbeat's LLM"
+    },
+    {
+      "door": "propose_failure_verdict",
+      "about": "Add a new typed verdict to a failure pack FROM EXAMPLES, not from a regular expression. Pa"
+    },
+    {
+      "door": "propose_web_evidence",
+      "about": "Quarantine ONE raw web-search excerpt, verbatim, for human review — the interactive counte"
+    },
+    {
+      "door": "rebake_inference",
+      "about": "Re-read the store ONCE and refresh baked inferred_forbids, reporting what was added and wh"
+    },
+    {
+      "door": "recall",
+      "about": "Recall the accumulated facets (with counts) for a core."
+    },
+    {
+      "door": "recall_conversation",
+      "about": "Answer from the conversation's own memory across every layer, oldest first (extended infer"
+    },
+    {
+      "door": "record_asset_outcome",
+      "about": "What happened when an asset was used for a need — and, when it worked, the recipe that mak"
+    },
+    {
+      "door": "record_baseline",
+      "about": "Record what the store holds now, to compare against later. `keep_cores` is a comma-separat"
+    },
+    {
+      "door": "record_build_failure",
+      "about": "Classify a build/CI/conversion failure into a typed verdict (UNKNOWN_SIGNING / UNKNOWN_DEP"
+    },
+    {
+      "door": "record_code_change",
+      "about": "Record a code change (file path + what changed) as a structured fact — NOT run through sen"
+    },
+    {
+      "door": "record_refusal_outcome",
+      "about": "A typed refusal was handed to an action branch (gather-evidence, ask-user, resolve-time, r"
+    },
+    {
+      "door": "record_tool_witness",
+      "about": "An external tool's run, kept as a witness — not as a log line. This is what makes using an"
+    },
+    {
+      "door": "record_transfer_result",
+      "about": "Explicitly judge a previously-logged transfer attempt (log_transfer_attempt's outcome_id)."
+    },
+    {
+      "door": "record_typed_failure",
+      "about": "Classify failure evidence through the named domain pack (see list_failure_domains) and rec"
+    },
+    {
+      "door": "record_ui_transition",
+      "about": "Milestone S: the IDE's Swift side calls this once per recorded UI-automation step (the sam"
+    },
+    {
+      "door": "record_verified_ui_element",
+      "about": "Register a confirmed UI element location within `app`'s window, as (x, y) normalized to 0-"
+    },
+    {
+      "door": "record_verified_url",
+      "about": "Register a human- or agent-confirmed URL for a named destination (e.g. name=\"Gemini\", url="
+    },
+    {
+      "door": "reject_ai_fact",
+      "about": "Discard one pending AI-proposed fact (by index) — it is marked rejected and never enters t"
+    },
+    {
+      "door": "reject_capacity_limit",
+      "about": "Discard one pending limit increase (by index)."
+    },
+    {
+      "door": "reject_domain_module",
+      "about": "Discard one pending domain module (by index) — marked rejected, never written to disk or r"
+    },
+    {
+      "door": "reject_pack_verdict",
+      "about": "Discard one pending verdict proposal."
+    },
+    {
+      "door": "reject_tool_call",
+      "about": "Discard one pending tool call (by index) — never runs."
+    },
+    {
+      "door": "remember",
+      "about": "Teach one English sentence. It is classified into core + facets and accumulated determinis"
+    },
+    {
+      "door": "resolve_gap",
+      "about": "欠落を人手で解決済みにする(文書を入れた・不要と判断した等)。 台帳から消さない — RESOLVED になって残る。"
+    },
+    {
+      "door": "retire_covenant",
+      "about": "Retire a covenant — not delete it. 「もう絵文字使っていいよ」 releases the rule from check/fading, but "
+    },
+    {
+      "door": "review_candidates",
+      "about": "Which quarantined candidates have earned adoption — a RECOMMENDATION, never an adoption. A"
+    },
+    {
+      "door": "set_covenant",
+      "about": "Register something the user settled, so a later reply can be checked against it. Comma-sep"
+    },
+    {
+      "door": "settings_guide",
+      "about": "The settings guide as Markdown, generated from the same registry the lookup tools read, so"
+    },
+    {
+      "door": "settings_lookup",
+      "about": "Find which Verantyx setting a question is about. Returns one of ANSWER (with the exact Set"
+    },
+    {
+      "door": "settings_search",
+      "about": "Ranked near-matches for a settings question — use when settings_lookup returns UNKNOWN_AMB"
+    },
+    {
+      "door": "stats",
+      "about": "Store statistics (cores, facet links, sentences ingested)."
+    },
+    {
+      "door": "survey_assets",
+      "about": "What this machine actually has — presence only, never ability. The exploring agent needs a"
+    },
+    {
+      "door": "test_failure_pack",
+      "about": "Run a pack over real log samples (one per line) and report what it typed, with example lin"
+    },
+    {
+      "door": "vera_ask",
+      "about": "Ask the full stack: language, staircase, inference core, reach. The same entry the 3D view"
+    },
+    {
+      "door": "vera_ask_documents",
+      "about": "Answer from the loaded documents only — quote, or say nothing. This is a different surface"
+    },
+    {
+      "door": "vera_chat",
+      "about": "Talk with the whole engine — stateful, model-free, audited. One call = one turn. What happ"
+    },
+    {
+      "door": "vera_cli",
+      "about": "CLI にしか無い機能を IDE から使う橋(閉じた許可表つき)。 扉ごとに CLI を書き写すと二つの表面が必ずずれるので、写さずに 呼ぶ。許可表は読むだけ・計算だけ: doct"
+    },
+    {
+      "door": "vera_compare_spaces",
+      "about": "この端末の文書と、公開連合（一般知識）が、同じ主題について何を 言うかの差分。「この規程は一般的な考え方と比べて特殊か」の答えが 立つ場所で、社内文書だけのモデルには構造的に作れな"
+    },
+    {
+      "door": "vera_compose",
+      "about": "Build one clause for a verb from its observed frame. No model. Three tables and no generat"
+    },
+    {
+      "door": "vera_diff",
+      "about": "Structural difference of two subjects — shared / A-only / B-only. The six-layer diff (type"
+    },
+    {
+      "door": "vera_doctor",
+      "about": "この機械で今、保証が成り立つかを実演して答える。 番人(G1〜G4)・単体の装置(S1〜S4)・配線(WIRED/PARTIAL/ NOT_WIRED)。保証が壊れていれば BRO"
+    },
+    {
+      "door": "vera_documents",
+      "about": "What documents this terminal has loaded, and a way to drop one. The domain shelf (`vera_do"
+    },
+    {
+      "door": "vera_domain",
+      "about": "Register one document's vocabulary as a domain. Words, not facts. `ingest_documents` adds "
+    },
+    {
+      "door": "vera_domain_text",
+      "about": "Register pasted text as a domain's vocabulary. Same gates. For text that arrived without a"
+    },
+    {
+      "door": "vera_domains",
+      "about": "Which document vocabularies are registered, and what is shared. A domain costs its NOUNS, "
+    },
+    {
+      "door": "vera_engine",
+      "about": "Everything the engine knows how to bring, for one question. **Call this door, not the spec"
+    },
+    {
+      "door": "vera_experience",
+      "about": "The experience ledger, read-only: everything this system has PROVED, REFUTED, failed at, r"
+    },
+    {
+      "door": "vera_explain",
+      "about": "Meaning descent: the term's units grounded in definition sentences, or a typed abstention."
+    },
+    {
+      "door": "vera_fresh",
+      "about": "検索で得た一般知識を、一時空間で引用し、毎回破棄する。 第三の空間。店（連合）でも端末の文書でもない — 呼び出し元（IDE の 検索実装）が取ってきた頁を、この関数の中だけに索引"
+    },
+    {
+      "door": "vera_intent",
+      "about": "Frame an instruction structurally, or refuse with UNKNOWN_INTENT. The measured share of in"
+    },
+    {
+      "door": "vera_math",
+      "about": "Is this theorem verified? The mathlib witness store answers. 75,919 of mathlib's 77,242 th"
+    },
+    {
+      "door": "vera_multi_party",
+      "about": "Split a multi-actor sentence into events, and look up each actor's act against the loaded "
+    },
+    {
+      "door": "vera_prove",
+      "about": "Prove an equation, refute it with a counterexample, or refuse. Three outcomes, never two —"
+    },
+    {
+      "door": "vera_prove_sections",
+      "about": "The stereo cross reading of a proof: derive from each section. 「複数の外に出ている断面から中心に向かってアクセスし、"
+    },
+    {
+      "door": "vera_read_at",
+      "about": "分野ごとの読みを、併合せずに並べて返す(2026-08-19配線)。 `fusion.read_at` は「両側の言い分を、平均せずに見せる」ための器官 だが、呼び出し元が一つも無"
+    },
+    {
+      "door": "vera_sovereigns",
+      "about": "Which sovereigns are loaded, and how big each is."
+    },
+    {
+      "door": "vera_summarize",
+      "about": "Edge-licensed compression over n held subjects (space-separated). Each subject is a path; "
+    },
+    {
+      "door": "vera_transfer",
+      "about": "Which of this system's learned facts survived a change of context, and which were bound to"
+    },
+    {
+      "door": "vera_typo",
+      "about": "Typed hand-off for an out-of-vocabulary term. Never rewrites. Recovery@5 84.8% with 0/500 "
+    },
+    {
+      "door": "verify_against_documents",
+      "about": "Check what an AI wrote against the user's compiled documents, claim by claim. Each claim g"
+    },
+    {
+      "door": "wake_summary",
+      "about": "Milestone O: 'what changed while you were away' — GapNodes whose status changed within the"
+    },
+    {
+      "door": "what_would_close",
+      "about": "Which document, from which shelf, would close this refusal. The enterprise inversion of th"
+    }
+  ]
+}

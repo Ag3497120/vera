@@ -1,0 +1,56 @@
+........................................................................ [ 19%]
+........................................................................ [ 39%]
+........................................................................ [ 59%]
+........................................................................ [ 79%]
+..........................................................F............. [ 99%]
+.                                                                        [100%]
+=================================== FAILURES ===================================
+_________ test_the_stop_signal_ends_the_run_with_an_interrupted_record _________
+
+env = (PosixPath('/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b0...f5e-a07a-ae6b080c15b8/scratchpad/codex-w3a6-r9/pytest-of-motonisihikoudai/pytest-0/test_the_stop_signal_ends_the_0/G'))
+
+    def test_the_stop_signal_ends_the_run_with_an_interrupted_record(env):
+        tmp, needs, G = env
+        fake = make_fake(tmp, sleep=30)
+        p = subprocess.Popen([PYTHON, str(TREE / "tools/gen_coarse_evidence.py"), "run",
+                              "--needs", str(needs), "--out-dir", str(G), "--codex-bin", str(fake),
+                              "--batch-size", "2", "--slots", "2"],
+                             stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        deadline = time.time() + 20
+        while time.time() < deadline:
+            if (G / "ledger.jsonl").exists() and len(starts(G)) >= 2:
+                break
+            time.sleep(0.1)
+        p.terminate()
+>       out, err = p.communicate(timeout=20)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_gen_coarse_evidence.py:498: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/subprocess.py:1209: in communicate
+    stdout, stderr = self._communicate(input, endtime, timeout)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/subprocess.py:2116: in _communicate
+    self._check_timeout(endtime, orig_timeout, stdout, stderr)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <Popen: returncode: None args: ['/Users/motonisihikoudai/vera-wiring/env/bin...>
+endtime = 332374.68460175, orig_timeout = 20, stdout_seq = [], stderr_seq = []
+skip_check_and_raise = False
+
+    def _check_timeout(self, endtime, orig_timeout, stdout_seq, stderr_seq,
+                       skip_check_and_raise=False):
+        """Convenience for checking if a timeout has expired."""
+        if endtime is None:
+            return
+        if skip_check_and_raise or _time() > endtime:
+>           raise TimeoutExpired(
+                    self.args, orig_timeout,
+                    output=b''.join(stdout_seq) if stdout_seq else None,
+                    stderr=b''.join(stderr_seq) if stderr_seq else None)
+E           subprocess.TimeoutExpired: Command '['/Users/motonisihikoudai/vera-wiring/env/bin/python', '/Users/motonisihikoudai/Projects/vera-impl/wt/W3-a6-S/tools/gen_coarse_evidence.py', 'run', '--needs', '/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/codex-w3a6-r9/pytest-of-motonisihikoudai/pytest-0/test_the_stop_signal_ends_the_0/needs.jsonl', '--out-dir', '/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/codex-w3a6-r9/pytest-of-motonisihikoudai/pytest-0/test_the_stop_signal_ends_the_0/G', '--codex-bin', '/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/codex-w3a6-r9/pytest-of-motonisihikoudai/pytest-0/test_the_stop_signal_ends_the_0/fakecodex', '--batch-size', '2', '--slots', '2']' timed out after 20 seconds
+
+/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/subprocess.py:1253: TimeoutExpired
+=========================== short test summary info ============================
+FAILED tests/test_gen_coarse_evidence.py::test_the_stop_signal_ends_the_run_with_an_interrupted_record
+1 failed, 360 passed in 44.22s

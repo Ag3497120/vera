@@ -1,0 +1,52 @@
+== 枠から質問に答える
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "枠から質問に答える",
+  "searched": 646,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 40,
+    "module": 278,
+    "prereg": 63,
+    "results": 44
+  },
+== 推奨 選択肢
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "推奨 選択肢",
+  "searched": 646,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 40,
+    "module": 278,
+    "prereg": 63,
+    "results": 44
+  },
+== 語彙外 LLM 対応づけ
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "語彙外 LLM 対応づけ",
+  "searched": 646,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 40,
+    "module": 278,
+    "prereg": 63,
+    "results": 44
+  },
+== 聞き返し エージェント 枠
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "聞き返し エージェント 枠",
+  "searched": 646,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 40,
+    "module": 278,
+    "prereg": 63,
+    "results": 44
+  },

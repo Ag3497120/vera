@@ -1,0 +1,49 @@
+{
+ "eligible": 269710,
+ "files": {
+  "S0": {
+   "articles": 0,
+   "bytes": 0,
+   "path": null,
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "S100000": {
+   "articles": 100000,
+   "bytes": 28610597,
+   "path": "/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/d52dc51d-8cb5-4487-931c-cc143bce928f/scratchpad/line3/data/S100000.jsonl",
+   "sha256": "29986b3b012e7dee36a3d2bc5e199a9f9dd0dae10c752086acf97e3bccb87589"
+  },
+  "S269710": {
+   "articles": 269710,
+   "bytes": 77198271,
+   "path": "/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/d52dc51d-8cb5-4487-931c-cc143bce928f/scratchpad/line3/data/S269710.jsonl",
+   "sha256": "796181944cad668c415a853c8c124ce975d03689d019bc5d75718a158582eb7a"
+  },
+  "S300": {
+   "articles": 300,
+   "bytes": 87014,
+   "path": "/Users/motonisihikoudai/Projects/vera-impl/wt/line3/experiments/line3/data/S300.jsonl",
+   "sha256": "3ffd821138937437a392b3a33ae5a8c54188751faceea31b223814013921b6c2"
+  },
+  "S3000": {
+   "articles": 3000,
+   "bytes": 857382,
+   "path": "/Users/motonisihikoudai/Projects/vera-impl/wt/line3/experiments/line3/data/S3000.jsonl",
+   "sha256": "36abce43a6c7a06e693e8e380e6beae486761eba6fd022f9328d5c30c2b716d0"
+  },
+  "S30000": {
+   "articles": 30000,
+   "bytes": 8590860,
+   "path": "/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/d52dc51d-8cb5-4487-931c-cc143bce928f/scratchpad/line3/data/S30000.jsonl",
+   "sha256": "79b344591b5b914ca8613922670746819f89cf740f250c94d0ad5804a6004713"
+  },
+  "S300full": {
+   "articles": 300,
+   "bytes": 109923,
+   "path": "/Users/motonisihikoudai/Projects/vera-impl/wt/line3/experiments/line3/data/S300_fulllead.jsonl",
+   "sha256": "d987fdee0e19283e9c69e461b2ae695e5f2681f7a64e2c486572fcd6d4f419ea"
+  }
+ },
+ "source": "/Users/motonisihikoudai/vera-wiring/data/jawiki_leads.full.jsonl",
+ "source_records": 2455473
+}

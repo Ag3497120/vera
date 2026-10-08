@@ -1,0 +1,4 @@
+code: round-4 (artifacts/w2-c/r5/conduct_ask_r4.py.txt)
+decision answer idx 0 answer はい reason None None
+--- current code (round 6)
+decision answer idx 0 answer はい reason None None

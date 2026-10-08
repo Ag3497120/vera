@@ -1,0 +1,7 @@
+diff --git a/mul_args.py b/mul_args.py
+new file mode 100644
+index 0000000..fd4462c
+--- /dev/null
++++ b/mul_args.py
+@@ -0,0 +1 @@
++print(24)

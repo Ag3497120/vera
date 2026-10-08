@@ -1,0 +1,45 @@
+........................................................................ [ 40%]
+........................................................................ [ 80%]
+.........................F.........                                      [100%]
+=================================== FAILURES ===================================
+___________________ test_tampered_export_cannot_be_attached ____________________
+
+tmp_path = PosixPath('/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/impl-r1/bt_w4m/test_tampered_export_cannot_be0')
+
+    def test_tampered_export_cannot_be_attached(tmp_path):
+        """Drop a rewrite trigger, alter one row, restore its exact SQL, then attach the export."""
+        origin, moved = tmp_path / "origin", tmp_path / "moved"
+        sov.create(origin, "s1", "owner-a")
+        sov.open_ledger(origin, "s1").append(
+            {"kind": "utterance", "payload": {"phrase": "original"}})
+        exported = tmp_path / "s1.sqlite"
+        assert sov.export(origin, "s1", str(exported))["verdict"] == "EXPORTED"
+    
+        conn = sqlite3.connect(exported, isolation_level=None)
+        conn.execute("DROP TRIGGER event_log_no_update")
+        conn.execute("UPDATE event_log SET payload = ? WHERE seq = 1",
+                     (json.dumps({"phrase": "forged"}, separators=(",", ":")),))
+        conn.execute(
+            "CREATE TRIGGER event_log_no_update BEFORE UPDATE ON event_log "
+            "BEGIN SELECT RAISE(ABORT, 'event_log is append-only: no update'); END")
+        conn.close()
+    
+        attached = sov.attach(moved, file=str(exported))
+        observed = (attached["verdict"],
+                    sov.open_ledger(moved, "s1").events()[0]["payload"]["phrase"])
+>       assert observed == ("UNREADABLE_SCHEMA", "original"), observed
+E       AssertionError: ('ATTACHED', 'forged')
+E       assert ('ATTACHED', 'forged') == ('UNREADABLE_...', 'original')
+E         
+E         At index 0 diff: 'ATTACHED' != 'UNREADABLE_SCHEMA'
+E         Use -v to get more diff
+
+tests/attack/test_attack_w4m_sovereign.py:49: AssertionError
+=============================== warnings summary ===============================
+tests/test_sovereign_cli.py::test_the_entrance_is_found_by_the_capability_index
+  <unknown>:96: DeprecationWarning: invalid escape sequence '\d'
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/attack/test_attack_w4m_sovereign.py::test_tampered_export_cannot_be_attached
+1 failed, 178 passed, 1 warning in 5.52s

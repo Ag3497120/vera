@@ -1,0 +1,8 @@
+H1: 4 passed in 0.25s
+H2: ============================== 52 passed in 0.39s ==============================
+H3_new_tests: 35 passed in 0.33s
+H3_C: 2 passed in 0.20s
+H3_B_A_not_met: 4 failed in 0.24s
+True
+['Conflict', 'MergeReport', 'SUPERSEDE_STATUSES', 'SupersedeStatus', 'active_records', 'conflicts', 'merge_files', 'merge_logs', 'merge_report']
+outside []

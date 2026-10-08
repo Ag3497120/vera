@@ -1,0 +1,6 @@
+Mon Oct  5 23:04:27 JST 2026
+7b43ee874811c315bc9a2a67db2eb180df7942decbf1b866cd3d05cdc53c2582  tests/test_w16t7_hooks.py
+e496a855d2aa09a354a034313f0fdf076b05b8ab9f33db970da81ac7af76c010  tests/test_w16t7_ledger.py
+27d131f6b6c183a2e74d716eb8c4b36c2046950847059aaa4664cfa167a3a3a4  tests/test_w16t7_redact.py
+43770c6f360ef26bb79b7b30c97f0ffe59ae426688b2a5be60b947bd788cde7c  tests/test_w16t7_run.py
+5b003cd9e80d9e6bb3aedd16cf404d2262e4cb12c855a7f2d29dab51edf4bd4b  docs/RECORDER.md

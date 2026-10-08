@@ -1,0 +1,3 @@
+items 60 wrong 30
+types {'W1': 10, 'OK': 30, 'W2': 10, 'N1': 5, 'N2': 5}
+cat {'ANS': 40, 'NONE': 20}

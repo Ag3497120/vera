@@ -1,0 +1,26 @@
+< | ja_r9 through the entry with the placement, with the gate on the ending: verdicts | abstain 49, correct 10, incomplete 1 | r9_entry_check.json |
+< | ja_r9 with the gate: misread / incomplete / UNJUDGED | 0 / 1 / 0 | r9_entry_check.json |
+< | ja_r9 with the gate: bad verdicts identical to the output with no placement | 1 of 1 | r9_entry_check.json |
+< | ja_r9 with the gate: read-expected rows the entry abstains on / abstain-expected rows the entry reads | 2 / 1 | r9_entry_check.json |
+< | round 3 -> round 4 (same inputs): read with the placement in round 3 and abstained in round 4, by the file the input comes from | ja_r8.jsonl 4, ja_r9.jsonl 2 | r3_entry_live.jsonl, entry_live.jsonl |
+< | round 3 -> round 4 (same inputs): read in both with a different output / abstained in round 3 and read in round 4 / abstained in both with a different output | 0 / 0 / 0 | r3_entry_live.jsonl, entry_live.jsonl |
+< | ja_r8 rows read with the placement before the gate that the gate returned to abstention | 4 of 53 | r2_entry_live.jsonl, entry_live.jsonl |
+< | inputs read with the placement before the gate and after it with a different output | 0 | r2_entry_live.jsonl, entry_live.jsonl |
+< | entry with the placement on the new data: verdicts | abstain 118, correct 92, incomplete 3 | r8_entry_check.json |
+< | entry with the placement on the new data: misread / incomplete / UNJUDGED | 0 / 3 / 0 | r8_entry_check.json |
+< | entry with the placement on the new data: bad verdicts identical to the output with no placement | 3 of 3 | r8_entry_check.json |
+< | new data: read-expected rows the entry abstains on / abstain-expected rows the entry reads | 34 / 3 | r8_entry_check.json |
+< | new data: abstained rows whose second reason is not the registered prefix | 16 | r8_entry_check.json |
+< | declared exceptions (w3b1_expect_exceptions.json) by kind | baseline_reads 3, reason_differs 16, row_returned_to_abstain 25, trigger_not_reached 9 | tests/reading_soundness/w3b1_expect_exceptions.json |
+< | base-commit comparison: same / reason_changed | 2468 / 365 | entry_dev.jsonl, entry_live.jsonl, base_diff_summary.txt |
+< | reason_changed: reasons added, by prefix | PLACEMENT_DIRECT_VIA_GENERATED 3, PLACEMENT_ESTIMATED_GENERATED 5, PLACEMENT_ESTIMATED_NEAR 2, PLACEMENT_FRAME_NOT_READ 79, PLACEMENT_MULTIPLE 11, PLACEMENT_NOT_PREDICATE_TYPE 1, PLACEMENT_PART_MARKER 7, PLACEMENT_PART_NONE 2, PLACEMENT_PART_NOT_FOLLOWED 3, PLACEMENT_PART_NOT_ISOLATED 3, PLACEMENT_PART_NOT_NP 17, PLACEMENT_PART_NO_ROLE 3, PLACEMENT_PART_PARTICLE 2, PLACEMENT_PREDICATE_POSSIBLY_DERIVED 17, PLACEMENT_PREDICATE_TAIL_UNINTERPRETED 32, PLACEMENT_PREDICATE_UNIDENTIFIED 32, PLACEMENT_REREAD_ABSTAINS 28, PLACEMENT_SLOT_EVIDENCE_ONLY 34, PLACEMENT_TYPE_MISMATCH 30, PLACEMENT_UNKNOWN 26, PLACEMENT_UNPLACED 24, PLACEMENT_VOICE_NOT_ACTIVE 4 | entry_dev.jsonl, entry_live.jsonl |
+< | B1 sample B1_v2 through the scorer (no placement reaches the child process): correct / correct_abstain / over_abstain / misread / wrong | 35 / 13 / 17 / 0 / 0 | bs_B1_v2/summary.json |
+< | B1 samples in-process with the placement: verdicts | abstain 47, correct 71; misread 0, incomplete 0 | b1_fixtures_live.json |
+< | placement questions over all inputs: total / most for one input / inputs with a question | 611 / 4 / 362 | queries_live.json |
+< | placement answers by state/origin/basis | DECIDED/direct/None 543, DECIDED/estimated/generated 5, DECIDED/estimated/proximity 2, MULTIPLE/direct/None 11, UNKNOWN/None/None 26, UNPLACED/None/None 24 | queries_live.json |
+< | time per input with the placement (median / mean / max, ms) at 1-min load 2.55 | 0.696 / 0.934 / 82.065 | timing_live.json |
+< | time per input with no placement (median / mean / max, ms) at 1-min load 3.91 | 0.607 / 0.906 / 61.836 | timing_none.json |
+< | event cross with the placement, event_cross_sentences: sentences read / arms / AGREE / DISAGREE / NOT_CHECKED | 70 / 174 / 36 / 1 / 137 | events_live.json |
+< | event cross with the placement, new_data: sentences read / arms / AGREE / DISAGREE / NOT_CHECKED | 81 / 203 / 115 / 0 / 88 | events_live.json |
+< | event cross with the placement, rest: sentences read / arms / AGREE / DISAGREE / NOT_CHECKED | 241 / 578 / 181 / 7 / 390 | events_live.json |
+< | event cross DISAGREE arms in all (and how many of them were typed by the entry) | 8 (0) | events_live.json |

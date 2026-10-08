@@ -1,0 +1,25 @@
+note: the 3 claude project directories with 0 jsonl files are the toy repository directories themselves (claude's own bookkeeping); the 3 with 1 jsonl each are the verifier sessions
+== a_sum_args: exit 0; no secret-like text
+REPO_REFS_UNCHANGED
+seq consecutive over the whole ledger: True
+VERIFIER_EXITED.output_sha256 == sha256(saved agent.output): True
+implementer last output paragraph (211 chars) present in verifier brief: False
+implementer last message (193 chars) present in verifier brief: False
+verifier changed anything: False None
+verifier read_only: True cwd: ['sessions', '6a17f2d4851344d099324ea595cc59bf', 'worktree']
+== b_trap_real: exit 0; no secret-like text
+REPO_REFS_UNCHANGED
+seq consecutive over the whole ledger: True
+VERIFIER_EXITED.output_sha256 == sha256(saved agent.output): True
+implementer last output paragraph (33 chars) present in verifier brief: False
+implementer last message (15 chars) present in verifier brief: False
+verifier changed anything: False None
+verifier read_only: True cwd: ['sessions', 'fcd0c9d97b2141eea15b5ded0936b624', 'worktree']
+== b_trap_fake_impl: exit 1; no secret-like text
+REPO_REFS_UNCHANGED
+seq consecutive over the whole ledger: True
+VERIFIER_EXITED.output_sha256 == sha256(saved agent.output): True
+implementer last output paragraph (0 chars) present in verifier brief: False
+implementer last message (0 chars) present in verifier brief: False
+verifier changed anything: False None
+verifier read_only: True cwd: ['sessions', '233b0ffe0cd14079a7475fae391e5750', 'worktree']

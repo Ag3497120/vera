@@ -1,0 +1,9 @@
+run 1 tests/bank_score/test_bs_end_to_end.py::test_s6_two_runs_agree_except_timing_and_recount_matches: 1 failed in 4.76s
+run 1 tests/test_p4_abilities.py::test_speech_act_drafts_fill_new_roles_and_reread: 1 failed in 0.24s
+run 1 tests/test_conduct_entry_dsl.py::test_dsl_existing_frame_text_without_our_additions_compiles_exactly_as_before: 1 passed in 0.46s
+run 2 tests/bank_score/test_bs_end_to_end.py::test_s6_two_runs_agree_except_timing_and_recount_matches: 1 failed in 3.73s
+run 2 tests/test_p4_abilities.py::test_speech_act_drafts_fill_new_roles_and_reread: 1 failed in 0.24s
+run 2 tests/test_conduct_entry_dsl.py::test_dsl_existing_frame_text_without_our_additions_compiles_exactly_as_before: 1 passed in 0.30s
+run 3 tests/bank_score/test_bs_end_to_end.py::test_s6_two_runs_agree_except_timing_and_recount_matches: 1 failed in 3.60s
+run 3 tests/test_p4_abilities.py::test_speech_act_drafts_fill_new_roles_and_reread: 1 failed in 0.23s
+run 3 tests/test_conduct_entry_dsl.py::test_dsl_existing_frame_text_without_our_additions_compiles_exactly_as_before: 1 passed in 0.30s

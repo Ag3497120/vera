@@ -1,0 +1,7 @@
+holes=32 sentences=30 adopted=0 not_adopted_by_reason={"GATE_A_NOT_PLACED": 19, "NO_CANDIDATE_WORDS": 9, "GATE_A_ROLE_SPLIT": 1, "GATE_A_TYPE_NOT_EXPECTED": 3} backend_failed=0
+vera_ms p50=8.7 p95=59.5 total=539.0 | llm_ms p50=4510.4 p95=6337.4 total=148043.0
+declared_type_vs_word {'True': 22, 'False': 7, 'None': 3}
+r3 words_that_passed_a1_a3_and_failed_a4=1 (in 1 holes; a4 reasons {'GATE_A_ROLE_SPLIT': 1}; split_kind {'TYPE_NOT_READ': 1})
+r3 words_by_first_failed_gate {'a1': 22, 'a4': 1} | holes_with_b_prime_failure=0
+percentile: sorted(v)[min(n-1, int(n*p))] over the 32 holes (one value per hole; vera_ms excludes the time in the backend)
+realize_status_of_passed_words {}

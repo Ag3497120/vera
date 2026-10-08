@@ -1,0 +1,366 @@
+...........XXX...........XX...........XXX...........XX................X. [  0%]
+F.........xXXXX...........XXX......x..XX.........xF.........xXXx........ [  1%]
+.........................x.............................................. [  2%]
+............x......................................x..........x.......F. [  3%]
+.F...x....F...X............X.....XXF......FFF.F...F....F................ [  4%]
+F...F..FF.....F........F..........F.......F..F..FFF..X.................. [  4%]
+.............................................x............xxx........... [  5%]
+....................XXX..........x....F...xxxxXX.........XXXx........... [  6%]
+.x.....................X......................X........XX.........x..... [  7%]
+........................................................................ [  8%]
+.......F....FFF.F.F.....F...........FFFF.F.........FF................... [  9%]
+........................................................................ [  9%]
+.........................................X.........XXXX................. [ 10%]
+......F.F...XXxx.............X.....................XF...........xx...... [ 11%]
+........................................................................ [ 12%]
+..........................x............................................. [ 13%]
+........................................................................ [ 14%]
+........................................................................ [ 14%]
+........................................................................ [ 15%]
+........................................................................ [ 16%]
+........................................................................ [ 17%]
+........................................................................ [ 18%]
+........................................................................ [ 19%]
+........................................................................ [ 19%]
+........................................................................ [ 20%]
+........................................................................ [ 21%]
+........................................................................ [ 22%]
+........................................................................ [ 23%]
+........................................................................ [ 24%]
+........................................................................ [ 24%]
+........................................................................ [ 25%]
+........................................................................ [ 26%]
+........................................................................ [ 27%]
+........................................................................ [ 28%]
+........................................................................ [ 29%]
+........................................................................ [ 29%]
+........................................................................ [ 30%]
+........................................................................ [ 31%]
+........................................................................ [ 32%]
+........................................................................ [ 33%]
+........................................................................ [ 34%]
+........................................................................ [ 34%]
+........................................................................ [ 35%]
+........................................................................ [ 36%]
+...........................F............................................ [ 37%]
+......F................................................................. [ 38%]
+..............................sFFFF.FF.................................F [ 39%]
+........................................................................ [ 39%]
+........................F............................................... [ 40%]
+........................................................................ [ 41%]
+........................................................................ [ 42%]
+........................................................................ [ 43%]
+........................................................................ [ 44%]
+........................................................................ [ 44%]
+........................................................................ [ 45%]
+........................................................................ [ 46%]
+........................................................................ [ 47%]
+........................................................................ [ 48%]
+........................................................................ [ 48%]
+........................................................................ [ 49%]
+........................................................................ [ 50%]
+........................................................................ [ 51%]
+........................................................................ [ 52%]
+........................................................................ [ 53%]
+........................................................................ [ 53%]
+........................................................................ [ 54%]
+........................................................................ [ 55%]
+........................................................................ [ 56%]
+........................................................................ [ 57%]
+........................................................................ [ 58%]
+........................................................................ [ 58%]
+........................................................................ [ 59%]
+........................................................................ [ 60%]
+........................................................................ [ 61%]
+........................................................................ [ 62%]
+........................................................................ [ 63%]
+........................................................................ [ 63%]
+........................................................................ [ 64%]
+........................................................................ [ 65%]
+........................................................................ [ 66%]
+........................................................................ [ 67%]
+........................................................................ [ 68%]
+........................................................................ [ 68%]
+........................................................................ [ 69%]
+........................................................................ [ 70%]
+........................................................................ [ 71%]
+........................................................................ [ 72%]
+........................................................................ [ 73%]
+........................................................................ [ 73%]
+........................................................................ [ 74%]
+........................................................................ [ 75%]
+........................................................................ [ 76%]
+........................................................................ [ 77%]
+........................................................................ [ 78%]
+........................................................................ [ 78%]
+........................................................................ [ 79%]
+........................................................................ [ 80%]
+........................................................................ [ 81%]
+........................................................................ [ 82%]
+........................................................................ [ 83%]
+........................................................................ [ 83%]
+........................................................................ [ 84%]
+........................................................................ [ 85%]
+........................................................................ [ 86%]
+........................................................................ [ 87%]
+........................................................................ [ 88%]
+........................................................................ [ 88%]
+......................................................FF................ [ 89%]
+........................................................................ [ 90%]
+........................................................................ [ 91%]
+.................F...................................................... [ 92%]
+........................................................................ [ 92%]
+........................................................................ [ 93%]
+........................................................................ [ 94%]
+........................................................................ [ 95%]
+........................................................................ [ 96%]
+........................................................................ [ 97%]
+........................................................................ [ 97%]
+........................................................................ [ 98%]
+........................................................................ [ 99%]
+...............................                                          [100%]
+=================================== FAILURES ===================================
+E   AssertionError: assert False
+     +  where False = <function coordination_ok at 0x108735300>([('金', '名詞', '一般', '*', 0, 1), ('が', '助詞', '格助詞', '*', 1, 2), ('なく', '形容詞', '自立', '連用形', 2, 4), ('て', '助詞', '接続助詞', '*', 4, 5), ('戻る', '動詞', '自立', '終止形', 5, 7)], [2, 4])
+     +    where <function coordination_ok at 0x108735300> = coord.coordination_ok
+/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t1b-S/tests/attack/test_semantic_coord_negation_modality.py:33: AssertionError: assert False
+E   AssertionError: assert False
+     +  where False = coordination_ok([('猫', '名詞', '一般', '', 0, 1), ('歩き', '動詞', '自立', '連用形', 1, 3), ('て', '助詞', '接続助詞', '', 3, 4), ('、', '補助記号', '読点', '', 4, 5), ('食べ', '動詞', '自立', '連用形', 5, 7)], [1, 4])
+/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t1b-S/tests/attack/test_semantic_coord_unicode_noise.py:19: AssertionError: assert False
+E   AssertionError: assert None == ('技師', 'ユン')
+     +  where None = name_split_in([('技', '名詞', '一般', 0, 1), ('師', '接尾辞', '一般', 1, 2), ('ユン', '名詞', '固有名詞', 2, 4)], '技師ユン')
+/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t1b-S/tests/attack/test_semantic_names_differential.py:122: AssertionError: assert None == ('技師', 'ユン')
+E   AssertionError: assert None == ('技師', 'ユン')
+     +  where None = name_split_in([('技師', '名詞', '一般', 0, 2), ('ユン', '名詞', '固有名詞', 2, 4)], ('技師' + 'ユン'))
+/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t1b-S/tests/attack/test_semantic_names_differential.py:157: AssertionError: assert None == ('技師', 'ユン')
+E   AssertionError: assert None == ('技師', 'ユン')
+     +  where None = name_split_in([('技師', '名詞', '一般', 0, 2), ('ユン', '名詞', '固有名詞', 2, 4)], '技師ユン')
+/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t1b-S/tests/attack/test_semantic_names_fabrication.py:52: AssertionError: assert None == ('技師', 'ユン')
+E   AssertionError: assert None == ('研究員', '玲')
+     +  where None = name_split_in([('研究', '名詞', '一般', 0, 2), ('員', '接尾辞', '名詞性名詞接続', 2, 3), ('玲', '名詞', '固有名詞', 3, 4)], '研究員玲')
+/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t1b-S/tests/attack/test_semantic_names_limits.py:54: AssertionError: assert None == ('研究員', '玲')
+E   AssertionError: assert None == ('技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技...技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技', '玲')
+     +  where None = name_split_in([('技', '名詞', '一般', 0, 1), ('技', '名詞', '一般', 1, 2), ('技', '名詞', '一般', 2, 3), ('技', '名詞', '一般', 3, 4), ('技', '名詞', '一般', 4, 5), ('技', '名詞', '一般', 5, 6), ...], '技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技...技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技玲')
+/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t1b-S/tests/attack/test_semantic_names_limits.py:97: AssertionError: assert None == ('技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技...技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技技', '玲')
+E   AssertionError: assert None == ('技師', '玲')
+     +  where None = name_split_in([('技師', '名詞', '一般', 0, 2), ('玲', '名詞', '固有名詞', 2, 3)], '技師玲')
+     +    where [('技師', '名詞', '一般', 0, 2), ('玲', '名詞', '固有名詞', 2, 3)] = tokens_covering([('技師', '名詞', '一般', 0, 2), ('玲', '名詞', '固有名詞', 2, 3)], 0, 3)
+/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t1b-S/tests/attack/test_semantic_names_limits.py:110: AssertionError: assert None == ('技師', '玲')
+E   assert False
+     +  where False = all(<generator object test_concurrent_independent_readers_do_not_share_results.<locals>.<genexpr> at 0x16bce7e20>)
+/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t1b-S/tests/attack/test_semantic_names_limits.py:127: assert False
+E   AssertionError: assert None == ('主任研究員', 'ユン')
+     +  where None = name_split_in([('主任', '名詞', '一般', 12000, 12002), ('研究員', '名詞', '一般', 12002, 12005), ('ユン', '名詞', '固有名詞', 12005, 12007)], '主任研究員ユン')
+/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t1b-S/tests/attack/test_semantic_names_long_documents.py:31: AssertionError: assert None == ('主任研究員', 'ユン')
+E   AssertionError: assert None == ('主任研究員', 'ユン')
+     +  where None = name_split_in([('主任', '名詞', '一般', 0, 2), ('研究員', '名詞', '一般', 2, 5), ('ユン', '名詞', '固有名詞', 5, 6)], '主任研究員ユン')
+/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t1b-S/tests/attack/test_semantic_names_long_documents.py:71: AssertionError: assert None == ('主任研究員', 'ユン')
+E   AssertionError: assert None == ('技師', 'ユン')
+     +  where None = name_split_in([('技師', '名詞', '一般', 2, 4), ('ユン', '名詞', '固有名詞', 4, 5)], ('技師' + 'ユン'))
+/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t1b-S/tests/attack/test_semantic_names_long_documents.py:123: AssertionError: assert None == ('技師', 'ユン')
+E   AssertionError: assert None == ('研究員', '花子')
+     +  where None = name_split_in([('研究員', '名詞', '一般', 0, 3), ('花子', '名詞', '固有名詞', 3, 5)], '研究員花子')
+/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t1b-S/tests/attack/test_semantic_names_negation_modality.py:70: AssertionError: assert None == ('研究員', '花子')
+E   AssertionError: assert None == ('技師', 'ユン')
+     +  where None = name_split_in([('技師', '名詞', '一般', 0, 2), ('ユン', '名詞', '固有名詞', 2, 4)], '技師ユン')
+/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t1b-S/tests/attack/test_semantic_names_paraphrase.py:39: AssertionError: assert None == ('技師', 'ユン')
+E   AssertionError: assert None == ('研究員', 'ユン')
+     +  where None = name_split_in([('研究員', '名詞', '一般', 0, 3), ('ユン', '名詞', '固有名詞', 3, 5)], '研究員ユン')
+/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t1b-S/tests/attack/test_semantic_names_paraphrase.py:67: AssertionError: assert None == ('研究員', 'ユン')
+E   AssertionError: assert None == ('研究員', 'ユン')
+     +  where None = name_split_in([('研究', '名詞', '一般', 0, 2), ('員', '接尾辞', '名詞性接尾辞', 2, 3), ('ユン', '名詞', '固有名詞', 3, 5)], '研究員ユン')
+/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t1b-S/tests/attack/test_semantic_names_paraphrase.py:77: AssertionError: assert None == ('研究員', 'ユン')
+E   AssertionError: assert None == ('技師', 'ユン')
+     +  where None = name_split_in([('技師', '名詞', '一般', 0, 2), ('ユン', '名詞', '固有名詞', 2, 4)], '技師ユン')
+/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t1b-S/tests/attack/test_semantic_names_paraphrase.py:132: AssertionError: assert None == ('技師', 'ユン')
+E   AssertionError: assert None == ('技師', 'ユン')
+     +  where None = name_split_in([('技師', '名詞', '一般', 0, 2), ('ユン', '名詞', '固有名詞', 2, 3)], '技師ユン')
+/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t1b-S/tests/attack/test_semantic_names_realtext.py:42: AssertionError: assert None == ('技師', 'ユン')
+E   AssertionError: assert None == ('店長', 'ユン')
+     +  where None = name_split_in([('店長', '名詞', '一般', 0, 2), ('ユン', '名詞', '固有名詞', 2, 3)], '店長ユン')
+/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t1b-S/tests/attack/test_semantic_names_tense_time.py:59: AssertionError: assert None == ('店長', 'ユン')
+E   AssertionError: assert None == ('技師', 'ユン')
+     +  where None = name_split_in([('技師', '名詞', '一般', 1, 3), ('ユン', '名詞', '固有名詞', 3, 5)], '技師ユン')
+/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t1b-S/tests/attack/test_semantic_names_unicode_noise.py:23: AssertionError: assert None == ('技師', 'ユン')
+E   AssertionError: assert None == ('技師', 'ユン')
+     +  where None = name_split_in([('技師', '名詞', '一般', 0, 2), ('ユン', '名詞', '固有名詞', 2, 4)], '技師ユン')
+/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t1b-S/tests/attack/test_semantic_names_unicode_noise.py:52: AssertionError: assert None == ('技師', 'ユン')
+E   AssertionError: assert None == ('技師', 'ＡＢＣ')
+     +  where None = name_split_in([('技師', '名詞', '一般', 0, 2), ('ＡＢＣ', '名詞', '固有名詞', 2, 5)], '技師ＡＢＣ')
+/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t1b-S/tests/attack/test_semantic_names_unicode_noise.py:79: AssertionError: assert None == ('技師', 'ＡＢＣ')
+E   AssertionError: assert None == ('技師', 'が')
+     +  where None = name_split_in([('技師', '名詞', '一般', 0, 2), ('が', '名詞', '固有名詞', 2, 4)], ('技師' + 'が'))
+/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t1b-S/tests/attack/test_semantic_names_unicode_noise.py:89: AssertionError: assert None == ('技師', 'が')
+E   AssertionError: assert None == ('技師', '😀<b>Ａ</b>')
+     +  where None = name_split_in([('技師', '名詞', '一般', 0, 2), ('😀<b>Ａ</b>', '名詞', '固有名詞', 2, 11)], ('技師' + '😀<b>Ａ</b>'))
+/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t1b-S/tests/attack/test_semantic_names_unicode_noise.py:99: AssertionError: assert None == ('技師', '😀<b>Ａ</b>')
+E   AssertionError: assert 2 == 1
+     +  where 2 = len((Clause(id='ed7e0993f7bc3c777e7da8b2', event=Variable(name='event_ed7e0993f7bc3c777e7da8b2', sort='event'), predicate=...s=(), exception_spans=(), exception_of='', rule='quantifier', sovereign='document', family='document', unsupported=())))
+     +    where (Clause(id='ed7e0993f7bc3c777e7da8b2', event=Variable(name='event_ed7e0993f7bc3c777e7da8b2', sort='event'), predicate=...s=(), exception_spans=(), exception_of='', rule='quantifier', sovereign='document', family='document', unsupported=())) = View(sources={'q': 'すべての鳥は飛ぶ。'}, clauses=(Clause(id='ed7e0993f7bc3c777e7da8b2', event=Variable(name='event_ed7e0993f7b...ifier', sovereign='document', family='document', unsupported=())), unread=(), ingest_ms=0.8181249722838402, invalid=()).clauses
+/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t1b-S/tests/attack/test_semantic_reader_realtext.py:83: AssertionError: assert 2 == 1
+E   assert False
+     +  where False = all(<generator object test_constructed_neighbour_candidate_is_not_answer_or_evidence.<locals>.<genexpr> at 0x16bef7d30>)
+/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t1b-S/tests/attack/test_semantic_unknown_fabrication.py:111: assert False
+E   AttributeError: 'types.SimpleNamespace' object has no attribute 'predicate_span'
+/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t1b-S/verantyx/semantic_unknown.py:176: AttributeError: 'types.SimpleNamespace' object has no attribute 'predicate_span'
+E   AttributeError: 'types.SimpleNamespace' object has no attribute 'predicate_span'
+/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t1b-S/verantyx/semantic_unknown.py:176: AttributeError: 'types.SimpleNamespace' object has no attribute 'predicate_span'
+E   AttributeError: 'types.SimpleNamespace' object has no attribute 'predicate_span'
+/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t1b-S/verantyx/semantic_unknown.py:176: AttributeError: 'types.SimpleNamespace' object has no attribute 'predicate_span'
+E   AttributeError: 'types.SimpleNamespace' object has no attribute 'predicate_span'
+/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t1b-S/verantyx/semantic_unknown.py:176: AttributeError: 'types.SimpleNamespace' object has no attribute 'predicate_span'
+E   AttributeError: 'types.SimpleNamespace' object has no attribute 'predicate_span'
+/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t1b-S/verantyx/semantic_unknown.py:176: AttributeError: 'types.SimpleNamespace' object has no attribute 'predicate_span'
+E   AttributeError: 'types.SimpleNamespace' object has no attribute 'predicate_span'
+/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t1b-S/verantyx/semantic_unknown.py:176: AttributeError: 'types.SimpleNamespace' object has no attribute 'predicate_span'
+E   AttributeError: 'ClauseStub' object has no attribute 'predicate_span'
+/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t1b-S/verantyx/semantic_unknown.py:176: AttributeError: 'ClauseStub' object has no attribute 'predicate_span'
+E   AttributeError: 'ClauseStub' object has no attribute 'predicate_span'
+/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t1b-S/verantyx/semantic_unknown.py:176: AttributeError: 'ClauseStub' object has no attribute 'predicate_span'
+E   AttributeError: 'ClauseStub' object has no attribute 'predicate_span'
+/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t1b-S/verantyx/semantic_unknown.py:176: AttributeError: 'ClauseStub' object has no attribute 'predicate_span'
+E   AttributeError: 'ClauseStub' object has no attribute 'predicate_span'
+/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t1b-S/verantyx/semantic_unknown.py:176: AttributeError: 'ClauseStub' object has no attribute 'predicate_span'
+E   AttributeError: 'ClauseStub' object has no attribute 'predicate_span'
+/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t1b-S/verantyx/semantic_unknown.py:176: AttributeError: 'ClauseStub' object has no attribute 'predicate_span'
+E   AssertionError: assert 'NO_REACH' == 'KIN_NEIGHBOURHOOD'
+      
+      - KIN_NEIGHBOURHOOD
+      + NO_REACH
+/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t1b-S/tests/attack/test_semantic_unknown_paraphrase.py:120: AssertionError: assert 'NO_REACH' == 'KIN_NEIGHBOURHOOD'
+E   AssertionError: assert 'NO_REACH' == 'KIN_NEIGHBOURHOOD'
+      
+      - KIN_NEIGHBOURHOOD
+      + NO_REACH
+/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t1b-S/tests/attack/test_semantic_unknown_paraphrase.py:132: AssertionError: assert 'NO_REACH' == 'KIN_NEIGHBOURHOOD'
+E   AssertionError: assert ()
+     +  where () = View(sources={'source': '太郎は走らなくはない。'}, clauses=(), unread=(Unread(span=Span(source='source', start=0, end=11, text='太郎は走らなくはない。'), reason='unsupported double negation'),), ingest_ms=0.6958330050110817, invalid=()).clauses
+/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t1b-S/tests/attack/test_semantic_verify_negation_modality.py:66: AssertionError: assert ()
+E   assert False
+     +  where False = all(<generator object test_hearsay_clause_is_not_licensed_as_an_assertion.<locals>.<genexpr> at 0x16bf45490>)
+/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t1b-S/tests/attack/test_semantic_verify_negation_modality.py:83: assert False
+E   verantyx.semantic_verify.Rejected: instruction assertion: non-atomic symbolic value
+/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t1b-S/verantyx/semantic_verify.py:920: verantyx.semantic_verify.Rejected: instruction assertion: non-atomic symbolic value
+E   AssertionError: assert ('UNKNOWN_NO_EVIDENCE', []) == ('ANSWER', ['工房F'])
+      
+      At index 0 diff: 'UNKNOWN_NO_EVIDENCE' != 'ANSWER'
+      Use -v to get more diff
+/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t1b-S/tests/test_semantic_coordination_codex.py:96: AssertionError: assert ('UNKNOWN_NO_EVIDENCE', []) == ('ANSWER', ['工房F'])
+E   AssertionError: assert ('UNKNOWN_UNSUPPORTED_EVIDENCE' == 'ANSWER'
+      
+      - ANSWER
+      + UNKNOWN_UNSUPPORTED_EVIDENCE)
+/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t1b-S/tests/test_semantic_coordination_codex.py:173: AssertionError: assert ('UNKNOWN_UNSUPPORTED_EVIDENCE' == 'ANSWER'
+E   AssertionError: assert ('UNKNOWN_NO_EVIDENCE', []) == ('ANSWER', ['...倉庫C', '部長田中'])
+      
+      At index 0 diff: 'UNKNOWN_NO_EVIDENCE' != 'ANSWER'
+      Use -v to get more diff
+/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t1b-S/tests/test_semantic_measure.py:112: AssertionError: assert ('UNKNOWN_NO_EVIDENCE', []) == ('ANSWER', ['...倉庫C', '部長田中'])
+E   AssertionError: assert ('UNKNOWN_NO_EVIDENCE', []) == ('ANSWER', ['...庫C', '整備士コウ'])
+      
+      At index 0 diff: 'UNKNOWN_NO_EVIDENCE' != 'ANSWER'
+      Use -v to get more diff
+/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t1b-S/tests/test_semantic_measure.py:112: AssertionError: assert ('UNKNOWN_NO_EVIDENCE', []) == ('ANSWER', ['...庫C', '整備士コウ'])
+E   AssertionError: assert ('UNKNOWN_NO_EVIDENCE', []) == ('ANSWER', ['...'青い鍵', '倉庫C'])
+      
+      At index 0 diff: 'UNKNOWN_NO_EVIDENCE' != 'ANSWER'
+      Use -v to get more diff
+/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t1b-S/tests/test_semantic_measure.py:112: AssertionError: assert ('UNKNOWN_NO_EVIDENCE', []) == ('ANSWER', ['...'青い鍵', '倉庫C'])
+E   AssertionError: assert ('UNKNOWN_NO_EVIDENCE', []) == ('ANSWER', ['荷物', '駅B', 'サキ'])
+      
+      At index 0 diff: 'UNKNOWN_NO_EVIDENCE' != 'ANSWER'
+      Use -v to get more diff
+/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t1b-S/tests/test_semantic_measure.py:112: AssertionError: assert ('UNKNOWN_NO_EVIDENCE', []) == ('ANSWER', ['荷物', '駅B', 'サキ'])
+E   AssertionError: assert ('UNKNOWN_NO_EVIDENCE', []) == ('ANSWER', ['荷物', '駅B', 'サキ'])
+      
+      At index 0 diff: 'UNKNOWN_NO_EVIDENCE' != 'ANSWER'
+      Use -v to get more diff
+/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t1b-S/tests/test_semantic_measure.py:112: AssertionError: assert ('UNKNOWN_NO_EVIDENCE', []) == ('ANSWER', ['荷物', '駅B', 'サキ'])
+E   AssertionError: assert ('UNKNOWN_NO_EVIDENCE', []) == ('ANSWER', ['荷物', '駅B', 'サキ'])
+      
+      At index 0 diff: 'UNKNOWN_NO_EVIDENCE' != 'ANSWER'
+      Use -v to get more diff
+/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t1b-S/tests/test_semantic_measure.py:112: AssertionError: assert ('UNKNOWN_NO_EVIDENCE', []) == ('ANSWER', ['荷物', '駅B', 'サキ'])
+E   AssertionError: assert ('ANSWER', ['技師ユン']) == ('ANSWER', ['ユン'])
+      
+      At index 1 diff: ['技師ユン'] != ['ユン']
+      Use -v to get more diff
+/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t1b-S/tests/test_semantic_measure.py:189: AssertionError: assert ('ANSWER', ['技師ユン']) == ('ANSWER', ['ユン'])
+E   AssertionError: assert 'UNKNOWN_UNREAD' == 'UNKNOWN_NO_EVIDENCE'
+      
+      - UNKNOWN_NO_EVIDENCE
+      + UNKNOWN_UNREAD
+/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t1b-S/tests/test_semantic_public.py:44: AssertionError: assert 'UNKNOWN_UNREAD' == 'UNKNOWN_NO_EVIDENCE'
+E   AssertionError: assert 'location' in {'agent', 'patient', 'place'}
+/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t1b-S/tests/test_semantic_realize.py:138: AssertionError: assert 'location' in {'agent', 'patient', 'place'}
+E   AssertionError: assert 'origin' in {'agent', 'patient', 'source'}
+/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t1b-S/tests/test_semantic_realize.py:138: AssertionError: assert 'origin' in {'agent', 'patient', 'source'}
+E   AssertionError: assert 'UNKNOWN_NO_EVIDENCE' == 'UNKNOWN_UNREAD'
+      
+      - UNKNOWN_UNREAD
+      + UNKNOWN_NO_EVIDENCE
+/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t1b-S/tests/test_semantic_scope_safety.py:18: AssertionError: assert 'UNKNOWN_NO_EVIDENCE' == 'UNKNOWN_UNREAD'
+=============================== warnings summary ===============================
+<unknown>:96
+  <unknown>:96: DeprecationWarning: invalid escape sequence '\d'
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+===================== environment classification of skips ======================
+ENV_MISSING[round5_dev_fixtures]: 1 skipped
+=========================== short test summary info ============================
+FAILED tests/attack/test_semantic_coord_negation_modality.py::test_adjectival_naku_then_te_is_structurally_accepted
+FAILED tests/attack/test_semantic_coord_unicode_noise.py::test_te_comma_chain_is_accepted
+FAILED tests/attack/test_semantic_names_differential.py::test_name_split_accepts_kanji_title_appositive
+FAILED tests/attack/test_semantic_names_differential.py::test_generated_name_splits_match_independent_reference
+FAILED tests/attack/test_semantic_names_fabrication.py::test_name_split_accepts_kanji_descriptor_and_one_proper_name
+FAILED tests/attack/test_semantic_names_limits.py::test_name_split_accepts_kanji_title_and_one_proper_name
+FAILED tests/attack/test_semantic_names_limits.py::test_large_cover_and_pathological_long_nonkanji_prefix_are_bounded
+FAILED tests/attack/test_semantic_names_limits.py::test_repeated_calls_are_idempotent_and_do_not_mutate_inputs
+FAILED tests/attack/test_semantic_names_limits.py::test_concurrent_independent_readers_do_not_share_results
+FAILED tests/attack/test_semantic_names_long_documents.py::test_covering_selects_exact_span_from_a_long_sentence
+FAILED tests/attack/test_semantic_names_long_documents.py::test_name_split_accepts_multiple_kanji_title_tokens
+FAILED tests/attack/test_semantic_names_long_documents.py::test_repeated_entities_and_conflicting_titles_stay_document_local
+FAILED tests/attack/test_semantic_names_negation_modality.py::test_name_split_can_extract_exact_title_name_pair_in_negative_context
+FAILED tests/attack/test_semantic_names_paraphrase.py::test_particle_and_clause_surface_changes_leave_the_name_split_unchanged
+FAILED tests/attack/test_semantic_names_paraphrase.py::test_kanji_title_and_proper_name_split
+FAILED tests/attack/test_semantic_names_paraphrase.py::test_split_accepts_a_common_noun_followed_by_a_noun_suffix
+FAILED tests/attack/test_semantic_names_paraphrase.py::test_entity_swap_keeps_split_shape_and_returns_the_swapped_name
+FAILED tests/attack/test_semantic_names_realtext.py::test_name_split_accepts_kanji_title_and_one_proper_name
+FAILED tests/attack/test_semantic_names_tense_time.py::test_name_split_accepts_a_kanji_title_before_a_proper_name
+FAILED tests/attack/test_semantic_names_unicode_noise.py::test_tokens_covering_uses_python_codepoint_offsets_around_astral_noise
+FAILED tests/attack/test_semantic_names_unicode_noise.py::test_name_split_accepts_kanji_title_plus_one_proper_name
+FAILED tests/attack/test_semantic_names_unicode_noise.py::test_name_split_preserves_fullwidth_name_surface
+FAILED tests/attack/test_semantic_names_unicode_noise.py::test_name_split_preserves_decomposed_combining_sequence
+FAILED tests/attack/test_semantic_names_unicode_noise.py::test_name_split_preserves_markup_and_emoji_in_tagged_name
+FAILED tests/attack/test_semantic_reader_realtext.py::test_quantifier_scope_is_retained_as_unsupported
+FAILED tests/attack/test_semantic_unknown_fabrication.py::test_constructed_neighbour_candidate_is_not_answer_or_evidence
+FAILED tests/attack/test_semantic_unknown_injection.py::test_document_instruction_cannot_expand_candidate_authority
+FAILED tests/attack/test_semantic_unknown_injection.py::test_quoted_nested_agent_message_remains_typed_data
+FAILED tests/attack/test_semantic_unknown_injection.py::test_unicode_instruction_variants_do_not_add_result_types
+FAILED tests/attack/test_semantic_unknown_injection.py::test_question_instruction_does_not_count_as_a_held_ir_term
+FAILED tests/attack/test_semantic_unknown_injection.py::test_repeated_attacks_are_deterministic_and_do_not_mutate_input
+FAILED tests/attack/test_semantic_unknown_injection.py::test_any_provenance_returned_for_hostile_source_is_a_valid_source_slice
+FAILED tests/attack/test_semantic_unknown_limits.py::test_constructed_outputs_are_typed_and_never_evidence
+FAILED tests/attack/test_semantic_unknown_limits.py::test_clause_and_role_order_do_not_change_report_json
+FAILED tests/attack/test_semantic_unknown_limits.py::test_repeated_calls_are_idempotent
+FAILED tests/attack/test_semantic_unknown_limits.py::test_two_concurrent_readers_return_the_same_report
+FAILED tests/attack/test_semantic_unknown_limits.py::test_exact_projection_budget_is_not_refused
+FAILED tests/attack/test_semantic_unknown_paraphrase.py::test_changed_compound_meaning_changes_the_constructed_route
+FAILED tests/attack/test_semantic_unknown_paraphrase.py::test_entity_swap_changes_the_available_neighbourhood
+FAILED tests/attack/test_semantic_verify_negation_modality.py::test_double_negation_is_not_licensed_as_an_ordinary_negative_fact
+FAILED tests/attack/test_semantic_verify_negation_modality.py::test_hearsay_clause_is_not_licensed_as_an_assertion
+FAILED tests/attack/test_semantic_verify_unicode_noise.py::test_symbolic_record_licenses_unicode_actor_without_normalization
+FAILED tests/test_semantic_coordination_codex.py::test_plain_predicate_coordination_answers_clause_local_roles[te_location_first]
+FAILED tests/test_semantic_coordination_codex.py::test_concessive_main_clause_keeps_the_topic_subject
+FAILED tests/test_semantic_measure.py::test_role_only_questions_generalize[\u30df\u30ca\u306f\u9752\u3044\u9375\u3092\u5009\u5eabC\u304b\u3089\u90e8\u9577\u7530\u4e2d\u3078\u904b\u3093\u3060\u3002-\u4f55\u3092\u3069\u3053\u304b\u3089\u8ab0\u3078\uff1f-expected0]
+FAILED tests/test_semantic_measure.py::test_role_only_questions_generalize[\u30df\u30ca\u306f\u9752\u3044\u9375\u3092\u5009\u5eabC\u304b\u3089\u6574\u5099\u58eb\u30b3\u30a6\u3078\u904b\u3093\u3060\u3002-\u4f55\u3092\u3069\u3053\u304b\u3089\u8ab0\u3078\uff1f-expected1]
+FAILED tests/test_semantic_measure.py::test_role_only_questions_generalize[\u30df\u30ca\u306f\u9752\u3044\u9375\u3092\u5009\u5eabC\u304b\u3089\u90e8\u9577\u7530\u4e2d\u3078\u904b\u3093\u3060\u3002-\u8ab0\u304c\u4f55\u3092\u3069\u3053\u304b\u3089\uff1f-expected2]
+FAILED tests/test_semantic_measure.py::test_role_only_questions_generalize[\u30d2\u30ed\u306f\u8377\u7269\u3092\u99c5B\u304b\u3089\u5e97\u9577\u30b5\u30ad\u3078\u5c4a\u3051\u305f\u3002-\u4f55\u3092\u3069\u3053\u304b\u3089\u8ab0\u3078\uff1f-expected3]
+FAILED tests/test_semantic_measure.py::test_role_only_questions_generalize[\u30d2\u30ed\u306f\u8377\u7269\u3092\u99c5B\u304b\u3089\u30b5\u30ad\u3078\u5c4a\u3051\u305f\u3002-\u7269\u3001\u8d77\u70b9\u3001\u7d42\u70b9\u306f\uff1f-expected5]
+FAILED tests/test_semantic_measure.py::test_role_only_questions_generalize[\u30d2\u30ed\u306f\u8377\u7269\u3092\u99c5B\u304b\u3089\u5e97\u9577\u30b5\u30ad\u3078\u5c4a\u3051\u305f\u3002-\u7269\u3001\u8d77\u70b9\u3001\u7d42\u70b9\u306f\uff1f-expected6]
+FAILED tests/test_semantic_measure.py::test_kanji_title_before_a_name_is_split[\u30df\u30ca\u306f\u9752\u3044\u9375\u3092\u5009\u5eabC\u304b\u3089\u6280\u5e2b\u30e6\u30f3\u3078\u904b\u3093\u3060\u3002-\u8ab0\u3078\u904b\u3093\u3060\uff1f-expected0]
+FAILED tests/test_semantic_public.py::test_unhandled_wh_is_not_yes_no_and_location_is_required
+FAILED tests/test_semantic_realize.py::test_reader_case_roles_are_preserved[\u30de\u30ad\u306f\u5b66\u6821\u3067\u672c\u3092\u8aad\u3093\u3060\u3002-location]
+FAILED tests/test_semantic_realize.py::test_reader_case_roles_are_preserved[\u30de\u30ad\u306f\u5b66\u6821\u304b\u3089\u672c\u3092\u904b\u3093\u3060\u3002-origin]
+FAILED tests/test_semantic_scope_safety.py::test_unrepresented_request_content_never_becomes_a_yes[\u30ca\u30aa\u306f\u5b66\u6821\u304b\u3089\u30ea\u30af\u306b\u9752\u9375\u3092\u6e21\u3057\u305f\u304b\uff1f]
+55 failed, 8540 passed, 1 skipped, 27 xfailed, 48 xpassed, 1 warning in 145.91s (0:02:25)

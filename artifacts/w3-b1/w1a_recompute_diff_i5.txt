@@ -1,0 +1,24 @@
+156c156
+< | 日本語・読める | 40 | 21 | 19 | 21 | 19 | 0 | 0 |
+---
+> | 日本語・読める | 40 | 24 | 16 | 24 | 16 | 0 | 0 |
+176c176
+< - 入口が `readable: false` にした 71 問の kind: {'not_supported': 60, 'unreadable_input': 11}。理由の型の内訳: {'AGENT_EVIDENCE_MISSING': 1, 'BENEFACTIVE_NOT_PRODUCED': 1, 'EN_UNREAD': 3, 'INTERJECTION_OR_FORMULA': 6, 'NO_PREDICATE_TOKEN': 3, 'NO_SUPPORTED_CLAUSE': 21, 'NP_BOUNDARY_UNDETERMINED': 1, 'PREDICATE_NORMALIZED': 3, 'RECIPIENT_TYPE_UNDETERMINED': 6, 'SUBJECT_TYPE_UNDETERMINED': 5, 'UNDETERMINED_VOICE': 6, 'UNKNOWN_PREDICATE': 5, 'UNKNOWN_PREDICATE_WORD': 2, 'UNREAD_SPAN': 3, 'UNSUPPORTED_CLAUSE': 5}
+---
+> - 入口が `readable: false` にした 68 問の kind: {'not_supported': 57, 'unreadable_input': 11}。理由の型の内訳: {'BENEFACTIVE_NOT_PRODUCED': 1, 'EN_UNREAD': 3, 'INTERJECTION_OR_FORMULA': 6, 'NO_PREDICATE_TOKEN': 3, 'NO_SUPPORTED_CLAUSE': 21, 'NP_BOUNDARY_UNDETERMINED': 1, 'PREDICATE_NORMALIZED': 3, 'QUANTIFIER_NOT_MAPPED': 1, 'RECIPIENT_TYPE_UNDETERMINED': 6, 'SUBJECT_TYPE_UNDETERMINED': 5, 'UNDETERMINED_VOICE': 6, 'UNKNOWN_PREDICATE': 5, 'UNKNOWN_PREDICATE_WORD': 2, 'UNMAPPED_ROLE': 1, 'UNREAD_SPAN': 3, 'UNSUPPORTED_CLAUSE': 1}
+202c202
+< - `voice:passive (indirect, honorific, potential, spontaneous)`: れる/られる is passive only on positive evidence: による/によって; or a に/から phrase of a verb of the closed class _NI_KARA_FREE_PREDICATES. Not evidence: a subject missing from the person table, a subject that is not a person, a verb outside a class. No agent phrase: always UNDETERMINED_VOICE (passive and spontaneous are not told apart without the predicate's type; W5-a). られる (potential), a verb of thought/feeling (spontaneous) and any other case: UNDETERMINED_VOICE
+---
+> - `voice:passive (indirect, honorific, potential, spontaneous)`: れる/られる is passive only on positive evidence: による/によって; a に/から phrase of a verb of the closed class _NI_KARA_FREE_PREDICATES; or no agent phrase and a subject headed by a noun that is never a person (_not_person_evidence). Not evidence: a subject missing from the person table, a verb outside a class. られる (potential), a verb of thought/feeling (spontaneous) and any other case: UNDETERMINED_VOICE
+211c211
+< - `role:path (を of a verb of going through a space)`: the convention has no role for the path a motion verb covers (走る・歩く・渡る の を-phrase); the reader calls it patient, which is wrong, so the input is not read (PATH_ROLE_NOT_MAPPED). Also a compound verb whose parts are of that class (the structure of the word, not a word added), and an active clause with an を-phrase whose subject is shown not to be a person, or whose subject has no person evidence and whose を-phrase has place evidence (SUBJECT_TYPE_UNDETERMINED:object or path; W5-a); and an active clause with an を-phrase whose subject has no person evidence and whose predicate is in none of the reader's closed classes with an を-object (the corpus transitivity table is not counted as evidence of an object): AGENT_EVIDENCE_MISSING (W5-a rounds 2-3, K64)
+---
+> - `role:path (を of a verb of going through a space)`: the convention has no role for the path a motion verb covers (走る・歩く・渡る の を-phrase); the reader calls it patient, which is wrong, so the input is not read (PATH_ROLE_NOT_MAPPED)
+216c216
+< 入口が棄権の理由として返す型(`semantic_read.py` が使う閉じた一覧): 見本での理由の型 ['AGENT_EVIDENCE_MISSING', 'BENEFACTIVE_NOT_PRODUCED', 'EN_UNREAD', 'INTERJECTION_OR_FORMULA', 'NO_PREDICATE_TOKEN', 'NO_SUPPORTED_CLAUSE', 'NP_BOUNDARY_UNDETERMINED', 'PREDICATE_NORMALIZED', 'RECIPIENT_TYPE_UNDETERMINED', 'SUBJECT_TYPE_UNDETERMINED', 'UNDETERMINED_VOICE', 'UNKNOWN_PREDICATE', 'UNKNOWN_PREDICATE_WORD', 'UNREAD_SPAN', 'UNSUPPORTED_CLAUSE']
+---
+> 入口が棄権の理由として返す型(`semantic_read.py` が使う閉じた一覧): 見本での理由の型 ['BENEFACTIVE_NOT_PRODUCED', 'EN_UNREAD', 'INTERJECTION_OR_FORMULA', 'NO_PREDICATE_TOKEN', 'NO_SUPPORTED_CLAUSE', 'NP_BOUNDARY_UNDETERMINED', 'PREDICATE_NORMALIZED', 'QUANTIFIER_NOT_MAPPED', 'RECIPIENT_TYPE_UNDETERMINED', 'SUBJECT_TYPE_UNDETERMINED', 'UNDETERMINED_VOICE', 'UNKNOWN_PREDICATE', 'UNKNOWN_PREDICATE_WORD', 'UNMAPPED_ROLE', 'UNREAD_SPAN', 'UNSUPPORTED_CLAUSE']
+262c262
+< - `tests/test_semantic_read_r4.py` の凍結(出典: w1a3_tests_freeze.sha256、w1a3_tests_freeze_time.txt): 凍結が 2 回(2 回目は T4 の差し替え。H65)。最後の凍結 `8eed13423de957cbba20792e2fee003beaf22d77fba0054b1ced7a5d86ec0d65` / いま `721a9c036aa4128f49d6474964329185b37e84deacf9ae4c2e32438f0a173863` / 不一致
+---
+> - `tests/test_semantic_read_r4.py` の凍結(出典: w1a3_tests_freeze.sha256、w1a3_tests_freeze_time.txt): 凍結が 2 回(2 回目は T4 の差し替え。H65)。最後の凍結 `8eed13423de957cbba20792e2fee003beaf22d77fba0054b1ced7a5d86ec0d65` / いま `8eed13423de957cbba20792e2fee003beaf22d77fba0054b1ced7a5d86ec0d65` / 一致

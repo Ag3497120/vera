@@ -1,0 +1,3 @@
+74f2b45240664fac8c174c0f109a365d65032f9704c03bf29690e80109f0f3f1  artifacts/w5-e/h4_inputs.json
+d831e477bec3d60abe19d9275edd13644a6f5aa3f5655bd3bfae6cb9d0114f7e  tests/test_basis_policy_w5e.py
+4a6700ff54bc4948efc0c2530843b895feed4e1845b73b20a6450b429d323c83  tests/attack/test_attack_w5d.py

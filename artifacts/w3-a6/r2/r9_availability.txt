@@ -1,0 +1,6 @@
+/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r9 False
+/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r9/run1 False
+tests/coarse_place/test_coarse_place_w3a6_r9.py False
+artifacts/w3-a6/scripts/n2_table.py False
+artifacts/w3-a6/scripts/n4_count.py False
+artifacts/w3-a6/scripts/compare_seeds.py False

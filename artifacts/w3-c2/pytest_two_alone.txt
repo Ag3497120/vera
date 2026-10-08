@@ -1,0 +1,9 @@
+# the two environment-derived failures, run alone in this tree
+correct_rate=0.0 wrong_rate=0.0 false_compliance_rate=0.0
+一致: 12 ファイル（除いた欄: results ['elapsed_ms'], raw ['elapsed_ms', 'ingest_ms', 'ms'], run_meta ['timing']）
+recount /private/tmp/pytest-of-motonisihikoudai/pytest-876/test_s6_two_runs_agree_except_0/a: summary.json 一致 / summary.md 一致
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-c2-S/tests/bank_score/test_bs_end_to_end.py:99: AssertionError: assert ('<WORK>/home' == '<WORK>/home'
+=========================== short test summary info ============================
+FAILED tests/test_p4_abilities.py::test_speech_act_drafts_fill_new_roles_and_reread
+FAILED tests/bank_score/test_bs_end_to_end.py::test_s6_two_runs_agree_except_timing_and_recount_matches
+2 failed in 3.31s

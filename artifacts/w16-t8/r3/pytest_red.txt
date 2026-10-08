@@ -1,0 +1,55 @@
+......................FFFF..F...F..............FF                        [100%]
+=================================== FAILURES ===================================
+E   AssertionError: frame_status
+    assert '"NOT_CONFIRMED"' == '"CONFIRMED"'
+      
+      - "CONFIRMED"
+      + "NOT_CONFIRMED"
+      ?  ++++
+/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t8-S/tests/test_w16t8_layer.py:300: AssertionError: frame_status
+E   AssertionError: assert (['P_ACT'] == ['P_ACT']
+      
+      Use -v to get more diff and 'NOT_CONFIRMED' == 'CONFIRMED'
+      
+      - CONFIRMED
+      + NOT_CONFIRMED
+      ? ++++)
+/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t8-S/tests/test_w16t8_layer.py:310: AssertionError: assert (['P_ACT'] == ['P_ACT']
+E   AssertionError: assert (('frame_disagreement' in {'term': '移動する', 'namespace': 'P', 'state': 'DECIDED', 'origin': 'direct', ...}) == ('NOT_CONFIRMED' == 'NOT_CONFIRMED'
+      
+        NOT_CONFIRMED))
+/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t8-S/tests/test_w16t8_layer.py:319: AssertionError: assert (('frame_disagreement' in {'term': '移動する', 'namespace': 'P', 'state': 'DECIDED', 'origin': 'direct', ...}) == ('NOT_CONFIRMED' == 'NOT_CONFIRMED'
+E   AssertionError: assert (('NOT_CONFIRMED', None) == ('NO_FRAME_TABLE', None)
+      
+      At index 0 diff: 'NOT_CONFIRMED' != 'NO_FRAME_TABLE'
+      Use -v to get more diff)
+/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t8-S/tests/test_w16t8_layer.py:318: AssertionError: assert (('NOT_CONFIRMED', None) == ('NO_FRAME_TABLE', None)
+E   AssertionError: assert (None == {'へ': ['PLACE']})
+/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t8-S/tests/test_w16t8_layer.py:330: AssertionError: assert (None == {'へ': ['PLACE']})
+E   AssertionError: 包み語
+    assert ('LAYER_DIRECT_USED' == 'LAYER_ESTIMATED_NOT_USED'
+      
+      - LAYER_ESTIMATED_NOT_USED
+      + LAYER_DIRECT_USED)
+/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t8-S/tests/test_w16t8_layer.py:365: AssertionError: 包み語
+E   AssertionError: assert (1 == 1 and 'frame' == 'frame'
+     +  where 1 = len([{'sentence_id': 'r3.txt#1:1', 'text': '田中が駅へ移動した。', 'status': 'ABSTAIN', 'op': 'frame', ...}])
+      
+        frame and True is False)
+/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t8-S/tests/test_w16t8_confirm_cli.py:205: AssertionError: assert (1 == 1 and 'frame' == 'frame'
+E   AssertionError: assert ('NOT_CONFIRMED' == 'CONFIRMED'
+      
+      - CONFIRMED
+      + NOT_CONFIRMED
+      ? ++++)
+/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t8-S/tests/test_w16t8_confirm_cli.py:214: AssertionError: assert ('NOT_CONFIRMED' == 'CONFIRMED'
+=========================== short test summary info ============================
+FAILED tests/test_w16t8_layer.py::test_r3_a_set_alone_keeps_the_twelve_ten_frame_and_the_role_frame_of_the_base
+FAILED tests/test_w16t8_layer.py::test_r3_a_set_of_another_predicate_type_keeps_the_frame_the_base_confirmed
+FAILED tests/test_w16t8_layer.py::test_r3_a_base_without_a_confirmed_frame_gets_no_gen_frame_from_a_human[NOT_CONFIRMED-NOT_CONFIRMED-False]
+FAILED tests/test_w16t8_layer.py::test_r3_a_base_without_a_confirmed_frame_gets_no_gen_frame_from_a_human[NO_FRAME_TABLE-NO_FRAME_TABLE-False]
+FAILED tests/test_w16t8_layer.py::test_r3_a_frame_row_overlays_the_role_frame_and_never_changes_the_twelve_ten_frame
+FAILED tests/test_w16t8_layer.py::test_r3_rows_that_look_like_a_confirmation_but_are_not_one_stay_estimated
+FAILED tests/test_w16t8_confirm_cli.py::test_r3_a_twelve_ten_frame_reason_is_not_reachable_by_a_confirmation
+FAILED tests/test_w16t8_confirm_cli.py::test_r3_a_set_does_not_make_the_twelve_ten_frame_go_away
+8 failed, 41 passed in 1.11s

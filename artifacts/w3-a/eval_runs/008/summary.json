@@ -1,0 +1,151 @@
+{
+ "all": {
+  "correct": 32,
+  "n": 119,
+  "returned_any": 59,
+  "wrong_single": 23
+ },
+ "builder_sha256": "423a3fd7ae1ee534b699d6668a1a0c22b976fbb37250e8481fb61abd2d04b559",
+ "by_decisive_arm": {
+  "-": {
+   "correct": 0,
+   "n": 60,
+   "returned_any": 0,
+   "wrong_single": 0
+  },
+  "alias": {
+   "correct": 0,
+   "n": 2,
+   "returned_any": 2,
+   "wrong_single": 2
+  },
+  "est:morphology:head": {
+   "correct": 3,
+   "n": 14,
+   "returned_any": 14,
+   "wrong_single": 11
+  },
+  "est:morphology:kin": {
+   "correct": 0,
+   "n": 1,
+   "returned_any": 1,
+   "wrong_single": 1
+  },
+  "frame": {
+   "correct": 2,
+   "n": 14,
+   "returned_any": 14,
+   "wrong_single": 8
+  },
+  "pos_class": {
+   "correct": 10,
+   "n": 10,
+   "returned_any": 10,
+   "wrong_single": 0
+  },
+  "seed": {
+   "correct": 17,
+   "n": 18,
+   "returned_any": 18,
+   "wrong_single": 1
+  }
+ },
+ "by_gold_type": {
+  "P_ACT": {
+   "correct": 0,
+   "n": 10,
+   "returned_any": 1,
+   "wrong_single": 1
+  },
+  "P_CHANGE": {
+   "correct": 3,
+   "n": 10,
+   "returned_any": 6,
+   "wrong_single": 3
+  },
+  "P_COGNITION": {
+   "correct": 1,
+   "n": 8,
+   "returned_any": 3,
+   "wrong_single": 2
+  },
+  "P_COMMUNICATE": {
+   "correct": 1,
+   "n": 8,
+   "returned_any": 3,
+   "wrong_single": 2
+  },
+  "P_CONSUME": {
+   "correct": 6,
+   "n": 9,
+   "returned_any": 8,
+   "wrong_single": 0
+  },
+  "P_CREATE": {
+   "correct": 1,
+   "n": 8,
+   "returned_any": 2,
+   "wrong_single": 1
+  },
+  "P_EMOTION": {
+   "correct": 0,
+   "n": 10,
+   "returned_any": 5,
+   "wrong_single": 5
+  },
+  "P_EXIST": {
+   "correct": 2,
+   "n": 10,
+   "returned_any": 4,
+   "wrong_single": 2
+  },
+  "P_GIVE": {
+   "correct": 4,
+   "n": 8,
+   "returned_any": 7,
+   "wrong_single": 2
+  },
+  "P_MOVE": {
+   "correct": 2,
+   "n": 10,
+   "returned_any": 4,
+   "wrong_single": 2
+  },
+  "P_PERCEIVE": {
+   "correct": 0,
+   "n": 9,
+   "returned_any": 2,
+   "wrong_single": 2
+  },
+  "P_POSSESS": {
+   "correct": 2,
+   "n": 9,
+   "returned_any": 4,
+   "wrong_single": 1
+  },
+  "P_STATE": {
+   "correct": 10,
+   "n": 10,
+   "returned_any": 10,
+   "wrong_single": 0
+  }
+ },
+ "coarse_types_sha256": "5a07478613086a33a563d61016cdf6a8ee17bb4f3b171c17be919061668d94c7",
+ "command": [
+  "pred",
+  "--placement",
+  "/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/run1"
+ ],
+ "config_sha256": "e48fcb83e2305378fbe65bab4afa924cc6d43ec723069e4e57229567feed2a45",
+ "content_sha256": "e07d46485ef297f8da634c42c391261420e4e51b0833588efa6bb38bfd6c82a6",
+ "data": "frozen",
+ "non_seed": {
+  "correct": 24,
+  "n": 109,
+  "returned_any": 51,
+  "wrong_single": 23
+ },
+ "note": "report only (not an acceptance criterion)",
+ "placement": "/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/run1",
+ "time_utc": "2026-10-02T22:01:11Z"
+}

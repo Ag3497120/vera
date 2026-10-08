@@ -1,0 +1,15 @@
+# commit 4a336dc9716678a7c302e3b83a174580587cf10f
+# status PASS
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 17 items / 16 deselected / 1 selected
+
+tests/attack/test_memory_brief_limits.py::test_exact_character_budget_includes_full_selected_line PASSED [100%]
+
+=== PASSES ===
+=== short test summary info ===
+PASSED tests/attack/test_memory_brief_limits.py::test_exact_character_budget_includes_full_selected_line
+=== 1 passed, 16 deselected ===

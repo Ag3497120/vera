@@ -1,0 +1,88 @@
+{
+ "n": 3,
+ "tree": "new",
+ "loaded_from": null,
+ "mode": "inproc",
+ "placement": "placement_ask.json",
+ "vp": false,
+ "counts": {
+  "CORRECT": 0,
+  "WRONG": 0,
+  "FALSE_NONE": 0,
+  "ABSTAINED": 0,
+  "NOT_RUN": 3
+ },
+ "wrong": [],
+ "wrong_details": {},
+ "notation_tie": [],
+ "false_none": [],
+ "error_ids": [],
+ "error_count": 0,
+ "question_cross_states": {},
+ "mapped_to": {},
+ "base_answer": {
+  "NO_ANSWER": 3
+ },
+ "by_category": {
+  "nodoc": {
+   "CORRECT": 0,
+   "WRONG": 0,
+   "FALSE_NONE": 0,
+   "ABSTAINED": 0,
+   "NOT_RUN": 3
+  }
+ },
+ "by_truth_kind": {
+  "NONE": {
+   "CORRECT": 0,
+   "WRONG": 0,
+   "FALSE_NONE": 0,
+   "ABSTAINED": 0,
+   "NOT_RUN": 3
+  }
+ },
+ "unparsable": [],
+ "nonzero_exit": [],
+ "policy_outcomes": {},
+ "rows": [
+  {
+   "id": "AN001",
+   "class": "NOT_RUN",
+   "base_answer": "NO_ANSWER",
+   "verdict": "UNKNOWN_SOURCE_ASSET",
+   "door": "semantic_qa",
+   "state": null,
+   "mapped_to": null,
+   "category": "nodoc",
+   "kind": "NONE",
+   "ran": false,
+   "outcome": "ABSTAIN"
+  },
+  {
+   "id": "AN002",
+   "class": "NOT_RUN",
+   "base_answer": "NO_ANSWER",
+   "verdict": "UNKNOWN_UNREAD",
+   "door": "semantic_qa",
+   "state": null,
+   "mapped_to": null,
+   "category": "nodoc",
+   "kind": "NONE",
+   "ran": false,
+   "outcome": "ABSTAIN"
+  },
+  {
+   "id": "AN003",
+   "class": "NOT_RUN",
+   "base_answer": "NO_ANSWER",
+   "verdict": "UNKNOWN_UNREAD",
+   "door": "semantic_qa",
+   "state": null,
+   "mapped_to": null,
+   "category": "nodoc",
+   "kind": "NONE",
+   "ran": false,
+   "outcome": "ABSTAIN"
+  }
+ ]
+}

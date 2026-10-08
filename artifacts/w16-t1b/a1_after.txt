@@ -1,0 +1,16 @@
+........................................................................ [ 13%]
+...............F.F...................................................... [ 26%]
+..F.....F..FF........................................................... [ 39%]
+........................................................................ [ 52%]
+........................................................................ [ 66%]
+........................................................................ [ 79%]
+........................................................................ [ 92%]
+........................................                                 [100%]
+=========================== short test summary info ============================
+FAILED tests/test_w16t1b_modality_answer.py::test_modal_clause_is_not_read_as_an_event[mod-potential-06]
+FAILED tests/test_w16t1b_modality_answer.py::test_modal_clause_is_not_read_as_an_event[mod-potential-08]
+FAILED tests/test_w16t1b_modality_answer.py::test_gated_form_abstains_with_the_modality_type[mod-desire-05]
+FAILED tests/test_w16t1b_modality_answer.py::test_gated_form_abstains_with_the_modality_type[mod-potential-02]
+FAILED tests/test_w16t1b_modality_answer.py::test_gated_form_abstains_with_the_modality_type[mod-potential-05]
+FAILED tests/test_w16t1b_modality_answer.py::test_gated_form_abstains_with_the_modality_type[mod-conditional-00]
+6 failed, 538 passed in 13.40s

@@ -1,0 +1,11 @@
+c32b19fc0a5cc10348dd8c994f94e83ad4e0297bb12216e1aedc0d63851d12a0  tests/conduct_ask/w2g2/frames/x01_garden.md
+6f6630a91d86951587de32b8794c1c1e419b2e2a4309a65b0a125d9cb928ac81  tests/conduct_ask/w2g2/frames/x02_waste.md
+06246d64c4ca4b8345f28066d3b2abab9aa75a3a5da1efa7e7be105f45dea245  tests/conduct_ask/w2g2/frames/x03_clinic.md
+1236a4bd3ea88637808215c5dfa9a4638dc744ab9af8aab66b5dd621fc87d5a4  tests/conduct_ask/w2g2/frames/x04_compost.md
+cfe735e74797600f249ee74a9d71012e32fff17f55945904225baa356e9fadc7  tests/conduct_ask/w2g2/frames/x05_solar.md
+ee099dbb4893db99df60a968f770748c6afd2efd5a6a46387f865bae434b0355  tests/conduct_ask/w2g2/frames/x06_trail.md
+057f06a6fddd4b907586575f585a3a62353e62b4b2ca27960509d77b49c3c006  tests/conduct_ask/w2g2/items.jsonl
+76d720c60930240455f6e4101f975f3db54cb4d81276f6ffbea8f63b3b8fc023  tests/conduct_ask/w2g2/claude_subset.txt
+dcf88b2421e1b6764a98739345caa3abc3713bf74cae95dd00d7a67ab6240af0  tests/conduct_ask/w2g2/holdout.txt
+Fri Oct  2 21:40:08 UTC 2026
+Sat Oct  3 06:40:08 JST 2026

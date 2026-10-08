@@ -1,0 +1,33 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_____ test_run_verifiers_records_references_with_their_verifier_identities _____
+
+    def test_run_verifiers_records_references_with_their_verifier_identities():
+        first = _agent("zeta", "record:acceptance-z")
+        second = _agent("alpha", "sha256:" + "a" * 64)
+        frame = _frame()
+        reply = run_verifiers(
+            frame, "task-1", _ask(), [first, second], claimant_id="claimant",
+            claimant_session_id="claimant-session",
+        )
+        assert reply.kind == "ESCALATE"
+        assert len(frame.written) == 1
+        acceptance_id, result, kwargs = frame.written[0]
+        assert acceptance_id == "accept-1"
+        assert result == "UNVERIFIED"
+        stored = json.loads(kwargs["evidence_ref"])
+>       assert stored["verifiers"] == [
+            {"verifier_id": "alpha", "session_id": "session-alpha", "result": "PASS",
+             "evidence_ref": "sha256:" + "a" * 64},
+            {"verifier_id": "zeta", "session_id": "session-zeta", "result": "PASS",
+             "evidence_ref": "record:acceptance-z"},
+        ]
+E       AssertionError: assert [{'items': []...n-zeta', ...}] == [{'verifier_i...cceptance-z'}]
+E         
+E         At index 0 diff: {'items': [], 'opinion': '', 'reported_result': 'PASS', 'session_id': 'session-alpha', 'verifier_id': 'alpha'} != {'verifier_id': 'alpha', 'session_id': 'session-alpha', 'result': 'PASS', 'evidence_ref': 'sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'}
+E         Use -v to get more diff
+
+tests/attack/test_verifier_agents_fabrication.py:190: AssertionError
+=========================== short test summary info ============================
+FAILED tests/attack/test_verifier_agents_fabrication.py::test_run_verifiers_records_references_with_their_verifier_identities
+1 failed in 0.18s

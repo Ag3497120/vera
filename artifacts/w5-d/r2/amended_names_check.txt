@@ -1,0 +1,7 @@
+OBSERVATION 17 changed; added: ['`person_placement`, `=PERSONS`', 'none', '`_persons`']
+ROUTING_FROM_TEXT 54 changed; added: ['`FakePlacement`, `std_placed`', 'none', 'none', 'none', '`_AllUnplaced`']
+BASIS_POLICY 9 changed; added: ['`_hand_over_memo`', '`_hand_over_memo`']
+COARSE_PLACEMENT 1 changed; added: ['none']
+k_functions 72 changed-in-docs 81
+K not in docs: []
+docs-changed not K: ['=EXAMPLES', '_sovereign_with_yes', 'entry', 'entry_block', 'explain_lines', 'one_unit_status', 'run', 'statuses', 'two_rules_and_a_precedence']

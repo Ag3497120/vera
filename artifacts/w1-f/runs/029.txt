@@ -1,0 +1,28 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 15 items / 14 deselected / 1 selected
+
+tests/attack/test_memory_brief_injection.py::test_typed_kind_priority_precedes_input_order FAILED [100%]
+
+=== FAILURES ===
+________________ test_typed_kind_priority_precedes_input_order _________________
+
+    def test_typed_kind_priority_precedes_input_order():
+        memory = Memory([
+            record("fact-1", sentence="Fact."),
+            record("invariant-1", "INVARIANT", "Invariant."),
+        ])
+    
+        brief = compile_brief(memory, 200)
+    
+>       assert brief.splitlines() == ["[id:invariant-1] Invariant.", "[id:fact-1] Fact."]
+               ^^^^^^^^^^^^^^^^
+E       AttributeError: 'ContextBrief' object has no attribute 'splitlines'
+
+tests/attack/test_memory_brief_injection.py:76: AttributeError
+=== short test summary info ===
+FAILED tests/attack/test_memory_brief_injection.py::test_typed_kind_priority_precedes_input_order - AttributeError: 'ContextBrief' object has no attribute 'splitlines'
+=== 1 failed, 14 deselected ===

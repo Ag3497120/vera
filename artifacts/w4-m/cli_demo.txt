@@ -1,0 +1,75 @@
++ /Users/motonisihikoudai/Projects/vera-impl/wt/W4-m-S/artifacts/w4-m/py.sh -m verantyx.cli sovereign create --root /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w4m-r3/demo/demo-root --store-id s1 --owner owner-a
+{"consent_promote": false, "content_sha256": "79e2651651af7b4d63b7fe162121e202c4beddaeede8554c609837740314ddbe", "file_sha256": "5b1b24d708901d0161f41b18986c42825273343df106966d18e0cf5ef6556325", "owner": "owner-a", "path": "/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w4m-r3/demo/demo-root/stores/s1.sqlite", "registry_seq": 1, "store_id": "s1", "verdict": "CREATED"}
++ echo rc=0
+rc=0
++ /Users/motonisihikoudai/Projects/vera-impl/wt/W4-m-S/artifacts/w4-m/py.sh -m verantyx.cli sovereign append --root /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w4m-r3/demo/demo-root --store-id s1 --kind utterance --payload '{"phrase":"p1"}'
+{"id": "s1:1", "store_id": "s1", "verdict": "APPENDED"}
++ echo rc=0
+rc=0
++ /Users/motonisihikoudai/Projects/vera-impl/wt/W4-m-S/artifacts/w4-m/py.sh -m verantyx.cli sovereign promote --root /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w4m-r3/demo/demo-root --store-id s1
+{"consent": {"promote": false, "since": "2026-10-03T04:11:11+00:00", "since_seq": 0}, "store_id": "s1", "thresholds": {"d": 2, "n": 3, "source": "prereg"}, "verdict": "NO_CONSENT", "wrote": 0}
++ echo rc=0
+rc=0
++ /Users/motonisihikoudai/Projects/vera-impl/wt/W4-m-S/artifacts/w4-m/py.sh -m verantyx.cli sovereign events --root /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w4m-r3/demo/demo-root --store-id s1
++ /Users/motonisihikoudai/Projects/vera-impl/wt/W4-m-S/artifacts/w4-m/py.sh -m verantyx.cli sovereign detach --root /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w4m-r3/demo/demo-root --store-id s1
+{"file_left_in_place": "/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w4m-r3/demo/demo-root/stores/s1.sqlite", "file_sha256": "80cc29decc9e50c3e1c628ccfdf1fd3be4b3ccdb9a0cf1a771264eb2adccb1bd", "file_state": "PRESENT", "registry_seq": 2, "store_id": "s1", "verdict": "DETACHED"}
++ echo rc=0
+rc=0
++ /Users/motonisihikoudai/Projects/vera-impl/wt/W4-m-S/artifacts/w4-m/py.sh -m verantyx.cli sovereign events --root /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w4m-r3/demo/demo-root --store-id s1
+{"store_id": "s1", "verdict": "DETACHED"}
++ echo rc=1
+rc=1
++ /Users/motonisihikoudai/Projects/vera-impl/wt/W4-m-S/artifacts/w4-m/py.sh -m verantyx.cli sovereign attach --root /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w4m-r3/demo/demo-root --store-id s1
+{"content_sha256": "17fed8c1b4c393de187a3f575e3531449f6fc9182df0b1811db1f979aae5680e", "file_sha256": "80cc29decc9e50c3e1c628ccfdf1fd3be4b3ccdb9a0cf1a771264eb2adccb1bd", "path": "/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w4m-r3/demo/demo-root/stores/s1.sqlite", "registry_seq": 3, "same_as_detached": true, "store_id": "s1", "verdict": "ATTACHED"}
++ echo rc=0
+rc=0
++ /Users/motonisihikoudai/Projects/vera-impl/wt/W4-m-S/artifacts/w4-m/py.sh -m verantyx.cli sovereign events --root /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w4m-r3/demo/demo-root --store-id s1
++ /Users/motonisihikoudai/Projects/vera-impl/wt/W4-m-S/artifacts/w4-m/py.sh -m verantyx.cli sovereign export --root /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w4m-r3/demo/demo-root --store-id s1 --to /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w4m-r3/demo/demo-root2/s1.sqlite
+{"content_sha256": "17fed8c1b4c393de187a3f575e3531449f6fc9182df0b1811db1f979aae5680e", "file_sha256": "80cc29decc9e50c3e1c628ccfdf1fd3be4b3ccdb9a0cf1a771264eb2adccb1bd", "registry_seq": 4, "store_id": "s1", "to": "/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w4m-r3/demo/demo-root2/s1.sqlite", "verdict": "EXPORTED"}
++ echo rc=0
+rc=0
++ /Users/motonisihikoudai/Projects/vera-impl/wt/W4-m-S/artifacts/w4-m/py.sh -m verantyx.cli sovereign attach --root /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w4m-r3/demo/demo-root2 --file /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w4m-r3/demo/demo-root2/s1.sqlite
+{"content_sha256": "17fed8c1b4c393de187a3f575e3531449f6fc9182df0b1811db1f979aae5680e", "file_sha256": "80cc29decc9e50c3e1c628ccfdf1fd3be4b3ccdb9a0cf1a771264eb2adccb1bd", "path": "/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w4m-r3/demo/demo-root2/s1.sqlite", "registry_seq": 1, "same_as_detached": null, "store_id": "s1", "verdict": "ATTACHED"}
++ echo rc=0
+rc=0
++ /Users/motonisihikoudai/Projects/vera-impl/wt/W4-m-S/artifacts/w4-m/py.sh -m verantyx.cli sovereign events --root /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w4m-r3/demo/demo-root2 --store-id s1
++ shasum -a 256 /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w4m-r3/demo/demo-root/stores/s1.sqlite /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w4m-r3/demo/demo-root2/s1.sqlite
+80cc29decc9e50c3e1c628ccfdf1fd3be4b3ccdb9a0cf1a771264eb2adccb1bd  /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w4m-r3/demo/demo-root/stores/s1.sqlite
+80cc29decc9e50c3e1c628ccfdf1fd3be4b3ccdb9a0cf1a771264eb2adccb1bd  /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w4m-r3/demo/demo-root2/s1.sqlite
++ /Users/motonisihikoudai/Projects/vera-impl/wt/W4-m-S/artifacts/w4-m/py.sh -m verantyx.cli sovereign release --root /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w4m-r3/demo/demo-root --store-id s1 --confirm wrong
+{"store_id": "s1", "verdict": "REFUSED_NOT_CONFIRMED", "want": "--confirm <store_id> (exactly the same text)"}
++ echo rc=1
+rc=1
++ /Users/motonisihikoudai/Projects/vera-impl/wt/W4-m-S/artifacts/w4-m/py.sh -m verantyx.cli sovereign release --root /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w4m-r3/demo/demo-root --store-id s1 --confirm s1
+{"file_left_in_place": "/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w4m-r3/demo/demo-root/stores/s1.sqlite", "file_sha256": "80cc29decc9e50c3e1c628ccfdf1fd3be4b3ccdb9a0cf1a771264eb2adccb1bd", "file_state": "PRESENT", "last_known_file_sha256": null, "note": "Vera detached its reference and did not touch the file; deleting it is the owner's operation", "registry_seq": 5, "retired": 0, "retired_this_run": 0, "store_id": "s1", "verdict": "RELEASED"}
++ echo rc=0
+rc=0
++ shasum -a 256 /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w4m-r3/demo/demo-root/stores/s1.sqlite
+80cc29decc9e50c3e1c628ccfdf1fd3be4b3ccdb9a0cf1a771264eb2adccb1bd  /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w4m-r3/demo/demo-root/stores/s1.sqlite
++ test -f /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w4m-r3/demo/demo-root/stores/s1.sqlite
++ echo FILE_LEFT_IN_PLACE
+FILE_LEFT_IN_PLACE
++ /Users/motonisihikoudai/Projects/vera-impl/wt/W4-m-S/artifacts/w4-m/py.sh -m verantyx.cli sovereign status --root /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w4m-r3/demo/demo-root --store-id s1
+{"stores": [{"file_present": true, "owner": "owner-a", "path": "/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w4m-r3/demo/demo-root/stores/s1.sqlite", "promotions_active": 0, "promotions_retired": 0, "registry_rows": 5, "status": "RELEASED", "store_id": "s1"}], "structure": "PRESENT", "verdict": "ANSWER"}
++ echo rc=0
+rc=0
++ /Users/motonisihikoudai/Projects/vera-impl/wt/W4-m-S/artifacts/w4-m/py.sh -m verantyx.cli sovereign events --root /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w4m-r3/demo/demo-root --store-id s1
+{"store_id": "s1", "verdict": "RELEASED"}
++ echo rc=1
+rc=1
++ /Users/motonisihikoudai/Projects/vera-impl/wt/W4-m-S/artifacts/w4-m/py.sh -m verantyx.cli sovereign promotions --root /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w4m-r3/demo/demo-root --store-id s1
+{"promotions": [], "scope": "active", "structure": "PRESENT", "verdict": "ANSWER"}
++ echo rc=0
+rc=0
++ /Users/motonisihikoudai/Projects/vera-impl/wt/W4-m-S/artifacts/w4-m/py.sh -m verantyx.cli sovereign promotions --root /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w4m-r3/demo/demo-root --store-id typo
+{"store_id": "typo", "verdict": "UNKNOWN_STORE"}
++ echo rc=1
+rc=1
++ /Users/motonisihikoudai/Projects/vera-impl/wt/W4-m-S/artifacts/w4-m/py.sh -m verantyx.cli sovereign promotions --root /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w4m-r3/demo/nowhere
+{"promotions": [], "scope": "active", "structure": "ABSENT", "verdict": "ANSWER"}
++ echo rc=0
+rc=0
++ test -e /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w4m-r3/demo/nowhere
++ echo NOWHERE_NOT_CREATED
+NOWHERE_NOT_CREATED
+S2_CLI_OK

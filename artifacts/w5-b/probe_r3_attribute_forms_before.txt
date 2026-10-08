@@ -1,0 +1,20 @@
+'Which language do we use for the report archive?' answer English None None ESCALATE:UNDECIDED:TO_MAPPING
+'Which language is best for the report archive?' answer English None None ESCALATE:UNDECIDED:TO_MAPPING
+'Please state the language of the report archive.' answer English None None ESCALATE:UNDECIDED:TO_MAPPING
+'Language of the report archive?' answer English None None ESCALATE:UNDECIDED:TO_MAPPING
+'The language used by the report archive?' answer English None None ESCALATE:UNDECIDED:TO_MAPPING
+'What language will the report archive be in?' answer English None None ESCALATE:UNDECIDED:TO_MAPPING
+'Report archive language?' answer English None None ESCALATE:UNDECIDED:TO_MAPPING
+"Give me the report archive's language." answer English None None ESCALATE:UNDECIDED:TO_MAPPING
+'What would be the ideal language for the report archive?' answer English None None ESCALATE:UNDECIDED:TO_MAPPING
+'In which language should the report archive be written?' answer English None None ESCALATE:UNDECIDED:TO_MAPPING
+"What's the report archive written in?" answer English None None ESCALATE:UNDECIDED:TO_MAPPING
+'Is the report archive in English?' answer English None None ESCALATE:UNDECIDED:TO_MAPPING
+'What should we use for the report archive?' answer English None None ESCALATE:UNDECIDED:TO_MAPPING
+'The report archive: which language?' answer English None None ESCALATE:UNDECIDED:TO_MAPPING
+'What does the report archive use for language?' answer English None None ESCALATE:UNDECIDED:TO_MAPPING
+'Is English the language of the report archive?' answer English None None ESCALATE:UNDECIDED:TO_MAPPING
+'報告書アーカイブの言語は何ですか？' answer English None None None
+'報告書アーカイブの言語を教えてください。' answer English None None None
+'報告書アーカイブはどの言語ですか？' answer English None None None
+'報告書アーカイブの言語は英語ですか？' answer English None None None

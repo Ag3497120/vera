@@ -1,0 +1,30 @@
+## 実現器 形の表 語尾 丁寧体
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "実現器 形の表 語尾 丁寧体",
+  "searched": 695,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 56,
+    "module": 294,
+    "prereg": 80,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}
+## realize forms layer
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "realize forms layer",
+  "searched": 695,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 56,
+    "module": 294,
+    "prereg": 80,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}

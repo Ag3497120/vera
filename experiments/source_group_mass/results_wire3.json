@@ -1,0 +1,60 @@
+{
+ "777": {
+  "baseline": {
+   "reachable": 285,
+   "correct": 15,
+   "wrong": 235,
+   "refusal": 50,
+   "asked": 300,
+   "junk_top1": 55
+  },
+  "gated": {
+   "reachable": 285,
+   "correct": 17,
+   "wrong": 242,
+   "refusal": 41,
+   "asked": 300,
+   "junk_top1": 0
+  },
+  "gold_is_junk": 0
+ },
+ "4242": {
+  "baseline": {
+   "reachable": 291,
+   "correct": 17,
+   "wrong": 248,
+   "refusal": 35,
+   "asked": 300,
+   "junk_top1": 57
+  },
+  "gated": {
+   "reachable": 284,
+   "correct": 18,
+   "wrong": 248,
+   "refusal": 28,
+   "asked": 294,
+   "junk_top1": 0
+  },
+  "gold_is_junk": 6
+ },
+ "42": {
+  "baseline": {
+   "reachable": 293,
+   "correct": 13,
+   "wrong": 231,
+   "refusal": 56,
+   "asked": 300,
+   "junk_top1": 50
+  },
+  "gated": {
+   "reachable": 286,
+   "correct": 19,
+   "wrong": 233,
+   "refusal": 42,
+   "asked": 294,
+   "junk_top1": 0
+  },
+  "gold_is_junk": 6
+ },
+ "elapsed_s": 50.8
+}

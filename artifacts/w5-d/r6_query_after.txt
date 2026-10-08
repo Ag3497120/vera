@@ -1,0 +1,5 @@
+words placed direct by gen_frame: 48 {'NOT_CONFIRMED': 13, 'CONFIRMED': 35}
+NOT_CONFIRMED words: ["うたう", "たたえる", "みせる", "交わす", "命じる", "問い合わせる", "潜める", "示せる", "薦める", "見せ合う", "言い換える", "訴える", "謳う"]
+命じる: {"state": "DECIDED", "origin": "direct", "top": ["P_COMMUNICATE"], "generated_frame": true, "frame_status": "NOT_CONFIRMED", "frame": null, "frame_disagreement": {"を": {"generated": ["GROUP_ORG", "PERSON"], "distribution": {"role_distribution@jawiki": ["EVENT_ACT"]}}}}
+tail keys: ['spelling', 'generated_frame', 'frame_status', 'frame', 'frame_disagreement']
+independent disjoint set equals the NOT_CONFIRMED set: True 13

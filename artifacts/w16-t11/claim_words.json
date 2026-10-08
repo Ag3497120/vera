@@ -1,0 +1,5 @@
+{
+ "_note": "R-2 の言い切りの語の一覧（事前登録。README を書く前に凍結。後から緩めない）。各要素は正規表現（数字・語の間の空白は \\s* で吸収）。",
+ "ja": ["誤読\\s*0", "誤答\\s*0", "誤り\\s*0", "見逃し\\s*0", "誤検出\\s*0", "100\\s*%", "すべて正し", "全問正", "誤りなし", "誤りはない"],
+ "en": ["0\\s*wrong", "zero\\s+wrong", "no\\s+errors", "0\\s*errors", "zero\\s+errors", "100\\s*%", "never\\s+wrong", "0\\s*misreads?", "zero\\s+misreads?", "wrong\\s+answers?\\s*[:=]?\\s*0", "misreads?\\s*[:=]?\\s*0"]
+}

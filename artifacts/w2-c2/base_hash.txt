@@ -1,0 +1,2 @@
+9ded5f9014dd6aacbe6456d3c96ece4060a2d26efb02d77e566238413c6c448f  verantyx/conduct_ask.py
+9ded5f9014dd6aacbe6456d3c96ece4060a2d26efb02d77e566238413c6c448f  /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w2c2/base/verantyx/conduct_ask.py

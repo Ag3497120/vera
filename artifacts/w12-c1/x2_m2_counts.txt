@@ -1,0 +1,4 @@
+v1_iter_unfixed words 371917 with_iteration_mark 0 confirmed_r9_undecided 216079 confirmed_r9_undecided_with_mark 0
+v2_iter_fixed words 372054 with_iteration_mark 460 confirmed_r9_undecided 216217 confirmed_r9_undecided_with_mark 177
+check words v1: ['意気揚', '木上原', '木公園', '木駅', '筋骨隆']
+check words v2: ['人々', '代々木', '佐々木', '木駅', '様々']

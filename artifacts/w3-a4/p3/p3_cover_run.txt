@@ -1,0 +1,5 @@
+config: {'rd_min_sources': 1, 'rd_min_total': 20, 'rd_particle_min': 10, 'rd_particle_share_pct': 30, 'rd_store_min': 20, 'rd_type_share_pct': 50} rule in r7 config: all9
+he_by_ni_place direct 59 new 11 lost 0 other_changes 0 why {None: 4002, 'DISTRIBUTION_DISAGREES': 743, 'FRAME_PARTICLES_NOT_COVERED': 43}
+  lost: []  other: []
+k62_he_by_ni_place direct 60 new 12 lost 0 other_changes 0 why {None: 4003, 'DISTRIBUTION_DISAGREES': 743, 'FRAME_PARTICLES_NOT_COVERED': 42}
+  lost: []  other: []

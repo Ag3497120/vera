@@ -1,0 +1,883 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: /Users/motonisihikoudai/Projects/vera-impl/wt/W2-c-S
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 64 items
+
+tests/test_conduct_ask_traps4.py::test_m1_cold_general_question_about_an_operation_allowed_only_for_the_criterion[May we purge an expired sensor token?-opts0] FAILED [  1%]
+tests/test_conduct_ask_traps4.py::test_m1_cold_general_question_about_an_operation_allowed_only_for_the_criterion[May we purge an expired sensor token now?-opts1] FAILED [  3%]
+tests/test_conduct_ask_traps4.py::test_m1_cold_general_question_about_an_operation_allowed_only_for_the_criterion[Can I purge an expired sensor token?-opts2] FAILED [  4%]
+tests/test_conduct_ask_traps4.py::test_m1_cold_general_question_about_an_operation_allowed_only_for_the_criterion[Is it okay for us to purge an expired sensor token?-opts3] FAILED [  6%]
+tests/test_conduct_ask_traps4.py::test_m1_cold_general_question_about_an_operation_allowed_only_for_the_criterion[Can the vendor purge an expired sensor token to check the rotation?-opts4] PASSED [  7%]
+tests/test_conduct_ask_traps4.py::test_m1_cold_general_question_about_an_operation_allowed_only_for_the_criterion[May we purge an expired sensor token to check the rotation?-opts5] PASSED [  9%]
+tests/test_conduct_ask_traps4.py::test_m1_clinic_general_question_about_an_operation_allowed_only_for_the_criterion[\u53e4\u3044\u63a7\u3048\u3092\u7834\u68c4\u3057\u3066\u3088\u3044\u3067\u3059\u304b\uff1f-opts0] FAILED [ 10%]
+tests/test_conduct_ask_traps4.py::test_m1_clinic_general_question_about_an_operation_allowed_only_for_the_criterion[\u6765\u5e74\u306e\u627f\u8a8d\u3092\u5f97\u305f\u306e\u3067\u3001\u53e4\u3044\u63a7\u3048\u3092\u7834\u68c4\u3057\u3066\u3088\u3044\u3067\u3059\u304b\uff1f-opts1] FAILED [ 12%]
+tests/test_conduct_ask_traps4.py::test_m1_clinic_general_question_about_an_operation_allowed_only_for_the_criterion[\u53e4\u3044\u63a7\u3048\u3092\u7834\u68c4\u3057\u3066\u3082\u3088\u3044\u3067\u3059\u304b\uff1f-opts2] FAILED [ 14%]
+tests/test_conduct_ask_traps4.py::test_m1_clinic_general_question_about_an_operation_allowed_only_for_the_criterion[\u53e4\u3044\u63a7\u3048\u3092\u7834\u68c4\u3059\u308b\u3053\u3068\u306f\u3067\u304d\u307e\u3059\u304b\uff1f-opts3] FAILED [ 15%]
+tests/test_conduct_ask_traps4.py::test_m1_precedence_reversed_frame_does_not_allow_the_general_question[May we retry a non-idempotent call?] FAILED [ 17%]
+tests/test_conduct_ask_traps4.py::test_m1_precedence_reversed_frame_does_not_allow_the_general_question[Can I retry a non-idempotent call?] FAILED [ 18%]
+tests/test_conduct_ask_traps4.py::test_m1_precedence_reversed_frame_does_not_allow_the_general_question[Can the vendor retry a non-idempotent call to measure the delay?] PASSED [ 20%]
+tests/test_conduct_ask_traps4.py::test_m1_precedence_reversed_frame_still_answers_the_restatement_of_the_criterion PASSED [ 21%]
+tests/test_conduct_ask_traps4.py::test_m1_answers_kept[0-Can the nightly job purge an expired sensor token to check the rotation?-opts0-0] PASSED [ 23%]
+tests/test_conduct_ask_traps4.py::test_m1_answers_kept[0-May we share the alert log with a courier?-opts1-1] PASSED [ 25%]
+tests/test_conduct_ask_traps4.py::test_m1_answers_kept[0-May we calibrate a probe on site?-opts2-0] PASSED [ 26%]
+tests/test_conduct_ask_traps4.py::test_m1_answers_kept[1-\u75c5\u6b74\u3092\u5916\u90e8\u306b\u9001\u3063\u3066\u3088\u3044\u3067\u3059\u304b\uff1f-opts3-1] PASSED [ 28%]
+tests/test_conduct_ask_traps4.py::test_m1_answers_kept[1-\u8077\u54e1\u306b\u3088\u308b\u64cd\u4f5c\u306e\u7df4\u7fd2\u3092\u3057\u3066\u3088\u3044\u3067\u3059\u304b\uff1f-opts4-0] PASSED [ 29%]
+tests/test_conduct_ask_traps4.py::test_m1_forbidden_wins_stays_not_permitted PASSED [ 31%]
+tests/test_conduct_ask_traps4.py::test_m2_cold_dotted_path_is_handed_up[Can I edit tracker/../secrets/keys.py?] FAILED [ 32%]
+tests/test_conduct_ask_traps4.py::test_m2_cold_dotted_path_is_handed_up[Can I edit tracker/sub/../../secrets/keys.py?] FAILED [ 34%]
+tests/test_conduct_ask_traps4.py::test_m2_cold_dotted_path_is_handed_up[Can I edit tracker/./rules.py?] FAILED [ 35%]
+tests/test_conduct_ask_traps4.py::test_m2_cold_dotted_path_is_handed_up[May I write to tracker/../tests/test_rules.py?] FAILED [ 37%]
+tests/test_conduct_ask_traps4.py::test_m2_cold_dotted_path_is_handed_up[Am I allowed to update tests/../tracker/rules.py?] FAILED [ 39%]
+tests/test_conduct_ask_traps4.py::test_m2_clinic_dotted_path_is_handed_up[clinic/../secret/key.py \u3092\u66f8\u304d\u63db\u3048\u3066\u3088\u3044\u3067\u3059\u304b\uff1f] FAILED [ 40%]
+tests/test_conduct_ask_traps4.py::test_m2_clinic_dotted_path_is_handed_up[clinic/./form.py \u3092\u66f8\u304d\u63db\u3048\u3066\u3088\u3044\u3067\u3059\u304b\uff1f] FAILED [ 42%]
+tests/test_conduct_ask_traps4.py::test_m2_clinic_dotted_path_is_handed_up[tests/../clinic/form.py \u3092\u66f8\u304d\u63db\u3048\u3066\u3088\u3044\u3067\u3059\u304b\uff1f] FAILED [ 43%]
+tests/test_conduct_ask_traps4.py::test_m2_f08_dotted_path_is_handed_up[Can I edit player/../store/prices.py?] FAILED [ 45%]
+tests/test_conduct_ask_traps4.py::test_m2_f01_dotted_path_is_handed_up[app/../config/secret.yml \u3092\u66f8\u304d\u63db\u3048\u3066\u3088\u3044\u3067\u3059\u304b\uff1f] FAILED [ 46%]
+tests/test_conduct_ask_traps4.py::test_m2_the_hand_up_is_typed_as_a_path_that_is_not_plain FAILED [ 48%]
+tests/test_conduct_ask_traps4.py::test_m2_plain_paths_answers_kept[0-Can I edit tracker/rules.py?-opts0-0] PASSED [ 50%]
+tests/test_conduct_ask_traps4.py::test_m2_plain_paths_answers_kept[0-Am I allowed to update tests/test_rules.py?-opts1-0] PASSED [ 51%]
+tests/test_conduct_ask_traps4.py::test_m2_plain_paths_answers_kept[1-clinic/form.py \u3092\u66f8\u304d\u63db\u3048\u3066\u3088\u3044\u3067\u3059\u304b\uff1f-opts2-0] PASSED [ 53%]
+tests/test_conduct_ask_traps4.py::test_m2_plain_paths_answers_kept[1-tests/test_form.py \u306b\u66f8\u304d\u8fbc\u3093\u3067\u3088\u3044\u3067\u3059\u304b\uff1f-opts3-0] PASSED [ 54%]
+tests/test_conduct_ask_traps4.py::test_m2_f08_and_f01_plain_paths_kept PASSED [ 56%]
+tests/test_conduct_ask_traps4.py::test_m2_a_leading_dot_slash_is_still_dropped PASSED [ 57%]
+tests/test_conduct_ask_traps4.py::test_m3_an_unread_sentence_hands_the_question_up[1-\u6587\u5b57\u306e\u8272\u306f\u3069\u308c\u306b\u3057\u307e\u3059\u304b\uff1f \u6765\u5e74\u306e\u8a71\u3067\u3059\u3002-opts0] FAILED [ 59%]
+tests/test_conduct_ask_traps4.py::test_m3_an_unread_sentence_hands_the_question_up[1-\u6587\u5b57\u306e\u8272\u306f\u3069\u308c\u306b\u3057\u307e\u3059\u304b\uff1f \u5b50\u3069\u3082\u5411\u3051\u306e\u753b\u9762\u306e\u5834\u5408\u3067\u3059\u3002-opts1] FAILED [ 60%]
+tests/test_conduct_ask_traps4.py::test_m3_an_unread_sentence_hands_the_question_up[0-Which time zone do we use? This is for the courier app.-opts2] FAILED [ 62%]
+tests/test_conduct_ask_traps4.py::test_m3_an_unread_sentence_hands_the_question_up[0-What is the storage engine? I mean for the old prototype.-None] FAILED [ 64%]
+tests/test_conduct_ask_traps4.py::test_m3_an_unread_sentence_hands_the_question_up[0-Is humidity tracking in scope? Asking about the next release.-opts4] FAILED [ 65%]
+tests/test_conduct_ask_traps4.py::test_m3_an_unread_sentence_hands_the_question_up[1-\u4e88\u7d04\u306e\u5358\u4f4d\u306f\u4f55\u3067\u3059\u304b\uff1f \u524d\u306e\u7248\u306e\u8a71\u3067\u3059\u3002-None] FAILED [ 67%]
+tests/test_conduct_ask_traps4.py::test_m3_an_unread_sentence_hands_the_question_up[1-\u30aa\u30f3\u30e9\u30a4\u30f3\u8a3a\u7642\u306e\u4e88\u7d04\u306f\u7bc4\u56f2\u306b\u542b\u3081\u307e\u3059\u304b\uff1f \u6765\u5e74\u306e\u7248\u306e\u8a71\u3067\u3059\u3002-opts6] FAILED [ 68%]
+tests/test_conduct_ask_traps4.py::test_m3_an_unread_sentence_hands_the_question_up[0-The record schema is done. What can we start next? This is for the old prototype.-None] FAILED [ 70%]
+tests/test_conduct_ask_traps4.py::test_m3_an_unread_sentence_hands_the_question_up[1-\u6765\u5e74\u306e\u8a71\u3067\u3059\u3002 \u6587\u5b57\u306e\u8272\u306f\u3069\u308c\u306b\u3057\u307e\u3059\u304b\uff1f-opts8] FAILED [ 71%]
+tests/test_conduct_ask_traps4.py::test_m3_an_unread_sentence_hands_the_question_up[0-For the old prototype only. What is the storage engine?-None] FAILED [ 73%]
+tests/test_conduct_ask_traps4.py::test_m3_an_unread_sentence_hands_the_question_up[0-What is the alert channel? Only on weekends.-None] FAILED [ 75%]
+tests/test_conduct_ask_traps4.py::test_m3_an_unread_sentence_hands_the_question_up[1-\u4e88\u7d04\u306e\u5358\u4f4d\u306f\u4f55\u3067\u3059\u304b\uff1f \u5b50\u3069\u3082\u5411\u3051\u306e\u5834\u5408\u3067\u3059\u3002-None] FAILED [ 76%]
+tests/test_conduct_ask_traps4.py::test_m3_the_hand_up_is_typed FAILED    [ 78%]
+tests/test_conduct_ask_traps4.py::test_m3_premise_sentences_of_what_can_we_start_next_are_still_read[w2c-f01-08] PASSED [ 79%]
+tests/test_conduct_ask_traps4.py::test_m3_premise_sentences_of_what_can_we_start_next_are_still_read[w2c-f02-06] PASSED [ 81%]
+tests/test_conduct_ask_traps4.py::test_m3_premise_sentences_of_what_can_we_start_next_are_still_read[w2c-f03-04] PASSED [ 82%]
+tests/test_conduct_ask_traps4.py::test_m3_premise_sentences_of_what_can_we_start_next_are_still_read[w2c-f05-07] PASSED [ 84%]
+tests/test_conduct_ask_traps4.py::test_m3_premise_sentences_of_what_can_we_start_next_are_still_read[w2c-f06-07] PASSED [ 85%]
+tests/test_conduct_ask_traps4.py::test_m3_premise_sentences_of_what_can_we_start_next_are_still_read[w2c-f07-05] PASSED [ 87%]
+tests/test_conduct_ask_traps4.py::test_m3_premise_sentences_of_what_can_we_start_next_are_still_read[w2c-f08-07] PASSED [ 89%]
+tests/test_conduct_ask_traps4.py::test_m3_premise_sentences_of_what_can_we_start_next_are_still_read[w2c-f11-07] PASSED [ 90%]
+tests/test_conduct_ask_traps4.py::test_m3_premise_sentences_of_what_can_we_start_next_are_still_read[w2c-f04-16] PASSED [ 92%]
+tests/test_conduct_ask_traps4.py::test_m3_answers_kept[1-\u6587\u5b57\u306e\u8272\u306f\u3069\u308c\u306b\u3057\u307e\u3059\u304b\uff1f-opts0-0] PASSED [ 93%]
+tests/test_conduct_ask_traps4.py::test_m3_answers_kept[1-\u6587\u5b57\u306e\u8272\u306f\u3069\u308c\u306b\u3057\u307e\u3059\u304b\uff1f \u627f\u8a8d\u6e08\u307f\u3067\u3059\u3002-opts1-0] PASSED [ 95%]
+tests/test_conduct_ask_traps4.py::test_m3_answers_kept[0-Is humidity tracking in scope? Approved.-opts2-1] PASSED [ 96%]
+tests/test_conduct_ask_traps4.py::test_m3_answers_kept[0-Is humidity tracking in scope? The lead approved it.-opts3-1] PASSED [ 98%]
+tests/test_conduct_ask_traps4.py::test_m3_the_condition_in_the_same_sentence_is_still_handed_up PASSED [100%]
+
+=================================== FAILURES ===================================
+_ test_m1_cold_general_question_about_an_operation_allowed_only_for_the_criterion[May we purge an expired sensor token?-opts0] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-239/traps40/cold.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-239/traps40/clinic.md')
+q = 'May we purge an expired sensor token?', opts = ['Yes', 'No']
+
+    @pytest.mark.parametrize("q,opts", M1_COLD)
+    def test_m1_cold_general_question_about_an_operation_allowed_only_for_the_criterion(frames, q, opts):
+>       assert_escalates(ask(frames[0], q, opts))
+
+tests/test_conduct_ask_traps4.py:179: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'PERMISSION', 'answer': 'Yes', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('Yes', 0, [{'id': 'forbidden_actions:L47', 'section': 'forbidden_actions', 'line': 47, 'text': 'purge an expired sensor token => Tokens are kept for the audit'}, {'id': 'C2', 'section': 'completion_criteria', 'line': 12, 'text': 'C2: The nightly job will purge an expired sensor token to check the rotation | human-judged'}, {'id': 'R1', 'section': 'conflict_precedence', 'line': 50, 'text': 'R1: completion_criteria > forbidden_actions: The rotation check is the reason the job exists'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps4.py:144: AssertionError
+_ test_m1_cold_general_question_about_an_operation_allowed_only_for_the_criterion[May we purge an expired sensor token now?-opts1] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-239/traps40/cold.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-239/traps40/clinic.md')
+q = 'May we purge an expired sensor token now?', opts = ['Yes', 'No']
+
+    @pytest.mark.parametrize("q,opts", M1_COLD)
+    def test_m1_cold_general_question_about_an_operation_allowed_only_for_the_criterion(frames, q, opts):
+>       assert_escalates(ask(frames[0], q, opts))
+
+tests/test_conduct_ask_traps4.py:179: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'PERMISSION', 'answer': 'Yes', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('Yes', 0, [{'id': 'forbidden_actions:L47', 'section': 'forbidden_actions', 'line': 47, 'text': 'purge an expired sensor token => Tokens are kept for the audit'}, {'id': 'C2', 'section': 'completion_criteria', 'line': 12, 'text': 'C2: The nightly job will purge an expired sensor token to check the rotation | human-judged'}, {'id': 'R1', 'section': 'conflict_precedence', 'line': 50, 'text': 'R1: completion_criteria > forbidden_actions: The rotation check is the reason the job exists'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps4.py:144: AssertionError
+_ test_m1_cold_general_question_about_an_operation_allowed_only_for_the_criterion[Can I purge an expired sensor token?-opts2] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-239/traps40/cold.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-239/traps40/clinic.md')
+q = 'Can I purge an expired sensor token?', opts = ['Yes', 'No']
+
+    @pytest.mark.parametrize("q,opts", M1_COLD)
+    def test_m1_cold_general_question_about_an_operation_allowed_only_for_the_criterion(frames, q, opts):
+>       assert_escalates(ask(frames[0], q, opts))
+
+tests/test_conduct_ask_traps4.py:179: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'PERMISSION', 'answer': 'Yes', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('Yes', 0, [{'id': 'forbidden_actions:L47', 'section': 'forbidden_actions', 'line': 47, 'text': 'purge an expired sensor token => Tokens are kept for the audit'}, {'id': 'C2', 'section': 'completion_criteria', 'line': 12, 'text': 'C2: The nightly job will purge an expired sensor token to check the rotation | human-judged'}, {'id': 'R1', 'section': 'conflict_precedence', 'line': 50, 'text': 'R1: completion_criteria > forbidden_actions: The rotation check is the reason the job exists'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps4.py:144: AssertionError
+_ test_m1_cold_general_question_about_an_operation_allowed_only_for_the_criterion[Is it okay for us to purge an expired sensor token?-opts3] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-239/traps40/cold.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-239/traps40/clinic.md')
+q = 'Is it okay for us to purge an expired sensor token?', opts = ['Yes', 'No']
+
+    @pytest.mark.parametrize("q,opts", M1_COLD)
+    def test_m1_cold_general_question_about_an_operation_allowed_only_for_the_criterion(frames, q, opts):
+>       assert_escalates(ask(frames[0], q, opts))
+
+tests/test_conduct_ask_traps4.py:179: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'PERMISSION', 'answer': 'Yes', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('Yes', 0, [{'id': 'forbidden_actions:L47', 'section': 'forbidden_actions', 'line': 47, 'text': 'purge an expired sensor token => Tokens are kept for the audit'}, {'id': 'C2', 'section': 'completion_criteria', 'line': 12, 'text': 'C2: The nightly job will purge an expired sensor token to check the rotation | human-judged'}, {'id': 'R1', 'section': 'conflict_precedence', 'line': 50, 'text': 'R1: completion_criteria > forbidden_actions: The rotation check is the reason the job exists'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps4.py:144: AssertionError
+_ test_m1_clinic_general_question_about_an_operation_allowed_only_for_the_criterion[\u53e4\u3044\u63a7\u3048\u3092\u7834\u68c4\u3057\u3066\u3088\u3044\u3067\u3059\u304b\uff1f-opts0] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-239/traps40/cold.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-239/traps40/clinic.md')
+q = '古い控えを破棄してよいですか？', opts = ['はい', 'いいえ']
+
+    @pytest.mark.parametrize("q,opts", M1_CLINIC)
+    def test_m1_clinic_general_question_about_an_operation_allowed_only_for_the_criterion(frames, q, opts):
+>       assert_escalates(ask(frames[1], q, opts))
+
+tests/test_conduct_ask_traps4.py:184: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'PERMISSION', 'answer': 'はい', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('はい', 0, [{'id': 'forbidden_actions:L47', 'section': 'forbidden_actions', 'line': 47, 'text': '古い控えを破棄する => 控えは5年保管する'}, {'id': 'C2', 'section': 'completion_criteria', 'line': 12, 'text': 'C2: 夜間の点検で古い控えを破棄して容量を確かめる | human-judged'}, {'id': 'R1', 'section': 'conflict_precedence', 'line': 50, 'text': 'R1: completion_criteria > forbidden_actions: 点検のための破棄は認める'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps4.py:144: AssertionError
+_ test_m1_clinic_general_question_about_an_operation_allowed_only_for_the_criterion[\u6765\u5e74\u306e\u627f\u8a8d\u3092\u5f97\u305f\u306e\u3067\u3001\u53e4\u3044\u63a7\u3048\u3092\u7834\u68c4\u3057\u3066\u3088\u3044\u3067\u3059\u304b\uff1f-opts1] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-239/traps40/cold.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-239/traps40/clinic.md')
+q = '来年の承認を得たので、古い控えを破棄してよいですか？', opts = ['はい', 'いいえ']
+
+    @pytest.mark.parametrize("q,opts", M1_CLINIC)
+    def test_m1_clinic_general_question_about_an_operation_allowed_only_for_the_criterion(frames, q, opts):
+>       assert_escalates(ask(frames[1], q, opts))
+
+tests/test_conduct_ask_traps4.py:184: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'PERMISSION', 'answer': 'はい', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('はい', 0, [{'id': 'forbidden_actions:L47', 'section': 'forbidden_actions', 'line': 47, 'text': '古い控えを破棄する => 控えは5年保管する'}, {'id': 'C2', 'section': 'completion_criteria', 'line': 12, 'text': 'C2: 夜間の点検で古い控えを破棄して容量を確かめる | human-judged'}, {'id': 'R1', 'section': 'conflict_precedence', 'line': 50, 'text': 'R1: completion_criteria > forbidden_actions: 点検のための破棄は認める'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps4.py:144: AssertionError
+_ test_m1_clinic_general_question_about_an_operation_allowed_only_for_the_criterion[\u53e4\u3044\u63a7\u3048\u3092\u7834\u68c4\u3057\u3066\u3082\u3088\u3044\u3067\u3059\u304b\uff1f-opts2] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-239/traps40/cold.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-239/traps40/clinic.md')
+q = '古い控えを破棄してもよいですか？', opts = ['はい', 'いいえ']
+
+    @pytest.mark.parametrize("q,opts", M1_CLINIC)
+    def test_m1_clinic_general_question_about_an_operation_allowed_only_for_the_criterion(frames, q, opts):
+>       assert_escalates(ask(frames[1], q, opts))
+
+tests/test_conduct_ask_traps4.py:184: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'PERMISSION', 'answer': 'はい', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('はい', 0, [{'id': 'forbidden_actions:L47', 'section': 'forbidden_actions', 'line': 47, 'text': '古い控えを破棄する => 控えは5年保管する'}, {'id': 'C2', 'section': 'completion_criteria', 'line': 12, 'text': 'C2: 夜間の点検で古い控えを破棄して容量を確かめる | human-judged'}, {'id': 'R1', 'section': 'conflict_precedence', 'line': 50, 'text': 'R1: completion_criteria > forbidden_actions: 点検のための破棄は認める'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps4.py:144: AssertionError
+_ test_m1_clinic_general_question_about_an_operation_allowed_only_for_the_criterion[\u53e4\u3044\u63a7\u3048\u3092\u7834\u68c4\u3059\u308b\u3053\u3068\u306f\u3067\u304d\u307e\u3059\u304b\uff1f-opts3] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-239/traps40/cold.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-239/traps40/clinic.md')
+q = '古い控えを破棄することはできますか？', opts = ['はい', 'いいえ']
+
+    @pytest.mark.parametrize("q,opts", M1_CLINIC)
+    def test_m1_clinic_general_question_about_an_operation_allowed_only_for_the_criterion(frames, q, opts):
+>       assert_escalates(ask(frames[1], q, opts))
+
+tests/test_conduct_ask_traps4.py:184: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'PERMISSION', 'answer': 'はい', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('はい', 0, [{'id': 'forbidden_actions:L47', 'section': 'forbidden_actions', 'line': 47, 'text': '古い控えを破棄する => 控えは5年保管する'}, {'id': 'C2', 'section': 'completion_criteria', 'line': 12, 'text': 'C2: 夜間の点検で古い控えを破棄して容量を確かめる | human-judged'}, {'id': 'R1', 'section': 'conflict_precedence', 'line': 50, 'text': 'R1: completion_criteria > forbidden_actions: 点検のための破棄は認める'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps4.py:144: AssertionError
+_ test_m1_precedence_reversed_frame_does_not_allow_the_general_question[May we retry a non-idempotent call?] _
+
+f05_reversed = '/private/tmp/pytest-of-motonisihikoudai/pytest-239/test_m1_precedence_reversed_fr0/f05_retry.md'
+q = 'May we retry a non-idempotent call?'
+
+    @pytest.mark.parametrize("q", ["May we retry a non-idempotent call?", "Can I retry a non-idempotent call?",
+                                   "Can the vendor retry a non-idempotent call to measure the delay?"])
+    def test_m1_precedence_reversed_frame_does_not_allow_the_general_question(f05_reversed, q):
+>       assert_escalates(ask(f05_reversed, q, YN))
+
+tests/test_conduct_ask_traps4.py:196: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'PERMISSION', 'answer': 'Yes', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('Yes', 0, [{'id': 'forbidden_actions:L44', 'section': 'forbidden_actions', 'line': 44, 'text': 'retry a non-idempotent call => A duplicated side effect cannot be undone'}, {'id': 'C3', 'section': 'completion_criteria', 'line': 13, 'text': 'C3: The stress run will retry a non-idempotent call to measure the delay | human-judged'}, {'id': 'R1', 'section': 'conflict_precedence', 'line': 47, 'text': 'R1: completion_criteria > forbidden_actions: A passing run never justifies a forbidden operation'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps4.py:144: AssertionError
+_ test_m1_precedence_reversed_frame_does_not_allow_the_general_question[Can I retry a non-idempotent call?] _
+
+f05_reversed = '/private/tmp/pytest-of-motonisihikoudai/pytest-239/test_m1_precedence_reversed_fr1/f05_retry.md'
+q = 'Can I retry a non-idempotent call?'
+
+    @pytest.mark.parametrize("q", ["May we retry a non-idempotent call?", "Can I retry a non-idempotent call?",
+                                   "Can the vendor retry a non-idempotent call to measure the delay?"])
+    def test_m1_precedence_reversed_frame_does_not_allow_the_general_question(f05_reversed, q):
+>       assert_escalates(ask(f05_reversed, q, YN))
+
+tests/test_conduct_ask_traps4.py:196: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'PERMISSION', 'answer': 'Yes', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('Yes', 0, [{'id': 'forbidden_actions:L44', 'section': 'forbidden_actions', 'line': 44, 'text': 'retry a non-idempotent call => A duplicated side effect cannot be undone'}, {'id': 'C3', 'section': 'completion_criteria', 'line': 13, 'text': 'C3: The stress run will retry a non-idempotent call to measure the delay | human-judged'}, {'id': 'R1', 'section': 'conflict_precedence', 'line': 47, 'text': 'R1: completion_criteria > forbidden_actions: A passing run never justifies a forbidden operation'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps4.py:144: AssertionError
+_ test_m2_cold_dotted_path_is_handed_up[Can I edit tracker/../secrets/keys.py?] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-239/traps40/cold.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-239/traps40/clinic.md')
+q = 'Can I edit tracker/../secrets/keys.py?'
+
+    @pytest.mark.parametrize("q", M2_COLD)
+    def test_m2_cold_dotted_path_is_handed_up(frames, q):
+>       assert_escalates(ask(frames[0], q, YN))
+
+tests/test_conduct_ask_traps4.py:243: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'PERMISSION', 'answer': 'Yes', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('Yes', 0, [{'id': 'W1', 'section': 'write_allowlist', 'line': 43, 'text': 'W1: tracker'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps4.py:144: AssertionError
+_ test_m2_cold_dotted_path_is_handed_up[Can I edit tracker/sub/../../secrets/keys.py?] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-239/traps40/cold.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-239/traps40/clinic.md')
+q = 'Can I edit tracker/sub/../../secrets/keys.py?'
+
+    @pytest.mark.parametrize("q", M2_COLD)
+    def test_m2_cold_dotted_path_is_handed_up(frames, q):
+>       assert_escalates(ask(frames[0], q, YN))
+
+tests/test_conduct_ask_traps4.py:243: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'PERMISSION', 'answer': 'Yes', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('Yes', 0, [{'id': 'W1', 'section': 'write_allowlist', 'line': 43, 'text': 'W1: tracker'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps4.py:144: AssertionError
+____ test_m2_cold_dotted_path_is_handed_up[Can I edit tracker/./rules.py?] _____
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-239/traps40/cold.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-239/traps40/clinic.md')
+q = 'Can I edit tracker/./rules.py?'
+
+    @pytest.mark.parametrize("q", M2_COLD)
+    def test_m2_cold_dotted_path_is_handed_up(frames, q):
+>       assert_escalates(ask(frames[0], q, YN))
+
+tests/test_conduct_ask_traps4.py:243: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'PERMISSION', 'answer': 'Yes', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('Yes', 0, [{'id': 'W1', 'section': 'write_allowlist', 'line': 43, 'text': 'W1: tracker'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps4.py:144: AssertionError
+_ test_m2_cold_dotted_path_is_handed_up[May I write to tracker/../tests/test_rules.py?] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-239/traps40/cold.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-239/traps40/clinic.md')
+q = 'May I write to tracker/../tests/test_rules.py?'
+
+    @pytest.mark.parametrize("q", M2_COLD)
+    def test_m2_cold_dotted_path_is_handed_up(frames, q):
+>       assert_escalates(ask(frames[0], q, YN))
+
+tests/test_conduct_ask_traps4.py:243: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'PERMISSION', 'answer': 'Yes', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('Yes', 0, [{'id': 'W1', 'section': 'write_allowlist', 'line': 43, 'text': 'W1: tracker'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps4.py:144: AssertionError
+_ test_m2_cold_dotted_path_is_handed_up[Am I allowed to update tests/../tracker/rules.py?] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-239/traps40/cold.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-239/traps40/clinic.md')
+q = 'Am I allowed to update tests/../tracker/rules.py?'
+
+    @pytest.mark.parametrize("q", M2_COLD)
+    def test_m2_cold_dotted_path_is_handed_up(frames, q):
+>       assert_escalates(ask(frames[0], q, YN))
+
+tests/test_conduct_ask_traps4.py:243: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'PERMISSION', 'answer': 'Yes', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('Yes', 0, [{'id': 'W2', 'section': 'write_allowlist', 'line': 44, 'text': 'W2: tests'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps4.py:144: AssertionError
+_ test_m2_clinic_dotted_path_is_handed_up[clinic/../secret/key.py \u3092\u66f8\u304d\u63db\u3048\u3066\u3088\u3044\u3067\u3059\u304b\uff1f] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-239/traps40/cold.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-239/traps40/clinic.md')
+q = 'clinic/../secret/key.py を書き換えてよいですか？'
+
+    @pytest.mark.parametrize("q", M2_CLINIC)
+    def test_m2_clinic_dotted_path_is_handed_up(frames, q):
+>       assert_escalates(ask(frames[1], q, HI))
+
+tests/test_conduct_ask_traps4.py:248: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'PERMISSION', 'answer': 'はい', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('はい', 0, [{'id': 'W1', 'section': 'write_allowlist', 'line': 43, 'text': 'W1: clinic'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps4.py:144: AssertionError
+_ test_m2_clinic_dotted_path_is_handed_up[clinic/./form.py \u3092\u66f8\u304d\u63db\u3048\u3066\u3088\u3044\u3067\u3059\u304b\uff1f] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-239/traps40/cold.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-239/traps40/clinic.md')
+q = 'clinic/./form.py を書き換えてよいですか？'
+
+    @pytest.mark.parametrize("q", M2_CLINIC)
+    def test_m2_clinic_dotted_path_is_handed_up(frames, q):
+>       assert_escalates(ask(frames[1], q, HI))
+
+tests/test_conduct_ask_traps4.py:248: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'PERMISSION', 'answer': 'はい', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('はい', 0, [{'id': 'W1', 'section': 'write_allowlist', 'line': 43, 'text': 'W1: clinic'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps4.py:144: AssertionError
+_ test_m2_clinic_dotted_path_is_handed_up[tests/../clinic/form.py \u3092\u66f8\u304d\u63db\u3048\u3066\u3088\u3044\u3067\u3059\u304b\uff1f] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-239/traps40/cold.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-239/traps40/clinic.md')
+q = 'tests/../clinic/form.py を書き換えてよいですか？'
+
+    @pytest.mark.parametrize("q", M2_CLINIC)
+    def test_m2_clinic_dotted_path_is_handed_up(frames, q):
+>       assert_escalates(ask(frames[1], q, HI))
+
+tests/test_conduct_ask_traps4.py:248: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'PERMISSION', 'answer': 'はい', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('はい', 0, [{'id': 'W2', 'section': 'write_allowlist', 'line': 44, 'text': 'W2: tests'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps4.py:144: AssertionError
+_ test_m2_f08_dotted_path_is_handed_up[Can I edit player/../store/prices.py?] __
+
+q = 'Can I edit player/../store/prices.py?'
+
+    @pytest.mark.parametrize("q", M2_F08)
+    def test_m2_f08_dotted_path_is_handed_up(q):
+>       assert_escalates(ask(H.frame("f08_audioguide"), q, YN))
+
+tests/test_conduct_ask_traps4.py:253: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'PERMISSION', 'answer': 'Yes', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('Yes', 0, [{'id': 'W1', 'section': 'write_allowlist', 'line': 44, 'text': 'W1: player'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps4.py:144: AssertionError
+_ test_m2_f01_dotted_path_is_handed_up[app/../config/secret.yml \u3092\u66f8\u304d\u63db\u3048\u3066\u3088\u3044\u3067\u3059\u304b\uff1f] _
+
+q = 'app/../config/secret.yml を書き換えてよいですか？'
+
+    @pytest.mark.parametrize("q", M2_F01)
+    def test_m2_f01_dotted_path_is_handed_up(q):
+>       assert_escalates(ask(H.frame("f01_loan"), q, HI))
+
+tests/test_conduct_ask_traps4.py:258: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'PERMISSION', 'answer': 'はい', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('はい', 0, [{'id': 'W1', 'section': 'write_allowlist', 'line': 42, 'text': 'W1: app'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps4.py:144: AssertionError
+___________ test_m2_the_hand_up_is_typed_as_a_path_that_is_not_plain ___________
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-239/traps40/cold.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-239/traps40/clinic.md')
+
+    def test_m2_the_hand_up_is_typed_as_a_path_that_is_not_plain(frames):
+        res = ask(frames[0], "Can I edit tracker/../secrets/keys.py?", YN)
+>       assert res["escalate_reason"] == "FRAME_SILENT" and res["escalate_detail"] == "PATH_NOT_PLAIN"
+E       AssertionError: assert (None == 'FRAME_SILENT')
+
+tests/test_conduct_ask_traps4.py:263: AssertionError
+_ test_m3_an_unread_sentence_hands_the_question_up[1-\u6587\u5b57\u306e\u8272\u306f\u3069\u308c\u306b\u3057\u307e\u3059\u304b\uff1f \u6765\u5e74\u306e\u8a71\u3067\u3059\u3002-opts0] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-239/traps40/cold.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-239/traps40/clinic.md')
+fi = 1, q = '文字の色はどれにしますか？ 来年の話です。', opts = ['黒', '青']
+
+    @pytest.mark.parametrize("fi,q,opts", M3)
+    def test_m3_an_unread_sentence_hands_the_question_up(frames, fi, q, opts):
+        res = ask(frames[fi], q, opts)
+>       assert_escalates(res)
+
+tests/test_conduct_ask_traps4.py:312: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'CHOICE', 'answer': '黒', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('黒', 0, [{'id': 'D6', 'section': 'decisions', 'line': 31, 'text': 'D6: CHOICE | 文字の色 | 黒'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps4.py:144: AssertionError
+_ test_m3_an_unread_sentence_hands_the_question_up[1-\u6587\u5b57\u306e\u8272\u306f\u3069\u308c\u306b\u3057\u307e\u3059\u304b\uff1f \u5b50\u3069\u3082\u5411\u3051\u306e\u753b\u9762\u306e\u5834\u5408\u3067\u3059\u3002-opts1] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-239/traps40/cold.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-239/traps40/clinic.md')
+fi = 1, q = '文字の色はどれにしますか？ 子ども向けの画面の場合です。', opts = ['黒', '青']
+
+    @pytest.mark.parametrize("fi,q,opts", M3)
+    def test_m3_an_unread_sentence_hands_the_question_up(frames, fi, q, opts):
+        res = ask(frames[fi], q, opts)
+>       assert_escalates(res)
+
+tests/test_conduct_ask_traps4.py:312: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'CHOICE', 'answer': '黒', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('黒', 0, [{'id': 'D6', 'section': 'decisions', 'line': 31, 'text': 'D6: CHOICE | 文字の色 | 黒'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps4.py:144: AssertionError
+_ test_m3_an_unread_sentence_hands_the_question_up[0-Which time zone do we use? This is for the courier app.-opts2] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-239/traps40/cold.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-239/traps40/clinic.md')
+fi = 0, q = 'Which time zone do we use? This is for the courier app.'
+opts = ['UTC', 'local time']
+
+    @pytest.mark.parametrize("fi,q,opts", M3)
+    def test_m3_an_unread_sentence_hands_the_question_up(frames, fi, q, opts):
+        res = ask(frames[fi], q, opts)
+>       assert_escalates(res)
+
+tests/test_conduct_ask_traps4.py:312: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'CHOICE', 'answer': 'UTC', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('UTC', 0, [{'id': 'D6', 'section': 'decisions', 'line': 31, 'text': 'D6: CHOICE | time zone | UTC'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps4.py:144: AssertionError
+_ test_m3_an_unread_sentence_hands_the_question_up[0-What is the storage engine? I mean for the old prototype.-None] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-239/traps40/cold.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-239/traps40/clinic.md')
+fi = 0, q = 'What is the storage engine? I mean for the old prototype.'
+opts = None
+
+    @pytest.mark.parametrize("fi,q,opts", M3)
+    def test_m3_an_unread_sentence_hands_the_question_up(frames, fi, q, opts):
+        res = ask(frames[fi], q, opts)
+>       assert_escalates(res)
+
+tests/test_conduct_ask_traps4.py:312: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'DESIGN_PREFERENCE', 'answer': 'PostgreSQL', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('PostgreSQL', None, [{'id': 'D1', 'section': 'decisions', 'line': 26, 'text': 'D1: storage engine => PostgreSQL'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps4.py:144: AssertionError
+_ test_m3_an_unread_sentence_hands_the_question_up[0-Is humidity tracking in scope? Asking about the next release.-opts4] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-239/traps40/cold.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-239/traps40/clinic.md')
+fi = 0, q = 'Is humidity tracking in scope? Asking about the next release.'
+opts = ['Yes', 'No']
+
+    @pytest.mark.parametrize("fi,q,opts", M3)
+    def test_m3_an_unread_sentence_hands_the_question_up(frames, fi, q, opts):
+        res = ask(frames[fi], q, opts)
+>       assert_escalates(res)
+
+tests/test_conduct_ask_traps4.py:312: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'SCOPE', 'answer': 'No', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('No', 1, [{'id': 'D3', 'section': 'decisions', 'line': 28, 'text': 'D3: SCOPE | humidity tracking | out of scope'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps4.py:144: AssertionError
+_ test_m3_an_unread_sentence_hands_the_question_up[1-\u4e88\u7d04\u306e\u5358\u4f4d\u306f\u4f55\u3067\u3059\u304b\uff1f \u524d\u306e\u7248\u306e\u8a71\u3067\u3059\u3002-None] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-239/traps40/cold.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-239/traps40/clinic.md')
+fi = 1, q = '予約の単位は何ですか？ 前の版の話です。', opts = None
+
+    @pytest.mark.parametrize("fi,q,opts", M3)
+    def test_m3_an_unread_sentence_hands_the_question_up(frames, fi, q, opts):
+        res = ask(frames[fi], q, opts)
+>       assert_escalates(res)
+
+tests/test_conduct_ask_traps4.py:312: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'DESIGN_PREFERENCE', 'answer': '15分', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('15分', None, [{'id': 'D1', 'section': 'decisions', 'line': 26, 'text': 'D1: 予約の単位 => 15分'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps4.py:144: AssertionError
+_ test_m3_an_unread_sentence_hands_the_question_up[1-\u30aa\u30f3\u30e9\u30a4\u30f3\u8a3a\u7642\u306e\u4e88\u7d04\u306f\u7bc4\u56f2\u306b\u542b\u3081\u307e\u3059\u304b\uff1f \u6765\u5e74\u306e\u7248\u306e\u8a71\u3067\u3059\u3002-opts6] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-239/traps40/cold.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-239/traps40/clinic.md')
+fi = 1, q = 'オンライン診療の予約は範囲に含めますか？ 来年の版の話です。', opts = ['はい', 'いいえ']
+
+    @pytest.mark.parametrize("fi,q,opts", M3)
+    def test_m3_an_unread_sentence_hands_the_question_up(frames, fi, q, opts):
+        res = ask(frames[fi], q, opts)
+>       assert_escalates(res)
+
+tests/test_conduct_ask_traps4.py:312: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'SCOPE', 'answer': 'いいえ', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('いいえ', 1, [{'id': 'D3', 'section': 'decisions', 'line': 28, 'text': 'D3: SCOPE | オンライン診療の予約 | out of scope'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps4.py:144: AssertionError
+_ test_m3_an_unread_sentence_hands_the_question_up[0-The record schema is done. What can we start next? This is for the old prototype.-None] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-239/traps40/cold.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-239/traps40/clinic.md')
+fi = 0
+q = 'The record schema is done. What can we start next? This is for the old prototype.'
+opts = None
+
+    @pytest.mark.parametrize("fi,q,opts", M3)
+    def test_m3_an_unread_sentence_hands_the_question_up(frames, fi, q, opts):
+        res = ask(frames[fi], q, opts)
+>       assert_escalates(res)
+
+tests/test_conduct_ask_traps4.py:312: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'ORDER', 'answer': 'Write the probe reader', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('Write the probe reader', None, [{'id': 'phase_order:P1->P2', 'section': 'phase_order', 'line': 21, 'text': 'P1 -> P2: The reader fills the schema'}, {'id': 'P2', 'section': 'phases', 'line': 16, 'text': 'P2: Write the probe reader'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps4.py:144: AssertionError
+_ test_m3_an_unread_sentence_hands_the_question_up[1-\u6765\u5e74\u306e\u8a71\u3067\u3059\u3002 \u6587\u5b57\u306e\u8272\u306f\u3069\u308c\u306b\u3057\u307e\u3059\u304b\uff1f-opts8] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-239/traps40/cold.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-239/traps40/clinic.md')
+fi = 1, q = '来年の話です。 文字の色はどれにしますか？', opts = ['黒', '青']
+
+    @pytest.mark.parametrize("fi,q,opts", M3)
+    def test_m3_an_unread_sentence_hands_the_question_up(frames, fi, q, opts):
+        res = ask(frames[fi], q, opts)
+>       assert_escalates(res)
+
+tests/test_conduct_ask_traps4.py:312: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'CHOICE', 'answer': '黒', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('黒', 0, [{'id': 'D6', 'section': 'decisions', 'line': 31, 'text': 'D6: CHOICE | 文字の色 | 黒'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps4.py:144: AssertionError
+_ test_m3_an_unread_sentence_hands_the_question_up[0-For the old prototype only. What is the storage engine?-None] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-239/traps40/cold.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-239/traps40/clinic.md')
+fi = 0, q = 'For the old prototype only. What is the storage engine?'
+opts = None
+
+    @pytest.mark.parametrize("fi,q,opts", M3)
+    def test_m3_an_unread_sentence_hands_the_question_up(frames, fi, q, opts):
+        res = ask(frames[fi], q, opts)
+>       assert_escalates(res)
+
+tests/test_conduct_ask_traps4.py:312: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'DESIGN_PREFERENCE', 'answer': 'PostgreSQL', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('PostgreSQL', None, [{'id': 'D1', 'section': 'decisions', 'line': 26, 'text': 'D1: storage engine => PostgreSQL'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps4.py:144: AssertionError
+_ test_m3_an_unread_sentence_hands_the_question_up[0-What is the alert channel? Only on weekends.-None] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-239/traps40/cold.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-239/traps40/clinic.md')
+fi = 0, q = 'What is the alert channel? Only on weekends.', opts = None
+
+    @pytest.mark.parametrize("fi,q,opts", M3)
+    def test_m3_an_unread_sentence_hands_the_question_up(frames, fi, q, opts):
+        res = ask(frames[fi], q, opts)
+>       assert_escalates(res)
+
+tests/test_conduct_ask_traps4.py:312: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'DESIGN_PREFERENCE', 'answer': 'pager', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('pager', None, [{'id': 'D2', 'section': 'decisions', 'line': 27, 'text': 'D2: alert channel => pager'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps4.py:144: AssertionError
+_ test_m3_an_unread_sentence_hands_the_question_up[1-\u4e88\u7d04\u306e\u5358\u4f4d\u306f\u4f55\u3067\u3059\u304b\uff1f \u5b50\u3069\u3082\u5411\u3051\u306e\u5834\u5408\u3067\u3059\u3002-None] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-239/traps40/cold.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-239/traps40/clinic.md')
+fi = 1, q = '予約の単位は何ですか？ 子ども向けの場合です。', opts = None
+
+    @pytest.mark.parametrize("fi,q,opts", M3)
+    def test_m3_an_unread_sentence_hands_the_question_up(frames, fi, q, opts):
+        res = ask(frames[fi], q, opts)
+>       assert_escalates(res)
+
+tests/test_conduct_ask_traps4.py:312: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'DESIGN_PREFERENCE', 'answer': '15分', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('15分', None, [{'id': 'D1', 'section': 'decisions', 'line': 26, 'text': 'D1: 予約の単位 => 15分'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps4.py:144: AssertionError
+_________________________ test_m3_the_hand_up_is_typed _________________________
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-239/traps40/cold.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-239/traps40/clinic.md')
+
+    def test_m3_the_hand_up_is_typed(frames):
+        res = ask(frames[1], "文字の色はどれにしますか？ 来年の話です。", ["黒", "青"])
+>       assert res["escalate_reason"] == "FRAME_SILENT" and res["escalate_detail"] == "CONTEXT_SENTENCE_UNREAD"
+E       AssertionError: assert (None == 'FRAME_SILENT')
+
+tests/test_conduct_ask_traps4.py:317: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_conduct_ask_traps4.py::test_m1_cold_general_question_about_an_operation_allowed_only_for_the_criterion[May we purge an expired sensor token?-opts0]
+FAILED tests/test_conduct_ask_traps4.py::test_m1_cold_general_question_about_an_operation_allowed_only_for_the_criterion[May we purge an expired sensor token now?-opts1]
+FAILED tests/test_conduct_ask_traps4.py::test_m1_cold_general_question_about_an_operation_allowed_only_for_the_criterion[Can I purge an expired sensor token?-opts2]
+FAILED tests/test_conduct_ask_traps4.py::test_m1_cold_general_question_about_an_operation_allowed_only_for_the_criterion[Is it okay for us to purge an expired sensor token?-opts3]
+FAILED tests/test_conduct_ask_traps4.py::test_m1_clinic_general_question_about_an_operation_allowed_only_for_the_criterion[\u53e4\u3044\u63a7\u3048\u3092\u7834\u68c4\u3057\u3066\u3088\u3044\u3067\u3059\u304b\uff1f-opts0]
+FAILED tests/test_conduct_ask_traps4.py::test_m1_clinic_general_question_about_an_operation_allowed_only_for_the_criterion[\u6765\u5e74\u306e\u627f\u8a8d\u3092\u5f97\u305f\u306e\u3067\u3001\u53e4\u3044\u63a7\u3048\u3092\u7834\u68c4\u3057\u3066\u3088\u3044\u3067\u3059\u304b\uff1f-opts1]
+FAILED tests/test_conduct_ask_traps4.py::test_m1_clinic_general_question_about_an_operation_allowed_only_for_the_criterion[\u53e4\u3044\u63a7\u3048\u3092\u7834\u68c4\u3057\u3066\u3082\u3088\u3044\u3067\u3059\u304b\uff1f-opts2]
+FAILED tests/test_conduct_ask_traps4.py::test_m1_clinic_general_question_about_an_operation_allowed_only_for_the_criterion[\u53e4\u3044\u63a7\u3048\u3092\u7834\u68c4\u3059\u308b\u3053\u3068\u306f\u3067\u304d\u307e\u3059\u304b\uff1f-opts3]
+FAILED tests/test_conduct_ask_traps4.py::test_m1_precedence_reversed_frame_does_not_allow_the_general_question[May we retry a non-idempotent call?]
+FAILED tests/test_conduct_ask_traps4.py::test_m1_precedence_reversed_frame_does_not_allow_the_general_question[Can I retry a non-idempotent call?]
+FAILED tests/test_conduct_ask_traps4.py::test_m2_cold_dotted_path_is_handed_up[Can I edit tracker/../secrets/keys.py?]
+FAILED tests/test_conduct_ask_traps4.py::test_m2_cold_dotted_path_is_handed_up[Can I edit tracker/sub/../../secrets/keys.py?]
+FAILED tests/test_conduct_ask_traps4.py::test_m2_cold_dotted_path_is_handed_up[Can I edit tracker/./rules.py?]
+FAILED tests/test_conduct_ask_traps4.py::test_m2_cold_dotted_path_is_handed_up[May I write to tracker/../tests/test_rules.py?]
+FAILED tests/test_conduct_ask_traps4.py::test_m2_cold_dotted_path_is_handed_up[Am I allowed to update tests/../tracker/rules.py?]
+FAILED tests/test_conduct_ask_traps4.py::test_m2_clinic_dotted_path_is_handed_up[clinic/../secret/key.py \u3092\u66f8\u304d\u63db\u3048\u3066\u3088\u3044\u3067\u3059\u304b\uff1f]
+FAILED tests/test_conduct_ask_traps4.py::test_m2_clinic_dotted_path_is_handed_up[clinic/./form.py \u3092\u66f8\u304d\u63db\u3048\u3066\u3088\u3044\u3067\u3059\u304b\uff1f]
+FAILED tests/test_conduct_ask_traps4.py::test_m2_clinic_dotted_path_is_handed_up[tests/../clinic/form.py \u3092\u66f8\u304d\u63db\u3048\u3066\u3088\u3044\u3067\u3059\u304b\uff1f]
+FAILED tests/test_conduct_ask_traps4.py::test_m2_f08_dotted_path_is_handed_up[Can I edit player/../store/prices.py?]
+FAILED tests/test_conduct_ask_traps4.py::test_m2_f01_dotted_path_is_handed_up[app/../config/secret.yml \u3092\u66f8\u304d\u63db\u3048\u3066\u3088\u3044\u3067\u3059\u304b\uff1f]
+FAILED tests/test_conduct_ask_traps4.py::test_m2_the_hand_up_is_typed_as_a_path_that_is_not_plain
+FAILED tests/test_conduct_ask_traps4.py::test_m3_an_unread_sentence_hands_the_question_up[1-\u6587\u5b57\u306e\u8272\u306f\u3069\u308c\u306b\u3057\u307e\u3059\u304b\uff1f \u6765\u5e74\u306e\u8a71\u3067\u3059\u3002-opts0]
+FAILED tests/test_conduct_ask_traps4.py::test_m3_an_unread_sentence_hands_the_question_up[1-\u6587\u5b57\u306e\u8272\u306f\u3069\u308c\u306b\u3057\u307e\u3059\u304b\uff1f \u5b50\u3069\u3082\u5411\u3051\u306e\u753b\u9762\u306e\u5834\u5408\u3067\u3059\u3002-opts1]
+FAILED tests/test_conduct_ask_traps4.py::test_m3_an_unread_sentence_hands_the_question_up[0-Which time zone do we use? This is for the courier app.-opts2]
+FAILED tests/test_conduct_ask_traps4.py::test_m3_an_unread_sentence_hands_the_question_up[0-What is the storage engine? I mean for the old prototype.-None]
+FAILED tests/test_conduct_ask_traps4.py::test_m3_an_unread_sentence_hands_the_question_up[0-Is humidity tracking in scope? Asking about the next release.-opts4]
+FAILED tests/test_conduct_ask_traps4.py::test_m3_an_unread_sentence_hands_the_question_up[1-\u4e88\u7d04\u306e\u5358\u4f4d\u306f\u4f55\u3067\u3059\u304b\uff1f \u524d\u306e\u7248\u306e\u8a71\u3067\u3059\u3002-None]
+FAILED tests/test_conduct_ask_traps4.py::test_m3_an_unread_sentence_hands_the_question_up[1-\u30aa\u30f3\u30e9\u30a4\u30f3\u8a3a\u7642\u306e\u4e88\u7d04\u306f\u7bc4\u56f2\u306b\u542b\u3081\u307e\u3059\u304b\uff1f \u6765\u5e74\u306e\u7248\u306e\u8a71\u3067\u3059\u3002-opts6]
+FAILED tests/test_conduct_ask_traps4.py::test_m3_an_unread_sentence_hands_the_question_up[0-The record schema is done. What can we start next? This is for the old prototype.-None]
+FAILED tests/test_conduct_ask_traps4.py::test_m3_an_unread_sentence_hands_the_question_up[1-\u6765\u5e74\u306e\u8a71\u3067\u3059\u3002 \u6587\u5b57\u306e\u8272\u306f\u3069\u308c\u306b\u3057\u307e\u3059\u304b\uff1f-opts8]
+FAILED tests/test_conduct_ask_traps4.py::test_m3_an_unread_sentence_hands_the_question_up[0-For the old prototype only. What is the storage engine?-None]
+FAILED tests/test_conduct_ask_traps4.py::test_m3_an_unread_sentence_hands_the_question_up[0-What is the alert channel? Only on weekends.-None]
+FAILED tests/test_conduct_ask_traps4.py::test_m3_an_unread_sentence_hands_the_question_up[1-\u4e88\u7d04\u306e\u5358\u4f4d\u306f\u4f55\u3067\u3059\u304b\uff1f \u5b50\u3069\u3082\u5411\u3051\u306e\u5834\u5408\u3067\u3059\u3002-None]
+FAILED tests/test_conduct_ask_traps4.py::test_m3_the_hand_up_is_typed - Asser...
+======================== 34 failed, 30 passed in 0.43s =========================

@@ -1,0 +1,18 @@
+registered_at: 2026-10-03 12:20:51 +0900 (docs/OBSERVATION.md 事前登録節の「登録日時」。初版は 12:21:00 と書いたが実際の date の出力より後の時刻だったので直し、変更記録に書いた。本文 P1〜P11 は変えていない)
+first_recorded_at: 2026-10-03 12:20:51 +0900 (初版の sha256 は 8071262e1e34c6fcd819454e588ea7477635d0988d4d2996c2072d1c8f4616a8)
+recorded_at: 2026-10-03 12:21:07 +0900
+cmd: awk '/<!-- prereg:begin -->/{f=1;next}/<!-- prereg:end -->/{f=0}f' docs/OBSERVATION.md | shasum -a 256
+0e0aeceafaf897b6fbe8c4ebc8a326e8e3f650584388207b9a3e278a26f729df  -
+cmd: ls tests/observe 2>&1
+ls output:
+ls: tests/observe: No such file or directory
+sha256_first: 8071262e1e34c6fcd819454e588ea7477635d0988d4d2996c2072d1c8f4616a8
+sha256_after_logged_changes: 0e0aeceafaf897b6fbe8c4ebc8a326e8e3f650584388207b9a3e278a26f729df
+logged_changes: 1
+--- round 2 (review r1, decision D17): a change AFTER the first observation (12:44:44). Not a pre-registration. ---
+change3_recorded_at: 2026-10-03 13:18:31 +0900 (date output after both edits; the docs change record 3 carries 13:18:18, the date output right after the P8 edit)
+cmd: awk '/<!-- prereg:begin -->/{f=1;next}/<!-- prereg:end -->/{f=0}f' docs/OBSERVATION.md | shasum -a 256
+2243402bd5f5b346e658055e0cdfabce84e7e5bf7b38149897b944a428f6d155  -
+sha256_current: 2243402bd5f5b346e658055e0cdfabce84e7e5bf7b38149897b944a428f6d155
+logged_changes_current: 2
+note: the section changed twice in total (change 1 = header time, change 3 = the definition of U in P8; change 2 was a clarification outside the section). The log in docs has 3 entries.

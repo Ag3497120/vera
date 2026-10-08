@@ -1,0 +1,1 @@
+{"counts": {"READER_NOT_REACHED": 2, "LAYER_WORD_NOT_IN_QUESTION": 10, "ALREADY_CORRECT": 8}, "answerable": 20, "routed": 2, "wrong": 0}

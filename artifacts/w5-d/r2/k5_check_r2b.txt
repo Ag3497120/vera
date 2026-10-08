@@ -1,0 +1,4 @@
+r6_audit_summary.json not_confirmed: 13 words; invariant_errors [] byte_differences []
+words: ['うたう', 'たたえる', 'みせる', '交わす', '命じる', '問い合わせる', '潜める', '示せる', '薦める', '見せ合う', '言い換える', '訴える', '謳う']
+all of them appear in round 1's r6_query_after.txt: True
+命じる in not_confirmed: True

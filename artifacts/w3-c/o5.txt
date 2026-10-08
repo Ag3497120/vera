@@ -1,0 +1,2 @@
+unoccupied 5, provenance_constructed 5, claim_answer 0
+outputs_scanned 103, realized_sentences_carrying_the_constructed_provenance 4

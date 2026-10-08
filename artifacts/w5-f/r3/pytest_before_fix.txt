@@ -1,0 +1,77 @@
+.FFF....F..FFFFF                                                         [100%]
+=================================== FAILURES ===================================
+E   AssertionError: F1 {"ABSTAIN": 23, "CORRECT": 32, "MISREAD": 7}
+      F2 {"CORRECT": 16, "DEFERRED_ABSTAIN": 18}
+      F3 {"ABSTAIN": 19, "CORRECT": 11}
+      MISREAD {"group": "F1", "id": "W5F-F1-101", "readable": true, "roles": {"agent": "兄", "patient": "荷車", "source": "倉庫"}, "status": "MISREAD"}
+      MISREAD {"group": "F1", "id": "W5F-F1-102", "readable": true, "roles": {"agent": "姉", "patient": "箱", "source": "港"}, "status": "MISREAD"}
+      MISREAD {"group": "F1", "id": "W5F-F1-104", "readable": true, "roles": {"agent": "母", "patient": "机", "source": "広場"}, "status": "MISREAD"}
+      MISREAD {"group": "F1", "id": "W5F-F1-105", "readable": true, "roles": {"agent": "父", "patient": "箱", "source": "畑"}, "status": "MISREAD"}
+      MISREAD {"group": "F1", "id": "W5F-F1-107", "readable": true, "roles": {"agent": "祖母", "patient": "台車", "source": "市場"}, "status": "MISREAD"}
+      MISREAD {"group": "F1", "id": "W5F-F1-110", "readable": true, "roles": {"agent": "姉", "patient": "台車", "source": "駅"}, "status": "MISREAD"}
+      MISREAD {"group": "F1", "id": "W5F-F1-131", "readable": true, "roles": {"agent": "姉", "patient": "机", "source": "店"}, "status": "MISREAD"}
+      summary {"groups": {"F1": {"ABSTAIN": 23, "CORRECT": 32, "MISREAD": 7}, "F2": {"CORRECT": 16, "DEFERRED_ABSTAIN": 18}, "F3": {"ABSTAIN": 19, "CORRECT": 11}}, "misread": 7, "mode": "fake", "rows": 126}
+      
+    assert 1 == 0
+     +  where 1 = CompletedProcess(args=['/Users/motonisihikoudai/vera-wiring/env/bin/python', '/Users/motonisihikoudai/Projects/vera-im...EFERRED_ABSTAIN": 18}, "F3": {"ABSTAIN": 19, "CORRECT": 11}}, "misread": 7, "mode": "fake", "rows": 126}\n', stderr='').returncode
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/tests/test_semantic_read_w5f.py:64: AssertionError: F1 {"ABSTAIN": 23, "CORRECT": 32, "MISREAD": 7}
+E   AssertionError: F1 {"ABSTAIN": 43, "CORRECT": 12, "MISREAD": 7}
+      F2 {"ABSTAIN": 16, "DEFERRED_ABSTAIN": 18}
+      F3 {"ABSTAIN": 19, "CORRECT": 11}
+      MISREAD {"group": "F1", "id": "W5F-F1-101", "readable": true, "roles": {"agent": "兄", "patient": "荷車", "source": "倉庫"}, "status": "MISREAD"}
+      MISREAD {"group": "F1", "id": "W5F-F1-102", "readable": true, "roles": {"agent": "姉", "patient": "箱", "source": "港"}, "status": "MISREAD"}
+      MISREAD {"group": "F1", "id": "W5F-F1-104", "readable": true, "roles": {"agent": "母", "patient": "机", "source": "広場"}, "status": "MISREAD"}
+      MISREAD {"group": "F1", "id": "W5F-F1-105", "readable": true, "roles": {"agent": "父", "patient": "箱", "source": "畑"}, "status": "MISREAD"}
+      MISREAD {"group": "F1", "id": "W5F-F1-107", "readable": true, "roles": {"agent": "祖母", "patient": "台車", "source": "市場"}, "status": "MISREAD"}
+      MISREAD {"group": "F1", "id": "W5F-F1-110", "readable": true, "roles": {"agent": "姉", "patient": "台車", "source": "駅"}, "status": "MISREAD"}
+      MISREAD {"group": "F1", "id": "W5F-F1-131", "readable": true, "roles": {"agent": "姉", "patient": "机", "source": "店"}, "status": "MISREAD"}
+      summary {"groups": {"F1": {"ABSTAIN": 43, "CORRECT": 12, "MISREAD": 7}, "F2": {"ABSTAIN": 16, "DEFERRED_ABSTAIN": 18}, "F3": {"ABSTAIN": 19, "CORRECT": 11}}, "misread": 7, "mode": "none", "rows": 126}
+      
+    assert 1 == 0
+     +  where 1 = CompletedProcess(args=['/Users/motonisihikoudai/vera-wiring/env/bin/python', '/Users/motonisihikoudai/Projects/vera-im...EFERRED_ABSTAIN": 18}, "F3": {"ABSTAIN": 19, "CORRECT": 11}}, "misread": 7, "mode": "none", "rows": 126}\n', stderr='').returncode
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/tests/test_semantic_read_w5f.py:64: AssertionError: F1 {"ABSTAIN": 43, "CORRECT": 12, "MISREAD": 7}
+E   AssertionError: F1 {"ABSTAIN": 35, "CORRECT": 20, "MISREAD": 7}
+      F2 {"ABSTAIN": 9, "CORRECT": 7, "DEFERRED_ABSTAIN": 18}
+      F3 {"ABSTAIN": 19, "CORRECT": 11}
+      MISREAD {"group": "F1", "id": "W5F-F1-101", "readable": true, "roles": {"agent": "兄", "patient": "荷車", "source": "倉庫"}, "status": "MISREAD"}
+      MISREAD {"group": "F1", "id": "W5F-F1-102", "readable": true, "roles": {"agent": "姉", "patient": "箱", "source": "港"}, "status": "MISREAD"}
+      MISREAD {"group": "F1", "id": "W5F-F1-104", "readable": true, "roles": {"agent": "母", "patient": "机", "source": "広場"}, "status": "MISREAD"}
+      MISREAD {"group": "F1", "id": "W5F-F1-105", "readable": true, "roles": {"agent": "父", "patient": "箱", "source": "畑"}, "status": "MISREAD"}
+      MISREAD {"group": "F1", "id": "W5F-F1-107", "readable": true, "roles": {"agent": "祖母", "patient": "台車", "source": "市場"}, "status": "MISREAD"}
+      MISREAD {"group": "F1", "id": "W5F-F1-110", "readable": true, "roles": {"agent": "姉", "patient": "台車", "source": "駅"}, "status": "MISREAD"}
+      MISREAD {"group": "F1", "id": "W5F-F1-131", "readable": true, "roles": {"agent": "姉", "patient": "机", "source": "店"}, "status": "MISREAD"}
+      summary {"groups": {"F1": {"ABSTAIN": 35, "CORRECT": 20, "MISREAD": 7}, "F2": {"ABSTAIN": 9, "CORRECT": 7, "DEFERRED_ABSTAIN": 18}, "F3": {"ABSTAIN": 19, "CORRECT": 11}}, "misread": 7, "mode": "r8", "rows": 126}
+      
+    assert 1 == 0
+     +  where 1 = CompletedProcess(args=['/Users/motonisihikoudai/vera-wiring/env/bin/python', '/Users/motonisihikoudai/Projects/vera-im..."DEFERRED_ABSTAIN": 18}, "F3": {"ABSTAIN": 19, "CORRECT": 11}}, "misread": 7, "mode": "r8", "rows": 126}\n', stderr='').returncode
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/tests/test_semantic_read_w5f.py:64: AssertionError: F1 {"ABSTAIN": 35, "CORRECT": 20, "MISREAD": 7}
+E   AssertionError: ('W5F-F2DE-001', {'w3b1_trigger': None, 'w3b1': None, 'w3b2_trigger': 'U3', 'w3b2': 'RELATIONAL_NOUN_FILLER:place', ...})
+    assert not True
+     +  where True = <built-in method startswith of str object at 0x12a85a7e0>('RELATIONAL_NOUN_FILLER')
+     +    where <built-in method startswith of str object at 0x12a85a7e0> = 'RELATIONAL_NOUN_FILLER:place'.startswith
+     +      where 'RELATIONAL_NOUN_FILLER:place' = str('RELATIONAL_NOUN_FILLER:place')
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/tests/test_semantic_read_w5f.py:130: AssertionError: ('W5F-F2DE-001', {'w3b1_trigger': None, 'w3b1': None, 'w3b2_trigger': 'U3', 'w3b2': 'RELATIONAL_NOUN_FILLER:place', ...})
+E   AssertionError: ('none', 'W5F-F1-101', {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': True, 'clauses': [{'predicate': '押す', 'roles': {'agent': '兄', 'patient': '荷車', 'source': '倉庫'}, 'polarity': '+', 'tense': 'past', ...}], ...})
+    assert not True
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/tests/test_semantic_read_w5f.py:199: AssertionError: ('none', 'W5F-F1-101', {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': True, 'clauses': [{'predicate': '押す', 'roles': {'agent': '兄', 'patient': '荷車', 'source': '倉庫'}, 'polarity': '+', 'tense': 'past', ...}], ...})
+E   AssertionError: ('fake', 'W5F-F1-101', {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': True, 'clauses': [{'predicate': '押す', 'roles': {'agent': '兄', 'patient': '荷車', 'source': '倉庫'}, 'polarity': '+', 'tense': 'past', ...}], ...})
+    assert not True
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/tests/test_semantic_read_w5f.py:199: AssertionError: ('fake', 'W5F-F1-101', {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': True, 'clauses': [{'predicate': '押す', 'roles': {'agent': '兄', 'patient': '荷車', 'source': '倉庫'}, 'polarity': '+', 'tense': 'past', ...}], ...})
+E   AssertionError: ('r8', 'W5F-F1-101', {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': True, 'clauses': [{'predicate': '押す', 'roles': {'agent': '兄', 'patient': '荷車', 'source': '倉庫'}, 'polarity': '+', 'tense': 'past', ...}], ...})
+    assert not True
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/tests/test_semantic_read_w5f.py:199: AssertionError: ('r8', 'W5F-F1-101', {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': True, 'clauses': [{'predicate': '押す', 'roles': {'agent': '兄', 'patient': '荷車', 'source': '倉庫'}, 'polarity': '+', 'tense': 'past', ...}], ...})
+E   TypeError: _quoted_focus_after_case_reason() got an unexpected keyword argument 'separated_only'
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/tests/test_semantic_read_w5f.py:206: TypeError: _quoted_focus_after_case_reason() got an unexpected keyword argument 'separated_only'
+E   TypeError: _quoted_focus_after_case_reason() got an unexpected keyword argument 'separated_only'
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/tests/test_semantic_read_w5f.py:216: TypeError: _quoted_focus_after_case_reason() got an unexpected keyword argument 'separated_only'
+=========================== short test summary info ============================
+FAILED tests/test_semantic_read_w5f.py::test_registered_reading_data_has_no_misread[fake]
+FAILED tests/test_semantic_read_w5f.py::test_registered_reading_data_has_no_misread[none]
+FAILED tests/test_semantic_read_w5f.py::test_registered_reading_data_has_no_misread_with_r8
+FAILED tests/test_semantic_read_w5f.py::test_the_retracted_relational_filler_gate_is_kept_but_never_called
+FAILED tests/test_semantic_read_w5f.py::test_r3_separated_focus_particles_abstain_on_the_public_entry[none]
+FAILED tests/test_semantic_read_w5f.py::test_r3_separated_focus_particles_abstain_on_the_public_entry[fake]
+FAILED tests/test_semantic_read_w5f.py::test_r3_separated_focus_particles_abstain_on_the_public_entry[r8]
+FAILED tests/test_semantic_read_w5f.py::test_r3_the_public_gate_does_not_refuse_an_unseparated_particle
+FAILED tests/test_semantic_read_w5f.py::test_r3_half_width_space_is_a_separation
+9 failed, 7 passed in 2.80s

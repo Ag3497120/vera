@@ -1,0 +1,21 @@
+[OK] E no change: exit=0 (expected 0); G3 NEW_FAIL=0; G3 GATES MISSING_IN_AFTER=0 PASS_TO_XFAIL=0 PASS_TO_SKIP_UNCLASSIFIED=0
+[OK] A renamed case, before PASSED -> fails now: exit=1 (expected 1); G3 NEW_FAIL=1; G3 GATES MISSING_IN_AFTER=0 PASS_TO_XFAIL=0 PASS_TO_SKIP_UNCLASSIFIED=0
+      tests.test_memory_revalidate::test_missing_or_unknown_witness_is_unverifiable_with_safe_answerability[None-True] [failed; before=passed] SELFTEST injected failure
+[OK] B renamed case, before FAILED -> fails now: exit=0 (expected 0); G3 NEW_FAIL=0; G3 GATES MISSING_IN_AFTER=0 PASS_TO_XFAIL=0 PASS_TO_SKIP_UNCLASSIFIED=0
+[OK] C renamed test, param id with no before-case -> fails: exit=1 (expected 1); G3 NEW_FAIL=1; G3 GATES MISSING_IN_AFTER=1 PASS_TO_XFAIL=0 PASS_TO_SKIP_UNCLASSIFIED=0
+      tests.test_memory_revalidate::test_missing_or_unknown_witness_is_unverifiable_with_safe_answerability[zzz-True] [failed; before=ABSENT] SELFTEST injected failure
+[OK] D other renamed test (same param ids) -> one case fails: exit=1 (expected 1); G3 NEW_FAIL=1; G3 GATES MISSING_IN_AFTER=0 PASS_TO_XFAIL=0 PASS_TO_SKIP_UNCLASSIFIED=0
+      tests.test_verifier_agents::test_parse_accepts_legacy_evidence_reference_as_testimony[record:abc-123] [failed; before=passed] SELFTEST injected failure
+[OK] F non-renamed test that passed before -> fails: exit=1 (expected 1); G3 NEW_FAIL=1; G3 GATES MISSING_IN_AFTER=0 PASS_TO_XFAIL=0 PASS_TO_SKIP_UNCLASSIFIED=0
+      tests.test_verifier_agents::test_parse_accepts_direct_structured_verdict_event [failed; before=passed] SELFTEST injected failure
+[OK] G module collected in before -> collection error in after: exit=1 (expected 1); G3 NEW_FAIL=1; G3 GATES MISSING_IN_AFTER=54 PASS_TO_XFAIL=0 PASS_TO_SKIP_UNCLASSIFIED=0
+      COLLECTION_ERROR tests.test_verifier_agents [error; before=collected]
+[OK] H module that also failed to collect in before -> collection error in after: exit=0 (expected 0); G3 NEW_FAIL=0; G3 GATES MISSING_IN_AFTER=0 PASS_TO_XFAIL=0 PASS_TO_SKIP_UNCLASSIFIED=0
+[OK] I module absent in before -> collection error in after: exit=1 (expected 1); G3 NEW_FAIL=1; G3 GATES MISSING_IN_AFTER=0 PASS_TO_XFAIL=0 PASS_TO_SKIP_UNCLASSIFIED=0
+      COLLECTION_ERROR tests.selftest_not_in_before [error; before=ABSENT]
+[OK] J one passed case removed from after: exit=1 (expected 1); G3 NEW_FAIL=0; G3 GATES MISSING_IN_AFTER=1 PASS_TO_XFAIL=0 PASS_TO_SKIP_UNCLASSIFIED=0
+[OK] K one passed case becomes xfailed: exit=1 (expected 1); G3 NEW_FAIL=0; G3 GATES MISSING_IN_AFTER=0 PASS_TO_XFAIL=1 PASS_TO_SKIP_UNCLASSIFIED=0
+[OK] L one passed case becomes skipped, reason names no resource: exit=1 (expected 1); G3 NEW_FAIL=0; G3 GATES MISSING_IN_AFTER=0 PASS_TO_XFAIL=0 PASS_TO_SKIP_UNCLASSIFIED=1
+[OK] M one passed case becomes skipped with ENV_MISSING[selftest_resource]: exit=0 (expected 0); G3 NEW_FAIL=0; G3 GATES MISSING_IN_AFTER=0 PASS_TO_XFAIL=0 PASS_TO_SKIP_UNCLASSIFIED=0
+SELFTEST PASS
+exit=0

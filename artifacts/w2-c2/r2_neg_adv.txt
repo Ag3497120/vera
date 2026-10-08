@@ -1,0 +1,60 @@
+MUST True 寄贈本を範囲に含めなくても大丈夫ですか？ 
+MUST True 寄贈本は範囲に含めずに進めてよいですか？ 
+MUST True 寄贈本を入れないで進めても差し支えないですか？ 
+MUST True 寄贈本はなくても問題ないですか？ 
+MUST True 寄贈本は範囲に入らないのですか？ 
+MUST True 寄贈本は範囲に入らないという理解で合っていますか？ 
+MUST True 寄贈本は範囲に含めない、で合っていますか？ 
+MUST True 寄贈本を扱わなくてもよいですか？ 
+MUST True 寄贈本を扱わなくても構いませんか？ 
+MUST True 寄贈本を扱わなくてもかまわないでしょうか？ 
+MUST False 寄贈本を省いても大丈夫ですか？    <== WRONG
+MUST True 寄贈本は不要ではないですか？ 
+MUST True 寄贈本は範囲に入らないのでしょうか？ 
+MUST True 寄贈本を範囲に入れなくてよいですか？ 
+MUST True 寄贈本を範囲に入れなくていいですか？ 
+MUST True 寄贈本は対象外ではないですか？ 
+MUST True 寄贈本を入れずにリリースしてもよいですか？ 
+MUST True 寄贈本を使わずに済ませてもよいですか？ 
+MUST True 寄贈本は含まれないと考えてよいですか？ 
+MUST True 寄贈本を除外せずにおいてもよいですか？ 
+MUST True Is the donated books shelf not in scope? 
+MUST True Isn't the donated books shelf in scope? 
+MUST True Do we really not need the donated books shelf? 
+MUST True Do we not need the donated books shelf? 
+MUST True Is it OK if we don't include the donated books shelf? 
+MUST True Is it alright if we do not cover the donated books shelf? 
+MUST True Is it fine if the donated books shelf isn't part of this? 
+MUST True Would it be a problem if we didn't cover the donated books shelf? 
+MUST True Would it be OK if we never cover the donated books shelf? 
+MUST True We don't need the donated books shelf, right? 
+MUST True The donated books shelf isn't in scope, is it? 
+MUST True The donated books shelf is not in scope, correct? 
+MUST False The donated books shelf is out of scope, isn't it?    <== WRONG
+MUST True We won't need the donated books shelf, will we? 
+MUST True Is it okay to not include the donated books shelf? 
+MUST True Can we leave the donated books shelf out? We don't need it, do we? 
+MUST True Can't we skip the donated books shelf? 
+MUST True Shouldn't the donated books shelf be left out? 
+MUST True Is it true that the donated books shelf is not in scope? 
+MUST True Do we agree that the donated books shelf is not needed? 
+MUST True Is there no need for the donated books shelf? 
+MUST True Why isn't the donated books shelf in scope? 
+MUST True Can we do without the donated books shelf? 
+MUST True Do you mind if we don't include the donated books shelf? 
+MUST True Is it ok if the shelf never gets built? 
+MUST True Would it hurt if we didn't build the donated books shelf? 
+MUST True Are we not including the donated books shelf? 
+MUST True Aren't we including the donated books shelf? 
+MUST True Is the donated books shelf no longer needed? 
+MUST False Is the donated books shelf unnecessary?    <== WRONG
+MUSTNOT False 寄贈本は、範囲に入りますか？ 手間はかかりませんが。 
+MUSTNOT False 寄贈本を、必ず範囲に入れなければなりませんか？ 
+MUSTNOT False 寄贈本は、例外なく範囲に入りますか？ 
+MUSTNOT False 寄贈本は範囲に含めますか？ 
+MUSTNOT False 寄贈本の件は、問題ないですか？ 
+MUSTNOT False Is the donated books shelf in scope, even though we haven't budgeted for it? 
+MUSTNOT False Since we won't open before spring, is the donated books shelf in scope? 
+MUSTNOT False Is it OK to include the donated books shelf? 
+MUSTNOT False Should the donated books shelf be in scope, whether or not we have volunteers? 
+MUSTNOT False Which is better, yes or no: is the donated books shelf in scope? 

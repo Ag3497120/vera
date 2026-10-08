@@ -1,0 +1,2 @@
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-b-S/artifacts/w5-b/coarse_before/eval_runs/001
+{"sentences": 2000, "tokens": 21774, "token_cover_rate": 0.7907, "distinct": 8391, "distinct_cover_rate": 0.6415, "by_pos_rate": {"名詞": 0.7794, "動詞": 0.8346, "形状詞": 1.0, "形容詞": 1.0}, "placed_direct_headwords": 993027, "pass": {"token_cover>=0.90": false, "placed>=100000": true}}

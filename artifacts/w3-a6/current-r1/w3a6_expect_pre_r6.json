@@ -1,0 +1,17 @@
+{
+  "_note": "W3-a6 expectations, written before any product change. relative_position words and the nine predicates come from the ticket text verbatim; they live only in this data file and tests.",
+  "relative_position": ["右", "左", "前", "後ろ", "上", "下", "中", "外", "隣", "向こう", "手前", "奥", "横", "側", "先"],
+  "roles": [
+    {"pred": "停泊する", "particle": "に", "role": "place"},
+    {"pred": "通報する", "particle": "に", "role": "recipient"},
+    {"pred": "連絡する", "particle": "に", "role": "recipient"},
+    {"pred": "打つ", "particle": "で", "role": "instrument"},
+    {"pred": "驚く", "particle": "で", "role": "cause"},
+    {"pred": "確認する", "particle": "で", "role": "place"},
+    {"pred": "集める", "particle": "に", "role": "place"},
+    {"pred": "分ける", "particle": "に", "role": "result"},
+    {"pred": "待つ", "particle": "で", "role": "place"},
+    {"pred": "運ぶ", "particle": "へ", "role": "goal"},
+    {"pred": "運ぶ", "particle": "から", "role": "source"}
+  ]
+}

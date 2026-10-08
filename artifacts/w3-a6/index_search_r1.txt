@@ -1,0 +1,86 @@
+{
+  "verdict": "ANSWER",
+  "query": "役割つき述語枠の生成確認と相対位置の名詞型配置",
+  "searched": 686,
+  "hits": [
+    {
+      "kind": "door",
+      "name": "explain_placement",
+      "about": "Where would this sentence land, and why — core, facets, poles,",
+      "where": "verantyx/mcp_server.py"
+    },
+    {
+      "kind": "command",
+      "name": "placement",
+      "about": "simulate which facts go on the faces, before shipping a store",
+      "where": "verantyx/cli.py"
+    },
+    {
+      "kind": "module",
+      "name": "placement",
+      "about": "Placement simulation — decide what goes on the faces BEFORE shipping.",
+      "where": "verantyx/placement.py"
+    },
+    {
+      "kind": "module",
+      "name": "placement_explain",
+      "about": "Where would this sentence land, and why — the placement inspector.",
+      "where": "verantyx/placement_explain.py"
+    },
+    {
+      "kind": "fork",
+      "name": "a_wholesale_replacement_is_not_no_change_fork",
+      "about": "Drift has to name what moved, because a count cannot see the worst case.",
+      "where": "verantyx/cross_geometry_forks.py",
+      "registered": "yes"
+    },
+    {
+      "kind": "fork",
+      "name": "placement_cannot_manufacture_confidence_fork",
+      "about": "A question that cannot distinguish its candidates must stay AMBIGUOUS,",
+      "where": "verantyx/cross_geometry_forks.py",
+      "registered": "yes"
+    },
+    {
+      "kind": "fork",
+      "name": "placement_granularity_fork",
+      "about": "The same information, poured two ways, is not the same knowledge.",
+      "where": "verantyx/cross_geometry_forks.py",
+      "registered": "yes"
+    },
+    {
+      "kind": "fork",
+      "name": "placement_invariance_fork",
+      "about": "An answer that depends on an arbitrary tie-break must not stand.",
+      "where": "verantyx/cross_geometry_forks.py",
+      "registered": "yes"
+    },
+    {
+      "kind": "fork",
+      "name": "placement_is_backward_compatible_fork",
+      "about": "A store with no baked placement must answer exactly as it always did.",
+      "where": "verantyx/cross_geometry_forks.py",
+      "registered": "yes"
+    },
+    {
+      "kind": "fork",
+      "name": "placement_simulation_fork",
+      "about": "Pre-simulation must beat frequency when demand is concentrated,",
+      "where": "verantyx/cross_geometry_forks.py",
+      "registered": "yes"
+    },
+    {
+      "kind": "door",
+      "name": "own_ai_guide",
+      "about": "The build-your-own-AI guide: how placement works (core / facet /",
+      "where": "verantyx/mcp_server.py"
+    },
+    {
+      "kind": "door",
+      "name": "vera_chat",
+      "about": "Talk with the whole engine — stateful, model-free, audited.",
+      "where": "verantyx/mcp_server.py"
+    }
+  ],
+  "total_hits": 50
+}

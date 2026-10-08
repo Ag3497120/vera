@@ -1,0 +1,325 @@
+added lines: 1959
+PROPER/NUMERIC (must be empty): []
+ENGLISH NAMES (must be empty): []
+common nouns found in added lines (list only): ['こと', 'ほう', 'ほど', 'わけ', '一覧', '上司', '上旬', '世話', '主人', '人口', '今回', '今後', '代表', '以上', '任命', '会員', '会社', '会議', '伯母', '作家', '作業', '依頼', '係員', '保管', '保護', '倉庫', '先月', '先生', '先輩', '先週', '全部', '公園', '兵士', '分類', '前倒し', '劇団', '加工', '勉強', '医師', '医者', '午前', '午後', '去年', '友人', '叔母', '叔父', '台所', '司書', '命令', '図書', '報告', '変換', '変更', '夕方', '大会', '委員', '子ども', '子供', '学校', '学生', '学者', '安全', '定休', '実際', '審査', '少年', '工場', '市長', '師匠', '幹事', '店主', '店員', '店長', '延期', '延長', '式典', '弟子', '役所', '後輩', '息子', '患者', '成長', '技師', '抜擢', '指名', '指揮', '指示', '授業', '探検', '提供', '提出', '支店', '改装', '改訂', '政府', '教員', '教室', '教師', '教授', '整理', '料理', '新人', '方言', '旅行', '日曜', '昨年', '時間', '普通', '書類', '来月', '来週', '校舎', '校長', '案内', '段落', '消防', '父親', '玄関', '理事', '生徒', '画家', '病院', '発送', '登用', '監督', '看護', '社員', '社長', '祖母', '祖父', '答え', '組合', '結局', '結果', '総会', '編集', '翌日', '翻訳', '老人', '職人', '職員', '若者', '英語', '要約', '観光', '観客', '記念', '記者', '設置', '説明', '課長', '警察', '議長', '通知', '連絡', '運転', '選任', '選出', '部下', '部屋', '部長', '配達', '釣り', '隊長', '隣人', '集会', '食事', '駅前', '騎士']
+verb lemmas found in added lines (list only): ['あげる', 'ある', 'する', 'なる', 'まとめる', 'やる', 'よる', '並べる', '仕上げる', '仕立てる', '仕舞う', '付ける', '伝える', '入る', '入れる', '出す', '出る', '分ける', '切り替える', '収める', '吊るす', '向かう', '塗り直す', '売る', '変える', '変わる', '届ける', '巻く', '戻る', '掛ける', '描き直す', '教える', '敷く', '書き換える', '来る', '染める', '植える', '歌う', '渡す', '直す', '着く', '移る', '立てる', '納める', '結ぶ', '繰り下げる', '置き換える', '置く', '行く', '見せる', '言い換える', '訳す', '読み替える', '貼る', '送る', '運ぶ', '選ぶ', '配る', '食べる', '飾る']
+english lowercase words found in added lines (list only; each with the added lines that hold it, so a reader can judge): ['accepted', 'after', 'alarm', 'all', 'although', 'arrived', 'asked', 'because', 'book', 'call', 'called', 'clerk', 'could', 'def', 'deleted', 'each', 'early', 'engineer', 'even', 'every', 'exactly', 'fast', 'fifty', 'fix', 'fixed', 'form', 'found', 'gathering', 'gave', 'got', 'ground', 'had', 'handed', 'heard', 'intern', 'just', 'kept', 'late', 'least', 'leave', 'leaving', 'left', 'less', 'let', 'letter', 'long', 'made', 'manager', 'more', 'most', 'nearly', 'never', 'new', 'nobody', 'none', 'not', 'nothing', 'office', 'old', 'only', 'outside', 'patient', 'players', 'read', 'report', 'reported', 'rest', 'results', 'returned', 'rewrite', 'ringing', 'room', 'run', 'running', 'said', 'saw', 'server', 'she', 'signed', 'since', 'sold', 'some', 'than', 'that', 'the', 'this', 'three', 'two', 'types', 'unless', 'updated', 'was', 'were', 'when', 'which', 'while', 'who', 'whom', 'written', 'wrote', 'yesterday']
+  [accepted] 1 added line(s):
+      # A person/organisation is accepted on positive evidence only (see _vt_is_addressee); the ending characters of a word (社 会 部 校 …)
+  [after] 37 added line(s):
+      """A case/topic-marked phrase (<pronoun>は, <place>で) stands in this clause before its typed frame. The segment starts after the
+      # W1-a round 4: ほど / くらい / ぐらい / 並み after a noun, pronoun, number or a nominalising の is a degree comparison (先月ほど静か),
+      r"|(?:in|on|by|until|since|during|before|after) (?:january|february|march|april|may|june|july|august|september|october|november|december)(?: [0-9]{1,2})?(?:,? [
+  [alarm] 1 added line(s):
+      # Verbs of perception/keeping/letting whose object may be followed by a bare or -ing verb (heard the alarm ring/ringing).
+  [all] 7 added line(s):
+      return words[-1].feature.pos3 in ("副詞可能", "形状詞可能") and all(w.feature.pos1 in ("名詞", "接頭辞", "接尾辞", "連体詞") for w in words)
+      _QUANT = {"every", "each", "all", "some", "any", "most", "few", "many", "several", "both", "everyone", "everybody",
+      if any(w in _NEG_QUANT for w in low) or any(low[i] == "no" or (low[i] == "not" and i + 1 < len(low) and low[i + 1] in ("every", "all", "any", "each")) for i in 
+  [although] 1 added line(s):
+      _SUBORD = {"although", "though", "because", "since", "when", "whenever", "while", "whilst", "if", "unless", "until", "whereas",
+  [arrived] 1 added line(s):
+      # 'as': an as-clause (Sam left as Pat arrived) or an as-phrase (worked as a clerk); the as...as comparison is flagged above
+  [asked] 1 added line(s):
+      # Verbs whose に/へ argument is an addressee: the thing is handed over, told, asked, shown, reported to someone.
+  [because] 1 added line(s):
+      _SUBORD = {"although", "though", "because", "since", "when", "whenever", "while", "whilst", "if", "unless", "until", "whereas",
+  [book] 1 added line(s):
+      relative: the book Sam wrote), no participle closing it (the report written ...), and no gerund after a verb of perception or
+  [call] 2 added line(s):
+      from ..typed_edges import _tagger          # the shared tagger (a Tagger() per call was slow); sharing the tokenizer keeps the checker independent
+      _SMALL_CLAUSE_MATRIX = {"make", "name", "call", "elect", "appoint", "consider", "declare", "find", "leave", "keep", "paint", "drive",
+  [called] 1 added line(s):
+      return _read_core(y + " " + " ".join(body), diag)      # the person who called Alice was Bob
+  [clerk] 1 added line(s):
+      # 'as': an as-clause (Sam left as Pat arrived) or an as-phrase (worked as a clerk); the as...as comparison is flagged above
+  [could] 4 added line(s):
+      _MODALS = {"may", "might", "could", "should", "must", "ought", "shall", "would", "can", "cannot"}
+      #       に-phrase is the `result` unless it is a person and the object is a thing (then it could be whoever the work is done for).
+      # (placement, attachment, storage, transport), unlike an unlisted verb whose に-phrase could be a result.
+  [def] 82 added line(s):
+      def _names_a_dimension(phrase: str) -> bool:
+      def _unrepresented_lead(tokens, lead_end: int) -> bool:
+      def _resolve_causative_bases(ctx: ConstructionContext, p0: int, p1: int, bases: tuple[str, ...]) -> tuple[str, ...]:
+  [deleted] 1 added line(s):
+      A clause is never deleted: a role of the wrong type leaves it unsupported with a reason that names the type error
+  [each] 5 added line(s):
+      _TIME = re.compile(r"\b(?:yesterday|today|tonight|tomorrow|(?:this|last|every|each|next) (?:morning|afternoon|evening|night|week|month|day|year|weekend|monday|t
+      _QUANT = {"every", "each", "all", "some", "any", "most", "few", "many", "several", "both", "everyone", "everybody",
+      if any(w in _NEG_QUANT for w in low) or any(low[i] == "no" or (low[i] == "not" and i + 1 < len(low) and low[i + 1] in ("every", "all", "any", "each")) for i in 
+  [early] 1 added line(s):
+      "old", "new", "young", "fast", "slow", "quick", "early", "late", "fresh", "ripe", "rapid", "swift",
+  [engineer] 4 added line(s):
+      # carries one of those is NOT read into a Frame that silently drops it (No engineer updated every server -> negated=False,
+      # a sentence opening with a negative word is a negated constituent (Not a single engineer ...), not a negated verb
+      """Is the token chosen as the main verb a verb? A copular/adjectival predicate (The report was long, Sam is an engineer), a
+  [even] 3 added line(s):
+      # a focus/scalar word attaches to a constituent whose scope the Frame cannot hold (Only Sam signed; Sam even signed)
+      _FOCUS = {"only", "just", "even", "also", "merely", "solely", "simply", "especially", "mainly", "mostly", "particularly", "too",
+      # 候補を議長に選出した). Their に-phrase is the status it is given, even when the object is a person the tagger cannot recognise (候補).
+  [every] 25 added line(s):
+      _TIME = re.compile(r"\b(?:yesterday|today|tonight|tomorrow|(?:this|last|every|each|next) (?:morning|afternoon|evening|night|week|month|day|year|weekend|monday|t
+      r"|(?:in|during) the (?:morning|afternoon|evening|night)|every day|daily|at night|at (?:noon|midnight|dawn|dusk|sunrise|sunset)"
+      r"|(?:on|every|last|next) (?:monday|tuesday|wednesday|thursday|friday|saturday|sunday)s?"
+  [exactly] 4 added line(s):
+      if any(w in _QUANT for w in low) or any(w in ("exactly", "precisely", "approximately", "only", "just", "least", "most") and i + 1 < len(low) and (low[i + 1].isd
+      or any(w.isdigit() and i > 0 and low[i - 1] in ("exactly", "least", "most", "than") for i, w in enumerate(low)):
+      "either", "neither", "both", "single", "alone", "nearly", "almost", "roughly", "approximately", "barely", "exactly", "precisely"}
+  [fast] 1 added line(s):
+      "old", "new", "young", "fast", "slow", "quick", "early", "late", "fresh", "ripe", "rapid", "swift",
+  [fifty] 1 added line(s):
+      "fifteen", "sixteen", "seventeen", "eighteen", "nineteen", "twenty", "thirty", "forty", "fifty", "sixty", "seventy",
+  [fix] 3 added line(s):
+      named place (the tagger's 固有名詞/地名; the shared tests fix 九州から運ばれた, 北海道から送られた as source)."""
+      # (置く, 住む ...) keep their reading: existing tests fix 封筒を青棚に置く -> recipient (see docs H33).
+      # location verbs keep the project convention (existing tests fix it).
+  [fixed] 1 added line(s):
+      終点 -> recipient, fixed by test_reader_case_roles_are_preserved) and is kept; for any other verb with an を-object
+  [form] 16 added line(s):
+      adverb (ずっと, もっと, かなり) or an adverbial form (大幅に) is not a dimension: then the adjective itself is."""
+      食べさせる inverts to 食べる (ichidan), 食べする (suru) and 食べす (godan) when only the form is looked at. The tagger
+      # The suffix test alone would catch nouns (manager, request, winter), so a stem must be in the class; an inflected form of an
+  [found] 20 added line(s):
+      # Verbs that take an object plus a predicate of it (a small clause / resultative / factitive: painted the room blue, found the
+      found = []
+      found.append(_TOKEN_SPAN_REASON); continue
+  [gathering] 1 added line(s):
+      """Evidence that the に/へ-phrase of a verb of motion is where one goes: a place (_is_place_phrase), a gathering (_GATHERING_NOUNS) or a person
+  [gave] 1 added line(s):
+      """Evidence that a から-phrase of a passive names where something comes from rather than who gave it: its head is one of _SPOT_NOUNS or a
+  [got] 2 added line(s):
+      _CAUS_MATRIX = {"make", "made", "making", "makes", "let", "lets", "letting", "have", "had", "has", "having", "get", "got",
+      and w not in ("get", "got", "gets", "getting")):
+  [ground] 1 added line(s):
+      Round 5 (M2): a person lexicon is never the ground for `result`. With a thing acted on (X を Y に V) the に-phrase is a result only on
+  [had] 1 added line(s):
+      _CAUS_MATRIX = {"make", "made", "making", "makes", "let", "lets", "letting", "have", "had", "has", "having", "get", "got",
+  [handed] 2 added line(s):
+      # Verbs whose に/へ argument is an addressee: the thing is handed over, told, asked, shown, reported to someone.
+      if excluded:      # the frame handed this phrase to the wrong role: it must not be declared as that role
+  [heard] 1 added line(s):
+      # Verbs of perception/keeping/letting whose object may be followed by a bare or -ing verb (heard the alarm ring/ringing).
+  [intern] 1 added line(s):
+      # The manager made the intern rewrite the report -> recipient='intern rewrite'): read_typed returns (None, reasons).
+  [just] 3 added line(s):
+      if any(w in _QUANT for w in low) or any(w in ("exactly", "precisely", "approximately", "only", "just", "least", "most") and i + 1 < len(low) and (low[i + 1].isd
+      _FOCUS = {"only", "just", "even", "also", "merely", "solely", "simply", "especially", "mainly", "mostly", "particularly", "too",
+      if last[0] == '中' or (last[0] == '間際' and len(core) >= 2):         # 試合中, 食事中, 閉館間際: <event noun> + during / just before
+  [kept] 4 added line(s):
+      # task easy, named Pat chair, made Sam the leader, kept the players running). The Frame has no place for that second predicate.
+      keeping (kept the players running)."""
+      # (end point -> recipient, as for motion verbs); the reading is kept, not extended: a destination verb is a closed class
+  [late] 1 added line(s):
+      "old", "new", "young", "fast", "slow", "quick", "early", "late", "fresh", "ripe", "rapid", "swift",
+  [least] 4 added line(s):
+      _COMP_IRREG = {"better", "worse", "best", "worst", "further", "furthest", "farther", "farthest", "less", "least", "more", "most"}
+      if any(w in _QUANT for w in low) or any(w in ("exactly", "precisely", "approximately", "only", "just", "least", "most") and i + 1 < len(low) and (low[i + 1].isd
+      or any(low[i:i + 2] in (["at", "least"], ["at", "most"], ["more", "than"], ["fewer", "than"]) for i in range(len(low) - 1)) \
+  [leave] 3 added line(s):
+      # infinitival complement / object control (told X to rest, wanted X to leave): to + a lowercase bare verb
+      _COMPLEMENT_MATRIX = {"see", "watch", "hear", "notice", "observe", "feel", "find", "catch", "leave", "keep", "smell", "spot", "start", "stop",
+      _SMALL_CLAUSE_MATRIX = {"make", "name", "call", "elect", "appoint", "consider", "declare", "find", "leave", "keep", "paint", "drive",
+  [leaving] 1 added line(s):
+      # に-phrase of a verb of going / leaving is where one goes (the event), not a purpose. NOT an activity (散歩, 勉強, 旅行, 釣り: one goes IN ORDER
+  [left] 18 added line(s):
+      # Unknown is not false: the reason says which structure was recognised and left unread.
+      # 'as': an as-clause (Sam left as Pat arrived) or an as-phrase (worked as a clerk); the as...as comparison is flagged above
+      _IRREG_NOUNISH = {"left", "saw", "rose", "lay", "spoke", "fell", "wound", "bit", "bore", "wore"}
+  [less] 1 added line(s):
+      _COMP_IRREG = {"better", "worse", "best", "worst", "further", "furthest", "farther", "farthest", "less", "least", "more", "most"}
+  [let] 3 added line(s):
+      _CAUS_MATRIX = {"make", "made", "making", "makes", "let", "lets", "letting", "have", "had", "has", "having", "get", "got",
+      # causative: make/let/have/get/help + NP + bare verb | NP + to + verb (the NP is one or two words)
+      "imagine", "let", "have", "help", "get", "make"}
+  [letter] 3 added line(s):
+      """Split `lhs は/が value` at the first は/が PARTICLE TOKEN outside any bracket. A か-letter inside a word (a thanks formula) or
+      character but no particle: an adnominal demonstrative is one entity with its noun, not a one-letter piece + the noun)."""
+      # The sentence splits at its first は/が PARTICLE TOKEN (not at a か/は letter inside a word or a reading such as
+  [long] 3 added line(s):
+      previous predicate (earlier clauses of a long sentence are other clauses' business). Connective particles (が、て)
+      "big", "small", "large", "tall", "short", "long", "high", "low", "wide", "narrow", "deep", "shallow", "thick", "thin",
+      """Is the token chosen as the main verb a verb? A copular/adjectival predicate (The report was long, Sam is an engineer), a
+  [made] 6 added line(s):
+      # The manager made the intern rewrite the report -> recipient='intern rewrite'): read_typed returns (None, reasons).
+      _CAUS_MATRIX = {"make", "made", "making", "makes", "let", "lets", "letting", "have", "had", "has", "having", "get", "got",
+      # task easy, named Pat chair, made Sam the leader, kept the players running). The Frame has no place for that second predicate.
+  [manager] 2 added line(s):
+      # The manager made the intern rewrite the report -> recipient='intern rewrite'): read_typed returns (None, reasons).
+      # The suffix test alone would catch nouns (manager, request, winter), so a stem must be in the class; an inflected form of an
+  [more] 7 added line(s):
+      _COMP_IRREG = {"better", "worse", "best", "worst", "further", "furthest", "farther", "farthest", "less", "least", "more", "most"}
+      or any(low[i:i + 2] in (["at", "least"], ["at", "most"], ["more", "than"], ["fewer", "than"]) for i in range(len(low) - 1)) \
+      (not "false": the sentence says more than a Frame can hold). None with no reasons: nothing was recognised at all."""
+  [most] 5 added line(s):
+      _QUANT = {"every", "each", "all", "some", "any", "most", "few", "many", "several", "both", "everyone", "everybody",
+      _COMP_IRREG = {"better", "worse", "best", "worst", "further", "furthest", "farther", "farthest", "less", "least", "more", "most"}
+      if any(w in _QUANT for w in low) or any(w in ("exactly", "precisely", "approximately", "only", "just", "least", "most") and i + 1 < len(low) and (low[i + 1].isd
+  [nearly] 1 added line(s):
+      "either", "neither", "both", "single", "alone", "nearly", "almost", "roughly", "approximately", "barely", "exactly", "precisely"}
+  [never] 24 added line(s):
+      # typed as goal/result/direction/location is an adjunct (X が Y を Z に V-させる, V intransitive): never the causee.
+      _NEG_QUANT = {"no", "nobody", "nothing", "none", "neither", "nor", "never", "nowhere", "noone", "rarely", "seldom", "hardly", "barely",
+      reasons.append("negative quantifier or never: scope not representable")
+  [new] 9 added line(s):
+      "old", "new", "young", "fast", "slow", "quick", "early", "late", "fresh", "ripe", "rapid", "swift",
+      # rescheduling / re-setting a value (大会を来月に延期した, 期限を3日に延長した): the に-phrase is the new value, not when it happened
+      _TIME_OF_CHANGE_REASON = 'ill-typed role: time phrase of a verb of change is its new value, not when it happened'
+  [nobody] 2 added line(s):
+      _NEG_QUANT = {"no", "nobody", "nothing", "none", "neither", "nor", "never", "nowhere", "noone", "rarely", "seldom", "hardly", "barely",
+      # nobody tagged. Not claimed as the recipient. A に-complement of a verb with no を-object (九州に集中する) keeps its
+  [none] 8 added line(s):
+      _NEG_QUANT = {"no", "nobody", "nothing", "none", "neither", "nor", "never", "nowhere", "noone", "rarely", "seldom", "hardly", "barely",
+      # ---- What a time phrase is (positive criteria; a phrase that meets none of them is NOT time, whatever its part of speech) ----
+      positive evidence of a result type (_result_type_evidence); with none it is undecided (result|beneficiary), whoever it names. Two cases
+  [not] 291 added line(s):
+      adverb (ずっと, もっと, かなり) or an adverbial form (大幅に) is not a dimension: then the adjective itself is."""
+      content = [w for w in _tagger()(phrase) if w.feature.pos1 not in ("助詞", "補助記号", "記号")]
+      marker == "に" and old.name == "recipient" and not _time_like(old.term)
+  [nothing] 18 added line(s):
+      does not become 着する). When the tagger gives no verb there, nothing is changed (the ambiguity stays an abstention)."""
+      _NEG_QUANT = {"no", "nobody", "nothing", "none", "neither", "nor", "never", "nowhere", "noone", "rarely", "seldom", "hardly", "barely",
+      (not "false": the sentence says more than a Frame can hold). None with no reasons: nothing was recognised at all."""
+  [office] 4 added line(s):
+      # A post / office conferred by selection or appointment (the に-phrase of 選ばれた / 任命された is that post, as in "was chosen as ...").
+      # Closed class: a noun that names an office, never a kinship term or a plain occupation (友人, 先生, 患者, 母 are not posts).
+      """A post / office (the thing a person is chosen AS): the head is a closed-class post noun, or <noun> + 長/係 as two tokens."""
+  [old] 6 added line(s):
+      marker == "に" and old.name == "recipient" and not _time_like(old.term)
+      for old, marker, _ in seen_cases
+      if old.name in ("goal", "direction", "result", "location", "source", "means", "companion", "ambiguous"):
+  [only] 48 added line(s):
+      """The words between より/ほど and the adjective name the dimension (背, 人口, 体重) only when they end in a noun. A degree
+      # The native frame hands a causative's に-phrase to `recipient`; this construction (and gold_caus_pass) is the only
+      食べさせる inverts to 食べる (ichidan), 食べする (suru) and 食べす (godan) when only the form is looked at. The tagger
+  [outside] 3 added line(s):
+      # adjective outside the class is not recognised as a comparison (the sentence is then simply not flagged by this test).
+      """Split `lhs は/が value` at the first は/が PARTICLE TOKEN outside any bracket. A か-letter inside a word (a thanks formula) or
+      # AをBにV with a non-person B and a verb outside every class above: B may be a result, a place or a person's name
+  [patient] 44 added line(s):
+      # X が Y に Z を V-させる (V transitive: Y is the causee, Z the patient) differs from X が Y を Z に V-させる (V
+      if "patient" in names:
+      # causee に + patient を is the transitive causative; an intransitive verb's を-phrase is its causee and its に-phrase
+  [players] 2 added line(s):
+      # task easy, named Pat chair, made Sam the leader, kept the players running). The Frame has no place for that second predicate.
+      keeping (kept the players running)."""
+  [read] 16 added line(s):
+      elif role.name in ("recipient", "setting", "location") and following == "に":   # location: W1-a typed re-read of a locative に
+      # carries one of those is NOT read into a Frame that silently drops it (No engineer updated every server -> negated=False,
+      """Clefts and pseudo-clefts are read by the existing rules; their who/that/what are not relative clauses."""
+  [report] 4 added line(s):
+      return None            # a pseudo-cleft names its focus (was Mari / was the report); 'was kind' is a relative clause + predicate
+      # The manager made the intern rewrite the report -> recipient='intern rewrite'): read_typed returns (None, reasons).
+      """Is the token chosen as the main verb a verb? A copular/adjectival predicate (The report was long, Sam is an engineer), a
+  [reported] 2 added line(s):
+      # Verbs whose に/へ argument is an addressee: the thing is handed over, told, asked, shown, reported to someone.
+      """The particle token that follows a phrase ending at `end` ('によって' is reported as one unit)."""
+  [rest] 4 added line(s):
+      # infinitival complement / object control (told X to rest, wanted X to leave): to + a lowercase bare verb
+      rest = text[m.end():]
+      return _time_segment(_word_features(rest))
+  [results] 1 added line(s):
+      # change of state/status (the に-phrase is the state or status that results): become, develop into, be promoted to
+  [returned] 3 added line(s):
+      # adjunct it is (time/place/result/direction) or the clause is returned unsupported with a typed reason.
+      # Anything else is not claimed as an agent (the clause is returned unsupported), whatever its ending.
+      a double-subject predicate as an identity; it is returned unsupported (the comparison rule can then read it).
+  [rewrite] 2 added line(s):
+      # The manager made the intern rewrite the report -> recipient='intern rewrite'): read_typed returns (None, reasons).
+      "rewrite", "reshape", "resize", "refactor", "rename", "reclassify", "categorize", "categorise", "classify",
+  [ringing] 1 added line(s):
+      # Verbs of perception/keeping/letting whose object may be followed by a bare or -ing verb (heard the alarm ring/ringing).
+  [room] 1 added line(s):
+      # Verbs that take an object plus a predicate of it (a small clause / resultative / factitive: painted the room blue, found the
+  [run] 1 added line(s):
+      """A particle-free run of tokens that is a lexical time phrase (criteria 2 and 3)."""
+  [running] 2 added line(s):
+      # task easy, named Pat chair, made Sam the leader, kept the players running). The Frame has no place for that second predicate.
+      keeping (kept the players running)."""
+  [said] 1 added line(s):
+      # predicate (すみません → 済む() 否定: nothing is said) or the participants were dropped silently (a clause read as する() out
+  [saw] 2 added line(s):
+      _IRREG_NOUNISH = {"left", "saw", "rose", "lay", "spoke", "fell", "wound", "bit", "bore", "wore"}
+      predicate or inside a role (a word that is neither was dropped silently: Sam saw the man the police arrested -> man)."""
+  [server] 1 added line(s):
+      # carries one of those is NOT read into a Frame that silently drops it (No engineer updated every server -> negated=False,
+  [she] 1 added line(s):
+      _PRONOUN = {"he", "she", "they", "we", "i", "you", "it", "him", "her", "them", "us", "me", "who", "whom"}
+  [signed] 1 added line(s):
+      # a focus/scalar word attaches to a constituent whose scope the Frame cannot hold (Only Sam signed; Sam even signed)
+  [since] 3 added line(s):
+      r"|(?:in|on|by|until|since|during|before|after) (?:january|february|march|april|may|june|july|august|september|october|november|december)(?: [0-9]{1,2})?(?:,? [
+      r"|(?:in|by|since|until) [0-9]{4}|at [0-9]{1,2}(?::[0-9]{2})? ?(?:am|pm|o'clock)?)\b", re.I)
+      _SUBORD = {"although", "though", "because", "since", "when", "whenever", "while", "whilst", "if", "unless", "until", "whereas",
+  [sold] 1 added line(s):
+      """A past/participle verb form (written, sold, arrested): -ed or an irregular non-base form; not a noun that looks like one."""
+  [some] 1 added line(s):
+      _QUANT = {"every", "each", "all", "some", "any", "most", "few", "many", "several", "both", "everyone", "everybody",
+  [than] 10 added line(s):
+      # when it does not say transitive, abstain rather than guess.
+      or any(low[i:i + 2] in (["at", "least"], ["at", "most"], ["more", "than"], ["fewer", "than"]) for i in range(len(low) - 1)) \
+      or any(w.isdigit() and i > 0 and low[i - 1] in ("exactly", "least", "most", "than") for i, w in enumerate(low)):
+  [that] 95 added line(s):
+      # reader that may re-assign it, so the reader's reason is named here and nowhere else.
+      already knows which verb stands in front of させ/せ: a candidate that is not that verb's lemma is dropped (so 着させた
+      return False     # a case/topic phrase before the frame that no role represents (私は…盗まれた)
+  [the] 265 added line(s):
+      """The words between より/ほど and the adjective name the dimension (背, 人口, 体重) only when they end in a noun. A degree
+      adverb (ずっと, もっと, かなり) or an adverbial form (大幅に) is not a dimension: then the adjective itself is."""
+      # The native frame hands a causative's に-phrase to `recipient`; this construction (and gold_caus_pass) is the only
+  [this] 23 added line(s):
+      # The native frame hands a causative's に-phrase to `recipient`; this construction (and gold_caus_pass) is the only
+      return None          # an adjunct this construction cannot represent: abstain, do not drop it
+      """A case/topic-marked phrase (<pronoun>は, <place>で) stands in this clause before its typed frame. The segment starts after the
+  [three] 2 added line(s):
+      _NUMBER_WORDS = {"one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen",
+      # W1-a round 4 (N2): the verbs of _CHANGE_PREDICATES fall in three groups for a に-phrase after the object (X を Y に V):
+  [two] 17 added line(s):
+      """An item that names a person (a name, a pronoun, a role/kin noun): decides whether a bare two-item comma pair is an
+      """<X>、<Y> with no と/や/・: an enumeration lists like things (two people, two places, two things). A pair of a person and a
+      # A constituent that swallows a が/は-marked phrase (<noun>が<noun>) is two constituents; this char scan cannot split them.
+  [types] 3 added line(s):
+      # A causee is the person the causer acts on, which the native frame types as `recipient`. A に-phrase the frame
+      # so a time word can arrive as an "agent" and a goal/result/place as a "recipient". The reader therefore types every
+      # module re-tokenizes the clause body and applies its own rules, so a reader that mis-types a role cannot also
+  [unless] 3 added line(s):
+      _SUBORD = {"although", "though", "because", "since", "when", "whenever", "while", "whilst", "if", "unless", "until", "whereas",
+      #       に-phrase is the `result` unless it is a person and the object is a thing (then it could be whoever the work is done for).
+      # type; a conversion verb takes it unless it is a person and the object is a thing; an appointment keeps its status reading.
+  [updated] 1 added line(s):
+      # carries one of those is NOT read into a Frame that silently drops it (No engineer updated every server -> negated=False,
+  [was] 15 added line(s):
+      from ..typed_edges import _tagger          # the shared tagger (a Tagger() per call was slow); sharing the tokenizer keeps the checker independent
+      return None            # a pseudo-cleft names its focus (was Mari / was the report); 'was kind' is a relative clause + predicate
+      return _read_core(y + " " + " ".join(body), diag)      # the person who called Alice was Bob
+  [were] 4 added line(s):
+      if low[i:i + 3] == ["the", w, low[i + 2]] and low[i + 2] in ("who", "that") and low[i - 1] in ("was", "is", "were"):
+      _BE = {"was", "were", "is", "are", "am", "be", "been", "being"}
+      # (知らせる) carry no mislabelled role and are left as they were.
+  [when] 34 added line(s):
+      """The words between より/ほど and the adjective name the dimension (背, 人口, 体重) only when they end in a noun. A degree
+      # when it does not say transitive, abstain rather than guess.
+      食べさせる inverts to 食べる (ichidan), 食べする (suru) and 食べす (godan) when only the form is looked at. The tagger
+  [which] 8 added line(s):
+      # A causee is the person the causer acts on, which the native frame types as `recipient`. A に-phrase the frame
+      already knows which verb stands in front of させ/せ: a candidate that is not that verb's lemma is dropped (so 着させた
+      # Unknown is not false: the reason says which structure was recognised and left unread.
+  [while] 15 added line(s):
+      _SUBORD = {"although", "though", "because", "since", "when", "whenever", "while", "whilst", "if", "unless", "until", "whereas",
+      while j < len(low) and low[j] in DET:
+      while j >= 0 and (low[j] in NEG or low[j] in ADV):
+  [who] 11 added line(s):
+      return _read_core(y + " " + " ".join(body), diag)      # the person who called Alice was Bob
+      _RELATIVE = {"who", "whom", "whose", "which"}
+      """Clefts and pseudo-clefts are read by the existing rules; their who/that/what are not relative clauses."""
+  [whom] 2 added line(s):
+      _RELATIVE = {"who", "whom", "whose", "which"}
+      _PRONOUN = {"he", "she", "they", "we", "i", "you", "it", "him", "her", "them", "us", "me", "who", "whom"}
+  [written] 10 added line(s):
+      # Comparative / superlative adjectives written with -er/-est. Criterion: the closed class of common gradable adjectives that
+      """A past/participle verb form (written, sold, arrested): -ed or an irregular non-base form; not a noun that looks like one."""
+      relative: the book Sam wrote), no participle closing it (the report written ...), and no gerund after a verb of perception or
+  [wrote] 1 added line(s):
+      relative: the book Sam wrote), no participle closing it (the report written ...), and no gerund after a verb of perception or
+  [yesterday] 1 added line(s):
+      _TIME = re.compile(r"\b(?:yesterday|today|tonight|tomorrow|(?:this|last|every|each|next) (?:morning|afternoon|evening|night|week|month|day|year|weekend|monday|t
+exit=0

@@ -1,0 +1,81 @@
+{
+  "verdict": "ANSWER",
+  "query": "事象の十字",
+  "searched": 648,
+  "hits": [
+    {
+      "kind": "module",
+      "name": "cross",
+      "about": "",
+      "where": "verantyx/cross.py"
+    },
+    {
+      "kind": "module",
+      "name": "cross_geometry_forks",
+      "about": "Forks for the three unbuilt pieces of the original conception:",
+      "where": "verantyx/cross_geometry_forks.py"
+    },
+    {
+      "kind": "module",
+      "name": "cross_store",
+      "about": "CrossStore — core ごとに1つの十字を累積する多十字ネットワークの土台.",
+      "where": "verantyx/cross_store.py"
+    },
+    {
+      "kind": "module",
+      "name": "crossverify",
+      "about": "Check English claims against Japanese documents through the shared structure.",
+      "where": "verantyx/crossverify.py"
+    },
+    {
+      "kind": "module",
+      "name": "experience_cross",
+      "about": "経験十字 — 経験のコンパイルを立体十字の上に置く(PREREG: experience_cross)。",
+      "where": "verantyx/experience_cross.py"
+    },
+    {
+      "kind": "fork",
+      "name": "cross_field_agreement_selects_but_barely_applies_fork",
+      "about": "Axis contrast is a real selection rule over a very small share.",
+      "where": "verantyx/cross_geometry_forks.py",
+      "registered": "yes"
+    },
+    {
+      "kind": "door",
+      "name": "attest_claim",
+      "about": "Judge whether THIS store supports what a claim says about a",
+      "where": "verantyx/mcp_server.py"
+    },
+    {
+      "kind": "door",
+      "name": "capability_index",
+      "about": "**Ask this before building anything.** Does the capability",
+      "where": "verantyx/mcp_server.py"
+    },
+    {
+      "kind": "door",
+      "name": "code_ingest",
+      "about": "Ingest a Python repo (AST): one cross per function with",
+      "where": "verantyx/mcp_server.py"
+    },
+    {
+      "kind": "door",
+      "name": "failure_stats",
+      "about": "Histogram of typed failures across all recorded UNKNOWN buckets,",
+      "where": "verantyx/mcp_server.py"
+    },
+    {
+      "kind": "door",
+      "name": "forget",
+      "about": "Delete a core cross entirely. Deletion is real and immediate —",
+      "where": "verantyx/mcp_server.py"
+    },
+    {
+      "kind": "door",
+      "name": "goal_recipe",
+      "about": "Turn \"what I want to do\" into the ordered settings that get there.",
+      "where": "verantyx/mcp_server.py"
+    }
+  ],
+  "total_hits": 219
+}

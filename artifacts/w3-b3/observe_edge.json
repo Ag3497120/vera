@@ -1,0 +1,180 @@
+{
+ "cases": [
+  {
+   "case": "E-W3B3-01",
+   "text": "兄が本を読んだので、弟が歌を歌った。",
+   "anchor_cross": 0,
+   "direction": "EDGE:cause",
+   "outcome": "FOCUS",
+   "abstain": null,
+   "cells_by_edge": 1,
+   "cells_by_edge_detail": [
+    {
+     "dir": "forward",
+     "predicate": "歌う",
+     "tense": "past"
+    }
+   ]
+  },
+  {
+   "case": "E-W3B3-02",
+   "text": "兄が本を読んだので、弟が歌を歌った。",
+   "anchor_cross": 1,
+   "direction": "EDGE:cause",
+   "outcome": "FOCUS",
+   "abstain": null,
+   "cells_by_edge": 1,
+   "cells_by_edge_detail": [
+    {
+     "dir": "backward",
+     "predicate": "読む",
+     "tense": "past"
+    }
+   ]
+  },
+  {
+   "case": "E-W3B3-03",
+   "text": "兄が本を読んだが、弟が歌を歌った。",
+   "anchor_cross": 0,
+   "direction": "EDGE:contrast",
+   "outcome": "FOCUS",
+   "abstain": null,
+   "cells_by_edge": 1,
+   "cells_by_edge_detail": [
+    {
+     "dir": "forward",
+     "predicate": "歌う",
+     "tense": "past"
+    }
+   ]
+  },
+  {
+   "case": "E-W3B3-04",
+   "text": "兄が来れば、弟が帰る。",
+   "anchor_cross": 0,
+   "direction": "EDGE:condition",
+   "outcome": "FOCUS",
+   "abstain": null,
+   "cells_by_edge": 1,
+   "cells_by_edge_detail": [
+    {
+     "dir": "forward",
+     "predicate": "帰る",
+     "tense": "nonpast"
+    }
+   ]
+  },
+  {
+   "case": "E-W3B3-05",
+   "text": "兄が来ても、弟が帰る。",
+   "anchor_cross": 0,
+   "direction": "EDGE:concession",
+   "outcome": "FOCUS",
+   "abstain": null,
+   "cells_by_edge": 1,
+   "cells_by_edge_detail": [
+    {
+     "dir": "forward",
+     "predicate": "帰る",
+     "tense": "nonpast"
+    }
+   ]
+  },
+  {
+   "case": "E-W3B3-06",
+   "text": "兄が本を読みながら、弟が歌を歌った。",
+   "anchor_cross": 0,
+   "direction": "EDGE:simultaneous",
+   "outcome": "FOCUS",
+   "abstain": null,
+   "cells_by_edge": 1,
+   "cells_by_edge_detail": [
+    {
+     "dir": "forward",
+     "predicate": "歌う",
+     "tense": "past"
+    }
+   ]
+  },
+  {
+   "case": "E-W3B3-07",
+   "text": "母が弟に話した人を兄が呼んだ。",
+   "anchor_cross": 0,
+   "direction": "EDGE:relative",
+   "outcome": "FOCUS",
+   "abstain": null,
+   "cells_by_edge": 1,
+   "cells_by_edge_detail": [
+    {
+     "dir": "forward",
+     "predicate": "呼ぶ",
+     "tense": "past"
+    }
+   ]
+  },
+  {
+   "case": "E-W3B3-08",
+   "text": "母が弟に話した人を兄が呼んだ。",
+   "anchor_cross": 1,
+   "direction": "EDGE:relative",
+   "outcome": "FOCUS",
+   "abstain": null,
+   "cells_by_edge": 1,
+   "cells_by_edge_detail": [
+    {
+     "dir": "backward",
+     "predicate": "話す",
+     "tense": "past"
+    }
+   ]
+  },
+  {
+   "case": "E-W3B3-09",
+   "text": "歌を弟に頼んだ人を兄が呼んだ。",
+   "anchor_cross": 0,
+   "direction": "EDGE:relative",
+   "outcome": "FOCUS",
+   "abstain": null,
+   "cells_by_edge": 1,
+   "cells_by_edge_detail": [
+    {
+     "dir": "forward",
+     "predicate": "呼ぶ",
+     "tense": "past"
+    }
+   ]
+  },
+  {
+   "case": "E-W3B3-10",
+   "text": "兄は本を読んだので、歌を歌った。",
+   "anchor_cross": 0,
+   "direction": "EDGE:cause",
+   "outcome": "FOCUS",
+   "abstain": null,
+   "cells_by_edge": 1,
+   "cells_by_edge_detail": [
+    {
+     "dir": "forward",
+     "predicate": "歌う",
+     "tense": "past"
+    }
+   ]
+  },
+  {
+   "case": "E-W3B3-11",
+   "text": "兄が本を読んだので、弟が歌を歌った。",
+   "anchor_cross": 0,
+   "direction": "EDGE:relative",
+   "outcome": "NO_MOVE_LICENSED",
+   "abstain": {
+    "type": "NO_MOVE_LICENSED",
+    "reasons": {
+     "EDGE:NO_RELATION_IN_STRUCTURE": 1
+    }
+   },
+   "cells_by_edge": 0,
+   "cells_by_edge_detail": []
+  }
+ ],
+ "cells_by_edge_total": 10
+}

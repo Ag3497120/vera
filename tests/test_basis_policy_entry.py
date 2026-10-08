@@ -128,6 +128,7 @@ GEN = {"family": "local", "source": "g0", "text": "窓が光った。", "sha": "
        "generator": "codex", "source_file": "f.jsonl", "line": 4}
 USER = {"family": "user", "source": "user:request", "text": "窓は？"}
 HUMAN = {"family": "document", "sovereign": "document", "source": "memo.txt", "text": "窓が光った。"}
+W5F_MEMORY_IDS = {"store_id": "store-w5f-test", "confirm_id": "0123456789abcdef01234567"}
 
 
 def _synthetic(kind, verdict, sources, **extra):
@@ -174,9 +175,10 @@ def test_p2_synthetic_results_with_generated_sources_never_come_out_as_an_answer
 @pytest.mark.parametrize("human", [False, True])
 @pytest.mark.parametrize("ref", [False, True])
 def test_a_mix_of_human_and_generated_sources_abstains(human, ref):
+    # W5-f（F-4、分類の規則 v5）: 退役した自己申告の入力に有効な識別子を与え、人と生成の混合を検査する。
     # W5-c r3（監査役の判断 2026-10-03 20:40）: 入力の人の出典を明示の人（origin: human_confirmed）にした。期待は同じ
     # W5-e2（監査役の判断 2026-10-04 04:42、K-A3）: 人の出典の入力を memory_sovereign（ソブリンの記録由来）にした（自己申告の human_confirmed は人にしない）。期待は同じ
-    result = _synthetic("answer", "ANSWER", [{**HUMAN, "family": "memory_sovereign", "origin": "human_confirmed"}, GEN])
+    result = _synthetic("answer", "ANSWER", [{**HUMAN, **W5F_MEMORY_IDS, "family": "memory_sovereign", "origin": "human_confirmed"}, GEN])
     out, rc = bp.apply_to_ask(result, bp.AskPolicy(human_present=human, show_reference=ref),
                               query="q", mode="legacy", documents=[])
     assert rc == 0 and out["kind"] == "unknown" and out["verdict"] == "UNKNOWN_BASIS_NOT_IN_TABLE"
@@ -201,9 +203,10 @@ def test_a_refusal_that_carries_generated_sources_stays_a_refusal_and_loses_the_
 
 
 def test_a_human_answer_is_passed_through_unchanged_apart_from_the_policy_note():
+    # W5-f（F-4、分類の規則 v5）: 退役した自己申告の入力に有効な識別子を与え、人の回答の通過を検査する。
     # W5-c r3（監査役の判断 2026-10-03 20:40）: 入力の人の出典を明示の人（origin: human_confirmed）にした。期待は同じ
     # W5-e2（監査役の判断 2026-10-04 04:42、K-A3）: 人の出典の入力を memory_sovereign（ソブリンの記録由来）にした（自己申告の human_confirmed は人にしない）。期待は同じ
-    result = _synthetic("answer", "ANSWER", [USER, {**HUMAN, "family": "memory_sovereign", "origin": "human_confirmed"}])
+    result = _synthetic("answer", "ANSWER", [USER, {**HUMAN, **W5F_MEMORY_IDS, "family": "memory_sovereign", "origin": "human_confirmed"}])
     out, rc = bp.apply_to_ask(result, bp.AskPolicy(), query="q", mode="legacy", documents=[])
     assert rc == 0 and _without(out, "basis_policy") == result
     assert out["basis_policy"]["outcome"] == "ANSWER_HUMAN_BASIS" and out["basis_policy"]["applied"] is True
@@ -405,7 +408,7 @@ def test_confirm_with_a_request_that_claims_no_fact_is_refused(tmp_path, capsys)
 
 
 def test_an_existing_configuration_error_keeps_its_place_before_the_new_ones(tmp_path, capsys):
-    rc, out = _ask(tmp_path, capsys, "こんにちは", "--document", "x.txt", "--confirm", "abc", "maybe")
+    rc, out = _ask(tmp_path, capsys, "こんにちは", "--mode", "legacy", "--document", "x.txt", "--confirm", "abc", "maybe")
     assert rc == 2 and out["verdict"] == "UNKNOWN_ROUTE_CONFIGURATION"
     assert out["reason"] == "--document requires --mode round5"
 

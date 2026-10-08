@@ -1,0 +1,117 @@
+.FFFFFF................FF...............................                 [100%]
+=================================== FAILURES ===================================
+_ test_a_time_ni_does_not_fill_the_recipient_arm_so_the_relative_clause_is_not_read[\u6bcd\u304c\u663c\u306b\u8a71\u3057\u305f\u4eba\u3092\u5144\u304c\u547c\u3093\u3060\u3002] _
+
+text = '母が昼に話した人を兄が呼んだ。'
+
+    @pytest.mark.parametrize('text', TIME_NI)
+    def test_a_time_ni_does_not_fill_the_recipient_arm_so_the_relative_clause_is_not_read(text):
+        q = F.FixtureQuery()
+        ex = SR.clause_scope_explain_ja(text, q)
+>       assert ex['read'] is False, (text, ex)
+E       AssertionError: ('母が昼に話した人を兄が呼んだ。', {'triggered': True, 'cut': {'kind': 'relative', 'connective': '', 'token_span': [6, 7]}, 'clause_t...dicate': '呼ぶ', 'roles': {'agent': '兄', 'patient': '人'}, 'polarity': '+', 'tense': 'past', ...}, 'reason': None}], ...})
+E       assert True is False
+
+tests/test_semantic_read_w3b3_r2.py:91: AssertionError
+_ test_a_time_ni_does_not_fill_the_recipient_arm_so_the_relative_clause_is_not_read[\u6bcd\u304c\u4e09\u6642\u306b\u8a71\u3057\u305f\u4eba\u3092\u5144\u304c\u547c\u3093\u3060\u3002] _
+
+text = '母が三時に話した人を兄が呼んだ。'
+
+    @pytest.mark.parametrize('text', TIME_NI)
+    def test_a_time_ni_does_not_fill_the_recipient_arm_so_the_relative_clause_is_not_read(text):
+        q = F.FixtureQuery()
+        ex = SR.clause_scope_explain_ja(text, q)
+>       assert ex['read'] is False, (text, ex)
+E       AssertionError: ('母が三時に話した人を兄が呼んだ。', {'triggered': True, 'cut': {'kind': 'relative', 'connective': '', 'token_span': [7, 8]}, 'clause_...dicate': '呼ぶ', 'roles': {'agent': '兄', 'patient': '人'}, 'polarity': '+', 'tense': 'past', ...}, 'reason': None}], ...})
+E       assert True is False
+
+tests/test_semantic_read_w3b3_r2.py:91: AssertionError
+_ test_a_time_ni_does_not_fill_the_recipient_arm_so_the_relative_clause_is_not_read[\u6bcd\u304c\u591c\u306b\u983c\u3093\u3060\u53cb\u9054\u3092\u5148\u751f\u304c\u547c\u3093\u3060\u3002] _
+
+text = '母が夜に頼んだ友達を先生が呼んだ。'
+
+    @pytest.mark.parametrize('text', TIME_NI)
+    def test_a_time_ni_does_not_fill_the_recipient_arm_so_the_relative_clause_is_not_read(text):
+        q = F.FixtureQuery()
+        ex = SR.clause_scope_explain_ja(text, q)
+>       assert ex['read'] is False, (text, ex)
+E       AssertionError: ('母が夜に頼んだ友達を先生が呼んだ。', {'triggered': True, 'cut': {'kind': 'relative', 'connective': '', 'token_span': [6, 7]}, 'clause...cate': '呼ぶ', 'roles': {'agent': '先生', 'patient': '友達'}, 'polarity': '+', 'tense': 'past', ...}, 'reason': None}], ...})
+E       assert True is False
+
+tests/test_semantic_read_w3b3_r2.py:91: AssertionError
+_ test_a_time_ni_does_not_fill_the_recipient_arm_so_the_relative_clause_is_not_read[\u6bcd\u304c\u671d\u306b\u8a00\u3063\u305f\u751f\u5f92\u3092\u5144\u304c\u547c\u3093\u3060\u3002] _
+
+text = '母が朝に言った生徒を兄が呼んだ。'
+
+    @pytest.mark.parametrize('text', TIME_NI)
+    def test_a_time_ni_does_not_fill_the_recipient_arm_so_the_relative_clause_is_not_read(text):
+        q = F.FixtureQuery()
+        ex = SR.clause_scope_explain_ja(text, q)
+>       assert ex['read'] is False, (text, ex)
+E       AssertionError: ('母が朝に言った生徒を兄が呼んだ。', {'triggered': True, 'cut': {'kind': 'relative', 'connective': '', 'token_span': [6, 7]}, 'clause_...icate': '呼ぶ', 'roles': {'agent': '兄', 'patient': '生徒'}, 'polarity': '+', 'tense': 'past', ...}, 'reason': None}], ...})
+E       assert True is False
+
+tests/test_semantic_read_w3b3_r2.py:91: AssertionError
+_ test_a_time_ni_does_not_fill_the_recipient_arm_so_the_relative_clause_is_not_read[\u59c9\u304c\u591c\u306b\u8a71\u3057\u305f\u5148\u751f\u3092\u6bcd\u304c\u5f85\u3063\u305f\u3002] _
+
+text = '姉が夜に話した先生を母が待った。'
+
+    @pytest.mark.parametrize('text', TIME_NI)
+    def test_a_time_ni_does_not_fill_the_recipient_arm_so_the_relative_clause_is_not_read(text):
+        q = F.FixtureQuery()
+        ex = SR.clause_scope_explain_ja(text, q)
+>       assert ex['read'] is False, (text, ex)
+E       AssertionError: ('姉が夜に話した先生を母が待った。', {'triggered': True, 'cut': {'kind': 'relative', 'connective': '', 'token_span': [6, 7]}, 'clause_...icate': '待つ', 'roles': {'agent': '母', 'patient': '先生'}, 'polarity': '+', 'tense': 'past', ...}, 'reason': None}], ...})
+E       assert True is False
+
+tests/test_semantic_read_w3b3_r2.py:91: AssertionError
+_ test_a_time_ni_does_not_fill_the_recipient_arm_so_the_relative_clause_is_not_read[\u7236\u304c\u4e09\u6642\u306b\u983c\u3093\u3060\u53cb\u9054\u3092\u5f1f\u304c\u547c\u3093\u3060\u3002] _
+
+text = '父が三時に頼んだ友達を弟が呼んだ。'
+
+    @pytest.mark.parametrize('text', TIME_NI)
+    def test_a_time_ni_does_not_fill_the_recipient_arm_so_the_relative_clause_is_not_read(text):
+        q = F.FixtureQuery()
+        ex = SR.clause_scope_explain_ja(text, q)
+>       assert ex['read'] is False, (text, ex)
+E       AssertionError: ('父が三時に頼んだ友達を弟が呼んだ。', {'triggered': True, 'cut': {'kind': 'relative', 'connective': '', 'token_span': [7, 8]}, 'clause...icate': '呼ぶ', 'roles': {'agent': '弟', 'patient': '友達'}, 'polarity': '+', 'tense': 'past', ...}, 'reason': None}], ...})
+E       assert True is False
+
+tests/test_semantic_read_w3b3_r2.py:91: AssertionError
+____________ test_the_arm_rule_adds_no_surface_string_of_a_particle ____________
+
+    def test_the_arm_rule_adds_no_surface_string_of_a_particle():
+        """The change narrows the count of the arms: the rule of `_w3b3_head_arm` is by the role names of the reading, not by the particle の surface (no `に` literal)."""
+        src = inspect.getsource(SR._w3b3_head_arm)
+>       assert 'に' not in src.split('"""', 2)[2], 'the arm count must not look at the particle に'
+E       AssertionError: the arm count must not look at the particle に
+E       assert 'に' not in '\n    head,...0]}}, None\n'
+E         
+E         'に' is contained here:
+E           rface == 'に' and t.pos2 == '格助詞' for t in snap[:cut['a_end'] + 1])
+E         ?           +
+E               undecided = ptype == 'P_COMMUNICATE' and not ni_filled
+E               note['head'] = {'arm': None, 'basis': None, 'empty_arms': [r[0] for r in empty] + (['NI_UNDECIDED'] if undecided else []), 'candidates': []}
+E               if len(empty) + (1 if undecided else 0) != 1: return None, None, 'HEAD_ROLE_UNDETERMINED:empty_arms=%d' % (len(empty) + (1 if undecided else 0))...
+E         
+E         ...Full output truncated (29 lines hidden), use '-vv' to show
+
+tests/test_semantic_read_w3b3_r2.py:124: AssertionError
+_ test_the_diagnosis_of_a_time_ni_names_both_empty_arms_and_nothing_is_placed __
+
+    def test_the_diagnosis_of_a_time_ni_names_both_empty_arms_and_nothing_is_placed():
+        ex = SR.clause_scope_explain_ja('母が昼に話した人を兄が呼んだ。', F.FixtureQuery())
+>       assert ex['read'] is False and ex['head']['arm'] is None and ex['head']['basis'] is None and ex['head']['candidates'] == []
+E       assert (True is False)
+
+tests/test_semantic_read_w3b3_r2.py:130: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_semantic_read_w3b3_r2.py::test_a_time_ni_does_not_fill_the_recipient_arm_so_the_relative_clause_is_not_read[\u6bcd\u304c\u663c\u306b\u8a71\u3057\u305f\u4eba\u3092\u5144\u304c\u547c\u3093\u3060\u3002]
+FAILED tests/test_semantic_read_w3b3_r2.py::test_a_time_ni_does_not_fill_the_recipient_arm_so_the_relative_clause_is_not_read[\u6bcd\u304c\u4e09\u6642\u306b\u8a71\u3057\u305f\u4eba\u3092\u5144\u304c\u547c\u3093\u3060\u3002]
+FAILED tests/test_semantic_read_w3b3_r2.py::test_a_time_ni_does_not_fill_the_recipient_arm_so_the_relative_clause_is_not_read[\u6bcd\u304c\u591c\u306b\u983c\u3093\u3060\u53cb\u9054\u3092\u5148\u751f\u304c\u547c\u3093\u3060\u3002]
+FAILED tests/test_semantic_read_w3b3_r2.py::test_a_time_ni_does_not_fill_the_recipient_arm_so_the_relative_clause_is_not_read[\u6bcd\u304c\u671d\u306b\u8a00\u3063\u305f\u751f\u5f92\u3092\u5144\u304c\u547c\u3093\u3060\u3002]
+FAILED tests/test_semantic_read_w3b3_r2.py::test_a_time_ni_does_not_fill_the_recipient_arm_so_the_relative_clause_is_not_read[\u59c9\u304c\u591c\u306b\u8a71\u3057\u305f\u5148\u751f\u3092\u6bcd\u304c\u5f85\u3063\u305f\u3002]
+FAILED tests/test_semantic_read_w3b3_r2.py::test_a_time_ni_does_not_fill_the_recipient_arm_so_the_relative_clause_is_not_read[\u7236\u304c\u4e09\u6642\u306b\u983c\u3093\u3060\u53cb\u9054\u3092\u5f1f\u304c\u547c\u3093\u3060\u3002]
+FAILED tests/test_semantic_read_w3b3_r2.py::test_the_arm_rule_adds_no_surface_string_of_a_particle
+FAILED tests/test_semantic_read_w3b3_r2.py::test_the_diagnosis_of_a_time_ni_names_both_empty_arms_and_nothing_is_placed
+8 failed, 48 passed in 0.53s

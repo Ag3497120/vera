@@ -1,0 +1,92 @@
+phrase	tokens	base_fused	suffix_fused	is_time	NEW_TRUE
+明日香村	[('明日香', '名詞'), ('村', '名詞')]	False	False	False	
+明日香	[('明日香', '名詞')]	False	False	False	
+春日部	[('春日部', '名詞')]	False	False	False	
+春日部市	[('春日部', '名詞'), ('市', '名詞')]	False	False	False	
+朝霞	[('朝霞', '名詞')]	False	False	False	
+朝霞市	[('朝霞', '名詞'), ('市', '名詞')]	False	False	False	
+秋葉原	[('秋葉原', '名詞')]	False	False	False	
+秋葉原駅	[('秋葉原', '名詞'), ('駅', '名詞')]	False	False	False	
+朝日町	[('朝日', '名詞'), ('町', '名詞')]	False	False	False	
+朝日村	[('朝日', '名詞'), ('村', '名詞')]	False	False	False	
+今市	[('今市', '名詞')]	False	False	False	
+今市市	[('今市', '名詞'), ('市', '名詞')]	False	False	False	
+元日神社	[('元日', '名詞'), ('神社', '名詞')]	True	False	False	
+今宮神社	[('今宮', '名詞'), ('神社', '名詞')]	False	False	False	
+今治	[('今治', '名詞')]	False	False	False	
+今治市	[('今治', '名詞'), ('市', '名詞')]	False	False	False	
+夏川	[('夏川', '名詞')]	False	False	False	
+冬木町	[('冬木町', '名詞')]	False	False	False	
+春日	[('春日', '名詞')]	False	False	False	
+春日市	[('春日', '名詞'), ('市', '名詞')]	False	False	False	
+春日井市	[('春日井', '名詞'), ('市', '名詞')]	False	False	False	
+夕張	[('夕張', '名詞')]	False	False	False	
+夕張市	[('夕張', '名詞'), ('市', '名詞')]	False	False	False	
+夕張岳	[('夕張', '名詞'), ('岳', '名詞')]	False	False	False	
+昼神温泉	[('昼神', '名詞'), ('温泉', '名詞')]	False	False	False	
+朝倉	[('朝倉', '名詞')]	False	False	False	
+朝倉市	[('朝倉', '名詞'), ('市', '名詞')]	False	False	False	
+秋田	[('秋田', '名詞')]	False	False	False	
+秋田市	[('秋田', '名詞'), ('市', '名詞')]	False	False	False	
+秋田県	[('秋田', '名詞'), ('県', '名詞')]	False	False	False	
+秋田港	[('秋田', '名詞'), ('港', '接尾辞')]	False	False	False	
+秋田駅	[('秋田', '名詞'), ('駅', '名詞')]	False	False	False	
+夏井	[('夏井', '名詞')]	False	False	False	
+毎日新聞社	[('毎日', '名詞'), ('新聞', '名詞'), ('社', '名詞')]	True	False	False	
+年金事務所	[('年金', '名詞'), ('事務', '名詞'), ('所', '接尾辞')]	False	False	False	
+月島	[('月島', '名詞')]	False	False	False	
+月島駅	[('月島', '名詞'), ('駅', '名詞')]	False	False	False	
+日本橋	[('日本橋', '名詞')]	False	False	False	
+日光	[('日光', '名詞')]	False	False	False	
+日光市	[('日光', '名詞'), ('市', '名詞')]	False	False	False	
+日向	[('日向', '名詞')]	False	False	False	
+日向市	[('日向', '名詞'), ('市', '名詞')]	False	False	False	
+今別	[('今別', '名詞')]	False	False	False	
+今帰仁村	[('今帰仁', '名詞'), ('村', '名詞')]	False	False	False	
+今金町	[('今金', '名詞'), ('町', '名詞')]	False	False	False	
+昨日市	[('昨日', '名詞'), ('市', '名詞')]	True	False	False	
+午前山	[('午前', '名詞'), ('山', '名詞')]	True	False	False	
+朝日新聞社	[('朝日', '名詞'), ('新聞', '名詞'), ('社', '名詞')]	False	False	False	
+朝日港	[('朝日', '名詞'), ('港', '接尾辞')]	False	False	False	
+朝日店	[('朝日', '名詞'), ('店', '接尾辞')]	False	False	False	
+夕日館	[('夕日', '名詞'), ('館', '接尾辞')]	False	False	False	
+夕日園	[('夕日', '名詞'), ('園', '接尾辞')]	False	False	False	
+秋葉原店	[('秋葉原', '名詞'), ('店', '接尾辞')]	False	False	False	
+春日港	[('春日', '名詞'), ('港', '接尾辞')]	False	False	False	
+春日店	[('春日', '名詞'), ('店', '接尾辞')]	False	False	False	
+春日館	[('春日', '名詞'), ('館', '接尾辞')]	False	False	False	
+春日院	[('春日', '名詞'), ('院', '接尾辞')]	False	False	False	
+春日園	[('春日', '名詞'), ('園', '接尾辞')]	False	False	False	
+春日城	[('春日', '名詞'), ('城', '接尾辞')]	False	False	False	
+春日庁	[('春日', '名詞'), ('庁', '接尾辞')]	False	False	False	
+夏目館	[('夏目', '名詞'), ('館', '接尾辞')]	False	False	False	
+冬山荘	[('冬山', '名詞'), ('荘', '接尾辞')]	False	False	False	
+週末店	[('週末', '名詞'), ('店', '接尾辞')]	False	True	False	NEW
+今夜館	[('今夜', '名詞'), ('館', '接尾辞')]	False	True	False	NEW
+先月港	[('先月', '名詞'), ('港', '接尾辞')]	False	True	False	NEW
+来年園	[('来年', '名詞'), ('園', '接尾辞')]	False	True	False	NEW
+来週末	[('来週', '名詞'), ('末', '接尾辞')]	False	False	True	
+今日中	[('今日', '名詞'), ('中', '名詞')]	True	False	False	
+昨夜来	[('昨夜', '名詞'), ('来', '接尾辞')]	False	False	True	
+来週前半	[('来週', '名詞'), ('前半', '名詞')]	False	False	True	
+毎朝新聞	[('毎朝', '名詞'), ('新聞', '名詞')]	True	False	False	
+毎日店	[('毎日', '名詞'), ('店', '接尾辞')]	False	True	False	NEW
+午後館	[('午後', '名詞'), ('館', '接尾辞')]	False	True	False	NEW
+夕方店	[('夕方', '名詞'), ('店', '名詞')]	True	False	False	
+夕方港	[('夕方', '名詞'), ('港', '名詞')]	True	False	False	
+夜景館	[('夜景', '名詞'), ('館', '接尾辞')]	False	False	False	
+朝市場	[('朝', '名詞'), ('市場', '名詞')]	True	False	False	
+朝日院	[('朝日', '名詞'), ('院', '接尾辞')]	False	False	False	
+昼食店	[('昼食', '名詞'), ('店', '接尾辞')]	False	False	False	
+晩翠園	[('晩翠', '名詞'), ('園', '接尾辞')]	False	False	False	
+晩翠院	[('晩翠', '名詞'), ('院', '接尾辞')]	False	False	False	
+春風館	[('春風', '名詞'), ('館', '接尾辞')]	False	False	False	
+秋風院	[('秋風', '名詞'), ('院', '接尾辞')]	False	False	False	
+夏祭園	[('夏祭', '名詞'), ('園', '接尾辞')]	False	False	False	
+年越し港	[('年越し', '名詞'), ('港', '接尾辞')]	False	False	False	
+正月店	[('正月', '名詞'), ('店', '接尾辞')]	False	True	False	NEW
+元日店	[('元日', '名詞'), ('店', '接尾辞')]	False	True	False	NEW
+元日港	[('元日', '名詞'), ('港', '接尾辞')]	False	True	False	NEW
+元旦館	[('元旦', '名詞'), ('館', '接尾辞')]	False	True	False	NEW
+今朝港	[('今朝', '名詞'), ('港', '名詞')]	True	False	False	
+今朝店	[('今朝', '名詞'), ('店', '名詞')]	True	False	False	

@@ -1,0 +1,62 @@
+# NOT ground truth: a look by the implementer at the words drawn with random.Random(20261004).sample(sorted(direct words of the law layer), min(60, n)). judgement (correct / doubtful / wrong) and reason were filled by hand.
+word	type	r9_state	r9_top	judgement	reason
+グレブナーきてい	ABSTRACT	UNKNOWN		正しい	概念
+Registered Trademark	INFO_LANGUAGE	UNKNOWN		疑わしい	登録商標の語。INFO_LANGUAGE は近いが ABSTRACT でもよい
+ユハ・カンクネン	PLACE	UNKNOWN		誤り	人名（フィンランドの人名）。定義文の「フィンランド」で PLACE になった
+律速	ABSTRACT	UNPLACED		正しい	概念
+ヘトリスヘイジ	PERSON	UNPLACED		疑わしい	何の名か判断できない
+シャトルかつらだい	GROUP_ORG	UNKNOWN		疑わしい	バス停/施設名か判断できない
+アッティリオ・ベッテガ	PLACE	UNKNOWN		誤り	人名
+袴腰山 (曖昧さ回避)	PERSON	UNKNOWN		誤り	山の曖昧さ回避ページ。PERSON ではない
+ウンピョンしょうぼうしょ	PLACE	UNKNOWN		疑わしい	消防署（施設/組織）
+御機嫌好う	EVENT_ACT	UNKNOWN		疑わしい	挨拶の表現
+可附番	ABSTRACT	UNKNOWN		正しい	概念
+セイブサンゴヘビ	ANIMAL	UNKNOWN		正しい	動物
+ダイエリシス	INFO_LANGUAGE	UNKNOWN		正しい	言語記号の用語
+すいちゅうカメラ	ARTIFACT	UNKNOWN		正しい	機器
+バルテリ・ボータス	PLACE	UNKNOWN		誤り	人名
+コルガス	SUBSTANCE_FOOD	UNPLACED		疑わしい	何か判断できない
+ブックマークレット	QUANTITY	UNPLACED		誤り	ソフトウェアの用語。QUANTITY ではない
+手助け	EVENT_ACT	MULTIPLE	EVENT_ACT,NATURAL_PHENOMENON	正しい	行為
+フィアット・126	ARTIFACT	UNKNOWN		正しい	車種
+シボレー・アスカ	ARTIFACT	UNKNOWN		正しい	車種
+オンダラビ・スリ	QUANTITY	UNKNOWN		誤り	名前らしい。QUANTITY ではない
+バズマーケティング	PERSON	UNKNOWN		誤り	手法の名。PERSON ではない
+うんちしたのはだれよ!	WORK	UNKNOWN		正しい	絵本の題
+エマヌエル・ピロ	PLACE	UNKNOWN		誤り	人名
+桑原晴民	PLACE	UNKNOWN		誤り	人名
+水稲農林313号	QUANTITY	UNKNOWN		誤り	稲の品種。QUANTITY ではない
+ツー・リーディング	ARTIFACT	UNKNOWN		疑わしい	何の名か判断できない
+多重円板	ABSTRACT	UNKNOWN		正しい	概念
+Uptime	QUANTITY	UNKNOWN		正しい	計量の語
+トヨタ・カローラレビン	ARTIFACT	UNKNOWN		正しい	車種
+ホラヒメグモ科	ANIMAL	UNKNOWN		正しい	動物の分類
+崔斗天	PERSON	UNKNOWN		正しい	人名
+外他流	GROUP_ORG	UNKNOWN		疑わしい	流派（組織）か
+ヒュンダイ・ラフェスタ	ARTIFACT	UNKNOWN		正しい	車種
+ホンダ・フリードハイブリッド	ARTIFACT	UNKNOWN		正しい	車種
+三菱・コルディア	ARTIFACT	UNKNOWN		正しい	車種
+7人制サッカー	EVENT_ACT	UNKNOWN		疑わしい	競技の名（EVENT_ACT か ABSTRACT）
+2023年山梨県知事選挙	EVENT_ACT	UNKNOWN		正しい	出来事
+串	ARTIFACT	MULTIPLE	ANIMAL,ARTIFACT,PLACE	正しい	道具（多義）
+ザック・フェア	PERSON	UNKNOWN		正しい	人名
+アタナス・ストイメノフ	PLANT	UNKNOWN		誤り	人名
+マリエル・ラベック	ARTIFACT	UNKNOWN		誤り	人名
+沸騰点	QUANTITY	UNKNOWN		正しい	物理量
+やかまし村のクリスマス	WORK	UNKNOWN		正しい	作品名
+チップ・ガナッシ	PLACE	UNKNOWN		誤り	人名
+アリラン祭	EVENT_ACT	UNKNOWN		正しい	祭
+単二電池	ARTIFACT	UNKNOWN		正しい	物
+マハギ無差別殺人事件	PERSON	UNKNOWN		誤り	事件。PERSON ではない
+発疹	ABSTRACT	MULTIPLE	ABSTRACT,STATE_PROPERTY	正しい	状態/概念
+天然資源環境省	GROUP_ORG	UNKNOWN		正しい	組織
+D-1グランプリ	EVENT_ACT	UNKNOWN		正しい	催し
+セルフランセ	QUANTITY	UNPLACED		誤り	馬の品種。QUANTITY ではない
+Shell (プログラミング言語)	INFO_LANGUAGE	UNKNOWN		正しい	言語
+レモンイエロー	STATE_PROPERTY	UNPLACED		正しい	色
+ラドリー・メツガー	PERSON	UNPLACED		正しい	人名
+霧の浮舟	SUBSTANCE_FOOD	UNKNOWN		疑わしい	何の名か判断できない
+久留米ナンバー	GROUP_ORG	UNKNOWN		疑わしい	ナンバープレートの地域名
+操縦席	ARTIFACT	UNPLACED		正しい	物
+生物学的性別	STATE_PROPERTY	UNKNOWN		正しい	概念
+苫小牧ナンバー	GROUP_ORG	UNKNOWN		疑わしい	ナンバープレートの地域名

@@ -1,0 +1,10 @@
+{"op": "set", "word": "整備室", "type": "PLACE", "reason": "unplaced name"}
+{"op": "set", "word": "実験棟", "type": "PLACE", "reason": "unplaced name"}
+{"op": "set", "word": "図書館", "type": "PLACE", "reason": "multiple (GROUP_ORG / PLACE)"}
+{"op": "set", "word": "学校", "type": "PLACE", "reason": "override base DECIDED GROUP_ORG"}
+{"op": "set", "word": "会社", "type": "PLACE", "reason": "override base DECIDED GROUP_ORG"}
+{"op": "set", "word": "移動する", "type": "P_MOVE", "reason": "override base DECIDED direct (frame lacks が)"}
+{"op": "set", "word": "移住する", "type": "P_MOVE", "reason": "override base DECIDED estimated (generated)"}
+{"op": "set", "word": "出向く", "type": "P_MOVE", "reason": "override base DECIDED estimated (generated)"}
+{"op": "set", "word": "赴く", "type": "P_MOVE", "reason": "override base DECIDED estimated (generated)"}
+{"op": "set", "word": "参上する", "type": "P_MOVE", "reason": "unknown word"}

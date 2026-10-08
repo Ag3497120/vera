@@ -1,0 +1,45 @@
+crosses to rebuild: 24
+built ('ジェラーチェ', 'max') capacity 1 -> 10 exhausted 5.85 s
+built ('フェミニズム', 'max') capacity 1 -> 1 budget 5.97 s
+built ('ハッシュテーブル', 'max') capacity 1 -> 1 budget 7.34 s
+built ('伊勢原断層', 'max') capacity 1 -> 1 budget 9.64 s
+built ('花園町駅', 'max') capacity 1 -> 9 exhausted 4.87 s
+built ('作者', 'max') capacity 1 -> 10 exhausted 14.57 s
+built ('ハッシュテーブル', 'high') capacity 1 -> 1 budget 1.29 s
+built ('フェミニズム', 'high') capacity 1 -> 1 budget 1.42 s
+built ('経営', 'max') capacity 1 -> 11 exhausted 11.64 s
+built ('竜游県', 'max') capacity 1 -> 11 exhausted 11.93 s
+built ('ムーン', 'high') capacity 1 -> 1 budget 1.58 s
+built ('破局噴火', 'max') capacity 1 -> 1 budget 18.99 s
+built ('伊勢原断層', 'high') capacity 1 -> 1 budget 2.37 s
+built ('ジェラーチェ', 'high') capacity 1 -> 10 exhausted 5.65 s
+built ('工房ハーヴェスト', 'high') capacity 1 -> 1 budget 2.06 s
+built ('破局噴火', 'high') capacity 1 -> 1 budget 2.3 s
+built ('舞浜地ビール', 'high') capacity 1 -> 1 budget 2.33 s
+built ('作者', 'high') capacity 1 -> 1 budget 6.83 s
+built ('竜游県', 'high') capacity 1 -> 1 budget 4.89 s
+built ('舞浜地ビール', 'max') capacity 1 -> 1 budget 18.71 s
+built ('工房ハーヴェスト', 'max') capacity 1 -> 1 budget 26.17 s
+built ('花園町駅', 'high') capacity 1 -> 9 exhausted 4.91 s
+built ('経営', 'high') capacity 1 -> 1 budget 7.1 s
+built ('ムーン', 'max') capacity 1 -> 1 budget 27.81 s
+build wall 28.1
+reask ('a06', 'high') UNKNOWN_NO_EVIDENCE 0 4 0.01
+reask ('a10', 'high') UNKNOWN_NO_EVIDENCE 0 1 0.01
+reask ('a14', 'high') UNKNOWN_NO_EVIDENCE 0 1 0.01
+reask ('a42', 'high') UNKNOWN_NO_EVIDENCE 0 1 0.01
+reask ('a57', 'high') UNKNOWN_NO_EVIDENCE 0 1 0.01
+reask ('a10', 'max') UNKNOWN_NO_EVIDENCE 0 1 0.01
+reask ('a14', 'max') UNKNOWN_NO_EVIDENCE 0 1 0.0
+reask ('a23', 'high') UNKNOWN_NO_FIXED_POINT 0 4 2.34
+reask ('a23', 'max') UNKNOWN_NO_FIXED_POINT 0 4 4.16
+reask ('a42', 'max') UNKNOWN_NO_EVIDENCE 0 1 0.0
+reask ('a57', 'max') UNKNOWN_NO_EVIDENCE 0 1 0.0
+reask ('a19', 'high') ANSWER 1366 1 17.72
+reask ('a19', 'max') ANSWER 1366 1 17.74
+reask ('a32', 'high') AMBIGUOUS 0 7 18.75
+reask ('a06', 'max') ANSWER 8523 4 23.43
+reask ('a32', 'max') CHOICE 1890 7 44.46
+reask ('a30', 'max') AMBIGUOUS 0 4 66.41
+reask ('a30', 'high') AMBIGUOUS 0 4 66.75
+done

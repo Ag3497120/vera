@@ -1,0 +1,178 @@
+{
+ "items": 14,
+ "errors": 0,
+ "route_expected": 5,
+ "route_correct": 0,
+ "route_abstained": 5,
+ "route_wrong_agent": 0,
+ "undecided_expected": 9,
+ "undecided_correct": 8,
+ "undecided_got_agent": 1,
+ "misroutes": 1,
+ "always_abstain_correct": 9,
+ "correct_total": 8,
+ "undecided_reason": {
+  "ABSTAINED": 13,
+  "None": 1
+ },
+ "abstention_type": {
+  "INCOMPLETE_READING": 13,
+  "None": 1
+ },
+ "basis_kind": {
+  "None": 13,
+  "explicit": 1
+ },
+ "per_explanation": {
+  "c1": {
+   "questions": 2,
+   "units": 2,
+   "by_status": {
+    "MAPPED": 0,
+    "COMPARISON_ONLY": 0,
+    "UNREAD": 1,
+    "PREDICATE_CLASS_UNKNOWN": 0,
+    "WORK_TERM_UNKNOWN": 0,
+    "NAME_UNRESOLVED": 1,
+    "AMBIGUOUS_RELATION": 0,
+    "CONTRADICTION": 0,
+    "UNREPRESENTABLE": 0
+   }
+  },
+  "c10": {
+   "questions": 2,
+   "units": 2,
+   "by_status": {
+    "MAPPED": 1,
+    "COMPARISON_ONLY": 0,
+    "UNREAD": 0,
+    "PREDICATE_CLASS_UNKNOWN": 0,
+    "WORK_TERM_UNKNOWN": 0,
+    "NAME_UNRESOLVED": 1,
+    "AMBIGUOUS_RELATION": 0,
+    "CONTRADICTION": 0,
+    "UNREPRESENTABLE": 0
+   }
+  },
+  "c2": {
+   "questions": 2,
+   "units": 2,
+   "by_status": {
+    "MAPPED": 0,
+    "COMPARISON_ONLY": 0,
+    "UNREAD": 1,
+    "PREDICATE_CLASS_UNKNOWN": 0,
+    "WORK_TERM_UNKNOWN": 0,
+    "NAME_UNRESOLVED": 1,
+    "AMBIGUOUS_RELATION": 0,
+    "CONTRADICTION": 0,
+    "UNREPRESENTABLE": 0
+   }
+  },
+  "c3": {
+   "questions": 1,
+   "units": 1,
+   "by_status": {
+    "MAPPED": 1,
+    "COMPARISON_ONLY": 0,
+    "UNREAD": 0,
+    "PREDICATE_CLASS_UNKNOWN": 0,
+    "WORK_TERM_UNKNOWN": 0,
+    "NAME_UNRESOLVED": 0,
+    "AMBIGUOUS_RELATION": 0,
+    "CONTRADICTION": 0,
+    "UNREPRESENTABLE": 0
+   }
+  },
+  "c4": {
+   "questions": 1,
+   "units": 2,
+   "by_status": {
+    "MAPPED": 0,
+    "COMPARISON_ONLY": 0,
+    "UNREAD": 2,
+    "PREDICATE_CLASS_UNKNOWN": 0,
+    "WORK_TERM_UNKNOWN": 0,
+    "NAME_UNRESOLVED": 0,
+    "AMBIGUOUS_RELATION": 0,
+    "CONTRADICTION": 0,
+    "UNREPRESENTABLE": 0
+   }
+  },
+  "c5": {
+   "questions": 1,
+   "units": 2,
+   "by_status": {
+    "MAPPED": 0,
+    "COMPARISON_ONLY": 0,
+    "UNREAD": 2,
+    "PREDICATE_CLASS_UNKNOWN": 0,
+    "WORK_TERM_UNKNOWN": 0,
+    "NAME_UNRESOLVED": 0,
+    "AMBIGUOUS_RELATION": 0,
+    "CONTRADICTION": 0,
+    "UNREPRESENTABLE": 0
+   }
+  },
+  "c6": {
+   "questions": 1,
+   "units": 2,
+   "by_status": {
+    "MAPPED": 0,
+    "COMPARISON_ONLY": 0,
+    "UNREAD": 2,
+    "PREDICATE_CLASS_UNKNOWN": 0,
+    "WORK_TERM_UNKNOWN": 0,
+    "NAME_UNRESOLVED": 0,
+    "AMBIGUOUS_RELATION": 0,
+    "CONTRADICTION": 0,
+    "UNREPRESENTABLE": 0
+   }
+  },
+  "c7": {
+   "questions": 1,
+   "units": 2,
+   "by_status": {
+    "MAPPED": 0,
+    "COMPARISON_ONLY": 0,
+    "UNREAD": 2,
+    "PREDICATE_CLASS_UNKNOWN": 0,
+    "WORK_TERM_UNKNOWN": 0,
+    "NAME_UNRESOLVED": 0,
+    "AMBIGUOUS_RELATION": 0,
+    "CONTRADICTION": 0,
+    "UNREPRESENTABLE": 0
+   }
+  },
+  "c8": {
+   "questions": 1,
+   "units": 2,
+   "by_status": {
+    "MAPPED": 0,
+    "COMPARISON_ONLY": 0,
+    "UNREAD": 0,
+    "PREDICATE_CLASS_UNKNOWN": 0,
+    "WORK_TERM_UNKNOWN": 0,
+    "NAME_UNRESOLVED": 2,
+    "AMBIGUOUS_RELATION": 0,
+    "CONTRADICTION": 0,
+    "UNREPRESENTABLE": 0
+   }
+  },
+  "c9": {
+   "questions": 2,
+   "units": 2,
+   "by_status": {
+    "MAPPED": 0,
+    "COMPARISON_ONLY": 0,
+    "UNREAD": 1,
+    "PREDICATE_CLASS_UNKNOWN": 0,
+    "WORK_TERM_UNKNOWN": 0,
+    "NAME_UNRESOLVED": 1,
+    "AMBIGUOUS_RELATION": 0,
+    "CONTRADICTION": 0,
+    "UNREPRESENTABLE": 0
+   }
+  }
+ }
+}

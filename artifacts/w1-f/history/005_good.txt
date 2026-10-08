@@ -1,0 +1,15 @@
+# commit 4a336dc9716678a7c302e3b83a174580587cf10f
+# status PASS
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 10 items / 9 deselected / 1 selected
+
+tests/attack/test_memory_brief_differential.py::test_deterministic_generated_cases_match_naive_reference PASSED [100%]
+
+=== PASSES ===
+=== short test summary info ===
+PASSED tests/attack/test_memory_brief_differential.py::test_deterministic_generated_cases_match_naive_reference
+=== 1 passed, 9 deselected ===

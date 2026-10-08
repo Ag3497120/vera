@@ -1,0 +1,2 @@
+raw files compared: 34 results rows: 35 35 summary equal: True
+differences after dropping clock keys and tmp names: 0

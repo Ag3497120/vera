@@ -1,0 +1,2 @@
+[('レビューは課がやる。', '課', 'UNPLACED', None), ('レビューは部門がやる。', '部門', 'UNPLACED', None), ('レビューはメンバーがやる。', 'メンバー', 'UNPLACED', None), ('レビューは外注先がやる。', '外注先', 'UNPLACED', None)]
+all UNPLACED: True

@@ -1,0 +1,2 @@
+generate_and_collect.sh: PASS
+trial_batch.sh: PASS

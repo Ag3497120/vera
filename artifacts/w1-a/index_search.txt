@@ -1,0 +1,78 @@
+### 役割の型 検査
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "役割の型 検査",
+  "searched": 644,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 39,
+    "module": 277,
+    "prereg": 63,
+    "results": 44
+  },
+### 時間表現 動作主
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "時間表現 動作主",
+  "searched": 644,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 39,
+    "module": 277,
+    "prereg": 63,
+    "results": 44
+  },
+### 使役 被使役者
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "使役 被使役者",
+  "searched": 644,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 39,
+    "module": 277,
+    "prereg": 63,
+    "results": 44
+  },
+### 二重否定
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "二重否定",
+  "searched": 644,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 39,
+    "module": 277,
+    "prereg": 63,
+    "results": 44
+  },
+### 比較 構文
+{
+  "verdict": "ANSWER",
+  "query": "比較 構文",
+  "searched": 644,
+  "hits": [
+    {
+      "kind": "prereg",
+      "name": "PREREGISTERED_2026-09-30_round5a_semantic_plan",
+      "about": "Round5-A 事前登録 — 節・作用域・全要求を保持する公開経路",
+      "where": "docs/PREREGISTERED_2026-09-30_round5a_semantic_plan.md"
+    }
+  ],
+### 挨拶 感動詞
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "挨拶 感動詞",
+  "searched": 644,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 39,
+    "module": 277,
+    "prereg": 63,
+    "results": 44
+  },

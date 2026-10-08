@@ -1,0 +1,123 @@
+{
+  "kind": "unknown",
+  "verdict": "UNKNOWN_GENERATED_BASIS_ONLY",
+  "text": "人が書いた出所に根拠が見つかりません。",
+  "sources": [],
+  "evidence": [],
+  "withheld": {
+    "verdict": "ANSWER",
+    "kind": "answer",
+    "door": "chat",
+    "basis_origin": "generated",
+    "generated_source_count": 2,
+    "families": [
+      "local",
+      "user"
+    ]
+  },
+  "door": "chat",
+  "trace": [
+    {
+      "part": "question.read",
+      "status": "ran"
+    },
+    {
+      "part": "stage_split.split",
+      "status": "ran"
+    },
+    {
+      "part": "typo_recovery.recover",
+      "status": "abstained"
+    },
+    {
+      "part": "meaning_assets.lattice",
+      "status": "abstained"
+    },
+    {
+      "part": "sense_split.resolve",
+      "status": "abstained"
+    },
+    {
+      "part": "polarity.observe_negation",
+      "status": "ran"
+    },
+    {
+      "part": "intent.act_by_form",
+      "status": "ran"
+    },
+    {
+      "part": "intent_frames.parse",
+      "status": "abstained"
+    },
+    {
+      "part": "arm_schema.classify_intent",
+      "status": "ran"
+    },
+    {
+      "part": "skills.answer",
+      "status": "abstained"
+    },
+    {
+      "part": "abilities.Abilities.answer",
+      "status": "ran"
+    },
+    {
+      "part": "question.read",
+      "status": "ran"
+    },
+    {
+      "part": "ability_corpus.status",
+      "status": "ran"
+    },
+    {
+      "part": "ability_corpus.status",
+      "status": "ran"
+    },
+    {
+      "part": "event_transition.conditional",
+      "status": "ran"
+    },
+    {
+      "part": "event_transition.conditional",
+      "status": "ran"
+    },
+    {
+      "part": "basis_policy.apply",
+      "status": "ran",
+      "outcome": "ABSTAIN"
+    }
+  ],
+  "basis_policy": {
+    "schema": "verantyx.basis_policy/1",
+    "table_version": 1,
+    "applied": true,
+    "request_kind": "factual",
+    "kind_class": "FACTUAL",
+    "basis": "GENERATED",
+    "basis_original": "GENERATED",
+    "human_present": false,
+    "show_reference": false,
+    "outcome": "ABSTAIN",
+    "in_table": true,
+    "counts": {
+      "human": 0,
+      "generated": 2,
+      "non_evidence": 0,
+      "request_text": 1,
+      "unreadable": 0,
+      "non_evidence_by_origin": {}
+    },
+    "sovereign": {
+      "state": "UNKNOWN_NO_SOVEREIGN",
+      "store_id": null,
+      "records_read": 0,
+      "rejected_by_user": 0,
+      "confirmed_records_used": 0,
+      "confirmed_records_not_used": 0,
+      "ambiguous": false
+    },
+    "form": {
+      "state": "NOT_ATTEMPTED_OUTCOME"
+    }
+  }
+}

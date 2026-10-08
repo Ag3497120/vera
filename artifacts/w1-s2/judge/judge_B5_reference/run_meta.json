@@ -1,0 +1,25 @@
+{
+ "args": {
+  "frames": "/Users/motonisihikoudai/Projects/vera-impl/hidden/banks/B5_conductor/v2/frames",
+  "items": "/Users/motonisihikoudai/Projects/vera-impl/hidden/banks/B5_conductor/v2/items.jsonl",
+  "observations": null,
+  "quarantine": "/Users/motonisihikoudai/Projects/vera-impl/hidden/banks/B5_conductor/v2/audit/quarantine.json"
+ },
+ "bank": "B5",
+ "frames_sha256": "d20b25a16a61d8884b24ac33cc84d9ae56aa7d3887f804989888ddcc94b9a57e",
+ "fugashi": "1.5.2",
+ "items_sha256": "3067f29f0cc163be6f4b1890b7fc4cdd0af945d027291c40fd8f60970a291d49",
+ "items_without_observation": 0,
+ "mode": "judge",
+ "n_rows": 144,
+ "note": "Vera も子プロセスも起動していない。観測は probe（参考例・別解・誤答例）か --observations から作った",
+ "probe": "reference",
+ "profile": "v2",
+ "quarantine": {
+  "count": 0,
+  "ids": [],
+  "not_in_items": [],
+  "shape": "quarantined"
+ },
+ "quarantine_sha256": "71d33b80b577cd34d0cff016185ae103890e747b904b9857ac248d3f98fb2f7f"
+}

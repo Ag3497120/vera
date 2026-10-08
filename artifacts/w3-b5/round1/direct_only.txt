@@ -1,0 +1,6 @@
+estimated: byte identical
+multiple: byte identical
+inputs=4104 same=4104 newly_read=0 frame_stopped=0 read_to_abstain_other=0 changed=0 refusal_changed=0 error_changed=0
+verdicts: {}
+inputs=4104 same=4104 newly_read=0 frame_stopped=0 read_to_abstain_other=0 changed=0 refusal_changed=0 error_changed=0
+verdicts: {}

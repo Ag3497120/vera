@@ -1,0 +1,18 @@
+ M docs/AGENT_ROUTING.md
+ M docs/CONDUCT_ASK.md
+ M docs/EVENT_CROSS.md
+ M docs/READING_SOUNDNESS.md
+ M tests/test_observe.py
+ M tests/test_semantic_read_r3.py
+ M tests/test_semantic_read_r4.py
+ M verantyx/event_cross.py
+ M verantyx/llm_choice.py
+ M verantyx/semantic_read.py
+?? artifacts/w5-a/
+?? attacks/
+?? tests/attack/test_attack_w1a3_reading_entry.py
+?? tests/attack/test_attack_w2h_routing_testimony_context_cache.py
+?? tests/attack/test_attack_w3b_placement_type_order.py
+?? tests/attack/test_w5a_cross_key_order.py
+?? tests/attack/test_w5a_reading_entry_rules.py
+?? tests/attack/test_w5a_testimony_reuse_key.py

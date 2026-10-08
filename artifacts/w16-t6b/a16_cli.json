@@ -1,0 +1,94 @@
+{
+ "schema": "verantyx.attest/1",
+ "report": {
+  "path": "artifacts/w16-t6b/k606_fixture/rep.md",
+  "sha256": "6d3b1bd5ffb41955e342b9376ef3baecb26ae004cd416bfe587fe10d3e612368"
+ },
+ "tree": {
+  "path": "/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t6b-S/artifacts/w16-t6b/k606_fixture/tree",
+  "head": "ecde332bf404fca5c959c8528b2dbc7f702a6b1f"
+ },
+ "flags": {
+  "ledger": "artifacts/w16-t6b/a16_fixture/led/events.jsonl",
+  "rerun": false,
+  "base": null,
+  "rev": null,
+  "extractors": [
+   "V",
+   "a"
+  ],
+  "partial_tree": false,
+  "search_dirs": [],
+  "history": false
+ },
+ "extractors": {
+  "V": {
+   "claims": [
+    {
+     "claim_id": "V-1",
+     "extractor": "V",
+     "line": 2,
+     "kind": "acceptance",
+     "text": "- 受入 A1: `python -m pytest -q tests/test_a.py -p no:cacheprovider` を実行し、終了コード 0",
+     "mark": "TESTIMONY",
+     "reason": "LEDGER_UNVERIFIED",
+     "reasons": [
+      "LEDGER_UNVERIFIED"
+     ],
+     "facts": [
+      {
+       "fact": "exit:python -m pytest -q tests/test_a.py -p no:cacheprovider",
+       "mark": "TESTIMONY",
+       "reason": "LEDGER_UNVERIFIED",
+       "claimed": 0,
+       "actual": null,
+       "evidence": {
+        "ledger": "artifacts/w16-t6b/a16_fixture/led/events.jsonl",
+        "status": "TAMPERED",
+        "problems": [
+         {
+          "line": 1,
+          "type": "BAD_SHAPE"
+         },
+         {
+          "line": 1,
+          "type": "PREV_MISMATCH"
+         }
+        ]
+       },
+       "observation": "台帳が T7 の検証を通らない（status=TAMPERED、問題: BAD_SHAPE@1, PREV_MISMATCH@1）"
+      }
+     ],
+     "why": null
+    }
+   ],
+   "counts": {
+    "RECORD": 0,
+    "TESTIMONY": 1,
+    "MISMATCH": 0
+   },
+   "offform": [],
+   "facts": {
+    "RECORD": 0,
+    "TESTIMONY": 1,
+    "MISMATCH": 0
+   }
+  },
+  "a": {
+   "claims": [],
+   "counts": {
+    "RECORD": 0,
+    "TESTIMONY": 0,
+    "MISMATCH": 0
+   },
+   "offform": [],
+   "facts": {
+    "RECORD": 0,
+    "TESTIMONY": 0,
+    "MISMATCH": 0
+   }
+  }
+ },
+ "notes": [],
+ "exit_code": 4
+}

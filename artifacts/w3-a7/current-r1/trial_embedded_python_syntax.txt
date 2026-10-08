@@ -1,0 +1,1 @@
+trial_batch.sh embedded Python syntax: PASS (not executed)

@@ -1,0 +1,12 @@
+{"id":"H01","docs":["adh1.txt"],"text":"誰が橋を建てた？","truth":{"kind":"NONE","fillers":[],"evidence":[]},"category":"adhoc"}
+{"id":"H02","docs":["adh1.txt"],"text":"誰が薬を渡さなかった？","truth":{"kind":"ONE","fillers":["看護師"],"evidence":["adh1.txt#2:2"]},"category":"adhoc"}
+{"id":"H03","docs":["adh1.txt"],"text":"先生は何を読んだ？","truth":{"kind":"ONE","fillers":["本"],"evidence":["adh1.txt#3:1"]},"category":"adhoc"}
+{"id":"H04","docs":["adh1.txt"],"text":"父は母に何を送った？","truth":{"kind":"NONE","fillers":[],"evidence":[]},"category":"adhoc"}
+{"id":"H05","docs":["adh1.txt"],"text":"誰が父に手紙を送った？","truth":{"kind":"ONE","fillers":["母"],"evidence":["adh1.txt#4:1"]},"category":"adhoc"}
+{"id":"H06","docs":["adh2.txt"],"text":"Who sold the horse to the miller?","truth":{"kind":"ONE","fillers":["Dr. Brown"],"evidence":["adh2.txt#1:1"]},"category":"adhoc"}
+{"id":"H07","docs":["adh2.txt"],"text":"What did the clerk give to Mr. Green?","truth":{"kind":"ONE","fillers":["key"],"evidence":["adh2.txt#2:1"]},"category":"adhoc"}
+{"id":"H08","docs":["adh2.txt"],"text":"Who gave the key to Mr. Green?","truth":{"kind":"ONE","fillers":["clerk"],"evidence":["adh2.txt#2:1"]},"category":"adhoc"}
+{"id":"H09","docs":["adh2.txt"],"text":"Who bought the flour?","truth":{"kind":"NONE","fillers":[],"evidence":[]},"category":"adhoc"}
+{"id":"H10","docs":["adh3.txt"],"text":"誰が生徒に地図を渡した？","truth":{"kind":"ONE","fillers":["先生"],"evidence":["adh3.txt#1:1"]},"category":"adhoc"}
+{"id":"H11","docs":["adh3.txt"],"text":"Who gave the book to the student?","truth":{"kind":"ONE","fillers":["teacher"],"evidence":["adh3.txt#2:1"]},"category":"adhoc"}
+{"id":"H12","docs":["d1/x.txt","d2/x.txt"],"text":"Who bought the flour?","truth":{"kind":"SPLIT","fillers":["baker","cook"],"evidence":["x.txt#1:1"]},"category":"adhoc"}

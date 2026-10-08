@@ -1,0 +1,923 @@
+{
+ "about": "Rows of the FROZEN data (the first 323 rows of tests/reading_soundness/ja_r10_w3b4.jsonl) whose diagnosis changed when the rows place/で/PLACE of P_ACT, P_CREATE and P_EMOTION were taken out of the table (docs/READING_SOUNDNESS.md 10D, table change record 3). They are NOT rewritten: the tests and tools/run_rows.py read such a row as \"the entry refuses it, and the diagnosis is observed_w3b2\". Made by tools/mk_narrowed_rows.py (the old table rebuilt in memory). Only narrowing is recorded; nothing is widened.",
+ "narrowed_at": "2026-10-04 02:58:07 +0900",
+ "recorded_in": "docs/READING_SOUNDNESS.md 10D, table change record 3; artifacts/w3-b4/r3/narrow_prereg_time.txt",
+ "decided_by": "auditor, 2026-10-04 04:20 (ticket, last section): way (b), K165 exception",
+ "reason": "The adjunct で is place, or instrument / cause: the conventions (section 2) decide no type for instrument and cause and a PLACE word takes them (右 = the right hand, 段差 = the cause), so place/で/PLACE is not disjoint from them: the table read an instrument / a cause as a place.",
+ "source": "review of round 2 (review.r2.md), F4 batches d (6 sentences) and c (4 sentences with 口) and B1 (b)",
+ "rows_removed": [
+  {
+   "type": "P_ACT",
+   "role": "place",
+   "particle": "で",
+   "types": [
+    "PLACE"
+   ],
+   "kind": "adjunct"
+  },
+  {
+   "type": "P_CREATE",
+   "role": "place",
+   "particle": "で",
+   "types": [
+    "PLACE"
+   ],
+   "kind": "adjunct"
+  },
+  {
+   "type": "P_EMOTION",
+   "role": "place",
+   "particle": "で",
+   "types": [
+    "PLACE"
+   ],
+   "kind": "adjunct"
+  }
+ ],
+ "rows_appended_to_the_data": [
+  "W3B4-ACT-A-901",
+  "W3B4-ACT-A-902",
+  "W3B4-ACT-A-903",
+  "W3B4-ACT-A-904",
+  "W3B4-CREATE-A-901",
+  "W3B4-CREATE-A-902",
+  "W3B4-CREATE-A-903",
+  "W3B4-CREATE-A-904",
+  "W3B4-EMOTION-A-901",
+  "W3B4-EMOTION-A-902"
+ ],
+ "data_rows_refused_by_the_narrowing": {
+  "W3B4-ACT-R-001": {
+   "pred_type": "P_ACT",
+   "frozen_entry_expect": "read",
+   "frozen_w3b4_expect": "READ",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "READ",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B4-ACT-R-002": {
+   "pred_type": "P_ACT",
+   "frozen_entry_expect": "read",
+   "frozen_w3b4_expect": "READ",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "READ",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B4-ACT-R-003": {
+   "pred_type": "P_ACT",
+   "frozen_entry_expect": "read",
+   "frozen_w3b4_expect": "READ",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "READ",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B4-ACT-R-004": {
+   "pred_type": "P_ACT",
+   "frozen_entry_expect": "read",
+   "frozen_w3b4_expect": "READ",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "READ",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B4-ACT-R-005": {
+   "pred_type": "P_ACT",
+   "frozen_entry_expect": "read",
+   "frozen_w3b4_expect": "READ",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "READ",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B4-ACT-R-006": {
+   "pred_type": "P_ACT",
+   "frozen_entry_expect": "read",
+   "frozen_w3b4_expect": "READ",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "READ",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B4-ACT-R-007": {
+   "pred_type": "P_ACT",
+   "frozen_entry_expect": "read",
+   "frozen_w3b4_expect": "READ",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "READ",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B4-ACT-R-008": {
+   "pred_type": "P_ACT",
+   "frozen_entry_expect": "read",
+   "frozen_w3b4_expect": "READ",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "READ",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B4-ACT-R-009": {
+   "pred_type": "P_ACT",
+   "frozen_entry_expect": "read",
+   "frozen_w3b4_expect": "READ",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "READ",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B4-ACT-R-010": {
+   "pred_type": "P_ACT",
+   "frozen_entry_expect": "read",
+   "frozen_w3b4_expect": "READ",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "READ",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B4-ACT-R-011": {
+   "pred_type": "P_ACT",
+   "frozen_entry_expect": "read",
+   "frozen_w3b4_expect": "READ",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "READ",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B4-ACT-R-012": {
+   "pred_type": "P_ACT",
+   "frozen_entry_expect": "read",
+   "frozen_w3b4_expect": "READ",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "READ",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B4-ACT-R-013": {
+   "pred_type": "P_ACT",
+   "frozen_entry_expect": "read",
+   "frozen_w3b4_expect": "READ",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "READ",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B4-ACT-R-014": {
+   "pred_type": "P_ACT",
+   "frozen_entry_expect": "read",
+   "frozen_w3b4_expect": "READ",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "READ",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B4-ACT-R-015": {
+   "pred_type": "P_ACT",
+   "frozen_entry_expect": "read",
+   "frozen_w3b4_expect": "READ",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "READ",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B4-ACT-R-016": {
+   "pred_type": "P_ACT",
+   "frozen_entry_expect": "read",
+   "frozen_w3b4_expect": "READ",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "READ",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B4-ACT-R-017": {
+   "pred_type": "P_ACT",
+   "frozen_entry_expect": "read",
+   "frozen_w3b4_expect": "READ",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "READ",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B4-ACT-R-018": {
+   "pred_type": "P_ACT",
+   "frozen_entry_expect": "read",
+   "frozen_w3b4_expect": "READ",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "READ",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B4-ACT-R-019": {
+   "pred_type": "P_ACT",
+   "frozen_entry_expect": "read",
+   "frozen_w3b4_expect": "READ",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "READ",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B4-ACT-R-020": {
+   "pred_type": "P_ACT",
+   "frozen_entry_expect": "read",
+   "frozen_w3b4_expect": "READ",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "READ",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B4-ACT-R-025": {
+   "pred_type": "P_ACT",
+   "frozen_entry_expect": "read",
+   "frozen_w3b4_expect": "READ",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "READ",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B4-ACT-R-026": {
+   "pred_type": "P_ACT",
+   "frozen_entry_expect": "read",
+   "frozen_w3b4_expect": "READ",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "READ",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B4-ACT-A-005": {
+   "pred_type": "P_ACT",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b4_expect": "PLACEMENT_MULTIPLE:で:机",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "PLACEMENT_MULTIPLE:で:机",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B4-ACT-A-006": {
+   "pred_type": "P_ACT",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b4_expect": "PLACEMENT_MULTIPLE:で:椅子",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "PLACEMENT_MULTIPLE:で:椅子",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B4-ACT-A-007": {
+   "pred_type": "P_ACT",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b4_expect": "PLACEMENT_MULTIPLE:で:街角",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "PLACEMENT_MULTIPLE:で:街角",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B4-ACT-A-008": {
+   "pred_type": "P_ACT",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b4_expect": "PLACEMENT_MULTIPLE:で:階段",
+   "declared_exception": true,
+   "diagnosis_with_the_rows_put_back": "PLACEMENT_SLOT_EVIDENCE_ONLY:で:階段",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B4-ACT-A-014": {
+   "pred_type": "P_ACT",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b4_expect": "PLACEMENT_SLOT_EVIDENCE_ONLY:で:書斎",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "PLACEMENT_SLOT_EVIDENCE_ONLY:で:書斎",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B4-ACT-A-015": {
+   "pred_type": "P_ACT",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b4_expect": "PLACEMENT_SLOT_EVIDENCE_ONLY:で:廊下",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "PLACEMENT_SLOT_EVIDENCE_ONLY:で:廊下",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B4-ACT-A-016": {
+   "pred_type": "P_ACT",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b4_expect": "PLACEMENT_SLOT_EVIDENCE_ONLY:で:縁側",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "PLACEMENT_SLOT_EVIDENCE_ONLY:で:縁側",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B4-ACT-A-021": {
+   "pred_type": "P_ACT",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b4_expect": "PLACEMENT_TYPE_MISMATCH:P_ACT:で:ARTIFACT",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "PLACEMENT_TYPE_MISMATCH:P_ACT:で:ARTIFACT",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B4-ACT-A-026": {
+   "pred_type": "P_ACT",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b4_expect": "PLACEMENT_PREDICATE_POSSIBLY_DERIVED",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-マ行",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B4-ACT-A-027": {
+   "pred_type": "P_ACT",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b4_expect": "PLACEMENT_PREDICATE_TAIL_UNINTERPRETED",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "PLACEMENT_PREDICATE_TAIL_UNINTERPRETED:連用形-撥音便:助詞",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B4-CREATE-R-001": {
+   "pred_type": "P_CREATE",
+   "frozen_entry_expect": "read",
+   "frozen_w3b4_expect": "READ",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "READ",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_CREATE:で"
+  },
+  "W3B4-CREATE-R-002": {
+   "pred_type": "P_CREATE",
+   "frozen_entry_expect": "read",
+   "frozen_w3b4_expect": "READ",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "READ",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_CREATE:で"
+  },
+  "W3B4-CREATE-R-003": {
+   "pred_type": "P_CREATE",
+   "frozen_entry_expect": "read",
+   "frozen_w3b4_expect": "READ",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "READ",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_CREATE:で"
+  },
+  "W3B4-CREATE-R-004": {
+   "pred_type": "P_CREATE",
+   "frozen_entry_expect": "read",
+   "frozen_w3b4_expect": "READ",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "READ",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_CREATE:で"
+  },
+  "W3B4-CREATE-R-005": {
+   "pred_type": "P_CREATE",
+   "frozen_entry_expect": "read",
+   "frozen_w3b4_expect": "READ",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "READ",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_CREATE:で"
+  },
+  "W3B4-CREATE-R-006": {
+   "pred_type": "P_CREATE",
+   "frozen_entry_expect": "read",
+   "frozen_w3b4_expect": "READ",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "READ",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_CREATE:で"
+  },
+  "W3B4-CREATE-R-007": {
+   "pred_type": "P_CREATE",
+   "frozen_entry_expect": "read",
+   "frozen_w3b4_expect": "READ",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "READ",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_CREATE:で"
+  },
+  "W3B4-CREATE-R-008": {
+   "pred_type": "P_CREATE",
+   "frozen_entry_expect": "read",
+   "frozen_w3b4_expect": "READ",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "READ",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_CREATE:で"
+  },
+  "W3B4-CREATE-R-009": {
+   "pred_type": "P_CREATE",
+   "frozen_entry_expect": "read",
+   "frozen_w3b4_expect": "READ",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "READ",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_CREATE:で"
+  },
+  "W3B4-CREATE-R-010": {
+   "pred_type": "P_CREATE",
+   "frozen_entry_expect": "read",
+   "frozen_w3b4_expect": "READ",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "READ",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_CREATE:で"
+  },
+  "W3B4-CREATE-R-011": {
+   "pred_type": "P_CREATE",
+   "frozen_entry_expect": "read",
+   "frozen_w3b4_expect": "READ",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "READ",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_CREATE:で"
+  },
+  "W3B4-CREATE-R-012": {
+   "pred_type": "P_CREATE",
+   "frozen_entry_expect": "read",
+   "frozen_w3b4_expect": "READ",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "READ",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_CREATE:で"
+  },
+  "W3B4-CREATE-R-013": {
+   "pred_type": "P_CREATE",
+   "frozen_entry_expect": "read",
+   "frozen_w3b4_expect": "READ",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "READ",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_CREATE:で"
+  },
+  "W3B4-CREATE-R-014": {
+   "pred_type": "P_CREATE",
+   "frozen_entry_expect": "read",
+   "frozen_w3b4_expect": "READ",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "READ",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_CREATE:で"
+  },
+  "W3B4-CREATE-R-015": {
+   "pred_type": "P_CREATE",
+   "frozen_entry_expect": "read",
+   "frozen_w3b4_expect": "READ",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "READ",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_CREATE:で"
+  },
+  "W3B4-CREATE-R-016": {
+   "pred_type": "P_CREATE",
+   "frozen_entry_expect": "read",
+   "frozen_w3b4_expect": "READ",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "READ",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_CREATE:で"
+  },
+  "W3B4-CREATE-R-017": {
+   "pred_type": "P_CREATE",
+   "frozen_entry_expect": "read",
+   "frozen_w3b4_expect": "READ",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "READ",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_CREATE:で"
+  },
+  "W3B4-CREATE-R-018": {
+   "pred_type": "P_CREATE",
+   "frozen_entry_expect": "read",
+   "frozen_w3b4_expect": "READ",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "READ",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_CREATE:で"
+  },
+  "W3B4-CREATE-R-019": {
+   "pred_type": "P_CREATE",
+   "frozen_entry_expect": "read",
+   "frozen_w3b4_expect": "READ",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "READ",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_CREATE:で"
+  },
+  "W3B4-CREATE-R-020": {
+   "pred_type": "P_CREATE",
+   "frozen_entry_expect": "read",
+   "frozen_w3b4_expect": "READ",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "READ",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_CREATE:で"
+  },
+  "W3B4-CREATE-R-021": {
+   "pred_type": "P_CREATE",
+   "frozen_entry_expect": "read",
+   "frozen_w3b4_expect": "READ",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "READ",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_CREATE:で"
+  },
+  "W3B4-CREATE-R-022": {
+   "pred_type": "P_CREATE",
+   "frozen_entry_expect": "read",
+   "frozen_w3b4_expect": "READ",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "READ",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_CREATE:で"
+  },
+  "W3B4-CREATE-R-023": {
+   "pred_type": "P_CREATE",
+   "frozen_entry_expect": "read",
+   "frozen_w3b4_expect": "READ",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "READ",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_CREATE:で"
+  },
+  "W3B4-CREATE-R-024": {
+   "pred_type": "P_CREATE",
+   "frozen_entry_expect": "read",
+   "frozen_w3b4_expect": "READ",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "READ",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_CREATE:で"
+  },
+  "W3B4-CREATE-R-025": {
+   "pred_type": "P_CREATE",
+   "frozen_entry_expect": "read",
+   "frozen_w3b4_expect": "READ",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "READ",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_CREATE:で"
+  },
+  "W3B4-CREATE-R-026": {
+   "pred_type": "P_CREATE",
+   "frozen_entry_expect": "read",
+   "frozen_w3b4_expect": "READ",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "READ",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_CREATE:で"
+  },
+  "W3B4-CREATE-R-027": {
+   "pred_type": "P_CREATE",
+   "frozen_entry_expect": "read",
+   "frozen_w3b4_expect": "READ",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "READ",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_CREATE:で"
+  },
+  "W3B4-CREATE-R-028": {
+   "pred_type": "P_CREATE",
+   "frozen_entry_expect": "read",
+   "frozen_w3b4_expect": "READ",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "READ",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_CREATE:で"
+  },
+  "W3B4-CREATE-A-007": {
+   "pred_type": "P_CREATE",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b4_expect": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_CREATE:から",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_CREATE:から",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_CREATE:で"
+  },
+  "W3B4-CREATE-A-019": {
+   "pred_type": "P_CREATE",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b4_expect": "PLACEMENT_SLOT_EVIDENCE_ONLY:で:書斎",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "PLACEMENT_SLOT_EVIDENCE_ONLY:で:書斎",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_CREATE:で"
+  },
+  "W3B4-CREATE-A-020": {
+   "pred_type": "P_CREATE",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b4_expect": "PLACEMENT_SLOT_EVIDENCE_ONLY:で:居間",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "PLACEMENT_SLOT_EVIDENCE_ONLY:で:居間",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_CREATE:で"
+  },
+  "W3B4-CREATE-A-021": {
+   "pred_type": "P_CREATE",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b4_expect": "PLACEMENT_SLOT_EVIDENCE_ONLY:で:縁側",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "PLACEMENT_SLOT_EVIDENCE_ONLY:で:縁側",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_CREATE:で"
+  },
+  "W3B4-CREATE-A-022": {
+   "pred_type": "P_CREATE",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b4_expect": "PLACEMENT_MULTIPLE:で:机",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "PLACEMENT_MULTIPLE:で:机",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_CREATE:で"
+  },
+  "W3B4-CREATE-A-023": {
+   "pred_type": "P_CREATE",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b4_expect": "PLACEMENT_MULTIPLE:で:階段",
+   "declared_exception": true,
+   "diagnosis_with_the_rows_put_back": "PLACEMENT_SLOT_EVIDENCE_ONLY:で:階段",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_CREATE:で"
+  },
+  "W3B4-CREATE-A-024": {
+   "pred_type": "P_CREATE",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b4_expect": "PLACEMENT_TYPE_MISMATCH:P_CREATE:で:ARTIFACT",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "PLACEMENT_TYPE_MISMATCH:P_CREATE:で:ARTIFACT",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_CREATE:で"
+  },
+  "W3B4-CREATE-A-029": {
+   "pred_type": "P_CREATE",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b4_expect": "PLACEMENT_PREDICATE_POSSIBLY_DERIVED",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-ガ行",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_CREATE:で"
+  },
+  "W3B4-CREATE-A-030": {
+   "pred_type": "P_CREATE",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b4_expect": "PLACEMENT_PREDICATE_POSSIBLY_DERIVED",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-タ行",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_CREATE:で"
+  },
+  "W3B4-CREATE-A-031": {
+   "pred_type": "P_CREATE",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b4_expect": "PLACEMENT_PREDICATE_TAIL_UNINTERPRETED",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "PLACEMENT_PREDICATE_TAIL_UNINTERPRETED:連用形-イ音便:助詞",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_CREATE:で"
+  },
+  "W3B4-EMOTION-R-001": {
+   "pred_type": "P_EMOTION",
+   "frozen_entry_expect": "read",
+   "frozen_w3b4_expect": "READ",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "READ",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_EMOTION:で"
+  },
+  "W3B4-EMOTION-R-002": {
+   "pred_type": "P_EMOTION",
+   "frozen_entry_expect": "read",
+   "frozen_w3b4_expect": "READ",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "READ",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_EMOTION:で"
+  },
+  "W3B4-EMOTION-R-003": {
+   "pred_type": "P_EMOTION",
+   "frozen_entry_expect": "read",
+   "frozen_w3b4_expect": "READ",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "READ",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_EMOTION:で"
+  },
+  "W3B4-EMOTION-R-004": {
+   "pred_type": "P_EMOTION",
+   "frozen_entry_expect": "read",
+   "frozen_w3b4_expect": "READ",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "READ",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_EMOTION:で"
+  },
+  "W3B4-EMOTION-R-005": {
+   "pred_type": "P_EMOTION",
+   "frozen_entry_expect": "read",
+   "frozen_w3b4_expect": "READ",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "READ",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_EMOTION:で"
+  },
+  "W3B4-EMOTION-R-006": {
+   "pred_type": "P_EMOTION",
+   "frozen_entry_expect": "read",
+   "frozen_w3b4_expect": "READ",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "READ",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_EMOTION:で"
+  },
+  "W3B4-EMOTION-R-007": {
+   "pred_type": "P_EMOTION",
+   "frozen_entry_expect": "read",
+   "frozen_w3b4_expect": "READ",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "READ",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_EMOTION:で"
+  },
+  "W3B4-EMOTION-R-008": {
+   "pred_type": "P_EMOTION",
+   "frozen_entry_expect": "read",
+   "frozen_w3b4_expect": "READ",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "READ",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_EMOTION:で"
+  },
+  "W3B4-EMOTION-R-009": {
+   "pred_type": "P_EMOTION",
+   "frozen_entry_expect": "read",
+   "frozen_w3b4_expect": "READ",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "READ",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_EMOTION:で"
+  },
+  "W3B4-EMOTION-R-010": {
+   "pred_type": "P_EMOTION",
+   "frozen_entry_expect": "read",
+   "frozen_w3b4_expect": "READ",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "READ",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_EMOTION:で"
+  },
+  "W3B4-EMOTION-R-011": {
+   "pred_type": "P_EMOTION",
+   "frozen_entry_expect": "read",
+   "frozen_w3b4_expect": "READ",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "READ",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_EMOTION:で"
+  },
+  "W3B4-EMOTION-R-012": {
+   "pred_type": "P_EMOTION",
+   "frozen_entry_expect": "read",
+   "frozen_w3b4_expect": "READ",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "READ",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_EMOTION:で"
+  },
+  "W3B4-EMOTION-R-013": {
+   "pred_type": "P_EMOTION",
+   "frozen_entry_expect": "read",
+   "frozen_w3b4_expect": "READ",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "READ",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_EMOTION:で"
+  },
+  "W3B4-EMOTION-R-014": {
+   "pred_type": "P_EMOTION",
+   "frozen_entry_expect": "read",
+   "frozen_w3b4_expect": "READ",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "READ",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_EMOTION:で"
+  },
+  "W3B4-EMOTION-R-015": {
+   "pred_type": "P_EMOTION",
+   "frozen_entry_expect": "read",
+   "frozen_w3b4_expect": "READ",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "READ",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_EMOTION:で"
+  },
+  "W3B4-EMOTION-R-016": {
+   "pred_type": "P_EMOTION",
+   "frozen_entry_expect": "read",
+   "frozen_w3b4_expect": "READ",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "READ",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_EMOTION:で"
+  },
+  "W3B4-EMOTION-R-017": {
+   "pred_type": "P_EMOTION",
+   "frozen_entry_expect": "read",
+   "frozen_w3b4_expect": "READ",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "READ",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_EMOTION:で"
+  },
+  "W3B4-EMOTION-R-018": {
+   "pred_type": "P_EMOTION",
+   "frozen_entry_expect": "read",
+   "frozen_w3b4_expect": "READ",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "READ",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_EMOTION:で"
+  },
+  "W3B4-EMOTION-R-019": {
+   "pred_type": "P_EMOTION",
+   "frozen_entry_expect": "read",
+   "frozen_w3b4_expect": "READ",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "READ",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_EMOTION:で"
+  },
+  "W3B4-EMOTION-R-020": {
+   "pred_type": "P_EMOTION",
+   "frozen_entry_expect": "read",
+   "frozen_w3b4_expect": "READ",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "READ",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_EMOTION:で"
+  },
+  "W3B4-EMOTION-R-021": {
+   "pred_type": "P_EMOTION",
+   "frozen_entry_expect": "read",
+   "frozen_w3b4_expect": "READ",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "READ",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_EMOTION:で"
+  },
+  "W3B4-EMOTION-R-022": {
+   "pred_type": "P_EMOTION",
+   "frozen_entry_expect": "read",
+   "frozen_w3b4_expect": "READ",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "READ",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_EMOTION:で"
+  },
+  "W3B4-EMOTION-R-023": {
+   "pred_type": "P_EMOTION",
+   "frozen_entry_expect": "read",
+   "frozen_w3b4_expect": "READ",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "READ",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_EMOTION:で"
+  },
+  "W3B4-EMOTION-R-024": {
+   "pred_type": "P_EMOTION",
+   "frozen_entry_expect": "read",
+   "frozen_w3b4_expect": "READ",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "READ",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_EMOTION:で"
+  },
+  "W3B4-EMOTION-R-025": {
+   "pred_type": "P_EMOTION",
+   "frozen_entry_expect": "read",
+   "frozen_w3b4_expect": "READ",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "READ",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_EMOTION:で"
+  },
+  "W3B4-EMOTION-R-026": {
+   "pred_type": "P_EMOTION",
+   "frozen_entry_expect": "read",
+   "frozen_w3b4_expect": "READ",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "READ",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_EMOTION:で"
+  },
+  "W3B4-EMOTION-A-007": {
+   "pred_type": "P_EMOTION",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b4_expect": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_EMOTION:から",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_EMOTION:から",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_EMOTION:で"
+  },
+  "W3B4-EMOTION-A-009": {
+   "pred_type": "P_EMOTION",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b4_expect": "PLACEMENT_TYPE_MISMATCH:P_EMOTION:で:EVENT_ACT",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "PLACEMENT_TYPE_MISMATCH:P_EMOTION:で:EVENT_ACT",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_EMOTION:で"
+  },
+  "W3B4-EMOTION-A-010": {
+   "pred_type": "P_EMOTION",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b4_expect": "PLACEMENT_TYPE_MISMATCH:P_EMOTION:で:EVENT_ACT",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "PLACEMENT_TYPE_MISMATCH:P_EMOTION:で:EVENT_ACT",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_EMOTION:で"
+  },
+  "W3B4-EMOTION-A-011": {
+   "pred_type": "P_EMOTION",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b4_expect": "PLACEMENT_TYPE_MISMATCH:P_EMOTION:で:EVENT_ACT",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "PLACEMENT_TYPE_MISMATCH:P_EMOTION:で:EVENT_ACT",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_EMOTION:で"
+  },
+  "W3B4-EMOTION-A-012": {
+   "pred_type": "P_EMOTION",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b4_expect": "PLACEMENT_MULTIPLE:で:野球",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "PLACEMENT_MULTIPLE:で:野球",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_EMOTION:で"
+  },
+  "W3B4-EMOTION-A-013": {
+   "pred_type": "P_EMOTION",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b4_expect": "PLACEMENT_MULTIPLE:で:勝利",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "PLACEMENT_MULTIPLE:で:勝利",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_EMOTION:で"
+  },
+  "W3B4-EMOTION-A-020": {
+   "pred_type": "P_EMOTION",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b4_expect": "PLACEMENT_SLOT_EVIDENCE_ONLY:で:書斎",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "PLACEMENT_SLOT_EVIDENCE_ONLY:で:書斎",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_EMOTION:で"
+  },
+  "W3B4-EMOTION-A-021": {
+   "pred_type": "P_EMOTION",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b4_expect": "PLACEMENT_SLOT_EVIDENCE_ONLY:で:廊下",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "PLACEMENT_SLOT_EVIDENCE_ONLY:で:廊下",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_EMOTION:で"
+  },
+  "W3B4-EMOTION-A-022": {
+   "pred_type": "P_EMOTION",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b4_expect": "PLACEMENT_SLOT_EVIDENCE_ONLY:で:縁側",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "PLACEMENT_SLOT_EVIDENCE_ONLY:で:縁側",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_EMOTION:で"
+  },
+  "W3B4-EMOTION-A-023": {
+   "pred_type": "P_EMOTION",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b4_expect": "PLACEMENT_MULTIPLE:で:街角",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "PLACEMENT_MULTIPLE:で:街角",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_EMOTION:で"
+  },
+  "W3B4-EMOTION-A-034": {
+   "pred_type": "P_EMOTION",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b4_expect": "PLACEMENT_PREDICATE_POSSIBLY_DERIVED",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-タ行",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_EMOTION:で"
+  },
+  "W3B4-EMOTION-A-035": {
+   "pred_type": "P_EMOTION",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b4_expect": "PLACEMENT_PREDICATE_POSSIBLY_DERIVED",
+   "declared_exception": true,
+   "diagnosis_with_the_rows_put_back": "PLACEMENT_REREAD_ABSTAINS:UNDETERMINED_MODALITY:possible potential form",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_EMOTION:で"
+  },
+  "W3B4-EMOTION-A-036": {
+   "pred_type": "P_EMOTION",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b4_expect": "PLACEMENT_PREDICATE_TAIL_UNINTERPRETED",
+   "declared_exception": false,
+   "diagnosis_with_the_rows_put_back": "PLACEMENT_PREDICATE_TAIL_UNINTERPRETED:連用形-イ音便:助詞",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_EMOTION:で"
+  }
+ }
+}

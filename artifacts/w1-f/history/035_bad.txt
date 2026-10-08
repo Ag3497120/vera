@@ -1,0 +1,41 @@
+# commit a9cad0ab448b649dc6c71584f14d203a5200289d
+# status FAIL
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 17 items / 16 deselected / 1 selected
+
+tests/attack/test_memory_brief_limits.py::test_record_order_is_independent_of_active_order_and_kind_priority FAILED [100%]
+
+=== FAILURES ===
+______ test_record_order_is_independent_of_active_order_and_kind_priority ______
+
+    def test_record_order_is_independent_of_active_order_and_kind_priority():
+        records = [
+            row("fact", "FACT", subject="s", attribute="color"),
+            row("decision", "DECISION", subject="s"),
+            row("invariant", "INVARIANT", subject="s"),
+        ]
+        expected = "\n".join(
+            [
+                "[id:invariant] Sentence for invariant.",
+                "[id:decision] Sentence for decision.",
+                "[id:fact] Sentence for fact.",
+            ]
+        )
+    
+>       assert compile_brief(MemoryStub(records), len(expected)) == expected
+E       AssertionError: assert ContextBrief(text='Dropped record ids: invariant, decision, fact', records=(), dropped_ids=('invariant', 'decision', 'fact')) == '[id:invariant] Sentence for invariant.\n[id:decision] Sentence for decision.\n[id:fact] Sentence for fact.'
+E        +  where ContextBrief(text='Dropped record ids: invariant, decision, fact', records=(), dropped_ids=('invariant', 'decision', 'fact')) = compile_brief(<test_memory_brief_limits.MemoryStub object at 0x<ADDR>>, 104)
+E        +    where <test_memory_brief_limits.MemoryStub object at 0x<ADDR>> = MemoryStub([{'id': 'fact', 'kind': 'FACT', 'sentence': 'Sentence for fact.', 'slots': {'attribute': 'color', 'subject': 's'}, 'ts': '2026-01-01'}, {'id': 'decision', 'kind': 'DECISION', 'sentence': 'Sentence for decision.', 'slots': {'subject': 's'}, 'ts': '2026-01-01'}, {'id': 'invariant', 'kind': 'INVARIANT', 'sentence': 'Sentence for invariant.', 'slots': {'subject': 's'}, 'ts': '2026-01-01'}])
+E        +    and   104 = len('[id:invariant] Sentence for invariant.\n[id:decision] Sentence for decision.\n[id:fact] Sentence for fact.')
+
+tests/attack/test_memory_brief_limits.py:67: AssertionError
+=== short test summary info ===
+FAILED tests/attack/test_memory_brief_limits.py::test_record_order_is_independent_of_active_order_and_kind_priority - AssertionError: assert ContextBrief(text='Dropped record ids: invariant, decision, fact', records=(), dropped_ids=('invariant', 'decision', 'fact')) == '[id:invariant] Sentence for invariant.\n[id:decision] Sentence for decision.\n[id:fact] Sentence for fact.'
+ +  where ContextBrief(text='Dropped record ids: invariant, decision, fact', records=(), dropped_ids=('invariant', 'decision', 'fact')) = compile_brief(<test_memory_brief_limits.MemoryStub object at 0x<ADDR>>, 104)
+ +    where <test_memory_brief_limits.MemoryStub object at 0x<ADDR>> = MemoryStub([{'id': 'fact', 'kind': 'FACT', 'sentence': 'Sentence for fact.', 'slots': {'attribute': 'color', 'subject': 's'}, 'ts': '2026-01-01'}, {'id': 'decision', 'kind': 'DECISION', 'sentence': 'Sentence for decision.', 'slots': {'subject': 's'}, 'ts': '2026-01-01'}, {'id': 'invariant', 'kind': 'INVARIANT', 'sentence': 'Sentence for invariant.', 'slots': {'subject': 's'}, 'ts': '2026-01-01'}])
+ +    and   104 = len('[id:invariant] Sentence for invariant.\n[id:decision] Sentence for decision.\n[id:fact] Sentence for fact.')
+=== 1 failed, 16 deselected ===

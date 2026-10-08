@@ -1,0 +1,5 @@
+round 3: full run `pytest -p no:cacheprovider -q -rf tests` -> 116 failed, 15596 passed (pytest_full.txt).
+comm -13 baseline(116) pytest_failures.txt(116) -> 1 failure not in the baseline list (pytest_new_failures.txt):
+- tests/bank_score/test_bs_end_to_end.py::test_s6_two_runs_agree_except_timing_and_recount_matches: named by the ticket as environment-caused while uncommitted; fails on the BASE tree too (round 1 check).
+The baseline's time-dependent test_the_stop_signal_... did not fail this time (0 in pytest_failures.txt).
+No test_w10f05_* failure.

@@ -1,0 +1,46 @@
+rows=5031 (file x row x fake)
+output differences: {"newly_read": 15, "refusal_reason_changed": 27}
+same output and same diagnosis: 4989
+same output, diagnosis differs only: 0
+refusal_reason_changed	w3b1	ja.jsonl	突然、犬が庭で穴を掘った。	
+refusal_reason_changed	w3b2	ja.jsonl	突然、犬が庭で穴を掘った。	
+refusal_reason_changed	w3b3	ja.jsonl	突然、犬が庭で穴を掘った。	
+newly_read	w3b1	ja_r8.jsonl	兄がそっと窓を開けた。	{"agent": "兄", "patient": "窓"}
+newly_read	w3b2	ja_r8.jsonl	兄がそっと窓を開けた。	{"agent": "兄", "patient": "窓"}
+newly_read	w3b3	ja_r8.jsonl	兄がそっと窓を開けた。	{"agent": "兄", "patient": "窓"}
+newly_read	w3b1	ja_r8.jsonl	母がゆっくり手紙を書いた。	{"agent": "母", "patient": "手紙"}
+newly_read	w3b2	ja_r8.jsonl	母がゆっくり手紙を書いた。	{"agent": "母", "patient": "手紙"}
+newly_read	w3b3	ja_r8.jsonl	母がゆっくり手紙を書いた。	{"agent": "母", "patient": "手紙"}
+newly_read	w3b1	ja_r8.jsonl	弟がきちんと靴を磨いた。	{"agent": "弟", "patient": "靴"}
+newly_read	w3b2	ja_r8.jsonl	弟がきちんと靴を磨いた。	{"agent": "弟", "patient": "靴"}
+newly_read	w3b3	ja_r8.jsonl	弟がきちんと靴を磨いた。	{"agent": "弟", "patient": "靴"}
+newly_read	w3b1	ja_r8.jsonl	姉がはっきり名前を書いた。	{"agent": "姉", "patient": "名前"}
+newly_read	w3b2	ja_r8.jsonl	姉がはっきり名前を書いた。	{"agent": "姉", "patient": "名前"}
+newly_read	w3b3	ja_r8.jsonl	姉がはっきり名前を書いた。	{"agent": "姉", "patient": "名前"}
+refusal_reason_changed	w3b1	w3b3_w1a4.jsonl	兄がゆっくり歩かなかった。	
+refusal_reason_changed	w3b2	w3b3_w1a4.jsonl	兄がゆっくり歩かなかった。	
+refusal_reason_changed	w3b3	w3b3_w1a4.jsonl	兄がゆっくり歩かなかった。	
+refusal_reason_changed	w3b1	w3b3_w1a4.jsonl	母はそっと窓を閉めなかった。	
+refusal_reason_changed	w3b2	w3b3_w1a4.jsonl	母はそっと窓を閉めなかった。	
+refusal_reason_changed	w3b3	w3b3_w1a4.jsonl	母はそっと窓を閉めなかった。	
+refusal_reason_changed	w3b1	w3b3_w1a4.jsonl	兄がすぐ帰らなかった。	
+refusal_reason_changed	w3b2	w3b3_w1a4.jsonl	兄がすぐ帰らなかった。	
+refusal_reason_changed	w3b3	w3b3_w1a4.jsonl	兄がすぐ帰らなかった。	
+refusal_reason_changed	w3b1	w3b3_w1a4.jsonl	兄がとても喜ばなかった。	
+refusal_reason_changed	w3b2	w3b3_w1a4.jsonl	兄がとても喜ばなかった。	
+refusal_reason_changed	w3b3	w3b3_w1a4.jsonl	兄がとても喜ばなかった。	
+refusal_reason_changed	w3b1	w3b3_w1a4.jsonl	兄がすぐ近くの店に行った。	
+refusal_reason_changed	w3b2	w3b3_w1a4.jsonl	兄がすぐ近くの店に行った。	
+refusal_reason_changed	w3b3	w3b3_w1a4.jsonl	兄がすぐ近くの店に行った。	
+refusal_reason_changed	w3b1	w3b3_w1a4.jsonl	兄がすぐ隣の部屋に入った。	
+refusal_reason_changed	w3b2	w3b3_w1a4.jsonl	兄がすぐ隣の部屋に入った。	
+refusal_reason_changed	w3b3	w3b3_w1a4.jsonl	兄がすぐ隣の部屋に入った。	
+refusal_reason_changed	w3b1	w3b3_w1a4.jsonl	母がすぐ前の店で本を買った。	
+refusal_reason_changed	w3b2	w3b3_w1a4.jsonl	母がすぐ前の店で本を買った。	
+refusal_reason_changed	w3b3	w3b3_w1a4.jsonl	母がすぐ前の店で本を買った。	
+refusal_reason_changed	w3b1	w3b3_w1a4.jsonl	兄がとても近くの店に行った。	
+refusal_reason_changed	w3b2	w3b3_w1a4.jsonl	兄がとても近くの店に行った。	
+refusal_reason_changed	w3b3	w3b3_w1a4.jsonl	兄がとても近くの店に行った。	
+newly_read	w3b1	w3b3_w1a4.jsonl	兄がとても喜んだ。	{"agent": "兄"}
+newly_read	w3b2	w3b3_w1a4.jsonl	兄がとても喜んだ。	{"agent": "兄"}
+newly_read	w3b3	w3b3_w1a4.jsonl	兄がとても喜んだ。	{"agent": "兄"}

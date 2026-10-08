@@ -1,0 +1,111 @@
+FFFFFF..FFFFFFFFFFF......F                                               [100%]
+=================================== FAILURES ===================================
+E   AssertionError: {"kind": "answer", "verdict": "ANSWER", "text": "答え。", "sources": [{"family": "document", "source": "memo.txt", "origin": "human_confirmed", "text": "渡された文書に無い事実。"}], "evidence": ["渡された文書に無い事実。"], "door": "t", "basis_policy": {"schema": "verantyx.basis_policy/1", "table_version": 1, "applied": true, "request_kind": "factual", "kind_class": "FACTUAL", "basis": "HUMAN", "basis_original": "HUMAN", "human_present": false, "show_reference": false, "outcome": "ANSWER_HUMAN_BASIS", "in_table": true, "counts": {"human": 1, "generated": 0, "non_evidence": 0, "request_text": 0, "unreadable": 0, "non_evidence_by_origin": {}, "unknown_origin": 0, "unknown_origin_by_family": {}, "unknown_origin_values": {}}, "classify_version": 3, "confirm_id_version": 2, "sovereign": {"state": "UNKNOWN_NO_SOVEREIGN", "store_id": null, "records_read": 0, "rejected_by_user": 0, "confirmed_records_used": 0, "confirmed_records_not_used": 0, "ambiguous": false}, "form": {"state": "FORM_SOURCE_NOT_ONE_CLAUSE"}}}
+    assert not True
+     +  where True = <built-in method startswith of str object at 0x1090e7a50>('ANSWER')
+     +    where <built-in method startswith of str object at 0x1090e7a50> = 'ANSWER_HUMAN_BASIS'.startswith
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-e-S/tests/test_basis_policy_w5e.py:41: AssertionError: {"kind": "answer", "verdict": "ANSWER", "text": "答え。", "sources": [{"family": "document", "source": "memo.txt", "origin": "human_confirmed", "text": "渡された文書に無い事実。"}], "evidence": ["渡された文書に無い事実。"], "door": "t", "basis_policy": {"schema": "verantyx.basis_policy/1", "table_version": 1, "applied": true, "request_kind": "factual", "kind_class": "FACTUAL", "basis": "HUMAN", "basis_original": "HUMAN", "human_present": false, "show_reference": false, "outcome": "ANSWER_HUMAN_BASIS", "in_table": true, "counts": {"human": 1, "generated": 0, "non_evidence": 0, "request_text": 0, "unreadable": 0, "non_evidence_by_origin": {}, "unknown_origin": 0, "unknown_origin_by_family": {}, "unknown_origin_values": {}}, "classify_version": 3, "confirm_id_version": 2, "sovereign": {"state": "UNKNOWN_NO_SOVEREIGN", "store_id": null, "records_read": 0, "rejected_by_user": 0, "confirmed_records_used": 0, "confirmed_records_not_used": 0, "ambiguous": false}, "form": {"state": "FORM_SOURCE_NOT_ONE_CLAUSE"}}}
+E   AssertionError: {"kind": "answer", "verdict": "ANSWER", "text": "答え。", "sources": [{"family": "document", "source": "memo.txt", "origin": "human_confirmed", "text": "窓は午後に閉める。"}], "evidence": ["窓は午後に閉める。"], "door": "t", "basis_policy": {"schema": "verantyx.basis_policy/1", "table_version": 1, "applied": true, "request_kind": "factual", "kind_class": "FACTUAL", "basis": "HUMAN", "basis_original": "HUMAN", "human_present": false, "show_reference": false, "outcome": "ANSWER_HUMAN_BASIS", "in_table": true, "counts": {"human": 1, "generated": 0, "non_evidence": 0, "request_text": 0, "unreadable": 0, "non_evidence_by_origin": {}, "unknown_origin": 0, "unknown_origin_by_family": {}, "unknown_origin_values": {}}, "classify_version": 3, "confirm_id_version": 2, "sovereign": {"state": "UNKNOWN_NO_SOVEREIGN", "store_id": null, "records_read": 0, "rejected_by_user": 0, "confirmed_records_used": 0, "confirmed_records_not_used": 0, "ambiguous": false}, "form": {"state": "NOT_ATTEMPTED_ROUTE"}}}
+    assert not True
+     +  where True = <built-in method startswith of str object at 0x1090e7a50>('ANSWER')
+     +    where <built-in method startswith of str object at 0x1090e7a50> = 'ANSWER_HUMAN_BASIS'.startswith
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-e-S/tests/test_basis_policy_w5e.py:41: AssertionError: {"kind": "answer", "verdict": "ANSWER", "text": "答え。", "sources": [{"family": "document", "source": "memo.txt", "origin": "human_confirmed", "text": "窓は午後に閉める。"}], "evidence": ["窓は午後に閉める。"], "door": "t", "basis_policy": {"schema": "verantyx.basis_policy/1", "table_version": 1, "applied": true, "request_kind": "factual", "kind_class": "FACTUAL", "basis": "HUMAN", "basis_original": "HUMAN", "human_present": false, "show_reference": false, "outcome": "ANSWER_HUMAN_BASIS", "in_table": true, "counts": {"human": 1, "generated": 0, "non_evidence": 0, "request_text": 0, "unreadable": 0, "non_evidence_by_origin": {}, "unknown_origin": 0, "unknown_origin_by_family": {}, "unknown_origin_values": {}}, "classify_version": 3, "confirm_id_version": 2, "sovereign": {"state": "UNKNOWN_NO_SOVEREIGN", "store_id": null, "records_read": 0, "rejected_by_user": 0, "confirmed_records_used": 0, "confirmed_records_not_used": 0, "ambiguous": false}, "form": {"state": "NOT_ATTEMPTED_ROUTE"}}}
+E   AssertionError: {"kind": "answer", "verdict": "ANSWER", "text": "答え。", "sources": [{"family": "local", "source": "local:f:1", "origin": "human_confirmed", "text": "窓は午後に閉める。"}], "evidence": ["窓は午後に閉める。"], "door": "t", "basis_policy": {"schema": "verantyx.basis_policy/1", "table_version": 1, "applied": true, "request_kind": "factual", "kind_class": "FACTUAL", "basis": "HUMAN", "basis_original": "HUMAN", "human_present": false, "show_reference": false, "outcome": "ANSWER_HUMAN_BASIS", "in_table": true, "counts": {"human": 1, "generated": 0, "non_evidence": 0, "request_text": 0, "unreadable": 0, "non_evidence_by_origin": {}, "unknown_origin": 0, "unknown_origin_by_family": {}, "unknown_origin_values": {}}, "classify_version": 3, "confirm_id_version": 2, "sovereign": {"state": "UNKNOWN_NO_SOVEREIGN", "store_id": null, "records_read": 0, "rejected_by_user": 0, "confirmed_records_used": 0, "confirmed_records_not_used": 0, "ambiguous": false}, "form": {"state": "FORM_SOURCE_NOT_ONE_CLAUSE"}}}
+    assert not True
+     +  where True = <built-in method startswith of str object at 0x1090e7a50>('ANSWER')
+     +    where <built-in method startswith of str object at 0x1090e7a50> = 'ANSWER_HUMAN_BASIS'.startswith
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-e-S/tests/test_basis_policy_w5e.py:41: AssertionError: {"kind": "answer", "verdict": "ANSWER", "text": "答え。", "sources": [{"family": "local", "source": "local:f:1", "origin": "human_confirmed", "text": "窓は午後に閉める。"}], "evidence": ["窓は午後に閉める。"], "door": "t", "basis_policy": {"schema": "verantyx.basis_policy/1", "table_version": 1, "applied": true, "request_kind": "factual", "kind_class": "FACTUAL", "basis": "HUMAN", "basis_original": "HUMAN", "human_present": false, "show_reference": false, "outcome": "ANSWER_HUMAN_BASIS", "in_table": true, "counts": {"human": 1, "generated": 0, "non_evidence": 0, "request_text": 0, "unreadable": 0, "non_evidence_by_origin": {}, "unknown_origin": 0, "unknown_origin_by_family": {}, "unknown_origin_values": {}}, "classify_version": 3, "confirm_id_version": 2, "sovereign": {"state": "UNKNOWN_NO_SOVEREIGN", "store_id": null, "records_read": 0, "rejected_by_user": 0, "confirmed_records_used": 0, "confirmed_records_not_used": 0, "ambiguous": false}, "form": {"state": "FORM_SOURCE_NOT_ONE_CLAUSE"}}}
+E   AssertionError: {"kind": "answer", "verdict": "ANSWER", "text": "答え。", "sources": [{"family": "web", "source": "https://example.invalid/x", "origin": "human_confirmed", "text": "窓は午後に閉める。"}], "evidence": ["窓は午後に閉める。"], "door": "t", "basis_policy": {"schema": "verantyx.basis_policy/1", "table_version": 1, "applied": true, "request_kind": "factual", "kind_class": "FACTUAL", "basis": "HUMAN", "basis_original": "HUMAN", "human_present": false, "show_reference": false, "outcome": "ANSWER_HUMAN_BASIS", "in_table": true, "counts": {"human": 1, "generated": 0, "non_evidence": 0, "request_text": 0, "unreadable": 0, "non_evidence_by_origin": {}, "unknown_origin": 0, "unknown_origin_by_family": {}, "unknown_origin_values": {}}, "classify_version": 3, "confirm_id_version": 2, "sovereign": {"state": "UNKNOWN_NO_SOVEREIGN", "store_id": null, "records_read": 0, "rejected_by_user": 0, "confirmed_records_used": 0, "confirmed_records_not_used": 0, "ambiguous": false}, "form": {"state": "FORM_SOURCE_NOT_ONE_CLAUSE"}}}
+    assert not True
+     +  where True = <built-in method startswith of str object at 0x1090e7a50>('ANSWER')
+     +    where <built-in method startswith of str object at 0x1090e7a50> = 'ANSWER_HUMAN_BASIS'.startswith
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-e-S/tests/test_basis_policy_w5e.py:41: AssertionError: {"kind": "answer", "verdict": "ANSWER", "text": "答え。", "sources": [{"family": "web", "source": "https://example.invalid/x", "origin": "human_confirmed", "text": "窓は午後に閉める。"}], "evidence": ["窓は午後に閉める。"], "door": "t", "basis_policy": {"schema": "verantyx.basis_policy/1", "table_version": 1, "applied": true, "request_kind": "factual", "kind_class": "FACTUAL", "basis": "HUMAN", "basis_original": "HUMAN", "human_present": false, "show_reference": false, "outcome": "ANSWER_HUMAN_BASIS", "in_table": true, "counts": {"human": 1, "generated": 0, "non_evidence": 0, "request_text": 0, "unreadable": 0, "non_evidence_by_origin": {}, "unknown_origin": 0, "unknown_origin_by_family": {}, "unknown_origin_values": {}}, "classify_version": 3, "confirm_id_version": 2, "sovereign": {"state": "UNKNOWN_NO_SOVEREIGN", "store_id": null, "records_read": 0, "rejected_by_user": 0, "confirmed_records_used": 0, "confirmed_records_not_used": 0, "ambiguous": false}, "form": {"state": "FORM_SOURCE_NOT_ONE_CLAUSE"}}}
+E   AssertionError: {"kind": "answer", "verdict": "ANSWER", "text": "答え。", "sources": [{"family": "ほかの系列", "source": "x", "origin": "human_confirmed", "text": "窓は午後に閉める。"}], "evidence": ["窓は午後に閉める。"], "door": "t", "basis_policy": {"schema": "verantyx.basis_policy/1", "table_version": 1, "applied": true, "request_kind": "factual", "kind_class": "FACTUAL", "basis": "HUMAN", "basis_original": "HUMAN", "human_present": false, "show_reference": false, "outcome": "ANSWER_HUMAN_BASIS", "in_table": true, "counts": {"human": 1, "generated": 0, "non_evidence": 0, "request_text": 0, "unreadable": 0, "non_evidence_by_origin": {}, "unknown_origin": 0, "unknown_origin_by_family": {}, "unknown_origin_values": {}}, "classify_version": 3, "confirm_id_version": 2, "sovereign": {"state": "UNKNOWN_NO_SOVEREIGN", "store_id": null, "records_read": 0, "rejected_by_user": 0, "confirmed_records_used": 0, "confirmed_records_not_used": 0, "ambiguous": false}, "form": {"state": "FORM_SOURCE_NOT_ONE_CLAUSE"}}}
+    assert not True
+     +  where True = <built-in method startswith of str object at 0x1090e7a50>('ANSWER')
+     +    where <built-in method startswith of str object at 0x1090e7a50> = 'ANSWER_HUMAN_BASIS'.startswith
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-e-S/tests/test_basis_policy_w5e.py:41: AssertionError: {"kind": "answer", "verdict": "ANSWER", "text": "答え。", "sources": [{"family": "ほかの系列", "source": "x", "origin": "human_confirmed", "text": "窓は午後に閉める。"}], "evidence": ["窓は午後に閉める。"], "door": "t", "basis_policy": {"schema": "verantyx.basis_policy/1", "table_version": 1, "applied": true, "request_kind": "factual", "kind_class": "FACTUAL", "basis": "HUMAN", "basis_original": "HUMAN", "human_present": false, "show_reference": false, "outcome": "ANSWER_HUMAN_BASIS", "in_table": true, "counts": {"human": 1, "generated": 0, "non_evidence": 0, "request_text": 0, "unreadable": 0, "non_evidence_by_origin": {}, "unknown_origin": 0, "unknown_origin_by_family": {}, "unknown_origin_values": {}}, "classify_version": 3, "confirm_id_version": 2, "sovereign": {"state": "UNKNOWN_NO_SOVEREIGN", "store_id": null, "records_read": 0, "rejected_by_user": 0, "confirmed_records_used": 0, "confirmed_records_not_used": 0, "ambiguous": false}, "form": {"state": "FORM_SOURCE_NOT_ONE_CLAUSE"}}}
+E   AssertionError: {"kind": "answer", "verdict": "ANSWER", "text": "答え。", "sources": [{"family": "user", "source": "request", "origin": "human_confirmed", "text": "窓は午後に閉める。"}], "evidence": ["窓は午後に閉める。"], "door": "t", "basis_policy": {"schema": "verantyx.basis_policy/1", "table_version": 1, "applied": true, "request_kind": "factual", "kind_class": "FACTUAL", "basis": "HUMAN", "basis_original": "HUMAN", "human_present": false, "show_reference": false, "outcome": "ANSWER_HUMAN_BASIS", "in_table": true, "counts": {"human": 1, "generated": 0, "non_evidence": 0, "request_text": 0, "unreadable": 0, "non_evidence_by_origin": {}, "unknown_origin": 0, "unknown_origin_by_family": {}, "unknown_origin_values": {}}, "classify_version": 3, "confirm_id_version": 2, "sovereign": {"state": "UNKNOWN_NO_SOVEREIGN", "store_id": null, "records_read": 0, "rejected_by_user": 0, "confirmed_records_used": 0, "confirmed_records_not_used": 0, "ambiguous": false}, "form": {"state": "FORM_SOURCE_NOT_ONE_CLAUSE"}}}
+    assert not True
+     +  where True = <built-in method startswith of str object at 0x1090e7a50>('ANSWER')
+     +    where <built-in method startswith of str object at 0x1090e7a50> = 'ANSWER_HUMAN_BASIS'.startswith
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-e-S/tests/test_basis_policy_w5e.py:41: AssertionError: {"kind": "answer", "verdict": "ANSWER", "text": "答え。", "sources": [{"family": "user", "source": "request", "origin": "human_confirmed", "text": "窓は午後に閉める。"}], "evidence": ["窓は午後に閉める。"], "door": "t", "basis_policy": {"schema": "verantyx.basis_policy/1", "table_version": 1, "applied": true, "request_kind": "factual", "kind_class": "FACTUAL", "basis": "HUMAN", "basis_original": "HUMAN", "human_present": false, "show_reference": false, "outcome": "ANSWER_HUMAN_BASIS", "in_table": true, "counts": {"human": 1, "generated": 0, "non_evidence": 0, "request_text": 0, "unreadable": 0, "non_evidence_by_origin": {}, "unknown_origin": 0, "unknown_origin_by_family": {}, "unknown_origin_values": {}}, "classify_version": 3, "confirm_id_version": 2, "sovereign": {"state": "UNKNOWN_NO_SOVEREIGN", "store_id": null, "records_read": 0, "rejected_by_user": 0, "confirmed_records_used": 0, "confirmed_records_not_used": 0, "ambiguous": false}, "form": {"state": "FORM_SOURCE_NOT_ONE_CLAUSE"}}}
+E   assert 3 == 4
+     +  where 3 = bp.CLASSIFY_VERSION
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-e-S/tests/test_basis_policy_w5e.py:54: assert 3 == 4
+E   AssertionError: assert 'human' == 'unknown_origin'
+      
+      - unknown_origin
+      + human
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-e-S/tests/test_basis_policy_w5e.py:68: AssertionError: assert 'human' == 'unknown_origin'
+E   AssertionError: assert 'human' == 'unknown_origin'
+      
+      - unknown_origin
+      + human
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-e-S/tests/test_basis_policy_w5e.py:81: AssertionError: assert 'human' == 'unknown_origin'
+E   AssertionError: assert 'human' == 'unknown_origin'
+      
+      - unknown_origin
+      + human
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-e-S/tests/test_basis_policy_w5e.py:89: AssertionError: assert 'human' == 'unknown_origin'
+E   AssertionError: assert 'human' == 'unknown_origin'
+      
+      - unknown_origin
+      + human
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-e-S/tests/test_basis_policy_w5e.py:89: AssertionError: assert 'human' == 'unknown_origin'
+E   AssertionError: assert 'human' == 'unknown_origin'
+      
+      - unknown_origin
+      + human
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-e-S/tests/test_basis_policy_w5e.py:89: AssertionError: assert 'human' == 'unknown_origin'
+E   AssertionError: assert 'human' == 'unknown_origin'
+      
+      - unknown_origin
+      + human
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-e-S/tests/test_basis_policy_w5e.py:89: AssertionError: assert 'human' == 'unknown_origin'
+E   AssertionError: assert 'human' == 'unknown_origin'
+      
+      - unknown_origin
+      + human
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-e-S/tests/test_basis_policy_w5e.py:89: AssertionError: assert 'human' == 'unknown_origin'
+E   AssertionError: assert 'human' == 'unknown_origin'
+      
+      - unknown_origin
+      + human
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-e-S/tests/test_basis_policy_w5e.py:89: AssertionError: assert 'human' == 'unknown_origin'
+E   AssertionError: assert 'human' == 'unknown_origin'
+      
+      - unknown_origin
+      + human
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-e-S/tests/test_basis_policy_w5e.py:89: AssertionError: assert 'human' == 'unknown_origin'
+E   AssertionError: assert 'human' == 'unknown_origin'
+      
+      - unknown_origin
+      + human
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-e-S/tests/test_basis_policy_w5e.py:94: AssertionError: assert 'human' == 'unknown_origin'
+E   AssertionError: {"kind": "answer", "verdict": "ANSWER", "text": "答え。", "sources": [{"family": "document", "source": "memo.txt", "origin": "human_confirmed", "text": "本文に無い事実。"}], "evidence": [], "door": "test", "basis_policy": {"schema": "verantyx.basis_policy/1", "table_version": 1, "applied": true, "request_kind": "factual", "kind_class": "FACTUAL", "basis": "HUMAN", "basis_original": "HUMAN", "human_present": false, "show_reference": false, "outcome": "ANSWER_HUMAN_BASIS", "in_table": true, "counts": {"human": 1, "generated": 0, "non_evidence": 0, "request_text": 0, "unreadable": 0, "non_evidence_by_origin": {}, "unknown_origin": 0, "unknown_origin_by_family": {}, "unknown_origin_values": {}}, "classify_version": 3, "confirm_id_version": 2, "sovereign": {"state": "UNKNOWN_NO_SOVEREIGN", "store_id": null, "records_read": 0, "rejected_by_user": 0, "confirmed_records_used": 0, "confirmed_records_not_used": 0, "ambiguous": false}, "form": {"state": "FORM_SOURCE_NOT_ONE_CLAUSE"}}}
+    assert ('HUMAN' == 'UNKNOWN_ORIGIN'
+      
+      - UNKNOWN_ORIGIN
+      + HUMAN)
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-e-S/tests/attack/test_attack_w5d.py:134: AssertionError: {"kind": "answer", "verdict": "ANSWER", "text": "答え。", "sources": [{"family": "document", "source": "memo.txt", "origin": "human_confirmed", "text": "本文に無い事実。"}], "evidence": [], "door": "test", "basis_policy": {"schema": "verantyx.basis_policy/1", "table_version": 1, "applied": true, "request_kind": "factual", "kind_class": "FACTUAL", "basis": "HUMAN", "basis_original": "HUMAN", "human_present": false, "show_reference": false, "outcome": "ANSWER_HUMAN_BASIS", "in_table": true, "counts": {"human": 1, "generated": 0, "non_evidence": 0, "request_text": 0, "unreadable": 0, "non_evidence_by_origin": {}, "unknown_origin": 0, "unknown_origin_by_family": {}, "unknown_origin_values": {}}, "classify_version": 3, "confirm_id_version": 2, "sovereign": {"state": "UNKNOWN_NO_SOVEREIGN", "store_id": null, "records_read": 0, "rejected_by_user": 0, "confirmed_records_used": 0, "confirmed_records_not_used": 0, "ambiguous": false}, "form": {"state": "FORM_SOURCE_NOT_ONE_CLAUSE"}}}
+=========================== short test summary info ============================
+FAILED tests/test_basis_policy_w5e.py::test_h4_a_self_declared_human_confirmed_never_answers[H4-1-document-text-not-in-body]
+FAILED tests/test_basis_policy_w5e.py::test_h4_a_self_declared_human_confirmed_never_answers[H4-2-document-no-document-handed-over]
+FAILED tests/test_basis_policy_w5e.py::test_h4_a_self_declared_human_confirmed_never_answers[H4-3-local-self-declared]
+FAILED tests/test_basis_policy_w5e.py::test_h4_a_self_declared_human_confirmed_never_answers[H4-4-web-self-declared]
+FAILED tests/test_basis_policy_w5e.py::test_h4_a_self_declared_human_confirmed_never_answers[H4-5-unknown-family-self-declared]
+FAILED tests/test_basis_policy_w5e.py::test_h4_a_self_declared_human_confirmed_never_answers[H4-6-user-family-self-declared]
+FAILED tests/test_basis_policy_w5e.py::test_a3_the_classify_version_is_4_and_the_note_carries_it
+FAILED tests/test_basis_policy_w5e.py::test_a3_document_with_human_confirmed_goes_through_the_body_check
+FAILED tests/test_basis_policy_w5e.py::test_a3_the_sha256_form_of_a_document_source_is_checked_too
+FAILED tests/test_basis_policy_w5e.py::test_a3_any_other_family_that_claims_human_confirmed_is_unknown_origin[local]
+FAILED tests/test_basis_policy_w5e.py::test_a3_any_other_family_that_claims_human_confirmed_is_unknown_origin[web]
+FAILED tests/test_basis_policy_w5e.py::test_a3_any_other_family_that_claims_human_confirmed_is_unknown_origin[user]
+FAILED tests/test_basis_policy_w5e.py::test_a3_any_other_family_that_claims_human_confirmed_is_unknown_origin[\u307b\u304b\u306e\u7cfb\u5217]
+FAILED tests/test_basis_policy_w5e.py::test_a3_any_other_family_that_claims_human_confirmed_is_unknown_origin[]
+FAILED tests/test_basis_policy_w5e.py::test_a3_any_other_family_that_claims_human_confirmed_is_unknown_origin[None]
+FAILED tests/test_basis_policy_w5e.py::test_a3_any_other_family_that_claims_human_confirmed_is_unknown_origin[3]
+FAILED tests/test_basis_policy_w5e.py::test_a3_a_missing_family_that_claims_human_confirmed_is_unknown_origin
+FAILED tests/attack/test_attack_w5d.py::test_a1_self_declared_human_origin_cannot_replace_missing_document_text
+18 failed, 8 passed, 11 deselected in 0.38s

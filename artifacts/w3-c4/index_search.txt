@@ -1,0 +1,82 @@
+### question cross ask document
+{
+  "verdict": "ANSWER",
+  "query": "question cross ask document",
+  "searched": 680,
+  "hits": [
+    {
+      "kind": "fork",
+      "name": "a_question_goes_to_one_language_sovereign_fork",
+      "about": "Two tokenizers reaching the same string have collided, not agreed.",
+      "where": "verantyx/cross_geometry_forks.py",
+      "registered": "yes"
+    },
+    {
+      "kind": "module",
+      "name": "bot",
+      "about": "A bot for any set of documents: put documents in, get a bot that answers from them — no training.",
+      "where": "verantyx/bot.py"
+    },
+    {
+      "kind": "module",
+      "name": "grow",
+      "about": "The refusal log as a standing work queue — growth where questions failed.",
+      "where": "verantyx/grow.py"
+    },
+    {
+      "kind": "module",
+      "name": "polyglot",
+      "about": "One sovereign per language, and a question goes to exactly one.",
+      "where": "verantyx/polyglot.py"
+    },
+    {
+      "kind": "module",
+      "name": "sovereign",
+      "about": "Documents in, one sovereign node out — the whole procedure, run for real.",
+      "where": "verantyx/sovereign.py"
+    },
+    {
+      "kind": "fork",
+      "name": "a_refusal_says_what_would_close_it_fork",
+      "about": "Four of six refusals close by registration; two must not.",
+### 質問の十字
+{
+  "verdict": "ANSWER",
+  "query": "質問の十字",
+  "searched": 680,
+  "hits": [
+    {
+      "kind": "module",
+      "name": "cross",
+      "about": "",
+      "where": "verantyx/cross.py"
+    },
+    {
+      "kind": "module",
+      "name": "cross_geometry_forks",
+      "about": "Forks for the three unbuilt pieces of the original conception:",
+      "where": "verantyx/cross_geometry_forks.py"
+    },
+    {
+      "kind": "module",
+      "name": "cross_store",
+      "about": "CrossStore — core ごとに1つの十字を累積する多十字ネットワークの土台.",
+      "where": "verantyx/cross_store.py"
+    },
+    {
+      "kind": "module",
+      "name": "crossverify",
+      "about": "Check English claims against Japanese documents through the shared structure.",
+      "where": "verantyx/crossverify.py"
+    },
+    {
+      "kind": "module",
+      "name": "event_cross",
+      "about": "Event cross (事象の十字): the middle layer between a word's coarse placement and the relations between events.",
+      "where": "verantyx/event_cross.py"
+    },
+    {
+      "kind": "module",
+      "name": "experience_cross",
+      "about": "経験十字 — 経験のコンパイルを立体十字の上に置く(PREREG: experience_cross)。",
+      "where": "verantyx/experience_cross.py"

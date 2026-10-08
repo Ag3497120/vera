@@ -1,0 +1,7 @@
+tools/demo_question_forms.py with the w_question_forms2 files placed on top of the integrated tree (artifacts/w0-1/tmp/qf2_tree):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: (7, {'correct': 83, 'wrong_other': 2, 'wrong_overlap': 17}, {'abstain': 2246, 'correct': 135, 'wrong_other': 3, 'wrong_overlap': 16})
+tools/demo_question_forms.py in w_question_forms2's own commit 9c89f1e (git archive):
+DEMO OK
+tools/demo_question_forms.py does not exist in dev or in the integrated tree (dev tree check):
+ls: /Users/motonisihikoudai/Projects/vera-impl/wt/W0-1-S/artifacts/w0-1/tmp/dev_tree/tools/demo_question_forms.py: No such file or directory

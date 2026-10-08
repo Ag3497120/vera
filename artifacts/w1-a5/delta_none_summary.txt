@@ -1,0 +1,11 @@
+inputs=3851 same=3733 newly_read=50 refusal_reason_changed=54 read_to_refused=7 reading_changed=7 error_changed=0
+newly_read labels: {"CORRECT": 45, "UNSURE": 1, "WRONG": 4}
+read_to_refused labels: {"REGISTERED_REFUSAL": 7}
+reading_changed labels: {"CORRECTION": 7}
+rows that come from the frozen data files: {"newly_read": 4, "refusal_reason_changed": 1}
+by source and kind: {"ja.jsonl|refusal_reason_changed": 1, "ja_r12.jsonl|newly_read": 45, "ja_r12.jsonl|read_to_refused": 7, "ja_r12.jsonl|reading_changed": 7, "ja_r12.jsonl|refusal_reason_changed": 45, "ja_r8.jsonl|newly_read": 4, "w3b3_w1a4.jsonl|newly_read": 1, "w3b3_w1a4.jsonl|refusal_reason_changed": 8}
+newly_read	WRONG	ja_r8.jsonl	兄がそっと窓を開けた。	b1.judge on new_data: misread
+newly_read	WRONG	ja_r8.jsonl	母がゆっくり手紙を書いた。	b1.judge on new_data: misread
+newly_read	WRONG	ja_r8.jsonl	弟がきちんと靴を磨いた。	b1.judge on new_data: misread
+newly_read	WRONG	ja_r8.jsonl	姉がはっきり名前を書いた。	b1.judge on new_data: misread
+newly_read	UNSURE	w3b3_w1a4.jsonl	兄がとても喜んだ。	新しい読み: 喜ぶ {agent 兄} past, flags.adverbs [とても]。規約 2 は副詞を役割にしないので、規約だけから見れば節は正しい。しかし凍結データ w3b3_w1a4.jsonl の W3B3-W1A4-021 はこの文を「W1-a4 の誤読の文」として棄権で凍結している(程度の副詞を落とした読みを不完全とした出所)。凍結データと衝突(frozen_conflicts.md)

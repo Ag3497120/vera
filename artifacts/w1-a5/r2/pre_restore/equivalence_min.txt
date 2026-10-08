@@ -1,0 +1,5 @@
+equivalence of the implementation with the minimal change of the plan (plan_evidence/sim_change.diff applied to a copy of the round-1 tree taken before the edit: /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w1a5-impl2/min)
+inputs: artifacts/w1-a5/r2/entry_inputs.txt (3865), mode none
+MIN_SAME (byte-identical: entry_none_min.jsonl vs artifacts/w1-a5/r2/entry_none_after.jsonl)
+e55ec4c9ad07fe69601af0d64297089e37b2ba2a35732e801bae137a1a088a61  /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w1a5-impl2/entry_none_min.jsonl
+e55ec4c9ad07fe69601af0d64297089e37b2ba2a35732e801bae137a1a088a61  /Users/motonisihikoudai/Projects/vera-impl/wt/W1-a5-S/artifacts/w1-a5/r2/entry_none_after.jsonl

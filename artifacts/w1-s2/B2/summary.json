@@ -1,0 +1,625 @@
+{
+ "approx": {
+  "changed_by_transition": {},
+  "class_sum": 286,
+  "classes": {
+   "correct": 0,
+   "correct_abstain": 49,
+   "false_compliance": 0,
+   "misread": 0,
+   "over_abstain": 186,
+   "runtime_error": 0,
+   "unreachable": 51,
+   "unscorable": 0,
+   "wrong": 0
+  },
+  "definition": "主分類で UNJUDGED の規則を、その規則の detail.surface_approx（設計者の lenient 近似）に置き換えて同じ classify にかけた分類。読解器の代わりではなく、見出しの数（classes・headline）には入れない",
+  "rows_changed": 0
+ },
+ "bank": "B2",
+ "baselines": {
+  "pass_rate_definition": "(正答 + 正しい棄権) / 全問。V2_RULES の「表層戦略の正答率 35% 以下」を厳しい側で読む",
+  "strategies": {
+   "all_labels": {
+    "applicable": true,
+    "classes": {
+     "correct": 0,
+     "correct_abstain": 0,
+     "false_compliance": 64,
+     "misread": 0,
+     "over_abstain": 0,
+     "runtime_error": 0,
+     "total": 286,
+     "unreachable": 0,
+     "unscorable": 0,
+     "wrong": 222
+    },
+    "correct_rate": 0.0,
+    "false_compliance_rate": 0.223776,
+    "pass_rate": 0.0,
+    "pass_rate_approx": 0.0,
+    "wrong_rate": 0.776224
+   },
+   "always_abstain": {
+    "applicable": true,
+    "classes": {
+     "correct": 0,
+     "correct_abstain": 64,
+     "false_compliance": 0,
+     "misread": 0,
+     "over_abstain": 222,
+     "runtime_error": 0,
+     "total": 286,
+     "unreachable": 0,
+     "unscorable": 0,
+     "wrong": 0
+    },
+    "correct_rate": 0.0,
+    "false_compliance_rate": 0.0,
+    "pass_rate": 0.223776,
+    "pass_rate_approx": 0.223776,
+    "wrong_rate": 0.0
+   },
+   "echo_documents": {
+    "applicable": true,
+    "classes": {
+     "correct": 0,
+     "correct_abstain": 0,
+     "false_compliance": 64,
+     "misread": 0,
+     "over_abstain": 0,
+     "runtime_error": 0,
+     "total": 286,
+     "unreachable": 0,
+     "unscorable": 0,
+     "wrong": 222
+    },
+    "correct_rate": 0.0,
+    "false_compliance_rate": 0.223776,
+    "pass_rate": 0.0,
+    "pass_rate_approx": 0.0,
+    "wrong_rate": 0.776224
+   },
+   "echo_input": {
+    "applicable": true,
+    "classes": {
+     "correct": 0,
+     "correct_abstain": 0,
+     "false_compliance": 64,
+     "misread": 0,
+     "over_abstain": 0,
+     "runtime_error": 0,
+     "total": 286,
+     "unreachable": 0,
+     "unscorable": 0,
+     "wrong": 222
+    },
+    "correct_rate": 0.0,
+    "false_compliance_rate": 0.223776,
+    "pass_rate": 0.0,
+    "pass_rate_approx": 0.0,
+    "wrong_rate": 0.776224
+   },
+   "empty": {
+    "applicable": true,
+    "classes": {
+     "correct": 0,
+     "correct_abstain": 0,
+     "false_compliance": 64,
+     "misread": 0,
+     "over_abstain": 0,
+     "runtime_error": 0,
+     "total": 286,
+     "unreachable": 0,
+     "unscorable": 0,
+     "wrong": 222
+    },
+    "correct_rate": 0.0,
+    "false_compliance_rate": 0.223776,
+    "pass_rate": 0.0,
+    "pass_rate_approx": 0.0,
+    "wrong_rate": 0.776224
+   },
+   "first_option": {
+    "applicable": false,
+    "reason": "B2 には選択肢が無い"
+   }
+  },
+  "threshold": 0.35,
+  "weak_fixture": []
+ },
+ "by_category": {
+  "calculation_logic": {
+   "correct": 0,
+   "correct_abstain": 4,
+   "false_compliance": 0,
+   "misread": 0,
+   "over_abstain": 13,
+   "runtime_error": 0,
+   "total": 25,
+   "unreachable": 8,
+   "unscorable": 0,
+   "wrong": 0
+  },
+  "definition_explanation": {
+   "correct": 0,
+   "correct_abstain": 3,
+   "false_compliance": 0,
+   "misread": 0,
+   "over_abstain": 10,
+   "runtime_error": 0,
+   "total": 13,
+   "unreachable": 0,
+   "unscorable": 0,
+   "wrong": 0
+  },
+  "doc_qa_combine": {
+   "correct": 0,
+   "correct_abstain": 0,
+   "false_compliance": 0,
+   "misread": 0,
+   "over_abstain": 28,
+   "runtime_error": 0,
+   "total": 28,
+   "unreachable": 0,
+   "unscorable": 0,
+   "wrong": 0
+  },
+  "doc_qa_direct": {
+   "correct": 0,
+   "correct_abstain": 0,
+   "false_compliance": 0,
+   "misread": 0,
+   "over_abstain": 15,
+   "runtime_error": 0,
+   "total": 15,
+   "unreachable": 0,
+   "unscorable": 0,
+   "wrong": 0
+  },
+  "doc_qa_paraphrase": {
+   "correct": 0,
+   "correct_abstain": 0,
+   "false_compliance": 0,
+   "misread": 0,
+   "over_abstain": 22,
+   "runtime_error": 0,
+   "total": 22,
+   "unreachable": 0,
+   "unscorable": 0,
+   "wrong": 0
+  },
+  "instruction_transform": {
+   "correct": 0,
+   "correct_abstain": 0,
+   "false_compliance": 0,
+   "misread": 0,
+   "over_abstain": 35,
+   "runtime_error": 0,
+   "total": 35,
+   "unreachable": 0,
+   "unscorable": 0,
+   "wrong": 0
+  },
+  "missing_info": {
+   "correct": 0,
+   "correct_abstain": 38,
+   "false_compliance": 0,
+   "misread": 0,
+   "over_abstain": 0,
+   "runtime_error": 0,
+   "total": 39,
+   "unreachable": 1,
+   "unscorable": 0,
+   "wrong": 0
+  },
+  "multi_turn": {
+   "correct": 0,
+   "correct_abstain": 0,
+   "false_compliance": 0,
+   "misread": 0,
+   "over_abstain": 0,
+   "runtime_error": 0,
+   "total": 41,
+   "unreachable": 41,
+   "unscorable": 0,
+   "wrong": 0
+  },
+  "reason_compare": {
+   "correct": 0,
+   "correct_abstain": 4,
+   "false_compliance": 0,
+   "misread": 0,
+   "over_abstain": 14,
+   "runtime_error": 0,
+   "total": 18,
+   "unreachable": 0,
+   "unscorable": 0,
+   "wrong": 0
+  },
+  "sentence_check": {
+   "correct": 0,
+   "correct_abstain": 0,
+   "false_compliance": 0,
+   "misread": 0,
+   "over_abstain": 32,
+   "runtime_error": 0,
+   "total": 32,
+   "unreachable": 0,
+   "unscorable": 0,
+   "wrong": 0
+  },
+  "social": {
+   "correct": 0,
+   "correct_abstain": 0,
+   "false_compliance": 0,
+   "misread": 0,
+   "over_abstain": 17,
+   "runtime_error": 0,
+   "total": 18,
+   "unreachable": 1,
+   "unscorable": 0,
+   "wrong": 0
+  }
+ },
+ "by_difficulty": {
+  "1": {
+   "correct": 0,
+   "correct_abstain": 15,
+   "false_compliance": 0,
+   "misread": 0,
+   "over_abstain": 57,
+   "runtime_error": 0,
+   "total": 85,
+   "unreachable": 13,
+   "unscorable": 0,
+   "wrong": 0
+  },
+  "2": {
+   "correct": 0,
+   "correct_abstain": 20,
+   "false_compliance": 0,
+   "misread": 0,
+   "over_abstain": 78,
+   "runtime_error": 0,
+   "total": 118,
+   "unreachable": 20,
+   "unscorable": 0,
+   "wrong": 0
+  },
+  "3": {
+   "correct": 0,
+   "correct_abstain": 14,
+   "false_compliance": 0,
+   "misread": 0,
+   "over_abstain": 51,
+   "runtime_error": 0,
+   "total": 83,
+   "unreachable": 18,
+   "unscorable": 0,
+   "wrong": 0
+  }
+ },
+ "by_lang": {
+  "en": {
+   "correct": 0,
+   "correct_abstain": 17,
+   "false_compliance": 0,
+   "misread": 0,
+   "over_abstain": 72,
+   "runtime_error": 0,
+   "total": 112,
+   "unreachable": 23,
+   "unscorable": 0,
+   "wrong": 0
+  },
+  "ja": {
+   "correct": 0,
+   "correct_abstain": 32,
+   "false_compliance": 0,
+   "misread": 0,
+   "over_abstain": 114,
+   "runtime_error": 0,
+   "total": 174,
+   "unreachable": 28,
+   "unscorable": 0,
+   "wrong": 0
+  }
+ },
+ "by_unit": {
+  "B2E-CNV": {
+   "correct": 0,
+   "correct_abstain": 1,
+   "false_compliance": 0,
+   "misread": 0,
+   "over_abstain": 8,
+   "runtime_error": 0,
+   "total": 30,
+   "unreachable": 21,
+   "unscorable": 0,
+   "wrong": 0
+  },
+  "B2E-DQA": {
+   "correct": 0,
+   "correct_abstain": 5,
+   "false_compliance": 0,
+   "misread": 0,
+   "over_abstain": 21,
+   "runtime_error": 0,
+   "total": 26,
+   "unreachable": 0,
+   "unscorable": 0,
+   "wrong": 0
+  },
+  "B2E-OPS": {
+   "correct": 0,
+   "correct_abstain": 0,
+   "false_compliance": 0,
+   "misread": 0,
+   "over_abstain": 29,
+   "runtime_error": 0,
+   "total": 29,
+   "unreachable": 0,
+   "unscorable": 0,
+   "wrong": 0
+  },
+  "B2E-RSN": {
+   "correct": 0,
+   "correct_abstain": 11,
+   "false_compliance": 0,
+   "misread": 0,
+   "over_abstain": 14,
+   "runtime_error": 0,
+   "total": 27,
+   "unreachable": 2,
+   "unscorable": 0,
+   "wrong": 0
+  },
+  "B2J-ABS": {
+   "correct": 0,
+   "correct_abstain": 16,
+   "false_compliance": 0,
+   "misread": 0,
+   "over_abstain": 6,
+   "runtime_error": 0,
+   "total": 22,
+   "unreachable": 0,
+   "unscorable": 0,
+   "wrong": 0
+  },
+  "B2J-CAL": {
+   "correct": 0,
+   "correct_abstain": 2,
+   "false_compliance": 0,
+   "misread": 0,
+   "over_abstain": 9,
+   "runtime_error": 0,
+   "total": 17,
+   "unreachable": 6,
+   "unscorable": 0,
+   "wrong": 0
+  },
+  "B2J-CHK": {
+   "correct": 0,
+   "correct_abstain": 0,
+   "false_compliance": 0,
+   "misread": 0,
+   "over_abstain": 18,
+   "runtime_error": 0,
+   "total": 18,
+   "unreachable": 0,
+   "unscorable": 0,
+   "wrong": 0
+  },
+  "B2J-DQA": {
+   "correct": 0,
+   "correct_abstain": 4,
+   "false_compliance": 0,
+   "misread": 0,
+   "over_abstain": 20,
+   "runtime_error": 0,
+   "total": 24,
+   "unreachable": 0,
+   "unscorable": 0,
+   "wrong": 0
+  },
+  "B2J-DRC": {
+   "correct": 0,
+   "correct_abstain": 5,
+   "false_compliance": 0,
+   "misread": 0,
+   "over_abstain": 16,
+   "runtime_error": 0,
+   "total": 21,
+   "unreachable": 0,
+   "unscorable": 0,
+   "wrong": 0
+  },
+  "B2J-MDQ": {
+   "correct": 0,
+   "correct_abstain": 4,
+   "false_compliance": 0,
+   "misread": 0,
+   "over_abstain": 16,
+   "runtime_error": 0,
+   "total": 20,
+   "unreachable": 0,
+   "unscorable": 0,
+   "wrong": 0
+  },
+  "B2J-MTN": {
+   "correct": 0,
+   "correct_abstain": 0,
+   "false_compliance": 0,
+   "misread": 0,
+   "over_abstain": 0,
+   "runtime_error": 0,
+   "total": 20,
+   "unreachable": 20,
+   "unscorable": 0,
+   "wrong": 0
+  },
+  "B2J-SOC": {
+   "correct": 0,
+   "correct_abstain": 1,
+   "false_compliance": 0,
+   "misread": 0,
+   "over_abstain": 9,
+   "runtime_error": 0,
+   "total": 12,
+   "unreachable": 2,
+   "unscorable": 0,
+   "wrong": 0
+  },
+  "B2J-TRF": {
+   "correct": 0,
+   "correct_abstain": 0,
+   "false_compliance": 0,
+   "misread": 0,
+   "over_abstain": 20,
+   "runtime_error": 0,
+   "total": 20,
+   "unreachable": 0,
+   "unscorable": 0,
+   "wrong": 0
+  }
+ },
+ "class_sum": 286,
+ "classes": {
+  "correct": {
+   "count": 0,
+   "ja": "正答",
+   "rate_all": 0.0,
+   "rate_reached": 0.0
+  },
+  "correct_abstain": {
+   "count": 49,
+   "ja": "正しい棄権",
+   "rate_all": 0.171329,
+   "rate_reached": 0.208511
+  },
+  "false_compliance": {
+   "count": 0,
+   "ja": "誤った応諾",
+   "rate_all": 0.0,
+   "rate_reached": 0.0
+  },
+  "misread": {
+   "count": 0,
+   "ja": "誤読",
+   "rate_all": 0.0,
+   "rate_reached": 0.0
+  },
+  "over_abstain": {
+   "count": 186,
+   "ja": "過剰棄権",
+   "rate_all": 0.65035,
+   "rate_reached": 0.791489
+  },
+  "runtime_error": {
+   "count": 0,
+   "ja": "実行時エラー",
+   "rate_all": 0.0,
+   "rate_reached": 0.0
+  },
+  "unreachable": {
+   "count": 51,
+   "ja": "入口未到達",
+   "rate_all": 0.178322,
+   "rate_reached": null
+  },
+  "unscorable": {
+   "count": 0,
+   "ja": "採点不能",
+   "rate_all": 0.0,
+   "rate_reached": 0.0
+  },
+  "wrong": {
+   "count": 0,
+   "ja": "誤答",
+   "rate_all": 0.0,
+   "rate_reached": 0.0
+  }
+ },
+ "entries": [
+  "cli-ask-round5"
+ ],
+ "evidence_strict": {
+  "correct": 0,
+  "correct_and_evidence_ok": 0,
+  "correct_and_evidence_ok_rate_all": 0.0,
+  "definition": "evidence_required の問題で、Vera が返した根拠文が expect.evidence の各文を含むか。内容の分類には入れない",
+  "evidence_match_all": {
+   "FAIL": 123,
+   "NOT_REQUIRED": 112,
+   "None": 51
+  },
+  "evidence_match_among_correct": {}
+ },
+ "headline": {
+  "correct_abstain_rate": {
+   "all": 0.171329,
+   "reached": 0.208511
+  },
+  "correct_rate": {
+   "all": 0.0,
+   "reached": 0.0
+  },
+  "denominators": {
+   "all": 286,
+   "reached": 235
+  },
+  "false_compliance_rate": {
+   "all": 0.0,
+   "reached": 0.0
+  },
+  "misread_rate": {
+   "all": 0.0,
+   "reached": 0.0
+  },
+  "over_abstain_rate": {
+   "all": 0.65035,
+   "reached": 0.791489
+  },
+  "unreachable_rate": {
+   "all": 0.178322,
+   "reached": null
+  },
+  "wrong_rate": {
+   "all": 0.0,
+   "reached": 0.0
+  }
+ },
+ "item_invalid_codes": {},
+ "judge_unavailable_reasons": {},
+ "profile": "v2",
+ "quarantine": {
+  "count": 14,
+  "ids": [
+   "B2E-DQA-12",
+   "B2E-DQA-18",
+   "B2E-DQA-27",
+   "B2E-DQA-29",
+   "B2E-OPS-26",
+   "B2E-RSN-08",
+   "B2E-RSN-16",
+   "B2E-RSN-22",
+   "B2J-ABS-13",
+   "B2J-ABS-21",
+   "B2J-CAL-17",
+   "B2J-DRC-05",
+   "B2J-MDQ-17",
+   "B2J-MDQ-18"
+  ],
+  "not_in_items": [],
+  "shape": "quarantined"
+ },
+ "runtime_error_breakdown": {},
+ "runtime_error_provenance_unverified": 0,
+ "total": 286,
+ "unknown_expect_keys": {},
+ "unreachable_by_capability": {
+  "conversation_history": 51
+ },
+ "unscorable_breakdown": {}
+}

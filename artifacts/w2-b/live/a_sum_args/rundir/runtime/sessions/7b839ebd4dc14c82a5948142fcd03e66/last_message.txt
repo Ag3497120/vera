@@ -1,0 +1,2 @@
+{"type":"CLAIM","task":"SumArgs","evidence":"Created sum_args.py using only the Python standard library; it prints the sum of integer arguments and prints 0 with no arguments."}
+{"type":"DONE"}

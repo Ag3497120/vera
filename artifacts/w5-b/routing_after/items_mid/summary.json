@@ -1,0 +1,115 @@
+{
+ "items": 56,
+ "errors": 0,
+ "route_expected": 40,
+ "route_correct": 0,
+ "route_abstained": 40,
+ "route_wrong_agent": 0,
+ "undecided_expected": 16,
+ "undecided_correct": 16,
+ "undecided_got_agent": 0,
+ "misroutes": 0,
+ "always_abstain_correct": 16,
+ "correct_total": 16,
+ "undecided_reason": {
+  "ABSTAINED": 56
+ },
+ "abstention_type": {
+  "INCOMPLETE_READING": 56
+ },
+ "basis_kind": {
+  "None": 56
+ },
+ "per_explanation": {
+  "e1": {
+   "questions": 9,
+   "units": 9,
+   "by_status": {
+    "MAPPED": 0,
+    "COMPARISON_ONLY": 0,
+    "UNREAD": 9,
+    "PREDICATE_CLASS_UNKNOWN": 0,
+    "WORK_TERM_UNKNOWN": 0,
+    "NAME_UNRESOLVED": 0,
+    "AMBIGUOUS_RELATION": 0,
+    "CONTRADICTION": 0,
+    "UNREPRESENTABLE": 0
+   }
+  },
+  "e2": {
+   "questions": 9,
+   "units": 13,
+   "by_status": {
+    "MAPPED": 0,
+    "COMPARISON_ONLY": 0,
+    "UNREAD": 13,
+    "PREDICATE_CLASS_UNKNOWN": 0,
+    "WORK_TERM_UNKNOWN": 0,
+    "NAME_UNRESOLVED": 0,
+    "AMBIGUOUS_RELATION": 0,
+    "CONTRADICTION": 0,
+    "UNREPRESENTABLE": 0
+   }
+  },
+  "e3": {
+   "questions": 10,
+   "units": 10,
+   "by_status": {
+    "MAPPED": 0,
+    "COMPARISON_ONLY": 0,
+    "UNREAD": 10,
+    "PREDICATE_CLASS_UNKNOWN": 0,
+    "WORK_TERM_UNKNOWN": 0,
+    "NAME_UNRESOLVED": 0,
+    "AMBIGUOUS_RELATION": 0,
+    "CONTRADICTION": 0,
+    "UNREPRESENTABLE": 0
+   }
+  },
+  "e4": {
+   "questions": 9,
+   "units": 13,
+   "by_status": {
+    "MAPPED": 0,
+    "COMPARISON_ONLY": 0,
+    "UNREAD": 13,
+    "PREDICATE_CLASS_UNKNOWN": 0,
+    "WORK_TERM_UNKNOWN": 0,
+    "NAME_UNRESOLVED": 0,
+    "AMBIGUOUS_RELATION": 0,
+    "CONTRADICTION": 0,
+    "UNREPRESENTABLE": 0
+   }
+  },
+  "e5": {
+   "questions": 9,
+   "units": 10,
+   "by_status": {
+    "MAPPED": 1,
+    "COMPARISON_ONLY": 0,
+    "UNREAD": 9,
+    "PREDICATE_CLASS_UNKNOWN": 0,
+    "WORK_TERM_UNKNOWN": 0,
+    "NAME_UNRESOLVED": 0,
+    "AMBIGUOUS_RELATION": 0,
+    "CONTRADICTION": 0,
+    "UNREPRESENTABLE": 0
+   }
+  },
+  "e6": {
+   "questions": 10,
+   "units": 10,
+   "by_status": {
+    "MAPPED": 0,
+    "COMPARISON_ONLY": 0,
+    "UNREAD": 10,
+    "PREDICATE_CLASS_UNKNOWN": 0,
+    "WORK_TERM_UNKNOWN": 0,
+    "NAME_UNRESOLVED": 0,
+    "AMBIGUOUS_RELATION": 0,
+    "CONTRADICTION": 0,
+    "UNREPRESENTABLE": 0
+   }
+  }
+ }
+}

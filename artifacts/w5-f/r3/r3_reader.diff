@@ -1,0 +1,55 @@
+2875c2875,2876
+< def _quoted_focus_after_case_reason(toks, lo, hi, text, *, quoted_only=False):
+---
+> def _quoted_focus_after_case_reason(toks, lo, hi, text, *, separated_only=False):
+>     """W5-f F-1 r3 (docs 10H.e): after a case particle, skip symbols/blanks; refuse a 1-2 char symbol-bracketed fragment or a focus particle."""
+2879,2896c2880,2897
+<         later = inside[offset + 1:]
+<         if not quoted_only:
+<             first = next((t for t in later if t[0].feature.pos1 not in ('補助記号', '空白', '記号')), None)
+<             if first is not None and first[0].feature.pos1 == '助詞' and first[0].feature.pos2 in ('係助詞', '副助詞'):
+<                 return 'PLACEMENT_FOCUS_PARTICLE_AFTER_CASE:%s:%s' % (word.surface, first[0].surface)
+<         opening = next((offset + 1 + j for j, t in enumerate(later)
+<                         if not (t[0].feature.pos1 == '空白'
+<                                 or (t[0].feature.pos1 == '補助記号' and t[0].feature.pos2 not in ('括弧開', '括弧閉')))), None)
+<         if opening is None: continue
+<         if inside[opening][0].feature.pos1 != '補助記号' or inside[opening][0].feature.pos2 != '括弧開':
+<             continue
+<         closing = next((j for j in range(opening + 1, len(inside))
+<                         if inside[j][0].feature.pos1 == '補助記号' and inside[j][0].feature.pos2 == '括弧閉'), None)
+<         if closing is None: continue
+<         open_token, close_token = inside[opening], inside[closing]
+<         fragment = text[open_token[2] - lo:close_token[1] - lo]
+<         if 1 <= len(fragment) <= 2:
+<             return 'PLACEMENT_QUOTED_PARTICLE_AFTER_CASE:%s' % word.surface
+---
+>         j = offset + 1
+>         while j < len(inside) and inside[j][0].feature.pos1 in ('補助記号', '空白', '記号'):
+>             opener = inside[j][0]
+>             if opener.feature.pos1 == '記号' or (opener.feature.pos1 == '補助記号' and opener.feature.pos2 not in ('読点', '句点', '括弧閉')):
+>                 if opener.feature.pos2 == '括弧開':
+>                     k = next((k for k in range(j + 1, len(inside)) if inside[k][0].feature.pos1 == '補助記号' and inside[k][0].feature.pos2 == '括弧閉'), None)
+>                 else:
+>                     k = next((k for k in range(j + 1, len(inside)) if inside[k][0].surface == opener.surface), None)
+>                 if k is not None:
+>                     fragment = text[inside[j][2] - lo:inside[k][1] - lo].strip()
+>                     if 1 <= len(fragment) <= 2:
+>                         return 'PLACEMENT_QUOTED_PARTICLE_AFTER_CASE:%s' % word.surface
+>             j += 1
+>         if j >= len(inside): continue
+>         separated = j > offset + 1 or inside[j][1] > inside[j - 1][2]
+>         first = inside[j][0]
+>         if first.feature.pos1 == '助詞' and first.feature.pos2 in ('係助詞', '副助詞') and (separated or not separated_only):
+>             return 'PLACEMENT_FOCUS_PARTICLE_AFTER_CASE:%s:%s' % (word.surface, first.surface)
+2907c2908
+<     reason = _quoted_focus_after_case_reason(_tokens(text), 0, len(text), text, quoted_only=True)
+---
+>     reason = _quoted_focus_after_case_reason(_tokens(text), 0, len(text), text, separated_only=True)
+2920c2921
+<     """W5-f (docs 10H): refuse place, goal, source or で fillers whose head is 名詞/普通名詞/副詞可能."""
+---
+>     """W5-f r3: retracted by the auditor (2026-10-04 13:30); not called. Kept as the record of K261 (docs 10H.e)."""
+2938c2939
+<         focus = typed_quoted_focus_after_case_ja(toks, clause) or typed_relational_filler_ja(toks, typed)
+---
+>         focus = typed_quoted_focus_after_case_ja(toks, clause)

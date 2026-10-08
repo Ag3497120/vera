@@ -14,6 +14,7 @@ import threading
 import unittest
 from unittest.mock import patch
 
+import _vera_env
 from verantyx import contract_sandbox as sandbox
 
 
@@ -195,7 +196,7 @@ class SandboxBoundaryTests(unittest.TestCase):
         self.assertEqual(result['correctness'],'not_established_by_execution')
 
 
-@unittest.skipUnless(os.environ.get('VERA_SANDBOX_INTEGRATION')=='1','requires opt-in actual OS execution; skipped is not verification')
+@unittest.skipUnless(_vera_env.available('sandbox_integration'),_vera_env.reason('sandbox_integration'))
 class ActualSeatbeltTests(unittest.TestCase):
     def require(self,result):
         self.assertEqual(result['status'],'EXECUTED',json.dumps(result,ensure_ascii=False))

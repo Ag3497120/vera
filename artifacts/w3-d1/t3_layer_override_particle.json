@@ -1,0 +1,8 @@
+{
+ "schema": "verantyx.realize_forms/1",
+ "version": 1,
+ "lang": "ja",
+ "role_particle": {
+  "patient": "が"
+ }
+}

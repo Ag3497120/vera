@@ -1,0 +1,26 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 10 items / 9 deselected / 1 selected
+
+tests/attack/test_semantic_unknown_fabrication.py::test_constructed_neighbour_candidate_is_not_answer_or_evidence FAILED [100%]
+
+=== FAILURES ===
+________ test_constructed_neighbour_candidate_is_not_answer_or_evidence ________
+
+    def test_constructed_neighbour_candidate_is_not_answer_or_evidence() -> None:
+        report = unknown_candidates(_view(), "Alicecats")
+    
+        _assert_candidate_is_constructed_only(report)
+>       assert all(candidate.kind == "KIN_NEIGHBOURHOOD"
+                   for candidate in report.candidates)
+E       assert False
+E        +  where False = all(<generator object test_constructed_neighbour_candidate_is_not_answer_or_evidence.<locals>.<genexpr> at 0x<ADDR>>)
+
+tests/attack/test_semantic_unknown_fabrication.py:111: AssertionError
+=== short test summary info ===
+FAILED tests/attack/test_semantic_unknown_fabrication.py::test_constructed_neighbour_candidate_is_not_answer_or_evidence - assert False
+ +  where False = all(<generator object test_constructed_neighbour_candidate_is_not_answer_or_evidence.<locals>.<genexpr> at 0x<ADDR>>)
+=== 1 failed, 9 deselected ===

@@ -1,0 +1,4 @@
+raw files compared: 23 results rows: 25 25
+summary equal (after stripping clocks): True
+keys dropped (both sides, all files): {'clock:elapsed_ms': 122, 'clock:ingest_ms': 30, 'counts:unknown_origin': 23, 'counts:unknown_origin_by_family': 23, 'counts:unknown_origin_values': 23, 'note:classify_version': 23, 'note:confirm_id_version': 23}
+differences: 0

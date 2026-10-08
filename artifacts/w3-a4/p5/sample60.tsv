@@ -1,0 +1,61 @@
+word	n_seen	ns	state	origin	top	by	why	gen_type	gen_frame	rd_sig	sahen_uses_max_src	judgement	reason
+確認する	550173	P	DECIDED	estimated	P_COGNITION	gen_frame	DISTRIBUTION_DISAGREES	P_COGNITION	{"を": ["ABSTRACT", "EVENT_ACT", "INFO_LANGUAGE"]}	{"role_distribution@jawiki": ["を"]}	318061	正しい	最も普通の意味が P_COGNITION の名称に当てはまる（より明らかな型は無い）
+表示する	226254	P	DECIDED	estimated	P_ACT	gen_frame		P_ACT	{"を": ["ARTIFACT", "INFO_LANGUAGE"]}	{}	112985	正しい	最も普通の意味が P_ACT の名称に当てはまる（より明らかな型は無い）
+実行する	151916	P	DECIDED	estimated	P_ACT	gen_frame	DISTRIBUTION_DISAGREES	P_ACT	{"を": ["ABSTRACT", "EVENT_ACT"]}	{"role_distribution@codex:general_qa": ["を"], "role_distribution@codex:paraphrase_entail": ["が", "を"], "role_distribution@jawiki": ["を"]}	77639	正しい	最も普通の意味が P_ACT の名称に当てはまる（より明らかな型は無い）
+指定する	124350	P	DECIDED	estimated	P_ACT	gen_frame		P_ACT	{"を": ["ABSTRACT", "ARTIFACT", "INFO_LANGUAGE"]}	{}	63775	正しい	最も普通の意味が P_ACT の名称に当てはまる（より明らかな型は無い）
+存在する	68537	P	DECIDED	estimated	P_EXIST	gen_frame		P_EXIST	{"が": ["ABSTRACT", "ANIMAL", "ARTIFACT", "EVENT_ACT", "GROUP_ORG", "PERSON", "PLACE"]}	{}	33942	正しい	最も普通の意味が P_EXIST の名称に当てはまる（より明らかな型は無い）
+説明する	68043	P	DECIDED	direct	P_COMMUNICATE	gen_frame,role_distribution@codex:general_qa		P_COMMUNICATE	{"に": ["GROUP_ORG", "PERSON"], "を": ["ABSTRACT", "EVENT_ACT", "INFO_LANGUAGE"]}	{"role_distribution@codex:general_qa": ["を"]}	32360	正しい	最も普通の意味が 伝達 の名称に当てはまる（より明らかな型は無い）
+記録する	58459	P	DECIDED	estimated	P_CREATE	gen_frame		P_CREATE	{"に": ["ARTIFACT", "INFO_LANGUAGE"], "を": ["EVENT_ACT", "INFO_LANGUAGE"]}	{}	36356	疑わしい	書き留める行為。作成にも当たる
+追加する	58047	P	DECIDED	estimated	P_CHANGE	gen_frame	DISTRIBUTION_DISAGREES	P_CHANGE	{"に": ["ABSTRACT", "ARTIFACT", "EVENT_ACT", "INFO_LANGUAGE"], "を": ["ABSTRACT", "ARTIFACT", "EVENT_ACT", "INFO_LANGUAGE"]}	{"role_distribution@codex:paraphrase_entail": ["を"], "role_distribution@codex:pro": ["を"]}	36159	正しい	最も普通の意味が P_CHANGE の名称に当てはまる（より明らかな型は無い）
+変更する	56658	P	DECIDED	estimated	P_CHANGE	gen_frame	DISTRIBUTION_DISAGREES	P_CHANGE	{"を": ["ABSTRACT", "ARTIFACT", "INFO_LANGUAGE", "STATE_PROPERTY"]}	{"role_distribution@codex:code_qa": ["を"], "role_distribution@codex:general_qa": ["を"]}	39923	正しい	最も普通の意味が P_CHANGE の名称に当てはまる（より明らかな型は無い）
+変換する	50378	P	DECIDED	estimated	P_CHANGE	gen_frame		P_CHANGE	{"に": ["ABSTRACT", "ARTIFACT", "INFO_LANGUAGE"], "を": ["ABSTRACT", "ARTIFACT", "INFO_LANGUAGE", "SUBSTANCE_FOOD"]}	{}	28721	正しい	最も普通の意味が P_CHANGE の名称に当てはまる（より明らかな型は無い）
+発売する	48755	P	DECIDED	estimated	P_CREATE	gen_frame		P_CREATE	{"を": ["ARTIFACT", "SUBSTANCE_FOOD", "WORK"]}	{}	48588	疑わしい	売り出す。作成より授受・伝達に近い面もある
+一致する	48004	P	DECIDED	estimated	P_STATE	gen_frame		P_STATE	{"が": ["ABSTRACT", "ARTIFACT", "EVENT_ACT", "INFO_LANGUAGE", "PERSON"], "と": ["ABSTRACT", "ARTIFACT", "EVENT_ACT", "INFO_LANGUAGE", "PERSON"]}	{}	28356	正しい	最も普通の意味が P_STATE の名称に当てはまる（より明らかな型は無い）
+発生する	47116	P	DECIDED	estimated	P_EXIST	gen_frame		P_EXIST	{"が": ["ABSTRACT", "EVENT_ACT", "NATURAL_PHENOMENON"]}	{}	35245	正しい	最も普通の意味が P_EXIST の名称に当てはまる（より明らかな型は無い）
+対応する	45255	P	DECIDED	estimated	P_STATE	gen_frame		P_STATE	{"と": ["ABSTRACT", "ARTIFACT", "EVENT_ACT", "GROUP_ORG", "PERSON"], "に": ["ABSTRACT", "ARTIFACT", "EVENT_ACT", "GROUP_ORG", "PERSON"]}	{}	23700	疑わしい	対応（照応）なら状態、対処なら行為。多義
+保存する	44686	P	DECIDED	estimated	P_ACT	gen_frame	DISTRIBUTION_DISAGREES	P_ACT	{"に": ["ARTIFACT", "INFO_LANGUAGE", "PLACE"], "を": ["ABSTRACT", "ARTIFACT", "INFO_LANGUAGE", "SUBSTANCE_FOOD"]}	{"role_distribution@codex:conversation": ["を", "に"], "role_distribution@codex:general_qa": ["を"], "role_distribution@codex:narrative": ["を"], "role_distribution@codex:pro": ["を"], "role_distribution@jawiki": ["を"]}	27950	正しい	最も普通の意味が P_ACT の名称に当てはまる（より明らかな型は無い）
+放送する	43544	P	DECIDED	estimated	P_COMMUNICATE	gen_frame		P_COMMUNICATE	{"を": ["EVENT_ACT", "INFO_LANGUAGE", "WORK"]}	{}	43212	正しい	最も普通の意味が 伝達 の名称に当てはまる（より明らかな型は無い）
+検証する	43039	P	DECIDED	estimated	P_COGNITION	gen_frame		P_COGNITION	{"を": ["ABSTRACT", "ARTIFACT", "EVENT_ACT", "INFO_LANGUAGE"]}	{}	28594	正しい	最も普通の意味が P_COGNITION の名称に当てはまる（より明らかな型は無い）
+失敗する	40925	P	DECIDED	estimated	P_STATE	gen_frame		P_STATE	{"に": ["ABSTRACT", "ARTIFACT", "EVENT_ACT"]}	{}	27731	疑わしい	出来事。状態とも変化とも読める
+比較する	40780	P	DECIDED	estimated	P_COGNITION	gen_frame		P_COGNITION	{"を": ["ABSTRACT", "ARTIFACT", "EVENT_ACT", "INFO_LANGUAGE", "STATE_PROPERTY"]}	{}	19918	正しい	最も普通の意味が P_COGNITION の名称に当てはまる（より明らかな型は無い）
+用意する	39756	P	DECIDED	estimated	P_CREATE	gen_frame	DISTRIBUTION_DISAGREES	P_CREATE	{"を": ["ABSTRACT", "ARTIFACT", "EVENT_ACT", "INFO_LANGUAGE", "SUBSTANCE_FOOD"]}	{"role_distribution@codex:code_qa": ["を"], "role_distribution@codex:paraphrase_entail": ["を"], "role_distribution@codex:pro": ["を"]}	14302	疑わしい	準備する。作成とも行為とも読める
+設定する	38878	P	DECIDED	estimated	P_ACT	gen_frame		P_ACT	{"を": ["ABSTRACT", "ARTIFACT", "EVENT_ACT", "INFO_LANGUAGE", "STATE_PROPERTY"]}	{}	25688	正しい	最も普通の意味が P_ACT の名称に当てはまる（より明らかな型は無い）
+検討する	38079	P	DECIDED	estimated	P_COGNITION	gen_frame	DISTRIBUTION_DISAGREES	P_COGNITION	{"を": ["ABSTRACT", "ARTIFACT", "EVENT_ACT", "INFO_LANGUAGE"]}	{"role_distribution@codex:conversation": ["を"], "role_distribution@codex:general_qa": ["を"], "role_distribution@codex:paraphrase_entail": ["を"], "role_distribution@jawiki": ["を"]}	34085	正しい	最も普通の意味が P_COGNITION の名称に当てはまる（より明らかな型は無い）
+利用する	37295	P	DECIDED	estimated	P_ACT	gen_frame		P_ACT	{"を": ["ABSTRACT", "ARTIFACT", "EVENT_ACT", "INFO_LANGUAGE", "PLACE"]}	{}	20884	正しい	最も普通の意味が P_ACT の名称に当てはまる（より明らかな型は無い）
+位置する	36542	P	DECIDED	estimated	P_STATE	gen_frame		P_STATE	{"に": ["ARTIFACT", "PLACE"]}	{}	34594	疑わしい	存在のほうが近い。状態でも間違いとは言い切れない
+相談する	34679	P	DECIDED	estimated	P_COMMUNICATE	gen_frame		P_COMMUNICATE	{"と": ["GROUP_ORG", "PERSON"], "に": ["GROUP_ORG", "PERSON"]}	{}	16763	正しい	最も普通の意味が 伝達 の名称に当てはまる（より明らかな型は無い）
+取得する	34608	P	DECIDED	estimated	P_GIVE	gen_frame		P_GIVE	{"から": ["GROUP_ORG", "PERSON", "PLACE"], "を": ["ABSTRACT", "ARTIFACT", "EVENT_ACT", "INFO_LANGUAGE"]}	{}	20028	疑わしい	入手。授受と所有のどちらとも読める
+処理する	34318	P	DECIDED	estimated	P_ACT	gen_frame	DISTRIBUTION_DISAGREES	P_ACT	{"を": ["ABSTRACT", "ARTIFACT", "EVENT_ACT", "INFO_LANGUAGE", "SUBSTANCE_FOOD"]}	{"role_distribution@codex:general_qa": ["を"], "role_distribution@codex:paraphrase_entail": ["を"]}	26170	正しい	最も普通の意味が P_ACT の名称に当てはまる（より明らかな型は無い）
+判定する	33123	P	DECIDED	estimated	P_COGNITION	gen_frame		P_COGNITION	{"を": ["ABSTRACT", "ARTIFACT", "EVENT_ACT", "INFO_LANGUAGE", "STATE_PROPERTY"]}	{}	18050	正しい	最も普通の意味が P_COGNITION の名称に当てはまる（より明らかな型は無い）
+明示する	32692	P	DECIDED	estimated	P_COMMUNICATE	gen_frame		P_COMMUNICATE	{"を": ["ABSTRACT", "ARTIFACT", "INFO_LANGUAGE", "STATE_PROPERTY"]}	{}	24499	正しい	最も普通の意味が 伝達 の名称に当てはまる（より明らかな型は無い）
+更新する	31696	P	DECIDED	estimated	P_CHANGE	gen_frame	DISTRIBUTION_DISAGREES	P_CHANGE	{"を": ["ABSTRACT", "ARTIFACT", "EVENT_ACT", "INFO_LANGUAGE", "STATE_PROPERTY"]}	{"role_distribution@codex:general_qa": ["を"]}	22689	正しい	最も普通の意味が P_CHANGE の名称に当てはまる（より明らかな型は無い）
+併置する	34	P	DECIDED	estimated	P_ACT	gen_frame		P_ACT	{"に": ["PLACE"], "を": ["ABSTRACT", "ARTIFACT", "PLACE"]}	{}	33	正しい	最も普通の意味が P_ACT の名称に当てはまる（より明らかな型は無い）
+まねする	621	P	DECIDED	estimated	P_COGNITION	gen_frame		P_COGNITION	{"を": ["ABSTRACT", "ANIMAL", "ARTIFACT", "EVENT_ACT", "GROUP_ORG", "PERSON"]}	{}	229	疑わしい	模倣は行為。思考・認識とは言い切れない
+追突する	44	P	DECIDED	estimated	P_ACT	gen_frame		P_ACT	{"に": ["ARTIFACT", "PLACE"]}	{}	22	疑わしい	追突は移動とも行為とも読める
+商売する	37	P	DECIDED	estimated	P_ACT	gen_frame		P_ACT	{"が": ["GROUP_ORG", "PERSON"], "を": ["ABSTRACT", "ARTIFACT", "SUBSTANCE_FOOD"]}	{}	33	正しい	最も普通の意味が P_ACT の名称に当てはまる（より明らかな型は無い）
+従軍する	310	P	DECIDED	estimated	P_ACT	gen_frame		P_ACT	{"に": ["EVENT_ACT", "GROUP_ORG"]}	{}	308	正しい	最も普通の意味が P_ACT の名称に当てはまる（より明らかな型は無い）
+反復する	2937	P	DECIDED	estimated	P_ACT	gen_frame	DISTRIBUTION_DISAGREES	P_ACT	{"を": ["ABSTRACT", "EVENT_ACT", "INFO_LANGUAGE"]}	{"role_distribution@codex:code": ["を"], "role_distribution@codex:figurative_commonsense": ["を"]}	2122	正しい	最も普通の意味が P_ACT の名称に当てはまる（より明らかな型は無い）
+殉教する	79	P	DECIDED	estimated	P_STATE	gen_frame		P_STATE	{"に": ["ABSTRACT"]}	{}	78	疑わしい	死ぬ行為。状態とは言い難いが他の型も決め手に欠ける
+傑出する	139	P	DECIDED	estimated	P_STATE	gen_frame		P_STATE	{"が": ["ABSTRACT", "ARTIFACT", "GROUP_ORG", "PERSON"]}	{}	139	正しい	最も普通の意味が P_STATE の名称に当てはまる（より明らかな型は無い）
+静置する	25	P	DECIDED	estimated	P_ACT	gen_frame		P_ACT	{"を": ["ARTIFACT", "SUBSTANCE_FOOD"]}	{}	24	正しい	最も普通の意味が P_ACT の名称に当てはまる（より明らかな型は無い）
+転移する	89	P	DECIDED	estimated	P_MOVE	gen_frame		P_MOVE	{"が": ["ABSTRACT", "BODY_PART"], "に": ["BODY_PART", "PLACE"]}	{}	64	正しい	最も普通の意味が 移動 の名称に当てはまる（より明らかな型は無い）
+診断する	997	P	DECIDED	estimated	P_COGNITION	gen_frame	DISTRIBUTION_DISAGREES	P_COGNITION	{"を": ["ABSTRACT", "ANIMAL", "PERSON", "STATE_PROPERTY"]}	{"role_distribution@jawiki": ["を"]}	635	正しい	最も普通の意味が P_COGNITION の名称に当てはまる（より明らかな型は無い）
+荷崩れする	33	P	DECIDED	estimated	P_CHANGE	gen_frame		P_CHANGE	{"が": ["ARTIFACT", "SUBSTANCE_FOOD"]}	{}	24	正しい	最も普通の意味が P_CHANGE の名称に当てはまる（より明らかな型は無い）
+レビューする	4692	P	DECIDED	estimated	P_COGNITION	gen_frame		P_COGNITION	{"に": ["GROUP_ORG", "PERSON"], "を": ["ABSTRACT", "ARTIFACT", "WORK"]}	{}	4617	正しい	最も普通の意味が P_COGNITION の名称に当てはまる（より明らかな型は無い）
+改造する	389	P	DECIDED	estimated	P_CHANGE	gen_frame	DISTRIBUTION_DISAGREES	P_CHANGE	{"を": ["ARTIFACT"]}	{"role_distribution@jawiki": ["を"]}	380	正しい	最も普通の意味が P_CHANGE の名称に当てはまる（より明らかな型は無い）
+乗車する	727	P	DECIDED	estimated	P_MOVE	gen_frame		P_MOVE	{"で": ["PLACE"], "に": ["ARTIFACT"]}	{}	272	正しい	最も普通の意味が 移動 の名称に当てはまる（より明らかな型は無い）
+復元する	1477	P	DECIDED	estimated	P_CHANGE	gen_frame	DISTRIBUTION_DISAGREES	P_CHANGE	{"を": ["ABSTRACT", "ARTIFACT", "INFO_LANGUAGE", "WORK"]}	{"role_distribution@codex:general_qa": ["を"]}	904	正しい	最も普通の意味が P_CHANGE の名称に当てはまる（より明らかな型は無い）
+登校する	945	P	DECIDED	estimated	P_MOVE	gen_frame		P_MOVE	{"が": ["PERSON"], "に": ["PLACE"]}	{}	265	正しい	最も普通の意味が 移動 の名称に当てはまる（より明らかな型は無い）
+対面する	78	P	DECIDED	estimated	P_ACT	gen_frame		P_ACT	{"と": ["GROUP_ORG", "PERSON"]}	{}	34	疑わしい	会う。行為とも伝達とも読める
+共作する	77	P	DECIDED	estimated	P_CREATE	gen_frame	DISTRIBUTION_DISAGREES	P_CREATE	{"と": ["GROUP_ORG", "PERSON"], "を": ["INFO_LANGUAGE", "WORK"]}	{"role_distribution@jawiki": ["を"]}	76	正しい	最も普通の意味が P_CREATE の名称に当てはまる（より明らかな型は無い）
+再入する	42	P	DECIDED	estimated	P_MOVE	gen_frame		P_MOVE	{"に": ["PLACE"]}	{}	41	正しい	最も普通の意味が 移動 の名称に当てはまる（より明らかな型は無い）
+ディ・ドナテッロする	70	P	UNPLACED							{}	70	該当なし	生成が棄権（UNPLACED）。型が付いていない
+剥奪する	102	P	DECIDED	estimated	P_GIVE	gen_frame		P_GIVE	{"から": ["GROUP_ORG", "PERSON"], "を": ["ABSTRACT", "ARTIFACT", "IDENTIFIER"]}	{}	99	疑わしい	奪い取る。授受とも所有とも読める
+便乗する	45	P	DECIDED	estimated	P_ACT	gen_frame		P_ACT	{"と": ["GROUP_ORG", "PERSON"], "に": ["EVENT_ACT"]}	{}	21	正しい	最も普通の意味が P_ACT の名称に当てはまる（より明らかな型は無い）
+協調する	98	P	DECIDED	estimated	P_ACT	gen_frame		P_ACT	{"が": ["ABSTRACT", "ARTIFACT", "GROUP_ORG", "PERSON"], "と": ["ABSTRACT", "GROUP_ORG", "PERSON"]}	{}	46	正しい	最も普通の意味が P_ACT の名称に当てはまる（より明らかな型は無い）
+忌避する	27	P	DECIDED	estimated	P_ACT	gen_frame		P_ACT	{"を": ["ABSTRACT", "EVENT_ACT", "PERSON"]}	{}	27	疑わしい	避ける。行為か感情か
+募集する	410	P	DECIDED	direct	P_COMMUNICATE	gen_frame,role_distribution@codex:general_qa		P_COMMUNICATE	{"を": ["GROUP_ORG", "PERSON"]}	{"role_distribution@codex:general_qa": ["を"]}	220	正しい	最も普通の意味が 伝達 の名称に当てはまる（より明らかな型は無い）
+停車する	3572	P	DECIDED	estimated	P_MOVE	gen_frame		P_MOVE	{"に": ["PLACE"]}	{}	1354	疑わしい	止まる。移動の終わりで移動と言い切れない
+介在する	53	P	DECIDED	estimated	P_EXIST	gen_frame		P_EXIST	{"が": ["ABSTRACT", "ARTIFACT", "PERSON"], "に": ["ABSTRACT", "EVENT_ACT", "PLACE"]}	{}	31	正しい	最も普通の意味が P_EXIST の名称に当てはまる（より明らかな型は無い）
+給電する	46	P	DECIDED	estimated	P_ACT	gen_frame		P_ACT	{"に": ["ARTIFACT", "GROUP_ORG", "PLACE"]}	{}	33	疑わしい	電力を渡す。授受のほうが当てはまる面がある
+削除する	31441	P	DECIDED	estimated	P_CHANGE	gen_frame	DISTRIBUTION_DISAGREES	P_CHANGE	{"を": ["ABSTRACT", "ARTIFACT", "EVENT_ACT", "INFO_LANGUAGE"]}	{"role_distribution@codex:code_qa": ["を"], "role_distribution@codex:general_qa": ["を"], "role_distribution@codex:paraphrase_entail": ["を"]}	18212	正しい	最も普通の意味が P_CHANGE の名称に当てはまる（より明らかな型は無い）

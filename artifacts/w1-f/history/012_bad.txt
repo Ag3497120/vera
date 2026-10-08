@@ -1,0 +1,31 @@
+# commit a9cad0ab448b649dc6c71584f14d203a5200289d
+# status FAIL
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 10 items / 9 deselected / 1 selected
+
+tests/attack/test_memory_brief_differential.py::test_superseded_records_disappear_and_closed_tasks_stay_dropped FAILED [100%]
+
+=== FAILURES ===
+_______ test_superseded_records_disappear_and_closed_tasks_stay_dropped ________
+
+    def test_superseded_records_disappear_and_closed_tasks_stay_dropped():
+        records = [
+            rec("old", subject="O", attribute="x"),
+            rec("closed", kind="TASK", subject="T", state="DONE"),
+            rec("open", kind="TASK", subject="T2", state="in progress"),
+        ]
+        memory = memory_with_sources(records, askable_ids={"old", "closed", "open"}, superseded={"old": "new"})
+        expected = "[id:open] Sentence open\nDropped record ids: closed"
+>       assert compile_brief(memory, 200) == expected
+E       AssertionError: assert ContextBrief(text='Dropped record ids: open, closed', records=(), dropped_ids=('open', 'closed')) == '[id:open] Sentence open\nDropped record ids: closed'
+E        +  where ContextBrief(text='Dropped record ids: open, closed', records=(), dropped_ids=('open', 'closed')) = compile_brief(<test_memory_brief_differential.FakeMemory object at 0x<ADDR>>, 200)
+
+tests/attack/test_memory_brief_differential.py:163: AssertionError
+=== short test summary info ===
+FAILED tests/attack/test_memory_brief_differential.py::test_superseded_records_disappear_and_closed_tasks_stay_dropped - AssertionError: assert ContextBrief(text='Dropped record ids: open, closed', records=(), dropped_ids=('open', 'closed')) == '[id:open] Sentence open\nDropped record ids: closed'
+ +  where ContextBrief(text='Dropped record ids: open, closed', records=(), dropped_ids=('open', 'closed')) = compile_brief(<test_memory_brief_differential.FakeMemory object at 0x<ADDR>>, 200)
+=== 1 failed, 9 deselected ===

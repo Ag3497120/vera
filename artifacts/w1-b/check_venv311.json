@@ -1,0 +1,316 @@
+{
+  "all_pass": true,
+  "checks": {
+    "a": {
+      "chat_is_verantyx_chat": true,
+      "dependency_status": {
+        "fugashi": "AVAILABLE",
+        "unidic_lite": "AVAILABLE"
+      },
+      "error_type": null,
+      "exit_code": 0,
+      "imported": true,
+      "status": "PASS"
+    },
+    "b": {
+      "outside_modules": {},
+      "per_child": {
+        "a": {
+          "inside": 33,
+          "no_file_count": 0,
+          "outside_count": 0
+        },
+        "d": {
+          "inside": 61,
+          "no_file_count": 0,
+          "outside_count": 0
+        },
+        "e": {
+          "inside": 63,
+          "no_file_count": 0,
+          "outside_count": 0
+        },
+        "f": {
+          "inside": 107,
+          "no_file_count": 0,
+          "outside_count": 0
+        },
+        "scan": {
+          "inside": 294,
+          "no_file_count": 0,
+          "outside_count": 0
+        }
+      },
+      "status": "PASS"
+    },
+    "c": {
+      "static": {
+        "declared_but_not_real": [],
+        "non_python_files_not_in_package_data": [],
+        "ok": true,
+        "packages_declared": 4,
+        "packages_real": 4,
+        "python_dirs_without_init": [],
+        "real_but_not_declared": []
+      },
+      "status": "PASS",
+      "wheel": {
+        "files_in_output": 321,
+        "files_in_wheel": 321,
+        "only_in_output": [],
+        "only_in_wheel": [],
+        "status": "PASS"
+      }
+    },
+    "d": {
+      "degraded": false,
+      "error_type": null,
+      "exit_code": 0,
+      "optional_dependencies": {
+        "fugashi": true,
+        "unidic_lite": true
+      },
+      "status": "PASS",
+      "stderr_has_traceback": false,
+      "stdout_lines": 6
+    },
+    "e": {
+      "calls_total": 28,
+      "configs": {
+        "empty": {
+          "calls": 14,
+          "constructor_exception": null,
+          "exceptions": [],
+          "kinds": {
+            "ack": 1,
+            "unknown": 3,
+            "unreadable": 10
+          },
+          "no_parser": 0,
+          "not_dict": 0,
+          "text_not_str": 0
+        },
+        "with_constructed_document": {
+          "calls": 14,
+          "constructor_exception": null,
+          "exceptions": [],
+          "kinds": {
+            "ack": 1,
+            "unknown": 3,
+            "unreadable": 10
+          },
+          "no_parser": 0,
+          "not_dict": 0,
+          "text_not_str": 0
+        }
+      },
+      "constructed_documents": [
+        {
+          "kind": "CONSTRUCTED",
+          "title": "営業案内"
+        }
+      ],
+      "inputs": 14,
+      "responses_other_than_unknown_no_parser_total": 28,
+      "status": "PASS",
+      "unknown_no_parser_total": 0
+    },
+    "f": {
+      "collected": 1693,
+      "collection_errors": 0,
+      "error_ids": [],
+      "pytest_exit": 0,
+      "status": "PASS"
+    },
+    "p4": {
+      "counts": {
+        "cache": 0,
+        "measurement": 0,
+        "personal_path": 0,
+        "store_data": 0,
+        "vcs": 0
+      },
+      "found": {
+        "cache": [],
+        "measurement": [],
+        "personal_path": [],
+        "store_data": [],
+        "vcs": []
+      },
+      "status": "PASS"
+    },
+    "scan": {
+      "import_failed_module_not_found": {},
+      "import_failed_other": {},
+      "import_ok": 292,
+      "informational": true,
+      "modules_found": 292,
+      "status": "DONE"
+    }
+  },
+  "checks_selected": [
+    "a",
+    "b",
+    "c",
+    "d",
+    "e",
+    "f",
+    "p4",
+    "scan"
+  ],
+  "external_verantyx_reachable": true,
+  "label": "venv311",
+  "optional_dependencies": {
+    "fugashi": true,
+    "unidic_lite": true
+  },
+  "out_digest_end": "dc1243a432c76ec23cf481bae23c5a3add98b1f9215ef504398d2809ca556826",
+  "out_digest_start": "dc1243a432c76ec23cf481bae23c5a3add98b1f9215ef504398d2809ca556826",
+  "out_file_count": 455,
+  "out_unchanged": true,
+  "public_diff": {
+    "added": [
+      "manifest.json",
+      "tests/conftest.py",
+      "vera_base/verantyx/agent.py",
+      "vera_base/verantyx/agent_forks.py",
+      "vera_base/verantyx/agent_tools.py",
+      "vera_base/verantyx/ai_ingest.py",
+      "vera_base/verantyx/ai_ingest_forks.py",
+      "vera_base/verantyx/arc_env_adapter.py",
+      "vera_base/verantyx/assembled.py",
+      "vera_base/verantyx/attest_llm.py",
+      "vera_base/verantyx/audit_app.py",
+      "vera_base/verantyx/axis_summary.py",
+      "vera_base/verantyx/boundary_eval.py",
+      "vera_base/verantyx/build_en.py",
+      "vera_base/verantyx/build_failure.py",
+      "vera_base/verantyx/capacity_calibration.py",
+      "vera_base/verantyx/capacity_ingest.py",
+      "vera_base/verantyx/card_numbers.py",
+      "vera_base/verantyx/cli.py",
+      "vera_base/verantyx/cognitive_interventions.py",
+      "vera_base/verantyx/compose.py",
+      "vera_base/verantyx/consensus_ab_eval.py",
+      "vera_base/verantyx/consensus_forks.py",
+      "vera_base/verantyx/constellation.py",
+      "vera_base/verantyx/constructions/modality.py",
+      "vera_base/verantyx/conversation.py",
+      "vera_base/verantyx/corpus_aozora.py",
+      "vera_base/verantyx/corpus_audit.py",
+      "vera_base/verantyx/corpus_fetch.py",
+      "vera_base/verantyx/cross_geometry_forks.py",
+      "vera_base/verantyx/defect_gaps.py",
+      "vera_base/verantyx/doctor.py",
+      "vera_base/verantyx/domain_ingest.py",
+      "vera_base/verantyx/domains/__init__.py",
+      "vera_base/verantyx/drift.py",
+      "vera_base/verantyx/experience.py",
+      "vera_base/verantyx/experience_cross.py",
+      "vera_base/verantyx/export_view3d.py",
+      "vera_base/verantyx/failure_domains.py",
+      "vera_base/verantyx/failure_domains_eval.py",
+      "vera_base/verantyx/failure_packs/data_pipeline.json",
+      "vera_base/verantyx/failure_packs/decision_explain.json",
+      "vera_base/verantyx/failure_packs/disaster_info.json",
+      "vera_base/verantyx/failure_packs/education_assess.json",
+      "vera_base/verantyx/failure_packs/game_qa.json",
+      "vera_base/verantyx/failure_packs/lab_automation.json",
+      "vera_base/verantyx/failure_packs/manufacturing_qa.json",
+      "vera_base/verantyx/failure_packs/medical_evidence.json",
+      "vera_base/verantyx/failure_packs/research_experiment.json",
+      "vera_base/verantyx/failure_packs/robot_grasp.json",
+      "vera_base/verantyx/failure_packs/search_zero.json",
+      "vera_base/verantyx/failure_packs/soc_telemetry.json",
+      "vera_base/verantyx/failure_packs/support_kb.json",
+      "vera_base/verantyx/failure_packs/translation_l10n.json",
+      "vera_base/verantyx/failure_packs/web_agent.json",
+      "vera_base/verantyx/field_app.html",
+      "vera_base/verantyx/field_app.py",
+      "vera_base/verantyx/field_reports.py",
+      "vera_base/verantyx/field_reports_eval.py",
+      "vera_base/verantyx/field_session.py",
+      "vera_base/verantyx/gapnode.py",
+      "vera_base/verantyx/generalization_eval.py",
+      "vera_base/verantyx/hf_store.py",
+      "vera_base/verantyx/index.py",
+      "vera_base/verantyx/ingest_coherence.py",
+      "vera_base/verantyx/intent_chain.py",
+      "vera_base/verantyx/jgen_lexicon.py",
+      "vera_base/verantyx/kripke_rewrite_forks.py",
+      "vera_base/verantyx/lang_data/ja_domain_disaster.json",
+      "vera_base/verantyx/lang_router_forks.py",
+      "vera_base/verantyx/layer_stack.py",
+      "vera_base/verantyx/lean_witness.py",
+      "vera_base/verantyx/lean_witness_forks.py",
+      "vera_base/verantyx/llm_local.py",
+      "vera_base/verantyx/math_sim_forks.py",
+      "vera_base/verantyx/mcp_server.py",
+      "vera_base/verantyx/module_forge.py",
+      "vera_base/verantyx/module_ingest.py",
+      "vera_base/verantyx/module_verify.py",
+      "vera_base/verantyx/multilingual_eval.py",
+      "vera_base/verantyx/obfuscate_forks.py",
+      "vera_base/verantyx/observation.py",
+      "vera_base/verantyx/own_ai_guide.py",
+      "vera_base/verantyx/pack_authoring.py",
+      "vera_base/verantyx/pack_ingest.py",
+      "vera_base/verantyx/phase2_forks.py",
+      "vera_base/verantyx/placement_explain.py",
+      "vera_base/verantyx/pour_forks.py",
+      "vera_base/verantyx/preregistration.py",
+      "vera_base/verantyx/procedure.py",
+      "vera_base/verantyx/procedure_exec.py",
+      "vera_base/verantyx/procedure_ingest.py",
+      "vera_base/verantyx/procedure_vary.py",
+      "vera_base/verantyx/proof_ledger.py",
+      "vera_base/verantyx/proposal.py",
+      "vera_base/verantyx/proposal_verify.py",
+      "vera_base/verantyx/prover.py",
+      "vera_base/verantyx/release.py",
+      "vera_base/verantyx/rewrite_eval.py",
+      "vera_base/verantyx/rewrite_math.py",
+      "vera_base/verantyx/rotation_signature.py",
+      "vera_base/verantyx/rule_synthesis.py",
+      "vera_base/verantyx/self_audit.py",
+      "vera_base/verantyx/self_evolve.py",
+      "vera_base/verantyx/self_harness.py",
+      "vera_base/verantyx/serve_view3d.py",
+      "vera_base/verantyx/settings_guide.py",
+      "vera_base/verantyx/settings_registry.py",
+      "vera_base/verantyx/settings_registry_eval.py",
+      "vera_base/verantyx/structural_similarity.py",
+      "vera_base/verantyx/structure_forks.py",
+      "vera_base/verantyx/summarize.py",
+      "vera_base/verantyx/task_bootstrap.py",
+      "vera_base/verantyx/task_recipes.py",
+      "vera_base/verantyx/tool_call_quarantine.py",
+      "vera_base/verantyx/transfer_outcomes.py",
+      "vera_base/verantyx/transfer_reading.py",
+      "vera_base/verantyx/tree_witness.py",
+      "vera_base/verantyx/ui_transition.py",
+      "vera_base/verantyx/vera_server.py",
+      "vera_base/verantyx/vocab_growth.py",
+      "vera_base/verantyx/watermark.py",
+      "vera_base/verantyx/watermark_forks.py"
+    ],
+    "counts": {
+      "added": 123,
+      "modified": 4,
+      "removed": 0,
+      "unchanged": 328
+    },
+    "modified": [
+      "pyproject.toml",
+      "vera_base/__init__.py",
+      "vera_base/verantyx/semantic_unknown_choice.py",
+      "vera_base/verantyx/verifier_agents.py"
+    ],
+    "removed": []
+  },
+  "python": {
+    "implementation": "cpython",
+    "version": "3.11.14 (main, Oct  9 2025, 16:16:55) [Clang 17.0.0 (clang-1700.4.4.1)]"
+  },
+  "schema": "vera_public_check_v1"
+}

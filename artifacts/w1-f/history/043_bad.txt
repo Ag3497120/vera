@@ -1,0 +1,27 @@
+# commit a9cad0ab448b649dc6c71584f14d203a5200289d
+# status FAIL
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 15 items / 14 deselected / 1 selected
+
+tests/attack/test_memory_brief_paraphrase.py::test_number_swap_is_reflected_in_the_rendered_record FAILED [100%]
+
+=== FAILURES ===
+_____________ test_number_swap_is_reflected_in_the_rendered_record _____________
+
+    def test_number_swap_is_reflected_in_the_rendered_record():
+        two = Memory([fact("floor", "会議は2階です。", attribute="階", value="2階")])
+        three = Memory([fact("floor", "会議は3階です。", attribute="階", value="3階")])
+    
+>       assert compile_brief(two, 100) == "[id:floor] 会議は2階です。"
+E       AssertionError: assert ContextBrief(text='Dropped record ids: floor', records=(), dropped_ids=('floor',)) == '[id:floor] \u4f1a\u8b70\u306f2\u968e\u3067\u3059\u3002'
+E        +  where ContextBrief(text='Dropped record ids: floor', records=(), dropped_ids=('floor',)) = compile_brief(<test_memory_brief_paraphrase.Memory object at 0x<ADDR>>, 100)
+
+tests/attack/test_memory_brief_paraphrase.py:151: AssertionError
+=== short test summary info ===
+FAILED tests/attack/test_memory_brief_paraphrase.py::test_number_swap_is_reflected_in_the_rendered_record - AssertionError: assert ContextBrief(text='Dropped record ids: floor', records=(), dropped_ids=('floor',)) == '[id:floor] \u4f1a\u8b70\u306f2\u968e\u3067\u3059\u3002'
+ +  where ContextBrief(text='Dropped record ids: floor', records=(), dropped_ids=('floor',)) = compile_brief(<test_memory_brief_paraphrase.Memory object at 0x<ADDR>>, 100)
+=== 1 failed, 14 deselected ===

@@ -1,0 +1,53 @@
+{
+ "arms": {
+  "raw": {
+   "reachable": 293,
+   "correct": 13,
+   "wrong": 231,
+   "refusal": 56,
+   "asked": 300,
+   "junk_top1": 50,
+   "junk_in_cands": 151
+  },
+  "raw+gate": {
+   "reachable": 287,
+   "correct": 36,
+   "wrong": 224,
+   "refusal": 40,
+   "asked": 300,
+   "junk_top1": 0,
+   "junk_in_cands": 151
+  },
+  "group+gate": {
+   "reachable": 287,
+   "correct": 34,
+   "wrong": 222,
+   "refusal": 44,
+   "asked": 300,
+   "junk_top1": 0,
+   "junk_in_cands": 151
+  }
+ },
+ "transitions": {
+  "raw→raw+gate": {
+   "WRONG→CORRECT": 16,
+   "UNKNOWN_NO_EVIDENCE→AMBIGUOUS": 8,
+   "UNKNOWN_NO_EVIDENCE→CORRECT": 7,
+   "UNKNOWN_NO_EVIDENCE→WRONG": 20,
+   "WRONG→AMBIGUOUS": 7,
+   "WRONG→UNKNOWN_NO_EVIDENCE": 5,
+   "AMBIGUOUS→WRONG": 1
+  },
+  "raw+gate→group+gate": {
+   "CORRECT→AMBIGUOUS": 3,
+   "WRONG→AMBIGUOUS": 3,
+   "CORRECT→WRONG": 1,
+   "WRONG→CORRECT": 2,
+   "AMBIGUOUS→WRONG": 3,
+   "CORRECT→UNKNOWN_NO_EVIDENCE": 1,
+   "UNKNOWN_NO_EVIDENCE→CORRECT": 1,
+   "WRONG→UNKNOWN_NO_EVIDENCE": 1
+  }
+ },
+ "elapsed_s": 16.2
+}

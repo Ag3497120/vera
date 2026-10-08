@@ -1,0 +1,21 @@
+# cmd_chat: 先頭の 'if getattr(args, "mode", "lab") == "round5":' 節（基点の cli.py:1093 から 1280 行付近）の出口。基点 3a1677c の行番号は git show 3a1677c:verantyx/cli.py で確かめられる
+## 基点の cmd_chat（1092-1402）の return / break の一覧（awk 'NR>=1092 && NR<=1402' | grep -n 'return\|break'）
+15:            return 2
+74:            return current if isinstance(current, dict) else {}
+85:                return
+138:                return
+146:                    return
+175:                break
+180:                break
+309:        return 0
+## 節の最後の行（基点 1400-1403）
+1396:                 _chat_read(args, argument)
+1397:             else:
+1398:                 bad_command("UNKNOWN_COMMAND", command=command)
+1399: 
+1400:         return 0
+1401: 
+1402:     from .config import VeraConfig
+1403:     from .one import Vera
+1404: 
+## 結論: 節の最後は字下げ 8 の無条件の 'return 0'（while True のループの break はこの return 0 に出る）。節の外（基点 1405 以降）の round5 = args.mode == "round5" は、この節を通った後では常に偽。到達不能な分岐（if round5: ... else: ...、'out = one_v.ask(raw if round5 else line)' の if round5: _print_round5_chat_result ...、'--engine と round5' の拒否）を消した。'--document requires --mode round5' の拒否は mode != round5（lab/hybrid）で生きているので残した。

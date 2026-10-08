@@ -1,0 +1,8 @@
+run経路 grep rc=1
+redactions":1
+redactions":0
+hook経路 grep rc=1
+redactions":1
+発話経路 grep rc=1
+BAD [] 25
+発話の行（伏せた後）: {"actor":{"id":"unknown","type":"owner"},"data":{"redactions":1,"session_id":"unknown","source":"claude_code","text":"ヘッダはBearer [RE

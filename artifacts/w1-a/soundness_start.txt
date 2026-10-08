@@ -1,0 +1,98 @@
+tree=/Users/motonisihikoudai/Projects/vera-impl/wt/W1-a-S
+revision=8d69747432f92f8d62a73b09b19790ffc60db8b2
+foreign_modules=[]
+type    n    正読    誤読    未対応    棄権正    正読&検査PASS     検査誤通過     半数以上正読
+E0      8     8     0      0      0            0         0       True
+E1      8     3     0      5      5            0         0      False
+E2      9     0     0      9      9            0         0      False
+E3      8     0     0      8      8            0         0      False
+E4      8     0     0      8      8            0         0      False
+E5      8     0     0      8      8            0         0      False
+E6      8     0     0      8      8            0         0      False
+F0      6     6     0      0      0            0         0       True
+F1      5     0     0      5      5            0         0      False
+F2      5     0     0      5      5            0         0      False
+F3      5     0     0      5      5            0         0      False
+F4      5     0     0      5      5            0         0      False
+F5      6     0     0      6      6            0         0      False
+F6      6     0     0      6      6            0         0      False
+J1     17    13     1      3      0           13         1       True
+J2     18    17     0      1      0           17         0       True
+J3     15     9     0      6      6            9         0       True
+J4     15    13     0      2      0           13         0       True
+J5     17    11     0      6      0           11         0       True
+J6     16    15     0      1      0           15         0       True
+J7     16     9     0      7      0            9         0       True
+J8     17    14     0      3      0           14         0       True
+J9     18    18     0      0      0            0         0       True
+K1     10     8     0      2      0            8         0       True
+K2      7     0     0      7      0            0         0      False
+K3      8     0     0      8      0            0         0      False
+K4      6     5     0      1      0            5         0       True
+K5      5     1     0      4      0            1         0      False
+K6      7     7     0      0      0            0         0       True
+L1     14     5     0      9      0            5         0      False
+L2     12    10     0      2      0           10         0       True
+L3      6     6     0      0      0            6         0       True
+N1     14     0    14      0      0            0         8      False
+N1c     6     6     0      0      0            6         0       True
+N2     12     0    12      0      0            0        12      False
+N2c     6     5     0      1      0            5         0       True
+N3     12     0     9      3      3            0         9      False
+N3c     4     0     4      0      0            0         4      False
+N4     14     0    11      3      3            0        10      False
+T7      7     6     0      1      0            5         0       True
+TOTAL misread=51 false_pass=44
+ESCALATED(known exception, listed by id: ['J1-17']) misread=1 false_pass=1
+UNESCALATED misread=50 false_pass=43
+MISREAD (escalated) J1-17 戦後は若者が都会へ移った。
+MISREAD N1-01 山手に公園が造られた。
+MISREAD N1-02 切手に消印が押された。
+MISREAD N1-03 借家に表札が掛けられた。
+MISREAD N1-04 生家に記念碑が建てられた。
+MISREAD N1-05 町家に格子が取り付けられた。
+MISREAD N1-06 波長に補正が加えられた。
+MISREAD N1-07 感官に刺激が加えられた。
+MISREAD N1-08 定員に上限が設けられた。
+MISREAD N1-09 衛生に注意が向けられた。
+MISREAD N1-10 港の山手に灯台が建てられた。
+MISREAD N1-11 古い借家に新しい門が取り付けられた。
+MISREAD N1-12 生家に石畳が敷かれた。
+MISREAD N1-13 町家に看板が掲げられた。
+MISREAD N1-14 山手に石畳が敷かれた。
+MISREAD N2-01 祖母が羽織を長男に仕立てた。
+MISREAD N2-02 父が靴を次男に直した。
+MISREAD N2-03 職人が着物を新郎に仕立てた。
+MISREAD N2-04 母が帯を長女に仕上げた。
+MISREAD N2-05 兄が自転車を弟分に塗り直した。
+MISREAD N2-06 叔父が納戸を居候に改装した。
+MISREAD N2-07 店員が花束を花婿に仕上げた。
+MISREAD N2-08 先輩が資料を跡取りにまとめた。
+MISREAD N2-09 姉が洋服を双子に直した。
+MISREAD N2-10 母が制服を一人っ子に仕立てた。
+MISREAD N2-11 大工が机を幼なじみに仕上げた。
+MISREAD N2-12 祖父が絵を長女に描き直した。
+MISREAD N3-01 同窓会に幹事が選ばれた。
+MISREAD N3-02 自治体に担当者が指名された。
+MISREAD N3-03 商店街に新しい代表が選出された。
+MISREAD N3-04 実行委員会に議長が指名された。
+MISREAD N3-05 保護者会に書記が選ばれた。
+MISREAD N3-08 音楽祭に審査員が選出された。
+MISREAD N3-09 管弦楽団に指揮者が任命された。
+MISREAD N3-10 農協に理事が選任された。
+MISREAD N3-11 学会に座長が指名された。
+MISREAD N3c-01 鈴木さんが店長に選ばれた。
+MISREAD N3c-02 野村さんが監督に任命された。
+MISREAD N3c-03 青木さんが課長に指名された。
+MISREAD N3c-04 吉田さんが校長に選出された。
+MISREAD N4-01 この商店街は去年ほど静かではない。
+MISREAD N4-02 この道は旧道ほど安全ではない。
+MISREAD N4-03 弟は兄ほど几帳面ではない。
+MISREAD N4-04 この部屋は隣の部屋ほど快適ではない。
+MISREAD N4-05 この店は本店ほど有名ではない。
+MISREAD N4-07 彼女は姉ほど社交的ではない。
+MISREAD N4-08 この橋は隣町のほど丈夫ではない。
+MISREAD N4-09 この料理は母のほど上品ではない。
+MISREAD N4-10 この湖は海くらい穏やかだ。
+MISREAD N4-12 この街は都心くらい華やかだ。
+MISREAD N4-13 この店は隣の店ぐらい親切ではない。

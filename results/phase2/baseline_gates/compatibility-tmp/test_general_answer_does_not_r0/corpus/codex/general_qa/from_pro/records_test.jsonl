@@ -1,0 +1,1 @@
+{"split": "train", "family": "general_qa", "kind": "fact", "domain": "test", "source": "test:source", "sha": "one", "q_variants": ["蓮根はどこで育ちますか？"], "answer": "蓮根は池で育ちます。"}

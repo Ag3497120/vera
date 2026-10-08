@@ -1,0 +1,35 @@
+verantyx/salience.py:100:        if extra: raise _invalid('UNKNOWN_EVENT_KEY:%s' % ','.join(sorted(map(str, extra))))
+verantyx/salience.py:250:STAGE_NAMES: Tuple[str, ...] = tuple(s[0] for s in STAGES)
+verantyx/salience.py:269:    and no `sorted(...)[0]` picks a winner: a rank with two cells is a TIE, whatever order the cells were passed in."""
+verantyx/salience.py:286:    ordered = sorted(groups.items(), key=lambda item: item[0])
+verantyx/salience.py:290:        members_in_display_order = sorted(members, key=lambda m: m[0])    # string order of cell keys: a display order, never a rank
+verantyx/salience.py:291:        ranks.append(tuple(m[0] for m in members_in_display_order))
+verantyx/salience.py:296:        a, b = ordered[i][0], ordered[i + 1][0]
+verantyx/salience.py:309:        'rank1': ({'kind': 'EMPTY', 'size': 0} if not ranks else {'kind': 'SINGLE' if len(ranks[0]) == 1 else 'TIE', 'size': len(ranks[0])}),
+verantyx/observe.py:140:        if extra: raise _bad('PLACEMENT_FILE_INVALID:unknown key %s' % ','.join(sorted(map(str, extra))))
+verantyx/observe.py:147:            if bad_keys: raise _bad('PLACEMENT_FILE_INVALID:lemma %s has unknown key %s' % (word, bad_keys[0]))
+verantyx/observe.py:151:                                                types=tuple(sorted(types)), provenance=dict(fields.get('provenance', {'file': True})))
+verantyx/observe.py:155:            self._neighbors[word] = tuple(sorted(set(items)))
+verantyx/observe.py:191:    return NeighborResult(got.state, tuple(sorted(set(got.items))), got.provenance)    # a set written in string order, not a ranking
+verantyx/observe.py:374:        for rk in sorted(rows):
+verantyx/observe.py:385:        if unknown: return OccupancySource('index:%s' % family, unknown[0], None, detail)
+verantyx/observe.py:557:        return self.coords[0]
+verantyx/observe.py:561:        return len(self.coords[0]['moves'])
+verantyx/observe.py:630:        roles[r] = values if arm.kind == 'ARM_TIE' else values[0]
+verantyx/observe.py:644:    new_cross = crossed.crosses[0]
+verantyx/observe.py:648:    move = {'move': FACE_SWAP, 'role': role, 'from': arm.fillers[0].surface, 'to': to, 'neighbor_source': neighbor_source_id}
+verantyx/observe.py:659:    got = _neighbors_of(neighbors, arm.fillers[0].head)
+verantyx/observe.py:801:        'realization': {'realized': 0, 'refused': {r: 0 for r in sorted(SR.REFUSAL_REASONS - set(REFUSAL_NOT_ON_THIS_PATH))}},    # a frozenset: sorted before use, so zero counts are listed in a fixed order
+verantyx/observe.py:814:        here = cell.cross.arms[move.role].fillers[0].surface
+verantyx/observe.py:834:    return [t[0] for t in targets]
+verantyx/observe.py:839:    return tuple(sorted({s for s in _surfaces_of(cell.cross) if s not in base}))
+verantyx/observe.py:864:        for cell in sorted(level, key=lambda c: c.key):    # the order only fixes the order of work, never a winner
+verantyx/observe.py:871:        for key in sorted(raw):
+verantyx/observe.py:872:            group = sorted(raw[key], key=lambda c: _cj(c.coord))
+verantyx/observe.py:874:            merged = replace(group[0], coords=tuple(json.loads(s) for s in coords))
+verantyx/observe.py:920:    elif len(ranking.ranks[0]) == 1:
+verantyx/observe.py:921:        focus = Focus(ranking.ranks[0][0])
+verantyx/observe.py:923:        focus = Tie(tuple(ranking.ranks[0]))
+verantyx/observe.py:956:            if arm is None or arm.kind != 'FILLER' or arm.fillers[0].surface != move['from']: return 'FACE_SWAP_FROM_DOES_NOT_MATCH'
+verantyx/observe.py:967:            cell = found[0]
+verantyx/observe.py:996:        if crossed.status != 'CROSSED' or len(crossed.crosses) != 1 or cell_key_of(crossed.crosses[0]) != d['cell_key']:

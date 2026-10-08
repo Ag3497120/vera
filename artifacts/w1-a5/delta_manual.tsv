@@ -1,0 +1,16 @@
+# text<TAB>label<TAB>reason. Written after reading the sentence, the base output and the new output (convention 3, 5, 6, 9.1). Labels: newly_read: CORRECT/WRONG/INCOMPLETE/UNSURE; reading_changed: CORRECTION; read_to_refused: free word (see the reason).
+兄がとても喜んだ。	UNSURE	新しい読み: 喜ぶ {agent 兄} past, flags.adverbs [とても]。規約 2 は副詞を役割にしないので、規約だけから見れば節は正しい。しかし凍結データ w3b3_w1a4.jsonl の W3B3-W1A4-021 はこの文を「W1-a4 の誤読の文」として棄権で凍結している(程度の副詞を落とした読みを不完全とした出所)。凍結データと衝突(frozen_conflicts.md)
+兄が本を読んでいない。	CORRECTION	基点は polarity + (誤読)。規約 5: 単純否定(ない)は "-"。新しい読み: - nonpast
+兄が本を読んでいなかった。	CORRECTION	基点は polarity + (誤読)。規約 5: ない+た は "-" past。新しい読み: - past
+兄が本を読んでいません。	CORRECTION	基点は polarity + (誤読)。規約 5: ません は "-"。新しい読み: - nonpast
+兄が本を読んでいませんでした。	CORRECTION	基点は polarity + (誤読)。規約 5: ませんでした は "-" past。新しい読み: - past
+兄が本を読んでしまわなかった。	CORRECTION	基点は polarity + (誤読)。規約 3 は てしまう を外した形、5 は否定を "-"。新しい読み: - past
+兄が本を読んでおかなかった。	CORRECTION	基点は polarity + (誤読)。規約 3 は ておく を外した形、5 は否定を "-"。新しい読み: - past
+弟が庭で遊んでいなかった。	CORRECTION	基点は polarity + (誤読)。規約 5: ない+た は "-" past。place 庭 はそのまま。新しい読み: - past
+兄が本を読んでみた。	REGISTERED_REFUSAL	基点は 読む past (てみる を外した)。規約 9.1 が てみる の書き方を未決としている形(バンク側が隔離)。棄権が規約どおりの扱い(H211)
+兄が本を読んでみる。	REGISTERED_REFUSAL	同上(てみる。規約 9.1 未決)
+母が窓を開けてある。	REGISTERED_REFUSAL	基点は 開ける nonpast。規約 3 の列挙に てある は無く、9.1 が未決。格の写し方も変わる(窓が開けてある の 窓 は patient)ので棄権(H211)
+兄が本を読んでおいてある。	REGISTERED_REFUSAL	基点は 読む nonpast。補助動詞の連鎖(ておいてある)。規約 3 は 1 つの補助動詞だけを外す。連鎖は読まない(K211 門 1/2)
+兄が本を読んでしまっている。	REGISTERED_REFUSAL	基点は 読む nonpast。補助動詞の連鎖(てしまっている)。連鎖は読まない(K211 門 2)。基点の読みは規約 3 の字面に反しないが、連鎖の語尾の表が規約に無い
+兄が本を読んでいろ。	REGISTERED_REFUSAL	基点は 読む + nonpast の平叙文として読む(誤読: ていろ は命令形で modality request。規約 5)。語尾が表に無い(門 3)ので棄権
+兄が本を読んじゃわなかった。	REGISTERED_REFUSAL	基点は 読む - past(規約 5 で正しい読み)。縮約形(じゃう)は規約 3 の字面に無い形で、後ろに否定がある(門 4, H212)ので棄権。正しい読みを失う(登録した損)

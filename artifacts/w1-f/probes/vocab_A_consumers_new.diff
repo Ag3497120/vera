@@ -1,0 +1,40 @@
+diff --git a/verantyx/semantic_realize.py b/verantyx/semantic_realize.py
+--- a/verantyx/semantic_realize.py
++++ b/verantyx/semantic_realize.py
+@@ -31,10 +31,10 @@
+ _AUX_LEMMAS = frozenset(("た", "ます", "ず", "だ", "です", "ない"))
+ _NEG_AUX_SURFACES = frozenset(("ない", "なかっ", "なく", "ありません"))
+ _PUNCT = frozenset("。！？!?、,．.")
+-_ROLE_ORDER = ("recipient", "goal", "patient", "origin", "location")
++_ROLE_ORDER = ("recipient", "goal", "patient", "origin", "source", "location", "place")
+ _ROLE_PARTICLE = {
+-    "recipient": "に", "goal": "へ", "patient": "を", "origin": "から",
+-    "location": "で",
++    "recipient": "に", "goal": "へ", "patient": "を", "origin": "から", "source": "から",
++    "location": "で", "place": "で",
+ }
+ _SUMMARY_ABOUT = re.compile(r"(.+?)\u306b\u3064\u3044\u3066\u6559\u3048\u3066[。！？?]*$")
+ _SUMMARY_GATHER = re.compile(r"(.+?)\u3092\u307e\u3068\u3081\u3066[。！？?]*$")
+@@ -271,7 +271,7 @@
+     roles = _role_map(clause)
+     pol = polarity if polarity is not None else clause.polarity
+     if clause.rule == "frame":
+-        supported = {"agent", "patient", "recipient", "origin", "location", "goal"}
++        supported = {"agent", "patient", "recipient", "origin", "source", "location", "place", "goal"}
+         if set(roles) - supported or "agent" not in roles:
+             return None, "frame needs a supported agent/case role set"
+         if topic not in ("は", "が"):
+diff --git a/verantyx/semantic_wh.py b/verantyx/semantic_wh.py
+--- a/verantyx/semantic_wh.py
++++ b/verantyx/semantic_wh.py
+@@ -12,8 +12,8 @@
+ 
+ _WH = r'(?:誰|だれ|何|なに|どこ)'
+ _CASE_ROLE = {'が': 'agent', 'は': 'agent', 'を': 'patient', 'に': 'recipient', 'へ': 'recipient',
+-              'で': 'location', 'から': 'origin'}
+-_ROLE_NOUN = {'物': 'patient', '起点': 'origin', '終点': 'recipient', '受取人': 'recipient',
++              'で': 'place', 'から': 'source'}
++_ROLE_NOUN = {'物': 'patient', '起点': 'source', '終点': 'recipient', '受取人': 'recipient',
+               '渡した人': 'agent', '送り主': 'agent'}
+ 
+ 

@@ -1,0 +1,18 @@
+verify full/r5/run1 exit=0
+verify full/r5/run2 exit=0
+sha equal True ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995 598.1 600.1
+{'path': '/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/generated/definitions.jsonl', 'sha256': '248ca1a4b03f6ffd514458cba3975cbbc3392559aca3434be2fdd0e7ea0a8729', 'lines': 60382, 'used': 19437, 'calls': 1510, 'batches_ok': 1510, 'batches_failed': 0, 'model': 'gpt-6-luna', 'effort': 'low', 'ledger_sha256': '42de32b510ae3bf1a4fe09f0756aac70f126f1480c45413a2064bdc321ab7910'}
+[{'name': 'codex generated corpus index (train)', 'path': '/Users/motonisihikoudai/Projects/vera-impl/build/p4-W1c', 'role': 'role / pos material per family (origin: generated)'}, {'effort': 'low', 'model': 'gpt-6-luna', 'name': 'generated definition sentences (a model wrote them; not a testimony)', 'origin': 'generated', 'path': '/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/generated/definitions.jsonl', 'role': 'arm gen_definition: places only a word nothing else decided, as an estimate (generated); never settles a tie; never a donor'}]
+248ca1a4b03f6ffd514458cba3975cbbc3392559aca3434be2fdd0e7ea0a8729  /Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/generated/definitions.jsonl
+42de32b510ae3bf1a4fe09f0756aac70f126f1480c45413a2064bdc321ab7910  /Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/generated/ledger.jsonl
+{"n": 1072, "correct_rate": 0.5289, "wrong_single_rate": 0.0438, "trap_wrong_single_rate": 0.0455, "non_direct": {"None/other": 162, "estimated/correct": 145, "estimated/wrong_single": 26}, "pass": {"correct>=0.85": false, "wrong<=0.08": true, "trap_wrong<=0.05": true, "n>=800": true, "trap_n>=100": true}}
+{"typed_n": 174, "unknown_n": 60, "correct_rate": 0.4943, "wrong_rate": 0.0517, "unknown_among_typed": 79, "returned_type_rate": 0.15, "leaks_direct_not_notation": [], "pass": {"correct>=0.65": false, "wrong<=0.15": true, "returned_type<=0.20": true, "no_leaks": true, "no_unmarked": true}}
+{"sentences": 2000, "tokens": 21774, "token_cover_rate": 0.7907, "distinct": 8391, "distinct_cover_rate": 0.6415, "by_pos_rate": {"名詞": 0.7794, "動詞": 0.8346, "形状詞": 1.0, "形容詞": 1.0}, "placed_direct_headwords": 993027, "pass": {"token_cover>=0.90": false, "placed>=100000": true}}
+{"all": {"n": 119, "correct": 15, "wrong_single": 25, "returned_any": 45}, "non_seed": {"n": 109, "correct": 15, "wrong_single": 22, "returned_any": 41}, "non_seed_now": {"n": 119, "correct": 15, "wrong_single": 25, "returned_any": 45}, "seed_now": {"n": 0, "correct": 0, "wrong_single": 0, "returned_any": 0}}
+{"n_queries": 23083, "mean_ms": 0.093, "p95_ms": 0.202, "max_ms": 2.903, "median_ms": 0.078, "cli_one_call_ms_including_load": 199.3, "python_import_only_ms": 108.0, "placement_bytes": 273076224, "pass": {"mean<=50": true, "p95<=50": true}, "command": ["l5", "--placement", "/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r5/run1"], "time_utc": "2026-10-03T03:46:22Z", "placement": "/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r5/run1", "content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995", "config_sha256": "a1c0c2047533dddb20deaae1f8df799e98a80a38a0cfe98df8fa51216bbc761c", "builder_sha256": "f724f253c1e4e2b7aad0d09e7b6af038d9b9e15d72a8071d8a5b1228fb590cf0", "coarse_types_sha256": "a715129f8a96f47afd39f5007316ce3266ac008e5386e6dcfbc56582ae0f79d4", "data": "frozen"}
+independent exit=0
+audit exit=0
+p4 exit=0
+m1m2 exit=0
+p5 exit=0
+post_build_r5_done

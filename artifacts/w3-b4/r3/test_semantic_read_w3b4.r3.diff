@@ -1,0 +1,256 @@
+--- /Users/motonisihikoudai/Projects/vera-impl/wt/W3-b4-S/artifacts/w3-b4/r3/test_semantic_read_w3b4.py.before_r3	2026-10-04 03:00:42
++++ tests/test_semantic_read_w3b4.py	2026-10-04 03:01:44
+@@ -53,6 +53,13 @@
+ NARROWED = json.loads(NARROWED_FILE.read_text(encoding='utf-8'))['types']
+ # round 2 (docs K165, table change records 1 and 2): a misread was found for P_CHANGE and P_CONSUME, so they went back to the unread types. The frozen rows of these two types keep their
+ # frozen expectations (`entry_expect: read` for 27 and 29 rows): the tests below read a row of a narrowed type as "the entry refuses it" (see `narrowed_types.json`).
++# round 3 (docs K165, table change record 3, the auditor's way (b)): the rows place/で/PLACE of P_ACT, P_CREATE and P_EMOTION were taken out of the table (the types stay, with their other rows).
++# The frozen rows whose diagnosis that changed are NOT rewritten: `narrowed_rows.json` (made by tools/mk_narrowed_rows.py) records them, with the diagnosis that is observed now, and the tests read
++# such a row as "the entry refuses it, with that diagnosis". Ten sentences of the review of round 2 were appended to the data as refused rows (`DATA[323:333]`).
++NARROWED_ROWS_FILE = TREE / 'artifacts' / 'w3-b4' / 'narrowed_rows.json'
++NARROWED_ROWS_RECORD = json.loads(NARROWED_ROWS_FILE.read_text(encoding='utf-8'))
++NARROWED_ROWS = NARROWED_ROWS_RECORD['data_rows_refused_by_the_narrowing']
++DE_ROW = ('place', ('で',), ('PLACE',), 'adjunct')
+ READ_TYPES = ('P_ACT', 'P_CREATE', 'P_EMOTION')
+ UNREAD_TYPES = ('P_GIVE', 'P_PERCEIVE', 'P_EXIST', 'P_POSSESS', 'P_STATE', 'P_COGNITION', 'P_CHANGE', 'P_CONSUME')
+ # the refusals that happen BEFORE the type of the predicate is asked (the registered reasons of the rows of a narrowed type that stay as they were registered)
+@@ -154,6 +161,7 @@
+     assert not any(r[2] == 'に' and r[1] != 'time' for r in rows)            # no に row but time/に (P_MOVE, P_COMMUNICATE; P_CONSUME's was taken out in round 2)
+     assert {t for t, role, p in rows if (role, p) == ('time', 'に')} == {'P_MOVE', 'P_COMMUNICATE'}
+     assert not any(t in ('P_CHANGE', 'P_CONSUME') for t, role, p in rows)      # round 2: the two narrowed types have no row at all
++    assert {t for t, role, p in rows if (role, p) == ('place', 'で')} == {'P_MOVE', 'P_COMMUNICATE'}      # round 3: no new type has a place/で row (instrument and cause take PLACE words too)
+     assert ('P_CHANGE', 'patient', 'を') not in rows and ('P_ACT', 'goal', 'に') not in rows
+ 
+ 
+@@ -291,6 +299,14 @@
+             assert row['entry_expect'] == 'abstain' and e in BEFORE_THE_TYPE, (row['id'], ex)
+             if row['id'] in EXCEPTIONS: assert ex == EXCEPTIONS[row['id']]['observed_explain'], ex
+             else: assert (ex['w3b2'] or '').startswith(e), (e, ex)
++    elif row['id'] in NARROWED_ROWS:
++        # round 3: a frozen row that the removal of the place/で rows changed. The entry refuses it (whatever the frozen `entry_expect` said), the diagnosis is the one recorded in `narrowed_rows.json`
++        # (compared in full), and the record quotes the frozen row. It is checked BEFORE the declared rows: the three declared rows of these types are refused now with another reason
++        rec = NARROWED_ROWS[row['id']]
++        assert out['readable'] is False, out
++        assert ex['w3b2'] == rec['observed_w3b2'] == 'PLACEMENT_PARTICLE_NOT_IN_FRAME:%s:で' % row['pred_type'], (ex, rec)
++        assert rec['frozen_entry_expect'] == row['entry_expect'] and rec['frozen_w3b4_expect'] == row['w3b4_expect'] and rec['pred_type'] == row['pred_type']
++        assert rec['declared_exception'] == (row['id'] in EXCEPTIONS)
+     elif row['id'] in EXCEPTIONS:
+         assert ('read' if out['readable'] else 'abstain') == row['entry_expect'], out
+         # a declared row (artifacts/w3-b4/expect_exceptions.json): the entry does what the row registered; the REASON that was registered was a wrong prediction, so the observed one is pinned
+@@ -336,13 +352,23 @@
+ 
+ 
+ def test_no_row_of_the_data_is_misread_or_incomplete_and_every_read_type_is_read_in_at_least_twenty_rows():
+-    verdicts = {}
++    """Round 3: the NAME is kept (a test is not renamed) but the claim "every read type is read in at least twenty rows" is no longer true and is not made: after the place/で rows were taken out,
++    the entry reads 4 rows of the data (P_ACT, へ/goal) and none of P_CREATE and P_EMOTION. What is checked instead: no row is misread or incomplete; of the frozen rows that registered `entry_expect: read`
++    (at least twenty per read type, as registered) every row is either judged `correct` or is a recorded narrowed row that the entry refuses; and the number of rows judged `correct` is pinned to the measured
++    one (artifacts/w3-b4/r3/per_type_counts.json): P_ACT 4, P_CREATE 0, P_EMOTION 0."""
++    verdicts, entries = {}, {}
+     for row in DATA:
+         out = SR.read(row['input'], placement=query_of(row))
+         verdicts[row['id']] = b1.judge(row['expect'], 'ja', out)['verdict']
++        entries[row['id']] = out['readable']
+     assert not [i for i, v in verdicts.items() if v in ('misread', 'incomplete', 'UNJUDGED')]
+     for t in READ_TYPES:
+-        assert sum(1 for r in DATA if r['pred_type'] == t and verdicts[r['id']] == 'correct') >= 20, t
++        registered_read = [r for r in DATA if r['pred_type'] == t and r['entry_expect'] == 'read']
++        assert len(registered_read) >= 20, t
++        for r in registered_read:
++            assert (entries[r['id']] and verdicts[r['id']] == 'correct') or (r['id'] in NARROWED_ROWS and not entries[r['id']]), r['id']
++    assert {t: sum(1 for r in DATA if r['pred_type'] == t and verdicts[r['id']] == 'correct' and entries[r['id']]) for t in READ_TYPES} == {'P_ACT': 4, 'P_CREATE': 0, 'P_EMOTION': 0}
++    assert sum(entries.values()) == 4
+ 
+ 
+ def test_with_no_placement_every_row_of_the_data_is_what_the_entry_of_the_base_commit_says():
+@@ -353,18 +379,26 @@
+ 
+ 
+ def test_the_six_types_that_stay_unread_are_refused_at_the_type_of_the_predicate_with_the_reason_of_the_type():
+-    row = next(r for r in DATA if r['id'] == 'W3B4-ACT-R-001')
++    row = next(r for r in DATA if r['id'] == 'W3B4-ACT-R-001')            # 兄が校庭で遊んだ。
+     for t in UNREAD_TYPES:
+         q = query_of(row)
+         q.mapping['遊ぶ'] = F.answer(t, decided_by=['seed'], term='遊ぶ')
+         ex = SR.typed_explain_ja(row['input'], q)
+         assert ex['w3b2'] == 'PLACEMENT_FRAME_NOT_READ:' + t, (t, ex)
+         assert SR.read(row['input'], placement=q)['readable'] is False
+-    # and a type that is read is read with the same sentence
++    # round 3: a type that is read has no place/で row, so 校庭で is refused for the particle (the type is read, the row is not in its table)
+     for t in READ_TYPES:
+         q = query_of(row)
+         q.mapping['遊ぶ'] = F.answer(t, decided_by=['seed'], term='遊ぶ')
+-        assert SR.typed_explain_ja(row['input'], q)['w3b2'] == 'READ', t
++        assert SR.typed_explain_ja(row['input'], q)['w3b2'] == 'PLACEMENT_PARTICLE_NOT_IN_FRAME:%s:で' % t, t
++        assert SR.read(row['input'], placement=q)['readable'] is False
++    # and the sentence that a read type does read: へ/goal is a row of P_ACT only (兄が荷車を畑へ押した。 with the predicate 押す replaced)
++    goal = next(r for r in DATA if r['id'] == 'W3B4-ACT-R-021')
++    assert goal['input'] == '兄が荷車を畑へ押した。'
++    for t in READ_TYPES:
++        q = query_of(goal)
++        q.mapping['押す'] = F.answer(t, decided_by=['seed'], term='押す')
++        assert SR.typed_explain_ja(goal['input'], q)['w3b2'] == ('READ' if t == 'P_ACT' else 'PLACEMENT_PARTICLE_NOT_IN_FRAME:%s:へ' % t), t
+ 
+ 
+ @pytest.mark.parametrize('mapper', [lambda a: F.to_estimated(a, 'proximity'), lambda a: F.to_estimated(a, 'generated'), F.to_multiple], ids=['proximity', 'generated', 'split'])
+@@ -376,20 +410,25 @@
+ 
+ 
+ def test_a_type_that_the_table_reads_is_read_with_the_frame_of_a_confirmed_predicate_only_when_the_frame_agrees():
+-    """K95 is unchanged: a CONFIRMED frame narrows what the table reads (the particle must be in it, every type of the role in its list)."""
+-    row = next(r for r in DATA if r['id'] == 'W3B4-ACT-R-012')            # 兄が道路で荷車を押した。 (agent が, place で, patient を)
++    """K95 is unchanged: a CONFIRMED frame narrows what the table reads (the particle must be in it, every type of the role in its list). Round 3: the row is `W3B4-ACT-R-021` (へ/goal); a frame
++    never adds a row to the table, so a frame that confirms で:PLACE does not make 兄が道路で荷車を押した。 readable (there is no place/で row for P_ACT)."""
++    row = next(r for r in DATA if r['id'] == 'W3B4-ACT-R-021')            # 兄が荷車を畑へ押した。 (agent が, patient を, goal へ)
+     q = query_of(row)
+-    frame_ok = {'が': ['ANIMAL', 'GROUP_ORG', 'PERSON'], 'を': ['ARTIFACT'], 'で': ['PLACE']}
++    frame_ok = {'が': ['ANIMAL', 'GROUP_ORG', 'PERSON'], 'を': ['ARTIFACT'], 'へ': ['PLACE']}
+     q.mapping['押す'] = F.with_frame(dict(q.mapping['押す'], decided_by=['seed', 'gen_frame'], namespace='P'), 'CONFIRMED', frame_ok)
+     assert SR.typed_explain_ja(row['input'], q)['w3b2'] == 'READ'
+     q2 = query_of(row)
+-    q2.mapping['押す'] = F.with_frame(dict(q2.mapping['押す'], decided_by=['seed', 'gen_frame'], namespace='P'), 'CONFIRMED', {'が': ['PERSON'], 'を': ['ARTIFACT']})
+-    assert SR.typed_explain_ja(row['input'], q2)['w3b2'].startswith('PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED:P_ACT:で')
++    q2.mapping['押す'] = F.with_frame(dict(q2.mapping['押す'], decided_by=['seed', 'gen_frame'], namespace='P'), 'CONFIRMED', {'が': ['ANIMAL', 'GROUP_ORG', 'PERSON'], 'を': ['ARTIFACT']})
++    assert SR.typed_explain_ja(row['input'], q2)['w3b2'] == 'PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED:P_ACT:へ'
++    road = next(r for r in DATA if r['id'] == 'W3B4-ACT-R-012')            # 兄が道路で荷車を押した。
++    q3 = query_of(road)
++    q3.mapping['押す'] = F.with_frame(dict(q3.mapping['押す'], decided_by=['seed', 'gen_frame'], namespace='P'), 'CONFIRMED', {'が': ['ANIMAL', 'GROUP_ORG', 'PERSON'], 'を': ['ARTIFACT'], 'で': ['PLACE']})
++    assert SR.typed_explain_ja(road['input'], q3)['w3b2'] == 'PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で'
+ 
+ 
+ def test_the_default_entry_reads_with_the_variable_and_with_the_option_the_same_as_with_a_placement_object():
+     if not os.path.isdir(R7): pytest.skip('the placement r7 is not on this machine')
+-    text = '兄が校庭で遊んだ。'
++    text = '兄が荷車を畑へ押した。'
+     env = dict(os.environ, PYTHONPATH=str(TREE), PYTHONDONTWRITEBYTECODE='1', VERA_PLACEMENT=R7)
+     env.pop('VERA_COARSE_PLACEMENT', None)
+     by_variable = subprocess.run([sys.executable, '-m', 'verantyx.semantic_read', '--text', text], capture_output=True, env=env, cwd=str(TREE)).stdout.decode('utf-8')
+@@ -397,8 +436,15 @@
+     by_option = subprocess.run([sys.executable, '-m', 'verantyx.semantic_read', '--text', text, '--placement', R7], capture_output=True, env=env, cwd=str(TREE)).stdout.decode('utf-8')
+     none = subprocess.run([sys.executable, '-m', 'verantyx.semantic_read', '--text', text], capture_output=True, env=env, cwd=str(TREE)).stdout.decode('utf-8')
+     a, b, c = json.loads(by_variable), json.loads(by_option), json.loads(none)
+-    assert a == b and a['readable'] is True and a['clauses'][0]['roles'] == {'agent': '兄', 'place': '校庭'}
++    assert a == b and a['readable'] is True and a['clauses'][0]['roles'] == {'agent': '兄', 'patient': '荷車', 'goal': '畑'}
+     assert c['readable'] is False
++    # round 3: 兄が校庭で遊んだ。 (place/で of P_ACT is not in the table) is not read, with the variable and with the option alike
++    text = '兄が校庭で遊んだ。'
++    env['VERA_PLACEMENT'] = R7
++    d = json.loads(subprocess.run([sys.executable, '-m', 'verantyx.semantic_read', '--text', text], capture_output=True, env=env, cwd=str(TREE)).stdout.decode('utf-8'))
++    env.pop('VERA_PLACEMENT')
++    e = json.loads(subprocess.run([sys.executable, '-m', 'verantyx.semantic_read', '--text', text, '--placement', R7], capture_output=True, env=env, cwd=str(TREE)).stdout.decode('utf-8'))
++    assert d == e and d['readable'] is False
+ 
+ 
+ # ===================================================================================================================================
+@@ -428,17 +474,17 @@
+     registered = {(t, row) for t in ('P_ACT', 'P_CHANGE', 'P_CREATE', 'P_CONSUME', 'P_EMOTION') for row in _registered_rows(t)}
+     for t, rows in R.TYPED_FRAMES_W3B4.items():
+         for row in rows: assert (t, row) in registered, (t, row)
+-    assert len(code_rows(R.typed_frames_v2())) == 20 and len(block('w3b4_frames')) == 20
++    assert len(code_rows(R.typed_frames_v2())) == 17 and len(block('w3b4_frames')) == 17      # round 3: 20 rows before the three place/で rows were taken out
+ 
+ 
+ def test_the_five_sentences_of_the_review_are_in_the_data_as_refused_rows_at_its_end_and_the_frozen_rows_stay():
+     ids = [i for rec in NARROWED.values() for i in rec['rows_appended_to_the_data']]
+     assert ids == ['W3B4-CHANGE-A-901', 'W3B4-CHANGE-A-902', 'W3B4-CHANGE-A-903', 'W3B4-CHANGE-A-904', 'W3B4-CONSUME-A-901']
+-    assert [r['id'] for r in DATA[-5:]] == ids and len(DATA) == 323
+-    for r in DATA[-5:]:
++    assert [r['id'] for r in DATA[318:323]] == ids and len(DATA) == 333      # round 3: ten more rows after them
++    for r in DATA[318:323]:
+         assert r['entry_expect'] == 'abstain' and r['expect']['readable'] is False and r['behavior'] == 'abstain'
+         assert r['w3b4_expect'] == 'PLACEMENT_FRAME_NOT_READ:' + r['pred_type'] and r['pred_type'] in NARROWED
+-    assert [r['input'] for r in DATA[-5:]] == ['会社が工場から店へ変わった。', 'チームが広場から体育館へ変わった。', '兄が田舎から都会へ変わった。', '学校が校舎から仮校舎へ変わった。', '兄が休みに金を使った。']
++    assert [r['input'] for r in DATA[318:323]] == ['会社が工場から店へ変わった。', 'チームが広場から体育館へ変わった。', '兄が田舎から都会へ変わった。', '学校が校舎から仮校舎へ変わった。', '兄が休みに金を使った。']
+     # the first 318 rows are the frozen file (artifacts/w3-b4/bank_freeze.sha256): the file was only appended to
+     import hashlib
+     head = ''.join(l + '\n' for l in DATA_FILE.read_text(encoding='utf-8').splitlines()[:318]).encode('utf-8')
+@@ -449,7 +495,7 @@
+ def test_the_five_sentences_were_misread_by_the_registered_rows_and_the_narrowed_table_refuses_them(monkeypatch):
+     """The evidence for the narrowing, kept as a test: with the registered rows of the two types put back in memory (and the two types taken off the unread ones) the five sentences are READ and
+     judged a misread; with the table as it is they are refused with the reason of the type. Nothing in the tree is changed by this test."""
+-    rows = DATA[-5:]
++    rows = DATA[318:323]
+     for row in rows:
+         out = SR.read(row['input'], placement=query_of(row))
+         assert out['readable'] is False, row['input']
+@@ -475,3 +521,80 @@
+     # the frozen read rows of the two types (27 and 29 rows) are the ones that the narrowing turned into refusals
+     for t, n in (('P_CHANGE', 27), ('P_CONSUME', 29)):
+         assert len([r for r in DATA if r['pred_type'] == t and r['entry_expect'] == 'read']) == n
++
++
++# ===================================================================================================================================
++# round 3 (docs K165, table change record 3): the rows place/で/PLACE of P_ACT, P_CREATE and P_EMOTION were taken out; the types stay
++# ===================================================================================================================================
++TEN = (('W3B4-ACT-A-901', 'P_ACT', '兄が右で打った。'), ('W3B4-ACT-A-902', 'P_ACT', '兄が右で皿を洗った。'), ('W3B4-ACT-A-903', 'P_ACT', '兄が右で皿を拭いた。'),
++       ('W3B4-ACT-A-904', 'P_ACT', '兄が口で戦った。'), ('W3B4-CREATE-A-901', 'P_CREATE', '兄が右で絵を描いた。'), ('W3B4-CREATE-A-902', 'P_CREATE', '弟が右で記事を書いた。'),
++       ('W3B4-CREATE-A-903', 'P_CREATE', '兄が口で絵を描いた。'), ('W3B4-CREATE-A-904', 'P_CREATE', '兄が口で手紙を書いた。'), ('W3B4-EMOTION-A-901', 'P_EMOTION', '兄が段差で驚いた。'),
++       ('W3B4-EMOTION-A-902', 'P_EMOTION', '兄が口で笑った。'))
++
++
++def test_the_narrowed_rows_are_recorded_and_the_three_rows_were_registered_and_are_gone():
++    rec = NARROWED_ROWS_RECORD
++    assert rec['rows_removed'] == [{'type': t, 'role': 'place', 'particle': 'で', 'types': ['PLACE'], 'kind': 'adjunct'} for t in READ_TYPES]
++    assert rec['narrowed_at'] and rec['reason'] and rec['source'] and rec['recorded_in'] and rec['decided_by']
++    assert rec['rows_appended_to_the_data'] == [i for i, t, text in TEN]
++    for t in READ_TYPES:
++        assert DE_ROW in _registered_rows(t)                                      # the registration (PREREG.md, not changed) did have the row
++        assert DE_ROW not in R.typed_frames_v2()[t] and DE_ROW not in R.TYPED_FRAMES_W3B4[t]
++        assert t not in R.TYPED_FRAMES_NOT_READ_W3B4                              # the type is not taken out: only the row
++    # v1's rows place/で stay in the first table (P_MOVE, P_COMMUNICATE) and in the first nine rows of the docs
++    for t in ('P_MOVE', 'P_COMMUNICATE'): assert DE_ROW in R.TYPED_FRAMES[t] and DE_ROW in R.typed_frames_v2()[t]
++    # only narrowing: every row of the table is a registered row (the registered rows of the five types of the registration, and the two types of v1)
++    registered = {(t, row) for t in ('P_ACT', 'P_CHANGE', 'P_CREATE', 'P_CONSUME', 'P_EMOTION') for row in _registered_rows(t)}
++    for t, rows in R.TYPED_FRAMES_W3B4.items():
++        for row in rows: assert (t, row) in registered, (t, row)
++    assert len(NARROWED_ROWS) == 109 and {v['pred_type'] for v in NARROWED_ROWS.values()} == set(READ_TYPES)
++    assert all(i in {r['id'] for r in DATA[:323]} for i in NARROWED_ROWS)         # only rows of the frozen part (the appended rows are refused as frozen)
++
++
++def test_the_ten_sentences_of_review_r2_are_appended_as_refused_rows_and_the_frozen_rows_stay():
++    import hashlib
++    assert len(DATA) == 333
++    for r, (i, t, text) in zip(DATA[323:333], TEN):
++        assert (r['id'], r['pred_type'], r['input']) == (i, t, text)
++        assert r['entry_expect'] == 'abstain' and r['behavior'] == 'abstain' and r['expect'] == {'readable': False, 'clauses': [], 'relations': [], 'must_not': []}
++        assert r['w3b4_expect'] == 'PLACEMENT_PARTICLE_NOT_IN_FRAME:%s:で' % t and r['path'] == 'U3'
++        de = '右' if '右' in text else ('段差' if '段差' in text else '口')
++        assert r['placement'][de] == {'top': ['PLACE'], 'decided_by': ['seed']}       # the filler of で is a seed answer (the optimistic fake): the misread appeared only that way
++    lines = DATA_FILE.read_text(encoding='utf-8').splitlines()
++    sha = lambda n: hashlib.sha256(''.join(l + '\n' for l in lines[:n]).encode('utf-8')).hexdigest()
++    assert sha(318) == (TREE / 'artifacts' / 'w3-b4' / 'bank_freeze.sha256').read_text(encoding='utf-8').split()[0]
++    assert sha(323) == (TREE / 'artifacts' / 'w3-b4' / 'r2' / 'bank_freeze_after_r2.sha256').read_text(encoding='utf-8').split()[0]
++
++
++def test_the_ten_sentences_were_misread_with_the_place_de_rows_and_the_narrowed_table_refuses_them(monkeypatch):
++    """The evidence for the narrowing, kept as a test: with the three rows put back in memory the ten sentences are READ and judged a misread (place 右 / 段差 / 口); with the table as it is they are
++    refused for the particle. Nothing in the tree is changed (monkeypatch)."""
++    rows = DATA[323:333]
++    for r in rows:
++        assert SR.read(r['input'], placement=query_of(r))['readable'] is False, r['input']
++        assert SR.typed_explain_ja(r['input'], query_of(r))['w3b2'] == 'PLACEMENT_PARTICLE_NOT_IN_FRAME:%s:で' % r['pred_type']
++    for t in READ_TYPES: monkeypatch.setitem(R.TYPED_FRAMES_W3B4, t, R.TYPED_FRAMES_W3B4[t] + (DE_ROW,))
++    for r in rows:
++        out = SR.read(r['input'], placement=query_of(r))
++        assert out['readable'] is True, r['input']
++        assert b1.judge(r['expect'], 'ja', out)['verdict'] == 'misread', (r['input'], out)
++        assert SR.typed_explain_ja(r['input'], query_of(r))['w3b2'] == 'READ'
++        assert 'place' in out['clauses'][0]['roles'], out
++
++
++def test_the_rows_whose_diagnosis_the_narrowing_changed_are_exactly_the_recorded_rows(monkeypatch):
++    frozen = DATA[:323]
++    now = {r['id']: explain(r) for r in frozen}
++    for t in READ_TYPES: monkeypatch.setitem(R.TYPED_FRAMES_W3B4, t, R.TYPED_FRAMES_W3B4[t] + (DE_ROW,))
++    before = {r['id']: explain(r) for r in frozen}
++    assert {i for i in now if now[i] != before[i]} == set(NARROWED_ROWS)             # 109 rows, no other row of the frozen data changes
++    for r in frozen:
++        if r['id'] not in NARROWED_ROWS: continue
++        assert now[r['id']]['w3b2'] == NARROWED_ROWS[r['id']]['observed_w3b2'] and before[r['id']]['w3b2'] == NARROWED_ROWS[r['id']]['diagnosis_with_the_rows_put_back']
++        # with the rows put back, the row is as it was registered: a declared row as pinned, the others as `entry_expect` and `w3b4_expect` say (and judged correct when read)
++        out = SR.read(r['input'], placement=query_of(r))
++        assert ('read' if out['readable'] else 'abstain') == r['entry_expect'], r['id']
++        if r['id'] in EXCEPTIONS: assert before[r['id']] == EXCEPTIONS[r['id']]['observed_explain'], r['id']
++        elif r['w3b4_expect'] == 'READ': assert before[r['id']]['w3b2'] == 'READ', r['id']
++        else: assert (before[r['id']]['w3b2'] or '').startswith(r['w3b4_expect']), r['id']
++        if out['readable']: assert b1.judge(r['expect'], 'ja', out)['verdict'] == 'correct', r['id']

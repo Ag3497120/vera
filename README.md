@@ -1,259 +1,597 @@
-# Vera
+# Verantyx Vera α
 
-**Vera is an AI with no weights that builds a frame in which a language model cannot lie.**
-It reads Japanese sentences into *event crosses* (predicate, roles, typed fillers, polarity, tense), keeps the
-owner's documents and decisions as append-only records, answers only with a source attached, and when it cannot
-answer it says so with a typed reason instead of guessing. It runs on a CPU in milliseconds and is deterministic.
+The public README is `public_overlay/README.md` (positioning, what Vera does and does not do, measured numbers with denominators, install). This README is for developers of this tree.
 
-This repository is the public snapshot of the development tree (`vera_base/verantyx`, synced 2026-10-04,
-40 integrated tickets). Every number below is a measurement; nothing here is estimated.
+**A model-free knowledge and reasoning research engine with source evidence and typed refusals.**
 
-(日本語版は後半にあります / The Japanese text follows the English text.)
+Run the round5 interactive CLI with `vera chat --mode round5`; see [docs/CHAT.md](docs/CHAT.md) for commands and limits.
 
----
+Vera stores knowledge as *crosses* — one per concept, with a core meaning and
+accumulating factual facets — and reasons by **multi-frontier consensus
+search**: several sections explore toward a center, and an answer ships only
+when they agree with sufficient evidence. Everything else is a **typed
+refusal**:
 
-## English
+```text
+ANSWER · AMBIGUOUS · UNKNOWN_NO_EVIDENCE · UNKNOWN_INSUFFICIENT_EVIDENCE ·
+UNKNOWN_SECTION_DISAGREEMENT · UNKNOWN_BUDGET · UNKNOWN_NO_SOLUTION · …
+```
 
-### What Vera is, in one paragraph
+No neural network. No GPU. No sampling temperature. Same input, same output,
+every time — and every answer traces back to counted source sentences.
 
-Vera is not a neural network and it is not a hand-written rule system over word lists. It is a structure:
-reading conventions (a closed set of roles, polarity, tense, quantifiers), a *coarse placement* of words into
-17 types computed from the distribution of a 7-million-line generated corpus (no learned parameters, every
-decision recomputable from evidence rows and thresholds), predicate frames proposed by a code model and kept
-only when the corpus distribution confirms them, and human records as the only ground for facts. Where a
-reading is ambiguous Vera abstains. The principle throughout is *zero misreadings over coverage*.
+> **Status: alpha research prototype; capability goals remain unmet.** The
+> central goals are general meaning understanding and free-text generation,
+> then construction beyond stored complete examples. General QA, code
+> construction and complex QA over newly added documents are applications of
+> that shared foundation. Cross geometry and compressed corpus representations
+> also remain design goals. These are development goals,
+> not verified capabilities. The authoritative scope is
+> [VERA_GOAL_AND_RESUME.md](docs/VERA_GOAL_AND_RESUME.md).
+>
+> Round5-A is an experimental source-span/meaning-plan/proof route selected with
+> `mode="semantic"`. Its first public development run answered 6/80 correctly,
+> answered 0/80 wrongly, and abstained on 74/80; it did **not** meet the
+> preregistered 60% adoption threshold. After a tense correction the same public
+> set scored 5 correct, 0 wrong and 75 abstentions; both runs are preserved in
+> [the development report](docs/RESULTS_2026-09-30_round5a.md).
+> A subsequent integration safety revision scored 4 correct, 0 wrong and 76
+> abstentions on that same public set. These reused development runs are not
+> independent evaluations of generalization.
+> Correct refusals are not correct answers.
+> The independent, limited A document evaluation of the immutable 12:49 UTC
+> snapshot completed 120 requests over 10 Japanese documents: **0 correct,
+> 0 wrong, 120 abstentions, 0 unrun, 0 appropriate refusals**. All ten documents
+> included untrusted response-changing instructions; instruction-following was
+> zero. The comparison target of 72 correct was not met. Median ask time
+> 0.256 ms measures refusals, not successful QA. These results do not measure
+> clean documents, general QA, B/C, free-text generation or compression.
+> The default remains `legacy`. Experimental B/C routes are now integrated;
+> their adoption and the four-family independent acceptance evaluation are not
+> completed. Runtime answers use local structures and rules;
+> Codex-authored development material is separately marked as synthetic.
 
-### What it does today
+`Vera(mode="round5").ask(raw)` is the experimental normal router for A semantic
+QA, B code contracts and C content plans. It selects from the raw request alone;
+ambiguous intent or a component refusal never retries an older answer path.
+Explicit diagnostic modes are `semantic`, `contract` and `content`. B revision r3
+is integrated after cleanup, process-group observation and asymmetric verifier
+witness corrections. Its final OS regression produced nonempty SQL for two raw
+requests (24 independent finite oracle checks) and rejected two semantic mutants
+after successful execution. All eight owned children were reclaimed. These
+are authored regressions, not B80 acceptance, arbitrary code-generation accuracy
+or a 50 ms result; POSIX execution remains held. C can construct
+finite licensed prose, but its whole-request step accounting is incomplete:
+the public adapter reports `experimental=True`, `adoption_eligible=False`,
+`budget.accounting_complete=False` and `budget.steps_total=None`.
+`CREATED` means fictional construction, not a verified factual answer or literary
+quality score. The latest implementation, evidence and unfinished work are in
+[the current Claude integration handoff](docs/CLAUDE_INTEGRATION_HANDOFF_2026-09-30.md).
 
-| Capability | Measured |
+For an explicitly selected, checkpointed material pack, use
+`Vera(mode="round5", round3_root=base_qa, material_root=approved_materials,
+material_immutable=True)`. The material root is separate from factual QA indexes.
+Immutable reading refuses nonempty WAL/journal files; the caller must verify and
+pin the release manifest first. Synthetic materials remain unverified expressions.
+
+`verantyx.meaning_bridge.source_event_realizations(raw_documents)` is a separate
+diagnostic for one source-attributed event. It retains the full source View,
+maps the supported roles/polarity/tense into C's grammar, and checks the emitted
+meaning. Unsupported scope, aspect and mood are held. Its result is
+`DIAGNOSTIC_REALIZATION`, never a completed user Goal or general-generation
+score; `adoption_eligible` remains false. See the handoff for the small positive
+and fault-injection checks and the remaining shared-parser limitations.
+
+## Platform / 全体系
+
+Structure, verdicts, signals, governed evolution, versioning and every way to participate: **[docs/PLATFORM.md](docs/PLATFORM.md)**. Live: [verantyx.ai/vera3d](https://verantyx.ai/vera3d/) · [model repo](https://huggingface.co/kofdai/vera-alpha) · suggest via issues labeled `vera-suggest`.
+
+## Historical component measurements — 2026-08
+
+These older component measurements concern their original versions and scopes.
+They are not end-to-end Round5 accuracy, latency, or generalization results.
+See the current status above before interpreting them as a capability claim.
+
+| | measured |
 |---|---|
-| Reads Japanese single- and two-clause sentences into event crosses; abstains with a typed reason otherwise | hidden bank B1 (reading, 296 items): correct 11, **misread 0** |
-| Answers wh-questions over a document with the evidence sentence attached (question cross = a cross with a typed hole, observed over the document) | question observation, 185 items: correct 73, **wrong 0** |
-| Never answers a factual question from generated text alone; separates human records / generated / unknown; asks for confirmation when a human is present | hidden bank B7 (basis policy, 100 items): wrong 0, generated-only answers 0 |
-| Routes work between agents from a free-text description of each agent, undecided when unsure | hidden bank B6 (132 items): misrouted 0 (routed 0) |
-| Append-only memory split into sovereigns: delete by unit, consent-gated promotion | 0 races under adversarial tests |
-| Generates by *observing* a structure (moving along faces and edges of crosses); each output is typed OBSERVED / CONSTRUCTED (outside the closure) / UNKNOWN; re-observation reproduces it | 100 % reproducible |
-| Chat: free conversation | hidden bank B2 (286 items): correct 0, wrong 0 |
+| Federation | **89,369 cores**, repaired 2026-08-14 (103,599 rule-shaped false facets removed, ledger kept) |
+| Typed negation | observed `¬` testimony, gated on a real lemma — **97/97** on the reported component test |
+| Unknown-word explanation | units grounded in sourced definitions — **81 of 91** remaining holes fully grounded |
+| Structural difference | exclusivity **0.9715** — "no attestation for B", never "B is not" |
+| Connective prose | **243/243** placements carry a licence; 「しかし」 only on an observed ¬ pair |
+| Instruction frames | 48 verbs × 28 operations — out-of-table refusal last measured at **15/15 on the 47-verb table**, not re-run since 見る was added |
+| Multi-stage chains | arrows derived deterministically — **0/18** false splits |
+| Typo recovery | recovery@5 **84.8%**, false fires on real words **0/500**, 2.15 ms |
+| Mathematics | **75,919 of 77,242** mathlib theorems carry `verified:lean4:4.34.0-rc1` from real kernel runs (98.9% of files) |
+| Cold start | shallow shelf took the hole rate **74.5% → 45.5%** |
+| Meaning by association | kin prediction covers 140/150 at **10× chance — and 4% of a word's own facets is the ceiling** |
+| Commonsense | **9/50**. Two pre-registered ConceptNet imports both PARKED (29/20, 28/21) — no usable source found |
 
-Six adversarial waves (codex at maximum effort) produced 35 hits; all are fixed or recorded as known holes.
-Nothing was ever answered wrongly on any bank.
+Doors: **94** over MCP (`vera_ask`, `vera_diff`, `vera_explain`, `vera_intent`,
+`vera_typo`, `vera_math`, `vera_summarize`, `memory_ledger`, `survey_assets`,
+`assets_for`, `record_tool_witness`, `record_asset_outcome`, …).
 
-### Update 2026-10-05 (what changed since 2026-10-04, and what we learned)
+### Sovereigns stay apart
 
-**New in the package** (all off by default unless noted; the default outputs of `vera read / ask / serve` are byte-identical to the previous release when the new options are not used):
+Only the federation votes. mathlib witnesses, the jawiki sidecars (941,604
+aliases, 122,988 sense surfaces, definition sentences, predicate profiles),
+the gap map and the parked ConceptNet import are hand-off only, and
+`MANIFEST.json` says so in its first sentence. Merging two stores whose
+notion of "agreement" differs was measured six times and broke six times —
+out-of-corpus words reaching quorum 0 → 8, 284 answers becoming 208.
 
-- **Assumed reading** (`vera read/ask/chat/serve` default mode `assume`; the library function `semantic_read.read` stays strict). When the only thing missing is a *premise* — a name's type, a coined verb, an unknown noun's type — Vera reads with an explicit assumption and says so (`assumptions`, `read_mode: assumed`, the note "（ミナを人として）"). Structure is never assumed (role-splitting particles, clause attachment, anaphora still abstain). Measured on unseen sentences: strict misreads 0, wrong assumptions 0/19. `--strict-read` or `VERA_READ_MODE=strict` turns it off.
-- **Compound sentences v1**: 3–4 finite/relative clauses, て-form and continuative with two subjects, quotation edges; subject sharing across clauses and anaphora abstain. Unseen sentences: misreads 0.
-- **Predicate role frames and placement r9** (`role_frame` in the placement query; `RELATIVE_POSITION` noun type) — the reader consumes confirmed frames (stage R).
-- **Holes and the LLM intake mouths**: typed holes in a cross, a candidate mouth (`vera serve --fill --ledger-file`), an append-only hash-chained testimony ledger (`vera ledger`), a swappable backend (`ollama` / OpenAI-compatible API / `fake`), provenance kind `testimony_fill`. Candidates never become the basis of a factual answer.
-- **Placement layers and document-driven growth** (`vera placement grow --documents … --layer`, `vera ledger promote`): a per-user/domain layer that never overrides the base placement; words become `direct` only when the documents' own distribution (or a human) confirms them.
-- **Realizer rules/forms split** (`verantyx/data/realize_forms_ja.json`), typed crosses realized and re-read with the same placement, `vera realize`.
-- `vera serve --no-llm`, `--profile strict|assume`, `confidence_tiers` (how many independent tiers gave the same answer; abstentions are not counted as agreement).
+### Where the machine itself is knowledge
 
-**What we measured and did not get** (negative results are kept on purpose):
+An agent that cannot do something here can ask what else this computer has.
+Four tiers, never collapsed:
 
-- Hidden bank B1 (reading) stays at correct 11 / misread 0 / wrong 0 across r9, compound v1 and assumed reading. The remaining abstentions are structural: multi-sentence inputs, 「」quotations with honorific names, noun-phrase-only inputs, passive/causative, quantifiers — not missing premises.
-- A higher reasoning effort for the role-frame generation (r10) did **not** improve recall of adjunct particles; the bottleneck is corpus coverage (which predicate–particle pairs occur significantly), not generation effort. r10 was not adopted.
-- Loading one document does not yet grow a layer (3 direct words out of 69 candidates; QA gain 0); growth needs several documents or human confirmation. Pre-built "initial layers" from the generated corpus did not capture a domain and are not shipped.
-
-**Known defects (fix in progress, ticket W3-f1; all three reproduced on this release)**: document QA (`vera ask --mode round5 --document`) (1) answers a two-character kinship noun subject with its first character only (叔父 → 「叔」, 祖母 → 「祖」); (2) reads a prohibition 「…してはならない」 as the verb なる and answers はい to a yes/no question built on it; (3) fuses a time noun into a place answer (「明日東京で働く」 → where? = 明日東京). The reader itself reads these sentences correctly; the defects are in the QA path. Until they are fixed, treat single-character answers, yes/no answers about prohibitions, and place answers that start with a time word as suspect.
-
-**What the first public comparison showed (W14-bench run1, 176 questions × 5 systems, machine scoring; human scoring of mixed rows pending)**: Vera *strict* behaved identically to "always abstain" on every item, and Vera *default* behaved identically to the raw 4B model on every item — in layer 0 the model's answers are labelled *testimony*, but on this set Vera itself confirmed **0** citations from the records. So the honest statement today is: Vera **holds** (strict) or **labels** (default); it does not yet **verify** the model's answers against the documents. Fixing that (passing the documents and checking the quoted evidence) is the next ticket.
-
-**Direction** (decided 2026-10-04/05, recorded in [docs/decisions/](docs/decisions/)): Vera is a weightless structural kernel whose rules are frozen as *base v1* and which grows by data (placements, documents, ledgers, memory); the LLM is a replaceable component that supplies words, never structure; no fine-tuning. The first product is "narrow and never lies, and grows as you use it": sourced QA over your documents, a checking front-end for an existing LLM, and a memory-and-gate for long-running agents (an Anthropic/OpenAI-compatible endpoint that IDE agents can mount). A public, adversarial comparison protocol (version conflicts, near-miss distractors, plausible-but-absent questions, prompt injection inside documents, paraphrase stability, many documents) is being built so the claim can be checked rather than believed.
-
-### What it cannot do yet
-
-- Free conversation, long documents, complex Japanese; English has no placement, so the typed path does not run.
-- Adverbs and floating noun-phrase quantifiers are not read (they abstain).
-- The role of a で / に / へ / から phrase is not decided by types alone (shown twice on unseen sentences; the
-  next step is predicate-specific *role frames*, ticket W3-a6).
-- Coverage is small: the strength is that what it says is sourced and what it does not know it says.
-
-### Install and run
-
-```sh
-python -m pip install -r requirements.txt
-python -m pip install -e .
+```text
+present   it exists            — a fact anyone can check by looking
+declares  Info.plist says so   — the vendor's claim, attributable
+verified  a run proved it      — record_tool_witness, earned
+chosen    it closed this need  — record_asset_outcome, remembered
 ```
 
-Chat over your own documents (the REPL shares the exact path of `vera ask`):
+A change in the machine opens a `GapNode` (ASSET_ARRIVED / ASSET_GONE) rather
+than passing silently, and the second time a need appears the answer is a
+lookup instead of another exploration.
 
-```sh
-vera-chat --document ./memo.txt          # = vera chat --mode round5 --document ./memo.txt
-vera ask "資料を渡したのは誰ですか。" --mode round5 --document ./memo.txt
+## In the IDE
+
+[Verantyx IDE](https://github.com/Ag3497120/Verantyx) ships Vera as a native
+child process (stdio JSON-RPC, no MCP registry in the path) and offers five
+modes: **jgen council / Vera-a (dual path) / Vera (store alone, no LLM) / Bot
+(settings & UI) / LLM**.
+
+- **The stereo cross is the route, not a logo.** It is a watermark across the
+  whole surface, lit by the real call — and only the arms the answer actually
+  evidenced. An arm with no cue stays grey, because a fact without a surface
+  cue has no arm.
+- **The reply is a console, not a bubble**: ANSWER (with verdict, grain,
+  witnesses) / EVIDENCE (named sources) / CONFLICT / **GAP — never an error.**
+  Declining *is* the answer.
+- **Memory is reviewable.** A ledger row moves from 証言 to 「ユーザーの校正」
+  by a person, and the review state lives beside the cross, never inside it:
+  an approval is not testimony the corpus gave.
+- **Surfaces are summoned by name** from a closed table — say 設定 / 記憶 /
+  画面 / モード. Anything unmatched falls through untouched.
+- **An attached document is offered, never taken**: 「入れますか?」 → 「はい」
+  ingests; anything else leaves it in the conversation only.
+
+## Earlier contradiction-detector measurements
+
+This section describes the earlier contradiction detector and its original
+measurements. The current QA, construction and generation goals are listed
+in the status block above.
+
+| corpus | detections | true | precision |
+|---|---|---|---|
+| Japanese government disaster reports (5 corpora, 4 read blind) | 14 | 14 | **100%** |
+| Technical prose — 93 mixed EN/JA project documents | 5 | **0** | **0%** |
+
+The difference is not the subject matter. It is whether the documents make
+**state claims about named entities**.
+
+**It works** where the same *named* thing — a municipality, a facility, a
+route, a service, a contract, an asset — is described by more than one source,
+and its state changes: open/closed, running/stopped, valid/expired,
+in-service/withdrawn. That shape is what the engine detects, and on it, it does
+not guess.
+
+**It does not work** on prose. In technical writing the same abstract noun
+returns in unrelated contexts — 「議論」, 「出力」, 「推論プロセス」 — and
+comparing two of them produces a contradiction that was never there. All five
+findings on that corpus were false, and the honest reading is that a wiki, a
+set of design docs, or meeting notes are the wrong input.
+
+It is also **not** a document organiser: no summarising, no tagging, no
+clustering, no semantic search. It answers one question — *do my sources
+disagree about this thing, and who said what* — and refuses the rest.
+
+The earlier parser also found bugs in **its own reading**, without an answer key: it
+reads the same documents twice through a transform that cannot change what
+they say, and a claim that appears in only one of the two readings is provably
+spurious. 13 real defects found that way, repaired unattended.
+[docs/METAMORPHIC.md](docs/METAMORPHIC.md).
+
+## Why
+
+| LLM | Vera |
+|-----|------|
+| Answers everything, sometimes wrongly | Answers only what it can ground, refuses the rest |
+| Knowledge baked into weights | Knowledge is data — inspect, count, **delete for real** |
+| Arithmetic is probabilistic | Arithmetic is exact by construction (wire carry propagation) |
+| GBs of weights + GPU | A JSON store + CPU; a 900k-concept store is ~200 MB |
+| Forgetting is an open research problem | `vera forget apple` — gone |
+
+Research areas include **source-grounded knowledge QA**,
+**persistent memory for agents (via MCP)**, **code reasoning**
+(who-calls / impact analysis), exact **arithmetic / equations / term
+rewriting / Kripke model checking**.
+
+Creative writing, small talk and free-form generation remain goals. Their
+current limitations are not a decision to exclude them from the project.
+
+## Install
+
+```bash
+pip install verantyx-vera            # core — standard library only
+pip install "verantyx-vera[docs]"    # + PDF, Word, Excel
+pip install "verantyx-vera[mcp]"     # + MCP server
 ```
 
-REPL commands: `/doc <path>` `/docs` `/read <sentence>` `/gen <sentence> [FACE_SWAP:<role>|EDGE:<relation>]`
-`/route <agents.md> <task.json>` `/json on|off` `/help` `/quit`. See [docs/CHAT.md](docs/CHAT.md).
+Python ≥ 3.9. The basic symbolic core has no additional dependencies. Japanese
+document parsing and the experimental Round5-A `semantic` mode use Fugashi and
+the bundled UniDic-lite dictionary. Install them from this checkout with:
 
-The coarse placement (a 290 MB SQLite built from the corpus) is **not** in the repository; without it the typed
-reading path and typed question answering do not run. Build one with `tools/build_coarse_placement.py` (see
-[docs/COARSE_PLACEMENT.md](docs/COARSE_PLACEMENT.md)) and point `VERA_PLACEMENT` at it.
-
-### One endpoint with a language model (fusion, layers 0–1)
-
-```sh
-ollama pull qwen3.5:4b
-vera serve --backend ollama --model qwen3.5:4b --document ./memo.txt          # layer 0: answer + provenance labels
-vera serve --backend ollama --model qwen3.5:4b --document ./memo.txt --strict # layer 1: grammar-bound decoding
+```bash
+python3.11 -m pip install -e ".[ja]"
 ```
 
-`/v1/chat/completions` (OpenAI-compatible) and `/api/chat` (Ollama-compatible). The model answers; Vera reads the
-question, answers facts that are in your documents from the records with evidence, and labels every sentence and arm
-of the reply as *record / testimony / constructed / unread* in the `vera` field. With `--strict` the decoder is bound
-by a grammar built from the records and unreadable questions are answered with a typed abstention instead of a call.
-Measured with Qwen3.5-4B on the ticket's test set: wrong answers 0 in both layers; record questions answered 21/50
-(layer 0) and 18/50 (layer 1); 50/50 questions without a record abstained; 20/20 creative requests came back as
-CONSTRUCTED. Details and the response schema: [docs/FUSION.md](docs/FUSION.md).
+The `all` extra includes these Japanese dependencies too. The dictionary is
+installed with the package; no dictionary download, GPU or network is needed
+when answering. Round5-A's experimental mode is selected explicitly through
+the Python API and does not establish that the project's capability goals
+have passed independent evaluation:
 
-### How it is built
+```python
+from verantyx.one import Vera
 
-- **Reading** — `verantyx/semantic_read.py`, `semantic_reader.py`; contract in
-  [READING_CONVENTIONS](docs/READING_CONVENTIONS.md), soundness ledger (pre-registered rules, every change with
-  before/after text) in [READING_SOUNDNESS](docs/READING_SOUNDNESS.md).
-- **Event cross** — `verantyx/event_cross.py`, [EVENT_CROSS](docs/EVENT_CROSS.md): the predicate is the centre,
-  roles are arms, words are fillers whose types come from the placement; relative clauses are crosses inside
-  fillers, connectives are typed edges between crosses.
-- **Placement** — `verantyx/coarse_place.py`, `coarse_types.py`, [COARSE_PLACEMENT](docs/COARSE_PLACEMENT.md):
-  17 noun types and 13 predicate types from corpus distributions; generated frames confirmed by distribution.
-- **Observation** — `verantyx/observe.py`, [OBSERVATION](docs/OBSERVATION.md): generation and question
-  answering are the same operation.
-- **Basis policy** — `verantyx/basis_policy.py`, [BASIS_POLICY](docs/BASIS_POLICY.md): human records answer
-  facts; generated text may lend wording; a human present gets a confirmation question.
-- **Routing** — `verantyx/routing_from_text.py`, [ROUTING_FROM_TEXT](docs/ROUTING_FROM_TEXT.md).
-- **Evaluation** — hidden banks scored by `tools/bank_score` ([BANK_SCORE](docs/BANK_SCORE.md)); the banks
-  themselves are not published. Method in [EVAL.md](EVAL.md), known failures in [KNOWN_ISSUES.md](KNOWN_ISSUES.md).
-- **Shadow operation** — [OPS_SHADOW](docs/OPS_SHADOW.md): Vera observes the project's own development loop
-  (routing, questions) with no authority, counting agree / abstain / wrong.
-
-### Where it is going
-
-Vera is being fused with an open-weights language model (base: **Qwen/Qwen3.5-4B**) in layers, each one
-measured before the next:
-
-0. One endpoint (OpenAI- and Ollama-compatible): the model answers, Vera labels every sentence and arm as
-   *record / testimony / constructed / unread*; facts in your documents are answered from the records with evidence.
-1. Grammar-constrained decoding from the records (`--strict`).
-2. Vocabulary intake with human approval (then Vera reads it alone), a feedback path back from the chat UI,
-   and rule enforcement that the model cannot bypass.
-3. A structure-token model: the LM emits Vera's cross tokens, Vera's realizer writes the sentence (LoRA → GGUF).
-
-The point of the fusion is to shorten the early research time and make the value visible; the weightless core
-keeps being developed in parallel.
-
-### License
-
-MIT (Vera). Base models keep their own licenses.
-
----
-
-## 日本語
-
-### Vera とは（一段落で）
-
-**Vera は、言語モデルが嘘をつけない枠をつくる、重みのない AI です。** 日本語の文を事象の十字（述語・役割・型つきの充填物・極性・時制）に読み、持ち主の文書と決定を追記のみの記録として持ち、答えには必ず出所を付け、答えられないときは推測せずに型つきの理由で黙ります。CPU の上でミリ秒で動き、決定的です。
-
-ニューラルネットではなく、語の一覧に対する手書きの if-then でもありません。構造です: 読解の規約（役割・極性・時制・量化の閉じた集合）、生成コーパス 700 万行の分布から計算した 17 型への **粗い配置**（学習したパラメータは無く、証拠の行と閾値から再計算できる）、コードモデルが申告しコーパスの分布が裏づけたときだけ採る述語の枠、そして事実の唯一の根拠である人の記録。読みが割れるところでは棄権します。全体を貫く原則は **正読より誤読ゼロ** です。
-
-このリポジトリは開発ツリーの公開スナップショット（`vera_base/verantyx`、2026-10-04 同期、統合 40 チケット）です。以下の数字はすべて実測で、見込みの数字はありません。
-
-### 今できること
-
-| 能力 | 実測 |
-|---|---|
-| 単文〜2 節の日本語を事象の十字に読む。読めなければ型つきで棄権 | 隠しバンク B1（読解 296 問）: 正読 11、**誤読 0** |
-| 文書への wh 疑問に、証拠の文を付けて答える（質問の十字＝穴の空いた十字を文書の上で観測） | 質問の観測 185 問: 正 73、**誤 0** |
-| 生成テキストだけでは事実を答えない。人の記録／生成／不明を分け、人が居れば確認を問い返す | 隠しバンク B7（根拠の方針 100 問）: 誤答 0、生成だけの回答 0 |
-| 各エージェントの自由文の説明から仕事を振り分け、迷えば未決 | 隠しバンク B6（132 問）: 誤ルート 0（ルート 0） |
-| 追記のみの記憶をソブリンに分ける: 単位で削除、同意つきで昇格 | 攻撃テストで競合 0 |
-| 構造を **観測** して生成（十字の面と辺に沿って動く）。出力は 観測された／構成した（閉包の外）／不明 の型つき。再観測で再現 | 再現 100 % |
-| 自由会話 | 隠しバンク B2（286 問）: 正答 0、誤答 0 |
-
-攻撃 6 波（codex の最大努力）で命中 35。すべて修正済みか既知の穴として記録済み。どのバンクでも誤った答えを出したことはありません。
-
-### 2026-10-05 の更新（10-04 以降に変わったことと、分かったこと）
-
-**パッケージに入ったもの**（注記のないものは既定でオフ。新しい選択肢を使わなければ `vera read / ask / serve` の既定の出力は前回と byte 一致）:
-
-- **仮定つきの読み**（`vera read/ask/chat/serve` の既定は `assume`、ライブラリ関数 `semantic_read.read` は strict のまま）。欠けているのが **前提** だけ——名前の型・造語の述語・未知の名詞の型——のとき、仮定を立てて読み、仮定を明示する（`assumptions`、`read_mode: assumed`、注記「（ミナを人として）」）。構造は仮定しない（役割が割れる助詞・節の掛かり先・照応は棄権のまま）。未公開文での実測: strict の誤読 0、仮定の誤り 0/19。`--strict-read` または `VERA_READ_MODE=strict` でオフ。
-- **複文 v1**: 定形・連体の 3〜4 節、両節に主語のある て形・連用中止、引用の辺。節をまたぐ主語の共有と照応は棄権。未公開文で誤読 0。
-- **述語の役割つきの枠と配置 r9**（問い合わせの `role_frame`、名詞の型 `RELATIVE_POSITION`）。読解器は確認済みの枠を使う（段 R）。
-- **穴と LLM の受け入れ口**: 型つきの穴、候補の口（`vera serve --fill --ledger-file`）、追記専用・ハッシュ連鎖の証言の台帳（`vera ledger`）、差し替え可能な後段（`ollama`／OpenAI 互換 API／`fake`）、出所の印 `testimony_fill`。候補は事実の問いの根拠にならない。
-- **配置の層と文書駆動の育成**（`vera placement grow --documents … --layer`、`vera ledger promote`）: 基底を上書きしない利用者・分野ごとの層。語が `direct` になるのは文書群自身の分布（または人）が確認したときだけ。
-- **実現器の規則と形の表の分離**（`verantyx/data/realize_forms_ja.json`）、型つきの十字を同じ配置で実現・再読、`vera realize`。
-- `vera serve --no-llm`、`--profile strict|assume`、`confidence_tiers`（独立した段のうちいくつが同じ答えを出したか。棄権の一致は数えない）。
-
-**測って得られなかったこと**（負の結果は意図して残す）:
-
-- 隠しバンク B1（読解）は r9・複文 v1・仮定つきの読みを入れても 正読 11／誤読 0／誤答 0 のまま。残る棄権は構造によるもの——複数文の入力、「」の引用と敬称つきの名前、名詞句だけの入力、受身・使役、数量——で、前提の欠落ではない。
-- 役割の枠の生成で推論の effort を上げても（r10）付加的な格の再現は上がらなかった。律速は生成の effort ではなくコーパスの被覆（どの述語と助詞の組が有意に出るか）。r10 は採用していない。
-- 文書を 1 本入れただけでは層は育たない（候補 69 のうち direct 3、QA の増分 0）。育つには複数の文書か人の確認が要る。生成コーパスから作った「初期搭載の層」は分野を捉えず、配布していない。
-
-**既知の欠陥（修正中、チケット W3-f1。3 件ともこの版で再現）**: 文書 QA（`vera ask --mode round5 --document`）が、(1) 2 字の親族名詞の主語を 1 字目だけで答える（叔父 → 「叔」、祖母 → 「祖」）、(2) 禁止の「…してはならない」を動詞「なる」として読み、それに基づく可否の問いに「はい」と答える、(3) 時の名詞を場所の答えに融合する（「明日東京で働く」→ どこで？ = 明日東京）。読解器自体は正しく読んでおり、欠陥は QA の経路にある。直るまで、1 文字だけの答え・禁止についての可否の答え・時の語で始まる場所の答えは疑ってください。
-
-**最初の公開比較が示したこと（W14-bench run1、176 問 × 5 系、機械採点。混在行の人の採点は未了）**: Vera *strict* は全項目で「常に棄権」と同じ振る舞い、Vera *既定* は全項目で素の 4B と同じ振る舞いだった。層 0 ではモデルの答えに *証言* の印が付くが、この集合で Vera 自身が記録から確かめた出典は **0 件**。したがって今日の正直な言い方は、Vera は **保留する**（strict）か **印を付ける**（既定）のであって、モデルの答えを文書に照らして **確かめて** はいない。それを直す（文書を渡し、引用された根拠を照合する）のが次のチケット。
-
-**方向**（2026-10-04/05 に決定、[docs/decisions/](docs/decisions/) に記録）: Vera は無重みの構造カーネルで、規則は *ベース v1* として凍結し、データ（配置・文書・台帳・記憶）で育つ。LLM は語を供給する差し替え可能な部品で、構造は供給しない。微調整はしない。最初の製品は「狭くて嘘をつかない、使うほど育つ」: 自分の文書への根拠つき QA、既存 LLM の前段の検査器、長く走るエージェントの記憶と門（IDE のエージェントが装着できる Anthropic／OpenAI 互換の入口）。主張を信じるのでなく検証できるよう、公開の敵対的な比較プロトコル（版の衝突・近い誤り・無いが尤もらしい問い・文書内の注入・言い換えの揺れ・多文書）を作っている。
-
-### まだできないこと
-
-- 自由会話、長文、複雑な日本語。英語は配置が無く、型の経路が動きません。
-- 副詞と名詞句にかかる遊離数量は読みません（棄権）。
-- で・に・へ・から の句の役割は型だけでは決まりません（未公開の文で 2 度示された。次は述語ごとの **役割つきの枠**、チケット W3-a6）。
-- 到達は小さい。強みは「言うことには出所があり、知らないことは知らないと言う」ことです。
-
-### 導入と実行
-
-```sh
-python -m pip install -r requirements.txt
-python -m pip install -e .
+vera = Vera.from_texts({"note": "ナオの担当はミオ。"}, mode="semantic")
+answer = vera.ask("ナオの担当は誰？")
+print(answer["verdict"], answer["values"])
 ```
 
-自分の文書で対話（REPL は `vera ask` と同じ経路を通ります）:
+Then, for the local app a non-programmer can use:
 
-```sh
-vera-chat --document ./memo.txt          # = vera chat --mode round5 --document ./memo.txt
-vera ask "資料を渡したのは誰ですか。" --mode round5 --document ./memo.txt
+```bash
+vera field       # opens on 127.0.0.1 — documents never leave the machine
 ```
 
-REPL のコマンド: `/doc <path>` `/docs` `/read <文>` `/gen <文> [FACE_SWAP:<役割>|EDGE:<関係>]`
-`/route <agents.md> <task.json>` `/json on|off` `/help` `/quit`。詳細は [docs/CHAT.md](docs/CHAT.md)。
+Step-by-step, written for someone who has never opened a terminal:
+<https://verantyx.ai/vera/download/>
 
-粗い配置（コーパスから作る 290 MB の SQLite）はリポジトリに **含みません**。無いと型による読解と型つきの質問回答は動きません。`tools/build_coarse_placement.py` で作り（[docs/COARSE_PLACEMENT.md](docs/COARSE_PLACEMENT.md)）、`VERA_PLACEMENT` で指します。
+## Quickstart
 
-### 言語モデルと一つの入口（融合の層 0・1）
+```bash
+# teach a fact — usable immediately, no training
+vera remember "The bright apple is sweet ."
 
-```sh
-ollama pull qwen3.5:4b
-vera serve --backend ollama --model qwen3.5:4b --document ./memo.txt          # 層 0: 答え＋出所の型
-vera serve --backend ollama --model qwen3.5:4b --document ./memo.txt --strict # 層 1: 文法で縛る復号
+# ask — grounded answer with provenance counts
+vera ask "what is apple"
+# → ANSWER "apple bright sweet"
+
+# ask something it was never taught
+vera ask "what is quantum chromodynamics"
+# → UNKNOWN_NO_EVIDENCE  (it says so, instead of making something up)
+
+# exact math on the same substrate
+vera math "solve x + 3 = 7"        # → ANSWER x=4
+vera math "x * 0 = 0"              # → AMBIGUOUS (many solutions — no vote)
+vera simplify "(2 + 3) * y"        # → 5 * y   (rule trace included)
+
+# interactive session (knowledge + math + code in one REPL)
+vera chat
 ```
 
-`/v1/chat/completions`（OpenAI 互換）と `/api/chat`（Ollama 互換）。モデルが答え、Vera は問いを読み、文書にある事実は記録から証拠つきで答え、返答の各文・各腕に **記録／証言／構成／未読** の型を `vera` 欄で付けます。`--strict` では記録から作った文法が復号を縛り、読めない問いには LLM を呼ばずに型つきで棄権します。Qwen3.5-4B でチケットの検査データを測った結果: 両層とも誤答 0、記録にある問いの正答は層 0 で 21/50・層 1 で 18/50、記録に無い問い 50/50 棄権、創作の依頼 20/20 が構成。応答の形は [docs/FUSION.md](docs/FUSION.md)。
+## Chat modes: lab & hybrid (a local LLM under Vera's control)
 
-### つくり
+```bash
+vera chat --mode lab                      # deterministic only (default)
+vera chat --mode hybrid --llm qwen3.5:2b  # local Ollama model, Vera allocates
+```
 
-- **読解** — `verantyx/semantic_read.py`、`semantic_reader.py`。契約は [READING_CONVENTIONS](docs/READING_CONVENTIONS.md)、健全性の台帳（事前登録した規則、変更は前後の全文つき）は [READING_SOUNDNESS](docs/READING_SOUNDNESS.md)。
-- **事象の十字** — `verantyx/event_cross.py`、[EVENT_CROSS](docs/EVENT_CROSS.md)。中心が述語、腕が役割、語は充填物で型は配置から来る。連体修飾節は充填物の中の十字、接続語は十字の間の型付きの辺。
-- **配置** — `verantyx/coarse_place.py`、`coarse_types.py`、[COARSE_PLACEMENT](docs/COARSE_PLACEMENT.md)。名詞 17 型・述語 13 型をコーパスの分布から。生成の枠は分布で確認。
-- **観測** — `verantyx/observe.py`、[OBSERVATION](docs/OBSERVATION.md)。生成と回答は同じ操作。
-- **根拠の方針** — `verantyx/basis_policy.py`、[BASIS_POLICY](docs/BASIS_POLICY.md)。事実は人の記録が答え、生成テキストは言い回しを貸すだけ、人が居れば確認を問い返す。
-- **分業** — `verantyx/routing_from_text.py`、[ROUTING_FROM_TEXT](docs/ROUTING_FROM_TEXT.md)。
-- **評価** — 隠しバンクを `tools/bank_score` で採点（[BANK_SCORE](docs/BANK_SCORE.md)）。バンク自体は公開しません。方法は [EVAL.md](EVAL.md)、既知の失敗は [KNOWN_ISSUES.md](KNOWN_ISSUES.md)。
-- **影運用** — [OPS_SHADOW](docs/OPS_SHADOW.md)。Vera がこのプロジェクト自身の開発の往復（分業・問い）を権限なしで観測し、一致／棄権／誤りを数える。
+In **hybrid** mode Vera stays the controller; the local model is only the
+language surface. Allocation is deterministic and every reply is labeled:
 
-### これから
+| Label | Meaning |
+|-------|---------|
+| `[math]` / `[code]` | exact routes — the LLM is **never** allowed to touch proven values |
+| `[llm←vera-facts]` | Vera answered; the LLM only rephrases Vera's verified facts |
+| `[llm UNVERIFIED]` | Vera has nothing; the LLM may converse, explicitly unverified |
+| `UNKNOWN_*` | genuine ambiguity stays refused — the LLM cannot vote it away |
 
-Vera は開いた重みの言語モデル（ベース: **Qwen/Qwen3.5-4B**）と層ごとに融合し、各層を測ってから次へ進みます:
+**Native memory harness** (no MCP, no triggers): in chat, every declarative
+utterance is remembered automatically; questions and imperatives are not
+(so "tell me something" never becomes a fake fact). Disable with
+`--no-auto-memory`.
 
-0. 一つの入口（OpenAI 互換・Ollama 互換）: モデルが答え、Vera が各文・各腕に **記録／証言／構成／未読** の型を付ける。文書の事実は記録が証拠つきで答える。
-1. 記録から作った文法で復号を縛る（`--strict`）。
-2. 人の承認による語彙の取り込み（以後は Vera だけで読む）、チャット UI からのフィードバックの逆経路、モデルが外せない規則の強制。
-3. 構造トークンのモデル: LM は Vera の十字のトークンを出し、文は Vera の実現器が書く（LoRA → GGUF）。
+**Multi-line paste**: `vera chat` and `vera agent` capture a pasted block
+(traceback, multi-sentence note, JSON) as one message instead of splitting
+it line by line — plain `input()` submits on every embedded newline, which
+silently mangles pastes. This uses bracketed-paste mode and needs a real
+TTY; piped/non-interactive input falls back to reading one line at a time.
 
-融合の目的は初期の研究時間を縮め、価値を見えるようにすること。重みのない本体の開発は並行して続けます。
+### Explicit experimental Round5 chat
 
-### ライセンス
+To send each conversational message through the same raw-request
+`one.Vera.ask` entry used by `vera ask --mode round5`, opt in explicitly:
 
-MIT（Vera）。ベースモデルはそれぞれのライセンスに従います。
+```bash
+/Users/motonishikoudai/Projects/vera-round5-run/env/bin/python -m verantyx.cli chat --mode round5 --document ./memo.txt
+```
+
+The document is loaded into this chat process for the current session; pass
+`--document` again on the next launch. The typed message is passed directly to
+`one.Vera.ask` without a generated prompt template. The current source-event
+slice is narrow: unsupported or ambiguous requests remain held, and a
+source-bound paraphrase may be reported as `PARTIAL`, with its projection
+checks, evidence reference, and unverified whole-Goal status shown in the
+terminal. A displayed source is evidence for the expression only; it does not
+establish that the source claim is true. `lab` remains the default, and the
+Round5 route does not replace the normal router.
+
+## Reversible obfuscation, keyed by your personal store state
+
+```bash
+pip install -e ".[obfuscate]"
+vera obfuscate billing.py --export-key recovery.key   # → billing.py.obf + .obfmap
+vera deobfuscate billing.py.obf billing.py.obfmap --key-file recovery.key
+```
+
+Identifiers are renamed via exact AST positions (never touches string
+literals or docstrings); the reversal mapping is AES-256-GCM-encrypted
+with a key derived from your store's own accumulated state — real, unique
+per person, and never from hiding the (public) algorithm. Full rationale
+and honest limits: [docs/OBFUSCATE.md](docs/OBFUSCATE.md).
+
+## First-run setup
+
+```bash
+vera setup       # arrow-key menu: pick a local Ollama model + the allocation
+                 # dial (which domains Vera owns vs where the LLM may speak),
+                 # saved to ~/.verantyx.json
+```
+
+## Agent mode (hands and feet)
+
+A ReAct loop where **Vera is the controller** and tools do real work — file
+edits, folder/file creation, shell commands, and web search — each mutating
+action gated behind **arrow-key approval**:
+
+```bash
+vera agent "read README.md and tell me the license"
+vera agent          # interactive; ↑/↓ + Enter to approve/deny each action
+```
+
+Exact math/code finishes with no LLM and no tools; web search is a stdlib
+DuckDuckGo client (no API key). Full details: [docs/AGENT_MODE.md](docs/AGENT_MODE.md).
+
+## Guided data placement
+
+```bash
+vera wizard      # arrow-key: choose a corpus + row budget, then it pours
+```
+
+## Base store from HuggingFace (no local store needed)
+
+Vera ships no weights; the artifact is the poured store. Publish it once,
+and any fresh checkout fetches it automatically:
+
+```bash
+vera push-store --repo <user>/Verantyx-Vera-base-store   # upload (needs HF login)
+# later, on any machine: if no local store exists and hf_store_repo is set
+# in ~/.verantyx.json, `vera ask ...` fetches the base store on first use.
+```
+
+**Live base store:** [`kofdai/Verantyx-Vera-base-store`](https://huggingface.co/datasets/kofdai/Verantyx-Vera-base-store)
+— 889k concept crosses / 9.78M facet links (WikiText-2/103, ag_news, DBpedia,
+SQuAD, IMDB). Set it once and any fresh checkout works with knowledge already
+inside:
+
+```bash
+vera setup    # or edit ~/.verantyx.json: "hf_store_repo": "kofdai/Verantyx-Vera-base-store"
+vera ask "what is football"    # auto-fetches the base store on first use
+```
+
+## The jgen static dictionary (optional)
+
+Vera grows its vocabulary from the documents themselves and a person approves
+each word. To put the likely-real candidates in front of that person first, it
+can consult a **jgen** — a local model file converted with `--parts lexicon`,
+carrying its embedding table and nothing else. It has no layers that generate,
+so it physically cannot write. It is opened once and read a row at a time:
+pure standard library, no inference engine, no network.
+
+Three questions, and the measurement that decided each — on qwen 0.5b
+(152k x 1024) against the engine's own 31-term vocabulary:
+
+| question | verdict | measured |
+|---|---|---|
+| Is this the kind of word that carries a state? | usable | separates the real proposal queue completely — true candidates +0.164 / +0.128 / +0.082, false ones −0.143 / −0.239 |
+| Which known words sit nearest? | usable as search | 冠水 → 断水 (0.52), 停電 → 停止 (0.47) |
+| **Which pole is it — restored, or still out?** | **refused; absent from the API** | **64.5% leave-one-out — a coin flip.** A 4B model scored 54.8% on the same test |
+
+The third row is why the other two are worth stating. Opposite poles live in
+identical contexts — an outage and its restoration share a paragraph — so a
+frozen embedding table holds no information that separates them. No function
+in `jgen_lexicon` returns a pole, and an eval asserts the absence.
+
+The dictionary **orders** the queue and accepts nothing. Acceptance stays with
+a person, and that boundary comes from the number rather than from caution.
+
+```bash
+# build one from a model you already have
+python3 jgen_forge.py pull qwen3.5:4b --parts lexicon
+
+# point Vera at it — entirely optional
+cat > ~/.verantyx-audit/lexicon.json <<'JSON'
+{"jgen": "/path/to/x_lexicon_full.jgen",
+ "tokenizer": "/path/to/x.jgen.tokenizer/tokenizer.json"}
+JSON
+
+vera lexicon 冠水 滞留 孤立        # ask it directly
+```
+
+Without one configured the queue simply arrives unsorted, and nothing else
+changes.
+
+## Languages
+
+The cross substrate is symbol-agnostic; segmentation is per-language:
+
+- **English** — full elementary-grammar pipeline (richest)
+- **Japanese** — tokenizer-free script-run segmentation
+  (`リンゴは甘い果物です` → core リンゴ, facets 甘い/果物; recall + typed refusal)
+- **Spanish / French / German** — generic content-word path with per-language
+  function-word stoplists; other Latin-script languages fall back to a shared list
+
+`vera chat --lang auto` detects per utterance; force with `--lang ja` etc.
+
+## Pouring corpora (bulk knowledge)
+
+```bash
+# built-in synthetic corpus (offline smoke test)
+vera pour --source synthetic --max-rows 2000
+
+# WikiText-2 from the HuggingFace cache
+vera pour --source wikitext --max-rows 40000
+
+# any HuggingFace dataset:  hf:<name>[#config][:text_field]
+vera pour --source "hf:ag_news" --max-rows 120000
+vera pour --source "hf:dbpedia_14:content" --max-rows 560000
+vera pour --source "hf:wikitext#wikitext-103-raw-v1" --max-rows 2000000
+
+# a local text file (one document per line)
+vera pour --source file:corpus.txt
+```
+
+Pouring is deterministic and resumable (`--store` is a JSON checkpoint;
+pouring again accumulates). A two-pass capitalization scan routes proper
+names to their own sense channel (`bush#p` ≠ `bush`). Reference run: WikiText-2
++ ag_news + DBpedia + WikiText-103 ≈ **870k concept crosses / 9.2M facet
+links**, poured in minutes on a laptop CPU.
+
+More detail: [docs/ADDING_KNOWLEDGE.md](docs/ADDING_KNOWLEDGE.md).
+
+## Code reasoning
+
+```bash
+vera code ingest path/to/repo          # AST → one cross per function
+vera code ask "who calls wire_add"     # reverse call edges
+vera code ask "what does simplify call"
+vera code ask "impact of parse_term"   # BFS: what may break if it changes
+```
+
+Unknown functions get `UNKNOWN_NO_EVIDENCE`, not a guess.
+
+**Bug localization by agreement** (`verantyx.debug_consensus.locate_bug`):
+traceback, recent-diff, and failing-test sections each nominate cause
+functions; a cause is asserted only when the sections agree — otherwise a
+typed UNKNOWN with the disagreement map. The `DEBUG_BEATS_BASELINES` fork
+shows the consensus resisting noise that fools a most-recently-changed
+baseline. See [docs/CODE_REASONING.md](docs/CODE_REASONING.md).
+
+## MCP server (memory & knowledge tools for LLM agents)
+
+Vera also supplies source-linked external memory for Claude Code /
+Claude Desktop or any MCP client:
+
+```bash
+pip install -e ".[mcp]"
+vera --store ~/vera_memory.json mcp
+```
+
+Tools exposed: `ask`, `remember`, `recall`, `forget`, `math`,
+`code_ingest`, `code_query`, `stats`. Setup snippets:
+[docs/MCP.md](docs/MCP.md).
+
+## Lab mode (self-test forks)
+
+Every capability is guarded by falsifiable "fork" tests — including the
+refusal behaviors:
+
+```bash
+vera lab        # 41 forks: consensus gates, pouring, math, rewriting, Kripke,
+                # languages, router allocation, debug consensus, memory
+                # provenance/contradiction, SQLite round-trip
+```
+
+## Memory with provenance & contradiction detection
+
+```python
+from verantyx import CrossStore
+st = CrossStore(track_provenance=True)
+st.add("server:prod-1", ["os:ubuntu"], source="infra sheet 7/24")
+st.add("server:prod-1", ["os:debian"], source="slack 7/25")
+st.contradictions("server:prod-1")
+# → key "os" holds two values, each with counts, timestamps, and sources
+```
+
+`key:value` facets are exclusive per key: different stored values are reported
+with both sources. This detects a stored key/value conflict; it does not establish
+which source is true or detect all contradictions in natural language.
+
+## SQLite backend (scale & fast writes)
+
+```python
+from verantyx import save_sqlite, load_sqlite, SqliteSync
+save_sqlite(store, "big.db")            # distributable single file
+st = load_sqlite("big.db")              # or cores_like="fn:%" for a slice
+sync = SqliteSync(st, "big.db"); st.add(...); sync.flush()   # delta writes
+```
+
+Reference store poured with the same pipeline: WikiText-2 + WikiText-103 +
+ag_news + DBpedia + SQuAD + IMDB ≈ **889k cores / 9.78M facet links**.
+
+## Passive memory from AI output (quarantined, never auto-trusted)
+
+```bash
+vera propose-ai-facts "The staging DB runs postgres 14. It might also \
+support replication, I'm not sure." --source ai_output:claude
+# → quarantines "The staging DB runs postgres 14." only —
+#   the hedged sentence never becomes a candidate
+vera review-ai-facts     # arrow-key accept/reject each pending candidate
+```
+
+Nothing proposed here is queryable via `ask` until explicitly accepted —
+an LLM's own text (even its final answer) can be wrong or hedged, so it
+never writes directly into the trusted store. Same tools over MCP:
+`propose_ai_facts` / `list_pending_ai_facts` / `accept_ai_fact` /
+`reject_ai_fact`. Rationale: [docs/DESIGN.md](docs/DESIGN.md#passive-memory-from-ai-output-quarantined).
+
+## Getting started as a builder
+
+New here? Read [docs/ONBOARDING.md](docs/ONBOARDING.md) — a zero-to-custom
+walkthrough (data-path choice, pouring best practices, verification, scale-up,
+extension points). Design rationale lives in [docs/DESIGN.md](docs/DESIGN.md).
+
+## Architecture (one page)
+
+```text
+sentence ──classify──▶ core + facets ──accumulate──▶ CrossStore
+                                                (core → {facet: count})
+query ──decompose──▶ retrieve candidate crosses ──▶ shell (6 arms)
+      ──▶ multi-frontier consensus search
+           gates:  NoImprovingMove ∧ AllSectionsAgree
+                 ∧ EvidenceComplete ∧ QueryGrounded ∧ NoContradiction
+      ──▶ ANSWER (facet document) | typed UNKNOWN / AMBIGUOUS
+disambiguation:  sense clusters over facet co-occurrence
+                 ("sun newspaper" vs "sun in the sky")
+layers:          matryoshka — unresolved disagreement is handed upward
+math:            digits on arms, carry as current  → exact by construction
+rules:           term rewriting; rules are data, poured like knowledge
+modal logic:     Kripke worlds = crosses, R = joins, □ = agreement gate
+```
+
+Deep dives: [docs/MATRYOSHKA.md](docs/MATRYOSHKA.md) (layer stacking, carry
+modes A/B/C), [docs/ADDING_KNOWLEDGE.md](docs/ADDING_KNOWLEDGE.md) (nodes,
+facets, sense channels, deletion).
+
+## Honest limitations
+
+- Output is structured facet documents, **not fluent prose** (hybrid mode
+  buys fluency from a local LLM, clearly labeled).
+- English has the richest pipeline; Japanese is an elementary tokenizer-free
+  recall path (no consensus decomposer yet); es/fr/de use a generic
+  content-word path.
+- Facet extraction is rule-based and shallow; noisy corpora leave noisy
+  facets (they are at least *visible* and deletable).
+- Same-surface homographs in the same channel can mix; sense clusters
+  mitigate at query time but need specifier words.
+- Kripke checking is finite-model only; no tableau validity, no proof search.
+- Naturals-only arithmetic (6-digit v0); no fractions/negatives yet.
+
+## License
+
+MIT

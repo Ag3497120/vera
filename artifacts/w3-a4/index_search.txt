@@ -1,0 +1,75 @@
+## サ変 名詞 する 述語
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "サ変 名詞 する 述語",
+  "searched": 680,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 54,
+    "module": 289,
+    "prereg": 72,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}
+## 連なり 項 sahen
+{
+  "verdict": "ANSWER",
+  "query": "連なり 項 sahen",
+  "searched": 680,
+  "hits": [
+    {
+      "kind": "prereg",
+      "name": "PREREG",
+      "about": "登録日時: 2026-10-03 18:49:53 +0900 から 2026-10-03 18:51:03 +0900 の間（`date '+%F %T %z'` の出力。`artifacts/w3-a3/prereg_time.txt` の `before` と `after`。この節はその間に書いた）",
+      "where": "artifacts/w3-a3/PREREG.md"
+    }
+  ],
+  "total_hits": 1
+}
+## 包含 助詞 枠 生成
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "包含 助詞 枠 生成",
+  "searched": 680,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 54,
+    "module": 289,
+    "prereg": 72,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}
+## 抽出 cache 停止
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "抽出 cache 停止",
+  "searched": 680,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 54,
+    "module": 289,
+    "prereg": 72,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}
+## 生成 一覧 needs 述語
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "生成 一覧 needs 述語",
+  "searched": 680,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 54,
+    "module": 289,
+    "prereg": 72,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}

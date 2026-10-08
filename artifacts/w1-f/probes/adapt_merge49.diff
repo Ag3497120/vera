@@ -1,0 +1,12 @@
+diff --git a/tests/attack/test_memory_merge_fabrication.py b/tests/attack/test_memory_merge_fabrication.py
+--- a/tests/attack/test_memory_merge_fabrication.py
++++ b/tests/attack/test_memory_merge_fabrication.py
+@@ -128,7 +128,7 @@
+     with pytest.raises(ValueError, match='dangling supersession reference'):
+         active_records(pending)
+ 
+-    new = write({'id': 'new', 'subject': 'Mika', 'attribute': 'city', 'value': 'Osaka'})
++    new = write({'id': 'new', 'subject': 'Mika', 'attribute': 'city', 'value': 'Osaka', 'supersedes': 'old'})  # W1-f adapt probe: the replacement carries the pointer (as fix_w_merge_1 does in its own tests)
+     completed = merge_logs(pending, [new])
+ 
+     assert [record['id'] for record in active_records(completed)] == ['new']

@@ -1,0 +1,322 @@
+{
+  "verdict": "ANSWER",
+  "query": "記憶のソブリン",
+  "searched": 663,
+  "hits": [
+    {
+      "kind": "door",
+      "name": "memory_ledger",
+      "about": "The memory as a LEDGER a person can read and act on.",
+      "where": "verantyx/mcp_server.py"
+    },
+    {
+      "kind": "door",
+      "name": "memory_review",
+      "about": "Mark a memory as reviewed by a person, or edit it.",
+      "where": "verantyx/mcp_server.py"
+    },
+    {
+      "kind": "module",
+      "name": "memory_brief",
+      "about": "Compile a deterministic, character-budgeted context brief from typed memory.",
+      "where": "verantyx/memory_brief.py"
+    },
+    {
+      "kind": "module",
+      "name": "memory_frame",
+      "about": "Typed project memory: write-time typing, witnesses, askability, and closed-choice term resolution.",
+      "where": "verantyx/memory_frame.py"
+    },
+    {
+      "kind": "module",
+      "name": "memory_lessons",
+      "about": "Exact trigger index for typed LESSON records.",
+      "where": "verantyx/memory_lessons.py"
+    },
+    {
+      "kind": "module",
+      "name": "memory_merge",
+      "about": "Deterministic union and conflict inspection for typed-memory event logs.",
+      "where": "verantyx/memory_merge.py"
+    },
+    {
+      "kind": "module",
+      "name": "memory_revalidate",
+      "about": "Read typed memory while re-checking its witnesses.",
+      "where": "verantyx/memory_revalidate.py"
+    },
+    {
+      "kind": "fork",
+      "name": "trace_is_memory_outside_the_store_fork",
+      "about": "The path is a value, kept beside the stores, and it resumes a walk.",
+      "where": "verantyx/cross_geometry_forks.py",
+      "registered": "yes"
+    },
+    {
+      "kind": "door",
+      "name": "accept_ai_fact",
+      "about": "Promote one pending AI-proposed fact (by index from",
+      "where": "verantyx/mcp_server.py"
+    },
+    {
+      "kind": "door",
+      "name": "list_pending_tool_calls",
+      "about": "Milestone R4: mutating tool calls the Vera-harness chat (IDE)",
+      "where": "verantyx/mcp_server.py"
+    },
+    {
+      "kind": "door",
+      "name": "recall_conversation",
+      "about": "Answer from the conversation's own memory across every layer,",
+      "where": "verantyx/mcp_server.py"
+    },
+    {
+      "kind": "door",
+      "name": "vera_documents",
+      "about": "What documents this terminal has loaded, and a way to drop one.",
+      "where": "verantyx/mcp_server.py"
+    },
+    {
+      "kind": "door",
+      "name": "vera_experience",
+      "about": "The experience ledger, read-only: everything this system has",
+      "where": "verantyx/mcp_server.py"
+    },
+    {
+      "kind": "command",
+      "name": "append",
+      "about": "記憶のソブリン: append one event to the conversation ledger",
+      "where": "verantyx/cli.py"
+    },
+    {
+      "kind": "command",
+      "name": "attach",
+      "about": "記憶のソブリン: read a detached store again, or register an exported file in place",
+      "where": "verantyx/cli.py"
+    },
+    {
+      "kind": "command",
+      "name": "consent",
+      "about": "記憶のソブリン: record a consent change (appended; the latest row wins)",
+      "where": "verantyx/cli.py"
+    },
+    {
+      "kind": "command",
+      "name": "create",
+      "about": "記憶のソブリン: create one independent store (one file, append-only inside)",
+      "where": "verantyx/cli.py"
+    },
+    {
+      "kind": "command",
+      "name": "detach",
+      "about": "記憶のソブリン: cut the reference so the store cannot be read (the file stays)",
+      "where": "verantyx/cli.py"
+    },
+    {
+      "kind": "command",
+      "name": "events",
+      "about": "記憶のソブリン: print the ledger, one event per line",
+      "where": "verantyx/cli.py"
+    },
+    {
+      "kind": "command",
+      "name": "export",
+      "about": "記憶のソブリン: copy the store out as one file with its hash",
+      "where": "verantyx/cli.py"
+    },
+    {
+      "kind": "command",
+      "name": "promote",
+      "about": "記憶のソブリン: promote repeated observations to the structure (needs consent)",
+      "where": "verantyx/cli.py"
+    },
+    {
+      "kind": "command",
+      "name": "promotions",
+      "about": "記憶のソブリン: list the promotions that are still active",
+      "where": "verantyx/cli.py"
+    },
+    {
+      "kind": "command",
+      "name": "release",
+      "about": "記憶のソブリン: let the store go, cutting the reference and keeping the hash (the file stays)",
+      "where": "verantyx/cli.py"
+    },
+    {
+      "kind": "command",
+      "name": "status",
+      "about": "記憶のソブリン: list the registered stores and their state",
+      "where": "verantyx/cli.py"
+    },
+    {
+      "kind": "module",
+      "name": "ai_ingest",
+      "about": "AI-output ingestion — passive memory from an assistant's final text,",
+      "where": "verantyx/ai_ingest.py"
+    },
+    {
+      "kind": "module",
+      "name": "capacity_calibration",
+      "about": "What to do about a bucket classified `needs_more_capacity`.",
+      "where": "verantyx/capacity_calibration.py"
+    },
+    {
+      "kind": "module",
+      "name": "conductor",
+      "about": "A small typed conductor built on :mod:`memory_frame`.",
+      "where": "verantyx/conductor.py"
+    },
+    {
+      "kind": "module",
+      "name": "conductor_run",
+      "about": "Drive a bounded project through typed memory and an ``AgentAdapter``.",
+      "where": "verantyx/conductor_run.py"
+    },
+    {
+      "kind": "module",
+      "name": "contract_sandbox",
+      "about": "Bounded observations of an artifact, never a correctness certificate.",
+      "where": "verantyx/contract_sandbox.py"
+    },
+    {
+      "kind": "module",
+      "name": "conversation",
+      "about": "Conversation context as space, not as a window.",
+      "where": "verantyx/conversation.py"
+    },
+    {
+      "kind": "module",
+      "name": "cross_geometry_forks",
+      "about": "Forks for the three unbuilt pieces of the original conception:",
+      "where": "verantyx/cross_geometry_forks.py"
+    },
+    {
+      "kind": "module",
+      "name": "experience",
+      "about": "経験のコンパイル — 散在する在庫を9状態型に写す読み出し層(束ねない)。",
+      "where": "verantyx/experience.py"
+    },
+    {
+      "kind": "module",
+      "name": "field_session",
+      "about": "What a field officer needs between one shift and the next.",
+      "where": "verantyx/field_session.py"
+    },
+    {
+      "kind": "module",
+      "name": "gapnode",
+      "about": "Gap nodes: what a sovereign lacks, held as crosses it can read.",
+      "where": "verantyx/gapnode.py"
+    },
+    {
+      "kind": "module",
+      "name": "growth_signals",
+      "about": "Growth-signal log — Vera's own record of where it keeps failing or drifting.",
+      "where": "verantyx/growth_signals.py"
+    },
+    {
+      "kind": "module",
+      "name": "layer_stack",
+      "about": "Layered memory — the missing half of the matryoshka.",
+      "where": "verantyx/layer_stack.py"
+    },
+    {
+      "kind": "module",
+      "name": "lean_witness",
+      "about": "Lean as a witness type — derivation outside, memory and audit here.",
+      "where": "verantyx/lean_witness.py"
+    },
+    {
+      "kind": "module",
+      "name": "llm_choice",
+      "about": "Real-LLM closed choice: which frame term is an out-of-frame word closest to?",
+      "where": "verantyx/llm_choice.py"
+    },
+    {
+      "kind": "module",
+      "name": "llm_local",
+      "about": "Local LLM client (Ollama) — the language surface Vera controls.",
+      "where": "verantyx/llm_local.py"
+    },
+    {
+      "kind": "module",
+      "name": "mcp_server",
+      "about": "MCP server — hallucination-free memory & knowledge tools over stdio.",
+      "where": "verantyx/mcp_server.py"
+    },
+    {
+      "kind": "module",
+      "name": "meaning_index",
+      "about": "The meaning sidecars as an INDEX, not as resident dictionaries.",
+      "where": "verantyx/meaning_index.py"
+    },
+    {
+      "kind": "module",
+      "name": "phase2_forks",
+      "about": "Forks for phase 2: debug consensus, memory provenance/contradiction,",
+      "where": "verantyx/phase2_forks.py"
+    },
+    {
+      "kind": "module",
+      "name": "store_sqlite",
+      "about": "SQLite persistence for CrossStore — 増分保存で規模の天井を外す.",
+      "where": "verantyx/store_sqlite.py"
+    },
+    {
+      "kind": "module",
+      "name": "trace",
+      "about": "The path a walk took, kept outside the stores it walked through.",
+      "where": "verantyx/trace.py"
+    },
+    {
+      "kind": "module",
+      "name": "vera_server",
+      "about": "Milestone N — Vera-as-harness HTTP+SSE daemon.",
+      "where": "verantyx/vera_server.py"
+    },
+    {
+      "kind": "fork",
+      "name": "layered_carry_drift_fork",
+      "about": "The telephone game, constructed on purpose.",
+      "where": "verantyx/cross_geometry_forks.py",
+      "registered": "yes"
+    },
+    {
+      "kind": "results",
+      "name": "RESULTS",
+      "about": "実測: 選択済み核の facet 被覆による棄権",
+      "where": "experiments/specificity_abstention/RESULTS.md"
+    },
+    {
+      "kind": "results",
+      "name": "RESULTS_CORPUS",
+      "about": "結果: 分野コーパスを店に入れて、何がどれだけ変わったか",
+      "where": "experiments/guard/corpus/RESULTS_CORPUS.md"
+    },
+    {
+      "kind": "prereg",
+      "name": "PREREG",
+      "about": "事前登録: 選択済み核の facet 被覆による棄権",
+      "where": "experiments/specificity_abstention/PREREG.md"
+    },
+    {
+      "kind": "prereg",
+      "name": "PREREG7_CLI_PARITY",
+      "about": "事前登録7: IDE から CLI へ — 文書・分野・扉・設定",
+      "where": "experiments/guard/PREREG7_CLI_PARITY.md"
+    },
+    {
+      "kind": "prereg",
+      "name": "PREREG8_WIRING_AND_WINDOW",
+      "about": "事前登録8: 静かに壊れないこと(①配線)と、欠けを1つの窓に出すこと",
+      "where": "experiments/guard/PREREG8_WIRING_AND_WINDOW.md"
+    },
+    {
+      "kind": "prereg",
+      "name": "PREREG_W4m_promotion",
+      "about": "PREREG W4-m: 記憶のソブリンの昇格 — しきい値・候補の形・数え方・確かめ方（事前登録）",
+      "where": "artifacts/w4-m/PREREG_W4m_promotion.md"
+    }
+  ],
+  "total_hits": 52
+}

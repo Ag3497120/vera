@@ -1,0 +1,10 @@
+ M artifacts/w16-t6/synth/synth_lib.py
+ M docs/ATTEST.md
+ M tests/test_w16t6_basis.py
+ M tests/test_w16t6_ledger.py
+ M verantyx/attest.py
+ M verantyx/cli.py
+?? artifacts/w16-t6b/
+?? tests/test_w16t6b_branches.py
+?? tests/test_w16t6b_cli_head.py
+?? tests/test_w16t6b_ledger_verify.py

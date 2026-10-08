@@ -1,0 +1,52 @@
+{
+  "verdict": "GREW",
+  "layer": "bicycle-real",
+  "layer_path": "/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/W10-f05-impl2/layers/bicycle-real.sqlite",
+  "base_content_sha256": "e58908eb4eba8820fed9eafcd1ff42a5a70cdfdf4c35a9646b5dd49aaa002a21",
+  "documents": {
+    "read": 1,
+    "skipped": [],
+    "sources": [
+      "doc:c2d800d37937"
+    ],
+    "sentences": 79
+  },
+  "candidates": 69,
+  "candidates_asked": 69,
+  "skipped_budget": 0,
+  "not_candidate": {
+    "BASE_DECIDED": 144
+  },
+  "declared": {
+    "noun": 68,
+    "predicate": 0
+  },
+  "backend_failed": 0,
+  "written": {
+    "layer_confirmed": 3,
+    "layer_estimated": 65,
+    "layer_human": 0
+  },
+  "not_written": {
+    "DECLARATION_INVALID:DUPLICATE": 1
+  },
+  "arms_not_built": [
+    "ARM_NOT_BUILT:role",
+    "ARM_NOT_BUILT:slot",
+    "ARM_NOT_BUILT:definition",
+    "ARM_NOT_BUILT:sahen",
+    "ARM_NOT_BUILT:pos_class"
+  ],
+  "min_sources": 1,
+  "send_sentences": false,
+  "timing": {
+    "vera_ms": 2552.292,
+    "llm_ms": 84535.252,
+    "calls": 8
+  },
+  "ledger": {
+    "path": "/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/W10-f05-impl2/ledger_real.jsonl",
+    "rows_added": 143,
+    "store_id": "b1b741ec1aa54561"
+  }
+}

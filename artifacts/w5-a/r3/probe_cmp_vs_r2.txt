@@ -1,0 +1,6 @@
+1a2
+> readable→false JA020 子犬が骨をかじった。 ['AGENT_EVIDENCE_MISSING:子犬'] []
+12c13
+< {'same': 129, 'readable→false': 9, 'reason_changed': 1, 'changed': 1}
+---
+> {'same': 128, 'readable→false': 10, 'reason_changed': 1, 'changed': 1}

@@ -1,0 +1,7 @@
+escalate None                     FRAME_SILENT/CONTEXT_SENTENCE_UNREAD | 'The record schema is done in the old prototype. What can we start next?'
+escalate None                     FRAME_SILENT/CONTEXT_SENTENCE_UNREAD | 'The record schema is done for the courier app only. What can we start next?'
+answer   Write the probe reader   None/None | 'The record schema is done. What can we start next?'
+escalate None                     QUESTION_UNREADABLE/PREDICATE_UNREADABLE | 'The record schema is done. Next year the probe reader will be done. What can we start next?'
+escalate None                     FRAME_SILENT/NO_STATE | '旧版では予約の項目が決まりました。次に着手できる作業はどれですか？'
+escalate None                     FRAME_SILENT/NO_STATE | '予約の項目が決まりました。次に着手できる作業はどれですか？'
+escalate None                     FRAME_SILENT/NO_STATE | '予約の項目は来年決まります。次に着手できる作業はどれですか？'

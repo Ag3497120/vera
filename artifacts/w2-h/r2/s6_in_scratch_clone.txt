@@ -1,0 +1,3 @@
+verantyx files committed in a scratch clone of b471f5a (not the real tree)
+.                                                                        [100%]
+1 passed in 3.40s

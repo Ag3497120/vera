@@ -1,0 +1,67 @@
+text	kind	round-2 reading (clauses)	round-3 abstain reason
+客が店員に案内された。	readable→false	[{"predicate": "案内する", "roles": {"agent": "店員", "patient": "客"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}]	UNDETERMINED_VOICE:passive or honorific
+鈴木さんが店長に選ばれた。	readable→false	[{"predicate": "選ぶ", "roles": {"patient": "鈴木さん", "result": "店長"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}]	UNDETERMINED_VOICE:passive or honorific
+記者が読者に書き換えた。	readable→false	[{"predicate": "書き換える", "roles": {"agent": "記者", "result": "読者"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}]	NO_SUPPORTED_CLAUSE
+弁護士が被告に翻訳した。	readable→false	[{"predicate": "翻訳する", "roles": {"agent": "弁護士", "result": "被告"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}]	NO_SUPPORTED_CLAUSE
+司会者が観客に言い換えた。	readable→false	[{"predicate": "言い換える", "roles": {"agent": "司会者", "result": "観客"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}]	NO_SUPPORTED_CLAUSE
+医師が患者に読み替えた。	readable→false	[{"predicate": "読み替える", "roles": {"agent": "医師", "result": "患者"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}]	NO_SUPPORTED_CLAUSE
+兄が妹に翻訳した。	readable→false	[{"predicate": "翻訳する", "roles": {"agent": "兄", "result": "妹"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}]	NO_SUPPORTED_CLAUSE
+案内人が旅行者に言い換えた。	readable→false	[{"predicate": "言い換える", "roles": {"agent": "案内人", "result": "旅行者"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}]	NO_SUPPORTED_CLAUSE
+翻訳者が子どもに訳した。	readable→false	[{"predicate": "訳す", "roles": {"agent": "翻訳者", "result": "子ども"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}]	NO_SUPPORTED_CLAUSE
+先輩が後輩に読み替えた。	readable→false	[{"predicate": "読み替える", "roles": {"agent": "先輩", "result": "後輩"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}]	NO_SUPPORTED_CLAUSE
+解説者が視聴者に言い換えた。	readable→false	[{"predicate": "言い換える", "roles": {"agent": "解説者", "result": "視聴者"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}]	NO_SUPPORTED_CLAUSE
+司書が利用者に翻訳した。	readable→false	[{"predicate": "翻訳する", "roles": {"agent": "司書", "result": "利用者"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}]	NO_SUPPORTED_CLAUSE
+祖母が曾孫に訳した。	readable→false	[{"predicate": "訳す", "roles": {"agent": "祖母", "result": "曾孫"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}]	NO_SUPPORTED_CLAUSE
+老人が居候に言い換えた。	readable→false	[{"predicate": "言い換える", "roles": {"agent": "老人", "result": "居候"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}]	NO_SUPPORTED_CLAUSE
+絵が伊藤家に飾られた。	readable→false	[{"predicate": "飾る", "roles": {"agent": "伊藤家", "patient": "絵"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}]	NO_SUPPORTED_CLAUSE
+提灯が小林家に吊るされた。	readable→false	[{"predicate": "吊るす", "roles": {"agent": "小林家", "patient": "提灯"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}]	NO_SUPPORTED_CLAUSE
+荷物が加藤家に置かれた。	readable→false	[{"predicate": "置く", "roles": {"agent": "加藤家", "patient": "荷物"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}]	NO_SUPPORTED_CLAUSE
+家宝が吉田家に保管された。	readable→false	[{"predicate": "保管する", "roles": {"agent": "吉田家", "patient": "家宝"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}]	NO_SUPPORTED_CLAUSE
+標識が山本家に立てられた。	readable→false	[{"predicate": "立てる", "roles": {"agent": "山本家", "patient": "標識"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}]	NO_SUPPORTED_CLAUSE
+皿が松本家に並べられた。	readable→false	[{"predicate": "並べる", "roles": {"agent": "松本家", "patient": "皿"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}]	NO_SUPPORTED_CLAUSE
+掛け軸が井上家に収められた。	readable→false	[{"predicate": "収める", "roles": {"agent": "井上家", "patient": "掛け軸"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}]	NO_SUPPORTED_CLAUSE
+若木が木村家に植えられた。	readable→false	[{"predicate": "植える", "roles": {"agent": "木村家", "patient": "若木"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}]	NO_SUPPORTED_CLAUSE
+旗が清水家に掲げられた。	readable→false	[{"predicate": "掲げる", "roles": {"agent": "清水家", "patient": "旗"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}]	NO_SUPPORTED_CLAUSE
+壺が斎藤家に据えられた。	readable→false	[{"predicate": "据える", "roles": {"agent": "斎藤家", "patient": "壺"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}]	NO_SUPPORTED_CLAUSE
+衝立が森家に置かれた。	readable→false	[{"predicate": "置く", "roles": {"agent": "森家", "patient": "衝立"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}]	NO_SUPPORTED_CLAUSE
+鉢植えが石川家に並べられた。	readable→false	[{"predicate": "並べる", "roles": {"agent": "石川家", "patient": "鉢植え"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}]	NO_SUPPORTED_CLAUSE
+表彰状が橋本家に飾られた。	readable→false	[{"predicate": "飾る", "roles": {"agent": "橋本家", "patient": "表彰状"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}]	NO_SUPPORTED_CLAUSE
+警察に容疑者が逮捕された。	readable→false	[{"predicate": "逮捕する", "roles": {"agent": "警察", "patient": "容疑者"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}]	UNDETERMINED_VOICE:passive or honorific
+6時半に姉が家を出た。	readable→false	[{"predicate": "出る", "roles": {"agent": "姉", "patient": "家", "time": "6時半"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}]	PATH_ROLE_NOT_MAPPED:出る
+3時過ぎに兄が店を出た。	readable→false	[{"predicate": "出る", "roles": {"agent": "兄", "patient": "店", "time": "3時過ぎ"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}]	PATH_ROLE_NOT_MAPPED:出る
+先生が生徒に笑われた。	readable→false	[{"predicate": "笑う", "roles": {"agent": "生徒", "patient": "先生"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}]	UNDETERMINED_VOICE:passive or honorific
+議長に新人が選ばれた。	readable→false	[{"predicate": "選ぶ", "roles": {"patient": "新人", "result": "議長"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}]	UNDETERMINED_VOICE:passive or honorific
+先生が素人に言い換えた。	readable→false	[{"predicate": "言い換える", "roles": {"agent": "先生", "result": "素人"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}]	NO_SUPPORTED_CLAUSE
+姉が甥に訳した。	readable→false	[{"predicate": "訳す", "roles": {"agent": "姉", "result": "甥"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}]	NO_SUPPORTED_CLAUSE
+社長が新顔に変えた。	readable→false	[{"predicate": "変える", "roles": {"agent": "社長", "result": "新顔"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}]	NO_SUPPORTED_CLAUSE
+係員が留学生に翻訳した。	readable→false	[{"predicate": "翻訳する", "roles": {"agent": "係員", "result": "留学生"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}]	NO_SUPPORTED_CLAUSE
+先生が説明された。	readable→false	[{"predicate": "説明する", "roles": {"patient": "先生"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}]	UNDETERMINED_VOICE:passive or honorific
+先生が話された。	readable→false	[{"predicate": "話す", "roles": {"patient": "先生"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}]	UNDETERMINED_VOICE:passive or honorific
+先生が発表された。	readable→false	[{"predicate": "発表する", "roles": {"patient": "先生"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}]	UNDETERMINED_VOICE:passive or honorific
+先生が書かれた。	readable→false	[{"predicate": "書く", "roles": {"patient": "先生"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}]	UNDETERMINED_VOICE:passive or honorific
+先生が教えられた。	readable→false	[{"predicate": "教える", "roles": {"patient": "先生"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}]	UNDETERMINED_VOICE:passive or honorific
+先生が生徒に説明された。	readable→false	[{"predicate": "説明する", "roles": {"agent": "生徒", "patient": "先生"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}]	UNDETERMINED_VOICE:passive or honorific
+社長が社員に話された。	readable→false	[{"predicate": "話す", "roles": {"agent": "社員", "patient": "社長"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}]	UNDETERMINED_VOICE:passive or honorific
+部長が部下に伝えられた。	readable→false	[{"predicate": "伝える", "roles": {"agent": "部下", "patient": "部長"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}]	UNDETERMINED_VOICE:passive or honorific
+校長が保護者に挨拶された。	readable→false	[{"predicate": "挨拶する", "roles": {"agent": "保護者", "patient": "校長"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}]	UNDETERMINED_VOICE:passive or honorific
+絵が田中家に飾られた。	readable→false	[{"predicate": "飾る", "roles": {"agent": "田中家", "patient": "絵"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}]	NO_SUPPORTED_CLAUSE
+看板が鈴木家に掲げられた。	readable→false	[{"predicate": "掲げる", "roles": {"agent": "鈴木家", "patient": "看板"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}]	NO_SUPPORTED_CLAUSE
+選手たちはグラウンドを走った。	readable→false	[{"predicate": "走る", "roles": {"agent": "選手たち", "patient": "グラウンド"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}]	PATH_ROLE_NOT_MAPPED:走る
+店長が店員に掃除をさせた。	readable→false	[{"predicate": "する", "roles": {"causer": "店長", "causee": "店員", "patient": "掃除"}, "polarity": "+", "tense": "past", "modality": null, "voice": "causative"}]	PREDICATE_NOT_MAPPED:light verb
+校長が保護者に書き換えた。	readable→false	[{"predicate": "書き換える", "roles": {"agent": "校長", "result": "保護者"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}]	NO_SUPPORTED_CLAUSE
+弁護士が証人に読み替えた。	readable→false	[{"predicate": "読み替える", "roles": {"agent": "弁護士", "result": "証人"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}]	NO_SUPPORTED_CLAUSE
+兄が姉に翻訳した。	readable→false	[{"predicate": "翻訳する", "roles": {"agent": "兄", "result": "姉"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}]	NO_SUPPORTED_CLAUSE
+店員が客に置き換えた。	readable→false	[{"predicate": "置き換える", "roles": {"agent": "店員", "result": "客"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}]	NO_SUPPORTED_CLAUSE
+係長が部下に変えた。	readable→false	[{"predicate": "変える", "roles": {"agent": "係長", "result": "部下"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}]	NO_SUPPORTED_CLAUSE
+司書が児童に言い換えた。	readable→false	[{"predicate": "言い換える", "roles": {"agent": "司書", "result": "児童"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}]	NO_SUPPORTED_CLAUSE
+皿が藤田家に飾られた。	readable→false	[{"predicate": "飾る", "roles": {"agent": "藤田家", "patient": "皿"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}]	NO_SUPPORTED_CLAUSE
+看板が岡田家に掲げられた。	readable→false	[{"predicate": "掲げる", "roles": {"agent": "岡田家", "patient": "看板"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}]	NO_SUPPORTED_CLAUSE
+Ann sent the report to Ben.	readable→false	[{"predicate": "send", "roles": {"agent": "Ann", "patient": "report", "recipient": "Ben"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"	RECIPIENT_TYPE_UNDETERMINED:Ben
+Ben sent the report to Ann.	readable→false	[{"predicate": "send", "roles": {"agent": "Ben", "patient": "report", "recipient": "Ann"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"	RECIPIENT_TYPE_UNDETERMINED:Ann
+Ann sent the package to London.	readable→false	[{"predicate": "send", "roles": {"agent": "Ann", "patient": "package", "recipient": "London"}, "polarity": "+", "tense": "past", "modality": null, "voice": "act	RECIPIENT_TYPE_UNDETERMINED:London
+The letter was sent to Paris.	readable→false	[{"predicate": "send", "roles": {"patient": "letter", "recipient": "Paris"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}]	RECIPIENT_TYPE_UNDETERMINED:Paris
+Ben handed the keys to Dana.	readable→false	[{"predicate": "hand", "roles": {"agent": "Ben", "patient": "keys", "recipient": "Dana"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}	RECIPIENT_TYPE_UNDETERMINED:Dana
+Nora sent the package to Paul.	readable→false	[{"predicate": "send", "roles": {"agent": "Nora", "patient": "package", "recipient": "Paul"}, "polarity": "+", "tense": "past", "modality": null, "voice": "acti	RECIPIENT_TYPE_UNDETERMINED:Paul
+Mia sold the bike to Tom.	readable→false	[{"predicate": "sell", "roles": {"agent": "Mia", "patient": "bike", "recipient": "Tom"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}]	RECIPIENT_TYPE_UNDETERMINED:Tom
+The clerk did not send the invoice to Mia.	readable→false	[{"predicate": "send", "roles": {"agent": "clerk", "patient": "invoice", "recipient": "Mia"}, "polarity": "-", "tense": "past", "modality": null, "voice": "acti	RECIPIENT_TYPE_UNDETERMINED:Mia
+Mia returned the book to Paul.	readable→false	[{"predicate": "return", "roles": {"agent": "Mia", "patient": "book", "recipient": "Paul"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active	RECIPIENT_TYPE_UNDETERMINED:Paul

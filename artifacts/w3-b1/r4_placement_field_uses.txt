@@ -1,0 +1,9 @@
+251:+    for key in ('state', 'top', 'origin', 'estimate_basis', 'constructed'):
+253:+    state, top, origin, basis = answer['state'], answer['top'], answer['origin'], answer['estimate_basis']
+264:+        by = answer.get('decided_by')
+271:+    (state, origin, top, decided_by, estimate_basis). The first rule that applies:
+280:+    state = answer['state']
+286:+    if answer['origin'] == 'estimated':
+287:+        return None, 'PLACEMENT_ESTIMATED_NEAR' if answer['estimate_basis'] == 'proximity' else 'PLACEMENT_ESTIMATED_GENERATED'
+288:+    arms = answer['decided_by']
+291:+    return answer['top'][0], None

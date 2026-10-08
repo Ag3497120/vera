@@ -1,0 +1,386 @@
+{
+ "bank": "B1",
+ "baselines": {
+  "pass_rate_definition": "(正答 + 正しい棄権) / 全問。V2_RULES の「表層戦略の正答率 35% 以下」を厳しい側で読む",
+  "strategies": {
+   "all_labels": {
+    "applicable": false,
+    "reason": "B1 にはラベルの選択肢が無い"
+   },
+   "always_abstain": {
+    "applicable": true,
+    "classes": {
+     "correct": 0,
+     "correct_abstain": 4,
+     "false_compliance": 0,
+     "misread": 0,
+     "over_abstain": 22,
+     "runtime_error": 0,
+     "total": 26,
+     "unreachable": 0,
+     "unscorable": 0,
+     "wrong": 0
+    },
+    "correct_rate": 0.0,
+    "false_compliance_rate": 0.0,
+    "pass_rate": 0.153846,
+    "wrong_rate": 0.0
+   },
+   "echo_documents": {
+    "applicable": false,
+    "reason": "B1 の問題には文書が無い"
+   },
+   "echo_input": {
+    "applicable": true,
+    "classes": {
+     "correct": 0,
+     "correct_abstain": 0,
+     "false_compliance": 4,
+     "misread": 0,
+     "over_abstain": 0,
+     "runtime_error": 0,
+     "total": 26,
+     "unreachable": 0,
+     "unscorable": 0,
+     "wrong": 22
+    },
+    "correct_rate": 0.0,
+    "false_compliance_rate": 0.153846,
+    "pass_rate": 0.0,
+    "wrong_rate": 0.846154
+   },
+   "empty": {
+    "applicable": true,
+    "classes": {
+     "correct": 0,
+     "correct_abstain": 0,
+     "false_compliance": 4,
+     "misread": 0,
+     "over_abstain": 0,
+     "runtime_error": 0,
+     "total": 26,
+     "unreachable": 0,
+     "unscorable": 0,
+     "wrong": 22
+    },
+    "correct_rate": 0.0,
+    "false_compliance_rate": 0.153846,
+    "pass_rate": 0.0,
+    "wrong_rate": 0.846154
+   },
+   "first_option": {
+    "applicable": false,
+    "reason": "B1 には選択肢が無い"
+   }
+  },
+  "threshold": 0.35,
+  "weak_fixture": []
+ },
+ "by_category": {
+  "テ形連鎖": {
+   "correct": 0,
+   "correct_abstain": 0,
+   "false_compliance": 0,
+   "misread": 0,
+   "over_abstain": 0,
+   "runtime_error": 0,
+   "total": 1,
+   "unreachable": 1,
+   "unscorable": 0,
+   "wrong": 0
+  },
+  "受身・使役・授受": {
+   "correct": 0,
+   "correct_abstain": 0,
+   "false_compliance": 0,
+   "misread": 0,
+   "over_abstain": 0,
+   "runtime_error": 0,
+   "total": 3,
+   "unreachable": 3,
+   "unscorable": 0,
+   "wrong": 0
+  },
+  "否定": {
+   "correct": 0,
+   "correct_abstain": 0,
+   "false_compliance": 0,
+   "misread": 0,
+   "over_abstain": 0,
+   "runtime_error": 0,
+   "total": 2,
+   "unreachable": 2,
+   "unscorable": 0,
+   "wrong": 0
+  },
+  "因果・逆接・条件": {
+   "correct": 0,
+   "correct_abstain": 0,
+   "false_compliance": 0,
+   "misread": 0,
+   "over_abstain": 0,
+   "runtime_error": 0,
+   "total": 3,
+   "unreachable": 3,
+   "unscorable": 0,
+   "wrong": 0
+  },
+  "基本の格": {
+   "correct": 0,
+   "correct_abstain": 0,
+   "false_compliance": 0,
+   "misread": 0,
+   "over_abstain": 0,
+   "runtime_error": 0,
+   "total": 4,
+   "unreachable": 4,
+   "unscorable": 0,
+   "wrong": 0
+  },
+  "引用と話者": {
+   "correct": 0,
+   "correct_abstain": 0,
+   "false_compliance": 0,
+   "misread": 0,
+   "over_abstain": 0,
+   "runtime_error": 0,
+   "total": 1,
+   "unreachable": 1,
+   "unscorable": 0,
+   "wrong": 0
+  },
+  "時間・場所が主語位置": {
+   "correct": 0,
+   "correct_abstain": 0,
+   "false_compliance": 0,
+   "misread": 0,
+   "over_abstain": 0,
+   "runtime_error": 0,
+   "total": 3,
+   "unreachable": 3,
+   "unscorable": 0,
+   "wrong": 0
+  },
+  "構造化してはいけない入力": {
+   "correct": 0,
+   "correct_abstain": 0,
+   "false_compliance": 0,
+   "misread": 0,
+   "over_abstain": 0,
+   "runtime_error": 0,
+   "total": 4,
+   "unreachable": 4,
+   "unscorable": 0,
+   "wrong": 0
+  },
+  "比較": {
+   "correct": 0,
+   "correct_abstain": 0,
+   "false_compliance": 0,
+   "misread": 0,
+   "over_abstain": 0,
+   "runtime_error": 0,
+   "total": 1,
+   "unreachable": 1,
+   "unscorable": 0,
+   "wrong": 0
+  },
+  "連体修飾": {
+   "correct": 0,
+   "correct_abstain": 0,
+   "false_compliance": 0,
+   "misread": 0,
+   "over_abstain": 0,
+   "runtime_error": 0,
+   "total": 1,
+   "unreachable": 1,
+   "unscorable": 0,
+   "wrong": 0
+  },
+  "量化とスコープ": {
+   "correct": 0,
+   "correct_abstain": 0,
+   "false_compliance": 0,
+   "misread": 0,
+   "over_abstain": 0,
+   "runtime_error": 0,
+   "total": 3,
+   "unreachable": 3,
+   "unscorable": 0,
+   "wrong": 0
+  }
+ },
+ "by_difficulty": {
+  "1": {
+   "correct": 0,
+   "correct_abstain": 0,
+   "false_compliance": 0,
+   "misread": 0,
+   "over_abstain": 0,
+   "runtime_error": 0,
+   "total": 8,
+   "unreachable": 8,
+   "unscorable": 0,
+   "wrong": 0
+  },
+  "2": {
+   "correct": 0,
+   "correct_abstain": 0,
+   "false_compliance": 0,
+   "misread": 0,
+   "over_abstain": 0,
+   "runtime_error": 0,
+   "total": 10,
+   "unreachable": 10,
+   "unscorable": 0,
+   "wrong": 0
+  },
+  "3": {
+   "correct": 0,
+   "correct_abstain": 0,
+   "false_compliance": 0,
+   "misread": 0,
+   "over_abstain": 0,
+   "runtime_error": 0,
+   "total": 8,
+   "unreachable": 8,
+   "unscorable": 0,
+   "wrong": 0
+  }
+ },
+ "by_lang": {
+  "en": {
+   "correct": 0,
+   "correct_abstain": 0,
+   "false_compliance": 0,
+   "misread": 0,
+   "over_abstain": 0,
+   "runtime_error": 0,
+   "total": 9,
+   "unreachable": 9,
+   "unscorable": 0,
+   "wrong": 0
+  },
+  "ja": {
+   "correct": 0,
+   "correct_abstain": 0,
+   "false_compliance": 0,
+   "misread": 0,
+   "over_abstain": 0,
+   "runtime_error": 0,
+   "total": 17,
+   "unreachable": 17,
+   "unscorable": 0,
+   "wrong": 0
+  }
+ },
+ "class_sum": 26,
+ "classes": {
+  "correct": {
+   "count": 0,
+   "ja": "正答",
+   "rate_all": 0.0,
+   "rate_reached": null
+  },
+  "correct_abstain": {
+   "count": 0,
+   "ja": "正しい棄権",
+   "rate_all": 0.0,
+   "rate_reached": null
+  },
+  "false_compliance": {
+   "count": 0,
+   "ja": "誤った応諾",
+   "rate_all": 0.0,
+   "rate_reached": null
+  },
+  "misread": {
+   "count": 0,
+   "ja": "誤読",
+   "rate_all": 0.0,
+   "rate_reached": null
+  },
+  "over_abstain": {
+   "count": 0,
+   "ja": "過剰棄権",
+   "rate_all": 0.0,
+   "rate_reached": null
+  },
+  "runtime_error": {
+   "count": 0,
+   "ja": "実行時エラー",
+   "rate_all": 0.0,
+   "rate_reached": null
+  },
+  "unreachable": {
+   "count": 26,
+   "ja": "入口未到達",
+   "rate_all": 1.0,
+   "rate_reached": null
+  },
+  "unscorable": {
+   "count": 0,
+   "ja": "採点不能",
+   "rate_all": 0.0,
+   "rate_reached": null
+  },
+  "wrong": {
+   "count": 0,
+   "ja": "誤答",
+   "rate_all": 0.0,
+   "rate_reached": null
+  }
+ },
+ "entries": [
+  "cli"
+ ],
+ "headline": {
+  "correct_abstain_rate": {
+   "all": 0.0,
+   "reached": null
+  },
+  "correct_rate": {
+   "all": 0.0,
+   "reached": null
+  },
+  "denominators": {
+   "all": 26,
+   "reached": 0
+  },
+  "false_compliance_rate": {
+   "all": 0.0,
+   "reached": null
+  },
+  "misread_rate": {
+   "all": 0.0,
+   "reached": null
+  },
+  "over_abstain_rate": {
+   "all": 0.0,
+   "reached": null
+  },
+  "unreachable_rate": {
+   "all": 1.0,
+   "reached": null
+  },
+  "wrong_rate": {
+   "all": 0.0,
+   "reached": null
+  }
+ },
+ "item_invalid_codes": {},
+ "judge_unavailable_reasons": {},
+ "quarantine": {
+  "count": 0,
+  "ids": [],
+  "not_in_items": []
+ },
+ "runtime_error_breakdown": {},
+ "runtime_error_provenance_unverified": 0,
+ "total": 26,
+ "unknown_expect_keys": {},
+ "unreachable_by_capability": {
+  "sentence_structure": 26
+ },
+ "unscorable_breakdown": {}
+}

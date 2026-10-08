@@ -1,0 +1,15 @@
+ M docs/COARSE_PLACEMENT.md
+ M tests/coarse_place/test_coarse_place_types.py
+ M tests/test_gen_coarse_evidence_pred.py
+ M tools/build_coarse_placement.py
+ M tools/gen_coarse_evidence.py
+ M verantyx/coarse_place.py
+ M verantyx/coarse_types.py
+?? artifacts/w3-a6/
+?? tests/coarse_place/data/w3a6_expect.json
+?? tests/coarse_place/test_coarse_place_w3a6_build.py
+?? tests/coarse_place/test_coarse_place_w3a6_decide.py
+?? tests/coarse_place/test_coarse_place_w3a6_gen.py
+?? tests/coarse_place/test_coarse_place_w3a6_query.py
+?? tests/coarse_place/test_coarse_place_w3a6_role_check.py
+?? tests/coarse_place/test_coarse_place_w3a6_types.py

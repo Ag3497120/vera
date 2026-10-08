@@ -1,0 +1,8 @@
+verantyx/semantic_reader.py: FAILED
+verantyx/semantic_read.py: FAILED
+verantyx/event_cross.py: FAILED
+tests/test_semantic_read.py: OK
+docs/READING_SOUNDNESS.md: FAILED
+docs/EVENT_CROSS.md: FAILED
+docs/READING_CONVENTIONS.md: FAILED
+shasum: WARNING: 6 computed checksums did NOT match

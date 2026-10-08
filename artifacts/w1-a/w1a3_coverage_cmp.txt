@@ -1,0 +1,1 @@
+coverage_after.json の再測定(W、tools/read_coverage.py --n 1500 --stride 200)は coverage_after.json と cmp で一致(SAME_COVERAGE。読解器は変えていないので変更前と同じ)。DROPPED_CORRECT 1 件(w1356)は監査役が許容(2026-10-03)。

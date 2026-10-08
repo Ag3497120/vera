@@ -1,0 +1,26 @@
+{
+ "schema": "verantyx.semantic_read/1",
+ "lang": "ja",
+ "readable": false,
+ "clauses": [],
+ "relations": [],
+ "abstain": {
+  "kind": "not_supported",
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE"
+  ]
+ },
+ "unsupported": [
+  {
+   "predicate": "読む",
+   "span": [
+    6,
+    8
+   ],
+   "reasons": [
+    "MODALITY_NOT_READ:desire"
+   ]
+  }
+ ],
+ "clause_meta": []
+}

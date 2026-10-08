@@ -1,0 +1,28 @@
+run: artifacts/w3-a3/dev_runs/001
+typed dev verbs decided direct with a frame@ arm in decided_by: 23
+  correct 10 / wrong_single 11 / other 2
+rule: correct >= 3 * wrong_single (both 0 -> False)  ->  frame_decides = False
+words:
+  強まる gold=P_CHANGE top=P_CHANGE cls=correct by=frame@codex:conversation+frame@codex:figurative_commonsense+frame@codex:general_qa+frame@codex:narrative+frame@codex:paraphrase_entail+frame@codex:pro
+  閉じ込める gold=P_ACT top=P_COGNITION cls=wrong_single by=frame@codex:code
+  浮かべる gold=P_ACT top=P_CREATE cls=wrong_single by=frame@codex:paraphrase_entail
+  のせる gold=P_ACT top=P_CONSUME cls=wrong_single by=frame@codex:conversation+frame@codex:pro
+  ずれる gold=P_CHANGE top=P_CHANGE cls=correct by=frame@codex:code_qa+frame@codex:conversation
+  立てかける gold=P_ACT top=P_ACT,P_CREATE cls=other by=frame@codex:pro
+  押し当てる gold=P_ACT top=P_ACT cls=correct by=frame@codex:pro
+  信じる gold=P_COGNITION top=P_COGNITION cls=correct by=frame@codex:general_qa
+  観る gold=P_PERCEIVE top=P_CREATE cls=wrong_single by=frame@codex:conversation+frame@codex:paraphrase_entail
+  出し合う gold=P_GIVE top=P_COGNITION cls=wrong_single by=frame@codex:conversation
+  しれる gold=P_COGNITION,P_STATE top=P_CHANGE cls=wrong_single by=frame@codex:code
+  泡立てる gold=P_CREATE,P_ACT top=P_CONSUME,P_CREATE cls=correct by=frame@codex:general_qa+frame@codex:paraphrase_entail
+  ほめる gold=P_COMMUNICATE top=P_CONSUME cls=wrong_single by=frame@codex:paraphrase_entail
+  外す gold=P_ACT top=P_ACT cls=correct by=frame@codex:pro
+  遠ざかる gold=P_MOVE top=P_CHANGE cls=wrong_single by=frame@codex:general_qa+frame@codex:paraphrase_entail
+  行ける gold=P_MOVE,P_STATE top=P_MOVE cls=correct by=frame@codex:conversation+frame@codex:figurative_commonsense+frame@codex:narrative+frame@codex:paraphrase_entail
+  洗える gold=P_ACT,P_STATE top=P_ACT cls=correct by=frame@codex:pro
+  禁ずる gold=P_ACT,P_COMMUNICATE top=P_COGNITION cls=wrong_single by=frame@codex:general_qa
+  深める gold=P_CHANGE top=P_COGNITION cls=wrong_single by=frame@codex:pro
+  分け合う gold=P_GIVE top=P_CONSUME,P_CREATE cls=other by=frame@codex:figurative_commonsense+frame@codex:narrative+frame@codex:pro
+  明ける gold=P_CHANGE top=P_CHANGE cls=correct by=frame@codex:conversation+frame@codex:figurative_commonsense+frame@codex:general_qa
+  乱す gold=P_CHANGE,P_ACT top=P_CHANGE cls=correct by=frame@codex:pro
+  運び入れる gold=P_MOVE,P_ACT top=P_CREATE cls=wrong_single by=frame@codex:paraphrase_entail

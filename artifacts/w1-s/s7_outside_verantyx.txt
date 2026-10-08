@@ -1,0 +1,6 @@
+採点は無効: ツリー外の verantyx を読んだ (precheck)。<TMP>/out/INVALID.json を見よ
+exit=3
+INVALID.json
+verdict INVALID_PROVENANCE stage precheck outside件数 24
+例 {'locations': ['/Users/motonisihikoudai/Downloads/simureal/reference-verantyx-bdcd218/engine/verantyx/__init__.py'], 'module': 'verantyx'}
+summary.json の有無: False

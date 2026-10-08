@@ -1,0 +1,2 @@
+{'content_sha256': 'ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995', 'inputs': 328, 'note': 'coarse_place.query(term, placement=<run1>) の答えの抜粋。配置のパスは書かない。テストの偽物 FixtureQuery が使う', 'terms': 679}
+answers 679 by state/origin [(('DECIDED', 'direct'), 238), (('DECIDED', 'estimated'), 71), (('MULTIPLE', 'direct'), 39), (('UNKNOWN', None), 172), (('UNPLACED', None), 159)]

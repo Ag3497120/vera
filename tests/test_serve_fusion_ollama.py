@@ -54,6 +54,11 @@ def test_real_strict_does_not_call_the_llm_without_a_record(cfg):
 
 
 def test_real_default_marks_the_llm_answer_as_testimony(cfg):
+    """Integration (auditor, 2026-10-06, W16-t3c K655): an anchored answer carries MARK_ANCHORED_TESTIMONY, any other
+    testimony MARK_TESTIMONY. The real LLM may or may not be anchored, so the mark is checked against the verdict.
+    Old expectation: always MARK_TESTIMONY."""
     res = VS.fusion_turn([{'role': 'user', 'content': '太郎は何を買った？'}], None, cfg(False))
     assert res['vera']['llm']['ok'] is True and res['vera']['outcome']['outcome'] == 'TESTIMONY'
-    assert res['content'].startswith(G.MARK_TESTIMONY)
+    verdict = ((res['vera'].get('quote_check') or {}).get('verdict'))
+    mark = G.MARK_ANCHORED_TESTIMONY if verdict == 'anchored' else G.MARK_TESTIMONY
+    assert res['content'].startswith(mark), (verdict, res['content'][:80])

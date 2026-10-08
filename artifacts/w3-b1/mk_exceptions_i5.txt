@@ -1,0 +1,1 @@
+exceptions=53 {"row_returned_to_abstain": 25, "reason_differs": 18, "trigger_not_reached": 9, "baseline_reads": 1} out=/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b1-5-S/tests/reading_soundness/w3b1_expect_exceptions.json

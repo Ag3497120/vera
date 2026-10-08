@@ -1,0 +1,3 @@
+K313 with VERA_PLACEMENT set (r8): the freeze script (copy without the refusal to run with VERA_PLACEMENT set; scratchpad) run on
+  (a) an unmodified copy of base 6bc410d (git archive) and (b) this tree, both with VERA_PLACEMENT=/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r8/run2
+cmp: identical (ENV_PARITY_OK). sha256 of both outputs: 5e96035ea38fc68a24f5fdb63bf0fe251126eb0ea74cdee19609fa2412515b2c  (= t1_before.sha256: 5e96035ea38fc68a24f5fdb63bf0fe251126eb0ea74cdee19609fa2412515b2c)

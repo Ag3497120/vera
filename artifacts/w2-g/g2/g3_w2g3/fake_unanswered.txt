@@ -1,0 +1,8 @@
+fake oracle (made-up reader that says what the fixture expects: a pipeline check, not a measurement): questions whose right action is to answer but were not answered
+w2g3-y02-03 QUESTION_UNREADABLE/NEGATED_QUESTION | NOT_ASKED:RULE_ESCALATION_NOT_RETRIED | 確認画面を作る前に、食材の一覧の取り込みと届け出画面の両方ができていなければなりませんか？
+w2g3-y02-04 QUESTION_UNREADABLE/NEGATED_QUESTION | NOT_ASKED:RULE_ESCALATION_NOT_RETRIED | 確認画面ができる前に、献立との照合と届け出画面が済んでいなければなりませんか？
+w2g3-y03-04 QUESTION_UNREADABLE/NEGATED_QUESTION | NOT_ASKED:RULE_ESCALATION_NOT_RETRIED | 店頭での試験を始める前に、値段の計算とお客さんへの提示画面の両方ができていなければなりませんか？
+w2g3-y03-08 MAPPING_UNSETTLED/STEP1_INVALID_ANSWER | ESCALATED:MAPPING_UNSETTLED/STEP1_INVALID_ANSWER | お客さんに見せる画面を作るのは、本の情報を調べる仕組みをつなぐより前でもよいですか？
+w2g3-y06-03 FRAME_SILENT/TERM_IN_WIDER_PHRASE | NOT_ASKED:RULE_ESCALATION_NOT_RETRIED | Must the trial evening wait for both the sign-up form and th
+off (rules only), reasons of the 45 questions to answer: {'VOCAB_UNMAPPED/NO_SINGLE_TERM': 2, 'VOCAB_UNMAPPED/NO_ROLE': 19, 'QUESTION_UNREADABLE/ORDER_PHASES_UNCLEAR': 2, 'VOCAB_UNMAPPED/VOCAB_LLM_OFF': 12, 'QUESTION_UNREADABLE/NEGATED_QUESTION': 3, 'FRAME_SILENT/NO_RECORD_DECIDES': 4, 'QUESTION_UNREADABLE/TARGET_PHASE_UNCLEAR': 1, 'QUESTION_UNREADABLE/PREDICATE_UNREADABLE': 1, 'FRAME_SILENT/TERM_IN_WIDER_PHRASE': 1}
+off, all 60 reasons: {'VOCAB_UNMAPPED': 44, 'QUESTION_UNREADABLE': 8, 'FRAME_SILENT': 8}

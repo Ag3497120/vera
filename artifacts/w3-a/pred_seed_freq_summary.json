@@ -1,0 +1,19 @@
+{
+ "verbs_and_adjectives_listed": 15484,
+ "range": 1200,
+ "predicate_seeds": 281,
+ "seeds_outside_range": [],
+ "seeds_in_predicate_check": [],
+ "frozen_seed_overlap_true": [
+  "かじる",
+  "召し上がる",
+  "唱える",
+  "啜る",
+  "宿る",
+  "平らげる",
+  "悟る",
+  "抱く",
+  "掴む",
+  "預かる"
+ ]
+}

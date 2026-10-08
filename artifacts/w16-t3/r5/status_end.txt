@@ -1,0 +1,26 @@
+ M docs/FUSION.md
+ M tests/test_w10f05_cli.py
+ M tests/test_w16t3_quote_check.py
+ M verantyx/quote_check.py
+?? artifacts/w16-t3/r4/
+?? artifacts/w16-t3/r4c/
+?? artifacts/w16-t3/r5/
+?? artifacts/w16-t3/scripts/make_cases_r4.py
+?? artifacts/w16-t3/scripts/make_cases_r4b.py
+?? artifacts/w16-t3/scripts/make_cases_r4c.py
+?? artifacts/w16-t3/scripts/make_cases_r5.py
+?? artifacts/w16-t3/scripts/make_cases_r5b.py
+?? artifacts/w16-t3/scripts/paste_docs_r4.py
+?? artifacts/w16-t3/scripts/paste_docs_r4c.py
+?? artifacts/w16-t3/scripts/paste_docs_r5.py
+?? artifacts/w16-t3/scripts/recheck_t32_r4.py
+?? artifacts/w16-t3/scripts/serve_diff_r5.py
+?? artifacts/w16-t3/scripts/t31_diff_r4.py
+?? artifacts/w16-t3/scripts/t31_diff_r5.py
+?? tests/test_w16t3_r4.py
+?? tests/test_w16t3_r5.py
+ docs/FUSION.md                  | 350 ++++++++++++++++++++++++++++++++++++++++
+ tests/test_w10f05_cli.py        |   2 +-
+ tests/test_w16t3_quote_check.py |   6 +-
+ verantyx/quote_check.py         | 103 ++++++++++--
+ 4 files changed, 444 insertions(+), 17 deletions(-)

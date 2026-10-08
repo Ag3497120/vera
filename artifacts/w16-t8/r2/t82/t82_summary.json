@@ -1,0 +1,107 @@
+{
+ "schema": "verantyx.t82_flow/1",
+ "placement": "/Users/motonisihikoudai/Projects/vera-impl/wt/W3-a6-S/build/coarse-W3a/full/r9/run2",
+ "rounds": [
+  {
+   "round": 1,
+   "suggest_rc": 0,
+   "named": [
+    "整備室",
+    "実験棟",
+    "図書館",
+    "移動する",
+    "学校",
+    "会社",
+    "移住する",
+    "出向く",
+    "赴く",
+    "参上する",
+    "歩く",
+    "転勤する"
+   ],
+   "written": [
+    "整備室",
+    "実験棟",
+    "図書館",
+    "学校",
+    "会社",
+    "移動する",
+    "移住する",
+    "出向く",
+    "赴く",
+    "参上する"
+   ]
+  },
+  {
+   "round": 2,
+   "suggest_rc": 0,
+   "named": [
+    "転勤する"
+   ],
+   "written": []
+  }
+ ],
+ "confirmations_written": 10,
+ "confirmations_in_truth": 10,
+ "truth_not_named": [],
+ "groups": {
+  "target": {
+   "n": 26,
+   "readable_before": 0,
+   "readable_after": 26,
+   "changed_output": [
+    "t01",
+    "t02",
+    "t03",
+    "t04",
+    "t05",
+    "t06",
+    "t07",
+    "t08",
+    "t09",
+    "t10",
+    "t11",
+    "t12",
+    "t13",
+    "t14",
+    "t15",
+    "t16",
+    "t17",
+    "t18",
+    "t19",
+    "t20",
+    "t21",
+    "t22",
+    "t23",
+    "t24",
+    "t25",
+    "t26"
+   ],
+   "misread": [],
+   "abstained_after": []
+  },
+  "control": {
+   "n": 14,
+   "readable_before": 9,
+   "readable_after": 9,
+   "changed_output": [],
+   "misread": [],
+   "abstained_after": [
+    "c05",
+    "c06",
+    "c07",
+    "c08",
+    "c14"
+   ]
+  }
+ },
+ "overrode_decided": [
+  "学校",
+  "会社",
+  "移動する",
+  "移住する",
+  "出向く",
+  "赴く"
+ ],
+ "data_freeze_mismatch": []
+}

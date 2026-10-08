@@ -1,0 +1,19 @@
+{
+ "alternatives_checked": 1317,
+ "alternatives_extra_content_words": 0,
+ "alternatives_reread_equal": 1317,
+ "cases": 97,
+ "elements": 213,
+ "extra_content_words": 0,
+ "mismatch": 0,
+ "mismatch_by_reason": {},
+ "mismatch_examples": [],
+ "outputs": 103,
+ "realized": 195,
+ "realized_reread_equal": 195,
+ "refused_by_reason": {
+  "NOT_REALIZABLE": 16,
+  "ROUNDTRIP_MISMATCH": 2
+ },
+ "reobserved": 213
+}

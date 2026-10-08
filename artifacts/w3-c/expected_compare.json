@@ -1,0 +1,35 @@
+{
+ "cases_with_one_turn_expectation": 91,
+ "different_after_frozen_disagreements": 0,
+ "different_raw": 3,
+ "different_raw_cases": {
+  "LG05": [
+   "decided_by",
+   "ranks"
+  ],
+  "M04b-swap-place-J09": [
+   "realization"
+  ],
+  "M04c-swap-place-J09-index": [
+   "realization"
+  ]
+ },
+ "equal_raw": 88,
+ "equal_with_frozen_disagreements": 91,
+ "expectations_superseded_by_expected_r2": [
+  "O4-a-L03",
+  "O4-b-L04",
+  "O4-c-L05",
+  "O4-d-L01",
+  "O4-e-L07",
+  "O4-f-L08"
+ ],
+ "frozen_disagreement_cases": [
+  "LG05",
+  "M04b-swap-place-J09",
+  "M04c-swap-place-J09-index"
+ ],
+ "frozen_disagreement_rows": 4,
+ "two_turn_cases": 6,
+ "two_turn_focus_and_ranks_equal": 6
+}

@@ -1,0 +1,660 @@
+{
+ "agree_all_candidates": [
+  {
+   "group": "rest",
+   "source": "ja.jsonl",
+   "sentence": "10月5日、市長が広場で式典を開いた。",
+   "role": "agent",
+   "value": [
+    "市長"
+   ],
+   "expected": [
+    "ANIMAL",
+    "GROUP_ORG",
+    "PERSON"
+   ],
+   "observed": [
+    "GROUP_ORG",
+    "PERSON"
+   ]
+  },
+  {
+   "group": "rest",
+   "source": "ja_r3.jsonl",
+   "sentence": "市長が弁護士を顧問に任命した。",
+   "role": "agent",
+   "value": [
+    "市長"
+   ],
+   "expected": [
+    "ANIMAL",
+    "GROUP_ORG",
+    "PERSON"
+   ],
+   "observed": [
+    "GROUP_ORG",
+    "PERSON"
+   ]
+  },
+  {
+   "group": "w3b2_data",
+   "source": "w3b2_multiple.jsonl",
+   "sentence": "家族が庭へ走った。",
+   "role": "agent",
+   "value": [
+    "家族"
+   ],
+   "expected": [
+    "ANIMAL",
+    "GROUP_ORG",
+    "PERSON"
+   ],
+   "observed": [
+    "GROUP_ORG",
+    "PERSON"
+   ]
+  },
+  {
+   "group": "w3b2_data",
+   "source": "w3b2_multiple.jsonl",
+   "sentence": "家族が森へ歩いた。",
+   "role": "agent",
+   "value": [
+    "家族"
+   ],
+   "expected": [
+    "ANIMAL",
+    "GROUP_ORG",
+    "PERSON"
+   ],
+   "observed": [
+    "GROUP_ORG",
+    "PERSON"
+   ]
+  },
+  {
+   "group": "w3b2_data",
+   "source": "w3b2_multiple.jsonl",
+   "sentence": "家族が島へ飛んだ。",
+   "role": "agent",
+   "value": [
+    "家族"
+   ],
+   "expected": [
+    "ANIMAL",
+    "GROUP_ORG",
+    "PERSON"
+   ],
+   "observed": [
+    "GROUP_ORG",
+    "PERSON"
+   ]
+  },
+  {
+   "group": "w3b2_data",
+   "source": "w3b2_multiple.jsonl",
+   "sentence": "家族が村へ歩いた。",
+   "role": "agent",
+   "value": [
+    "家族"
+   ],
+   "expected": [
+    "ANIMAL",
+    "GROUP_ORG",
+    "PERSON"
+   ],
+   "observed": [
+    "GROUP_ORG",
+    "PERSON"
+   ]
+  },
+  {
+   "group": "w3b2_data",
+   "source": "w3b2_multiple.jsonl",
+   "sentence": "家族が港へ走った。",
+   "role": "agent",
+   "value": [
+    "家族"
+   ],
+   "expected": [
+    "ANIMAL",
+    "GROUP_ORG",
+    "PERSON"
+   ],
+   "observed": [
+    "GROUP_ORG",
+    "PERSON"
+   ]
+  },
+  {
+   "group": "w3b2_data",
+   "source": "w3b2_multiple.jsonl",
+   "sentence": "家族が橋へ歩いた。",
+   "role": "agent",
+   "value": [
+    "家族"
+   ],
+   "expected": [
+    "ANIMAL",
+    "GROUP_ORG",
+    "PERSON"
+   ],
+   "observed": [
+    "GROUP_ORG",
+    "PERSON"
+   ]
+  },
+  {
+   "group": "w3b2_data",
+   "source": "w3b2_multiple.jsonl",
+   "sentence": "家族が寺へ歩いた。",
+   "role": "agent",
+   "value": [
+    "家族"
+   ],
+   "expected": [
+    "ANIMAL",
+    "GROUP_ORG",
+    "PERSON"
+   ],
+   "observed": [
+    "GROUP_ORG",
+    "PERSON"
+   ]
+  },
+  {
+   "group": "w3b2_data",
+   "source": "w3b2_multiple.jsonl",
+   "sentence": "家族が玄関へ走った。",
+   "role": "agent",
+   "value": [
+    "家族"
+   ],
+   "expected": [
+    "ANIMAL",
+    "GROUP_ORG",
+    "PERSON"
+   ],
+   "observed": [
+    "GROUP_ORG",
+    "PERSON"
+   ]
+  },
+  {
+   "group": "w3b2_data",
+   "source": "w3b2_multiple.jsonl",
+   "sentence": "家族が山へ歩いた。",
+   "role": "agent",
+   "value": [
+    "家族"
+   ],
+   "expected": [
+    "ANIMAL",
+    "GROUP_ORG",
+    "PERSON"
+   ],
+   "observed": [
+    "GROUP_ORG",
+    "PERSON"
+   ]
+  },
+  {
+   "group": "w3b2_data",
+   "source": "w3b2_multiple.jsonl",
+   "sentence": "家族が湖へ歩いた。",
+   "role": "agent",
+   "value": [
+    "家族"
+   ],
+   "expected": [
+    "ANIMAL",
+    "GROUP_ORG",
+    "PERSON"
+   ],
+   "observed": [
+    "GROUP_ORG",
+    "PERSON"
+   ]
+  },
+  {
+   "group": "w3b2_data",
+   "source": "w3b2_multiple.jsonl",
+   "sentence": "警察が屋上へ走った。",
+   "role": "agent",
+   "value": [
+    "警察"
+   ],
+   "expected": [
+    "ANIMAL",
+    "GROUP_ORG",
+    "PERSON"
+   ],
+   "observed": [
+    "GROUP_ORG",
+    "PERSON"
+   ]
+  },
+  {
+   "group": "w3b2_data",
+   "source": "w3b2_multiple.jsonl",
+   "sentence": "警察が倉庫へ走った。",
+   "role": "agent",
+   "value": [
+    "警察"
+   ],
+   "expected": [
+    "ANIMAL",
+    "GROUP_ORG",
+    "PERSON"
+   ],
+   "observed": [
+    "GROUP_ORG",
+    "PERSON"
+   ]
+  },
+  {
+   "group": "w3b2_data",
+   "source": "w3b2_multiple.jsonl",
+   "sentence": "警察が港へ歩いた。",
+   "role": "agent",
+   "value": [
+    "警察"
+   ],
+   "expected": [
+    "ANIMAL",
+    "GROUP_ORG",
+    "PERSON"
+   ],
+   "observed": [
+    "GROUP_ORG",
+    "PERSON"
+   ]
+  },
+  {
+   "group": "w3b2_data",
+   "source": "w3b2_multiple.jsonl",
+   "sentence": "警察が畑へ走った。",
+   "role": "agent",
+   "value": [
+    "警察"
+   ],
+   "expected": [
+    "ANIMAL",
+    "GROUP_ORG",
+    "PERSON"
+   ],
+   "observed": [
+    "GROUP_ORG",
+    "PERSON"
+   ]
+  },
+  {
+   "group": "w3b2_data",
+   "source": "w3b2_multiple.jsonl",
+   "sentence": "警察が森へ歩いた。",
+   "role": "agent",
+   "value": [
+    "警察"
+   ],
+   "expected": [
+    "ANIMAL",
+    "GROUP_ORG",
+    "PERSON"
+   ],
+   "observed": [
+    "GROUP_ORG",
+    "PERSON"
+   ]
+  },
+  {
+   "group": "w3b2_data",
+   "source": "w3b2_multiple.jsonl",
+   "sentence": "警察が湖へ歩いた。",
+   "role": "agent",
+   "value": [
+    "警察"
+   ],
+   "expected": [
+    "ANIMAL",
+    "GROUP_ORG",
+    "PERSON"
+   ],
+   "observed": [
+    "GROUP_ORG",
+    "PERSON"
+   ]
+  },
+  {
+   "group": "w3b2_data",
+   "source": "w3b2_multiple.jsonl",
+   "sentence": "警察が山へ歩いた。",
+   "role": "agent",
+   "value": [
+    "警察"
+   ],
+   "expected": [
+    "ANIMAL",
+    "GROUP_ORG",
+    "PERSON"
+   ],
+   "observed": [
+    "GROUP_ORG",
+    "PERSON"
+   ]
+  },
+  {
+   "group": "w3b2_data",
+   "source": "w3b2_multiple.jsonl",
+   "sentence": "警察が病院へ走った。",
+   "role": "agent",
+   "value": [
+    "警察"
+   ],
+   "expected": [
+    "ANIMAL",
+    "GROUP_ORG",
+    "PERSON"
+   ],
+   "observed": [
+    "GROUP_ORG",
+    "PERSON"
+   ]
+  },
+  {
+   "group": "w3b2_data",
+   "source": "w3b2_multiple.jsonl",
+   "sentence": "家族が校庭で走った。",
+   "role": "agent",
+   "value": [
+    "家族"
+   ],
+   "expected": [
+    "ANIMAL",
+    "GROUP_ORG",
+    "PERSON"
+   ],
+   "observed": [
+    "GROUP_ORG",
+    "PERSON"
+   ]
+  },
+  {
+   "group": "w3b2_data",
+   "source": "w3b2_multiple.jsonl",
+   "sentence": "家族が神社で歩いた。",
+   "role": "agent",
+   "value": [
+    "家族"
+   ],
+   "expected": [
+    "ANIMAL",
+    "GROUP_ORG",
+    "PERSON"
+   ],
+   "observed": [
+    "GROUP_ORG",
+    "PERSON"
+   ]
+  },
+  {
+   "group": "w3b2_data",
+   "source": "w3b2_multiple.jsonl",
+   "sentence": "警察が国道で走った。",
+   "role": "agent",
+   "value": [
+    "警察"
+   ],
+   "expected": [
+    "ANIMAL",
+    "GROUP_ORG",
+    "PERSON"
+   ],
+   "observed": [
+    "GROUP_ORG",
+    "PERSON"
+   ]
+  },
+  {
+   "group": "w3b2_data",
+   "source": "w3b2_multiple.jsonl",
+   "sentence": "警察が歩道で歩いた。",
+   "role": "agent",
+   "value": [
+    "警察"
+   ],
+   "expected": [
+    "ANIMAL",
+    "GROUP_ORG",
+    "PERSON"
+   ],
+   "observed": [
+    "GROUP_ORG",
+    "PERSON"
+   ]
+  },
+  {
+   "group": "w3b2_data",
+   "source": "w3b2_multiple.jsonl",
+   "sentence": "家族がホテルで名乗った。",
+   "role": "agent",
+   "value": [
+    "家族"
+   ],
+   "expected": [
+    "ANIMAL",
+    "GROUP_ORG",
+    "PERSON"
+   ],
+   "observed": [
+    "GROUP_ORG",
+    "PERSON"
+   ]
+  },
+  {
+   "group": "w3b2_data",
+   "source": "w3b2_multiple.jsonl",
+   "sentence": "警察がアパートで断った。",
+   "role": "agent",
+   "value": [
+    "警察"
+   ],
+   "expected": [
+    "ANIMAL",
+    "GROUP_ORG",
+    "PERSON"
+   ],
+   "observed": [
+    "GROUP_ORG",
+    "PERSON"
+   ]
+  },
+  {
+   "group": "w3b2_data",
+   "source": "w3b2_multiple.jsonl",
+   "sentence": "家族が川で歩いた。",
+   "role": "agent",
+   "value": [
+    "家族"
+   ],
+   "expected": [
+    "ANIMAL",
+    "GROUP_ORG",
+    "PERSON"
+   ],
+   "observed": [
+    "GROUP_ORG",
+    "PERSON"
+   ]
+  },
+  {
+   "group": "w3b2_data",
+   "source": "w3b2_multiple.jsonl",
+   "sentence": "警察が湖で走った。",
+   "role": "agent",
+   "value": [
+    "警察"
+   ],
+   "expected": [
+    "ANIMAL",
+    "GROUP_ORG",
+    "PERSON"
+   ],
+   "observed": [
+    "GROUP_ORG",
+    "PERSON"
+   ]
+  }
+ ],
+ "placement_sha_in_lookup_id_example": "coarse-placement:5c969d454b39d39ac0e394191b5e985b4e0a10099591bb7b12fcc559e7d77ff1",
+ "groups": {
+  "rest": {
+   "sentences_read": 198,
+   "with_a_cross_of_a_typed_clause": 0,
+   "arms": 479,
+   "AGREE": 155,
+   "DISAGREE": 4,
+   "NOT_CHECKED": 318,
+   "AGREE_ALL_CANDIDATES": 2,
+   "fillers_with_a_determiner": 0,
+   "not_checked_by_reason": {
+    "ESTIMATED_GENERATED": 15,
+    "ESTIMATED_NEAR": 7,
+    "MULTIPLE": 10,
+    "ROLE_NOT_IN_TABLE": 256,
+    "UNKNOWN": 4,
+    "UNPLACED": 26
+   },
+   "lookup_ids": {
+    "coarse-placement:5c969d454b39d39ac0e394191b5e985b4e0a10099591bb7b12fcc559e7d77ff1": 198
+   }
+  },
+  "event_cross_sentences": {
+   "sentences_read": 69,
+   "with_a_cross_of_a_typed_clause": 0,
+   "arms": 171,
+   "AGREE": 35,
+   "DISAGREE": 0,
+   "NOT_CHECKED": 136,
+   "AGREE_ALL_CANDIDATES": 0,
+   "fillers_with_a_determiner": 0,
+   "not_checked_by_reason": {
+    "ESTIMATED_GENERATED": 4,
+    "ESTIMATED_NEAR": 7,
+    "MULTIPLE": 9,
+    "ROLE_NOT_IN_TABLE": 78,
+    "UNKNOWN": 3,
+    "UNPLACED": 35
+   },
+   "lookup_ids": {
+    "coarse-placement:5c969d454b39d39ac0e394191b5e985b4e0a10099591bb7b12fcc559e7d77ff1": 69
+   }
+  },
+  "new_data": {
+   "sentences_read": 68,
+   "with_a_cross_of_a_typed_clause": 56,
+   "arms": 177,
+   "AGREE": 103,
+   "DISAGREE": 0,
+   "NOT_CHECKED": 74,
+   "AGREE_ALL_CANDIDATES": 0,
+   "fillers_with_a_determiner": 1,
+   "not_checked_by_reason": {
+    "ESTIMATED_NEAR": 1,
+    "ROLE_NOT_IN_TABLE": 73
+   },
+   "lookup_ids": {
+    "coarse-placement:5c969d454b39d39ac0e394191b5e985b4e0a10099591bb7b12fcc559e7d77ff1": 68
+   }
+  },
+  "w3b2_data": {
+   "sentences_read": 113,
+   "with_a_cross_of_a_typed_clause": 112,
+   "arms": 264,
+   "AGREE": 168,
+   "DISAGREE": 0,
+   "NOT_CHECKED": 70,
+   "AGREE_ALL_CANDIDATES": 26,
+   "fillers_with_a_determiner": 34,
+   "not_checked_by_reason": {
+    "ESTIMATED_NEAR": 2,
+    "ROLE_NOT_IN_TABLE": 59,
+    "UNKNOWN": 9
+   },
+   "lookup_ids": {
+    "coarse-placement:5c969d454b39d39ac0e394191b5e985b4e0a10099591bb7b12fcc559e7d77ff1": 113
+   }
+  }
+ },
+ "disagree": [
+  {
+   "group": "rest",
+   "source": "ja.jsonl",
+   "sentence": "先月、兄が会社で書類を作った。",
+   "role": "place",
+   "value": [
+    "会社"
+   ],
+   "expected": [
+    "PLACE"
+   ],
+   "observed": [
+    "GROUP_ORG"
+   ],
+   "typed_by_the_entry": false
+  },
+  {
+   "group": "rest",
+   "source": "r3_probe_ja.txt",
+   "sentence": "国が研究者を委員に任命した。",
+   "role": "agent",
+   "value": [
+    "国"
+   ],
+   "expected": [
+    "ANIMAL",
+    "GROUP_ORG",
+    "PERSON"
+   ],
+   "observed": [
+    "PLACE"
+   ],
+   "typed_by_the_entry": false
+  },
+  {
+   "group": "rest",
+   "source": "r3_probe_ja.txt",
+   "sentence": "翻訳者が原稿を英語に訳した。",
+   "role": "agent",
+   "value": [
+    "翻訳者"
+   ],
+   "expected": [
+    "ANIMAL",
+    "GROUP_ORG",
+    "PERSON"
+   ],
+   "observed": [
+    "EVENT_ACT"
+   ],
+   "typed_by_the_entry": false
+  },
+  {
+   "group": "rest",
+   "source": "w1a2r2_probe_ja.txt",
+   "sentence": "店が看板を赤に塗り替えた。",
+   "role": "agent",
+   "value": [
+    "店"
+   ],
+   "expected": [
+    "ANIMAL",
+    "GROUP_ORG",
+    "PERSON"
+   ],
+   "observed": [
+    "PLACE"
+   ],
+   "typed_by_the_entry": false
+  }
+ ]
+}

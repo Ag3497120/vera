@@ -1,0 +1,7 @@
+[
+ {
+  "word": "一部",
+  "placement": "GENERIC_HEADS",
+  "reason": "W3-a review round 1 M6-2: 'X は、…イヌ亜科の一部' names the thing X belongs to; the stop word 一部 must step back over の to the taxon (a stop word gives NO type; it is not a seed, not a notation rule). It had been removed from GENERIC_HEADS only to satisfy the source check (decisions 2-2), which made the head 一部 and left taxonomic leads untyped. Permitted by the review for stop words only (GENERIC_HEADS / META_HEADS)."
+ }
+]

@@ -1,0 +1,15 @@
+# commit 1fd524b421abd83b4b7506042062a537002dc09c
+# status PASS
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 77 items / 76 deselected / 1 selected
+
+tests/test_semantic_measure.py::test_role_only_questions_generalize[\u30d2\u30ed\u306f\u8377\u7269\u3092\u99c5B\u304b\u3089\u5e97\u9577\u30b5\u30ad\u3078\u5c4a\u3051\u305f\u3002-\u8ab0\u304c\u4f55\u3092\u8ab0\u3078\uff1f-expected4] PASSED [100%]
+
+=== PASSES ===
+=== short test summary info ===
+PASSED tests/test_semantic_measure.py::test_role_only_questions_generalize[\u30d2\u30ed\u306f\u8377\u7269\u3092\u99c5B\u304b\u3089\u5e97\u9577\u30b5\u30ad\u3078\u5c4a\u3051\u305f\u3002-\u8ab0\u304c\u4f55\u3092\u8ab0\u3078\uff1f-expected4]
+=== 1 passed, 76 deselected ===

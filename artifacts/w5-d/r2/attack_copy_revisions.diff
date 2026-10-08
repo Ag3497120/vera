@@ -1,0 +1,130 @@
+--- attacks/W3-c2/test_attack_question_cross.py
++++ tests/attack/w3c2/test_attack_w3c2_question_cross.py (minus its first line)
+@@ -43,16 +43,24 @@
+     assert {e['reason'] for e in answer['excluded']} == {'HOLE_TYPE_DISAGREE'}
+ 
+ 
+-def test_tied_agent_witnesses_remain_a_tie():
+-    answer = _run('JA01-01')['answer']
++def _persons(tmp_path):
++    """W5-d2 (auditor's ruling B1, K1): a placement file written in the test (the data directory is not touched) that types the two witnesses as persons (direct).
++    Since W5-d a filler whose type was not checked is not a candidate, so a tie of two witnesses needs the types of the two."""
++    path = tmp_path / 'persons.json'
++    path.write_text(json.dumps({'lemmas': {w: {'state': 'DECIDED', 'origin': 'direct', 'types': ['PERSON']} for w in ('校長', '先生')}, 'neighbors': {}}, ensure_ascii=False), encoding='utf-8')
++    return str(path)
++
++
++def test_tied_agent_witnesses_remain_a_tie(tmp_path):
++    answer = _run('JA01-01', _persons(tmp_path))['answer']
+     got = {f['surface'] for f in answer['fillers']}
+     assert answer['status'] == 'TIE' and got == {'校長', '先生'}, (
+         f"expected both matching witnesses, got status={answer['status']}, fillers={got!r}"
+     )
+ 
+ 
+-def test_negative_question_does_not_match_affirmative_crosses():
+-    answer = _run('JA01-05')['answer']
++def test_negative_question_does_not_match_affirmative_crosses(tmp_path):
++    answer = _run('JA01-05', _persons(tmp_path))['answer']
+     got = {f['surface'] for f in answer['fillers']}
+     assert answer['status'] == 'FILLED' and got == {'校長'}, (
+         f"expected the sole negative witness JA01-S04, got status={answer['status']}, fillers={got!r}"
+--- attacks/W5-b/test_attack_w5b_wave2.py
++++ tests/attack/test_attack_w5b_wave2.py (minus its first line)
+@@ -194,17 +194,29 @@
+             "relations": [], "abstain": None, "unsupported": [], "clause_meta": [{"rule": "injected", "span": [0, 1]}]}
+ 
+ 
++class _AllUnplaced:
++    """W5-d2 (auditor's ruling B1, K2): a made-up placement written in the test: it answers, and every word is UNPLACED (it says nothing about the word)."""
++    id = "w5d2-all-unplaced/1"
++
++    def lookup(self, _lemma):
++        from verantyx.event_cross import PlaceResult
++        return PlaceResult("UNPLACED", provenance={"fake": True})
++
++
+ def test_yappari_sonomama_does_not_turn_an_addendum_into_replacement():
++    # W5-d2 (K2): the expectation is the result of W5-d's R-J2. The marker `やっぱり` is followed by a fragment of its own (`そのまま`); the fragment is read by the same
++    # reader, and this reader answers every sentence with the affirmative assignment, so the fragment is not a maintenance and the unit is AMBIGUOUS_RELATION:
++    # nothing is replaced (superseded_by stays None, auto_resolved 0) and nothing is added. The point of the attack (it must not be a replacement) is kept.
+     first = "実装はハルに任せる。"
+     second = "やっぱりそのまま、実装はハルに任せる。"
+-    explained = rt.explain(f"{first}\n追記：{second}\n", "attack.md", reader=_reading_for_assignment)
++    explained = rt.explain(f"{first}\n追記：{second}\n", "attack.md", reader=_reading_for_assignment, lookup=_AllUnplaced())
+     actual = {"statuses": [unit.status for unit in explained.extraction.units],
+               "auto_resolved": explained.extraction.auto_resolved,
+               "superseded_by": [relation.superseded_by for relation in explained.extraction.relations],
+               "additions_kept": explained.extraction.additions_kept}
+     print(f"OBS R2 {json.dumps(actual, ensure_ascii=False, sort_keys=True)}")
+-    assert actual == {"statuses": ["MAPPED", "MAPPED"], "auto_resolved": 0,
+-                      "superseded_by": [None, None], "additions_kept": 1}
++    assert actual == {"statuses": ["MAPPED", "AMBIGUOUS_RELATION"], "auto_resolved": 0,
++                      "superseded_by": [None], "additions_kept": 0}
+ 
+ 
+ LEDGER_FRAME = """# Ledger service
+--- attacks/W3-a3/test_attack_w3a3.py
++++ tests/attack/w3a3/test_attack_w3a3_r6.py (minus its first line)
+@@ -15,6 +15,10 @@
+ 
+ 
+ def test_all_r6_generated_frame_upgrades():
++    # W5-d2 (auditor's ruling B1, K5): the invariants follow the rule of W5-d (docs/COARSE_PLACEMENT.md section 13): a predicate that a generated frame placed direct
++    # is CONFIRMED only when no particle of the frame contradicts the distribution that backed it; a contradicted one is NOT_CONFIRMED (frame null, the contradiction
++    # in frame_disagreement). The derivation of the 48 words, the byte identity of two queries, state/origin/generated_frame/namespace/top, the type of the
++    # generated frame, and the verdict of every distribution arm are as they were; the number of NOT_CONFIRMED words is not asserted (it is written to the summary).
+     pl, why = cp._open(PLACEMENT)
+     assert pl is not None, why
+     rows = pl.con.execute(
+@@ -23,7 +27,7 @@
+     words = [row[0] for row in rows]
+     assert len(words) == 48
+ 
+-    results, frame_conflicts, invariant_errors, byte_diffs = [], [], [], []
++    results, frame_conflicts, invariant_errors, byte_diffs, not_confirmed = [], [], [], [], []
+     for word in words:
+         answer = cp.query(word, placement=PLACEMENT)
+         again = cp.query(word, placement=PLACEMENT)
+@@ -33,7 +37,7 @@
+ 
+         if not (answer["state"] == "DECIDED" and answer["origin"] == "direct"
+                 and answer.get("generated_frame") is True
+-                and answer["frame_status"] == "CONFIRMED"
++                and answer["frame_status"] in ("CONFIRMED", "NOT_CONFIRMED")
+                 and answer["namespace"] == "P" and answer["top"]):
+             invariant_errors.append({"word": word, "answer": answer})
+             continue
+@@ -58,6 +62,23 @@
+             if ct.arm_verdict("role_distribution", counts, pl.cfg, base) != answer["top"]:
+                 invariant_errors.append({"word": word, "arm": key, "reason": "arm_top_differs"})
+ 
++        if answer["frame_status"] == "NOT_CONFIRMED":
++            not_confirmed.append(word)
++            disagreement = answer.get("frame_disagreement")
++            if answer["frame"] is not None or "frame_unconfirmed" in answer \
++                    or not isinstance(disagreement, dict) or not disagreement:
++                invariant_errors.append({"word": word, "reason": "not_confirmed_shape", "frame": answer["frame"],
++                                         "frame_disagreement": disagreement,
++                                         "has_frame_unconfirmed": "frame_unconfirmed" in answer})
++                continue
++            for particle, entry in disagreement.items():
++                gen_types = set(entry.get("generated") or [])
++                arms = entry.get("distribution") or {}
++                if not gen_types or not arms or any(gen_types & set(dt) for dt in arms.values()):
++                    invariant_errors.append({"word": word, "reason": "disagreement_types_meet",
++                                             "particle": particle, "entry": entry})
++            continue
++
+         expected = {p: sorted(set(generated.get(p, []))) for p in ct.ROLE_PARTICLES
+                     if p in sig_particles and generated.get(p)}
+         if answer["frame"] != expected:
+@@ -79,7 +100,7 @@
+         encoding="utf-8")
+     summary = {"derived_words": len(words), "queried": len(results),
+                "byte_differences": byte_diffs, "invariant_errors": invariant_errors,
+-               "disjoint_slot_conflicts": frame_conflicts}
++               "disjoint_slot_conflicts": frame_conflicts, "not_confirmed": not_confirmed}
+     (OUT / "r6_audit_summary.json").write_text(
+         json.dumps(summary, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+     print(json.dumps(summary, ensure_ascii=False, indent=2))

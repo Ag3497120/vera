@@ -1,0 +1,21 @@
+mode=live
+rows=78
+verdicts={"abstain": 54, "correct": 24}
+verdicts_by_data={"ja_r10": {"abstain": 54, "correct": 24}}
+misread=0
+incomplete=0
+unjudged=0
+new_data_rows=78
+entry_expect_mismatch={"abstain_expected_but_read": 5, "read_expected_but_abstained": 4}
+reason_prefix_mismatch_among_abstained=0
+second_reason_prefixes={"PLACEMENT_DIRECT_VIA_GENERATED": 1, "PLACEMENT_PART_NO_ROLE": 1, "PLACEMENT_PREDICATE_POSSIBLY_DERIVED": 11, "PLACEMENT_REREAD_ABSTAINS": 20, "PLACEMENT_SLOT_EVIDENCE_ONLY": 20, "PLACEMENT_UNPLACED": 1}
+bad_verdicts={}
+READ_EXPECTED_BUT_ABSTAINED W3B1-R10-S4-027 父が週末、靴を洗った。 ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_SLOT_EVIDENCE_ONLY:part:週末']
+READ_EXPECTED_BUT_ABSTAINED W3B1-R10-S4-029 母が夏、絵を描く。 ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_SLOT_EVIDENCE_ONLY:part:夏']
+READ_EXPECTED_BUT_ABSTAINED W3B1-R10-S4-030 弟が秋、本を読まなかった。 ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_SLOT_EVIDENCE_ONLY:part:秋']
+READ_EXPECTED_BUT_ABSTAINED W3B1-R10-S4-033 兄が夕方、手紙を渡した。 ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_SLOT_EVIDENCE_ONLY:part:夕方']
+ABSTAIN_EXPECTED_BUT_READ W3B1-R10-U-022 猫が庭へ出た。 verdict=correct identical_to_no_placement=True
+ABSTAIN_EXPECTED_BUT_READ W3B1-R10-U-024 弟が広場へ出なかった。 verdict=correct identical_to_no_placement=True
+ABSTAIN_EXPECTED_BUT_READ W3B1-R10-U-025 兄が駅から離れた。 verdict=correct identical_to_no_placement=True
+ABSTAIN_EXPECTED_BUT_READ W3B1-R10-U-026 母が病院へ出かけた。 verdict=correct identical_to_no_placement=True
+ABSTAIN_EXPECTED_BUT_READ W3B1-R10-U-027 姉が港へ出かけなかった。 verdict=correct identical_to_no_placement=True

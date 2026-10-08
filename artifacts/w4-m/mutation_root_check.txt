@@ -1,0 +1,4 @@
+FAILED tests/test_sovereign_promote.py::test_structure_ref_is_deterministic_and_differs_between_roots
+FAILED tests/test_sovereign_promote.py::test_structure_ref_differs_for_the_same_file_attached_in_two_new_roots_at_the_same_time
+FAILED tests/test_sovereign_promote.py::test_two_roots_that_attached_the_same_file_keep_their_back_links_and_repairs_apart
+3 failed, 44 passed in 1.42s

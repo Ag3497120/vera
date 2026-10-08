@@ -1,0 +1,1 @@
+<SMOKE_TMP>/venv/bin/python -c import pathlib, sysconfig, verantyx; p=pathlib.Path(verantyx.__file__).resolve(); root=pathlib.Path(sysconfig.get_paths()["purelib"]).resolve(); assert p.is_relative_to(root), p; pathlib.Path(__import__("sys").argv[1]).write_text(str(p.parent), encoding="utf-8"); print("origin=installed-wheel") <SMOKE_TMP>/package-root.txt

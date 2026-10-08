@@ -1,0 +1,4 @@
+===================== environment classification of skips ======================
+ENV_MISSING[llm_live]: 1 skipped
+UNCLASSIFIED_SKIP: tests/test_llm_choice_live.py::test_live_codex_closed_choice
+952 passed, 2 skipped in 6.21s

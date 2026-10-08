@@ -1,0 +1,2 @@
+FAILED tests/bank_score/test_bs_end_to_end.py::test_s6_two_runs_agree_except_timing_and_recount_matches
+FAILED tests/test_semantic_read_w3b6.py::test_the_change_is_two_insertions_in_the_reader_and_nothing_else_outside_the_allowed_paths

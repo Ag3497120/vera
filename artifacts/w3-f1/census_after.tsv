@@ -1,0 +1,5 @@
+value	canonical	files
+先生の夫婦	夫婦	tests/reading_soundness/w3b2_no.jsonl
+森田課長	森田	tests/observe/question_ask/b2like/docs/BA01.txt;tests/observe/question_ask/b2like/questions.jsonl
+田中部長	田中	tests/observe/question_ask/b2like/docs/BA01.txt;tests/observe/question_ask/b2like/questions.jsonl
+祖父の家	家	tests/reading_soundness/w3b2_no.jsonl

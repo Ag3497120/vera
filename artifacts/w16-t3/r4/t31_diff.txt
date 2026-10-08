@@ -1,0 +1,8 @@
+S1-ANS-05 W1 wrong=True anchored->unanchored reason=POLARITY_DIFFERS 引用=通常の使用による摩耗や破損について、使用者に弁償を求めない。
+S2-ANS-07 W1 wrong=True anchored->unanchored reason=POLARITY_DIFFERS 引用=返却を求めない依頼者には、試料を返さない。
+S3-ANS-05 W1 wrong=True anchored->unanchored reason=POLARITY_DIFFERS 引用=小雨のときは、防災訓練を中止しない。
+S4-ANS-07 W1 wrong=True anchored->unanchored reason=POLARITY_DIFFERS 引用=2回目の延長は、認めない。
+印か reason が変わった行: 4 / 60
+誤答で anchored -> 非 anchored になった数: 4
+正しい ANS（wrong=false, cat=ANS）で anchored -> 非 anchored（偽の錨なしの増加）: 0
+anchored 以外 -> anchored（あってはならない）: 0

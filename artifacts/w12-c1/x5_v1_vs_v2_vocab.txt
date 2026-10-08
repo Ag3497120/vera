@@ -1,0 +1,3 @@
+python compare: x5_tiers_v1_vocab.jsonl vs x5_tiers.jsonl, vera.timing removed, vocab sha256 -> V
+rows 50 50 identical rows 50
+vocab sha v1 31a913dc22b5 v2 f808465b3cd4

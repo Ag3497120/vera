@@ -1,0 +1,70 @@
+# M1 の確かめ(review.r1.md の指定のコマンド。W)
+ピアノ False False
+カメラ False False
+ギター False False
+スタジオ False False
+トイレ False False
+ロンドン False False
+農家 False False
+
+# M2・M3・M5 ほかの例文: dev の supported の (役割,値) と W の状態(出典 x3_dev.jsonl / x3_after.jsonl)
+ピアノに細かい傷が付けられた。
+   dev: frame:付ける[('agent', 'ピアノ'), ('patient', '細かい傷')]
+   W  : (supported なし = 未対応)
+先生が説明を新米に言い換えた。
+   dev: frame:言い換える[('agent', '先生'), ('patient', '説明'), ('recipient', '新米')]
+   W  : (supported なし = 未対応)
+父が話を末っ子に言い換えた。
+   dev: frame:言い換える[('agent', '父'), ('patient', '話'), ('recipient', '末っ子')]
+   W  : (supported なし = 未対応)
+母が名前を園児に変えた。
+   dev: frame:変える[('agent', '母'), ('patient', '名前'), ('recipient', '園児')]
+   W  : (supported なし = 未対応)
+結果が事務局から通知された。
+   dev: frame:通知する[('agent', '事務局'), ('patient', '結果')]
+   W  : (supported なし = 未対応)
+2004年10月6日にキングレコードから発売された。
+   dev: frame:発売する[('agent', 'キングレコード'), ('time', '2004年10月6日')]
+   W  : (supported なし = 未対応)
+姉は買い物に行った。
+   dev: frame:行く[('agent', '姉'), ('recipient', '買い物')]
+   W  : (supported なし = 未対応)
+彼は買い物に行った。
+   dev: zero_subject:行く[('agent', '彼'), ('recipient', '買い物')]
+   W  : (supported なし = 未対応)
+支部に資料が送られた。
+   dev: frame:送る[('agent', '支部'), ('patient', '資料')]
+   W  : (supported なし = 未対応)
+マキは研究室へ行った。
+   dev: frame:行く[('agent', 'マキ'), ('recipient', '研究室')]
+   W  : frame:行く[('agent', 'マキ'), ('recipient', '研究室')]
+妹が学校へ行った。
+   dev: frame:行く[('agent', '妹'), ('recipient', '学校')]
+   W  : frame:行く[('agent', '妹'), ('recipient', '学校')]
+兄は東京に住んでいる。
+   dev: frame:住む[('agent', '兄'), ('recipient', '東京')]
+   W  : frame:住む[('agent', '兄'), ('recipient', '東京')]
+兄は弟から本を借りた。
+   dev: frame:貸す[('agent', '弟'), ('patient', '本'), ('recipient', '兄')]
+   W  : frame:貸す[('agent', '弟'), ('patient', '本'), ('recipient', '兄')]
+兄は弟に本をもらった。
+   dev: frame:あげる[('agent', '弟'), ('patient', '本'), ('recipient', '兄')]
+   W  : frame:あげる[('agent', '弟'), ('patient', '本'), ('recipient', '兄')]
+兄は姉から手紙を受け取った。
+   dev: frame:渡す[('agent', '姉'), ('patient', '手紙'), ('recipient', '兄')]
+   W  : frame:渡す[('agent', '姉'), ('patient', '手紙'), ('recipient', '兄')]
+弟は先生に英語を教わった。
+   dev: frame:教える[('agent', '先生'), ('patient', '英語'), ('recipient', '弟')]
+   W  : frame:教える[('agent', '先生'), ('patient', '英語'), ('recipient', '弟')]
+叔父が弟に時計をくれた。
+   dev: frame:くれる[('agent', '叔父'), ('patient', '時計'), ('recipient', '弟')]
+   W  : frame:くれる[('agent', '叔父'), ('patient', '時計'), ('recipient', '弟')]
+先生が来られた。
+   dev: frame:来る[('patient', '先生')]
+   W  : frame:来る[('patient', '先生')]
+庭に猫がいる。
+   dev: frame:いる[('agent', '猫'), ('recipient', '庭')]
+   W  : frame:いる[('agent', '猫'), ('recipient', '庭')]
+子供が野菜を食べられた。
+   dev: frame:食べる[('agent', '子供'), ('patient', '野菜')]
+   W  : frame:食べる[('agent', '子供'), ('patient', '野菜')]

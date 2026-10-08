@@ -1,0 +1,4 @@
+# G1-b recheck 2026-10-04 01:09:34 +0900 (script g1b_diff.py; the diff files attack_copy_*.diff were regenerated, same hunk bodies as before)
+w3c2: hunks=1 changed-in-defs=['_persons', 'test_negative_question_does_not_match_affirmative_crosses', 'test_tied_agent_witnesses_remain_a_tie'] changed-outside-defs=[]
+w5b: hunks=1 changed-in-defs=['_AllUnplaced', 'test_yappari_sonomama_does_not_turn_an_addendum_into_replacement'] changed-outside-defs=[]
+w3a3: hunks=5 changed-in-defs=['test_all_r6_generated_frame_upgrades'] changed-outside-defs=[]

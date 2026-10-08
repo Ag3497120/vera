@@ -11,6 +11,7 @@ import pytest
 
 from verantyx import cli
 from verantyx import event_cross as EC
+from verantyx import semantic_read as SRD
 from verantyx import observe as O
 
 HERE = Path(__file__).resolve().parent
@@ -403,6 +404,16 @@ def place_forms(tmp_path, monkeypatch):
     monkeypatch.setattr(EC, 'default_lookup', lambda *a, **k: fp)
 
 
+# Integration (auditor ruling 2026-10-06, W16-t1b K800): the sentences of this file that carry a modal auxiliary and the kind the reader abstains with.
+K800_KIND = {'先生は本を読みたかった。': 'desire', '母は手紙を書きたかったです。': 'desire', '漁師は魚を運びたがった。': 'desire', '課長は地図を見たがっていた。': 'desire',
+             '社長は資料を渡したらしかった。': 'hearsay', '先生は本を読んだらしかった。': 'hearsay', '駅員は切符を渡したら。': 'conditional', '先生は本を読んだら。': 'conditional',
+             '校長は雑誌を読みたかった。': 'desire'}
+
+
+def reader_unsupported_reasons(sentence):
+    return [r for u in SRD.read(sentence, placement=None).get('unsupported') or [] for r in u.get('reasons') or []]
+
+
 @pytest.mark.parametrize('sentence,tail,want', [
     ('先生は本を読んだ。', '先生は何を読んだ', None),                        # the same written predicate
     ('先生は本を読みたかった。', '先生は何を読みたかった', None),            # the question is written in the same form
@@ -417,11 +428,20 @@ def place_forms(tmp_path, monkeypatch):
     ('The teacher did read the book.', 'What did the teacher read', None),   # not applied to English
 ])
 def test_predicate_form_check_directly(sentence, tail, want):
+    """Integration (auditor ruling 2026-10-06, W16-t1b K800): a sentence that carries a modal auxiliary (desire たい, hearsay らしい, conditional たら) is not read as an event,
+    so the reader gives no clause and the check answers PREDICATE_POSITION_UNKNOWN (the reader abstains with MODALITY_NOT_READ:<kind>). Old expectations kept in the table above:
+    先生は本を読みたかった。/読みたかった = None, and PREDICATE_FORM_DIFFERS for 読みたかった・読んだらしかった・読んだら (a clause was read and its form differed).
+    The rows without a modal auxiliary are unchanged."""
+    if sentence in K800_KIND:
+        assert 'MODALITY_NOT_READ:' + K800_KIND[sentence] in reader_unsupported_reasons(sentence)
+        want = 'PREDICATE_POSITION_UNKNOWN'
     assert cli._qc_predicate_form(sentence, tail) == want
 
 
 @pytest.mark.parametrize('sentence,question', FORMS)
 def test_a_desire_or_hearsay_sentence_is_not_the_answer_of_a_plain_past_question(tmp_path, capsys, place_forms, sentence, question):
+    """Integration (auditor ruling 2026-10-06, W16-t1b K800): for the desire / hearsay / conditional sentences of FORMS the abstention pair is now
+    (NO_ATTESTED_CELL, NO_MATCHING_CROSS_IN_READ_SENTENCES) with MODALITY_NOT_READ:<kind> in the reader's reasons; old expectation: (FILLED, PREDICATE_FORM_DIFFERS) for every row except the te-miru one."""
     path = doc_file(tmp_path, 'f.txt', sentence + '\n')
     rc, out = ask(tmp_path, capsys, [path], question)
     assert out['verdict'] == 'UNKNOWN_UNREAD' and out.get('door') != 'question_cross'
@@ -429,24 +449,36 @@ def test_a_desire_or_hearsay_sentence_is_not_the_answer_of_a_plain_past_question
     # Integration (auditor, 2026-10-04): for the te-miru sentence the document sentence itself is no longer read, so the cross reports
     # NO_ATTESTED_CELL / NO_MATCHING_CROSS_IN_READ_SENTENCES instead of a FILLED cell rejected by the form check; the verdict is the same abstention.
     want = (('NO_ATTESTED_CELL', 'NO_MATCHING_CROSS_IN_READ_SENTENCES'),) if ('てみ' in sentence or 'でみ' in sentence) else (('FILLED', 'PREDICATE_FORM_DIFFERS'),)   # 読んでみた: the voiced te-form
+    # Integration (auditor ruling 2026-10-06, W16-t1b K800): for a desire / hearsay / conditional sentence the document sentence is not read as an event either (the reader abstains with
+    # MODALITY_NOT_READ:<kind>), so the cross reports the same abstention as for the te-miru sentence instead of a FILLED cell rejected by the form check; old expectation: (FILLED, PREDICATE_FORM_DIFFERS)
+    if sentence in K800_KIND:
+        assert 'MODALITY_NOT_READ:' + K800_KIND[sentence] in reader_unsupported_reasons(sentence)
+        want = (('NO_ATTESTED_CELL', 'NO_MATCHING_CROSS_IN_READ_SENTENCES'),)
     assert out['question_cross']['mapped_to'] == 'ORIGINAL' and (out['question_cross']['state'], out['question_cross']['reason']) in want
     assert qc_steps(out)[0]['mapped_to'] == 'ORIGINAL'
 
 
 def test_the_same_written_form_in_the_question_is_answered_verbatim(tmp_path, capsys, place_forms):
+    """Integration (auditor ruling 2026-10-06, W16-t1b K800): a desire sentence is not read as an event, so even the question written in the same form (先生は何を読みたかった？) is no longer
+    answered (answer -> abstention, the direction the ruling allows; the later stage is not touched in this ticket). Old expectation: ANSWER 本 through the door question_cross, sources[0]['sentence_id'] == 'f.txt#1:1',
+    out['text'] in out['sources'][0]['text']."""
     path = doc_file(tmp_path, 'f.txt', '先生は本を読みたかった。\n')
     rc, out = ask(tmp_path, capsys, [path], '先生は何を読みたかった？')
-    assert out['verdict'] == 'ANSWER' and out['door'] == 'question_cross' and out['text'] == '本' and out['sources'][0]['sentence_id'] == 'f.txt#1:1'
-    assert out['text'] in out['sources'][0]['text']
+    assert 'MODALITY_NOT_READ:desire' in reader_unsupported_reasons('先生は本を読みたかった。')
+    assert out['verdict'] == 'UNKNOWN_UNREAD' and out.get('door') != 'question_cross' and out.get('text') != '本'
 
 
 def test_a_tie_whose_candidate_is_written_in_another_form_is_not_a_tie_of_answers(tmp_path, monkeypatch):
+    """Integration (auditor ruling 2026-10-06, W16-t1b K800): the reason of the check is PREDICATE_POSITION_UNKNOWN because the desire sentence is not read as an event; old expectation: PREDICATE_FORM_DIFFERS."""
     path = doc_file(tmp_path, 't.txt', '先生は本を読んだ。\n校長は雑誌を読みたかった。\n')
     monkeypatch.setattr(O, 'observe_question_records', lambda q, r, **k: fake_obs(
         [{'surface': '本', 'evidence': [{'reading': 't.txt#1:1'}]}, {'surface': '雑誌', 'evidence': [{'reading': 't.txt#2:1'}]}], status='TIE'))
     orig = trigger()
     out = cli._round5_question_cross(orig, [path], '誰かは何を読んだ？')
-    check_original(out, orig, 'TIE', 'PREDICATE_FORM_DIFFERS')
+    # Integration (auditor ruling 2026-10-06, W16-t1b K800): the second candidate is the desire sentence 校長は雑誌を読みたかった。, which the reader no longer reads as an event, so the
+    # tie is checked with the reason PREDICATE_POSITION_UNKNOWN (abstention -> abstention, only the reason changes); old expectation: 'PREDICATE_FORM_DIFFERS'
+    assert 'MODALITY_NOT_READ:desire' in reader_unsupported_reasons('校長は雑誌を読みたかった。')
+    check_original(out, orig, 'TIE', 'PREDICATE_POSITION_UNKNOWN')
 
 
 # ---------------------------------------------------------------------------------------------------------------------------------

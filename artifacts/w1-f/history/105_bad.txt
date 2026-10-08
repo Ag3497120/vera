@@ -1,0 +1,29 @@
+# commit 3e36e08fe5e9f1a04abebbdcfb62f1b14cd99980
+# status FAIL
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 14 items / 13 deselected / 1 selected
+
+tests/attack/test_verifier_agents_fabrication.py::test_parse_verdict_rejects_unscoped_or_vague_references[verified] FAILED [100%]
+
+=== FAILURES ===
+______ test_parse_verdict_rejects_unscoped_or_vague_references[verified] _______
+
+evidence_ref = 'verified'
+
+    @pytest.mark.parametrize("evidence_ref", ["../private.txt", "a/../private.txt", "verified"])
+    def test_parse_verdict_rejects_unscoped_or_vague_references(evidence_ref):
+>       with pytest.raises(ValueError, match="evidence reference"):
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'evidence reference'
+E         Actual message: 'UNVERIFIED: malformed legacy verdict'
+
+tests/attack/test_verifier_agents_fabrication.py:159: AssertionError
+=== short test summary info ===
+FAILED tests/attack/test_verifier_agents_fabrication.py::test_parse_verdict_rejects_unscoped_or_vague_references[verified] - AssertionError: Regex pattern did not match.
+  Expected regex: 'evidence reference'
+  Actual message: 'UNVERIFIED: malformed legacy verdict'
+=== 1 failed, 13 deselected ===

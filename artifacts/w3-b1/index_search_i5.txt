@@ -1,0 +1,14 @@
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "統合 再検証 申告の生成器 原因の帰属",
+  "searched": 673,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 54,
+    "module": 288,
+    "prereg": 66,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}

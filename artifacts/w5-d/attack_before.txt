@@ -1,0 +1,11 @@
+F.........FF....FFF.........F.....F.                                     [100%]
+=========================== short test summary info ============================
+FAILED tests/attack/w3c2/test_attack_w3c2_question_cross.py::test_person_question_does_not_fill_with_artifacts_without_placement
+FAILED tests/attack/test_attack_w5b_wave2.py::test_japanese_common_noun_without_placement_is_not_routed_as_an_agent
+FAILED tests/attack/test_attack_w5b_wave2.py::test_yappari_sonomama_does_not_turn_an_addendum_into_replacement
+FAILED tests/attack/test_attack_w5c_confirmation_text_binding.py::test_attack_a_confirmed_sentence_must_equal_the_current_generated_claim[whitespace]
+FAILED tests/attack/test_attack_w5c_confirmation_text_binding.py::test_attack_a_confirmed_sentence_must_equal_the_current_generated_claim[punctuation]
+FAILED tests/attack/test_attack_w5c_confirmation_text_binding.py::test_attack_a_confirmed_sentence_must_equal_the_current_generated_claim[nfkc]
+FAILED tests/attack/test_attack_w5c_classification_binding.py::test_attack_a_document_family_and_nonempty_documents_do_not_prove_the_source_text_is_user_supplied
+FAILED tests/attack/w3a3/test_attack_w3a3_r6.py::test_all_r6_generated_frame_upgrades
+8 failed, 28 passed in 1.32s

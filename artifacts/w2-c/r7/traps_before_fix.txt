@@ -1,0 +1,363 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: /Users/motonisihikoudai/Projects/vera-impl/wt/W2-c-S
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 28 items
+
+tests/test_conduct_ask_traps6.py::test_handed_up[A1] FAILED              [  3%]
+tests/test_conduct_ask_traps6.py::test_handed_up[A2] FAILED              [  7%]
+tests/test_conduct_ask_traps6.py::test_handed_up[A3] FAILED              [ 10%]
+tests/test_conduct_ask_traps6.py::test_handed_up[A4] FAILED              [ 14%]
+tests/test_conduct_ask_traps6.py::test_handed_up[A5] FAILED              [ 17%]
+tests/test_conduct_ask_traps6.py::test_handed_up[A6] FAILED              [ 21%]
+tests/test_conduct_ask_traps6.py::test_handed_up[A7] FAILED              [ 25%]
+tests/test_conduct_ask_traps6.py::test_handed_up[B1] FAILED              [ 28%]
+tests/test_conduct_ask_traps6.py::test_handed_up[B2] FAILED              [ 32%]
+tests/test_conduct_ask_traps6.py::test_handed_up[B3] FAILED              [ 35%]
+tests/test_conduct_ask_traps6.py::test_handed_up[B4] FAILED              [ 39%]
+tests/test_conduct_ask_traps6.py::test_handed_up[B5] FAILED              [ 42%]
+tests/test_conduct_ask_traps6.py::test_handed_up[B6] FAILED              [ 46%]
+tests/test_conduct_ask_traps6.py::test_handed_up[B7] FAILED              [ 50%]
+tests/test_conduct_ask_traps6.py::test_handed_up[C1] FAILED              [ 53%]
+tests/test_conduct_ask_traps6.py::test_handed_up[C2] FAILED              [ 57%]
+tests/test_conduct_ask_traps6.py::test_handed_up[C3] FAILED              [ 60%]
+tests/test_conduct_ask_traps6.py::test_handed_up[C4] FAILED              [ 64%]
+tests/test_conduct_ask_traps6.py::test_a_conditional_invariant_is_not_answered_even_when_the_question_restates_its_condition PASSED [ 67%]
+tests/test_conduct_ask_traps6.py::test_unconditional_invariant_without_approval_still_gives_not_permitted_with_the_rule PASSED [ 71%]
+tests/test_conduct_ask_traps6.py::test_a_conditional_invariant_with_the_precedence_of_a_frozen_frame_goes_up_with_its_rule FAILED [ 75%]
+tests/test_conduct_ask_traps6.py::test_control_is_still_answered[K1] PASSED [ 78%]
+tests/test_conduct_ask_traps6.py::test_control_is_still_answered[K3] PASSED [ 82%]
+tests/test_conduct_ask_traps6.py::test_control_is_still_answered[K4] PASSED [ 85%]
+tests/test_conduct_ask_traps6.py::test_control_is_still_answered[K5] PASSED [ 89%]
+tests/test_conduct_ask_traps6.py::test_control_is_still_answered[K6] PASSED [ 92%]
+tests/test_conduct_ask_traps6.py::test_control_is_still_answered[K7] PASSED [ 96%]
+tests/test_conduct_ask_traps6.py::test_control_is_still_answered[K8] PASSED [100%]
+
+=================================== FAILURES ===================================
+______________________________ test_handed_up[A1] ______________________________
+
+fdir = PosixPath('/private/tmp/pytest-of-motonisihikoudai/pytest-310/traps60')
+frame = 'ferry_neg', question = 'May we wipe the card reader?'
+opts = ['Yes', 'No'], typed = ('FRAME_SILENT', 'RECORD_STANCE_UNREADABLE')
+
+    @pytest.mark.parametrize("frame,question,opts,typed", [pytest.param(*r[1:], id=r[0]) for r in ESCALATE])
+    def test_handed_up(fdir, frame, question, opts, typed):
+        res = _ask(fdir, frame, question, opts)
+>       assert res["decision"] == "escalate"
+E       AssertionError: assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps6.py:209: AssertionError
+______________________________ test_handed_up[A2] ______________________________
+
+fdir = PosixPath('/private/tmp/pytest-of-motonisihikoudai/pytest-310/traps60')
+frame = 'ferry_neg', question = 'Can we wipe the card reader now?'
+opts = ['Yes', 'No'], typed = None
+
+    @pytest.mark.parametrize("frame,question,opts,typed", [pytest.param(*r[1:], id=r[0]) for r in ESCALATE])
+    def test_handed_up(fdir, frame, question, opts, typed):
+        res = _ask(fdir, frame, question, opts)
+>       assert res["decision"] == "escalate"
+E       AssertionError: assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps6.py:209: AssertionError
+______________________________ test_handed_up[A3] ______________________________
+
+fdir = PosixPath('/private/tmp/pytest-of-motonisihikoudai/pytest-310/traps60')
+frame = 'ferry_neg', question = 'May we wipe the card reader?', opts = None
+typed = None
+
+    @pytest.mark.parametrize("frame,question,opts,typed", [pytest.param(*r[1:], id=r[0]) for r in ESCALATE])
+    def test_handed_up(fdir, frame, question, opts, typed):
+        res = _ask(fdir, frame, question, opts)
+>       assert res["decision"] == "escalate"
+E       AssertionError: assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps6.py:209: AssertionError
+______________________________ test_handed_up[A4] ______________________________
+
+fdir = PosixPath('/private/tmp/pytest-of-motonisihikoudai/pytest-310/traps60')
+frame = 'nursery_neg', question = '連絡帳の記録を消去してよいですか？', opts = ['はい', 'いいえ']
+typed = ('FRAME_SILENT', 'RECORD_STANCE_UNREADABLE')
+
+    @pytest.mark.parametrize("frame,question,opts,typed", [pytest.param(*r[1:], id=r[0]) for r in ESCALATE])
+    def test_handed_up(fdir, frame, question, opts, typed):
+        res = _ask(fdir, frame, question, opts)
+>       assert res["decision"] == "escalate"
+E       AssertionError: assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps6.py:209: AssertionError
+______________________________ test_handed_up[A5] ______________________________
+
+fdir = PosixPath('/private/tmp/pytest-of-motonisihikoudai/pytest-310/traps60')
+frame = 'nursery_neg', question = '連絡帳の記録を消去してよいですか？', opts = None, typed = None
+
+    @pytest.mark.parametrize("frame,question,opts,typed", [pytest.param(*r[1:], id=r[0]) for r in ESCALATE])
+    def test_handed_up(fdir, frame, question, opts, typed):
+        res = _ask(fdir, frame, question, opts)
+>       assert res["decision"] == "escalate"
+E       AssertionError: assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps6.py:209: AssertionError
+______________________________ test_handed_up[A6] ______________________________
+
+fdir = PosixPath('/private/tmp/pytest-of-motonisihikoudai/pytest-310/traps60')
+frame = 'ferry_inv', question = 'May we export the passenger manifest?'
+opts = ['Yes', 'No'], typed = ('FRAME_SILENT', 'RECORD_STANCE_UNREADABLE')
+
+    @pytest.mark.parametrize("frame,question,opts,typed", [pytest.param(*r[1:], id=r[0]) for r in ESCALATE])
+    def test_handed_up(fdir, frame, question, opts, typed):
+        res = _ask(fdir, frame, question, opts)
+>       assert res["decision"] == "escalate"
+E       AssertionError: assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps6.py:209: AssertionError
+______________________________ test_handed_up[A7] ______________________________
+
+fdir = PosixPath('/private/tmp/pytest-of-motonisihikoudai/pytest-310/traps60')
+frame = 'nursery_inv', question = '園児の写真を外部へ送ってよいですか？', opts = ['はい', 'いいえ']
+typed = None
+
+    @pytest.mark.parametrize("frame,question,opts,typed", [pytest.param(*r[1:], id=r[0]) for r in ESCALATE])
+    def test_handed_up(fdir, frame, question, opts, typed):
+        res = _ask(fdir, frame, question, opts)
+>       assert res["decision"] == "escalate"
+E       AssertionError: assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps6.py:209: AssertionError
+______________________________ test_handed_up[B1] ______________________________
+
+fdir = PosixPath('/private/tmp/pytest-of-motonisihikoudai/pytest-310/traps60')
+frame = 'ferry', question = 'May we export the passenger manifest?'
+opts = ['Yes', 'No']
+typed = ('HUMAN_APPROVAL_REQUIRED', 'INVARIANT_IS_CONDITIONAL')
+
+    @pytest.mark.parametrize("frame,question,opts,typed", [pytest.param(*r[1:], id=r[0]) for r in ESCALATE])
+    def test_handed_up(fdir, frame, question, opts, typed):
+        res = _ask(fdir, frame, question, opts)
+>       assert res["decision"] == "escalate"
+E       AssertionError: assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps6.py:209: AssertionError
+______________________________ test_handed_up[B2] ______________________________
+
+fdir = PosixPath('/private/tmp/pytest-of-motonisihikoudai/pytest-310/traps60')
+frame = 'ferry'
+question = 'May we export the passenger manifest? The harbour master agreed.'
+opts = ['Yes', 'No'], typed = None
+
+    @pytest.mark.parametrize("frame,question,opts,typed", [pytest.param(*r[1:], id=r[0]) for r in ESCALATE])
+    def test_handed_up(fdir, frame, question, opts, typed):
+        res = _ask(fdir, frame, question, opts)
+>       assert res["decision"] == "escalate"
+E       AssertionError: assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps6.py:209: AssertionError
+______________________________ test_handed_up[B3] ______________________________
+
+fdir = PosixPath('/private/tmp/pytest-of-motonisihikoudai/pytest-310/traps60')
+frame = 'ferry', question = 'Can we export the passenger manifest now?'
+opts = ['Yes', 'No'], typed = None
+
+    @pytest.mark.parametrize("frame,question,opts,typed", [pytest.param(*r[1:], id=r[0]) for r in ESCALATE])
+    def test_handed_up(fdir, frame, question, opts, typed):
+        res = _ask(fdir, frame, question, opts)
+>       assert res["decision"] == "escalate"
+E       AssertionError: assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps6.py:209: AssertionError
+______________________________ test_handed_up[B4] ______________________________
+
+fdir = PosixPath('/private/tmp/pytest-of-motonisihikoudai/pytest-310/traps60')
+frame = 'ferry', question = 'May we export the passenger manifest?', opts = None
+typed = None
+
+    @pytest.mark.parametrize("frame,question,opts,typed", [pytest.param(*r[1:], id=r[0]) for r in ESCALATE])
+    def test_handed_up(fdir, frame, question, opts, typed):
+        res = _ask(fdir, frame, question, opts)
+>       assert res["decision"] == "escalate"
+E       AssertionError: assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps6.py:209: AssertionError
+______________________________ test_handed_up[B5] ______________________________
+
+fdir = PosixPath('/private/tmp/pytest-of-motonisihikoudai/pytest-310/traps60')
+frame = 'nursery', question = '園児の写真を外部へ送ってよいですか？', opts = ['はい', 'いいえ']
+typed = ('HUMAN_APPROVAL_REQUIRED', 'INVARIANT_IS_CONDITIONAL')
+
+    @pytest.mark.parametrize("frame,question,opts,typed", [pytest.param(*r[1:], id=r[0]) for r in ESCALATE])
+    def test_handed_up(fdir, frame, question, opts, typed):
+        res = _ask(fdir, frame, question, opts)
+>       assert res["decision"] == "escalate"
+E       AssertionError: assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps6.py:209: AssertionError
+______________________________ test_handed_up[B6] ______________________________
+
+fdir = PosixPath('/private/tmp/pytest-of-motonisihikoudai/pytest-310/traps60')
+frame = 'nursery', question = '園児の写真を外部へ送ってよいですか？ 園長の承認はもらっています。'
+opts = ['はい', 'いいえ'], typed = None
+
+    @pytest.mark.parametrize("frame,question,opts,typed", [pytest.param(*r[1:], id=r[0]) for r in ESCALATE])
+    def test_handed_up(fdir, frame, question, opts, typed):
+        res = _ask(fdir, frame, question, opts)
+>       assert res["decision"] == "escalate"
+E       AssertionError: assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps6.py:209: AssertionError
+______________________________ test_handed_up[B7] ______________________________
+
+fdir = PosixPath('/private/tmp/pytest-of-motonisihikoudai/pytest-310/traps60')
+frame = 'nursery', question = '園長の承認を得たので、園児の写真を外部へ送ってよいですか？'
+opts = ['はい', 'いいえ'], typed = None
+
+    @pytest.mark.parametrize("frame,question,opts,typed", [pytest.param(*r[1:], id=r[0]) for r in ESCALATE])
+    def test_handed_up(fdir, frame, question, opts, typed):
+        res = _ask(fdir, frame, question, opts)
+>       assert res["decision"] == "escalate"
+E       AssertionError: assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps6.py:209: AssertionError
+______________________________ test_handed_up[C1] ______________________________
+
+fdir = PosixPath('/private/tmp/pytest-of-motonisihikoudai/pytest-310/traps60')
+frame = 'ferry', question = 'Can I edit KIOSK/fare.py?', opts = ['Yes', 'No']
+typed = ('FRAME_SILENT', 'PATH_CASE_DIFFERS')
+
+    @pytest.mark.parametrize("frame,question,opts,typed", [pytest.param(*r[1:], id=r[0]) for r in ESCALATE])
+    def test_handed_up(fdir, frame, question, opts, typed):
+        res = _ask(fdir, frame, question, opts)
+>       assert res["decision"] == "escalate"
+E       AssertionError: assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps6.py:209: AssertionError
+______________________________ test_handed_up[C2] ______________________________
+
+fdir = PosixPath('/private/tmp/pytest-of-motonisihikoudai/pytest-310/traps60')
+frame = 'nursery', question = 'App/notes.py を書き換えてよいですか？', opts = ['はい', 'いいえ']
+typed = ('FRAME_SILENT', 'PATH_CASE_DIFFERS')
+
+    @pytest.mark.parametrize("frame,question,opts,typed", [pytest.param(*r[1:], id=r[0]) for r in ESCALATE])
+    def test_handed_up(fdir, frame, question, opts, typed):
+        res = _ask(fdir, frame, question, opts)
+>       assert res["decision"] == "escalate"
+E       AssertionError: assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps6.py:209: AssertionError
+______________________________ test_handed_up[C3] ______________________________
+
+fdir = PosixPath('/private/tmp/pytest-of-motonisihikoudai/pytest-310/traps60')
+frame = 'ferry', question = 'Can I edit Kiosk/fare.py?', opts = ['Yes', 'No']
+typed = None
+
+    @pytest.mark.parametrize("frame,question,opts,typed", [pytest.param(*r[1:], id=r[0]) for r in ESCALATE])
+    def test_handed_up(fdir, frame, question, opts, typed):
+        res = _ask(fdir, frame, question, opts)
+>       assert res["decision"] == "escalate"
+E       AssertionError: assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps6.py:209: AssertionError
+______________________________ test_handed_up[C4] ______________________________
+
+fdir = PosixPath('/private/tmp/pytest-of-motonisihikoudai/pytest-310/traps60')
+frame = 'nursery', question = 'ＡＰＰ/notes.py を書き換えてよいですか？', opts = ['はい', 'いいえ']
+typed = None
+
+    @pytest.mark.parametrize("frame,question,opts,typed", [pytest.param(*r[1:], id=r[0]) for r in ESCALATE])
+    def test_handed_up(fdir, frame, question, opts, typed):
+        res = _ask(fdir, frame, question, opts)
+>       assert res["decision"] == "escalate"
+E       AssertionError: assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps6.py:209: AssertionError
+_ test_a_conditional_invariant_with_the_precedence_of_a_frozen_frame_goes_up_with_its_rule _
+
+tmp_path = PosixPath('/private/tmp/pytest-of-motonisihikoudai/pytest-310/test_a_conditional_invariant_w0')
+
+    def test_a_conditional_invariant_with_the_precedence_of_a_frozen_frame_goes_up_with_its_rule(tmp_path):
+        section = "[conflict_precedence]\n{rule}\n\n[protected_actions]"
+        inv_wins = H.edit_frame(tmp_path, "f03_handout", out_name="inv_wins", replace=(
+            ("[protected_actions]", section.format(rule="R1: philosophy_invariants > protected_actions: 不変条件が先")),))
+        res = H.ask(inv_wins, "外部の査読者に送ってよいですか？ 担当者の承認は得ています。", HI)
+>       assert res["decision"] == "escalate" and res["answer"] is None and res["answer_option_index"] is None
+E       AssertionError: assert ('answer' == 'escalate'
+E         
+E         - escalate
+E         + answer)
+
+tests/test_conduct_ask_traps6.py:233: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_conduct_ask_traps6.py::test_handed_up[A1] - AssertionError:...
+FAILED tests/test_conduct_ask_traps6.py::test_handed_up[A2] - AssertionError:...
+FAILED tests/test_conduct_ask_traps6.py::test_handed_up[A3] - AssertionError:...
+FAILED tests/test_conduct_ask_traps6.py::test_handed_up[A4] - AssertionError:...
+FAILED tests/test_conduct_ask_traps6.py::test_handed_up[A5] - AssertionError:...
+FAILED tests/test_conduct_ask_traps6.py::test_handed_up[A6] - AssertionError:...
+FAILED tests/test_conduct_ask_traps6.py::test_handed_up[A7] - AssertionError:...
+FAILED tests/test_conduct_ask_traps6.py::test_handed_up[B1] - AssertionError:...
+FAILED tests/test_conduct_ask_traps6.py::test_handed_up[B2] - AssertionError:...
+FAILED tests/test_conduct_ask_traps6.py::test_handed_up[B3] - AssertionError:...
+FAILED tests/test_conduct_ask_traps6.py::test_handed_up[B4] - AssertionError:...
+FAILED tests/test_conduct_ask_traps6.py::test_handed_up[B5] - AssertionError:...
+FAILED tests/test_conduct_ask_traps6.py::test_handed_up[B6] - AssertionError:...
+FAILED tests/test_conduct_ask_traps6.py::test_handed_up[B7] - AssertionError:...
+FAILED tests/test_conduct_ask_traps6.py::test_handed_up[C1] - AssertionError:...
+FAILED tests/test_conduct_ask_traps6.py::test_handed_up[C2] - AssertionError:...
+FAILED tests/test_conduct_ask_traps6.py::test_handed_up[C3] - AssertionError:...
+FAILED tests/test_conduct_ask_traps6.py::test_handed_up[C4] - AssertionError:...
+FAILED tests/test_conduct_ask_traps6.py::test_a_conditional_invariant_with_the_precedence_of_a_frozen_frame_goes_up_with_its_rule
+========================= 19 failed, 9 passed in 1.13s =========================

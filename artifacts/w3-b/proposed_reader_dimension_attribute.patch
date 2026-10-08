@@ -1,0 +1,13 @@
+--- a/verantyx/semantic_read.py	2026-10-03 09:36:42
++++ b/verantyx/semantic_read.py	2026-10-03 09:45:47
+@@ -412,7 +412,9 @@
+         elif name in _ROLE_TABLE:
+             mapped = _ROLE_TABLE[name]
+             if c.rule == 'comparison' and name == 'direction': continue
+-        elif c.rule == 'comparison' and name in ('dimension', 'direction'):
++        elif c.rule == 'comparison' and name == 'dimension':
++            mapped = 'attribute'
++        elif c.rule == 'comparison' and name == 'direction':
+             continue
+         else:
+             _no('UNMAPPED_ROLE:' + name)

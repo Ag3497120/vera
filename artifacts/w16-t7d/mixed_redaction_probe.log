@@ -1,0 +1,13 @@
+## 混在の分割と秘密の伏せ: 基点の build_claude_code_event と 新しい claude_code_prompt_rows（第 2 ラウンドの修正後）
+prompt: 'token=<system-reminder>abcdefgh9</system-reminder>'
+  基点: ["owner_utterance", "token=[REDACTED:kv_secret]", 1]
+  新  : [["user_turn_unattributed", "token=[REDACTED:kv_secret]", 1, "SECRET_NEAR_BLOCK_BOUNDARY"]]
+prompt: 'see token=<system-reminder>abcdefgh9</system-reminder> ok'
+  基点: ["owner_utterance", "see token=[REDACTED:kv_secret] ok", 1]
+  新  : [["user_turn_unattributed", "see token=[REDACTED:kv_secret] ok", 1, "SECRET_NEAR_BLOCK_BOUNDARY"]]
+prompt: 'Bearer <system-reminder>x</system-reminder>abcdefghijklmnopqrstuvwxyz0123456789'
+  基点: ["owner_utterance", "Bearer <system-reminder>x</system-reminder>abcdefghijklmnopqrstuvwxyz0123456789", 0]
+  新  : [["user_turn_unattributed", "Bearer <system-reminder>x</system-reminder>abcdefghijklmnopqrstuvwxyz0123456789", 0, "SECRET_NEAR_BLOCK_BOUNDARY"]]
+prompt: 'please look <system-reminder>r</system-reminder> thanks'
+  基点: ["owner_utterance", "please look <system-reminder>r</system-reminder> thanks", 0]
+  新  : [["system_message", "<system-reminder>r</system-reminder>", 0, null], ["owner_utterance", "please look  thanks", 0, null]]

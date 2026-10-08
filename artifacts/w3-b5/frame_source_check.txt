@@ -1,0 +1,1 @@
+rows=649 frame_source r8=557 absent=60 synthetic=32 mismatch=0

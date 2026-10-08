@@ -1,0 +1,330 @@
+FFFFFFFFFFFF.FFF.F                                                       [100%]
+=================================== FAILURES ===================================
+__ test_a11_t7_kinds_reject_new_actor_types_same_as_baseline[approval-system] __
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2360/test_a11_t7_kinds_reject_new_a0')
+base_root = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2360/base0')
+kind = 'approval', atype = 'system'
+
+    @pytest.mark.parametrize("kind,atype", [("approval", "system"), ("approval", "unknown"), ("owner_utterance", "unknown"),
+                                            ("test_run", "system")])
+    def test_a11_t7_kinds_reject_new_actor_types_same_as_baseline(tmp_path, base_root, kind, atype):
+        outs = []
+        for root in (base_root, ROOT):
+            led = tmp_path / f"l_{root.name}_{kind}_{atype}"
+            r = cli("events", "add", kind, "--actor-type", atype, "--actor-id", "x", "--text", "hi", "--ledger-dir", str(led), root=root)
+>           assert r.returncode == 2 and not (led / "events.jsonl").exists()
+E           assert (0 == 2)
+E            +  where 0 = CompletedProcess(args=['/Users/motonisihikoudai/vera-wiring/env/bin/python', '-P', '-m', 'verantyx.cli', 'events', 'ad..."65a50b835cb67b3111410b65873ed498a99ee139427b58a6c9495b936b8f8883", "ts": "2026-10-05T21:33:04.128423Z"}\n', stderr='').returncode
+
+tests/test_w16t7d_review1.py:49: AssertionError
+_ test_a11_t7_kinds_reject_new_actor_types_same_as_baseline[approval-unknown] __
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2360/test_a11_t7_kinds_reject_new_a1')
+base_root = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2360/base0')
+kind = 'approval', atype = 'unknown'
+
+    @pytest.mark.parametrize("kind,atype", [("approval", "system"), ("approval", "unknown"), ("owner_utterance", "unknown"),
+                                            ("test_run", "system")])
+    def test_a11_t7_kinds_reject_new_actor_types_same_as_baseline(tmp_path, base_root, kind, atype):
+        outs = []
+        for root in (base_root, ROOT):
+            led = tmp_path / f"l_{root.name}_{kind}_{atype}"
+            r = cli("events", "add", kind, "--actor-type", atype, "--actor-id", "x", "--text", "hi", "--ledger-dir", str(led), root=root)
+>           assert r.returncode == 2 and not (led / "events.jsonl").exists()
+E           assert (0 == 2)
+E            +  where 0 = CompletedProcess(args=['/Users/motonisihikoudai/vera-wiring/env/bin/python', '-P', '-m', 'verantyx.cli', 'events', 'ad..."07dac8abb66972e3fc178b64f4431ad6be61c9f42cb357952e8c2deaeba52a23", "ts": "2026-10-05T21:33:04.723981Z"}\n', stderr='').returncode
+
+tests/test_w16t7d_review1.py:49: AssertionError
+_ test_a11_t7_kinds_reject_new_actor_types_same_as_baseline[owner_utterance-unknown] _
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2360/test_a11_t7_kinds_reject_new_a2')
+base_root = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2360/base0')
+kind = 'owner_utterance', atype = 'unknown'
+
+    @pytest.mark.parametrize("kind,atype", [("approval", "system"), ("approval", "unknown"), ("owner_utterance", "unknown"),
+                                            ("test_run", "system")])
+    def test_a11_t7_kinds_reject_new_actor_types_same_as_baseline(tmp_path, base_root, kind, atype):
+        outs = []
+        for root in (base_root, ROOT):
+            led = tmp_path / f"l_{root.name}_{kind}_{atype}"
+            r = cli("events", "add", kind, "--actor-type", atype, "--actor-id", "x", "--text", "hi", "--ledger-dir", str(led), root=root)
+>           assert r.returncode == 2 and not (led / "events.jsonl").exists()
+E           assert (0 == 2)
+E            +  where 0 = CompletedProcess(args=['/Users/motonisihikoudai/vera-wiring/env/bin/python', '-P', '-m', 'verantyx.cli', 'events', 'ad..."fa9a164e0a00a353bbe5aae9757bf4945f4792bc2e0b2d25dd7ffd2ccf417307", "ts": "2026-10-05T21:33:05.306502Z"}\n', stderr='').returncode
+
+tests/test_w16t7d_review1.py:49: AssertionError
+__ test_a11_t7_kinds_reject_new_actor_types_same_as_baseline[test_run-system] __
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2360/test_a11_t7_kinds_reject_new_a3')
+base_root = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2360/base0')
+kind = 'test_run', atype = 'system'
+
+    @pytest.mark.parametrize("kind,atype", [("approval", "system"), ("approval", "unknown"), ("owner_utterance", "unknown"),
+                                            ("test_run", "system")])
+    def test_a11_t7_kinds_reject_new_actor_types_same_as_baseline(tmp_path, base_root, kind, atype):
+        outs = []
+        for root in (base_root, ROOT):
+            led = tmp_path / f"l_{root.name}_{kind}_{atype}"
+            r = cli("events", "add", kind, "--actor-type", atype, "--actor-id", "x", "--text", "hi", "--ledger-dir", str(led), root=root)
+>           assert r.returncode == 2 and not (led / "events.jsonl").exists()
+E           assert (0 == 2)
+E            +  where 0 = CompletedProcess(args=['/Users/motonisihikoudai/vera-wiring/env/bin/python', '-P', '-m', 'verantyx.cli', 'events', 'ad..."db7bfd8663b408734ebc235c2d0fbc809fc587f32ce58ea5ca1827811647d460", "ts": "2026-10-05T21:33:05.885957Z"}\n', stderr='').returncode
+
+tests/test_w16t7d_review1.py:49: AssertionError
+____________________ test_a11b_verify_shape_per_kind[rows0] ____________________
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2360/test_a11b_verify_shape_per_kin0')
+base_root = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2360/base0')
+rows = [('approval', 'system')]
+
+    @pytest.mark.parametrize("rows", [
+        [("approval", "system")], [("owner_utterance", "unknown")], [("approval", "owner"), ("test_run", "system")],
+        [("system_message", "owner")], [("user_turn_unattributed", "system")], [("correction", "process")],
+        [("correction", "system")], [("system_message", "unknown")],
+    ])
+    def test_a11b_verify_shape_per_kind(tmp_path, base_root, rows):
+        new = _probe_verify(ROOT, rows, tmp_path / "new")
+>       assert new[0] == 1 and "BAD_SHAPE" in new[1], new
+E       AssertionError: (0, '{"head": "ecacec46bda743a36b45d8b49322775d4058877a09cd521e0d24356975dd47fc", "n": 1, "problems": [], "status": "OK"}
+E         ')
+E       assert (0 == 1)
+
+tests/test_w16t7d_review1.py:80: AssertionError
+____________________ test_a11b_verify_shape_per_kind[rows1] ____________________
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2360/test_a11b_verify_shape_per_kin1')
+base_root = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2360/base0')
+rows = [('owner_utterance', 'unknown')]
+
+    @pytest.mark.parametrize("rows", [
+        [("approval", "system")], [("owner_utterance", "unknown")], [("approval", "owner"), ("test_run", "system")],
+        [("system_message", "owner")], [("user_turn_unattributed", "system")], [("correction", "process")],
+        [("correction", "system")], [("system_message", "unknown")],
+    ])
+    def test_a11b_verify_shape_per_kind(tmp_path, base_root, rows):
+        new = _probe_verify(ROOT, rows, tmp_path / "new")
+>       assert new[0] == 1 and "BAD_SHAPE" in new[1], new
+E       AssertionError: (0, '{"head": "fa2fa8cea313391b441723ad0b2b8ca88cbe0a605f62f5fcdd82f9bce220452e", "n": 1, "problems": [], "status": "OK"}
+E         ')
+E       assert (0 == 1)
+
+tests/test_w16t7d_review1.py:80: AssertionError
+____________________ test_a11b_verify_shape_per_kind[rows2] ____________________
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2360/test_a11b_verify_shape_per_kin2')
+base_root = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2360/base0')
+rows = [('approval', 'owner'), ('test_run', 'system')]
+
+    @pytest.mark.parametrize("rows", [
+        [("approval", "system")], [("owner_utterance", "unknown")], [("approval", "owner"), ("test_run", "system")],
+        [("system_message", "owner")], [("user_turn_unattributed", "system")], [("correction", "process")],
+        [("correction", "system")], [("system_message", "unknown")],
+    ])
+    def test_a11b_verify_shape_per_kind(tmp_path, base_root, rows):
+        new = _probe_verify(ROOT, rows, tmp_path / "new")
+>       assert new[0] == 1 and "BAD_SHAPE" in new[1], new
+E       AssertionError: (0, '{"head": "38e58afc126cb0f34f1f72eea1d38eb1af065b50ac6ad689d4ac3ad1f8fa271b", "n": 2, "problems": [], "status": "OK"}
+E         ')
+E       assert (0 == 1)
+
+tests/test_w16t7d_review1.py:80: AssertionError
+____________________ test_a11b_verify_shape_per_kind[rows3] ____________________
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2360/test_a11b_verify_shape_per_kin3')
+base_root = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2360/base0')
+rows = [('system_message', 'owner')]
+
+    @pytest.mark.parametrize("rows", [
+        [("approval", "system")], [("owner_utterance", "unknown")], [("approval", "owner"), ("test_run", "system")],
+        [("system_message", "owner")], [("user_turn_unattributed", "system")], [("correction", "process")],
+        [("correction", "system")], [("system_message", "unknown")],
+    ])
+    def test_a11b_verify_shape_per_kind(tmp_path, base_root, rows):
+        new = _probe_verify(ROOT, rows, tmp_path / "new")
+>       assert new[0] == 1 and "BAD_SHAPE" in new[1], new
+E       AssertionError: (0, '{"head": "454ac704a113189b7d0c470377c3d0d623c655552068b26219b73272d36a1041", "n": 1, "problems": [], "status": "OK"}
+E         ')
+E       assert (0 == 1)
+
+tests/test_w16t7d_review1.py:80: AssertionError
+____________________ test_a11b_verify_shape_per_kind[rows4] ____________________
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2360/test_a11b_verify_shape_per_kin4')
+base_root = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2360/base0')
+rows = [('user_turn_unattributed', 'system')]
+
+    @pytest.mark.parametrize("rows", [
+        [("approval", "system")], [("owner_utterance", "unknown")], [("approval", "owner"), ("test_run", "system")],
+        [("system_message", "owner")], [("user_turn_unattributed", "system")], [("correction", "process")],
+        [("correction", "system")], [("system_message", "unknown")],
+    ])
+    def test_a11b_verify_shape_per_kind(tmp_path, base_root, rows):
+        new = _probe_verify(ROOT, rows, tmp_path / "new")
+>       assert new[0] == 1 and "BAD_SHAPE" in new[1], new
+E       AssertionError: (0, '{"head": "3140ecf7af532667962b333c440c3f064b69ca02a5044d51b7e44a4c6a98207c", "n": 1, "problems": [], "status": "OK"}
+E         ')
+E       assert (0 == 1)
+
+tests/test_w16t7d_review1.py:80: AssertionError
+____________________ test_a11b_verify_shape_per_kind[rows5] ____________________
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2360/test_a11b_verify_shape_per_kin5')
+base_root = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2360/base0')
+rows = [('correction', 'process')]
+
+    @pytest.mark.parametrize("rows", [
+        [("approval", "system")], [("owner_utterance", "unknown")], [("approval", "owner"), ("test_run", "system")],
+        [("system_message", "owner")], [("user_turn_unattributed", "system")], [("correction", "process")],
+        [("correction", "system")], [("system_message", "unknown")],
+    ])
+    def test_a11b_verify_shape_per_kind(tmp_path, base_root, rows):
+        new = _probe_verify(ROOT, rows, tmp_path / "new")
+>       assert new[0] == 1 and "BAD_SHAPE" in new[1], new
+E       AssertionError: (0, '{"head": "97de0609069931740de096f0b062af7bc0acb5be6b1595494c07bb6c7305030a", "n": 1, "problems": [], "status": "OK"}
+E         ')
+E       assert (0 == 1)
+
+tests/test_w16t7d_review1.py:80: AssertionError
+____________________ test_a11b_verify_shape_per_kind[rows6] ____________________
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2360/test_a11b_verify_shape_per_kin6')
+base_root = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2360/base0')
+rows = [('correction', 'system')]
+
+    @pytest.mark.parametrize("rows", [
+        [("approval", "system")], [("owner_utterance", "unknown")], [("approval", "owner"), ("test_run", "system")],
+        [("system_message", "owner")], [("user_turn_unattributed", "system")], [("correction", "process")],
+        [("correction", "system")], [("system_message", "unknown")],
+    ])
+    def test_a11b_verify_shape_per_kind(tmp_path, base_root, rows):
+        new = _probe_verify(ROOT, rows, tmp_path / "new")
+>       assert new[0] == 1 and "BAD_SHAPE" in new[1], new
+E       AssertionError: (0, '{"head": "546839118421620554eb41a71323f002d09fa057b1af1d07872cc259bdc5be9a", "n": 1, "problems": [], "status": "OK"}
+E         ')
+E       assert (0 == 1)
+
+tests/test_w16t7d_review1.py:80: AssertionError
+____________________ test_a11b_verify_shape_per_kind[rows7] ____________________
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2360/test_a11b_verify_shape_per_kin7')
+base_root = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2360/base0')
+rows = [('system_message', 'unknown')]
+
+    @pytest.mark.parametrize("rows", [
+        [("approval", "system")], [("owner_utterance", "unknown")], [("approval", "owner"), ("test_run", "system")],
+        [("system_message", "owner")], [("user_turn_unattributed", "system")], [("correction", "process")],
+        [("correction", "system")], [("system_message", "unknown")],
+    ])
+    def test_a11b_verify_shape_per_kind(tmp_path, base_root, rows):
+        new = _probe_verify(ROOT, rows, tmp_path / "new")
+>       assert new[0] == 1 and "BAD_SHAPE" in new[1], new
+E       AssertionError: (0, '{"head": "ab5c3beff64877cbcb46b2a26fd586baf4053f4c14a254ff7423b1b3bbdd696d", "n": 1, "problems": [], "status": "OK"}
+E         ')
+E       assert (0 == 1)
+
+tests/test_w16t7d_review1.py:80: AssertionError
+_ test_a12_secret_near_block_boundary_never_leaks[token=<system-reminder>abcdefgh9</system-reminder>] _
+
+prompt = 'token=<system-reminder>abcdefgh9</system-reminder>'
+
+    @pytest.mark.parametrize("prompt", [
+        "token=<system-reminder>abcdefgh9</system-reminder>",
+        "see token=<system-reminder>abcdefgh9</system-reminder> ok",
+        "Bearer <system-reminder>x</system-reminder>abcdefghijklmnopqrstuvwxyz0123456789",
+    ])
+    def test_a12_secret_near_block_boundary_never_leaks(prompt):
+        rows = L.claude_code_prompt_rows(prompt, SRC, "s")
+        blob = json.dumps(rows, ensure_ascii=False)
+        full, n = L.redact_obj({"text": prompt})
+        for secret in ("abcdefgh9", "abcdefghijklmnopqrstuvwxyz0123456789"):
+            # 基点（全体を伏せる）が伏せる秘密は、どの行にも出ない。基点が伏せない形は基点と同じ扱い
+            if secret in prompt and secret not in full["text"]:
+>               assert secret not in blob
+E               assert 'abcdefgh9' not in '[["system_m...tions": 0}]]'
+E                 
+E                 'abcdefgh9' is contained here:
+E                   -reminder>abcdefgh9</system-reminder>", "source": "claude_code.UserPromptSubmit", "session_id": "s", "tags": ["system_reminder"], "attributed_by": "tag_shape", "turn_sha256": "8d81e41c9421d190456f576dcabce33e20bab853622a69150a27643e1314c5a8", "part": 1, "parts": 2, "redactions": 0}], ["owner_utterance", {"type": "owner", "id": "s"}, {"text": "token=", "source": "claude_code.UserPromptSubmit", "session_id": "s", "attributed_by": "tag_shape", "turn_sha256": "8d81e41c9421d190456f576dcabce33e20bab853622a69150a27643e1314c5a8", "part": 2, "parts": 2, "redactions": 0}]]
+E                 ?           +++++++++
+
+tests/test_w16t7d_review1.py:103: AssertionError
+_ test_a12_secret_near_block_boundary_never_leaks[see token=<system-reminder>abcdefgh9</system-reminder> ok] _
+
+prompt = 'see token=<system-reminder>abcdefgh9</system-reminder> ok'
+
+    @pytest.mark.parametrize("prompt", [
+        "token=<system-reminder>abcdefgh9</system-reminder>",
+        "see token=<system-reminder>abcdefgh9</system-reminder> ok",
+        "Bearer <system-reminder>x</system-reminder>abcdefghijklmnopqrstuvwxyz0123456789",
+    ])
+    def test_a12_secret_near_block_boundary_never_leaks(prompt):
+        rows = L.claude_code_prompt_rows(prompt, SRC, "s")
+        blob = json.dumps(rows, ensure_ascii=False)
+        full, n = L.redact_obj({"text": prompt})
+        for secret in ("abcdefgh9", "abcdefghijklmnopqrstuvwxyz0123456789"):
+            # 基点（全体を伏せる）が伏せる秘密は、どの行にも出ない。基点が伏せない形は基点と同じ扱い
+            if secret in prompt and secret not in full["text"]:
+>               assert secret not in blob
+E               assert 'abcdefgh9' not in '[["system_m...tions": 0}]]'
+E                 
+E                 'abcdefgh9' is contained here:
+E                   -reminder>abcdefgh9</system-reminder>", "source": "claude_code.UserPromptSubmit", "session_id": "s", "tags": ["system_reminder"], "attributed_by": "tag_shape", "turn_sha256": "87014b73e17f96577ca3b6cea8506d2d7d83b238a5d13f5e8505916ecb60b409", "part": 1, "parts": 2, "redactions": 0}], ["owner_utterance", {"type": "owner", "id": "s"}, {"text": "see token= ok", "source": "claude_code.UserPromptSubmit", "session_id": "s", "attributed_by": "tag_shape", "turn_sha256": "87014b73e17f96577ca3b6cea8506d2d7d83b238a5d13f5e8505916ecb60b409", "part": 2, "parts": 2, "redactions": 0}]]
+E                 ?           +++++++++
+
+tests/test_w16t7d_review1.py:103: AssertionError
+_ test_a12_secret_near_block_boundary_never_leaks[Bearer <system-reminder>x</system-reminder>abcdefghijklmnopqrstuvwxyz0123456789] _
+
+prompt = 'Bearer <system-reminder>x</system-reminder>abcdefghijklmnopqrstuvwxyz0123456789'
+
+    @pytest.mark.parametrize("prompt", [
+        "token=<system-reminder>abcdefgh9</system-reminder>",
+        "see token=<system-reminder>abcdefgh9</system-reminder> ok",
+        "Bearer <system-reminder>x</system-reminder>abcdefghijklmnopqrstuvwxyz0123456789",
+    ])
+    def test_a12_secret_near_block_boundary_never_leaks(prompt):
+        rows = L.claude_code_prompt_rows(prompt, SRC, "s")
+        blob = json.dumps(rows, ensure_ascii=False)
+        full, n = L.redact_obj({"text": prompt})
+        for secret in ("abcdefgh9", "abcdefghijklmnopqrstuvwxyz0123456789"):
+            # 基点（全体を伏せる）が伏せる秘密は、どの行にも出ない。基点が伏せない形は基点と同じ扱い
+            if secret in prompt and secret not in full["text"]:
+                assert secret not in blob
+            if secret in prompt and secret in full["text"]:
+>               assert secret in blob
+E               assert 'abcdefghijklmnopqrstuvwxyz0123456789' in '[["system_message", {"type": "system", "id": "s"}, {"text": "<system-reminder>x</system-reminder>", "source": "claude...sha256": "4b92f9a877d4239236cc68505a3eda5eb5539ce2b827e1ec9294751ce22b18c5", "part": 2, "parts": 2, "redactions": 1}]]'
+
+tests/test_w16t7d_review1.py:105: AssertionError
+________________________ test_a13_split_scales_linearly ________________________
+
+    def test_a13_split_scales_linearly():
+        def t(k):
+            s = "<system-reminder></system-reminder>" * k
+            a = time.perf_counter()
+            r = L.split_system_blocks(s)
+            assert r["status"] == "SYSTEM_ONLY" and len(r["blocks"]) == k
+            return time.perf_counter() - a
+        t(1000)
+        small, big = min(t(5000) for _ in range(3)), min(t(40000) for _ in range(3))
+>       assert big < 1.0 and big < small * 24      # 8 倍の入力で 2 乗なら 64 倍
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       assert (6.364180792006664 < 1.0)
+
+tests/test_w16t7d_review1.py:125: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_w16t7d_review1.py::test_a11_t7_kinds_reject_new_actor_types_same_as_baseline[approval-system]
+FAILED tests/test_w16t7d_review1.py::test_a11_t7_kinds_reject_new_actor_types_same_as_baseline[approval-unknown]
+FAILED tests/test_w16t7d_review1.py::test_a11_t7_kinds_reject_new_actor_types_same_as_baseline[owner_utterance-unknown]
+FAILED tests/test_w16t7d_review1.py::test_a11_t7_kinds_reject_new_actor_types_same_as_baseline[test_run-system]
+FAILED tests/test_w16t7d_review1.py::test_a11b_verify_shape_per_kind[rows0]
+FAILED tests/test_w16t7d_review1.py::test_a11b_verify_shape_per_kind[rows1]
+FAILED tests/test_w16t7d_review1.py::test_a11b_verify_shape_per_kind[rows2]
+FAILED tests/test_w16t7d_review1.py::test_a11b_verify_shape_per_kind[rows3]
+FAILED tests/test_w16t7d_review1.py::test_a11b_verify_shape_per_kind[rows4]
+FAILED tests/test_w16t7d_review1.py::test_a11b_verify_shape_per_kind[rows5]
+FAILED tests/test_w16t7d_review1.py::test_a11b_verify_shape_per_kind[rows6]
+FAILED tests/test_w16t7d_review1.py::test_a11b_verify_shape_per_kind[rows7]
+FAILED tests/test_w16t7d_review1.py::test_a12_secret_near_block_boundary_never_leaks[token=<system-reminder>abcdefgh9</system-reminder>]
+FAILED tests/test_w16t7d_review1.py::test_a12_secret_near_block_boundary_never_leaks[see token=<system-reminder>abcdefgh9</system-reminder> ok]
+FAILED tests/test_w16t7d_review1.py::test_a12_secret_near_block_boundary_never_leaks[Bearer <system-reminder>x</system-reminder>abcdefghijklmnopqrstuvwxyz0123456789]
+FAILED tests/test_w16t7d_review1.py::test_a13_split_scales_linearly - assert ...
+16 failed, 2 passed in 25.61s

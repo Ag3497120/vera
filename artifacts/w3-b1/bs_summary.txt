@@ -1,0 +1,3 @@
+B1_v2 {'correct': 32, 'correct_abstain': 13, 'false_compliance': 0, 'misread': 0, 'over_abstain': 20, 'runtime_error': 0, 'unreachable': 0, 'unscorable': 0, 'wrong': 0}
+B1_v2_r2 {'correct': 11, 'correct_abstain': 8, 'false_compliance': 0, 'misread': 0, 'over_abstain': 17, 'runtime_error': 0, 'unreachable': 0, 'unscorable': 0, 'wrong': 0}
+B1_v2_r3 {'correct': 4, 'correct_abstain': 0, 'false_compliance': 0, 'misread': 0, 'over_abstain': 13, 'runtime_error': 0, 'unreachable': 0, 'unscorable': 0, 'wrong': 0}

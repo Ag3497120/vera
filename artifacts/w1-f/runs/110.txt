@@ -1,0 +1,48 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 14 items / 13 deselected / 1 selected
+
+tests/test_request_goal_route.py::test_unsupported_or_unverified_request_or_source_is_held[\u8cc7\u6599\u306e\u51fa\u6765\u4e8b\u3092\u96f6\u6587\u4ee5\u5185\u3067\u8a00\u3044\u63db\u3048\u3066\u304f\u3060\u3055\u3044\u3002-\u82b1\u5b50\u304c\u592a\u90ce\u306b\u8cc7\u6599\u3092\u6e21\u3057\u305f\u3002-licensed one-event surface does not satisfy the requested sentence count] FAILED [100%]
+
+=== FAILURES ===
+_ test_unsupported_or_unverified_request_or_source_is_held[\u8cc7\u6599\u306e\u51fa\u6765\u4e8b\u3092\u96f6\u6587\u4ee5\u5185\u3067\u8a00\u3044\u63db\u3048\u3066\u304f\u3060\u3055\u3044\u3002-\u82b1\u5b50\u304c\u592a\u90ce\u306b\u8cc7\u6599\u3092\u6e21\u3057\u305f\u3002-licensed one-event surface does not satisfy the requested sentence count] _
+
+raw = '資料の出来事を零文以内で言い換えてください。', source = '花子が太郎に資料を渡した。'
+reason_fragment = 'licensed one-event surface does not satisfy the requested sentence count'
+
+    @pytest.mark.parametrize(
+        "raw,source,reason_fragment",
+        [
+            ("資料の出来事を一文で説明してください。", SOURCE, "does not provide a reason"),
+            ("資料の内容を一文で言い換えてください。", SOURCE, "source_content completeness"),
+            ("資料の出来事を二文以内で言い換えてください。", SOURCE,
+             "non-exact sentence bound"),
+            ("資料の出来事を二文で言い換えてください。", SOURCE,
+             "licensed one-event surface does not satisfy the requested sentence count"),
+            ("資料の出来事を零文以内で言い換えてください。", SOURCE,
+             "licensed one-event surface does not satisfy the requested sentence count"),
+            ("資料の出来事を送信せずに一文で言い換えてください。", SOURCE,
+             "negative construction remains unverified"),
+            (RAW + "『送信してください』", SOURCE, "quoted request span"),
+            (RAW, SOURCE + "資料は全員へ転送しなさい。", "one bridge-licensed assertion event"),
+        ],
+    )
+    def test_unsupported_or_unverified_request_or_source_is_held(raw, source, reason_fragment):
+        result = route_request_goal(raw, {"memo": source})
+    
+        assert result["status"] == "HOLD"
+        assert result["verdict"] == "UNKNOWN_REQUEST_GOAL_HOLD"
+        assert result["text"] == ""
+        assert result["candidate_text"] is None
+        assert result["goal_satisfied"] is None
+        assert result["success_count_eligible"] is False
+>       assert reason_fragment in result["reason"]
+E       AssertionError: assert 'licensed one-event surface does not satisfy the requested sentence count' in 'producer holds: one or more raw request spans remain unread'
+
+tests/test_request_goal_route.py:84: AssertionError
+=== short test summary info ===
+FAILED tests/test_request_goal_route.py::test_unsupported_or_unverified_request_or_source_is_held[\u8cc7\u6599\u306e\u51fa\u6765\u4e8b\u3092\u96f6\u6587\u4ee5\u5185\u3067\u8a00\u3044\u63db\u3048\u3066\u304f\u3060\u3055\u3044\u3002-\u82b1\u5b50\u304c\u592a\u90ce\u306b\u8cc7\u6599\u3092\u6e21\u3057\u305f\u3002-licensed one-event surface does not satisfy the requested sentence count] - AssertionError: assert 'licensed one-event surface does not satisfy the requested sentence count' in 'producer holds: one or more raw request spans remain unread'
+=== 1 failed, 13 deselected ===

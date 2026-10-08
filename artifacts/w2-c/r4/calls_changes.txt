@@ -1,0 +1,9 @@
+# calls_before.jsonl lines: 875 distinct (frame,q,opts): 653
+# calls_after.jsonl  lines: 875 distinct (frame,q,opts): 653 same key set: True
+# counts: {'answer->escalate': 2, 'escalate->answer': 0, 'answer value/index changed': 0, 'escalate reason/detail changed': 0}
+== answer->escalate 2
+   f08_audioguide.md | Can we hand a handset to a visitor for the pilot? | ["Yes", "No"] | ('answer', 1, 'No', None, None) -> ('escalate', None, None, 'FRAME_SILENT', 'PERMISSION_FOR_ANOTHER_SUBJECT_OR_CONDITION')
+   f08_audioguide.md | Can we hand a handset to a visitor for the pilot? | ["No", "Yes"] | ('answer', 0, 'No', None, None) -> ('escalate', None, None, 'FRAME_SILENT', 'PERMISSION_FOR_ANOTHER_SUBJECT_OR_CONDITION')
+== escalate->answer 0
+== answer value/index changed 0
+== escalate reason/detail changed 0

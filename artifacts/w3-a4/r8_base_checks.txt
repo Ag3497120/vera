@@ -1,0 +1,18 @@
+verify: see verify_r8_base.txt (state OK)
+excluded_terms_total r8/base 359 r7 359
+sahen invariant codex:code 1728884 1728884 OK
+sahen invariant codex:code_qa 569555 569555 OK
+sahen invariant codex:conversation 189776 189776 OK
+sahen invariant codex:figurative_commonsense 63124 63124 OK
+sahen invariant codex:general_qa 357100 357100 OK
+sahen invariant codex:narrative 28844 28844 OK
+sahen invariant codex:paraphrase_entail 208553 208553 OK
+sahen invariant codex:pro 35579 35579 OK
+sahen invariant jawiki 844152 844152 OK
+funnel keys identical to r7 for every source: True
+config equal to DEFAULT+config_w3a4: k62_he_by_ni_place
+r7 content sha 5c969d454b39d39ac0e394191b5e985b4e0a10099591bb7b12fcc559e7d77ff1
+r8/base content sha c1900987c33c6970550a143a69b91ea9d5220cbe1b055c3edac1fd5c0cf2c206
+git_head c334fe6f195acfc124720f788e0f7c441054752d git_dirty True
+compare_to removed 0 added_other 0 added_sahen_verb 8058
+builder_sha 21f94de6cb33a99d7a29a3848aaaa5cc74b0b0492425641ed7bd14550d50e7c3 coarse_types_sha e20bbbc780af038a1916e255058ba6e3d66fb8c2ced642982e691f551fbfe5b7

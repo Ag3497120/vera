@@ -1,0 +1,9 @@
+A1 end to end through the CLI (vera ask --mode round5 --document ...), no index, scratch store:
+-- (1) file holding the answering sentence
+{"verdict": "ANSWER", "text": "agent: 花子", "outcome": "ANSWER_HUMAN_BASIS", "basis": "HUMAN", "unknown_origin": 0, "sources": [["document", "memo.txt"]]}
+-- (2) directory holding it
+{"verdict": "ANSWER", "text": "agent: 花子", "outcome": "ANSWER_HUMAN_BASIS", "basis": "HUMAN", "unknown_origin": 0, "sources": [["document", "a.txt"]]}
+-- (3) a document that says nothing about it
+{"verdict": "UNKNOWN_UNSUPPORTED_EVIDENCE", "text": "この要求を裏づける導出を確認できません。", "outcome": "ABSTAIN", "basis": "NONE", "unknown_origin": 0, "sources": []}
+-- (4) a path that does not exist
+{"verdict": "UNKNOWN_SOURCE_ASSET", "text": "この要求を裏づける導出を確認できません。", "outcome": "ABSTAIN", "basis": "NONE", "unknown_origin": 0, "sources": []}

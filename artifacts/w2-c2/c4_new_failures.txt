@@ -1,0 +1,3 @@
+FAILED tests/bank_score/test_bs_end_to_end.py::test_s6_two_runs_agree_except_timing_and_recount_matches
+FAILED tests/test_conduct_ask_cli.py::test_markdown_and_jsonl_frames_give_the_same_decisions
+FAILED tests/test_p4_abilities.py::test_speech_act_drafts_fill_new_roles_and_reread

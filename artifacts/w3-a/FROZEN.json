@@ -1,0 +1,63 @@
+{
+ "categories": {
+  "daily": 479,
+  "polysemous": 69,
+  "proper": 163,
+  "technical": 268,
+  "time_quantity": 96
+ },
+ "files": {
+  "artifacts/w3-a/PREREG.md": {
+   "bytes": 5195,
+   "lines": 44,
+   "sha256": "8a798bfcad5d39ba403c5819b887d8adb4c91c86114dcb37143ff7d47965ab5a"
+  },
+  "artifacts/w3-a/holdout_2000.jsonl": {
+   "bytes": 535560,
+   "lines": 2000,
+   "sha256": "c9772c535ee284b2cf10adcea45be63704b7f8494fe00778655c4f4ff1c30323"
+  },
+  "tests/coarse_place/data/dev_unknown.jsonl": {
+   "bytes": 16006,
+   "lines": 65,
+   "sha256": "3f3172d04fda65a1b82bbf9664979728bda29613ced0fa25c936caa26637c1c7"
+  },
+  "tests/coarse_place/data/dev_vocab.jsonl": {
+   "bytes": 66816,
+   "lines": 583,
+   "sha256": "5a286f49dc59a0cc0be78295e1516d7c660dd1d6106aac16a816c6a64efb1832"
+  },
+  "tests/coarse_place/data/predicate_check.jsonl": {
+   "bytes": 12788,
+   "lines": 119,
+   "sha256": "1fb8c36281269dbecc32d0a5895c01e909eb8aaa48b43334445e14972a6439db"
+  },
+  "tests/coarse_place/data/typed_vocab.jsonl": {
+   "bytes": 129127,
+   "lines": 1075,
+   "sha256": "10546bbf0e8cc312330cd5e3b51e93f393ab244aae4f16d98e4338223605f28b"
+  },
+  "tests/coarse_place/data/unknown_words.jsonl": {
+   "bytes": 57026,
+   "lines": 234,
+   "sha256": "f0d0932a61fa7ab32c5c940d79fff5d43853ada1b2fb6cf4f0b4f0e74b8017f9"
+  },
+  "verantyx/coarse_types.py": {
+   "bytes": 18570,
+   "lines": 268,
+   "sha256": "0956f593d8ba72c05138233db2c99e6aa722efd5f7fbe8dbde0478a8930bac61"
+  }
+ },
+ "frozen_at_utc": "2026-10-02T20:48:07Z",
+ "seed_overlap_terms": [
+  "料理",
+  "方言",
+  "空港"
+ ],
+ "suffix_trap_count": 154,
+ "types_version": "1",
+ "unknown_words": {
+  "gold_unknown": 60,
+  "total": 234
+ }
+}

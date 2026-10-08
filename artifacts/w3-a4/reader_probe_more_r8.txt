@@ -1,0 +1,7 @@
+担当者が資料をレビューした。 | queried: [] | readable: True | predicate: ['レビューする'] | abstain: None | basis: ['frame']
+先生が学生に結果を連絡した。 | queried: [] | readable: True | predicate: ['連絡する'] | abstain: None | basis: ['frame']
+部長が会議に参加した。 | queried: ['参加する'] | readable: False | predicate: [] | abstain: ['RECIPIENT_TYPE_UNDETERMINED:参加する', 'PLACEMENT_ESTIMATED_GENERATED:predicate:参加する'] | basis: []
+客が駅から空港へ移動した。 | queried: ['移動する', '客'] | readable: False | predicate: [] | abstain: ['RECIPIENT_TYPE_UNDETERMINED:移動する', 'PLACEMENT_MULTIPLE:が:客'] | basis: []
+係が書類を提出した。 | queried: [] | readable: True | predicate: ['提出する'] | abstain: None | basis: ['frame']
+彼女は書類を確認した。 | queried: [] | readable: False | predicate: [] | abstain: ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_PART_NOT_NP:代名詞'] | basis: []
+会社が新製品を発売した。 | queried: [] | readable: False | predicate: [] | abstain: ['AGENT_EVIDENCE_MISSING:会社'] | basis: []

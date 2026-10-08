@@ -1,0 +1,10 @@
+Reachability of the gold through ONE sentence shared with a question unit (any tier), vs the T9 cascade stage (layers-ssp-standard)
+('budget', True) 6
+('hit', True) 16
+('noagree', True) 7
+('nofix', True) 1
+('noquery', False) 10
+('noquery', True) 10
+('select', True) 1
+('tok', False) 18
+reachable in one hop (RUN or WORD): 41

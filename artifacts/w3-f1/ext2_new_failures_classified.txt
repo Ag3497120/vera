@@ -1,0 +1,4 @@
+基線 115 件にない 2 件（ext2_new_failures.txt）。失敗の集合は第 1 ラウンドの ext_after_failures.txt と diff で同一（今回の直しで増減なし）。
+1. tests/bank_score/test_bs_end_to_end.py::test_s6_two_runs_agree_except_timing_and_recount_matches — verantyx_untouched（tools/bank_score/cli.py:335）。verantyx/ に未コミットの変更がある間は必ず落ちる。コミット後に 1 回確かめること（未確認）。
+2. tests/test_p4_abilities.py::test_speech_act_drafts_fill_new_roles_and_reread — 基点でも落ちる（ext_new_failures_base_check.txt、第 1 ラウンドで基点の写しで確認。今回は再確認していない）。チケットが環境由来と名指しした系統。
+基線にあって消えた 1 件: test_one_trace::…（ext_fixed_failures.txt と同じ。因果は未確認）。

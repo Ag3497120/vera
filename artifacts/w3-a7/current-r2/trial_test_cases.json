@@ -1,0 +1,45 @@
+{
+  "version": 1,
+  "sources": {
+    "needs": "artifacts/w3-a7/current-r1/trial_needs_role_v3.jsonl",
+    "v2_claims": "artifacts/w3-a6/r9/n4_claims_run2_prefreeze.jsonl",
+    "visual_labels": "artifacts/w3-a6/r9/n4_visual_labels_run2.jsonl"
+  },
+  "single_missing_row": {
+    "drop_index": 0,
+    "expected": {
+      "status": "UNKNOWN",
+      "state_counts": {
+        "response": 38,
+        "abstain_null": 1,
+        "missing": 1,
+        "invalid_or_duplicate": 0
+      }
+    }
+  },
+  "four_state_matrix": {
+    "null_index": 0,
+    "missing_index": 1,
+    "duplicate_index": 2,
+    "invalid_index": 3,
+    "expected": {
+      "status": "UNKNOWN",
+      "state_counts": {
+        "response": 36,
+        "abstain_null": 1,
+        "missing": 1,
+        "invalid_or_duplicate": 2
+      },
+      "invalid_reasons": {
+        "duplicate_word_response": 1,
+        "invalid_frame": 1
+      }
+    }
+  },
+  "append_only_gate": {
+    "allow_latest_complete_pass": true,
+    "reject_latest_started_without_completion": true,
+    "reject_latest_completed_fail": true,
+    "allow_newer_complete_pass": true
+  }
+}

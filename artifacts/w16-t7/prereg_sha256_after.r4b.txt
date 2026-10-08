@@ -1,0 +1,6 @@
+# 第 4 ラウンド・レビュー r1 対応後 2026-10-06 00:33
+733239255746db15a1d5c8f548cd55ed420af9152ed6fad07f6c0b055993cb81  tests/test_w16t7_hooks.py
+e496a855d2aa09a354a034313f0fdf076b05b8ab9f33db970da81ac7af76c010  tests/test_w16t7_ledger.py
+f8f073b6813b1a5ad8fec0093aec30b6b5eaacc14990fa3fd1217fe0a5849cac  tests/test_w16t7_redact.py
+83113da52255b3beecaa9ebbbf5d6448823371b1024b5ce513690c8411c7f6fd  tests/test_w16t7_run.py
+965a495633d5c50f81f0cce420bf0f0e33f5d10cf12a9bdaecc704848676d4f4  docs/RECORDER.md

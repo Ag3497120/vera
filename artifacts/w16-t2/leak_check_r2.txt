@@ -1,0 +1,2 @@
+LEAK_CHANGE after tests/test_serve_fusion.py::test_grammar_alternatives_gbnf_and_schema_come_from_the_same_list: (None, None)
+100 passed in 23.18s

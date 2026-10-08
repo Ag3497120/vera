@@ -1,0 +1,20 @@
+tools/gen_coarse_evidence.py:432:            elif "PLACE" not in (top or "").split(","):
+tools/gen_coarse_evidence.py:436:            elif {a.split("@")[0] for a in (by or "").split("+") if a} & set(DEFINITION_LIKE_ARMS):
+tools/gen_coarse_evidence.py:620:        lines = f.read().split("\n")
+tools/gen_coarse_evidence.py:810:        if (any((not isinstance(t, str)) or t not in ct.NOUN_TYPES for t in ts) or len(set(ts)) != len(ts)
+tools/gen_coarse_evidence.py:865:                        or len(set(ts)) != len(ts)):
+tools/gen_coarse_evidence.py:936:    for line in stdout.splitlines():
+verantyx/coarse_types.py:317:    "left_attested": True,       # the left side of a split must be an attested word/atom
+verantyx/coarse_types.py:318:    "left_recursive": True,      # ... or itself split into attested words (both parts >= 2 chars)
+verantyx/coarse_types.py:344:    # settles a tie or a split; it places a word nothing else decided, marked as an
+verantyx/coarse_types.py:566:        return list(cands) if len(cands) == 1 else []     # a split is no vote (a tie abstains)
+verantyx/coarse_types.py:621:    else decided only when it names ONE type (a split places nothing:
+verantyx/coarse_types.py:693:    ``FRAME_PARTICLES_NOT_COVERED``: both stay estimates (a split is not made: the distribution never
+verantyx/coarse_types.py:892:    the frame declares for p whose types contain t.  |R| = 1: the source votes for (p, that role).  |R| >= 2: a split
+verantyx/coarse_types.py:893:    (the same type is declared by two roles of one particle): nobody votes (a tie abstains) and it is counted.  |R| = 0: the
+verantyx/coarse_types.py:913:    split_seen: Dict[Tuple[str, str], set] = {}           # (particle, role) -> types that were split
+verantyx/coarse_types.py:920:                "votes": {}, "split": [], "undeclared": []}
+verantyx/coarse_types.py:928:                elif len(roles) >= 2:
+verantyx/coarse_types.py:929:                    info["split"].append({"particle": p, "type": t, "roles": [r["role"] for r in roles]})
+verantyx/coarse_types.py:931:                        split_seen.setdefault((p, r["role"]), set()).add(t)
+verantyx/coarse_types.py:947:                why = "SPLIT" if (not by_src and split_seen.get((p, r["role"]))) else "NOT_BACKED"

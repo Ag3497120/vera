@@ -1,0 +1,7 @@
+2026-10-04 08:37:53 +0900
+2026-10-04 08:37:53 +0900
+2026-10-04 08:37:59 +0900
+tests/coarse_place/data/w3a6_expect.json 2026-10-04 08:37:59 +0900
+docs/COARSE_PLACEMENT.md 2026-10-04 08:37:53 +0900
+tools/gen_coarse_evidence.py 2026-10-04 08:43:31 +0900
+verantyx/coarse_types.py 2026-10-04 08:40:18 +0900

@@ -1,0 +1,24 @@
+FULL W3B3-PAR-001 兄が本を読んで、弟が歌を歌った。
+ before: {"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "not_supported", "reasons": ["RELATION_NOT_MAPPED:frame"]}, "unsupported": [], "clause_meta": []}
+ after : {"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": true, "clauses": [{"predicate": "読む", "roles": {"agent": "兄", "patient": "本"}, "polarity": "+", "tense": null, "modality": null, "voice": "active"}, {"predicate": "歌う", "roles": {"agent": "弟", "patient": "歌"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "relations": [{"type": "sequence", "from": 0, "to": 1}], "abstain": null, "unsupported": [], "clause_meta": [{"rule": "frame", "span": [4, 6]}, {"rule": "frame", "span": [12, 15]}]}
+ expect: {"readable": true, "clauses": [{"predicate": "読む", "roles": {"agent": "兄", "patient": "本"}, "polarity": "+", "tense": null, "modality": null, "voice": "active"}, {"predicate": "歌う", "roles": {"agent": "弟", "patient": "歌"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "relations": [{"type": ["sequence", "manner", "cause"], "from": 0, "to": 1}], "must_not": []}
+FULL W3B3-PAR-016 兄が本を読み、弟が歌を歌った。
+ before: {"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "not_supported", "reasons": ["RELATION_NOT_MAPPED:frame"]}, "unsupported": [], "clause_meta": []}
+ after : {"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": true, "clauses": [{"predicate": "読む", "roles": {"agent": "兄", "patient": "本"}, "polarity": "+", "tense": null, "modality": null, "voice": "active"}, {"predicate": "歌う", "roles": {"agent": "弟", "patient": "歌"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "relations": [{"type": "sequence", "from": 0, "to": 1}], "abstain": null, "unsupported": [], "clause_meta": [{"rule": "frame", "span": [4, 6]}, {"rule": "frame", "span": [11, 14]}]}
+ expect: {"readable": true, "clauses": [{"predicate": "読む", "roles": {"agent": "兄", "patient": "本"}, "polarity": "+", "tense": null, "modality": null, "voice": "active"}, {"predicate": "歌う", "roles": {"agent": "弟", "patient": "歌"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "relations": [{"type": ["sequence"], "from": 0, "to": 1}], "must_not": []}
+ROW W3B3-PAR-001 兄が本を読んで、弟が歌を歌った。 before_readable=False after_readable=True verdict=correct relations=[{'type': 'sequence', 'from': 0, 'to': 1}]
+ROW W3B3-PAR-002 母が絵を描いて、姉が手紙を書いた。 before_readable=False after_readable=True verdict=correct relations=[{'type': 'sequence', 'from': 0, 'to': 1}]
+ROW W3B3-PAR-003 先生が本を読んで、生徒が薬を飲んだ。 before_readable=False after_readable=True verdict=correct relations=[{'type': 'sequence', 'from': 0, 'to': 1}]
+ROW W3B3-PAR-004 兄が来て弟が帰った。 before_readable=False after_readable=True verdict=correct relations=[{'type': 'sequence', 'from': 0, 'to': 1}]
+ROW W3B3-PAR-005 姉が着いて母が座った。 before_readable=False after_readable=True verdict=correct relations=[{'type': 'sequence', 'from': 0, 'to': 1}]
+ROW W3B3-PAR-006 父が起きて、祖父が立った。 before_readable=False after_readable=True verdict=correct relations=[{'type': 'sequence', 'from': 0, 'to': 1}]
+ROW W3B3-PAR-007 弟が転んで、兄が来た。 before_readable=False after_readable=True verdict=correct relations=[{'type': 'sequence', 'from': 0, 'to': 1}]
+ROW W3B3-PAR-008 母が戻って、姉が着いた。 before_readable=False after_readable=True verdict=correct relations=[{'type': 'sequence', 'from': 0, 'to': 1}]
+ROW W3B3-PAR-016 兄が本を読み、弟が歌を歌った。 before_readable=False after_readable=True verdict=correct relations=[{'type': 'sequence', 'from': 0, 'to': 1}]
+ROW W3B3-PAR-017 母が絵を描き、姉が手紙を書いた。 before_readable=False after_readable=True verdict=correct relations=[{'type': 'sequence', 'from': 0, 'to': 1}]
+ROW W3B3-PAR-018 先生が本を読み、生徒が薬を飲んだ。 before_readable=False after_readable=True verdict=correct relations=[{'type': 'sequence', 'from': 0, 'to': 1}]
+ROW W3B3-PAR-019 兄が着き、弟が帰った。 before_readable=False after_readable=True verdict=correct relations=[{'type': 'sequence', 'from': 0, 'to': 1}]
+ROW W3B3-PAR-020 姉が戻り、母が座った。 before_readable=False after_readable=True verdict=correct relations=[{'type': 'sequence', 'from': 0, 'to': 1}]
+ROW W3B3-PAR-021 父が起き、祖父が立った。 before_readable=False after_readable=True verdict=correct relations=[{'type': 'sequence', 'from': 0, 'to': 1}]
+ROW W3B3-PAR-022 弟が転び、兄が来た。 before_readable=False after_readable=True verdict=correct relations=[{'type': 'sequence', 'from': 0, 'to': 1}]
+rows=15 all_correct=True

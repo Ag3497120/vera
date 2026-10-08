@@ -1,0 +1,61 @@
+word	n_seen	ns	state	origin	top	by	why	gen_type	gen_frame	rd_sig	sahen_uses_max_src	judgement	reason
+確認する	550173	P	DECIDED	estimated	P_COGNITION	gen_frame	DISTRIBUTION_DISAGREES	P_COGNITION	{"を": ["ABSTRACT", "EVENT_ACT", "INFO_LANGUAGE"]}	{"role_distribution@jawiki": ["を"]}	318061		
+表示する	226254	P	DECIDED	estimated	P_ACT	gen_frame		P_ACT	{"を": ["ARTIFACT", "INFO_LANGUAGE"]}	{}	112985		
+実行する	151916	P	DECIDED	estimated	P_ACT	gen_frame	DISTRIBUTION_DISAGREES	P_ACT	{"を": ["ABSTRACT", "EVENT_ACT"]}	{"role_distribution@codex:general_qa": ["を"], "role_distribution@codex:paraphrase_entail": ["が", "を"], "role_distribution@jawiki": ["を"]}	77639		
+指定する	124350	P	DECIDED	estimated	P_ACT	gen_frame		P_ACT	{"を": ["ABSTRACT", "ARTIFACT", "INFO_LANGUAGE"]}	{}	63775		
+存在する	68537	P	DECIDED	estimated	P_EXIST	gen_frame		P_EXIST	{"が": ["ABSTRACT", "ANIMAL", "ARTIFACT", "EVENT_ACT", "GROUP_ORG", "PERSON", "PLACE"]}	{}	33942		
+説明する	68043	P	DECIDED	direct	P_COMMUNICATE	gen_frame,role_distribution@codex:general_qa		P_COMMUNICATE	{"に": ["GROUP_ORG", "PERSON"], "を": ["ABSTRACT", "EVENT_ACT", "INFO_LANGUAGE"]}	{"role_distribution@codex:general_qa": ["を"]}	32360		
+記録する	58459	P	DECIDED	estimated	P_CREATE	gen_frame		P_CREATE	{"に": ["ARTIFACT", "INFO_LANGUAGE"], "を": ["EVENT_ACT", "INFO_LANGUAGE"]}	{}	36356		
+追加する	58047	P	DECIDED	estimated	P_CHANGE	gen_frame	DISTRIBUTION_DISAGREES	P_CHANGE	{"に": ["ABSTRACT", "ARTIFACT", "EVENT_ACT", "INFO_LANGUAGE"], "を": ["ABSTRACT", "ARTIFACT", "EVENT_ACT", "INFO_LANGUAGE"]}	{"role_distribution@codex:paraphrase_entail": ["を"], "role_distribution@codex:pro": ["を"]}	36159		
+変更する	56658	P	DECIDED	estimated	P_CHANGE	gen_frame	DISTRIBUTION_DISAGREES	P_CHANGE	{"を": ["ABSTRACT", "ARTIFACT", "INFO_LANGUAGE", "STATE_PROPERTY"]}	{"role_distribution@codex:code_qa": ["を"], "role_distribution@codex:general_qa": ["を"]}	39923		
+変換する	50378	P	DECIDED	estimated	P_CHANGE	gen_frame		P_CHANGE	{"に": ["ABSTRACT", "ARTIFACT", "INFO_LANGUAGE"], "を": ["ABSTRACT", "ARTIFACT", "INFO_LANGUAGE", "SUBSTANCE_FOOD"]}	{}	28721		
+発売する	48755	P	DECIDED	estimated	P_CREATE	gen_frame		P_CREATE	{"を": ["ARTIFACT", "SUBSTANCE_FOOD", "WORK"]}	{}	48588		
+一致する	48004	P	DECIDED	estimated	P_STATE	gen_frame		P_STATE	{"が": ["ABSTRACT", "ARTIFACT", "EVENT_ACT", "INFO_LANGUAGE", "PERSON"], "と": ["ABSTRACT", "ARTIFACT", "EVENT_ACT", "INFO_LANGUAGE", "PERSON"]}	{}	28356		
+発生する	47116	P	DECIDED	estimated	P_EXIST	gen_frame		P_EXIST	{"が": ["ABSTRACT", "EVENT_ACT", "NATURAL_PHENOMENON"]}	{}	35245		
+対応する	45255	P	DECIDED	estimated	P_STATE	gen_frame		P_STATE	{"と": ["ABSTRACT", "ARTIFACT", "EVENT_ACT", "GROUP_ORG", "PERSON"], "に": ["ABSTRACT", "ARTIFACT", "EVENT_ACT", "GROUP_ORG", "PERSON"]}	{}	23700		
+保存する	44686	P	DECIDED	estimated	P_ACT	gen_frame	DISTRIBUTION_DISAGREES	P_ACT	{"に": ["ARTIFACT", "INFO_LANGUAGE", "PLACE"], "を": ["ABSTRACT", "ARTIFACT", "INFO_LANGUAGE", "SUBSTANCE_FOOD"]}	{"role_distribution@codex:conversation": ["を", "に"], "role_distribution@codex:general_qa": ["を"], "role_distribution@codex:narrative": ["を"], "role_distribution@codex:pro": ["を"], "role_distribution@jawiki": ["を"]}	27950		
+放送する	43544	P	DECIDED	estimated	P_COMMUNICATE	gen_frame		P_COMMUNICATE	{"を": ["EVENT_ACT", "INFO_LANGUAGE", "WORK"]}	{}	43212		
+検証する	43039	P	DECIDED	estimated	P_COGNITION	gen_frame		P_COGNITION	{"を": ["ABSTRACT", "ARTIFACT", "EVENT_ACT", "INFO_LANGUAGE"]}	{}	28594		
+失敗する	40925	P	DECIDED	estimated	P_STATE	gen_frame		P_STATE	{"に": ["ABSTRACT", "ARTIFACT", "EVENT_ACT"]}	{}	27731		
+比較する	40780	P	DECIDED	estimated	P_COGNITION	gen_frame		P_COGNITION	{"を": ["ABSTRACT", "ARTIFACT", "EVENT_ACT", "INFO_LANGUAGE", "STATE_PROPERTY"]}	{}	19918		
+用意する	39756	P	DECIDED	estimated	P_CREATE	gen_frame	DISTRIBUTION_DISAGREES	P_CREATE	{"を": ["ABSTRACT", "ARTIFACT", "EVENT_ACT", "INFO_LANGUAGE", "SUBSTANCE_FOOD"]}	{"role_distribution@codex:code_qa": ["を"], "role_distribution@codex:paraphrase_entail": ["を"], "role_distribution@codex:pro": ["を"]}	14302		
+設定する	38878	P	DECIDED	estimated	P_ACT	gen_frame		P_ACT	{"を": ["ABSTRACT", "ARTIFACT", "EVENT_ACT", "INFO_LANGUAGE", "STATE_PROPERTY"]}	{}	25688		
+検討する	38079	P	DECIDED	estimated	P_COGNITION	gen_frame	DISTRIBUTION_DISAGREES	P_COGNITION	{"を": ["ABSTRACT", "ARTIFACT", "EVENT_ACT", "INFO_LANGUAGE"]}	{"role_distribution@codex:conversation": ["を"], "role_distribution@codex:general_qa": ["を"], "role_distribution@codex:paraphrase_entail": ["を"], "role_distribution@jawiki": ["を"]}	34085		
+利用する	37295	P	DECIDED	estimated	P_ACT	gen_frame		P_ACT	{"を": ["ABSTRACT", "ARTIFACT", "EVENT_ACT", "INFO_LANGUAGE", "PLACE"]}	{}	20884		
+位置する	36542	P	DECIDED	estimated	P_STATE	gen_frame		P_STATE	{"に": ["ARTIFACT", "PLACE"]}	{}	34594		
+相談する	34679	P	DECIDED	estimated	P_COMMUNICATE	gen_frame		P_COMMUNICATE	{"と": ["GROUP_ORG", "PERSON"], "に": ["GROUP_ORG", "PERSON"]}	{}	16763		
+取得する	34608	P	DECIDED	estimated	P_GIVE	gen_frame		P_GIVE	{"から": ["GROUP_ORG", "PERSON", "PLACE"], "を": ["ABSTRACT", "ARTIFACT", "EVENT_ACT", "INFO_LANGUAGE"]}	{}	20028		
+処理する	34318	P	DECIDED	estimated	P_ACT	gen_frame	DISTRIBUTION_DISAGREES	P_ACT	{"を": ["ABSTRACT", "ARTIFACT", "EVENT_ACT", "INFO_LANGUAGE", "SUBSTANCE_FOOD"]}	{"role_distribution@codex:general_qa": ["を"], "role_distribution@codex:paraphrase_entail": ["を"]}	26170		
+判定する	33123	P	DECIDED	estimated	P_COGNITION	gen_frame		P_COGNITION	{"を": ["ABSTRACT", "ARTIFACT", "EVENT_ACT", "INFO_LANGUAGE", "STATE_PROPERTY"]}	{}	18050		
+明示する	32692	P	DECIDED	estimated	P_COMMUNICATE	gen_frame		P_COMMUNICATE	{"を": ["ABSTRACT", "ARTIFACT", "INFO_LANGUAGE", "STATE_PROPERTY"]}	{}	24499		
+更新する	31696	P	DECIDED	estimated	P_CHANGE	gen_frame	DISTRIBUTION_DISAGREES	P_CHANGE	{"を": ["ABSTRACT", "ARTIFACT", "EVENT_ACT", "INFO_LANGUAGE", "STATE_PROPERTY"]}	{"role_distribution@codex:general_qa": ["を"]}	22689		
+併置する	34	P	DECIDED	estimated	P_ACT	gen_frame		P_ACT	{"に": ["PLACE"], "を": ["ABSTRACT", "ARTIFACT", "PLACE"]}	{}	33		
+まねする	621	P	DECIDED	estimated	P_COGNITION	gen_frame		P_COGNITION	{"を": ["ABSTRACT", "ANIMAL", "ARTIFACT", "EVENT_ACT", "GROUP_ORG", "PERSON"]}	{}	229		
+追突する	44	P	DECIDED	estimated	P_ACT	gen_frame		P_ACT	{"に": ["ARTIFACT", "PLACE"]}	{}	22		
+商売する	37	P	DECIDED	estimated	P_ACT	gen_frame		P_ACT	{"が": ["GROUP_ORG", "PERSON"], "を": ["ABSTRACT", "ARTIFACT", "SUBSTANCE_FOOD"]}	{}	33		
+従軍する	310	P	DECIDED	estimated	P_ACT	gen_frame		P_ACT	{"に": ["EVENT_ACT", "GROUP_ORG"]}	{}	308		
+反復する	2937	P	DECIDED	estimated	P_ACT	gen_frame	DISTRIBUTION_DISAGREES	P_ACT	{"を": ["ABSTRACT", "EVENT_ACT", "INFO_LANGUAGE"]}	{"role_distribution@codex:code": ["を"], "role_distribution@codex:figurative_commonsense": ["を"]}	2122		
+殉教する	79	P	DECIDED	estimated	P_STATE	gen_frame		P_STATE	{"に": ["ABSTRACT"]}	{}	78		
+傑出する	139	P	DECIDED	estimated	P_STATE	gen_frame		P_STATE	{"が": ["ABSTRACT", "ARTIFACT", "GROUP_ORG", "PERSON"]}	{}	139		
+静置する	25	P	DECIDED	estimated	P_ACT	gen_frame		P_ACT	{"を": ["ARTIFACT", "SUBSTANCE_FOOD"]}	{}	24		
+転移する	89	P	DECIDED	estimated	P_MOVE	gen_frame		P_MOVE	{"が": ["ABSTRACT", "BODY_PART"], "に": ["BODY_PART", "PLACE"]}	{}	64		
+診断する	997	P	DECIDED	estimated	P_COGNITION	gen_frame	DISTRIBUTION_DISAGREES	P_COGNITION	{"を": ["ABSTRACT", "ANIMAL", "PERSON", "STATE_PROPERTY"]}	{"role_distribution@jawiki": ["を"]}	635		
+荷崩れする	33	P	DECIDED	estimated	P_CHANGE	gen_frame		P_CHANGE	{"が": ["ARTIFACT", "SUBSTANCE_FOOD"]}	{}	24		
+レビューする	4692	P	DECIDED	estimated	P_COGNITION	gen_frame		P_COGNITION	{"に": ["GROUP_ORG", "PERSON"], "を": ["ABSTRACT", "ARTIFACT", "WORK"]}	{}	4617		
+改造する	389	P	DECIDED	estimated	P_CHANGE	gen_frame	DISTRIBUTION_DISAGREES	P_CHANGE	{"を": ["ARTIFACT"]}	{"role_distribution@jawiki": ["を"]}	380		
+乗車する	727	P	DECIDED	estimated	P_MOVE	gen_frame		P_MOVE	{"で": ["PLACE"], "に": ["ARTIFACT"]}	{}	272		
+復元する	1477	P	DECIDED	estimated	P_CHANGE	gen_frame	DISTRIBUTION_DISAGREES	P_CHANGE	{"を": ["ABSTRACT", "ARTIFACT", "INFO_LANGUAGE", "WORK"]}	{"role_distribution@codex:general_qa": ["を"]}	904		
+登校する	945	P	DECIDED	estimated	P_MOVE	gen_frame		P_MOVE	{"が": ["PERSON"], "に": ["PLACE"]}	{}	265		
+対面する	78	P	DECIDED	estimated	P_ACT	gen_frame		P_ACT	{"と": ["GROUP_ORG", "PERSON"]}	{}	34		
+共作する	77	P	DECIDED	estimated	P_CREATE	gen_frame	DISTRIBUTION_DISAGREES	P_CREATE	{"と": ["GROUP_ORG", "PERSON"], "を": ["INFO_LANGUAGE", "WORK"]}	{"role_distribution@jawiki": ["を"]}	76		
+再入する	42	P	DECIDED	estimated	P_MOVE	gen_frame		P_MOVE	{"に": ["PLACE"]}	{}	41		
+ディ・ドナテッロする	70	P	UNPLACED							{}	70		
+剥奪する	102	P	DECIDED	estimated	P_GIVE	gen_frame		P_GIVE	{"から": ["GROUP_ORG", "PERSON"], "を": ["ABSTRACT", "ARTIFACT", "IDENTIFIER"]}	{}	99		
+便乗する	45	P	DECIDED	estimated	P_ACT	gen_frame		P_ACT	{"と": ["GROUP_ORG", "PERSON"], "に": ["EVENT_ACT"]}	{}	21		
+協調する	98	P	DECIDED	estimated	P_ACT	gen_frame		P_ACT	{"が": ["ABSTRACT", "ARTIFACT", "GROUP_ORG", "PERSON"], "と": ["ABSTRACT", "GROUP_ORG", "PERSON"]}	{}	46		
+忌避する	27	P	DECIDED	estimated	P_ACT	gen_frame		P_ACT	{"を": ["ABSTRACT", "EVENT_ACT", "PERSON"]}	{}	27		
+募集する	410	P	DECIDED	direct	P_COMMUNICATE	gen_frame,role_distribution@codex:general_qa		P_COMMUNICATE	{"を": ["GROUP_ORG", "PERSON"]}	{"role_distribution@codex:general_qa": ["を"]}	220		
+停車する	3572	P	DECIDED	estimated	P_MOVE	gen_frame		P_MOVE	{"に": ["PLACE"]}	{}	1354		
+介在する	53	P	DECIDED	estimated	P_EXIST	gen_frame		P_EXIST	{"が": ["ABSTRACT", "ARTIFACT", "PERSON"], "に": ["ABSTRACT", "EVENT_ACT", "PLACE"]}	{}	31		
+給電する	46	P	DECIDED	estimated	P_ACT	gen_frame		P_ACT	{"に": ["ARTIFACT", "GROUP_ORG", "PLACE"]}	{}	33		
+削除する	31441	P	DECIDED	estimated	P_CHANGE	gen_frame	DISTRIBUTION_DISAGREES	P_CHANGE	{"を": ["ABSTRACT", "ARTIFACT", "EVENT_ACT", "INFO_LANGUAGE"]}	{"role_distribution@codex:code_qa": ["を"], "role_distribution@codex:general_qa": ["を"], "role_distribution@codex:paraphrase_entail": ["を"]}	18212		

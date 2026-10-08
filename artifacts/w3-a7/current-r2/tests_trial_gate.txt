@@ -1,0 +1,50 @@
+FF.                                                                      [100%]
+=================================== FAILURES ===================================
+____ test_one_missing_raw_item_is_unknown_and_separate_from_null_abstention ____
+
+    def test_one_missing_raw_item_is_unknown_and_separate_from_null_abstention():
+        judge = _judge_module()
+        words, v2_rows, labels = _frozen_source_rows()
+        raw = _raw_from_v2(words, v2_rows)
+        raw["items"] = [row for index, row in enumerate(raw["items"])
+                        if index != CASES["single_missing_row"]["drop_index"]]
+        result = judge.evaluate_trial(words, raw, _collected_from_raw(words, raw), v2_rows, labels)
+        expected = CASES["single_missing_row"]["expected"]
+        assert result["status"] == expected["status"]
+        assert result["state_counts"] == expected["state_counts"]
+>       assert result["state_counts"]["missing"] != result["state_counts"]["abstain_null"]
+E       assert 1 != 1
+
+tests/test_gen_coarse_evidence_trial_gate.py:73: AssertionError
+__ test_trial_reports_response_null_missing_and_invalid_duplicate_separately ___
+
+    def test_trial_reports_response_null_missing_and_invalid_duplicate_separately():
+        judge = _judge_module()
+        words, v2_rows, labels = _frozen_source_rows()
+        raw = _raw_from_v2(words, v2_rows)
+        matrix = CASES["four_state_matrix"]
+        by_word = {row["word"]: row for row in raw["items"]}
+        by_word[words[matrix["null_index"]]]["frame"] = None
+        missing_word = words[matrix["missing_index"]]
+        duplicate_word = words[matrix["duplicate_index"]]
+        invalid_word = words[matrix["invalid_index"]]
+        raw["items"] = [row for row in raw["items"] if row["word"] != missing_word]
+        raw["items"].append(copy.deepcopy(by_word[duplicate_word]))
+        by_word[invalid_word]["frame"] = "malformed"
+        result = judge.evaluate_trial(words, raw, _collected_from_raw(words, raw), v2_rows, labels)
+        expected = matrix["expected"]
+        assert result["status"] == expected["status"]
+>       assert result["state_counts"] == expected["state_counts"]
+E       AssertionError: assert {'response': ...duplicate': 2} == {'response': ...duplicate': 2}
+E         
+E         Omitting 2 identical items, use -vv to show
+E         Differing items:
+E         {'abstain_null': 2} != {'abstain_null': 1}
+E         {'response': 35} != {'response': 36}
+E         Use -v to get more diff
+
+tests/test_gen_coarse_evidence_trial_gate.py:92: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_gen_coarse_evidence_trial_gate.py::test_one_missing_raw_item_is_unknown_and_separate_from_null_abstention
+FAILED tests/test_gen_coarse_evidence_trial_gate.py::test_trial_reports_response_null_missing_and_invalid_duplicate_separately
+2 failed, 1 passed in 0.12s

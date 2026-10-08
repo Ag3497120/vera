@@ -1,0 +1,8 @@
+# Evaluation paths; the overlap test reads text dynamically, never answer labels into source.
+vera-ja-sealed1
+vera-ja-sealed2
+vera-ja-sealed3
+vera-ja-sealed4
+vera-ja-dev2
+vera-corpus/codex/*/heldout
+vera-corpus/codex/*/from_pro/heldout

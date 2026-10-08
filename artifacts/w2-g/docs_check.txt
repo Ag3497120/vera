@@ -1,0 +1,89 @@
+OK      g3_w2g2/off wall_s: 15.38 秒
+OK      g3_w2g2/off median_s: 0.98 秒
+OK      g3_w2g2/off max_s: 1.43 秒
+OK      g3_w2g2/off asks: 0
+OK      g3_w2g2/off correct: 0 / 48
+OK      g3_w2g2/off q2 rate: 0.0
+OK      g3_w2g2/off escalate correct: 15 / 16
+OK      g3_w2g2/off wrong: 1
+OK      live/w2g2/codex_codex wall_s: 233.05 秒
+OK      live/w2g2/codex_codex median_s: 10.44 秒
+OK      live/w2g2/codex_codex max_s: 22.31 秒
+OK      live/w2g2/codex_codex asks: 222
+OK      live/w2g2/codex_codex correct: 28 / 48
+OK      live/w2g2/codex_codex q2 rate: 0.5833
+OK      live/w2g2/codex_codex escalate correct: 16 / 16
+OK      live/w2g2/codex_codex wrong: 0
+OK      live/w2g2/codex_claude wall_s: 61.07 秒
+OK      live/w2g2/codex_claude median_s: 8.63 秒
+OK      live/w2g2/codex_claude max_s: 17.54 秒
+OK      live/w2g2/codex_claude asks: 62
+OK      live/w2g2/codex_claude correct: 9 / 12
+OK      live/w2g2/codex_claude q2 rate: 0.75
+OK      live/w2g2/codex_claude escalate correct: 8 / 8
+OK      live/w2g2/codex_claude wrong: 0
+OK      live/w2g2/codex_codex_r3_order wall_s: 40.53 秒
+OK      live/w2g2/codex_codex_r3_order median_s: 8.65 秒
+OK      live/w2g2/codex_codex_r3_order max_s: 16.43 秒
+OK      live/w2g2/codex_codex_r3_order asks: 34
+OK      live/w2g2/codex_codex_r3_order correct: 0 / 12
+OK      live/w2g2/codex_codex_r3_order q2 rate: 0.0
+OK      live/w2g2/codex_codex_r3_order escalate correct: 1 / 1
+OK      live/w2g2/codex_codex_r3_order wrong: 0
+OK      live/w2g2/codex_codex_r3b_order wall_s: 50.74 秒
+OK      live/w2g2/codex_codex_r3b_order median_s: 10.59 秒
+OK      live/w2g2/codex_codex_r3b_order max_s: 19.6 秒
+OK      live/w2g2/codex_codex_r3b_order asks: 46
+OK      live/w2g2/codex_codex_r3b_order correct: 6 / 12
+OK      live/w2g2/codex_codex_r3b_order q2 rate: 0.5
+OK      live/w2g2/codex_codex_r3b_order escalate correct: 1 / 1
+OK      live/w2g2/codex_codex_r3b_order wrong: 0
+OK      live/calib_r3/run1 wall_s: 34.16 秒
+OK      live/calib_r3/run1 median_s: 8.13 秒
+OK      live/calib_r3/run1 max_s: 10.83 秒
+OK      live/calib_r3/run1 asks: 36
+OK      live/calib_r3/run1 correct: 6 / 8
+OK      live/calib_r3/run1 q2 rate: 0.75
+OK      live/calib_r3/run1 escalate correct: 4 / 4
+OK      live/calib_r3/run1 wrong: 0
+OK      live/w2g2/codex_claude_r3b_order wall_s: 34.26 秒
+OK      live/w2g2/codex_claude_r3b_order median_s: 15.82 秒
+OK      live/w2g2/codex_claude_r3b_order max_s: 18.25 秒
+OK      live/w2g2/codex_claude_r3b_order asks: 18
+OK      live/w2g2/codex_claude_r3b_order correct: 3 / 4
+OK      live/w2g2/codex_claude_r3b_order q2 rate: 0.75
+OK      live/w2g2/codex_claude_r3b_order wrong: 0
+OK      g3/off asks: 0
+OK      g3/off correct: 3 / 48
+OK      g3/off q2 rate: 0.0625
+OK      g3/off escalate correct: 16 / 16
+OK      g3/off wrong: 0
+OK      live/codex_codex_r2 asks: 197
+OK      live/codex_codex_r2 correct: 22 / 48
+OK      live/codex_codex_r2 q2 rate: 0.4583
+OK      live/codex_codex_r2 escalate correct: 16 / 16
+OK      live/codex_codex_r2 wrong: 0
+OK      live/codex_claude asks: 70
+OK      live/codex_claude correct: 10 / 15
+OK      live/codex_claude q2 rate: 0.6667
+OK      live/codex_claude escalate correct: 5 / 5
+OK      live/codex_claude wrong: 0
+OK      live/w2g1_rerun/codex_codex_subset asks: 117
+OK      live/w2g1_rerun/codex_codex_subset correct: 22 / 36
+OK      live/w2g1_rerun/codex_codex_subset q2 rate: 0.6111
+OK      live/w2g1_rerun/codex_codex_subset wrong: 0
+OK      total provider asks (budget.py): 合計は 1,094 回
+OK      oracle correct: 42 / 48（0.875）
+OK      w2g2/merged_r3b_codex_codex correct: 27 / 48
+OK      w2g2/merged_r3b_codex_codex q2 rate: 0.5625
+OK      w2g2/merged_r3b_codex_codex wrong: 0
+OK      w2g2/merged_r3b_codex_codex escalate: 16 / 16
+OK      w2g2/merged_r3a_codex_codex correct: 21 / 48
+OK      w2g2/merged_r3a_codex_codex q2 rate: 0.4375
+OK      w2g2/merged_r3a_codex_codex wrong: 0
+OK      w2g2/merged_r3a_codex_codex escalate: 16 / 16
+OK      w2g2/merged_r3b_codex_claude correct: 9 / 12
+OK      w2g2/merged_r3b_codex_claude q2 rate: 0.75
+OK      w2g2/merged_r3b_codex_claude wrong: 0
+OK      w2g2/merged_r3b_codex_claude escalate: 8 / 8
+MISSING lines: 0

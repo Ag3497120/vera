@@ -1,0 +1,97 @@
+UNDET H-POS-001 兄が山田に催促した。 に 山田 MULTIPLE exp= ['TIME'] roles= {'PERSON': ['None'], 'PLACE': ['None']}
+UNDET H-POS-002 姉が本社に請求した。 に 本社 MULTIPLE exp= ['TIME'] roles= {'GROUP_ORG': ['None'], 'PLACE': ['None']}
+UNDET H-POS-003 妹が山田に申告した。 に 山田 MULTIPLE exp= ['TIME'] roles= {'PERSON': ['None'], 'PLACE': ['None']}
+UNDET H-POS-004 妹が東京に旅行した。 に 東京 MULTIPLE exp= ['TIME'] roles= {'PLACE': ['None'], 'TIME': ['time']}
+UNDET H-POS-005 先生が本社に旅行した。 に 本社 MULTIPLE exp= ['TIME'] roles= {'GROUP_ORG': ['None'], 'PLACE': ['None']}
+UNDET H-POS-006 店員が左に昇った。 に 左 MULTIPLE exp= ['TIME'] roles= {'PLACE': ['None'], 'TIME': ['time']}
+UNDET H-POS-007 係員が山田に旅行した。 に 山田 MULTIPLE exp= ['TIME'] roles= {'PERSON': ['None'], 'PLACE': ['None']}
+UNPLACED H-POS-008 職員が望遠レンズに旅行した。 に 望遠レンズ UNPLACED exp= ['TIME'] roles= {}
+UNPLACED H-POS-009 選手が搬出口に昇った。 に 搬出口 UNKNOWN exp= ['TIME'] roles= {}
+UNDET H-POS-010 社員が警察に申告した。 に 警察 MULTIPLE exp= ['TIME'] roles= {'GROUP_ORG': ['None'], 'PERSON': ['None']}
+UNDET H-POS-011 学生が顧客に請求した。 に 顧客 MULTIPLE exp= ['TIME'] roles= {'GROUP_ORG': ['None'], 'PERSON': ['None']}
+UNDET H-POS-012 学生が友人に催促した。 に 友人 MULTIPLE exp= ['TIME'] roles= {'ABSTRACT': ['None'], 'PERSON': ['None']}
+UNDET H-POS-013 職員が隊員に請求した。 に 隊員 MULTIPLE exp= ['TIME'] roles= {'PERSON': ['None'], 'QUANTITY': ['None']}
+UNDET H-POS-014 監督が相手に申告した。 に 相手 MULTIPLE exp= ['TIME'] roles= {'IDENTIFIER': ['None'], 'PERSON': ['None']}
+UNDET H-POS-015 手紙が駅へ飛んだ。 が 手紙 MULTIPLE exp= ['ANIMAL', 'GROUP_ORG', 'PERSON'] roles= {'ABSTRACT': ['None'], 'IDENTIFIER': ['None'], 'INFO_LANGUAGE': ['None'], 'WORK': ['None']}
+UNDET H-POS-016 母が図書館へ歩いた。 へ 図書館 MULTIPLE exp= ['PLACE'] roles= {'GROUP_ORG': ['None'], 'PLACE': ['goal']}
+UNDET H-POS-017 姉が客に断った。 に 客 MULTIPLE exp= ['TIME'] roles= {'NATURAL_PHENOMENON': ['None'], 'PERSON': ['None']}
+UNDET H-POS-018 兄が窓口で名乗った。 で 窓口 MULTIPLE exp= ['PLACE'] roles= {'ABSTRACT': ['None'], 'PLACE': ['place']}
+UNDET H-POS-019 母がホールで断った。 で ホール MULTIPLE exp= ['PLACE'] roles= {'EVENT_ACT': ['None'], 'PLACE': ['place']}
+UNDET H-POS-020 弟が交番で走った。 で 交番 MULTIPLE exp= ['PLACE'] roles= {'PERSON': ['None'], 'PLACE': ['place']}
+UNPLACED H-POS-021 兄が土間で歩いた。 で 土間 UNPLACED exp= ['PLACE'] roles= {}
+UNPLACED H-POS-022 母が広間で名乗った。 で 広間 UNPLACED exp= ['PLACE'] roles= {}
+UNPLACED H-POS-023 祖父が座敷で断った。 で 座敷 UNPLACED exp= ['PLACE'] roles= {}
+UNPLACED H-POS-024 妹が屋根裏で歩いた。 で 屋根裏 UNPLACED exp= ['PLACE'] roles= {}
+UNDET H-POS-025 夫婦がホテルで名乗った。 が 夫婦 MULTIPLE exp= ['ANIMAL', 'GROUP_ORG', 'PERSON'] roles= {'NATURAL_PHENOMENON': ['None'], 'PERSON': ['agent']}
+UNDET H-POS-026 友人が庭へ走った。 が 友人 MULTIPLE exp= ['ANIMAL', 'GROUP_ORG', 'PERSON'] roles= {'ABSTRACT': ['None'], 'PERSON': ['agent']}
+UNDET H-POS-027 夫婦が森へ歩いた。 が 夫婦 MULTIPLE exp= ['ANIMAL', 'GROUP_ORG', 'PERSON'] roles= {'NATURAL_PHENOMENON': ['None'], 'PERSON': ['agent']}
+UNDET H-POS-028 住民が村へ歩いた。 が 住民 MULTIPLE exp= ['ANIMAL', 'GROUP_ORG', 'PERSON'] roles= {'GROUP_ORG': ['agent'], 'PERSON': ['agent'], 'TIME': ['None']}
+UNDET H-POS-029 隊員が港へ走った。 が 隊員 MULTIPLE exp= ['ANIMAL', 'GROUP_ORG', 'PERSON'] roles= {'PERSON': ['agent'], 'QUANTITY': ['None']}
+UNDET H-POS-030 親子が橋へ歩いた。 が 親子 MULTIPLE exp= ['ANIMAL', 'GROUP_ORG', 'PERSON'] roles= {'ABSTRACT': ['None'], 'PERSON': ['agent'], 'PLACE': ['None']}
+UNDET H-POS-031 一行が寺へ歩いた。 が 一行 MULTIPLE exp= ['ANIMAL', 'GROUP_ORG', 'PERSON'] roles= {'IDENTIFIER': ['None'], 'PERSON': ['agent']}
+UNDET H-POS-032 艦隊が湖へ歩いた。 が 艦隊 MULTIPLE exp= ['ANIMAL', 'GROUP_ORG', 'PERSON'] roles= {'GROUP_ORG': ['agent'], 'QUANTITY': ['None']}
+UNDET H-POS-033 客が庭へ走った。 が 客 MULTIPLE exp= ['ANIMAL', 'GROUP_ORG', 'PERSON'] roles= {'NATURAL_PHENOMENON': ['None'], 'PERSON': ['agent']}
+UNDET H-POS-034 鹿が山へ走った。 が 鹿 MULTIPLE exp= ['ANIMAL', 'GROUP_ORG', 'PERSON'] roles= {'ANIMAL': ['agent'], 'PLACE': ['None']}
+UNDET H-POS-035 兄が図書館へ走った。 へ 図書館 MULTIPLE exp= ['PLACE'] roles= {'GROUP_ORG': ['None'], 'PLACE': ['goal']}
+UNDET H-POS-036 姉が家へ歩いた。 へ 家 MULTIPLE exp= ['PLACE'] roles= {'PLACE': ['goal'], 'STATE_PROPERTY': ['None']}
+UNDET H-POS-037 母が谷へ歩いた。 へ 谷 MULTIPLE exp= ['PLACE'] roles= {'PLACE': ['goal'], 'STATE_PROPERTY': ['None']}
+UNDET H-POS-038 弟が役所へ走った。 へ 役所 MULTIPLE exp= ['PLACE'] roles= {'GROUP_ORG': ['None'], 'PLACE': ['goal']}
+UNDET H-POS-039 妹が本部へ歩いた。 へ 本部 MULTIPLE exp= ['PLACE'] roles= {'GROUP_ORG': ['None'], 'PLACE': ['goal']}
+UNDET H-POS-040 父が銀行へ歩いた。 へ 銀行 MULTIPLE exp= ['PLACE'] roles= {'GROUP_ORG': ['None'], 'PLACE': ['goal']}
+UNDET H-POS-041 祖父が研究所へ歩いた。 へ 研究所 MULTIPLE exp= ['PLACE'] roles= {'GROUP_ORG': ['None'], 'PLACE': ['goal']}
+UNDET H-POS-042 先生が職場へ走った。 へ 職場 MULTIPLE exp= ['PLACE'] roles= {'ABSTRACT': ['None'], 'PLACE': ['goal']}
+UNDET H-POS-043 先生が校舎で挨拶を断った。 を 挨拶 MULTIPLE exp= ['ABSTRACT', 'ANIMAL', 'ARTIFACT', 'BODY_PART', 'EVENT_ACT', 'GROUP_ORG', 'IDENTIFIER', 'INFO_LANGUAGE', 'NATURAL_PHENOMENON', 'PERSON', 'PLANT', 'STATE_PROPERTY', 'SUBSTANCE_FOOD', 'WORK'] roles= {'EVENT_ACT': ['patient'], 'INFO_LANGUAGE': ['patient'], 'TIME': ['None']}
+UNDET H-POS-044 母がホテルで勝利を願った。 を 勝利 MULTIPLE exp= ['ABSTRACT', 'ANIMAL', 'ARTIFACT', 'BODY_PART', 'EVENT_ACT', 'GROUP_ORG', 'IDENTIFIER', 'INFO_LANGUAGE', 'NATURAL_PHENOMENON', 'PERSON', 'PLANT', 'STATE_PROPERTY', 'SUBSTANCE_FOOD', 'WORK'] roles= {'EVENT_ACT': ['patient'], 'PLACE': ['None'], 'TIME': ['None']}
+UNDET H-POS-045 姉が神社で日程を断った。 を 日程 MULTIPLE exp= ['ABSTRACT', 'ANIMAL', 'ARTIFACT', 'BODY_PART', 'EVENT_ACT', 'GROUP_ORG', 'IDENTIFIER', 'INFO_LANGUAGE', 'NATURAL_PHENOMENON', 'PERSON', 'PLANT', 'STATE_PROPERTY', 'SUBSTANCE_FOOD', 'WORK'] roles= {'PLACE': ['None'], 'TIME': ['None']}
+UNDET H-POS-046 兄がアパートで地図を断った。 を 地図 MULTIPLE exp= ['ABSTRACT', 'ANIMAL', 'ARTIFACT', 'BODY_PART', 'EVENT_ACT', 'GROUP_ORG', 'IDENTIFIER', 'INFO_LANGUAGE', 'NATURAL_PHENOMENON', 'PERSON', 'PLANT', 'STATE_PROPERTY', 'SUBSTANCE_FOOD', 'WORK'] roles= {'INFO_LANGUAGE': ['patient'], 'PLACE': ['None']}
+UNDET H-POS-047 兄が窓口で歩いた。 で 窓口 MULTIPLE exp= ['PLACE'] roles= {'ABSTRACT': ['None'], 'PLACE': ['place']}
+UNDET H-POS-048 母がホールで走った。 で ホール MULTIPLE exp= ['PLACE'] roles= {'EVENT_ACT': ['None'], 'PLACE': ['place']}
+UNDET H-POS-049 姉が交番で歩いた。 で 交番 MULTIPLE exp= ['PLACE'] roles= {'PERSON': ['None'], 'PLACE': ['place']}
+UNPLACED H-POS-050 鳥が山の上へ飛んだ。 へ 山の上 UNKNOWN exp= ['PLACE'] roles= {}
+UNPLACED H-POS-051 馬が橋の上へ走った。 へ 橋の上 UNKNOWN exp= ['PLACE'] roles= {}
+UNPLACED H-POS-052 兄が祖父の家へ走った。 へ 祖父の家 UNKNOWN exp= ['PLACE'] roles= {}
+UNPLACED H-POS-053 先生の夫婦が森へ歩いた。 が 先生の夫婦 UNKNOWN exp= ['ANIMAL', 'GROUP_ORG', 'PERSON'] roles= {}
+UNDET H-POS-054 兄が台車を前へ押した。 へ 前 MULTIPLE exp= ['PLACE'] roles= {'PLACE': ['goal'], 'TIME': ['None']}
+UNDET H-POS-055 姉が机を中から広場へ引いた。 を 机 MULTIPLE exp= ['ABSTRACT', 'ANIMAL', 'ARTIFACT', 'BODY_PART', 'EVENT_ACT', 'GROUP_ORG', 'IDENTIFIER', 'INFO_LANGUAGE', 'NATURAL_PHENOMENON', 'PERSON', 'PLANT', 'STATE_PROPERTY', 'SUBSTANCE_FOOD', 'WORK'] roles= {'ARTIFACT': ['patient'], 'PLACE': ['None']}
+UNDET H-POS-056 妹が台車を前から港へ押した。 から 前 MULTIPLE exp= ['PLACE'] roles= {'PLACE': ['source'], 'TIME': ['None']}
+UNPLACED H-POS-057 母が荷物を港へ押した。 を 荷物 UNPLACED exp= ['ABSTRACT', 'ANIMAL', 'ARTIFACT', 'BODY_PART', 'EVENT_ACT', 'GROUP_ORG', 'IDENTIFIER', 'INFO_LANGUAGE', 'NATURAL_PHENOMENON', 'PERSON', 'PLANT', 'STATE_PROPERTY', 'SUBSTANCE_FOOD', 'WORK'] roles= {}
+UNDET H-POS-058 姉が机を工場から広場へ引いた。 を 机 MULTIPLE exp= ['ABSTRACT', 'ANIMAL', 'ARTIFACT', 'BODY_PART', 'EVENT_ACT', 'GROUP_ORG', 'IDENTIFIER', 'INFO_LANGUAGE', 'NATURAL_PHENOMENON', 'PERSON', 'PLANT', 'STATE_PROPERTY', 'SUBSTANCE_FOOD', 'WORK'] roles= {'ARTIFACT': ['patient'], 'PLACE': ['None']}
+SAME H-POS2-001 家族が図書館へ走った。 が 家族 MULTIPLE exp= ['ANIMAL', 'GROUP_ORG', 'PERSON'] roles= {'GROUP_ORG': ['agent'], 'PERSON': ['agent']}
+UNDET H-POS2-001 家族が図書館へ走った。 へ 図書館 MULTIPLE exp= ['PLACE'] roles= {'GROUP_ORG': ['None'], 'PLACE': ['goal']}
+SAME H-POS2-002 警察が家へ歩いた。 が 警察 MULTIPLE exp= ['ANIMAL', 'GROUP_ORG', 'PERSON'] roles= {'GROUP_ORG': ['agent'], 'PERSON': ['agent']}
+UNDET H-POS2-002 警察が家へ歩いた。 へ 家 MULTIPLE exp= ['PLACE'] roles= {'PLACE': ['goal'], 'STATE_PROPERTY': ['None']}
+SAME H-POS2-003 家族が銀行へ歩いた。 が 家族 MULTIPLE exp= ['ANIMAL', 'GROUP_ORG', 'PERSON'] roles= {'GROUP_ORG': ['agent'], 'PERSON': ['agent']}
+UNDET H-POS2-003 家族が銀行へ歩いた。 へ 銀行 MULTIPLE exp= ['PLACE'] roles= {'GROUP_ORG': ['None'], 'PLACE': ['goal']}
+UNPLACED H-POS2-004 母が荷物を後へ押した。 を 荷物 UNPLACED exp= ['ABSTRACT', 'ANIMAL', 'ARTIFACT', 'BODY_PART', 'EVENT_ACT', 'GROUP_ORG', 'IDENTIFIER', 'INFO_LANGUAGE', 'NATURAL_PHENOMENON', 'PERSON', 'PLANT', 'STATE_PROPERTY', 'SUBSTANCE_FOOD', 'WORK'] roles= {}
+UNDET H-POS2-004 母が荷物を後へ押した。 へ 後 MULTIPLE exp= ['PLACE'] roles= {'PLACE': ['goal'], 'TIME': ['None']}
+UNPLACED F-A4U-01 父が税務署に申告した。 に 税務署 UNPLACED exp= ['TIME'] roles= {}
+UNDET F-A4S-03 妹が左に旅行した。 に 左 MULTIPLE exp= ['TIME'] roles= {'PLACE': ['None'], 'TIME': ['time']}
+UNDET F-A4S-04 妹があとに旅行した。 に あと MULTIPLE exp= ['TIME'] roles= {'PLACE': ['None'], 'TIME': ['time']}
+UNDET F-A4S-05 妹があいだに旅行した。 に あいだ MULTIPLE exp= ['TIME'] roles= {'PLACE': ['None'], 'TIME': ['time']}
+UNDET F-A4S-06 妹が前に旅行した。 に 前 MULTIPLE exp= ['TIME'] roles= {'PLACE': ['None'], 'TIME': ['time']}
+UNDET F-A4S-07 妹が後に旅行した。 に 後 MULTIPLE exp= ['TIME'] roles= {'PLACE': ['None'], 'TIME': ['time']}
+UNDET F-A4S-08 妹が下に旅行した。 に 下 MULTIPLE exp= ['TIME'] roles= {'PLACE': ['None'], 'TIME': ['time']}
+UNDET F-A4S-09 妹がほかに旅行した。 に ほか MULTIPLE exp= ['TIME'] roles= {'PLACE': ['None'], 'TIME': ['time']}
+UNDET F-A4S-10 妹が先に旅行した。 に 先 MULTIPLE exp= ['TIME'] roles= {'PLACE': ['None'], 'TIME': ['time']}
+UNDET F-A4S-11 妹が手前に旅行した。 に 手前 MULTIPLE exp= ['TIME'] roles= {'PLACE': ['None'], 'TIME': ['time']}
+UNDET F-A4S-12 妹が外に旅行した。 に 外 MULTIPLE exp= ['TIME'] roles= {'PLACE': ['None'], 'TIME': ['time']}
+UNDET F-A4S-13 妹が間に旅行した。 に 間 MULTIPLE exp= ['TIME'] roles= {'PLACE': ['None'], 'QUANTITY': ['None'], 'TIME': ['time']}
+SAME F-ADOPT-N01 ウサギが図書館へ走った。 が ウサギ MULTIPLE exp= ['ANIMAL', 'GROUP_ORG', 'PERSON'] roles= {'ANIMAL': ['agent'], 'PERSON': ['agent']}
+UNDET F-ADOPT-N01 ウサギが図書館へ走った。 へ 図書館 MULTIPLE exp= ['PLACE'] roles= {'GROUP_ORG': ['None'], 'PLACE': ['goal']}
+SAME F-ADOPT-N03 エリートが銀行へ歩いた。 が エリート MULTIPLE exp= ['ANIMAL', 'GROUP_ORG', 'PERSON'] roles= {'GROUP_ORG': ['agent'], 'PERSON': ['agent']}
+UNDET F-ADOPT-N03 エリートが銀行へ歩いた。 へ 銀行 MULTIPLE exp= ['PLACE'] roles= {'GROUP_ORG': ['None'], 'PLACE': ['goal']}
+SAME F-ADOPT-N04 ライオンが銀行へ歩いた。 が ライオン MULTIPLE exp= ['ANIMAL', 'GROUP_ORG', 'PERSON'] roles= {'ANIMAL': ['agent'], 'PERSON': ['agent']}
+UNDET F-ADOPT-N04 ライオンが銀行へ歩いた。 へ 銀行 MULTIPLE exp= ['PLACE'] roles= {'GROUP_ORG': ['None'], 'PLACE': ['goal']}
+SAME F-ADOPT-N07 パンダが本部へ走った。 が パンダ MULTIPLE exp= ['ANIMAL', 'GROUP_ORG', 'PERSON'] roles= {'ANIMAL': ['agent'], 'PERSON': ['agent']}
+UNDET F-ADOPT-N07 パンダが本部へ走った。 へ 本部 MULTIPLE exp= ['PLACE'] roles= {'GROUP_ORG': ['None'], 'PLACE': ['goal']}
+SAME F-ADOPT-N08 ヒツジが家へ歩いた。 が ヒツジ MULTIPLE exp= ['ANIMAL', 'GROUP_ORG', 'PERSON'] roles= {'ANIMAL': ['agent'], 'PERSON': ['agent']}
+UNDET F-ADOPT-N08 ヒツジが家へ歩いた。 へ 家 MULTIPLE exp= ['PLACE'] roles= {'PLACE': ['goal'], 'STATE_PROPERTY': ['None']}
+SAME F-ADOPT-N09 リスが図書館へ歩いた。 が リス MULTIPLE exp= ['ANIMAL', 'GROUP_ORG', 'PERSON'] roles= {'ANIMAL': ['agent'], 'GROUP_ORG': ['agent']}
+UNDET F-ADOPT-N09 リスが図書館へ歩いた。 へ 図書館 MULTIPLE exp= ['PLACE'] roles= {'GROUP_ORG': ['None'], 'PLACE': ['goal']}
+SAME F-ADOPT-N10 スズメが銀行へ走った。 が スズメ MULTIPLE exp= ['ANIMAL', 'GROUP_ORG', 'PERSON'] roles= {'ANIMAL': ['agent'], 'PERSON': ['agent']}
+UNDET F-ADOPT-N10 スズメが銀行へ走った。 へ 銀行 MULTIPLE exp= ['PLACE'] roles= {'GROUP_ORG': ['None'], 'PLACE': ['goal']}
+SAME F-ADOPT-N11 ヤギが本部へ走った。 が ヤギ MULTIPLE exp= ['ANIMAL', 'GROUP_ORG', 'PERSON'] roles= {'ANIMAL': ['agent'], 'PERSON': ['agent']}
+UNDET F-ADOPT-N11 ヤギが本部へ走った。 へ 本部 MULTIPLE exp= ['PLACE'] roles= {'GROUP_ORG': ['None'], 'PLACE': ['goal']}
+SAME F-ADOPT-N12 カラスが図書館へ走った。 が カラス MULTIPLE exp= ['ANIMAL', 'GROUP_ORG', 'PERSON'] roles= {'ANIMAL': ['agent'], 'GROUP_ORG': ['agent'], 'PERSON': ['agent']}
+UNDET F-ADOPT-N12 カラスが図書館へ走った。 へ 図書館 MULTIPLE exp= ['PLACE'] roles= {'GROUP_ORG': ['None'], 'PLACE': ['goal']}
+Counter({'UNDET': 71, 'UNPLACED': 13, 'SAME': 12})

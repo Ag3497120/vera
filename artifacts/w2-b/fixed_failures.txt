@@ -1,0 +1,3 @@
+tests.attack.test_verifier_agents_fabrication::test_parse_verdict_rejects_unscoped_or_vague_references[../private.txt]
+tests.attack.test_verifier_agents_fabrication::test_parse_verdict_rejects_unscoped_or_vague_references[a/../private.txt]
+tests.attack.test_verifier_agents_fabrication::test_parse_verdict_rejects_unscoped_or_vague_references[verified]

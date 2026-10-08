@@ -1,0 +1,1130 @@
+{
+ "summary": {
+  "mode": "live",
+  "rows": 60,
+  "verdicts": {
+   "abstain": 15,
+   "correct": 28,
+   "incomplete": 1,
+   "misread": 16
+  },
+  "verdicts_by_data": {
+   "ja_r9": {
+    "abstain": 15,
+    "correct": 28,
+    "incomplete": 1,
+    "misread": 16
+   }
+  },
+  "misread": 16,
+  "incomplete": 1,
+  "unjudged": 0,
+  "new_data_rows": 60,
+  "entry_expect_mismatch": {
+   "read_expected_but_abstained": 0,
+   "abstain_expected_but_read": 33
+  },
+  "reason_prefix_mismatch_among_abstained": 0,
+  "second_reason_prefixes": {
+   "PLACEMENT_PART_NOT_NP": 1,
+   "PLACEMENT_REREAD_ABSTAINS": 8
+  },
+  "bad_verdicts": {
+   "bad_verdict_total": 17,
+   "bad_verdict_produced_by_the_placement": 16,
+   "bad_verdict_identical_to_no_placement": 1
+  }
+ },
+ "misses_in_fixture": [],
+ "read_expected_but_abstained": [],
+ "abstain_expected_but_read": [
+  {
+   "id": "W3B1-R9-U-007",
+   "input": "猫が庭へ走っている。",
+   "verdict": "correct",
+   "identical_to_no_placement": false
+  },
+  {
+   "id": "W3B1-R9-U-008",
+   "input": "犬が森へ走っていた。",
+   "verdict": "correct",
+   "identical_to_no_placement": false
+  },
+  {
+   "id": "W3B1-R9-U-009",
+   "input": "鳥が島へ飛んでいない。",
+   "verdict": "misread",
+   "identical_to_no_placement": false
+  },
+  {
+   "id": "W3B1-R9-U-010",
+   "input": "馬が畑へ走っていません。",
+   "verdict": "correct",
+   "identical_to_no_placement": false
+  },
+  {
+   "id": "W3B1-R9-U-011",
+   "input": "兄が橋へ歩いていなかった。",
+   "verdict": "correct",
+   "identical_to_no_placement": false
+  },
+  {
+   "id": "W3B1-R9-U-012",
+   "input": "弟が広場へ歩きません。",
+   "verdict": "correct",
+   "identical_to_no_placement": false
+  },
+  {
+   "id": "W3B1-R9-U-013",
+   "input": "犬が庭へ走るな。",
+   "verdict": "misread",
+   "identical_to_no_placement": false
+  },
+  {
+   "id": "W3B1-R9-U-014",
+   "input": "鳥が島へ飛ぶな。",
+   "verdict": "misread",
+   "identical_to_no_placement": false
+  },
+  {
+   "id": "W3B1-R9-U-015",
+   "input": "兄が寺へ歩け。",
+   "verdict": "misread",
+   "identical_to_no_placement": false
+  },
+  {
+   "id": "W3B1-R9-U-016",
+   "input": "弟が港へ走れ。",
+   "verdict": "misread",
+   "identical_to_no_placement": false
+  },
+  {
+   "id": "W3B1-R9-U-017",
+   "input": "馬が森へ走るまい。",
+   "verdict": "misread",
+   "identical_to_no_placement": false
+  },
+  {
+   "id": "W3B1-R9-U-018",
+   "input": "姉が広場へ歩くまい。",
+   "verdict": "misread",
+   "identical_to_no_placement": false
+  },
+  {
+   "id": "W3B1-R9-U-020",
+   "input": "弟が橋へ走りたかった。",
+   "verdict": "misread",
+   "identical_to_no_placement": false
+  },
+  {
+   "id": "W3B1-R9-U-021",
+   "input": "妹が町へ飛びたかった。",
+   "verdict": "misread",
+   "identical_to_no_placement": false
+  },
+  {
+   "id": "W3B1-R9-U-023",
+   "input": "母が寺へ歩いてしまった。",
+   "verdict": "correct",
+   "identical_to_no_placement": false
+  },
+  {
+   "id": "W3B1-R9-U-024",
+   "input": "父が港へ走っておく。",
+   "verdict": "correct",
+   "identical_to_no_placement": false
+  },
+  {
+   "id": "W3B1-R9-U-030",
+   "input": "兄が駅から村へ歩いていなかった。",
+   "verdict": "correct",
+   "identical_to_no_placement": false
+  },
+  {
+   "id": "W3B1-R9-S4-007",
+   "input": "兄が夜、本を読んでいる。",
+   "verdict": "correct",
+   "identical_to_no_placement": false
+  },
+  {
+   "id": "W3B1-R9-S4-008",
+   "input": "母が昼、手紙を書いていた。",
+   "verdict": "correct",
+   "identical_to_no_placement": false
+  },
+  {
+   "id": "W3B1-R9-S4-009",
+   "input": "姉が冬、窓を閉めていない。",
+   "verdict": "correct",
+   "identical_to_no_placement": false
+  },
+  {
+   "id": "W3B1-R9-S4-010",
+   "input": "弟が休日、皿を洗っていなかった。",
+   "verdict": "correct",
+   "identical_to_no_placement": false
+  },
+  {
+   "id": "W3B1-R9-S4-011",
+   "input": "妹が平日、靴を磨いていません。",
+   "verdict": "correct",
+   "identical_to_no_placement": false
+  },
+  {
+   "id": "W3B1-R9-S4-012",
+   "input": "父が月末、絵を描きません。",
+   "verdict": "correct",
+   "identical_to_no_placement": false
+  },
+  {
+   "id": "W3B1-R9-S4-013",
+   "input": "先生が夜、本を読むな。",
+   "verdict": "misread",
+   "identical_to_no_placement": false
+  },
+  {
+   "id": "W3B1-R9-S4-014",
+   "input": "生徒が昼、窓を開けるな。",
+   "verdict": "misread",
+   "identical_to_no_placement": false
+  },
+  {
+   "id": "W3B1-R9-S4-015",
+   "input": "学生が冬、手紙を書け。",
+   "verdict": "misread",
+   "identical_to_no_placement": false
+  },
+  {
+   "id": "W3B1-R9-S4-016",
+   "input": "祖父が休日、窓を閉めろ。",
+   "verdict": "misread",
+   "identical_to_no_placement": false
+  },
+  {
+   "id": "W3B1-R9-S4-018",
+   "input": "兄が年末、皿を洗うまい。",
+   "verdict": "misread",
+   "identical_to_no_placement": false
+  },
+  {
+   "id": "W3B1-R9-S4-019",
+   "input": "姉が月末、本を読むまい。",
+   "verdict": "misread",
+   "identical_to_no_placement": false
+  },
+  {
+   "id": "W3B1-R9-S4-021",
+   "input": "妹が誕生日、手紙を書きたかった。",
+   "verdict": "misread",
+   "identical_to_no_placement": false
+  },
+  {
+   "id": "W3B1-R9-S4-024",
+   "input": "先生が冬、本を読んでしまった。",
+   "verdict": "correct",
+   "identical_to_no_placement": false
+  },
+  {
+   "id": "W3B1-R9-S4-025",
+   "input": "生徒が休日、食器を洗っておく。",
+   "verdict": "correct",
+   "identical_to_no_placement": false
+  },
+  {
+   "id": "W3B1-R9-S4-030",
+   "input": "姉が放課後、本を読むべきだ。",
+   "verdict": "incomplete",
+   "identical_to_no_placement": true
+  }
+ ],
+ "reason_prefix_mismatch": [],
+ "rows": [
+  {
+   "id": "W3B1-R9-U-001",
+   "data": "ja_r9",
+   "input": "犬が畑へ走った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "犬",
+     "goal": "畑"
+    }
+   ]
+  },
+  {
+   "id": "W3B1-R9-U-002",
+   "data": "ja_r9",
+   "input": "猫が広場へ歩く。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "猫",
+     "goal": "広場"
+    }
+   ]
+  },
+  {
+   "id": "W3B1-R9-U-003",
+   "data": "ja_r9",
+   "input": "鳥が湖へ飛ばなかった。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "鳥",
+     "goal": "湖"
+    }
+   ]
+  },
+  {
+   "id": "W3B1-R9-U-004",
+   "data": "ja_r9",
+   "input": "馬が村へ走らない。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "馬",
+     "goal": "村"
+    }
+   ]
+  },
+  {
+   "id": "W3B1-R9-U-005",
+   "data": "ja_r9",
+   "input": "兄が橋から寺へ歩いた。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "兄",
+     "goal": "寺",
+     "source": "橋"
+    }
+   ]
+  },
+  {
+   "id": "W3B1-R9-U-006",
+   "data": "ja_r9",
+   "input": "弟が夜に病院へ走った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "弟",
+     "goal": "病院",
+     "time": "夜"
+    }
+   ]
+  },
+  {
+   "id": "W3B1-R9-U-007",
+   "data": "ja_r9",
+   "input": "猫が庭へ走っている。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "abstain",
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "猫",
+     "goal": "庭"
+    }
+   ]
+  },
+  {
+   "id": "W3B1-R9-U-008",
+   "data": "ja_r9",
+   "input": "犬が森へ走っていた。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "abstain",
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "犬",
+     "goal": "森"
+    }
+   ]
+  },
+  {
+   "id": "W3B1-R9-U-009",
+   "data": "ja_r9",
+   "input": "鳥が島へ飛んでいない。",
+   "verdict": "misread",
+   "readable": true,
+   "entry_expect": "abstain",
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "鳥",
+     "goal": "島"
+    }
+   ]
+  },
+  {
+   "id": "W3B1-R9-U-010",
+   "data": "ja_r9",
+   "input": "馬が畑へ走っていません。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "abstain",
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "馬",
+     "goal": "畑"
+    }
+   ]
+  },
+  {
+   "id": "W3B1-R9-U-011",
+   "data": "ja_r9",
+   "input": "兄が橋へ歩いていなかった。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "abstain",
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "兄",
+     "goal": "橋"
+    }
+   ]
+  },
+  {
+   "id": "W3B1-R9-U-012",
+   "data": "ja_r9",
+   "input": "弟が広場へ歩きません。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "abstain",
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "弟",
+     "goal": "広場"
+    }
+   ]
+  },
+  {
+   "id": "W3B1-R9-U-013",
+   "data": "ja_r9",
+   "input": "犬が庭へ走るな。",
+   "verdict": "misread",
+   "readable": true,
+   "entry_expect": "abstain",
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "犬",
+     "goal": "庭"
+    }
+   ]
+  },
+  {
+   "id": "W3B1-R9-U-014",
+   "data": "ja_r9",
+   "input": "鳥が島へ飛ぶな。",
+   "verdict": "misread",
+   "readable": true,
+   "entry_expect": "abstain",
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "鳥",
+     "goal": "島"
+    }
+   ]
+  },
+  {
+   "id": "W3B1-R9-U-015",
+   "data": "ja_r9",
+   "input": "兄が寺へ歩け。",
+   "verdict": "misread",
+   "readable": true,
+   "entry_expect": "abstain",
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "兄",
+     "goal": "寺"
+    }
+   ]
+  },
+  {
+   "id": "W3B1-R9-U-016",
+   "data": "ja_r9",
+   "input": "弟が港へ走れ。",
+   "verdict": "misread",
+   "readable": true,
+   "entry_expect": "abstain",
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "弟",
+     "goal": "港"
+    }
+   ]
+  },
+  {
+   "id": "W3B1-R9-U-017",
+   "data": "ja_r9",
+   "input": "馬が森へ走るまい。",
+   "verdict": "misread",
+   "readable": true,
+   "entry_expect": "abstain",
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "馬",
+     "goal": "森"
+    }
+   ]
+  },
+  {
+   "id": "W3B1-R9-U-018",
+   "data": "ja_r9",
+   "input": "姉が広場へ歩くまい。",
+   "verdict": "misread",
+   "readable": true,
+   "entry_expect": "abstain",
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "姉",
+     "goal": "広場"
+    }
+   ]
+  },
+  {
+   "id": "W3B1-R9-U-019",
+   "data": "ja_r9",
+   "input": "兄が湖へ歩きたい。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "RECIPIENT_TYPE_UNDETERMINED:歩く",
+    "PLACEMENT_REREAD_ABSTAINS:UNDETERMINED_MODALITY:たい"
+   ],
+   "roles": null
+  },
+  {
+   "id": "W3B1-R9-U-020",
+   "data": "ja_r9",
+   "input": "弟が橋へ走りたかった。",
+   "verdict": "misread",
+   "readable": true,
+   "entry_expect": "abstain",
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "弟",
+     "goal": "橋"
+    }
+   ]
+  },
+  {
+   "id": "W3B1-R9-U-021",
+   "data": "ja_r9",
+   "input": "妹が町へ飛びたかった。",
+   "verdict": "misread",
+   "readable": true,
+   "entry_expect": "abstain",
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "妹",
+     "goal": "町"
+    }
+   ]
+  },
+  {
+   "id": "W3B1-R9-U-022",
+   "data": "ja_r9",
+   "input": "犬が畑へ走ってください。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "BENEFACTIVE_NOT_PRODUCED",
+    "PLACEMENT_REREAD_ABSTAINS:BENEFACTIVE_NOT_PRODUCED"
+   ],
+   "roles": null
+  },
+  {
+   "id": "W3B1-R9-U-023",
+   "data": "ja_r9",
+   "input": "母が寺へ歩いてしまった。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "abstain",
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "母",
+     "goal": "寺"
+    }
+   ]
+  },
+  {
+   "id": "W3B1-R9-U-024",
+   "data": "ja_r9",
+   "input": "父が港へ走っておく。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "abstain",
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "父",
+     "goal": "港"
+    }
+   ]
+  },
+  {
+   "id": "W3B1-R9-U-025",
+   "data": "ja_r9",
+   "input": "猫が庭へ走るようだ。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "MAIN_PREDICATE_NOT_READ"
+   ],
+   "roles": null
+  },
+  {
+   "id": "W3B1-R9-U-026",
+   "data": "ja_r9",
+   "input": "鳥が森へ飛ぶらしい。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "RECIPIENT_TYPE_UNDETERMINED:飛ぶ",
+    "PLACEMENT_REREAD_ABSTAINS:UNDETERMINED_MODALITY:hedge"
+   ],
+   "roles": null
+  },
+  {
+   "id": "W3B1-R9-U-027",
+   "data": "ja_r9",
+   "input": "馬が村へ走るそうだ。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "roles": null
+  },
+  {
+   "id": "W3B1-R9-U-028",
+   "data": "ja_r9",
+   "input": "兄が橋へ歩くかもしれない。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "UNREAD_SPAN:interrogative source does not assert a fact"
+   ],
+   "roles": null
+  },
+  {
+   "id": "W3B1-R9-U-029",
+   "data": "ja_r9",
+   "input": "弟が湖へ走るべきだ。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "RECIPIENT_TYPE_UNDETERMINED:走る",
+    "PLACEMENT_REREAD_ABSTAINS:UNDETERMINED_MODALITY:べき"
+   ],
+   "roles": null
+  },
+  {
+   "id": "W3B1-R9-U-030",
+   "data": "ja_r9",
+   "input": "兄が駅から村へ歩いていなかった。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "abstain",
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "兄",
+     "goal": "村",
+     "source": "駅"
+    }
+   ]
+  },
+  {
+   "id": "W3B1-R9-S4-001",
+   "data": "ja_r9",
+   "input": "兄が夜、窓を開けた。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "兄",
+     "patient": "窓",
+     "time": "夜"
+    }
+   ]
+  },
+  {
+   "id": "W3B1-R9-S4-002",
+   "data": "ja_r9",
+   "input": "母が昼、手紙を書く。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "母",
+     "patient": "手紙",
+     "time": "昼"
+    }
+   ]
+  },
+  {
+   "id": "W3B1-R9-S4-003",
+   "data": "ja_r9",
+   "input": "姉が冬、皿を洗わなかった。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "姉",
+     "patient": "皿",
+     "time": "冬"
+    }
+   ]
+  },
+  {
+   "id": "W3B1-R9-S4-004",
+   "data": "ja_r9",
+   "input": "弟が休日、靴を磨かない。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "弟",
+     "patient": "靴",
+     "time": "休日"
+    }
+   ]
+  },
+  {
+   "id": "W3B1-R9-S4-005",
+   "data": "ja_r9",
+   "input": "妹が放課後、絵を描いた。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "妹",
+     "patient": "絵",
+     "time": "放課後"
+    }
+   ]
+  },
+  {
+   "id": "W3B1-R9-S4-006",
+   "data": "ja_r9",
+   "input": "父が年末、扉を閉めなかった。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "父",
+     "patient": "扉",
+     "time": "年末"
+    }
+   ]
+  },
+  {
+   "id": "W3B1-R9-S4-007",
+   "data": "ja_r9",
+   "input": "兄が夜、本を読んでいる。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "abstain",
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "兄",
+     "patient": "本",
+     "time": "夜"
+    }
+   ]
+  },
+  {
+   "id": "W3B1-R9-S4-008",
+   "data": "ja_r9",
+   "input": "母が昼、手紙を書いていた。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "abstain",
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "母",
+     "patient": "手紙",
+     "time": "昼"
+    }
+   ]
+  },
+  {
+   "id": "W3B1-R9-S4-009",
+   "data": "ja_r9",
+   "input": "姉が冬、窓を閉めていない。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "abstain",
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "姉",
+     "patient": "窓",
+     "time": "冬"
+    }
+   ]
+  },
+  {
+   "id": "W3B1-R9-S4-010",
+   "data": "ja_r9",
+   "input": "弟が休日、皿を洗っていなかった。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "abstain",
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "弟",
+     "patient": "皿",
+     "time": "休日"
+    }
+   ]
+  },
+  {
+   "id": "W3B1-R9-S4-011",
+   "data": "ja_r9",
+   "input": "妹が平日、靴を磨いていません。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "abstain",
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "妹",
+     "patient": "靴",
+     "time": "平日"
+    }
+   ]
+  },
+  {
+   "id": "W3B1-R9-S4-012",
+   "data": "ja_r9",
+   "input": "父が月末、絵を描きません。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "abstain",
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "父",
+     "patient": "絵",
+     "time": "月末"
+    }
+   ]
+  },
+  {
+   "id": "W3B1-R9-S4-013",
+   "data": "ja_r9",
+   "input": "先生が夜、本を読むな。",
+   "verdict": "misread",
+   "readable": true,
+   "entry_expect": "abstain",
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "先生",
+     "patient": "本",
+     "time": "夜"
+    }
+   ]
+  },
+  {
+   "id": "W3B1-R9-S4-014",
+   "data": "ja_r9",
+   "input": "生徒が昼、窓を開けるな。",
+   "verdict": "misread",
+   "readable": true,
+   "entry_expect": "abstain",
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "生徒",
+     "patient": "窓",
+     "time": "昼"
+    }
+   ]
+  },
+  {
+   "id": "W3B1-R9-S4-015",
+   "data": "ja_r9",
+   "input": "学生が冬、手紙を書け。",
+   "verdict": "misread",
+   "readable": true,
+   "entry_expect": "abstain",
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "学生",
+     "patient": "手紙",
+     "time": "冬"
+    }
+   ]
+  },
+  {
+   "id": "W3B1-R9-S4-016",
+   "data": "ja_r9",
+   "input": "祖父が休日、窓を閉めろ。",
+   "verdict": "misread",
+   "readable": true,
+   "entry_expect": "abstain",
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "祖父",
+     "patient": "窓",
+     "time": "休日"
+    }
+   ]
+  },
+  {
+   "id": "W3B1-R9-S4-017",
+   "data": "ja_r9",
+   "input": "店員が平日、床を磨け。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_REREAD_ABSTAINS:UNDETERMINED_MODALITY:possible potential form"
+   ],
+   "roles": null
+  },
+  {
+   "id": "W3B1-R9-S4-018",
+   "data": "ja_r9",
+   "input": "兄が年末、皿を洗うまい。",
+   "verdict": "misread",
+   "readable": true,
+   "entry_expect": "abstain",
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "兄",
+     "patient": "皿",
+     "time": "年末"
+    }
+   ]
+  },
+  {
+   "id": "W3B1-R9-S4-019",
+   "data": "ja_r9",
+   "input": "姉が月末、本を読むまい。",
+   "verdict": "misread",
+   "readable": true,
+   "entry_expect": "abstain",
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "姉",
+     "patient": "本",
+     "time": "月末"
+    }
+   ]
+  },
+  {
+   "id": "W3B1-R9-S4-020",
+   "data": "ja_r9",
+   "input": "弟が放課後、絵を描きたい。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_REREAD_ABSTAINS:UNDETERMINED_MODALITY:たい"
+   ],
+   "roles": null
+  },
+  {
+   "id": "W3B1-R9-S4-021",
+   "data": "ja_r9",
+   "input": "妹が誕生日、手紙を書きたかった。",
+   "verdict": "misread",
+   "readable": true,
+   "entry_expect": "abstain",
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "妹",
+     "patient": "手紙",
+     "time": "誕生日"
+    }
+   ]
+  },
+  {
+   "id": "W3B1-R9-S4-022",
+   "data": "ja_r9",
+   "input": "母が夜、靴を磨きたい。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_REREAD_ABSTAINS:UNDETERMINED_MODALITY:たい"
+   ],
+   "roles": null
+  },
+  {
+   "id": "W3B1-R9-S4-023",
+   "data": "ja_r9",
+   "input": "父が昼、扉を開けてください。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_REREAD_ABSTAINS:BENEFACTIVE_NOT_PRODUCED"
+   ],
+   "roles": null
+  },
+  {
+   "id": "W3B1-R9-S4-024",
+   "data": "ja_r9",
+   "input": "先生が冬、本を読んでしまった。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "abstain",
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "先生",
+     "patient": "本",
+     "time": "冬"
+    }
+   ]
+  },
+  {
+   "id": "W3B1-R9-S4-025",
+   "data": "ja_r9",
+   "input": "生徒が休日、食器を洗っておく。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "abstain",
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "生徒",
+     "patient": "食器",
+     "time": "休日"
+    }
+   ]
+  },
+  {
+   "id": "W3B1-R9-S4-026",
+   "data": "ja_r9",
+   "input": "祖父が平日、窓を閉めるようだ。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "MAIN_PREDICATE_NOT_READ"
+   ],
+   "roles": null
+  },
+  {
+   "id": "W3B1-R9-S4-027",
+   "data": "ja_r9",
+   "input": "学生が年末、手紙を書くらしい。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "UNDETERMINED_MODALITY:hearsay"
+   ],
+   "roles": null
+  },
+  {
+   "id": "W3B1-R9-S4-028",
+   "data": "ja_r9",
+   "input": "店員が月末、床を磨くそうだ。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_PART_NOT_NP:形状詞"
+   ],
+   "roles": null
+  },
+  {
+   "id": "W3B1-R9-S4-029",
+   "data": "ja_r9",
+   "input": "兄が誕生日、絵を描くかもしれない。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "UNREAD_SPAN:interrogative source does not assert a fact"
+   ],
+   "roles": null
+  },
+  {
+   "id": "W3B1-R9-S4-030",
+   "data": "ja_r9",
+   "input": "姉が放課後、本を読むべきだ。",
+   "verdict": "incomplete",
+   "readable": true,
+   "entry_expect": "abstain",
+   "reasons": null,
+   "roles": [
+    {
+     "patient": "本"
+    }
+   ]
+  }
+ ]
+}

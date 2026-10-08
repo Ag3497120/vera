@@ -1,0 +1,431 @@
+F......FFFFFFF......FFFFFFFFF......                                      [100%]
+=================================== FAILURES ===================================
+_ test_attack_resealed_tampered_mapping_decision_changes_answer_on_zero_ask_replay _
+
+tmp_path = PosixPath('/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/impl-r1/bt_atk_dev/test_attack_resealed_tampered_0')
+
+    def test_attack_resealed_tampered_mapping_decision_changes_answer_on_zero_ask_replay(tmp_path):
+        ledger_path = tmp_path / "ledger.jsonl"
+        first, _, first_pair = _run(UNRELATED, ledger_path)
+        assert first["decision"] == "escalate"
+        assert first["mapping"]["outcome"] == "ESCALATED:FRAME_SILENT/MAPPED_NO_OPTION_RELATED"
+        assert [provider.calls for provider in first_pair] == [4, 4]
+    
+        def target(row):
+            return (row.get("type") == "map_decision" and row.get("step") == "relation"
+                    and json.loads(row["key"]).get("option_index") == 1)
+    
+        _reseal_changed_last_entry(ledger_path, target,
+                                   lambda row: row["result"].update(relation="一致"))
+        assert ChoiceLedger(ledger_path).verify()["lines"] == 12
+    
+        replay, _, replay_pair = _run(UNRELATED, ledger_path)
+        print("before: escalate / no answer / MAPPED_NO_OPTION_RELATED")
+        print("after one map_decision.result edit + hash recomputation:", replay["decision"], replay["answer"],
+              replay["mapping"]["outcome"])
+        print("replay provider calls:", [provider.calls for provider in replay_pair])
+    
+        # The tampered relation decision is trusted by _cached despite disagreeing with both raw ask rows.
+        # The promised behavior under ledger modification is to refuse replay; current code answers option 2.
+>       assert (replay["decision"], replay["answer"], replay["mapping"]["outcome"]) == (
+            "escalate", None, "ESCALATED:MAPPING_UNSETTLED/LEDGER_INTEGRITY")
+E       AssertionError: assert ('answer', 'いいえ', 'ANSWERED') == ('escalate', ...ER_INTEGRITY')
+E         
+E         At index 0 diff: 'answer' != 'escalate'
+E         Use -v to get more diff
+
+tests/attack/test_attack_w2g2_mapping.py:75: AssertionError
+----------------------------- Captured stdout call -----------------------------
+before: escalate / no answer / MAPPED_NO_OPTION_RELATED
+after one map_decision.result edit + hash recomputation: answer いいえ ANSWERED
+replay provider calls: [0, 0]
+___________________ test_nfkc_width_variant_keeps_same_state ___________________
+
+    def test_nfkc_width_variant_keeps_same_state():
+        fullwidth = ask("ＮＰＯ")
+        ascii_form = ask("NPO")
+>       assert fullwidth["state"] == ascii_form["state"], (
+            f"NFKC-equivalent terms changed state: ＮＰＯ={fullwidth['state']} "
+            f"{fullwidth['top']}, NPO={ascii_form['state']} {ascii_form['top']}"
+        )
+E       AssertionError: NFKC-equivalent terms changed state: ＮＰＯ=UNPLACED [], NPO=DECIDED ['GROUP_ORG']
+E       assert 'UNPLACED' == 'DECIDED'
+E         
+E         - DECIDED
+E         + UNPLACED
+
+tests/attack/test_attack_w3a2_contract.py:21: AssertionError
+_______________ test_hiragana_katakana_variant_keeps_same_state ________________
+
+    def test_hiragana_katakana_variant_keeps_same_state():
+        hiragana = ask("あざみ")
+        katakana = ask("アザミ")
+>       assert hiragana["state"] == katakana["state"], (
+            f"kana spelling variants changed state: あざみ={hiragana['state']} "
+            f"{hiragana['top']}, アザミ={katakana['state']} {katakana['top']}"
+        )
+E       AssertionError: kana spelling variants changed state: あざみ=UNPLACED [], アザミ=DECIDED ['PLANT']
+E       assert 'UNPLACED' == 'DECIDED'
+E         
+E         - DECIDED
+E         + UNPLACED
+
+tests/attack/test_attack_w3a2_contract.py:30: AssertionError
+___________ test_number_plus_time_unit_is_not_downgraded_to_quantity ___________
+
+    def test_number_plus_time_unit_is_not_downgraded_to_quantity():
+        result = ask("3年後")
+>       assert result["top"] == ["TIME"], (
+            f"3年後 should be a time expression, got {result['top']} "
+            f"via {result['axes'].get('notation')}"
+        )
+E       AssertionError: 3年後 should be a time expression, got ['QUANTITY'] via {'counts': {'QUANTITY': 1}, 'top': ['QUANTITY'], 'rule': 'number+counter', 'met': True, 'generated': False}
+E       assert ['QUANTITY'] == ['TIME']
+E         
+E         At index 0 diff: 'QUANTITY' != 'TIME'
+E         Use -v to get more diff
+
+tests/attack/test_attack_w3a2_contract.py:38: AssertionError
+___________________ test_tampered_export_cannot_be_attached ____________________
+
+tmp_path = PosixPath('/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/impl-r1/bt_atk_dev/test_tampered_export_cannot_be0')
+
+    def test_tampered_export_cannot_be_attached(tmp_path):
+        """Drop a rewrite trigger, alter one row, restore its exact SQL, then attach the export."""
+        origin, moved = tmp_path / "origin", tmp_path / "moved"
+        sov.create(origin, "s1", "owner-a")
+        sov.open_ledger(origin, "s1").append(
+            {"kind": "utterance", "payload": {"phrase": "original"}})
+        exported = tmp_path / "s1.sqlite"
+        assert sov.export(origin, "s1", str(exported))["verdict"] == "EXPORTED"
+    
+        conn = sqlite3.connect(exported, isolation_level=None)
+        conn.execute("DROP TRIGGER event_log_no_update")
+        conn.execute("UPDATE event_log SET payload = ? WHERE seq = 1",
+                     (json.dumps({"phrase": "forged"}, separators=(",", ":")),))
+        conn.execute(
+            "CREATE TRIGGER event_log_no_update BEFORE UPDATE ON event_log "
+            "BEGIN SELECT RAISE(ABORT, 'event_log is append-only: no update'); END")
+        conn.close()
+    
+        attached = sov.attach(moved, file=str(exported))
+        observed = (attached["verdict"],
+                    sov.open_ledger(moved, "s1").events()[0]["payload"]["phrase"])
+>       assert observed == ("UNREADABLE_SCHEMA", "original"), observed
+E       AssertionError: ('ATTACHED', 'forged')
+E       assert ('ATTACHED', 'forged') == ('UNREADABLE_...', 'original')
+E         
+E         At index 0 diff: 'ATTACHED' != 'UNREADABLE_SCHEMA'
+E         Use -v to get more diff
+
+tests/attack/test_attack_w4m_sovereign.py:49: AssertionError
+________ test_revoking_consent_while_promote_is_in_flight_stops_writes _________
+
+tmp_path = PosixPath('/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/impl-r1/bt_atk_dev/test_revoking_consent_while_pr0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x11ad0c810>
+
+    def test_revoking_consent_while_promote_is_in_flight_stops_writes(tmp_path, monkeypatch):
+        """Pause after promote read consent=true; revoke before it appends either promotion row."""
+        _promotable(tmp_path)
+        analyzed, resume = threading.Event(), threading.Event()
+        real_analyze = sov._sov_analyze
+    
+        def pause_after_analysis(*args, **kwargs):
+            result = real_analyze(*args, **kwargs)
+            analyzed.set()
+            assert resume.wait(5), "test synchronization timed out"
+            return result
+    
+        monkeypatch.setattr(sov, "_sov_analyze", pause_after_analysis)
+        result, errors = [], []
+    
+        def run_promote():
+            try:
+                result.append(sov.promote(tmp_path, "s1", now=lambda: _day(3)))
+            except BaseException as exc:  # preserve worker errors for the main test thread
+                errors.append(exc)
+    
+        worker = threading.Thread(target=run_promote)
+        worker.start()
+        assert analyzed.wait(5), "promote did not reach the synchronized point"
+        sov.set_consent(tmp_path, "s1", False, now=lambda: _day(4))
+        resume.set()
+        worker.join(5)
+        assert not worker.is_alive(), "promote did not finish"
+        assert not errors, errors
+    
+        assert sov.describe(tmp_path, "s1").consent["promote"] is False
+>       assert result[0]["verdict"] == "NO_CONSENT", result[0]
+E       AssertionError: {'verdict': 'PROMOTED', 'store_id': 's1', 'basis': 'conversation:s1', 'promoted': [{'promotion_id': '60615ad34c223a0cbc9d2932', 'kind': 'construction_evidence', 'key': 'candidate', 'count': 3, ...}], ...}
+E       assert 'PROMOTED' == 'NO_CONSENT'
+E         
+E         - NO_CONSENT
+E         + PROMOTED
+
+tests/attack/test_attack_w4m_sovereign.py:83: AssertionError
+_________ test_release_racing_with_promote_leaves_no_active_promotion __________
+
+tmp_path = PosixPath('/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/impl-r1/bt_atk_dev/test_release_racing_with_promo0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x11acb4190>
+
+    def test_release_racing_with_promote_leaves_no_active_promotion(tmp_path, monkeypatch):
+        """Pause before the structure-side promotion append; release completes, then resume."""
+        _promotable(tmp_path)
+        reached, resume = threading.Event(), threading.Event()
+        real_append = sov._sov_append_structure_promotion
+    
+        def pause_before_structure_append(*args, **kwargs):
+            reached.set()
+            assert resume.wait(5), "test synchronization timed out"
+            return real_append(*args, **kwargs)
+    
+        monkeypatch.setattr(sov, "_sov_append_structure_promotion", pause_before_structure_append)
+        result, errors = [], []
+    
+        def run_promote():
+            try:
+                result.append(sov.promote(tmp_path, "s1", now=lambda: _day(3)))
+            except BaseException as exc:
+                errors.append(exc)
+    
+        worker = threading.Thread(target=run_promote)
+        worker.start()
+        assert reached.wait(5), "promote did not reach the synchronized point"
+        assert sov.release(tmp_path, "s1", "s1", now=lambda: _day(4))["verdict"] == "RELEASED"
+        resume.set()
+        worker.join(5)
+        assert not worker.is_alive(), "promote did not finish"
+        assert not errors, errors
+    
+        answer = sov.promotions_answer(tmp_path, include_retired=False)
+>       assert answer["promotions"] == [], answer
+E       AssertionError: {'verdict': 'ANSWER', 'structure': 'PRESENT', 'scope': 'active', 'promotions': [{'seq': 1, 'ts': '2026-10-04T00:00:00+00:00', 'promotion_id': '60615ad34c223a0cbc9d2932', 'store_id': 's1', ...}]}
+E       assert [{'seq': 1, '...': 's1', ...}] == []
+E         
+E         Left contains one more item: {'seq': 1, 'ts': '2026-10-04T00:00:00+00:00', 'promotion_id': '60615ad34c223a0cbc9d2932', 'store_id': 's1', ...}
+E         Use -v to get more diff
+
+tests/attack/test_attack_w4m_sovereign.py:116: AssertionError
+_______ test_two_process_promotions_do_not_duplicate_the_same_candidate ________
+
+tmp_path = PosixPath('/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/impl-r1/bt_atk_dev/test_two_process_promotions_do0')
+
+    def test_two_process_promotions_do_not_duplicate_the_same_candidate(tmp_path):
+        if "fork" not in multiprocessing.get_all_start_methods():
+            pytest.skip("this race probe requires fork so both children inherit initialized test helpers")
+        _promotable(tmp_path)
+        ctx = multiprocessing.get_context("fork")
+        both_analyzed, result_queue = ctx.Barrier(2), ctx.Queue()
+        children = [ctx.Process(target=_promote_process,
+                                args=(str(tmp_path), both_analyzed, result_queue)) for _ in range(2)]
+        for child in children:
+            child.start()
+        results = [result_queue.get(timeout=15) for _ in children]
+        for child in children:
+            child.join(15)
+        assert all(child.exitcode == 0 for child in children), [child.exitcode for child in children]
+        assert all(status == "ok" for status, _ in results), results
+        active = sov.active_promotions(tmp_path, "s1")
+>       assert len(active) == 1, {"results": results, "active": active}
+E       AssertionError: {'results': [('ok', {'verdict': 'PROMOTED', 'store_id': 's1', 'basis': 'conversation:s1', 'promoted': [{'promotion_id'.....}, {'seq': 2, 'ts': '2026-10-04T00:00:00+00:00', 'promotion_id': '60615ad34c223a0cbc9d2932', 'store_id': 's1', ...}]}
+E       assert 2 == 1
+E        +  where 2 = len([{'seq': 1, 'ts': '2026-10-04T00:00:00+00:00', 'promotion_id': '60615ad34c223a0cbc9d2932', 'store_id': 's1', ...}, {'seq': 2, 'ts': '2026-10-04T00:00:00+00:00', 'promotion_id': '60615ad34c223a0cbc9d2932', 'store_id': 's1', ...}])
+
+tests/attack/test_attack_w4m_sovereign.py:150: AssertionError
+_____________ test_neighbor_file_order_does_not_change_the_output ______________
+
+tmp_path = PosixPath('/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/impl-r1/bt_atk_dev/test_neighbor_file_order_does_0')
+
+    def test_neighbor_file_order_does_not_change_the_output(tmp_path):
+        lemmas = {
+            word: {"state": "DECIDED", "origin": "direct", "types": ["PERSON"]}
+            for word in ("太郎", "花子", "次郎")
+        }
+        outputs = []
+        for name, neighbors in (("a", ["花子", "次郎"]), ("b", ["次郎", "花子"])):
+            path = tmp_path / f"{name}.json"
+            path.write_text(json.dumps({"lemmas": lemmas, "neighbors": {"太郎": neighbors}}, ensure_ascii=False), encoding="utf-8")
+            result = _cli("--anchor-text", GIVE, "--direction", "FACE_SWAP:agent", "--placement", path, "--no-index")
+            assert result.returncode == 0, result.stderr
+            outputs.append(result.stdout)
+    
+        first, second = map(json.loads, outputs)
+        same_observation = (
+            first["focus"] == second["focus"]
+            and [[e["cell_key"] for e in group["elements"]] for group in first["ranks"]]
+            == [[e["cell_key"] for e in group["elements"]] for group in second["ranks"]]
+        )
+>       assert outputs[0] == outputs[1], (
+            "same neighbor set in different list order changed JSON bytes; "
+            f"focus/ranks equal={same_observation}; "
+            f"placement ids=({first['structure']['placement']!r}, {second['structure']['placement']!r}); "
+            f"neighbor ids=({first['structure']['neighbors']!r}, {second['structure']['neighbors']!r})"
+        )
+E       AssertionError: same neighbor set in different list order changed JSON bytes; focus/ranks equal=True; placement ids=('file:aedd4bc744c95134eeeed44b9b543e54692a6fcf7fc9e24152fa2c58d962ac74', 'file:cb29d5983ff29d313c6187de08bf14e2255480bf175c7e836ba9e5ac1513d85e'); neighbor ids=('file:aedd4bc744c95134eeeed44b9b543e54692a6fcf7fc9e24152fa2c58d962ac74', 'file:cb29d5983ff29d313c6187de08bf14e2255480bf175c7e836ba9e5ac1513d85e')
+E       assert '{"schema":"v...chor":[]}}}\n' == '{"schema":"v...chor":[]}}}\n'
+E         
+E         Skipping 478 identical leading characters in diff, use -v to show
+E         Skipping 9781 identical trailing characters in diff, use -v to show
+E         - nt":"file:cb29d5983ff29d313c6187de08bf14e2255480bf175c7e836ba9e5ac1513d85e","neighbors":"file:cb29d5983ff29d313c6187de08bf14e2255480bf175c7e836ba9e5ac1513d85e"},"anchor":{"cell_key":"cell:{\"arms\":[{\"kind\":\"FILLER\",\"role\":\"agent\",\"surfaces\":[\"太郎\"]},{\"kind\":\"FILLER\",\"role\":\"patient\",\"surfaces\":[\"本\"]},{\"kind\":\"FILLER\",\"role\":\"recipient\",\"surfaces\":[\"花子\"]}],\"center\":{\"modality\":null,\"polarity\":\"+\"...
+E         
+E         ...Full output truncated (4 lines hidden), use '-vv' to show
+
+tests/attack/test_attack_w3c_observe.py:55: AssertionError
+_______________ test_all_paths_are_carried_through_a_merged_cell _______________
+
+    def test_all_paths_are_carried_through_a_merged_cell():
+        people = _People()
+        anchor_reading = _reading(_clause("行く", "太郎"), _clause("買う", "花子"))
+        items = [
+            _edge_item("structure-ab", _clause("行く", "太郎"), _clause("買う", "花子")),
+            _edge_item("structure-bc-1", _clause("買う", "花子"), _clause("話す", "次郎")),
+            _edge_item("structure-bc-2", _clause("買う", "花子"), _clause("話す", "次郎")),
+            _edge_item("structure-cd", _clause("話す", "次郎"), _clause("笑う", "三郎")),
+        ]
+        structure = O.Structure.from_injected(items, people, people)
+        viewpoint = O.Viewpoint(
+            O.AnchorText("seed", "seed", None, 0, anchor_reading),
+            (O.Edge("cause"), O.Edge("cause"), O.Edge("cause")),
+        )
+        observation = O.observe(viewpoint, structure)
+        by_predicate = {
+            element.cell.cross.center["predicate"]: element.to_dict()
+            for element in observation.elements()
+        }
+    
+        # A->B has two witnesses (anchor reading and structure-ab); B->C has two
+        # readings, so the same C and its D descendant each have four valid paths.
+        got_c = [
+            [move["reading"] for move in coord["moves"]]
+            for coord in by_predicate["話す"]["coords"]
+        ]
+        got_d = [
+            [move["reading"] for move in coord["moves"]]
+            for coord in by_predicate["笑う"]["coords"]
+        ]
+        replay_check = O.reobserve(by_predicate["笑う"], viewpoint, structure)
+>       assert len(got_c) == 4 and len(got_d) == 4, (
+            "converged paths were not propagated to later levels; "
+            f"C paths={got_c!r}; D paths={got_d!r}; "
+            f"the incomplete coordinate still reports {replay_check!r}"
+        )
+E       AssertionError: converged paths were not propagated to later levels; C paths=[['anchor', 'structure-bc-1'], ['anchor', 'structure-bc-2']]; D paths=[['anchor', 'structure-bc-1', 'structure-cd']]; the incomplete coordinate still reports {'status': 'REOBSERVED', 'reason': None}
+E       assert (2 == 4)
+E        +  where 2 = len([['anchor', 'structure-bc-1'], ['anchor', 'structure-bc-2']])
+
+tests/attack/test_attack_w3c_observe.py:132: AssertionError
+_____________ test_malformed_ledger_is_rejected_without_appending ______________
+
+tmp_path = PosixPath('/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/impl-r1/bt_atk_dev/test_malformed_ledger_is_rejec0')
+
+    def test_malformed_ledger_is_rejected_without_appending(tmp_path):
+        ledger = tmp_path / "broken.jsonl"
+        ledger.write_text(
+            json.dumps({"seq": 1, "ts": "t", "kind": "utterance", "payload": {"text": [], "anchor": "seed"}}) + "\n",
+            encoding="utf-8",
+        )
+        before = ledger.read_bytes()
+        result = _cli("--anchor-text", GIVE, "--no-index", "--ledger", ledger)
+        after = ledger.read_bytes()
+>       assert result.returncode == 3 and after == before, (
+            "malformed utterance payload was accepted and the broken ledger was modified; "
+            f"returncode={result.returncode}, appended_lines={len(after.splitlines()) - len(before.splitlines())}, "
+            f"stdout_is_json={result.stdout.startswith('{')}, stderr={result.stderr!r}"
+        )
+E       AssertionError: malformed utterance payload was accepted and the broken ledger was modified; returncode=0, appended_lines=2, stdout_is_json=True, stderr=''
+E       assert (0 == 3)
+E        +  where 0 = CompletedProcess(args=['/Users/motonisihikoudai/vera-wiring/env/bin/python', '-m', 'verantyx.cli', 'observe', '--ancho...aries":[],"rank1":{"kind":"SINGLE","size":1},"utterance":{"used_seq":null,"skipped_same_as_anchor":[]}}}\n', stderr='').returncode
+
+tests/attack/test_attack_w3c_observe.py:148: AssertionError
+___________ test_attack_01_common_noun_is_not_a_declared_agent_name ____________
+
+    def test_attack_01_common_noun_is_not_a_declared_agent_name():
+        out = route("attack_01_common_noun.md")
+>       assert (out["decision"], out["agent"]) != ("route", "team"), out
+E       AssertionError: {'schema': 'verantyx.routing_from_text/1', 'decision': 'route', 'agent': 'team', 'undecided_reason': None, ...}
+E       assert ('route', 'team') != ('route', 'team')
+
+tests/attack/test_attack_w2h2_routing_from_text.py:32: AssertionError
+___ test_attack_02_addendum_does_not_silently_replace_an_existing_assignment ___
+
+    def test_attack_02_addendum_does_not_silently_replace_an_existing_assignment():
+        out = route("attack_02_addendum.md")
+>       assert (out["decision"], out["agent"]) != ("route", "Luna"), out
+E       AssertionError: {'schema': 'verantyx.routing_from_text/1', 'decision': 'route', 'agent': 'Luna', 'undecided_reason': None, ...}
+E       assert ('route', 'Luna') != ('route', 'Luna')
+
+tests/attack/test_attack_w2h2_routing_from_text.py:37: AssertionError
+____ test_01_unattested_report_archive_does_not_get_a_wrong_language_answer ____
+
+    def test_01_unattested_report_archive_does_not_get_a_wrong_language_answer() -> None:
+        """D1 says report format=CSV, not the language of a report archive."""
+        result = ask(FRAME_A, "What language should we use for the report archive?", ["English", "Japanese"], map_script=MAP_FALSE)
+>       assert (result["decision"], result["escalate_reason"], result["escalate_detail"]) == (
+            "escalate", "FRAME_SILENT", "TERM_IN_WIDER_PHRASE"
+        ), result
+E       AssertionError: {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'CHOICE', 'answer': 'English', ...}
+E       assert ('answer', None, None) == ('escalate', ...WIDER_PHRASE')
+E         
+E         At index 0 diff: 'answer' != 'escalate'
+E         Use -v to get more diff
+
+tests/attack/w2c3/test_attack_w2c3_traps.py:29: AssertionError
+________________ test_02_polite_delete_request_requires_a_human ________________
+
+    def test_02_polite_delete_request_requires_a_human() -> None:
+        result = ask(FRAME_A, "Could you please delete an archive?", map_script=MAP_EMPTY)
+>       assert result["escalate_reason"] == "HUMAN_APPROVAL_REQUIRED", result
+E       AssertionError: {'schema': 'conduct_ask/v1', 'decision': 'escalate', 'kind': 'OTHER', 'answer': None, ...}
+E       assert 'FRAME_SILENT' == 'HUMAN_APPROVAL_REQUIRED'
+E         
+E         - HUMAN_APPROVAL_REQUIRED
+E         + FRAME_SILENT
+
+tests/attack/w2c3/test_attack_w2c3_traps.py:36: AssertionError
+_____________ test_03_delegated_delete_permission_requires_a_human _____________
+
+    def test_03_delegated_delete_permission_requires_a_human() -> None:
+        result = ask(FRAME_A, "Could we have the team delete the archive?", map_script=MAP_EMPTY)
+>       assert result["escalate_reason"] == "HUMAN_APPROVAL_REQUIRED", result
+E       AssertionError: {'schema': 'conduct_ask/v1', 'decision': 'escalate', 'kind': 'OTHER', 'answer': None, ...}
+E       assert 'FRAME_SILENT' == 'HUMAN_APPROVAL_REQUIRED'
+E         
+E         - HUMAN_APPROVAL_REQUIRED
+E         + FRAME_SILENT
+
+tests/attack/w2c3/test_attack_w2c3_traps.py:41: AssertionError
+______ test_04_markdown_and_compiled_jsonl_give_the_same_view_and_answer _______
+
+    def test_04_markdown_and_compiled_jsonl_give_the_same_view_and_answer() -> None:
+        question = "欠測の扱いは範囲外ですか？"
+        options = ["はい", "いいえ"]
+        md = ask(FRAME_B_MD, question, options)
+        jsonl = ask(FRAME_B_JSONL, question, options)
+        fields = ("decision", "answer", "answer_option_index", "escalate_reason", "escalate_detail")
+>       assert tuple(md[k] for k in fields) == tuple(jsonl[k] for k in fields), (md, jsonl)
+E       AssertionError: ({'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'SCOPE', 'answer': 'はい', ...}, {'schema': 'conduct_ask/v1', 'decision': 'escalate', 'kind': 'SCOPE', 'answer': None, ...})
+E       assert ('answer', 'は...0, None, None) == ('escalate', ...OCAB_LLM_OFF')
+E         
+E         At index 0 diff: 'answer' != 'escalate'
+E         Use -v to get more diff
+
+tests/attack/w2c3/test_attack_w2c3_traps.py:50: AssertionError
+=========================== short test summary info ============================
+FAILED tests/attack/test_attack_w2g2_mapping.py::test_attack_resealed_tampered_mapping_decision_changes_answer_on_zero_ask_replay
+FAILED tests/attack/test_attack_w3a2_contract.py::test_nfkc_width_variant_keeps_same_state
+FAILED tests/attack/test_attack_w3a2_contract.py::test_hiragana_katakana_variant_keeps_same_state
+FAILED tests/attack/test_attack_w3a2_contract.py::test_number_plus_time_unit_is_not_downgraded_to_quantity
+FAILED tests/attack/test_attack_w4m_sovereign.py::test_tampered_export_cannot_be_attached
+FAILED tests/attack/test_attack_w4m_sovereign.py::test_revoking_consent_while_promote_is_in_flight_stops_writes
+FAILED tests/attack/test_attack_w4m_sovereign.py::test_release_racing_with_promote_leaves_no_active_promotion
+FAILED tests/attack/test_attack_w4m_sovereign.py::test_two_process_promotions_do_not_duplicate_the_same_candidate
+FAILED tests/attack/test_attack_w3c_observe.py::test_neighbor_file_order_does_not_change_the_output
+FAILED tests/attack/test_attack_w3c_observe.py::test_all_paths_are_carried_through_a_merged_cell
+FAILED tests/attack/test_attack_w3c_observe.py::test_malformed_ledger_is_rejected_without_appending
+FAILED tests/attack/test_attack_w2h2_routing_from_text.py::test_attack_01_common_noun_is_not_a_declared_agent_name
+FAILED tests/attack/test_attack_w2h2_routing_from_text.py::test_attack_02_addendum_does_not_silently_replace_an_existing_assignment
+FAILED tests/attack/w2c3/test_attack_w2c3_traps.py::test_01_unattested_report_archive_does_not_get_a_wrong_language_answer
+FAILED tests/attack/w2c3/test_attack_w2c3_traps.py::test_02_polite_delete_request_requires_a_human
+FAILED tests/attack/w2c3/test_attack_w2c3_traps.py::test_03_delegated_delete_permission_requires_a_human
+FAILED tests/attack/w2c3/test_attack_w2c3_traps.py::test_04_markdown_and_compiled_jsonl_give_the_same_view_and_answer
+17 failed, 18 passed in 2.45s

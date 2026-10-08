@@ -1,0 +1,200 @@
+{
+ "placement_sha_in_lookup_id_example": "coarse-placement:ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+ "groups": {
+  "rest": {
+   "sentences_read": 241,
+   "with_a_cross_of_a_typed_clause": 0,
+   "arms": 578,
+   "AGREE": 181,
+   "DISAGREE": 7,
+   "NOT_CHECKED": 390,
+   "not_checked_by_reason": {
+    "ESTIMATED_GENERATED": 15,
+    "ESTIMATED_NEAR": 7,
+    "MULTIPLE": 13,
+    "ROLE_NOT_IN_TABLE": 314,
+    "UNKNOWN": 14,
+    "UNPLACED": 27
+   },
+   "lookup_ids": {
+    "coarse-placement:ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995": 241
+   }
+  },
+  "event_cross_sentences": {
+   "sentences_read": 70,
+   "with_a_cross_of_a_typed_clause": 0,
+   "arms": 174,
+   "AGREE": 36,
+   "DISAGREE": 1,
+   "NOT_CHECKED": 137,
+   "not_checked_by_reason": {
+    "ESTIMATED_GENERATED": 4,
+    "ESTIMATED_NEAR": 7,
+    "MULTIPLE": 9,
+    "ROLE_NOT_IN_TABLE": 79,
+    "UNKNOWN": 3,
+    "UNPLACED": 35
+   },
+   "lookup_ids": {
+    "coarse-placement:ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995": 70
+   }
+  },
+  "new_data": {
+   "sentences_read": 54,
+   "with_a_cross_of_a_typed_clause": 51,
+   "arms": 143,
+   "AGREE": 83,
+   "DISAGREE": 0,
+   "NOT_CHECKED": 60,
+   "not_checked_by_reason": {
+    "ESTIMATED_NEAR": 1,
+    "ROLE_NOT_IN_TABLE": 59
+   },
+   "lookup_ids": {
+    "coarse-placement:ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995": 54
+   }
+  }
+ },
+ "disagree": [
+  {
+   "group": "rest",
+   "source": "ja.jsonl",
+   "sentence": "先月、兄が会社で書類を作った。",
+   "role": "place",
+   "value": [
+    "会社"
+   ],
+   "expected": [
+    "PLACE"
+   ],
+   "observed": [
+    "GROUP_ORG"
+   ],
+   "typed_by_the_entry": false
+  },
+  {
+   "group": "rest",
+   "source": "ja.jsonl",
+   "sentence": "この先生は学校で数学を教えた。",
+   "role": "place",
+   "value": [
+    "学校"
+   ],
+   "expected": [
+    "PLACE"
+   ],
+   "observed": [
+    "GROUP_ORG"
+   ],
+   "typed_by_the_entry": false
+  },
+  {
+   "group": "rest",
+   "source": "r3_probe_ja.txt",
+   "sentence": "国が研究者を委員に任命した。",
+   "role": "agent",
+   "value": [
+    "国"
+   ],
+   "expected": [
+    "ANIMAL",
+    "GROUP_ORG",
+    "PERSON"
+   ],
+   "observed": [
+    "PLACE"
+   ],
+   "typed_by_the_entry": false
+  },
+  {
+   "group": "rest",
+   "source": "r3_probe_ja.txt",
+   "sentence": "翻訳者が原稿を英語に訳した。",
+   "role": "agent",
+   "value": [
+    "翻訳者"
+   ],
+   "expected": [
+    "ANIMAL",
+    "GROUP_ORG",
+    "PERSON"
+   ],
+   "observed": [
+    "EVENT_ACT"
+   ],
+   "typed_by_the_entry": false
+  },
+  {
+   "group": "rest",
+   "source": "w1a2r2_probe_ja.txt",
+   "sentence": "店が看板を赤に塗り替えた。",
+   "role": "agent",
+   "value": [
+    "店"
+   ],
+   "expected": [
+    "ANIMAL",
+    "GROUP_ORG",
+    "PERSON"
+   ],
+   "observed": [
+    "PLACE"
+   ],
+   "typed_by_the_entry": false
+  },
+  {
+   "group": "rest",
+   "source": "w1a3_review_r3_examples_ja.txt",
+   "sentence": "車がトンネルを抜けた。",
+   "role": "agent",
+   "value": [
+    "車"
+   ],
+   "expected": [
+    "ANIMAL",
+    "GROUP_ORG",
+    "PERSON"
+   ],
+   "observed": [
+    "ARTIFACT"
+   ],
+   "typed_by_the_entry": false
+  },
+  {
+   "group": "rest",
+   "source": "w1a3_review_r3_examples_ja.txt",
+   "sentence": "船が港を出航した。",
+   "role": "agent",
+   "value": [
+    "船"
+   ],
+   "expected": [
+    "ANIMAL",
+    "GROUP_ORG",
+    "PERSON"
+   ],
+   "observed": [
+    "ARTIFACT"
+   ],
+   "typed_by_the_entry": false
+  },
+  {
+   "group": "event_cross_sentences",
+   "source": "sentences_ja.jsonl",
+   "sentence": "風が窓を揺らした。",
+   "role": "agent",
+   "value": [
+    "風"
+   ],
+   "expected": [
+    "ANIMAL",
+    "GROUP_ORG",
+    "PERSON"
+   ],
+   "observed": [
+    "NATURAL_PHENOMENON"
+   ],
+   "typed_by_the_entry": false
+  }
+ ]
+}

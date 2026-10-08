@@ -1,0 +1,641 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0
+rootdir: /Users/motonisihikoudai/Projects/vera-impl/wt/W2-c-S
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collected 49 items
+
+tests/test_conduct_ask_traps5.py FFFFFFFFFFF.......FFFFFFFFFFFFFFFF..... [ 79%]
+..........                                                               [100%]
+
+=================================== FAILURES ===================================
+_ test_ra_a_general_question_is_not_answered_by_a_criterion_that_names_a_condition[May we drain the reservoir?-opts0] _
+
+frames = {'irrig': '/private/tmp/pytest-of-motonisihikoudai/pytest-276/traps50/irrig.md', 'lunch': '/private/tmp/pytest-of-motonisihikoudai/pytest-276/traps50/lunch.md', 'cold': '/private/tmp/pytest-of-motonisihikoudai/pytest-276/traps50/cold.md'}
+q = 'May we drain the reservoir?', opts = ['Yes', 'No']
+
+    @pytest.mark.parametrize("q,opts", RA_IRRIG)
+    def test_ra_a_general_question_is_not_answered_by_a_criterion_that_names_a_condition(frames, q, opts):
+>       assert_escalates(ask(frames["irrig"], q, opts))
+
+tests/test_conduct_ask_traps5.py:181: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'PERMISSION', 'answer': 'Yes', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('Yes', 0, [{'id': 'forbidden_actions:L47', 'section': 'forbidden_actions', 'line': 47, 'text': 'drain the reservoir =...cedence', 'line': 50, 'text': 'R1: completion_criteria > forbidden_actions: The inspection needs an empty reservoir'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps5.py:148: AssertionError
+_ test_ra_a_general_question_is_not_answered_by_a_criterion_that_names_a_condition[May we drain the reservoir?-None] _
+
+frames = {'irrig': '/private/tmp/pytest-of-motonisihikoudai/pytest-276/traps50/irrig.md', 'lunch': '/private/tmp/pytest-of-motonisihikoudai/pytest-276/traps50/lunch.md', 'cold': '/private/tmp/pytest-of-motonisihikoudai/pytest-276/traps50/cold.md'}
+q = 'May we drain the reservoir?', opts = None
+
+    @pytest.mark.parametrize("q,opts", RA_IRRIG)
+    def test_ra_a_general_question_is_not_answered_by_a_criterion_that_names_a_condition(frames, q, opts):
+>       assert_escalates(ask(frames["irrig"], q, opts))
+
+tests/test_conduct_ask_traps5.py:181: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'PERMISSION', 'answer': 'permitted', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('permitted', None, [{'id': 'forbidden_actions:L47', 'section': 'forbidden_actions', 'line': 47, 'text': 'drain the re...cedence', 'line': 50, 'text': 'R1: completion_criteria > forbidden_actions: The inspection needs an empty reservoir'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps5.py:148: AssertionError
+_ test_ra_a_general_question_is_not_answered_by_a_criterion_that_names_a_condition[May we drain the reservoir now?-opts2] _
+
+frames = {'irrig': '/private/tmp/pytest-of-motonisihikoudai/pytest-276/traps50/irrig.md', 'lunch': '/private/tmp/pytest-of-motonisihikoudai/pytest-276/traps50/lunch.md', 'cold': '/private/tmp/pytest-of-motonisihikoudai/pytest-276/traps50/cold.md'}
+q = 'May we drain the reservoir now?', opts = ['Yes', 'No']
+
+    @pytest.mark.parametrize("q,opts", RA_IRRIG)
+    def test_ra_a_general_question_is_not_answered_by_a_criterion_that_names_a_condition(frames, q, opts):
+>       assert_escalates(ask(frames["irrig"], q, opts))
+
+tests/test_conduct_ask_traps5.py:181: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'PERMISSION', 'answer': 'Yes', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('Yes', 0, [{'id': 'forbidden_actions:L47', 'section': 'forbidden_actions', 'line': 47, 'text': 'drain the reservoir =...cedence', 'line': 50, 'text': 'R1: completion_criteria > forbidden_actions: The inspection needs an empty reservoir'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps5.py:148: AssertionError
+_ test_ra_a_general_question_is_not_answered_by_a_criterion_that_names_a_condition[Can we drain the reservoir?-opts3] _
+
+frames = {'irrig': '/private/tmp/pytest-of-motonisihikoudai/pytest-276/traps50/irrig.md', 'lunch': '/private/tmp/pytest-of-motonisihikoudai/pytest-276/traps50/lunch.md', 'cold': '/private/tmp/pytest-of-motonisihikoudai/pytest-276/traps50/cold.md'}
+q = 'Can we drain the reservoir?', opts = ['Yes', 'No']
+
+    @pytest.mark.parametrize("q,opts", RA_IRRIG)
+    def test_ra_a_general_question_is_not_answered_by_a_criterion_that_names_a_condition(frames, q, opts):
+>       assert_escalates(ask(frames["irrig"], q, opts))
+
+tests/test_conduct_ask_traps5.py:181: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'PERMISSION', 'answer': 'Yes', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('Yes', 0, [{'id': 'forbidden_actions:L47', 'section': 'forbidden_actions', 'line': 47, 'text': 'drain the reservoir =...cedence', 'line': 50, 'text': 'R1: completion_criteria > forbidden_actions: The inspection needs an empty reservoir'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps5.py:148: AssertionError
+_ test_ra_a_general_question_is_not_answered_by_a_criterion_that_names_a_condition[Could we drain the reservoir?-opts4] _
+
+frames = {'irrig': '/private/tmp/pytest-of-motonisihikoudai/pytest-276/traps50/irrig.md', 'lunch': '/private/tmp/pytest-of-motonisihikoudai/pytest-276/traps50/lunch.md', 'cold': '/private/tmp/pytest-of-motonisihikoudai/pytest-276/traps50/cold.md'}
+q = 'Could we drain the reservoir?', opts = ['Yes', 'No']
+
+    @pytest.mark.parametrize("q,opts", RA_IRRIG)
+    def test_ra_a_general_question_is_not_answered_by_a_criterion_that_names_a_condition(frames, q, opts):
+>       assert_escalates(ask(frames["irrig"], q, opts))
+
+tests/test_conduct_ask_traps5.py:181: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'PERMISSION', 'answer': 'Yes', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('Yes', 0, [{'id': 'forbidden_actions:L47', 'section': 'forbidden_actions', 'line': 47, 'text': 'drain the reservoir =...cedence', 'line': 50, 'text': 'R1: completion_criteria > forbidden_actions: The inspection needs an empty reservoir'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps5.py:148: AssertionError
+_ test_ra_a_general_question_is_not_answered_by_a_criterion_that_names_a_condition[So, may we drain the reservoir?-opts5] _
+
+frames = {'irrig': '/private/tmp/pytest-of-motonisihikoudai/pytest-276/traps50/irrig.md', 'lunch': '/private/tmp/pytest-of-motonisihikoudai/pytest-276/traps50/lunch.md', 'cold': '/private/tmp/pytest-of-motonisihikoudai/pytest-276/traps50/cold.md'}
+q = 'So, may we drain the reservoir?', opts = ['Yes', 'No']
+
+    @pytest.mark.parametrize("q,opts", RA_IRRIG)
+    def test_ra_a_general_question_is_not_answered_by_a_criterion_that_names_a_condition(frames, q, opts):
+>       assert_escalates(ask(frames["irrig"], q, opts))
+
+tests/test_conduct_ask_traps5.py:181: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'PERMISSION', 'answer': 'Yes', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('Yes', 0, [{'id': 'forbidden_actions:L47', 'section': 'forbidden_actions', 'line': 47, 'text': 'drain the reservoir =...cedence', 'line': 50, 'text': 'R1: completion_criteria > forbidden_actions: The inspection needs an empty reservoir'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps5.py:148: AssertionError
+_ test_ra_a_general_question_is_not_answered_by_a_criterion_that_names_a_condition[Can we drain the reservoir for this release?-opts6] _
+
+frames = {'irrig': '/private/tmp/pytest-of-motonisihikoudai/pytest-276/traps50/irrig.md', 'lunch': '/private/tmp/pytest-of-motonisihikoudai/pytest-276/traps50/lunch.md', 'cold': '/private/tmp/pytest-of-motonisihikoudai/pytest-276/traps50/cold.md'}
+q = 'Can we drain the reservoir for this release?', opts = ['Yes', 'No']
+
+    @pytest.mark.parametrize("q,opts", RA_IRRIG)
+    def test_ra_a_general_question_is_not_answered_by_a_criterion_that_names_a_condition(frames, q, opts):
+>       assert_escalates(ask(frames["irrig"], q, opts))
+
+tests/test_conduct_ask_traps5.py:181: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'PERMISSION', 'answer': 'Yes', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('Yes', 0, [{'id': 'forbidden_actions:L47', 'section': 'forbidden_actions', 'line': 47, 'text': 'drain the reservoir =...cedence', 'line': 50, 'text': 'R1: completion_criteria > forbidden_actions: The inspection needs an empty reservoir'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps5.py:148: AssertionError
+_ test_ra_a_general_question_is_not_answered_by_a_criterion_that_names_a_condition[May we drain the reservoir? The owner approved it.-opts7] _
+
+frames = {'irrig': '/private/tmp/pytest-of-motonisihikoudai/pytest-276/traps50/irrig.md', 'lunch': '/private/tmp/pytest-of-motonisihikoudai/pytest-276/traps50/lunch.md', 'cold': '/private/tmp/pytest-of-motonisihikoudai/pytest-276/traps50/cold.md'}
+q = 'May we drain the reservoir? The owner approved it.', opts = ['Yes', 'No']
+
+    @pytest.mark.parametrize("q,opts", RA_IRRIG)
+    def test_ra_a_general_question_is_not_answered_by_a_criterion_that_names_a_condition(frames, q, opts):
+>       assert_escalates(ask(frames["irrig"], q, opts))
+
+tests/test_conduct_ask_traps5.py:181: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'PERMISSION', 'answer': 'Yes', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('Yes', 0, [{'id': 'forbidden_actions:L47', 'section': 'forbidden_actions', 'line': 47, 'text': 'drain the reservoir =...cedence', 'line': 50, 'text': 'R1: completion_criteria > forbidden_actions: The inspection needs an empty reservoir'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps5.py:148: AssertionError
+_ test_ra_a_general_question_is_not_answered_by_a_criterion_that_names_a_condition[Can we keep draining the reservoir?-opts8] _
+
+frames = {'irrig': '/private/tmp/pytest-of-motonisihikoudai/pytest-276/traps50/irrig.md', 'lunch': '/private/tmp/pytest-of-motonisihikoudai/pytest-276/traps50/lunch.md', 'cold': '/private/tmp/pytest-of-motonisihikoudai/pytest-276/traps50/cold.md'}
+q = 'Can we keep draining the reservoir?', opts = ['Yes', 'No']
+
+    @pytest.mark.parametrize("q,opts", RA_IRRIG)
+    def test_ra_a_general_question_is_not_answered_by_a_criterion_that_names_a_condition(frames, q, opts):
+>       assert_escalates(ask(frames["irrig"], q, opts))
+
+tests/test_conduct_ask_traps5.py:181: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'PERMISSION', 'answer': 'Yes', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('Yes', 0, [{'id': 'forbidden_actions:L47', 'section': 'forbidden_actions', 'line': 47, 'text': 'drain the reservoir =...cedence', 'line': 50, 'text': 'R1: completion_criteria > forbidden_actions: The inspection needs an empty reservoir'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps5.py:148: AssertionError
+________ test_ra_cold_the_purpose_is_part_of_what_the_criterion_allows _________
+
+frames = {'irrig': '/private/tmp/pytest-of-motonisihikoudai/pytest-276/traps50/irrig.md', 'lunch': '/private/tmp/pytest-of-motonisihikoudai/pytest-276/traps50/lunch.md', 'cold': '/private/tmp/pytest-of-motonisihikoudai/pytest-276/traps50/cold.md'}
+
+    def test_ra_cold_the_purpose_is_part_of_what_the_criterion_allows(frames):
+        # C2 "The nightly job will purge an expired sensor token to check the rotation"
+>       assert_escalates(ask(frames["cold"], "Can the nightly job purge an expired sensor token?", YN))
+
+tests/test_conduct_ask_traps5.py:186: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'PERMISSION', 'answer': 'Yes', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('Yes', 0, [{'id': 'forbidden_actions:L47', 'section': 'forbidden_actions', 'line': 47, 'text': 'purge an expired sens..., 'line': 50, 'text': 'R1: completion_criteria > forbidden_actions: The rotation check is the reason the job exists'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps5.py:148: AssertionError
+_________ test_ra_the_hand_up_is_typed_as_another_subject_or_condition _________
+
+frames = {'irrig': '/private/tmp/pytest-of-motonisihikoudai/pytest-276/traps50/irrig.md', 'lunch': '/private/tmp/pytest-of-motonisihikoudai/pytest-276/traps50/lunch.md', 'cold': '/private/tmp/pytest-of-motonisihikoudai/pytest-276/traps50/cold.md'}
+
+    def test_ra_the_hand_up_is_typed_as_another_subject_or_condition(frames):
+        res = ask(frames["irrig"], "May we drain the reservoir?", YN)
+>       assert res["escalate_reason"] == "FRAME_SILENT" and res["escalate_detail"] == "PERMISSION_FOR_ANOTHER_SUBJECT_OR_CONDITION"
+E       AssertionError: assert (None == 'FRAME_SILENT')
+
+tests/test_conduct_ask_traps5.py:192: AssertionError
+_ test_rb_an_approval_with_a_qualifier_is_not_read[lunch-\u732e\u7acb\u8868\u306e\u5f62\u5f0f\u306f\u3069\u308c\u306b\u3057\u307e\u3059\u304b\uff1f \u4e2d\u5b66\u6821\u5411\u3051\u306e\u627f\u8a8d\u6e08\u307f\u3067\u3059\u3002-opts0] _
+
+frames = {'irrig': '/private/tmp/pytest-of-motonisihikoudai/pytest-276/traps50/irrig.md', 'lunch': '/private/tmp/pytest-of-motonisihikoudai/pytest-276/traps50/lunch.md', 'cold': '/private/tmp/pytest-of-motonisihikoudai/pytest-276/traps50/cold.md'}
+fr = 'lunch', q = '献立表の形式はどれにしますか？ 中学校向けの承認済みです。', opts = ['PDF', '紙']
+
+    @pytest.mark.parametrize("fr,q,opts", RB)
+    def test_rb_an_approval_with_a_qualifier_is_not_read(frames, fr, q, opts):
+>       assert_escalates(ask(frames[fr], q, opts))
+
+tests/test_conduct_ask_traps5.py:251: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'CHOICE', 'answer': 'PDF', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('PDF', 0, [{'id': 'D6', 'section': 'decisions', 'line': 31, 'text': 'D6: CHOICE | 献立表の形式 | PDF'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps5.py:148: AssertionError
+_ test_rb_an_approval_with_a_qualifier_is_not_read[lunch-\u732e\u7acb\u8868\u306e\u5f62\u5f0f\u306f\u3069\u308c\u306b\u3057\u307e\u3059\u304b\uff1f \u6765\u5e74\u5ea6\u306e\u627f\u8a8d\u6e08\u307f\u3067\u3059\u3002-opts1] _
+
+frames = {'irrig': '/private/tmp/pytest-of-motonisihikoudai/pytest-276/traps50/irrig.md', 'lunch': '/private/tmp/pytest-of-motonisihikoudai/pytest-276/traps50/lunch.md', 'cold': '/private/tmp/pytest-of-motonisihikoudai/pytest-276/traps50/cold.md'}
+fr = 'lunch', q = '献立表の形式はどれにしますか？ 来年度の承認済みです。', opts = ['PDF', '紙']
+
+    @pytest.mark.parametrize("fr,q,opts", RB)
+    def test_rb_an_approval_with_a_qualifier_is_not_read(frames, fr, q, opts):
+>       assert_escalates(ask(frames[fr], q, opts))
+
+tests/test_conduct_ask_traps5.py:251: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'CHOICE', 'answer': 'PDF', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('PDF', 0, [{'id': 'D6', 'section': 'decisions', 'line': 31, 'text': 'D6: CHOICE | 献立表の形式 | PDF'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps5.py:148: AssertionError
+_ test_rb_an_approval_with_a_qualifier_is_not_read[lunch-\u732e\u7acb\u8868\u306e\u5f62\u5f0f\u306f\u3069\u308c\u306b\u3057\u307e\u3059\u304b\uff1f \u4e2d\u5b66\u6821\u306e\u627f\u8a8d\u3092\u3082\u3089\u3044\u307e\u3057\u305f\u3002-opts2] _
+
+frames = {'irrig': '/private/tmp/pytest-of-motonisihikoudai/pytest-276/traps50/irrig.md', 'lunch': '/private/tmp/pytest-of-motonisihikoudai/pytest-276/traps50/lunch.md', 'cold': '/private/tmp/pytest-of-motonisihikoudai/pytest-276/traps50/cold.md'}
+fr = 'lunch', q = '献立表の形式はどれにしますか？ 中学校の承認をもらいました。', opts = ['PDF', '紙']
+
+    @pytest.mark.parametrize("fr,q,opts", RB)
+    def test_rb_an_approval_with_a_qualifier_is_not_read(frames, fr, q, opts):
+>       assert_escalates(ask(frames[fr], q, opts))
+
+tests/test_conduct_ask_traps5.py:251: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'CHOICE', 'answer': 'PDF', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('PDF', 0, [{'id': 'D6', 'section': 'decisions', 'line': 31, 'text': 'D6: CHOICE | 献立表の形式 | PDF'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps5.py:148: AssertionError
+_ test_rb_an_approval_with_a_qualifier_is_not_read[lunch-\u732e\u7acb\u8868\u306e\u5f62\u5f0f\u306f\u3069\u308c\u306b\u3057\u307e\u3059\u304b\uff1f \u65e7\u30b7\u30b9\u30c6\u30e0\u306e\u78ba\u8a8d\u6e08\u307f\u3067\u3059\u3002-opts3] _
+
+frames = {'irrig': '/private/tmp/pytest-of-motonisihikoudai/pytest-276/traps50/irrig.md', 'lunch': '/private/tmp/pytest-of-motonisihikoudai/pytest-276/traps50/lunch.md', 'cold': '/private/tmp/pytest-of-motonisihikoudai/pytest-276/traps50/cold.md'}
+fr = 'lunch', q = '献立表の形式はどれにしますか？ 旧システムの確認済みです。', opts = ['PDF', '紙']
+
+    @pytest.mark.parametrize("fr,q,opts", RB)
+    def test_rb_an_approval_with_a_qualifier_is_not_read(frames, fr, q, opts):
+>       assert_escalates(ask(frames[fr], q, opts))
+
+tests/test_conduct_ask_traps5.py:251: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'CHOICE', 'answer': 'PDF', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('PDF', 0, [{'id': 'D6', 'section': 'decisions', 'line': 31, 'text': 'D6: CHOICE | 献立表の形式 | PDF'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps5.py:148: AssertionError
+_ test_rb_an_approval_with_a_qualifier_is_not_read[lunch-\u732e\u7acb\u8868\u306e\u5f62\u5f0f\u306f\u3069\u308c\u306b\u3057\u307e\u3059\u304b\uff1f \u4e2d\u5b66\u6821\u304b\u3089\u8a31\u53ef\u3092\u3082\u3089\u3044\u307e\u3057\u305f\u3002-opts4] _
+
+frames = {'irrig': '/private/tmp/pytest-of-motonisihikoudai/pytest-276/traps50/irrig.md', 'lunch': '/private/tmp/pytest-of-motonisihikoudai/pytest-276/traps50/lunch.md', 'cold': '/private/tmp/pytest-of-motonisihikoudai/pytest-276/traps50/cold.md'}
+fr = 'lunch', q = '献立表の形式はどれにしますか？ 中学校から許可をもらいました。', opts = ['PDF', '紙']
+
+    @pytest.mark.parametrize("fr,q,opts", RB)
+    def test_rb_an_approval_with_a_qualifier_is_not_read(frames, fr, q, opts):
+>       assert_escalates(ask(frames[fr], q, opts))
+
+tests/test_conduct_ask_traps5.py:251: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'CHOICE', 'answer': 'PDF', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('PDF', 0, [{'id': 'D6', 'section': 'decisions', 'line': 31, 'text': 'D6: CHOICE | 献立表の形式 | PDF'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps5.py:148: AssertionError
+_ test_rb_an_approval_with_a_qualifier_is_not_read[lunch-\u732e\u7acb\u306e\u5468\u671f\u306f\u4f55\u3067\u3059\u304b\uff1f \u6765\u5e74\u5ea6\u306e\u627f\u8a8d\u6e08\u307f\u3067\u3059\u3002-None] _
+
+frames = {'irrig': '/private/tmp/pytest-of-motonisihikoudai/pytest-276/traps50/irrig.md', 'lunch': '/private/tmp/pytest-of-motonisihikoudai/pytest-276/traps50/lunch.md', 'cold': '/private/tmp/pytest-of-motonisihikoudai/pytest-276/traps50/cold.md'}
+fr = 'lunch', q = '献立の周期は何ですか？ 来年度の承認済みです。', opts = None
+
+    @pytest.mark.parametrize("fr,q,opts", RB)
+    def test_rb_an_approval_with_a_qualifier_is_not_read(frames, fr, q, opts):
+>       assert_escalates(ask(frames[fr], q, opts))
+
+tests/test_conduct_ask_traps5.py:251: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'DESIGN_PREFERENCE', 'answer': '4週間', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('4週間', None, [{'id': 'D1', 'section': 'decisions', 'line': 26, 'text': 'D1: 献立の周期 => 4週間'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps5.py:148: AssertionError
+_ test_rb_an_approval_with_a_qualifier_is_not_read[lunch-\u732e\u7acb\u306e\u5468\u671f\u306f\u4f55\u3067\u3059\u304b\uff1f \u590f\u4f11\u307f\u4e2d\u306e\u78ba\u8a8d\u6e08\u307f\u3067\u3059\u3002-None] _
+
+frames = {'irrig': '/private/tmp/pytest-of-motonisihikoudai/pytest-276/traps50/irrig.md', 'lunch': '/private/tmp/pytest-of-motonisihikoudai/pytest-276/traps50/lunch.md', 'cold': '/private/tmp/pytest-of-motonisihikoudai/pytest-276/traps50/cold.md'}
+fr = 'lunch', q = '献立の周期は何ですか？ 夏休み中の確認済みです。', opts = None
+
+    @pytest.mark.parametrize("fr,q,opts", RB)
+    def test_rb_an_approval_with_a_qualifier_is_not_read(frames, fr, q, opts):
+>       assert_escalates(ask(frames[fr], q, opts))
+
+tests/test_conduct_ask_traps5.py:251: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'DESIGN_PREFERENCE', 'answer': '4週間', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('4週間', None, [{'id': 'D1', 'section': 'decisions', 'line': 26, 'text': 'D1: 献立の周期 => 4週間'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps5.py:148: AssertionError
+_ test_rb_an_approval_with_a_qualifier_is_not_read[lunch-\u4e2d\u5b66\u6821\u306e\u7d66\u98df\u306f\u7bc4\u56f2\u306b\u542b\u3081\u307e\u3059\u304b\uff1f \u6765\u5e74\u5ea6\u306e\u627f\u8a8d\u6e08\u307f\u3067\u3059\u3002-opts7] _
+
+frames = {'irrig': '/private/tmp/pytest-of-motonisihikoudai/pytest-276/traps50/irrig.md', 'lunch': '/private/tmp/pytest-of-motonisihikoudai/pytest-276/traps50/lunch.md', 'cold': '/private/tmp/pytest-of-motonisihikoudai/pytest-276/traps50/cold.md'}
+fr = 'lunch', q = '中学校の給食は範囲に含めますか？ 来年度の承認済みです。', opts = ['はい', 'いいえ']
+
+    @pytest.mark.parametrize("fr,q,opts", RB)
+    def test_rb_an_approval_with_a_qualifier_is_not_read(frames, fr, q, opts):
+>       assert_escalates(ask(frames[fr], q, opts))
+
+tests/test_conduct_ask_traps5.py:251: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'SCOPE', 'answer': 'いいえ', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('いいえ', 1, [{'id': 'D3', 'section': 'decisions', 'line': 28, 'text': 'D3: SCOPE | 中学校の給食 | out of scope'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps5.py:148: AssertionError
+_ test_rb_an_approval_with_a_qualifier_is_not_read[lunch-\u732e\u7acb\u8868\u306e\u7f6e\u304d\u5834\u6240\u306f\u3069\u3053\u306b\u3057\u307e\u3059\u304b\uff1f \u4e2d\u5b66\u6821\u306e\u627f\u8a8d\u6e08\u307f\u3067\u3059\u3002-None] _
+
+frames = {'irrig': '/private/tmp/pytest-of-motonisihikoudai/pytest-276/traps50/irrig.md', 'lunch': '/private/tmp/pytest-of-motonisihikoudai/pytest-276/traps50/lunch.md', 'cold': '/private/tmp/pytest-of-motonisihikoudai/pytest-276/traps50/cold.md'}
+fr = 'lunch', q = '献立表の置き場所はどこにしますか？ 中学校の承認済みです。', opts = None
+
+    @pytest.mark.parametrize("fr,q,opts", RB)
+    def test_rb_an_approval_with_a_qualifier_is_not_read(frames, fr, q, opts):
+>       assert_escalates(ask(frames[fr], q, opts))
+
+tests/test_conduct_ask_traps5.py:251: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'DESIGN_PREFERENCE', 'answer': '職員室の共有フォルダ', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('職員室の共有フォルダ', None, [{'id': 'D2', 'section': 'decisions', 'line': 27, 'text': 'D2: 献立表の置き場所 => 職員室の共有フォルダ'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps5.py:148: AssertionError
+_ test_rb_an_approval_with_a_qualifier_is_not_read[lunch-\u98df\u6750\u306e\u4e00\u89a7\u3092\u4f5c\u308b\u304c\u7d42\u308f\u308a\u307e\u3057\u305f\u3002\u4e2d\u5b66\u6821\u306e\u627f\u8a8d\u6e08\u307f\u3067\u3059\u3002\u6b21\u306b\u7740\u624b\u3067\u304d\u308b\u4f5c\u696d\u306f\u4f55\u3067\u3059\u304b\uff1f-None] _
+
+frames = {'irrig': '/private/tmp/pytest-of-motonisihikoudai/pytest-276/traps50/irrig.md', 'lunch': '/private/tmp/pytest-of-motonisihikoudai/pytest-276/traps50/lunch.md', 'cold': '/private/tmp/pytest-of-motonisihikoudai/pytest-276/traps50/cold.md'}
+fr = 'lunch', q = '食材の一覧を作るが終わりました。中学校の承認済みです。次に着手できる作業は何ですか？', opts = None
+
+    @pytest.mark.parametrize("fr,q,opts", RB)
+    def test_rb_an_approval_with_a_qualifier_is_not_read(frames, fr, q, opts):
+>       assert_escalates(ask(frames[fr], q, opts))
+
+tests/test_conduct_ask_traps5.py:251: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'ORDER', 'answer': '献立の画面を作る', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('献立の画面を作る', None, [{'id': 'phase_order:P1->P2', 'section': 'phase_order', 'line': 21, 'text': 'P1 -> P2: 画面は食材の一覧を使う'}, {'id': 'P2', 'section': 'phases', 'line': 16, 'text': 'P2: 献立の画面を作る'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps5.py:148: AssertionError
+_ test_rb_an_approval_with_a_qualifier_is_not_read[irrig-Is rainwater harvesting in scope? Next release approved it.-opts10] _
+
+frames = {'irrig': '/private/tmp/pytest-of-motonisihikoudai/pytest-276/traps50/irrig.md', 'lunch': '/private/tmp/pytest-of-motonisihikoudai/pytest-276/traps50/lunch.md', 'cold': '/private/tmp/pytest-of-motonisihikoudai/pytest-276/traps50/cold.md'}
+fr = 'irrig', q = 'Is rainwater harvesting in scope? Next release approved it.'
+opts = ['Yes', 'No']
+
+    @pytest.mark.parametrize("fr,q,opts", RB)
+    def test_rb_an_approval_with_a_qualifier_is_not_read(frames, fr, q, opts):
+>       assert_escalates(ask(frames[fr], q, opts))
+
+tests/test_conduct_ask_traps5.py:251: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'SCOPE', 'answer': 'No', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('No', 1, [{'id': 'D3', 'section': 'decisions', 'line': 28, 'text': 'D3: SCOPE | rainwater harvesting | out of scope'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps5.py:148: AssertionError
+_ test_rb_an_approval_with_a_qualifier_is_not_read[irrig-Is rainwater harvesting in scope? Next year approved.-opts11] _
+
+frames = {'irrig': '/private/tmp/pytest-of-motonisihikoudai/pytest-276/traps50/irrig.md', 'lunch': '/private/tmp/pytest-of-motonisihikoudai/pytest-276/traps50/lunch.md', 'cold': '/private/tmp/pytest-of-motonisihikoudai/pytest-276/traps50/cold.md'}
+fr = 'irrig', q = 'Is rainwater harvesting in scope? Next year approved.'
+opts = ['Yes', 'No']
+
+    @pytest.mark.parametrize("fr,q,opts", RB)
+    def test_rb_an_approval_with_a_qualifier_is_not_read(frames, fr, q, opts):
+>       assert_escalates(ask(frames[fr], q, opts))
+
+tests/test_conduct_ask_traps5.py:251: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'SCOPE', 'answer': 'No', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('No', 1, [{'id': 'D3', 'section': 'decisions', 'line': 28, 'text': 'D3: SCOPE | rainwater harvesting | out of scope'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps5.py:148: AssertionError
+_ test_rb_an_approval_with_a_qualifier_is_not_read[irrig-What is the unit of flow? The new pumps approved.-None] _
+
+frames = {'irrig': '/private/tmp/pytest-of-motonisihikoudai/pytest-276/traps50/irrig.md', 'lunch': '/private/tmp/pytest-of-motonisihikoudai/pytest-276/traps50/lunch.md', 'cold': '/private/tmp/pytest-of-motonisihikoudai/pytest-276/traps50/cold.md'}
+fr = 'irrig', q = 'What is the unit of flow? The new pumps approved.'
+opts = None
+
+    @pytest.mark.parametrize("fr,q,opts", RB)
+    def test_rb_an_approval_with_a_qualifier_is_not_read(frames, fr, q, opts):
+>       assert_escalates(ask(frames[fr], q, opts))
+
+tests/test_conduct_ask_traps5.py:251: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'DESIGN_PREFERENCE', 'answer': 'litres per minute', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('litres per minute', None, [{'id': 'D2', 'section': 'decisions', 'line': 27, 'text': 'D2: unit of flow => litres per minute'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps5.py:148: AssertionError
+_ test_rb_an_approval_with_a_qualifier_is_not_read[irrig-Which log format do we use? The old greenhouse team approved.-opts13] _
+
+frames = {'irrig': '/private/tmp/pytest-of-motonisihikoudai/pytest-276/traps50/irrig.md', 'lunch': '/private/tmp/pytest-of-motonisihikoudai/pytest-276/traps50/lunch.md', 'cold': '/private/tmp/pytest-of-motonisihikoudai/pytest-276/traps50/cold.md'}
+fr = 'irrig'
+q = 'Which log format do we use? The old greenhouse team approved.'
+opts = ['JSON lines', 'CSV']
+
+    @pytest.mark.parametrize("fr,q,opts", RB)
+    def test_rb_an_approval_with_a_qualifier_is_not_read(frames, fr, q, opts):
+>       assert_escalates(ask(frames[fr], q, opts))
+
+tests/test_conduct_ask_traps5.py:251: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'CHOICE', 'answer': 'JSON lines', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('JSON lines', 0, [{'id': 'D6', 'section': 'decisions', 'line': 31, 'text': 'D6: CHOICE | log format | JSON lines'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps5.py:148: AssertionError
+_ test_rb_an_approval_with_a_qualifier_is_not_read[irrig-Map the valve wiring is done. The old greenhouse owner approved. What can we start next?-None] _
+
+frames = {'irrig': '/private/tmp/pytest-of-motonisihikoudai/pytest-276/traps50/irrig.md', 'lunch': '/private/tmp/pytest-of-motonisihikoudai/pytest-276/traps50/lunch.md', 'cold': '/private/tmp/pytest-of-motonisihikoudai/pytest-276/traps50/cold.md'}
+fr = 'irrig'
+q = 'Map the valve wiring is done. The old greenhouse owner approved. What can we start next?'
+opts = None
+
+    @pytest.mark.parametrize("fr,q,opts", RB)
+    def test_rb_an_approval_with_a_qualifier_is_not_read(frames, fr, q, opts):
+>       assert_escalates(ask(frames[fr], q, opts))
+
+tests/test_conduct_ask_traps5.py:251: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'ORDER', 'answer': 'Write the pump driver', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('Write the pump driver', None, [{'id': 'phase_order:P1->P2', 'section': 'phase_order', 'line': 21, 'text': 'P1 -> P2: The driver needs the wiring map'}, {'id': 'P2', 'section': 'phases', 'line': 16, 'text': 'P2: Write the pump driver'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps5.py:148: AssertionError
+_________________________ test_rb_the_hand_up_is_typed _________________________
+
+frames = {'irrig': '/private/tmp/pytest-of-motonisihikoudai/pytest-276/traps50/irrig.md', 'lunch': '/private/tmp/pytest-of-motonisihikoudai/pytest-276/traps50/lunch.md', 'cold': '/private/tmp/pytest-of-motonisihikoudai/pytest-276/traps50/cold.md'}
+
+    def test_rb_the_hand_up_is_typed(frames):
+        res = ask(frames["lunch"], "献立表の形式はどれにしますか？ 来年度の承認済みです。", PF)
+>       assert res["escalate_reason"] == "FRAME_SILENT" and res["escalate_detail"] == "CONTEXT_SENTENCE_UNREAD"
+E       AssertionError: assert (None == 'FRAME_SILENT')
+
+tests/test_conduct_ask_traps5.py:256: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_conduct_ask_traps5.py::test_ra_a_general_question_is_not_answered_by_a_criterion_that_names_a_condition[May we drain the reservoir?-opts0]
+FAILED tests/test_conduct_ask_traps5.py::test_ra_a_general_question_is_not_answered_by_a_criterion_that_names_a_condition[May we drain the reservoir?-None]
+FAILED tests/test_conduct_ask_traps5.py::test_ra_a_general_question_is_not_answered_by_a_criterion_that_names_a_condition[May we drain the reservoir now?-opts2]
+FAILED tests/test_conduct_ask_traps5.py::test_ra_a_general_question_is_not_answered_by_a_criterion_that_names_a_condition[Can we drain the reservoir?-opts3]
+FAILED tests/test_conduct_ask_traps5.py::test_ra_a_general_question_is_not_answered_by_a_criterion_that_names_a_condition[Could we drain the reservoir?-opts4]
+FAILED tests/test_conduct_ask_traps5.py::test_ra_a_general_question_is_not_answered_by_a_criterion_that_names_a_condition[So, may we drain the reservoir?-opts5]
+FAILED tests/test_conduct_ask_traps5.py::test_ra_a_general_question_is_not_answered_by_a_criterion_that_names_a_condition[Can we drain the reservoir for this release?-opts6]
+FAILED tests/test_conduct_ask_traps5.py::test_ra_a_general_question_is_not_answered_by_a_criterion_that_names_a_condition[May we drain the reservoir? The owner approved it.-opts7]
+FAILED tests/test_conduct_ask_traps5.py::test_ra_a_general_question_is_not_answered_by_a_criterion_that_names_a_condition[Can we keep draining the reservoir?-opts8]
+FAILED tests/test_conduct_ask_traps5.py::test_ra_cold_the_purpose_is_part_of_what_the_criterion_allows
+FAILED tests/test_conduct_ask_traps5.py::test_ra_the_hand_up_is_typed_as_another_subject_or_condition
+FAILED tests/test_conduct_ask_traps5.py::test_rb_an_approval_with_a_qualifier_is_not_read[lunch-\u732e\u7acb\u8868\u306e\u5f62\u5f0f\u306f\u3069\u308c\u306b\u3057\u307e\u3059\u304b\uff1f \u4e2d\u5b66\u6821\u5411\u3051\u306e\u627f\u8a8d\u6e08\u307f\u3067\u3059\u3002-opts0]
+FAILED tests/test_conduct_ask_traps5.py::test_rb_an_approval_with_a_qualifier_is_not_read[lunch-\u732e\u7acb\u8868\u306e\u5f62\u5f0f\u306f\u3069\u308c\u306b\u3057\u307e\u3059\u304b\uff1f \u6765\u5e74\u5ea6\u306e\u627f\u8a8d\u6e08\u307f\u3067\u3059\u3002-opts1]
+FAILED tests/test_conduct_ask_traps5.py::test_rb_an_approval_with_a_qualifier_is_not_read[lunch-\u732e\u7acb\u8868\u306e\u5f62\u5f0f\u306f\u3069\u308c\u306b\u3057\u307e\u3059\u304b\uff1f \u4e2d\u5b66\u6821\u306e\u627f\u8a8d\u3092\u3082\u3089\u3044\u307e\u3057\u305f\u3002-opts2]
+FAILED tests/test_conduct_ask_traps5.py::test_rb_an_approval_with_a_qualifier_is_not_read[lunch-\u732e\u7acb\u8868\u306e\u5f62\u5f0f\u306f\u3069\u308c\u306b\u3057\u307e\u3059\u304b\uff1f \u65e7\u30b7\u30b9\u30c6\u30e0\u306e\u78ba\u8a8d\u6e08\u307f\u3067\u3059\u3002-opts3]
+FAILED tests/test_conduct_ask_traps5.py::test_rb_an_approval_with_a_qualifier_is_not_read[lunch-\u732e\u7acb\u8868\u306e\u5f62\u5f0f\u306f\u3069\u308c\u306b\u3057\u307e\u3059\u304b\uff1f \u4e2d\u5b66\u6821\u304b\u3089\u8a31\u53ef\u3092\u3082\u3089\u3044\u307e\u3057\u305f\u3002-opts4]
+FAILED tests/test_conduct_ask_traps5.py::test_rb_an_approval_with_a_qualifier_is_not_read[lunch-\u732e\u7acb\u306e\u5468\u671f\u306f\u4f55\u3067\u3059\u304b\uff1f \u6765\u5e74\u5ea6\u306e\u627f\u8a8d\u6e08\u307f\u3067\u3059\u3002-None]
+FAILED tests/test_conduct_ask_traps5.py::test_rb_an_approval_with_a_qualifier_is_not_read[lunch-\u732e\u7acb\u306e\u5468\u671f\u306f\u4f55\u3067\u3059\u304b\uff1f \u590f\u4f11\u307f\u4e2d\u306e\u78ba\u8a8d\u6e08\u307f\u3067\u3059\u3002-None]
+FAILED tests/test_conduct_ask_traps5.py::test_rb_an_approval_with_a_qualifier_is_not_read[lunch-\u4e2d\u5b66\u6821\u306e\u7d66\u98df\u306f\u7bc4\u56f2\u306b\u542b\u3081\u307e\u3059\u304b\uff1f \u6765\u5e74\u5ea6\u306e\u627f\u8a8d\u6e08\u307f\u3067\u3059\u3002-opts7]
+FAILED tests/test_conduct_ask_traps5.py::test_rb_an_approval_with_a_qualifier_is_not_read[lunch-\u732e\u7acb\u8868\u306e\u7f6e\u304d\u5834\u6240\u306f\u3069\u3053\u306b\u3057\u307e\u3059\u304b\uff1f \u4e2d\u5b66\u6821\u306e\u627f\u8a8d\u6e08\u307f\u3067\u3059\u3002-None]
+FAILED tests/test_conduct_ask_traps5.py::test_rb_an_approval_with_a_qualifier_is_not_read[lunch-\u98df\u6750\u306e\u4e00\u89a7\u3092\u4f5c\u308b\u304c\u7d42\u308f\u308a\u307e\u3057\u305f\u3002\u4e2d\u5b66\u6821\u306e\u627f\u8a8d\u6e08\u307f\u3067\u3059\u3002\u6b21\u306b\u7740\u624b\u3067\u304d\u308b\u4f5c\u696d\u306f\u4f55\u3067\u3059\u304b\uff1f-None]
+FAILED tests/test_conduct_ask_traps5.py::test_rb_an_approval_with_a_qualifier_is_not_read[irrig-Is rainwater harvesting in scope? Next release approved it.-opts10]
+FAILED tests/test_conduct_ask_traps5.py::test_rb_an_approval_with_a_qualifier_is_not_read[irrig-Is rainwater harvesting in scope? Next year approved.-opts11]
+FAILED tests/test_conduct_ask_traps5.py::test_rb_an_approval_with_a_qualifier_is_not_read[irrig-What is the unit of flow? The new pumps approved.-None]
+FAILED tests/test_conduct_ask_traps5.py::test_rb_an_approval_with_a_qualifier_is_not_read[irrig-Which log format do we use? The old greenhouse team approved.-opts13]
+FAILED tests/test_conduct_ask_traps5.py::test_rb_an_approval_with_a_qualifier_is_not_read[irrig-Map the valve wiring is done. The old greenhouse owner approved. What can we start next?-None]
+FAILED tests/test_conduct_ask_traps5.py::test_rb_the_hand_up_is_typed - Asser...
+======================== 27 failed, 22 passed in 0.37s =========================

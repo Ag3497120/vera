@@ -1,0 +1,4 @@
+source bank_fake: calls 161 answers 106 escalates 55 resolver_values {'choice': 26, 'order': 39, 'permission': 23, 'scope': 18} derivation {'DIRECT': 71, 'COMBINED': 35} problems 0 {}
+source bank_off: calls 161 answers 79 escalates 82 resolver_values {'choice': 17, 'order': 39, 'permission': 15, 'scope': 8} derivation {'DIRECT': 44, 'COMBINED': 35} problems 0 {}
+source tests: calls 1527 answers 725 escalates 802 resolver_values {'acceptance': 5, 'choice': 167, 'order': 266, 'permission': 196, 'scope': 91} derivation {'DIRECT': 487, 'COMBINED': 238} problems 0 {}
+names_seen ['acceptance', 'choice', 'order', 'permission', 'scope'] all_5_present True

@@ -1,0 +1,13 @@
+K1 probe (scratchpad copy of c875ed3 + the changed verantyx files; the test file is NOT changed; only tests/conftest.py of the copy gets the mechanical rewrite in k1_probe_rewrite.diff:
+the stub lookup answers DECIDED/direct for the fillers the tests use: 船長 提督 Ｘ 商人 人 = PERSON, Ａ社 A社 = GROUP_ORG, 小包 = ARTIFACT).
+
+K1 failing existing tests in the real tree:       13
+of those, still failing with the rewrite:        2  => pass with a typed placement: 11
+  still failing (in K1): tests/test_question_cross_observe.py::test_an_unchecked_type_is_not_a_reason_to_exclude_except_for_which_noun
+  still failing (in K1): tests/test_question_cross_observe.py::test_the_command_line_entry_gives_the_same_bytes_for_two_hash_seeds
+tests that fail only because of the rewrite (they passed in the real tree):        1
+  probe artifact: tests/test_question_cross_observe.py::test_restrictor_whose_type_is_not_decided_says_so
+
+reasons: test_an_unchecked_type_is_not_a_reason_to_exclude_except_for_which_noun asserts FILLED with NOT_CHECKED(NO_PLACEMENT): the opposite of Q-J1 by design;
+test_the_command_line_entry_gives_the_same_bytes_for_two_hash_seeds runs the CLI in a subprocess (the in-process rewrite does not reach it; the same intent is in tests/test_question_cross_w5d.py::test_k1_the_command_line_entry_gives_the_same_bytes_for_two_hash_seeds with --placement, which passes).
+test_restrictor_whose_type_is_not_decided_says_so: the rewrite types 人, so the restrictor is decided (an artifact of the probe).

@@ -1,0 +1,340 @@
+..FFFFFFFFFF.........F..............................F..........F........ [ 79%]
+................F..                                                      [100%]
+=================================== FAILURES ===================================
+_____________________________ test_case_r5[SO-01] ______________________________
+
+case = {'id': 'SO-01', 'type': 'SO', 'docs': {'doc.txt': '船着き場の係留は、無料だ。'}, 'question': '船着き場の係留は有料ですか', ...}
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2208/test_case_r5_SO_01_0')
+
+    @pytest.mark.parametrize("case", CASES, ids=[c["id"] for c in CASES])
+    def test_case_r5(case, tmp_path):
+        paths = []
+        for name, body in case["docs"].items():
+            p = tmp_path / name
+            p.write_text(body + "\n", encoding="utf-8")
+            paths.append(str(p))
+        rec = G.load_records(paths)
+        d = QC.check(case["answer"], case["quotes"], rec, question=case["question"]).to_dict()
+>       assert d["verdict"] == case["expect"], (d, case["note"])
+E       AssertionError: ({'verdict': 'anchored', 'quotes': [{'source': 'doc.txt', 'line': 1, 'text': '船着き場の係留は、無料だ。', 'found': 'exact'}], 'elements': [], 'conflicts': []}, '副詞＋です。内容語 0 個、要素 0、応答の語（感動詞）無し。R12 (ii)。')
+E       assert 'anchored' == 'unanchored'
+E         
+E         - unanchored
+E         ? --
+E         + anchored
+
+tests/test_w16t3_r5.py:41: AssertionError
+_____________________________ test_case_r5[SO-02] ______________________________
+
+case = {'id': 'SO-02', 'type': 'SO', 'docs': {'doc.txt': '旧校舎の武道場は、改装中で使えない。'}, 'question': '旧校舎の武道場は使えますか', ...}
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2208/test_case_r5_SO_02_0')
+
+    @pytest.mark.parametrize("case", CASES, ids=[c["id"] for c in CASES])
+    def test_case_r5(case, tmp_path):
+        paths = []
+        for name, body in case["docs"].items():
+            p = tmp_path / name
+            p.write_text(body + "\n", encoding="utf-8")
+            paths.append(str(p))
+        rec = G.load_records(paths)
+        d = QC.check(case["answer"], case["quotes"], rec, question=case["question"]).to_dict()
+>       assert d["verdict"] == case["expect"], (d, case["note"])
+E       AssertionError: ({'verdict': 'anchored', 'quotes': [{'source': 'doc.txt', 'line': 1, 'text': '旧校舎の武道場は、改装中で使えない。', 'found': 'exact'}], 'elements': [], 'conflicts': []}, '副詞だけ。内容語 0 個。引用は逆（使えない）。R12 (ii)。')
+E       assert 'anchored' == 'unanchored'
+E         
+E         - unanchored
+E         ? --
+E         + anchored
+
+tests/test_w16t3_r5.py:41: AssertionError
+_____________________________ test_case_r5[SO-03] ______________________________
+
+case = {'id': 'SO-03', 'type': 'SO', 'docs': {'doc.txt': '桟橋の釣りは、禁じられている。'}, 'question': '桟橋で釣りはできますか', ...}
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2208/test_case_r5_SO_03_0')
+
+    @pytest.mark.parametrize("case", CASES, ids=[c["id"] for c in CASES])
+    def test_case_r5(case, tmp_path):
+        paths = []
+        for name, body in case["docs"].items():
+            p = tmp_path / name
+            p.write_text(body + "\n", encoding="utf-8")
+            paths.append(str(p))
+        rec = G.load_records(paths)
+        d = QC.check(case["answer"], case["quotes"], rec, question=case["question"]).to_dict()
+        assert d["verdict"] == case["expect"], (d, case["note"])
+        if case["expect_reason_prefix"]:
+>           assert (d.get("reason") or "").startswith(case["expect_reason_prefix"]), d
+E           AssertionError: {'verdict': 'unanchored', 'quotes': [{'source': 'doc.txt', 'line': 1, 'text': '桟橋の釣りは、禁じられている。', 'found': 'exact'}], 'elements': [], 'conflicts': [], ...}
+E           assert False
+E            +  where False = <built-in method startswith of str object at 0x1174fc780>('NO_CONTENT_TO_CHECK')
+E            +    where <built-in method startswith of str object at 0x1174fc780> = ('ANSWER_CONTENT_NOT_IN_QUOTE:左様').startswith
+E            +      where 'ANSWER_CONTENT_NOT_IN_QUOTE:左様' = <built-in method get of dict object at 0x106da3dc0>('reason')
+E            +        where <built-in method get of dict object at 0x106da3dc0> = {'verdict': 'unanchored', 'quotes': [{'source': 'doc.txt', 'line': 1, 'text': '桟橋の釣りは、禁じられている。', 'found': 'exact'}], 'elements': [], 'conflicts': [], ...}.get
+
+tests/test_w16t3_r5.py:43: AssertionError
+_____________________________ test_case_r5[SO-04] ______________________________
+
+case = {'id': 'SO-04', 'type': 'SO', 'docs': {'doc.txt': '温室の見学は、予約が必要だ。'}, 'question': '温室の見学は予約なしでできますか', ...}
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2208/test_case_r5_SO_04_0')
+
+    @pytest.mark.parametrize("case", CASES, ids=[c["id"] for c in CASES])
+    def test_case_r5(case, tmp_path):
+        paths = []
+        for name, body in case["docs"].items():
+            p = tmp_path / name
+            p.write_text(body + "\n", encoding="utf-8")
+            paths.append(str(p))
+        rec = G.load_records(paths)
+        d = QC.check(case["answer"], case["quotes"], rec, question=case["question"]).to_dict()
+>       assert d["verdict"] == case["expect"], (d, case["note"])
+E       AssertionError: ({'verdict': 'anchored', 'quotes': [{'source': 'doc.txt', 'line': 1, 'text': '温室の見学は、予約が必要だ。', 'found': 'exact'}], 'elements': [], 'conflicts': []}, '述語は 非自立可能 の できる だけ。内容語 0 個。極性（3d）より先に 3e（印の順）。')
+E       assert 'anchored' == 'unanchored'
+E         
+E         - unanchored
+E         ? --
+E         + anchored
+
+tests/test_w16t3_r5.py:41: AssertionError
+_____________________________ test_case_r5[QO-01] ______________________________
+
+case = {'id': 'QO-01', 'type': 'QO', 'docs': {'doc.txt': '渡し船の運賃は、乗船前に払う。'}, 'question': '渡し船の運賃は後払いですか', ...}
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2208/test_case_r5_QO_01_0')
+
+    @pytest.mark.parametrize("case", CASES, ids=[c["id"] for c in CASES])
+    def test_case_r5(case, tmp_path):
+        paths = []
+        for name, body in case["docs"].items():
+            p = tmp_path / name
+            p.write_text(body + "\n", encoding="utf-8")
+            paths.append(str(p))
+        rec = G.load_records(paths)
+        d = QC.check(case["answer"], case["quotes"], rec, question=case["question"]).to_dict()
+>       assert d["verdict"] == case["expect"], (d, case["note"])
+E       AssertionError: ({'verdict': 'anchored', 'quotes': [{'source': 'doc.txt', 'line': 1, 'text': '渡し船の運賃は、乗船前に払う。', 'found': 'exact'}], 'elements': [], 'conflicts': []}, '内容語 後払い は問いの語の繰り返しだけ（rest 空）。R12 (i) で戻し、引用に無いので 3b。')
+E       assert 'anchored' == 'unanchored'
+E         
+E         - unanchored
+E         ? --
+E         + anchored
+
+tests/test_w16t3_r5.py:41: AssertionError
+_____________________________ test_case_r5[QO-02] ______________________________
+
+case = {'id': 'QO-02', 'type': 'QO', 'docs': {'doc.txt': '地域センターの会議室は、洋室だ。'}, 'question': '地域センターの会議室は茶室ですか', ...}
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2208/test_case_r5_QO_02_0')
+
+    @pytest.mark.parametrize("case", CASES, ids=[c["id"] for c in CASES])
+    def test_case_r5(case, tmp_path):
+        paths = []
+        for name, body in case["docs"].items():
+            p = tmp_path / name
+            p.write_text(body + "\n", encoding="utf-8")
+            paths.append(str(p))
+        rec = G.load_records(paths)
+        d = QC.check(case["answer"], case["quotes"], rec, question=case["question"]).to_dict()
+>       assert d["verdict"] == case["expect"], (d, case["note"])
+E       AssertionError: ({'verdict': 'anchored', 'quotes': [{'source': 'doc.txt', 'line': 1, 'text': '地域センターの会議室は、洋室だ。', 'found': 'exact'}], 'elements': [], 'conflicts': []}, '内容語 茶室 は問いの語の繰り返しだけ。引用は 洋室。')
+E       assert 'anchored' == 'unanchored'
+E         
+E         - unanchored
+E         ? --
+E         + anchored
+
+tests/test_w16t3_r5.py:41: AssertionError
+_____________________________ test_case_r5[QO-03] ______________________________
+
+case = {'id': 'QO-03', 'type': 'QO', 'docs': {'doc.txt': '診療所の受付は、窓口で行う。'}, 'question': '診療所の受付は電話だけですか', ...}
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2208/test_case_r5_QO_03_0')
+
+    @pytest.mark.parametrize("case", CASES, ids=[c["id"] for c in CASES])
+    def test_case_r5(case, tmp_path):
+        paths = []
+        for name, body in case["docs"].items():
+            p = tmp_path / name
+            p.write_text(body + "\n", encoding="utf-8")
+            paths.append(str(p))
+        rec = G.load_records(paths)
+        d = QC.check(case["answer"], case["quotes"], rec, question=case["question"]).to_dict()
+>       assert d["verdict"] == case["expect"], (d, case["note"])
+E       AssertionError: ({'verdict': 'anchored', 'quotes': [{'source': 'doc.txt', 'line': 1, 'text': '診療所の受付は、窓口で行う。', 'found': 'exact'}], 'elements': [], 'conflicts': []}, '内容語 電話 は問いの語の繰り返しだけ。引用に無い。')
+E       assert 'anchored' == 'unanchored'
+E         
+E         - unanchored
+E         ? --
+E         + anchored
+
+tests/test_w16t3_r5.py:41: AssertionError
+_____________________________ test_case_r5[PR-01] ______________________________
+
+case = {'id': 'PR-01', 'type': 'PR', 'docs': {'doc.txt': '町内会の清掃は、当番の住民が担当する。'}, 'question': '町内会の清掃は班長が担当しますか', ...}
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2208/test_case_r5_PR_01_0')
+
+    @pytest.mark.parametrize("case", CASES, ids=[c["id"] for c in CASES])
+    def test_case_r5(case, tmp_path):
+        paths = []
+        for name, body in case["docs"].items():
+            p = tmp_path / name
+            p.write_text(body + "\n", encoding="utf-8")
+            paths.append(str(p))
+        rec = G.load_records(paths)
+        d = QC.check(case["answer"], case["quotes"], rec, question=case["question"]).to_dict()
+>       assert d["verdict"] == case["expect"], (d, case["note"])
+E       AssertionError: ({'verdict': 'anchored', 'quotes': [{'source': 'doc.txt', 'line': 1, 'text': '町内会の清掃は、当番の住民が担当する。', 'found': 'exact'}], 'elements': [], 'conflicts': []}, '述語（する）があるので 3c でなく R12 (i)。班（長は接尾辞）が引用に無い。誤答。')
+E       assert 'anchored' == 'unanchored'
+E         
+E         - unanchored
+E         ? --
+E         + anchored
+
+tests/test_w16t3_r5.py:41: AssertionError
+_____________________________ test_case_r5[PR-02] ______________________________
+
+case = {'id': 'PR-02', 'type': 'PR', 'docs': {'doc.txt': '資料室の鍵は、夜警が保管する。'}, 'question': '資料室の鍵は事務員が保管しますか', ...}
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2208/test_case_r5_PR_02_0')
+
+    @pytest.mark.parametrize("case", CASES, ids=[c["id"] for c in CASES])
+    def test_case_r5(case, tmp_path):
+        paths = []
+        for name, body in case["docs"].items():
+            p = tmp_path / name
+            p.write_text(body + "\n", encoding="utf-8")
+            paths.append(str(p))
+        rec = G.load_records(paths)
+        d = QC.check(case["answer"], case["quotes"], rec, question=case["question"]).to_dict()
+>       assert d["verdict"] == case["expect"], (d, case["note"])
+E       AssertionError: ({'verdict': 'anchored', 'quotes': [{'source': 'doc.txt', 'line': 1, 'text': '資料室の鍵は、夜警が保管する。', 'found': 'exact'}], 'elements': [], 'conflicts': []}, '述語つき。事務 が引用に無い。誤答。')
+E       assert 'anchored' == 'unanchored'
+E         
+E         - unanchored
+E         ? --
+E         + anchored
+
+tests/test_w16t3_r5.py:41: AssertionError
+_____________________________ test_case_r5[PR-03] ______________________________
+
+case = {'id': 'PR-03', 'type': 'PR', 'docs': {'doc.txt': '農協の集荷は、平日に行う。'}, 'question': '農協の集荷は週末に行いますか', ...}
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2208/test_case_r5_PR_03_0')
+
+    @pytest.mark.parametrize("case", CASES, ids=[c["id"] for c in CASES])
+    def test_case_r5(case, tmp_path):
+        paths = []
+        for name, body in case["docs"].items():
+            p = tmp_path / name
+            p.write_text(body + "\n", encoding="utf-8")
+            paths.append(str(p))
+        rec = G.load_records(paths)
+        d = QC.check(case["answer"], case["quotes"], rec, question=case["question"]).to_dict()
+>       assert d["verdict"] == case["expect"], (d, case["note"])
+E       AssertionError: ({'verdict': 'anchored', 'quotes': [{'source': 'doc.txt', 'line': 1, 'text': '農協の集荷は、平日に行う。', 'found': 'exact'}], 'elements': [], 'conflicts': []}, '応答の語なしの言い直し。週末 は問いの語の繰り返しで引用に無い。誤答。')
+E       assert 'anchored' == 'unanchored'
+E         
+E         - unanchored
+E         ? --
+E         + anchored
+
+tests/test_w16t3_r5.py:41: AssertionError
+______________________________ test_case_r5[F-01] ______________________________
+
+case = {'id': 'F-01', 'type': 'F', 'docs': {'doc.txt': '旧館の貸出は、学生にはできない。'}, 'question': '旧館の貸出は学生にもできますか', ...}
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2208/test_case_r5_F_01_0')
+
+    @pytest.mark.parametrize("case", CASES, ids=[c["id"] for c in CASES])
+    def test_case_r5(case, tmp_path):
+        paths = []
+        for name, body in case["docs"].items():
+            p = tmp_path / name
+            p.write_text(body + "\n", encoding="utf-8")
+            paths.append(str(p))
+        rec = G.load_records(paths)
+        d = QC.check(case["answer"], case["quotes"], rec, question=case["question"]).to_dict()
+>       assert d["verdict"] == case["expect"], (d, case["note"])
+E       AssertionError: ({'verdict': 'anchored', 'quotes': [{'source': 'doc.txt', 'line': 1, 'text': '旧館の貸出は、学生にはできない。', 'found': 'exact'}], 'elements': [], 'conflicts': []}, 'J-R5-4: 正しい答えだが内容語 0 個（できる は 非自立可能）。偽の錨なしとして数える。')
+E       assert 'anchored' == 'unanchored'
+E         
+E         - unanchored
+E         ? --
+E         + anchored
+
+tests/test_w16t3_r5.py:41: AssertionError
+_______________________________ test_case[O-02] ________________________________
+
+case = {'id': 'O-02', 'type': 'O', 'docs': {'doc.txt': '大川通信は、請求書を月末に発送する。'}, 'question': '大川通信は請求書を月末に発送しますか', ...}
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2208/test_case_O_02_0')
+
+    @pytest.mark.parametrize("case", CASES, ids=[c["id"] for c in CASES])
+    def test_case(case, tmp_path):
+        paths = []
+        for name, body in case["docs"].items():
+            p = tmp_path / name
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_text(body + "\n", encoding="utf-8")
+            paths.append(str(p))
+        rec = G.load_records(paths)
+        res = QC.check(case["answer"], case["quotes"], rec, question=case["question"])
+        d = res.to_dict()
+>       assert d["verdict"] == case["expect"], (d, case["note"])
+E       AssertionError: ({'verdict': 'anchored', 'quotes': [{'source': 'doc.txt', 'line': 1, 'text': '大川通信は、請求書を月末に発送する。', 'found': 'exact'}], 'elements': [], 'conflicts': []}, '要素・述語・内容語が 1 つも無く、応答の語も無い（そう = 副詞）。J-R4-1。')
+E       assert 'anchored' == 'unanchored'
+E         
+E         - unanchored
+E         ? --
+E         + anchored
+
+tests/test_w16t3_r4.py:44: AssertionError
+_____________________________ test_case_r4c[YC-02] _____________________________
+
+case = {'id': 'YC-02', 'type': 'YC', 'docs': {'doc.txt': '研修の講師は、外部の専門家が務める。'}, 'question': '研修の講師は社内の人が務めますか', ...}
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2208/test_case_r4c_YC_02_0')
+
+    @pytest.mark.parametrize("case", CASES_C, ids=[c["id"] for c in CASES_C])
+    def test_case_r4c(case, tmp_path):
+        paths = []
+        for name, body in case["docs"].items():
+            p = tmp_path / name
+            p.write_text(body + "\n", encoding="utf-8")
+            paths.append(str(p))
+        rec = G.load_records(paths)
+        d = QC.check(case["answer"], case["quotes"], rec, question=case["question"]).to_dict()
+>       assert d["verdict"] == case["expect"], (d, case["note"])
+E       AssertionError: ({'verdict': 'anchored', 'quotes': [{'source': 'doc.txt', 'line': 1, 'text': '研修の講師は、外部の専門家が務める。', 'found': 'exact'}],...[], 'conflicts': []}, '既知の穴: 述語（務める）を伴う答えは 3c でなく 3d の極性の検査だけに掛かる。極性が合えば anchored（誤答。§9.8 で開示）。（r5: K654 で閉じた。J-R5-1）')
+E       assert 'anchored' == 'unanchored'
+E         
+E         - unanchored
+E         ? --
+E         + anchored
+
+tests/test_w16t3_r4.py:74: AssertionError
+______________ test_no_elements_with_a_real_quote_is_not_anchored ______________
+
+records = <verantyx.decode_grammar.Records object at 0x1175d7890>
+
+    def test_no_elements_with_a_real_quote_is_not_anchored(records):
+        """旧い期待: anchored（第 1 ラウンド。要素が無ければ確かめる物が無いので錨あり）。
+        監査役の裁定 第 5 ラウンド 3 で改めた: 要素も確かめる内容語も無い答えは「確かめた」と言えないので unanchored（NO_CONTENT_TO_CHECK）。"""
+        r = first(records, "そうです", [q(D1, 5, "予備の行である。")])
+>       assert r.elements == [] and r.verdict == "unanchored" and r.reason == "NO_CONTENT_TO_CHECK"
+E       AssertionError: assert ([] == []
+E         
+E         Use -v to get more diff and 'anchored' == 'unanchored'
+E         
+E         - unanchored
+E         ? --
+E         + anchored)
+
+tests/test_w16t3_quote_check.py:207: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_w16t3_r5.py::test_case_r5[SO-01] - AssertionError: ({'verdi...
+FAILED tests/test_w16t3_r5.py::test_case_r5[SO-02] - AssertionError: ({'verdi...
+FAILED tests/test_w16t3_r5.py::test_case_r5[SO-03] - AssertionError: {'verdic...
+FAILED tests/test_w16t3_r5.py::test_case_r5[SO-04] - AssertionError: ({'verdi...
+FAILED tests/test_w16t3_r5.py::test_case_r5[QO-01] - AssertionError: ({'verdi...
+FAILED tests/test_w16t3_r5.py::test_case_r5[QO-02] - AssertionError: ({'verdi...
+FAILED tests/test_w16t3_r5.py::test_case_r5[QO-03] - AssertionError: ({'verdi...
+FAILED tests/test_w16t3_r5.py::test_case_r5[PR-01] - AssertionError: ({'verdi...
+FAILED tests/test_w16t3_r5.py::test_case_r5[PR-02] - AssertionError: ({'verdi...
+FAILED tests/test_w16t3_r5.py::test_case_r5[PR-03] - AssertionError: ({'verdi...
+FAILED tests/test_w16t3_r5.py::test_case_r5[F-01] - AssertionError: ({'verdic...
+FAILED tests/test_w16t3_r4.py::test_case[O-02] - AssertionError: ({'verdict':...
+FAILED tests/test_w16t3_r4.py::test_case_r4c[YC-02] - AssertionError: ({'verd...
+FAILED tests/test_w16t3_quote_check.py::test_no_elements_with_a_real_quote_is_not_anchored
+14 failed, 77 passed in 0.82s

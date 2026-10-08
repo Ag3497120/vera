@@ -1,0 +1,167 @@
+{
+  "dataset": "Round5-A public development fixtures",
+  "created": "2026-09-30",
+  "count": 80,
+  "sha256_fixtures_jsonl": "a765402a5fc88176dd17833730780c3b8c917f7c3d80a7748277c61845c1c693",
+  "family_counts": {
+    "ambiguity": 4,
+    "comparison": 7,
+    "condition": 4,
+    "conditional_exception": 2,
+    "conflicting_evidence": 4,
+    "counterfactual_scope": 2,
+    "equivalent_paraphrase": 2,
+    "exception": 4,
+    "injection": 4,
+    "insufficient_evidence": 6,
+    "multi_argument": 4,
+    "multiple_requirements": 6,
+    "negation_scope": 4,
+    "negative_polarity": 2,
+    "quote_reality": 4,
+    "role_binding": 4,
+    "time_scope": 4,
+    "two_hop_join": 6,
+    "unit_calculation": 7
+  },
+  "verdict_counts": {
+    "AMBIGUOUS": 3,
+    "ANSWER": 63,
+    "CONFLICT": 4,
+    "UNKNOWN": 10
+  },
+  "pair_count": 12,
+  "paired_rows": 24,
+  "audit_checks": [
+    "JSON syntax",
+    "row count and unique IDs",
+    "12 pairs with two rows each",
+    "required types",
+    "source references",
+    "manual evidence/question/answer audit",
+    "Independent pre-answer semantic review of all 80 rows, including 19 corrected rows"
+  ],
+  "fixes": [
+    {
+      "id": "r05",
+      "reason": "条件の認証対象を明示し、省略された主語の補完に依存させない。"
+    },
+    {
+      "id": "r06",
+      "reason": "条件の認証対象を明示し、省略された主語の補完に依存させない。"
+    },
+    {
+      "id": "r15",
+      "reason": "同一個体と時刻を明示し、文書順を時系列の根拠にしない。"
+    },
+    {
+      "id": "r16",
+      "reason": "同一個体と時刻を明示し、文書順を時系列の根拠にしない。"
+    },
+    {
+      "id": "r25",
+      "reason": "後段資料だけで直接答えられる問いを、物品→受取人→製作品の2段結合が必要な資料と問いへ訂正。"
+    },
+    {
+      "id": "r26",
+      "reason": "入室許可から実際の入室と義務を推論していた参照を、明示された2段の規則鎖へ訂正。"
+    },
+    {
+      "id": "r43",
+      "reason": "更新票という優先性の示唆を除き、同時点・優先指定なしの競合として固定。"
+    },
+    {
+      "id": "r46",
+      "reason": "主語の省略と目的語の省略を取り違えた参照説明を訂正。"
+    },
+    {
+      "id": "r55",
+      "reason": "十分条件の不成立から入室不可を導く誤りを訂正。資料に必要条件や禁止はないためUNKNOWN。"
+    },
+    {
+      "id": "r56",
+      "reason": "一般規則への例外関係と冷蔵条件への適用を明示し、優先の暗黙補完を除く。"
+    },
+    {
+      "id": "r57",
+      "reason": "地図の場所が後段単独で得られる構造を、貸与物→受取人→場所の2段結合へ訂正。"
+    },
+    {
+      "id": "r58",
+      "reason": "番号が後段単独で得られる問いを、箱→封筒→札番号の結合へ訂正。"
+    },
+    {
+      "id": "r78",
+      "reason": "手順名から書かれていないボタンを補っていたため、各版のボタン操作を資料へ明記。"
+    },
+    {
+      "id": "r69",
+      "reason": "共同作業自体では答えられない個別分担を具体的に問う。"
+    },
+    {
+      "id": "r30",
+      "reason": "規則の適用と実際の行動を明示的に区別する。"
+    },
+    {
+      "id": "r36",
+      "reason": "容量ではなく使用前の実際の水量を明示する。"
+    },
+    {
+      "id": "r38",
+      "reason": "同日の時刻比較であることを明示する。"
+    },
+    {
+      "id": "r51",
+      "reason": "在庫計算に必要な閉じた増減条件を明示する。"
+    },
+    {
+      "id": "r60",
+      "reason": "全幅計算に必要な隙間なしと並べる方向を明示する。"
+    },
+    {
+      "id": "r15",
+      "reason": "同一日の明示時刻比較として参照も固定。"
+    },
+    {
+      "id": "r16",
+      "reason": "同一日の明示時刻比較として参照も固定。"
+    },
+    {
+      "id": "r05",
+      "reason": "明示化した資料に参照の必要事実を合わせる。"
+    },
+    {
+      "id": "r06",
+      "reason": "明示化した資料に参照の必要事実を合わせる。"
+    },
+    {
+      "id": "r43",
+      "reason": "明示化した資料に参照の必要事実を合わせる。"
+    },
+    {
+      "id": "r56",
+      "reason": "明示化した資料に参照の必要事実を合わせる。"
+    },
+    {
+      "id": "r78",
+      "reason": "明示化した資料に参照の必要事実を合わせる。"
+    }
+  ],
+  "limitations": "Public development fixtures only; same-author generation audit plus independent pre-answer review of all 80 items. No formal semantics proof or generalization claim.",
+  "validation_status": "APPROVED",
+  "hold_set_at": "2026-09-30T09:25:47.353747+00:00",
+  "audit_requested_by": "root",
+  "original_sha256": "47e0a765c10dff53a4c53db1fa449be5fd3f553ce907202d303a9e5856b3126b",
+  "audit_history_path": "/Users/motonishikoudai/Projects/vera-round5-run/fixture_corrections.json",
+  "corrected_unique_rows": 19,
+  "ready_for_evaluation": true,
+  "approved_at": "2026-09-30T09:32:43.665545+00:00",
+  "independent_audit": {
+    "agent": "round5_fixture_audit",
+    "all_rows_reviewed": 80,
+    "remaining_required_issues": 0,
+    "read_runtime_or_answers": false,
+    "notes": "/Users/motonishikoudai/Projects/vera-round5-run/fixture_audit_notes.md",
+    "before_answers": true
+  }
+}

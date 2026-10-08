@@ -1,0 +1,50 @@
+r7/run1 と r8/run1 の差（manifest_r8_run1.json の compare_to。r7 は読み取りのみ）
+r7 content_sha256 5c969d454b39d39ac0e394191b5e985b4e0a10099591bb7b12fcc559e7d77ff1
+r8/run1 content_sha256 89bd07e6c71d883cdeafaa96e906118cbfbc3dc45b1f15f2ce65bbec783382a5
+headwords: 行数 [1758845, 1766903]、増えた語 8058（うち サ変の述語 8058・それ以外 0）、消えた語 0
+判定が変わった語（ns・state・origin・top・by）ns ごと: {"N": {"by_only": 3, "decision_changed": 11, "total": 14}, "P": {"decision_changed": 15, "total": 15}}
+ctx: {'n_differs': 0, 'only_after': 0, 'only_before': 0, 'rows': [166701, 166701]}
+generated_frames: {'added': 3242, 'removed': 0, 'rows': [4788, 8030]}
+outcomes（r7, r8）:
+  DISTRIBUTION_DISAGREES: 743 -> 1243
+  FRAME_PARTICLES_NOT_COVERED: 54 -> 54
+  cover_he_by_ni_place: None -> 15
+  cover_ignored_non_k62: None -> 1
+  decided_direct_upgrade: 48 -> 130
+  decided_direct_upgrade_all_sources_codex: 30 -> 80
+  decided_direct_upgrade_with_jawiki: 18 -> 50
+  decided_estimated_generated: 4740 -> 7900
+  frame_confirmed: 35 -> 99
+  frame_types_disagree: 13 -> 31
+P を含む語で判定が変わった語（全件）:
+  よぶ	decision_changed	['P', 'DECIDED', 'estimated', 'P_COMMUNICATE', 1635, 'gen_frame']	=>	['P', 'DECIDED', 'direct', 'P_COMMUNICATE', 1635, 'gen_frame+role_distribution@jawiki']
+  向かえる	decision_changed	['P', 'DECIDED', 'estimated', 'P_MOVE', 238, 'gen_frame']	=>	['P', 'DECIDED', 'direct', 'P_MOVE', 238, 'gen_frame+role_distribution@codex:figurative_commonsense']
+  嫁ぐ	decision_changed	['P', 'DECIDED', 'estimated', 'P_MOVE', 279, 'gen_frame']	=>	['P', 'DECIDED', 'direct', 'P_MOVE', 279, 'gen_frame+role_distribution@codex:narrative']
+  昇る	decision_changed	['P', 'DECIDED', 'estimated', 'P_MOVE', 1312, 'gen_frame']	=>	['P', 'DECIDED', 'direct', 'P_MOVE', 1312, 'gen_frame+role_distribution@codex:general_qa+role_distribution@codex:narrative']
+  死する	decision_changed	['P', 'UNPLACED', None, '', 14, '']	=>	['P', 'DECIDED', 'estimated', 'P_EXIST', 150, 'gen_frame']
+  流れ込む	decision_changed	['P', 'DECIDED', 'estimated', 'P_MOVE', 3104, 'gen_frame']	=>	['P', 'DECIDED', 'direct', 'P_MOVE', 3104, 'gen_frame+role_distribution@codex:narrative']
+  潜る	decision_changed	['P', 'DECIDED', 'estimated', 'P_MOVE', 733, 'gen_frame']	=>	['P', 'DECIDED', 'direct', 'P_MOVE', 733, 'gen_frame+role_distribution@codex:narrative+role_distribution@codex:pro']
+  移す	decision_changed	['P', 'DECIDED', 'estimated', 'P_MOVE', 23422, 'gen_frame']	=>	['P', 'DECIDED', 'direct', 'P_MOVE', 23422, 'gen_frame+role_distribution@codex:general_qa+role_distribution@codex:narrative+role_distribution@codex:pro']
+  行ける	decision_changed	['P', 'DECIDED', 'estimated', 'P_MOVE', 11619, 'gen_frame']	=>	['P', 'DECIDED', 'direct', 'P_MOVE', 11619, 'gen_frame+role_distribution@codex:figurative_commonsense+role_distribution@codex:narrative+role_distribution@codex:paraphrase_entail+role_distribution@codex:pro']
+  訳する	decision_changed	['P', 'UNPLACED', None, '', 5, '']	=>	['P', 'DECIDED', 'estimated', 'P_COMMUNICATE', 30, 'gen_frame']
+  賞する	decision_changed	['P', 'UNPLACED', None, '', 12, '']	=>	['P', 'DECIDED', 'estimated', 'P_COMMUNICATE', 35, 'gen_frame']
+  送り返す	decision_changed	['P', 'DECIDED', 'estimated', 'P_MOVE', 82, 'gen_frame']	=>	['P', 'DECIDED', 'direct', 'P_MOVE', 82, 'gen_frame+role_distribution@codex:narrative']
+  逃げ込む	decision_changed	['P', 'DECIDED', 'estimated', 'P_MOVE', 329, 'gen_frame']	=>	['P', 'DECIDED', 'direct', 'P_MOVE', 329, 'gen_frame+role_distribution@codex:narrative']
+  通う	decision_changed	['P', 'DECIDED', 'estimated', 'P_MOVE', 6818, 'gen_frame']	=>	['P', 'DECIDED', 'direct', 'P_MOVE', 6818, 'gen_frame+role_distribution@codex:narrative']
+  飛び込む	decision_changed	['P', 'DECIDED', 'estimated', 'P_MOVE', 976, 'gen_frame']	=>	['P', 'DECIDED', 'direct', 'P_MOVE', 976, 'gen_frame+role_distribution@codex:narrative+role_distribution@codex:paraphrase_entail']
+N で state/origin/top が変わった語（n_seen 上位 20）:
+  定刻 n_seen=742 ['N', 'DECIDED', 'estimated', 'TIME', 742, 'gen_definition'] => ['N', 'DECIDED', 'direct', 'TIME', 742, 'gen_definition+slot@codex:paraphrase_entail']
+  購入後 n_seen=329 ['N', 'DECIDED', 'estimated', 'TIME', 329, 'gen_definition'] => ['N', 'DECIDED', 'direct', 'TIME', 329, 'gen_definition+slot@codex:paraphrase_entail']
+  授業後 n_seen=234 ['N', 'DECIDED', 'estimated', 'TIME', 234, 'gen_definition'] => ['N', 'DECIDED', 'direct', 'TIME', 234, 'gen_definition+slot@codex:paraphrase_entail']
+  始業前 n_seen=190 ['N', 'DECIDED', 'estimated', 'TIME', 190, 'gen_definition'] => ['N', 'DECIDED', 'direct', 'TIME', 190, 'gen_definition+slot@codex:paraphrase_entail']
+  試合開始前 n_seen=168 ['N', 'DECIDED', 'estimated', 'TIME', 168, 'gen_definition'] => ['N', 'DECIDED', 'direct', 'TIME', 168, 'gen_definition+slot@codex:paraphrase_entail']
+  発車前 n_seen=155 ['N', 'DECIDED', 'estimated', 'TIME', 155, 'gen_definition'] => ['N', 'DECIDED', 'direct', 'TIME', 155, 'gen_definition+slot@codex:paraphrase_entail']
+  試合終了後 n_seen=120 ['N', 'DECIDED', 'estimated', 'TIME', 120, 'gen_definition'] => ['N', 'DECIDED', 'direct', 'TIME', 120, 'gen_definition+slot@codex:paraphrase_entail']
+  退勤時 n_seen=113 ['N', 'DECIDED', 'estimated', 'TIME', 113, 'gen_definition'] => ['N', 'DECIDED', 'direct', 'TIME', 113, 'gen_definition+slot@codex:paraphrase_entail']
+  退去前 n_seen=104 ['N', 'DECIDED', 'estimated', 'TIME', 104, 'gen_definition'] => ['N', 'DECIDED', 'direct', 'TIME', 104, 'gen_definition+slot@codex:paraphrase_entail']
+  第一次世界大戦前 n_seen=90 ['N', 'DECIDED', 'estimated', 'TIME', 90, 'gen_definition'] => ['N', 'DECIDED', 'direct', 'TIME', 90, 'gen_definition+slot@jawiki']
+  開館後 n_seen=73 ['N', 'DECIDED', 'estimated', 'TIME', 73, 'gen_definition'] => ['N', 'DECIDED', 'direct', 'TIME', 73, 'gen_definition+slot@codex:paraphrase_entail']
+N で by だけ変わった語（上位 20）:
+  旅行中 n_seen=6177 ['N', 'DECIDED', 'direct', 'TIME', 6177, 'gen_definition+role@codex:figurative_commonsense'] => ['N', 'DECIDED', 'direct', 'TIME', 6177, 'gen_definition+role@codex:figurative_commonsense+slot@codex:paraphrase_entail']
+  診察後 n_seen=294 ['N', 'DECIDED', 'direct', 'TIME', 294, 'gen_definition+role@codex:paraphrase_entail'] => ['N', 'DECIDED', 'direct', 'TIME', 294, 'gen_definition+role@codex:paraphrase_entail+slot@codex:paraphrase_entail']
+  設定時間内 n_seen=191 ['N', 'DECIDED', 'direct', 'TIME', 191, 'gen_definition+role@codex:code'] => ['N', 'DECIDED', 'direct', 'TIME', 191, 'gen_definition+role@codex:code+slot@codex:code']

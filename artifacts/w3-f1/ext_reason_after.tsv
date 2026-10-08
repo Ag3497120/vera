@@ -1,0 +1,43 @@
+file	id	kind	group	document	question	verdict	values	text	reason
+w3f1_prohibition.jsonl	aux-エージェント-てはならない	aux_polar	てはならない	エージェントは評価バンクを開いてはならない。	エージェントはならない？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-エージェント-てはいけない	aux_polar	てはいけない	エージェントは鍵を持ち出してはいけない。	エージェントはいけない？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-エージェント-ではならない	aux_polar	ではならない	エージェントは友人を呼んではならない。	エージェントはならない？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-エージェント-ではいけない	aux_polar	ではいけない	エージェントは公園で遊んではいけない。	エージェントはいけない？	UNKNOWN_NO_EVIDENCE	[]	この要求を裏づける導出を確認できません。	no complete supported derivation
+w3f1_prohibition.jsonl	aux-エージェント-てはなりません	aux_polar	てはなりません	エージェントは書類を捨ててはなりません。	エージェントはなりません？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-エージェント-てはいけません	aux_polar	てはいけません	エージェントは窓を開けてはいけません。	エージェントはいけません？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-エージェント-てはいけなかった	aux_polar	てはいけなかった	エージェントは評価バンクを開いてはいけなかった。	エージェントはいけなかった？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-社員-てはならない	aux_polar	てはならない	社員は鍵を持ち出してはならない。	社員はならない？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-社員-てはいけない	aux_polar	てはいけない	社員は答えを見てはいけない。	社員はいけない？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-社員-ではならない	aux_polar	ではならない	社員は酒を飲んではならない。	社員はならない？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-社員-ではいけない	aux_polar	ではいけない	社員は友人を呼んではいけない。	社員はいけない？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-社員-てはなりません	aux_polar	てはなりません	社員は窓を開けてはなりません。	社員はなりません？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-社員-てはいけません	aux_polar	てはいけません	社員は評価バンクを開いてはいけません。	社員はいけません？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-社員-てはいけなかった	aux_polar	てはいけなかった	社員は鍵を持ち出してはいけなかった。	社員はいけなかった？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-学生-てはならない	aux_polar	てはならない	学生は答えを見てはならない。	学生はならない？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-学生-てはいけない	aux_polar	てはいけない	学生は秘密を話してはいけない。	学生はいけない？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-学生-ではならない	aux_polar	ではならない	学生は本を読んではならない。	学生はならない？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-学生-ではいけない	aux_polar	ではいけない	学生は酒を飲んではいけない。	学生はいけない？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-学生-てはなりません	aux_polar	てはなりません	学生は評価バンクを開いてはなりません。	学生はなりません？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-学生-てはいけません	aux_polar	てはいけません	学生は鍵を持ち出してはいけません。	学生はいけません？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-学生-てはいけなかった	aux_polar	てはいけなかった	学生は答えを見てはいけなかった。	学生はいけなかった？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-患者-てはならない	aux_polar	てはならない	患者は秘密を話してはならない。	患者はならない？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-患者-てはいけない	aux_polar	てはいけない	患者は書類を捨ててはいけない。	患者はいけない？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-患者-ではならない	aux_polar	ではならない	患者は公園で遊んではならない。	患者はならない？	UNKNOWN_NO_EVIDENCE	[]	この要求を裏づける導出を確認できません。	no complete supported derivation
+w3f1_prohibition.jsonl	aux-患者-ではいけない	aux_polar	ではいけない	患者は本を読んではいけない。	患者はいけない？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-患者-てはなりません	aux_polar	てはなりません	患者は鍵を持ち出してはなりません。	患者はなりません？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-患者-てはいけません	aux_polar	てはいけません	患者は答えを見てはいけません。	患者はいけません？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-患者-てはいけなかった	aux_polar	てはいけなかった	患者は秘密を話してはいけなかった。	患者はいけなかった？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-子供-てはならない	aux_polar	てはならない	子供は書類を捨ててはならない。	子供はならない？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-子供-てはいけない	aux_polar	てはいけない	子供は窓を開けてはいけない。	子供はいけない？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-子供-ではならない	aux_polar	ではならない	子供は友人を呼んではならない。	子供はならない？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-子供-ではいけない	aux_polar	ではいけない	子供は公園で遊んではいけない。	子供はいけない？	UNKNOWN_NO_EVIDENCE	[]	この要求を裏づける導出を確認できません。	no complete supported derivation
+w3f1_prohibition.jsonl	aux-子供-てはなりません	aux_polar	てはなりません	子供は答えを見てはなりません。	子供はなりません？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-子供-てはいけません	aux_polar	てはいけません	子供は秘密を話してはいけません。	子供はいけません？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-子供-てはいけなかった	aux_polar	てはいけなかった	子供は書類を捨ててはいけなかった。	子供はいけなかった？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-職員-てはならない	aux_polar	てはならない	職員は窓を開けてはならない。	職員はならない？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-職員-てはいけない	aux_polar	てはいけない	職員は評価バンクを開いてはいけない。	職員はいけない？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-職員-ではならない	aux_polar	ではならない	職員は酒を飲んではならない。	職員はならない？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-職員-ではいけない	aux_polar	ではいけない	職員は友人を呼んではいけない。	職員はいけない？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-職員-てはなりません	aux_polar	てはなりません	職員は秘密を話してはなりません。	職員はなりません？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-職員-てはいけません	aux_polar	てはいけません	職員は書類を捨ててはいけません。	職員はいけません？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-職員-てはいけなかった	aux_polar	てはいけなかった	職員は窓を開けてはいけなかった。	職員はいけなかった？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ

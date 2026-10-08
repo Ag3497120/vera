@@ -1,0 +1,88 @@
+added lines: 99
+PROPER/NUMERIC (must be empty): []
+ENGLISH NAMES (must be empty): []
+common nouns found in added lines (list only): []
+verb lemmas found in added lines (list only): []
+english lowercase words found in added lines (list only; each with the added lines that hold it, so a reader can judge): ['after', 'answer', 'could', 'def', 'each', 'form', 'found', 'kept', 'new', 'not', 'only', 'patient', 'plan', 'read', 'rest', 'that', 'the', 'this', 'three', 'two', 'types', 'was', 'were', 'when', 'written']
+  [after] 3 added line(s):
+      # Two types registered with rows (P_CHANGE, P_CONSUME) were taken out again after the review of round 1 (docs K165, table change records 1 and 2): they are in T
+      table), then the types of W3-b4 (three after the narrowing of round 2, and without place/で after the narrowing of round 3). A change of `TYPED_FRAMES` is seen a
+      # narrowed after the review of round 1 (docs K165, table change records 1 and 2): a misread was found for each, so the type goes back to the unread ones (no wor
+  [answer] 2 added line(s):
+      answer = ask(head or value)
+      kind, payload = placement_fit(answer, row[2], adjunct=row[3] == 'adjunct')
+  [could] 1 added line(s):
+      # For a particle that two roles of one predicate type could take, a row is written only when the expected types of the two are disjoint (a test checks it); the 
+  [def] 2 added line(s):
+      def typed_frames_v2():
+      def typed_plan_u_w3b4_ja(clause, toks, query, *, voice, written, strip, role_map):
+  [each] 2 added line(s):
+      # narrowed after the review of round 1 (docs K165, table change records 1 and 2): a misread was found for each, so the type goes back to the unread ones (no wor
+      # semantic_read.py is not changed: the entry looks up `R.typed_plan_u_w3b2_ja` each time it runs, so paths U and U3 read with v2 once the name is this plan
+  [form] 1 added line(s):
+      replaced: the types that are not read are `TYPED_FRAMES_NOT_READ_W3B4`, and the rows come from `typed_frames_v2()`. The reasons, their order and the form of `ro
+  [found] 1 added line(s):
+      # narrowed after the review of round 1 (docs K165, table change records 1 and 2): a misread was found for each, so the type goes back to the unread ones (no wor
+  [kept] 1 added line(s):
+      # The table of W3-b1 (`TYPED_FRAMES`, `TYPED_FRAMES_NOT_READ`) keeps its value; v2 is kept under new names. The rows are (role, particle, expected types) triple
+  [new] 3 added line(s):
+      # The table of W3-b1 (`TYPED_FRAMES`, `TYPED_FRAMES_NOT_READ`) keeps its value; v2 is kept under new names. The rows are (role, particle, expected types) triple
+      # has; of those the new types use agent/が, patient/を, goal/へ and source/から only. No row is added for a role whose type the conventions do not decide (recipient,
+      # result, cause), and no row for the adjunct place/で: instrument and cause take words that are PLACE too (examples are in the docs), so the new types are not re
+  [not] 13 added line(s):
+      # has; of those the new types use agent/が, patient/を, goal/へ and source/から only. No row is added for a role whose type the conventions do not decide (recipient,
+      # result, cause), and no row for the adjunct place/で: instrument and cause take words that are PLACE too (examples are in the docs), so the new types are not re
+      # For a particle that two roles of one predicate type could take, a row is written only when the expected types of the two are disjoint (a test checks it); the 
+  [only] 4 added line(s):
+      # W3-b4: K62 v2, the second table (docs/READING_SOUNDNESS.md section 10D, K160-K165). Nothing above this line is changed: only lines are added.
+      # has; of those the new types use agent/が, patient/を, goal/へ and source/から only. No row is added for a role whose type the conventions do not decide (recipient,
+      # For a particle that two roles of one predicate type could take, a row is written only when the expected types of the two are disjoint (a test checks it); the 
+  [patient] 4 added line(s):
+      # has; of those the new types use agent/が, patient/を, goal/へ and source/から only. No row is added for a role whose type the conventions do not decide (recipient,
+      ('patient', ('を',), ('PERSON', 'GROUP_ORG', 'ANIMAL', 'PLANT', 'ARTIFACT', 'SUBSTANCE_FOOD', 'EVENT_ACT', 'STATE_PROPERTY', 'ABSTRACT',
+      ('patient', ('を',), ('PERSON', 'GROUP_ORG', 'ANIMAL', 'PLANT', 'ARTIFACT', 'SUBSTANCE_FOOD', 'EVENT_ACT', 'STATE_PROPERTY', 'ABSTRACT',
+  [plan] 3 added line(s):
+      """K160, the plan of paths U and U3 with the second table (K62 v2): the plan of W3-b2 (`typed_plan_u_w3b2_v1_ja`), body unchanged, with two references to the ta
+      typed_plan_u_w3b2_v1_ja = typed_plan_u_w3b2_ja          # the plan of W3-b2 (rows of v1 only) stays under a name of its own: for the tests and the measurements 
+      # semantic_read.py is not changed: the entry looks up `R.typed_plan_u_w3b2_ja` each time it runs, so paths U and U3 read with v2 once the name is this plan
+  [read] 5 added line(s):
+      # result, cause), and no row for the adjunct place/で: instrument and cause take words that are PLACE too (examples are in the docs), so the new types are not re
+      # For a particle that two roles of one predicate type could take, a row is written only when the expected types of the two are disjoint (a test checks it); the 
+      """K161: the table the plans of W3-b4 read with, composed WHEN IT IS ASKED (not copied when the module is loaded): the two types of K62 (v1, in the order of the
+  [rest] 1 added line(s):
+      # For a particle that two roles of one predicate type could take, a row is written only when the expected types of the two are disjoint (a test checks it); the 
+  [that] 6 added line(s):
+      # The table of W3-b1 (`TYPED_FRAMES`, `TYPED_FRAMES_NOT_READ`) keeps its value; v2 is kept under new names. The rows are (role, particle, expected types) triple
+      # result, cause), and no row for the adjunct place/で: instrument and cause take words that are PLACE too (examples are in the docs), so the new types are not re
+      # For a particle that two roles of one predicate type could take, a row is written only when the expected types of the two are disjoint (a test checks it); the 
+  [the] 15 added line(s):
+      # W3-b4: K62 v2, the second table (docs/READING_SOUNDNESS.md section 10D, K160-K165). Nothing above this line is changed: only lines are added.
+      # has; of those the new types use agent/が, patient/を, goal/へ and source/から only. No row is added for a role whose type the conventions do not decide (recipient,
+      # result, cause), and no row for the adjunct place/で: instrument and cause take words that are PLACE too (examples are in the docs), so the new types are not re
+  [this] 2 added line(s):
+      # W3-b4: K62 v2, the second table (docs/READING_SOUNDNESS.md section 10D, K160-K165). Nothing above this line is changed: only lines are added.
+      # semantic_read.py is not changed: the entry looks up `R.typed_plan_u_w3b2_ja` each time it runs, so paths U and U3 read with v2 once the name is this plan
+  [three] 1 added line(s):
+      table), then the types of W3-b4 (three after the narrowing of round 2, and without place/で after the narrowing of round 3). A change of `TYPED_FRAMES` is seen a
+  [two] 4 added line(s):
+      # For a particle that two roles of one predicate type could take, a row is written only when the expected types of the two are disjoint (a test checks it); the 
+      """K161: the table the plans of W3-b4 read with, composed WHEN IT IS ASKED (not copied when the module is loaded): the two types of K62 (v1, in the order of the
+      """K160, the plan of paths U and U3 with the second table (K62 v2): the plan of W3-b2 (`typed_plan_u_w3b2_v1_ja`), body unchanged, with two references to the ta
+  [types] 14 added line(s):
+      # The table of W3-b1 (`TYPED_FRAMES`, `TYPED_FRAMES_NOT_READ`) keeps its value; v2 is kept under new names. The rows are (role, particle, expected types) triple
+      # has; of those the new types use agent/が, patient/を, goal/へ and source/から only. No row is added for a role whose type the conventions do not decide (recipient,
+      # result, cause), and no row for the adjunct place/で: instrument and cause take words that are PLACE too (examples are in the docs), so the new types are not re
+  [was] 3 added line(s):
+      # After the review of round 2 the place/で row of P_ACT, P_CREATE and P_EMOTION was taken out (table change record 3); the types stay, with their other rows.
+      # narrowed after the review of round 1 (docs K165, table change records 1 and 2): a misread was found for each, so the type goes back to the unread ones (no wor
+      head, relational = no_phrase_head(toks, role.span.end - len(value), role.span.end)      # the value is the end of the role's text (a demonstrative at its start 
+  [were] 1 added line(s):
+      # Two types registered with rows (P_CHANGE, P_CONSUME) were taken out again after the review of round 1 (docs K165, table change records 1 and 2): they are in T
+  [when] 2 added line(s):
+      # For a particle that two roles of one predicate type could take, a row is written only when the expected types of the two are disjoint (a test checks it); the 
+      """K161: the table the plans of W3-b4 read with, composed WHEN IT IS ASKED (not copied when the module is loaded): the two types of K62 (v1, in the order of the
+  [written] 5 added line(s):
+      # For a particle that two roles of one predicate type could take, a row is written only when the expected types of the two are disjoint (a test checks it); the 
+      def typed_plan_u_w3b4_ja(clause, toks, query, *, voice, written, strip, role_map):
+      if written is None or written != clause.predicate: return None, 'PLACEMENT_PREDICATE_NORMALIZED'
+exit=0

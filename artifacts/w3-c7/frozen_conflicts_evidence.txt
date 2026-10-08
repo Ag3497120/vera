@@ -1,0 +1,8 @@
+ascii_only_before_c7: True chars_scanned 10358
+ascii_string_constants_before_c7: True
+non_ascii_tokens_in_c7_section: ['。', 'が', 'と', '代名詞', '助動詞', '助詞', '動詞', '句点', '格助詞', '終止形', '補助記号', '読点', '連体形', '連体詞']
+base_defs_unchanged: True
+added_defs_vs_registered_w3b6: ['_W3C7Probe', '_w3c7_alternatives', '_w3c7_anaphora', '_w3c7_blank', '_w3c7_clause_string', '_w3c7_merged_cut', '_w3c7_path_verbs', '_w3c7_quote_shaped', '_w3c7_quotes', '_w3c7_roles', '_w3c7_self', '_w3c7_tokens_match', 'w3c7_explain_ja', 'w3c7_read_ja']
+new_assigned_names: ['W3C7_EDGES', 'W3C7_MAX_CLAUSES', 'W3C7_REASON_NAMES', '_W3C7_ADJUNCTS']
+_read_ja sha256 now: 18a84477afcac6429805dbee47e41210accb223711009929fb3b2a61f957a482
+_read_ja sha256 base: 6d9d64a8e7f0788081a3d5daaeb042de89f9a2e35ec81c8f7b159b3e73620e5e

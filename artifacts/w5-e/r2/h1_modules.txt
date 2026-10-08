@@ -1,0 +1,225 @@
+........................................................................ [  0%]
+........................................................................ [  1%]
+........................................................................ [  2%]
+........................................................................ [  3%]
+........................................................................ [  4%]
+........................................................................ [  4%]
+........................................................................ [  5%]
+........................................................................ [  6%]
+........................................................................ [  7%]
+........................................................................ [  8%]
+........................................................................ [  9%]
+........................................................................ [  9%]
+........................................................................ [ 10%]
+........................................................................ [ 11%]
+........................................................................ [ 12%]
+........................................................................ [ 13%]
+........................................................................ [ 14%]
+........................................................................ [ 14%]
+........................................................................ [ 15%]
+........................................................................ [ 16%]
+........................................................................ [ 17%]
+........................................................................ [ 18%]
+........................................................................ [ 19%]
+........................................................................ [ 19%]
+........................................................................ [ 20%]
+........................................................................ [ 21%]
+........................................................................ [ 22%]
+........................................................................ [ 23%]
+........................................................................ [ 24%]
+........................................................................ [ 24%]
+........................................................................ [ 25%]
+........................................................................ [ 26%]
+........................................................................ [ 27%]
+........................................................................ [ 28%]
+........................................................................ [ 29%]
+........................................................................ [ 29%]
+........................................................................ [ 30%]
+........................................................................ [ 31%]
+........................................................................ [ 32%]
+........................................................................ [ 33%]
+........................................................................ [ 33%]
+........................................................................ [ 34%]
+........................................................................ [ 35%]
+........................................................................ [ 36%]
+........................................................................ [ 37%]
+........................................................................ [ 38%]
+........................................................................ [ 38%]
+........................................................................ [ 39%]
+........................................................................ [ 40%]
+........................................................................ [ 41%]
+........................................................................ [ 42%]
+........................................................................ [ 43%]
+........................................................................ [ 43%]
+........................................................................ [ 44%]
+........................................................................ [ 45%]
+........................................................................ [ 46%]
+........................................................................ [ 47%]
+........................................................................ [ 48%]
+........................................................................ [ 48%]
+........................................................................ [ 49%]
+........................................................................ [ 50%]
+........................................................................ [ 51%]
+........................................................................ [ 52%]
+........................................................................ [ 53%]
+........................................................................ [ 53%]
+........................................................................ [ 54%]
+........................................................................ [ 55%]
+........................................................................ [ 56%]
+........................................................................ [ 57%]
+........................................................................ [ 58%]
+........................................................................ [ 58%]
+........................................................................ [ 59%]
+........................................................................ [ 60%]
+........................................................................ [ 61%]
+........................................................................ [ 62%]
+........................................................................ [ 62%]
+........................................................................ [ 63%]
+........................................................................ [ 64%]
+........................................................................ [ 65%]
+........................................................................ [ 66%]
+........................................................................ [ 67%]
+........................................................................ [ 67%]
+........................................................................ [ 68%]
+........................................................................ [ 69%]
+........................................................................ [ 70%]
+........................................................................ [ 71%]
+........................................................................ [ 72%]
+........................................................................ [ 72%]
+........................................................................ [ 73%]
+........s............................xx.........x......X................ [ 74%]
+..........xx......xx..................x...x.............FF.......X....X. [ 75%]
+..........XX..........X........XXX.........x..........xxxx...........x.. [ 76%]
+.....................................x................x..........x....x. [ 77%]
+.............x..................................x......x..............xF [ 77%]
+FFFFFFFFFFFFFFFFF.F....FFFFFFF.....Fxx......FFFF.FFFFxxF....FFFxFFFFF... [ 78%]
+...........XX...........XXX...............XXF.........XXX........XX..... [ 79%]
+........................................................................ [ 80%]
+....F..........FF......F..........x..................................... [ 81%]
+.......F........F..................F...x..............................x. [ 82%]
+...........xx......x....x.........................x..................... [ 82%]
+.............................x................XXX...........XX.......... [ 83%]
+.XXX...........XX................X.F.........xXXXX...........XXX......x. [ 84%]
+.XX.........xF.........xXXx.................................x........... [ 85%]
+...............................................x........................ [ 86%]
+..............x..........x.......F..F...x....F...X............X.....XXF. [ 87%]
+.....FFF.F...F....F................F...F..FF.....F........F..........F.. [ 87%]
+.....F..F..FFF..X....................................................... [ 88%]
+........x............xxx...............................XXX..........x... [ 89%]
+.F...xxxxXX.........XXXx............x.....................X............. [ 90%]
+.........X........XX.........x.......................................... [ 91%]
+..........................................F....FFF.F.F.....F...........F [ 92%]
+FFF.F.........FF........................................................ [ 92%]
+........................................................................ [ 93%]
+....X.........XXXX.......................F.F...XXxx.............X....... [ 94%]
+..............XF...........xx........................................... [ 95%]
+.............................................................x.......... [ 96%]
+..................................................x.....x..........x.... [ 96%]
+.....x.........xx.............xx.....F..Xx............FX.F.............. [ 97%]
+...Xx...........F.XX..................X................................. [ 98%]
+........................................................................ [ 99%]
+........x.....................................                           [100%]
+===================== environment classification of skips ======================
+UNCLASSIFIED_SKIP: tests/attack/test_attack_w5d.py::test_frame_confirmed_partial_intersection_does_not_authorize_unbacked_type
+=========================== short test summary info ============================
+FAILED tests/attack/test_conductor_escalate_realtext.py::test_reask_citation_must_name_an_active_record_and_then_closes
+FAILED tests/attack/test_conductor_escalate_realtext.py::test_repeated_resolution_check_does_not_duplicate_resolved_ledger_entry
+FAILED tests/attack/test_memory_brief_differential.py::test_empty_memory_and_budget_validation
+FAILED tests/attack/test_memory_brief_differential.py::test_askable_and_unaskable_records_are_accounted_for
+FAILED tests/attack/test_memory_brief_differential.py::test_superseded_records_disappear_and_closed_tasks_stay_dropped
+FAILED tests/attack/test_memory_brief_differential.py::test_nfkc_casefolded_focus_ranks_matching_record_first
+FAILED tests/attack/test_memory_brief_differential.py::test_kind_timestamp_and_id_order_break_ties
+FAILED tests/attack/test_memory_brief_differential.py::test_source_membership_and_lesson_question_shape_control_askability
+FAILED tests/attack/test_memory_brief_differential.py::test_budget_uses_python_character_length_and_reports_omissions
+FAILED tests/attack/test_memory_brief_differential.py::test_later_short_candidate_can_fit_after_earlier_long_candidate_is_skipped
+FAILED tests/attack/test_memory_brief_differential.py::test_deterministic_generated_cases_match_naive_reference
+FAILED tests/attack/test_memory_brief_differential.py::test_nonaskable_records_are_never_rendered_as_answers
+FAILED tests/attack/test_memory_brief_fabrication.py::test_supported_record_is_rendered_verbatim_with_its_id
+FAILED tests/attack/test_memory_brief_fabrication.py::test_negation_in_supported_sentence_is_preserved_verbatim
+FAILED tests/attack/test_memory_brief_fabrication.py::test_same_attribute_for_two_entities_keeps_each_source_attached
+FAILED tests/attack/test_memory_brief_fabrication.py::test_record_without_ask_path_source_is_dropped_and_accounted_for
+FAILED tests/attack/test_memory_brief_fabrication.py::test_lesson_uses_its_situation_and_response_role_for_source_check
+FAILED tests/attack/test_memory_brief_fabrication.py::test_superseded_record_is_not_rendered_or_counted_as_active_input
+FAILED tests/attack/test_memory_brief_fabrication.py::test_closed_task_is_not_emitted_and_its_id_is_reported
+FAILED tests/attack/test_memory_brief_fabrication.py::test_budget_can_fit_drop_accounting_without_partial_record_text
+FAILED tests/attack/test_memory_brief_fabrication.py::test_focus_changes_order_without_changing_supported_sentences
+FAILED tests/attack/test_memory_brief_injection.py::test_embedded_instruction_stays_attributed_to_its_record
+FAILED tests/attack/test_memory_brief_injection.py::test_record_is_omitted_when_question_path_does_not_cite_it
+FAILED tests/attack/test_memory_brief_injection.py::test_typed_kind_priority_precedes_input_order
+FAILED tests/attack/test_memory_brief_injection.py::test_focus_ranks_matches_without_admitting_uncited_records
+FAILED tests/attack/test_memory_brief_injection.py::test_superseded_record_is_excluded_from_brief_and_accounting
+FAILED tests/attack/test_memory_brief_injection.py::test_closed_task_is_dropped_and_reported
+FAILED tests/attack/test_memory_brief_injection.py::test_compatibility_unicode_closed_state_is_normalized
+FAILED tests/attack/test_memory_brief_injection.py::test_question_path_failure_does_not_promote_record
+FAILED tests/attack/test_memory_brief_limits.py::test_empty_memory_returns_empty_brief_at_zero_budget
+FAILED tests/attack/test_memory_brief_limits.py::test_record_order_is_independent_of_active_order_and_kind_priority
+FAILED tests/attack/test_memory_brief_limits.py::test_exact_character_budget_includes_full_selected_line
+FAILED tests/attack/test_memory_brief_limits.py::test_dropped_ids_are_reported_when_selected_line_fits
+FAILED tests/attack/test_memory_brief_limits.py::test_focus_uses_nfkc_casefold_matching_to_rank_first
+FAILED tests/attack/test_memory_brief_limits.py::test_superseded_ids_are_excluded_from_output_and_drop_accounting
+FAILED tests/attack/test_memory_brief_limits.py::test_repeated_calls_are_idempotent_and_do_not_mutate_records
+FAILED tests/attack/test_memory_brief_limits.py::test_concurrent_readers_return_the_same_brief
+FAILED tests/attack/test_memory_brief_paraphrase.py::test_empty_memory_returns_empty_string
+FAILED tests/attack/test_memory_brief_paraphrase.py::test_focus_normalizes_width_and_case
+FAILED tests/attack/test_memory_brief_paraphrase.py::test_focus_precedes_kind_priority
+FAILED tests/attack/test_memory_brief_paraphrase.py::test_polite_and_plain_wording_keep_the_same_focused_record
+FAILED tests/attack/test_memory_brief_paraphrase.py::test_entity_swap_is_reflected_in_the_rendered_record
+FAILED tests/attack/test_memory_brief_paraphrase.py::test_number_swap_is_reflected_in_the_rendered_record
+FAILED tests/attack/test_memory_brief_paraphrase.py::test_closed_task_is_omitted_and_accounted_for
+FAILED tests/attack/test_memory_brief_paraphrase.py::test_unaskable_record_is_accounted_for_as_dropped
+FAILED tests/attack/test_memory_brief_paraphrase.py::test_superseded_record_is_removed_before_dropped_accounting
+FAILED tests/attack/test_memory_frame_limits.py::test_empty_memory_returns_unknown_without_mutating_log
+FAILED tests/attack/test_memory_merge_fabrication.py::test_partial_supersession_link_stays_pending_until_target_record_arrives
+FAILED tests/attack/test_memory_merge_injection.py::test_instruction_payload_cannot_hide_a_dangling_supersession
+FAILED tests/attack/test_memory_merge_injection.py::test_instruction_text_does_not_make_a_supersession_cycle_valid
+FAILED tests/attack/test_memory_merge_limits.py::test_active_records_reject_dangling_supersession_reference
+FAILED tests/attack/test_memory_revalidate_injection.py::test_instruction_text_in_document_is_only_a_literal_witness_check
+FAILED tests/attack/test_memory_revalidate_injection.py::test_confusable_unknown_witness_kind_does_not_become_fresh
+FAILED tests/attack/test_memory_revalidate_paraphrase.py::test_fresh_text_witness_keeps_its_record_answerable
+FAILED tests/attack/test_semantic_coord_negation_modality.py::test_adjectival_naku_then_te_is_structurally_accepted
+FAILED tests/attack/test_semantic_coord_unicode_noise.py::test_te_comma_chain_is_accepted
+FAILED tests/attack/test_semantic_names_differential.py::test_name_split_accepts_kanji_title_appositive
+FAILED tests/attack/test_semantic_names_differential.py::test_generated_name_splits_match_independent_reference
+FAILED tests/attack/test_semantic_names_fabrication.py::test_name_split_accepts_kanji_descriptor_and_one_proper_name
+FAILED tests/attack/test_semantic_names_limits.py::test_name_split_accepts_kanji_title_and_one_proper_name
+FAILED tests/attack/test_semantic_names_limits.py::test_large_cover_and_pathological_long_nonkanji_prefix_are_bounded
+FAILED tests/attack/test_semantic_names_limits.py::test_repeated_calls_are_idempotent_and_do_not_mutate_inputs
+FAILED tests/attack/test_semantic_names_limits.py::test_concurrent_independent_readers_do_not_share_results
+FAILED tests/attack/test_semantic_names_long_documents.py::test_covering_selects_exact_span_from_a_long_sentence
+FAILED tests/attack/test_semantic_names_long_documents.py::test_name_split_accepts_multiple_kanji_title_tokens
+FAILED tests/attack/test_semantic_names_long_documents.py::test_repeated_entities_and_conflicting_titles_stay_document_local
+FAILED tests/attack/test_semantic_names_negation_modality.py::test_name_split_can_extract_exact_title_name_pair_in_negative_context
+FAILED tests/attack/test_semantic_names_paraphrase.py::test_particle_and_clause_surface_changes_leave_the_name_split_unchanged
+FAILED tests/attack/test_semantic_names_paraphrase.py::test_kanji_title_and_proper_name_split
+FAILED tests/attack/test_semantic_names_paraphrase.py::test_split_accepts_a_common_noun_followed_by_a_noun_suffix
+FAILED tests/attack/test_semantic_names_paraphrase.py::test_entity_swap_keeps_split_shape_and_returns_the_swapped_name
+FAILED tests/attack/test_semantic_names_realtext.py::test_name_split_accepts_kanji_title_and_one_proper_name
+FAILED tests/attack/test_semantic_names_tense_time.py::test_name_split_accepts_a_kanji_title_before_a_proper_name
+FAILED tests/attack/test_semantic_names_unicode_noise.py::test_tokens_covering_uses_python_codepoint_offsets_around_astral_noise
+FAILED tests/attack/test_semantic_names_unicode_noise.py::test_name_split_accepts_kanji_title_plus_one_proper_name
+FAILED tests/attack/test_semantic_names_unicode_noise.py::test_name_split_preserves_fullwidth_name_surface
+FAILED tests/attack/test_semantic_names_unicode_noise.py::test_name_split_preserves_decomposed_combining_sequence
+FAILED tests/attack/test_semantic_names_unicode_noise.py::test_name_split_preserves_markup_and_emoji_in_tagged_name
+FAILED tests/attack/test_semantic_reader_realtext.py::test_quantifier_scope_is_retained_as_unsupported
+FAILED tests/attack/test_semantic_unknown_fabrication.py::test_constructed_neighbour_candidate_is_not_answer_or_evidence
+FAILED tests/attack/test_semantic_unknown_injection.py::test_document_instruction_cannot_expand_candidate_authority
+FAILED tests/attack/test_semantic_unknown_injection.py::test_quoted_nested_agent_message_remains_typed_data
+FAILED tests/attack/test_semantic_unknown_injection.py::test_unicode_instruction_variants_do_not_add_result_types
+FAILED tests/attack/test_semantic_unknown_injection.py::test_question_instruction_does_not_count_as_a_held_ir_term
+FAILED tests/attack/test_semantic_unknown_injection.py::test_repeated_attacks_are_deterministic_and_do_not_mutate_input
+FAILED tests/attack/test_semantic_unknown_injection.py::test_any_provenance_returned_for_hostile_source_is_a_valid_source_slice
+FAILED tests/attack/test_semantic_unknown_limits.py::test_constructed_outputs_are_typed_and_never_evidence
+FAILED tests/attack/test_semantic_unknown_limits.py::test_clause_and_role_order_do_not_change_report_json
+FAILED tests/attack/test_semantic_unknown_limits.py::test_repeated_calls_are_idempotent
+FAILED tests/attack/test_semantic_unknown_limits.py::test_two_concurrent_readers_return_the_same_report
+FAILED tests/attack/test_semantic_unknown_limits.py::test_exact_projection_budget_is_not_refused
+FAILED tests/attack/test_semantic_unknown_paraphrase.py::test_changed_compound_meaning_changes_the_constructed_route
+FAILED tests/attack/test_semantic_unknown_paraphrase.py::test_entity_swap_changes_the_available_neighbourhood
+FAILED tests/attack/test_semantic_verify_negation_modality.py::test_double_negation_is_not_licensed_as_an_ordinary_negative_fact
+FAILED tests/attack/test_semantic_verify_negation_modality.py::test_hearsay_clause_is_not_licensed_as_an_assertion
+FAILED tests/attack/test_semantic_verify_unicode_noise.py::test_symbolic_record_licenses_unicode_actor_without_normalization
+FAILED tests/attack/test_verifier_agents_differential.py::test_brief_matches_independent_renderer_for_generated_untrusted_specs
+FAILED tests/attack/test_verifier_agents_fabrication.py::test_run_verifiers_records_references_with_their_verifier_identities
+FAILED tests/attack/test_verifier_agents_injection.py::test_brief_keeps_nested_quotes_and_unicode_inside_the_json_data
+FAILED tests/attack/test_verifier_agents_limits.py::test_unanimous_verification_evidence_is_order_independent
+100 failed, 8435 passed, 1 skipped, 75 xfailed, 75 xpassed in 113.49s (0:01:53)

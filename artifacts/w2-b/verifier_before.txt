@@ -1,0 +1,9 @@
+=========================== short test summary info ============================
+FAILED tests/attack/test_verifier_agents_differential.py::test_brief_matches_independent_renderer_for_generated_untrusted_specs
+FAILED tests/attack/test_verifier_agents_fabrication.py::test_parse_verdict_rejects_unscoped_or_vague_references[../private.txt]
+FAILED tests/attack/test_verifier_agents_fabrication.py::test_parse_verdict_rejects_unscoped_or_vague_references[a/../private.txt]
+FAILED tests/attack/test_verifier_agents_fabrication.py::test_parse_verdict_rejects_unscoped_or_vague_references[verified]
+FAILED tests/attack/test_verifier_agents_fabrication.py::test_run_verifiers_records_references_with_their_verifier_identities
+FAILED tests/attack/test_verifier_agents_injection.py::test_brief_keeps_nested_quotes_and_unicode_inside_the_json_data
+FAILED tests/attack/test_verifier_agents_limits.py::test_unanimous_verification_evidence_is_order_independent
+7 failed, 121 passed, 5 xfailed, 3 xpassed in 0.45s

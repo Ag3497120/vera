@@ -1,0 +1,469 @@
+[
+ {
+  "id": "a06",
+  "question": "舞浜地ビール工房ハーヴェスト・ムーンを経営しているのは誰ですか",
+  "gold": "イクスピアリ",
+  "budget_raise": {
+   "mode": "on_demand",
+   "levels": [
+    "high",
+    "max"
+   ],
+   "needed": true,
+   "steps": [
+    {
+     "level": "high",
+     "raised": [
+      {
+       "seed": "ムーン",
+       "capacity_before": 1,
+       "capacity_after": 1,
+       "stop_after": "budget"
+      },
+      {
+       "seed": "工房ハーヴェスト",
+       "capacity_before": 1,
+       "capacity_after": 1,
+       "stop_after": "budget"
+      },
+      {
+       "seed": "経営",
+       "capacity_before": 1,
+       "capacity_after": 1,
+       "stop_after": "budget"
+      },
+      {
+       "seed": "舞浜地ビール",
+       "capacity_before": 1,
+       "capacity_after": 1,
+       "stop_after": "budget"
+      }
+     ],
+     "verdict": "UNKNOWN_NO_EVIDENCE",
+     "states_adopted": 0,
+     "crosses_read": 4
+    },
+    {
+     "level": "max",
+     "raised": [
+      {
+       "seed": "ムーン",
+       "capacity_before": 1,
+       "capacity_after": 1,
+       "stop_after": "budget"
+      },
+      {
+       "seed": "工房ハーヴェスト",
+       "capacity_before": 1,
+       "capacity_after": 1,
+       "stop_after": "budget"
+      },
+      {
+       "seed": "経営",
+       "capacity_before": 1,
+       "capacity_after": 11,
+       "stop_after": "exhausted"
+      },
+      {
+       "seed": "舞浜地ビール",
+       "capacity_before": 1,
+       "capacity_after": 1,
+       "stop_after": "budget"
+      }
+     ],
+     "verdict": "ANSWER",
+     "states_adopted": 8523,
+     "crosses_read": 4
+    }
+   ],
+   "final_level": "max"
+  },
+  "verdict": "ANSWER",
+  "states": 8523,
+  "secs_ask": 118.5,
+  "plain": {
+   "verdict": "CHOICE",
+   "items": 8505,
+   "gold_in_path": true,
+   "trace_ok": true
+  },
+  "merged": {
+   "verdict": "CHOICE",
+   "items": 7560,
+   "gold_in_path": true,
+   "trace_ok": true
+  }
+ },
+ {
+  "id": "a10",
+  "question": "フェミニズムとは何ですか",
+  "gold": "社会運動|思想|ジェンダー",
+  "budget_raise": {
+   "mode": "on_demand",
+   "levels": [
+    "high",
+    "max"
+   ],
+   "needed": true,
+   "steps": [
+    {
+     "level": "high",
+     "raised": [
+      {
+       "seed": "フェミニズム",
+       "capacity_before": 1,
+       "capacity_after": 1,
+       "stop_after": "budget"
+      }
+     ],
+     "verdict": "UNKNOWN_NO_EVIDENCE",
+     "states_adopted": 0,
+     "crosses_read": 1
+    },
+    {
+     "level": "max",
+     "raised": [
+      {
+       "seed": "フェミニズム",
+       "capacity_before": 1,
+       "capacity_after": 1,
+       "stop_after": "budget"
+      }
+     ],
+     "verdict": "UNKNOWN_NO_EVIDENCE",
+     "states_adopted": 0,
+     "crosses_read": 1
+    }
+   ],
+   "final_level": "max"
+  },
+  "verdict": "UNKNOWN_NO_EVIDENCE",
+  "states": 0,
+  "secs_ask": 7.8
+ },
+ {
+  "id": "a14",
+  "question": "伊勢原断層はどこにありますか",
+  "gold": "神奈川県",
+  "budget_raise": {
+   "mode": "on_demand",
+   "levels": [
+    "high",
+    "max"
+   ],
+   "needed": true,
+   "steps": [
+    {
+     "level": "high",
+     "raised": [
+      {
+       "seed": "伊勢原断層",
+       "capacity_before": 1,
+       "capacity_after": 1,
+       "stop_after": "budget"
+      }
+     ],
+     "verdict": "UNKNOWN_NO_EVIDENCE",
+     "states_adopted": 0,
+     "crosses_read": 1
+    },
+    {
+     "level": "max",
+     "raised": [
+      {
+       "seed": "伊勢原断層",
+       "capacity_before": 1,
+       "capacity_after": 1,
+       "stop_after": "budget"
+      }
+     ],
+     "verdict": "UNKNOWN_NO_EVIDENCE",
+     "states_adopted": 0,
+     "crosses_read": 1
+    }
+   ],
+   "final_level": "max"
+  },
+  "verdict": "UNKNOWN_NO_EVIDENCE",
+  "states": 0,
+  "secs_ask": 12.4
+ },
+ {
+  "id": "a19",
+  "question": "ジェラーチェはどこの国にありますか",
+  "gold": "イタリア共和国|カラブリア州",
+  "budget_raise": {
+   "mode": "on_demand",
+   "levels": [
+    "high",
+    "max"
+   ],
+   "needed": true,
+   "steps": [
+    {
+     "level": "high",
+     "raised": [
+      {
+       "seed": "ジェラーチェ",
+       "capacity_before": 1,
+       "capacity_after": 10,
+       "stop_after": "exhausted"
+      }
+     ],
+     "verdict": "ANSWER",
+     "states_adopted": 1366,
+     "crosses_read": 1
+    }
+   ],
+   "final_level": "high"
+  },
+  "verdict": "ANSWER",
+  "states": 1366,
+  "secs_ask": 23.9,
+  "plain": {
+   "verdict": "CHOICE",
+   "items": 1135,
+   "gold_in_path": true,
+   "trace_ok": true
+  },
+  "merged": {
+   "verdict": "CHOICE",
+   "items": 1026,
+   "gold_in_path": true,
+   "trace_ok": true
+  }
+ },
+ {
+  "id": "a23",
+  "question": "竜游県はどこにありますか",
+  "gold": "浙江省|中華人民共和国",
+  "budget_raise": {
+   "mode": "on_demand",
+   "levels": [
+    "high",
+    "max"
+   ],
+   "needed": true,
+   "steps": [
+    {
+     "level": "high",
+     "raised": [
+      {
+       "seed": "竜游県",
+       "capacity_before": 1,
+       "capacity_after": 1,
+       "stop_after": "budget"
+      }
+     ],
+     "verdict": "UNKNOWN_NO_FIXED_POINT",
+     "states_adopted": 0,
+     "crosses_read": 4
+    },
+    {
+     "level": "max",
+     "raised": [
+      {
+       "seed": "竜游県",
+       "capacity_before": 1,
+       "capacity_after": 11,
+       "stop_after": "exhausted"
+      }
+     ],
+     "verdict": "UNKNOWN_NO_FIXED_POINT",
+     "states_adopted": 0,
+     "crosses_read": 4
+    }
+   ],
+   "final_level": "max"
+  },
+  "verdict": "UNKNOWN_NO_FIXED_POINT",
+  "states": 0,
+  "secs_ask": 26.1
+ },
+ {
+  "id": "a30",
+  "question": "花園町駅はどこにありますか",
+  "gold": "大阪府|大阪市|西成区",
+  "budget_raise": {
+   "mode": "on_demand",
+   "levels": [
+    "high",
+    "max"
+   ],
+   "needed": true,
+   "steps": [
+    {
+     "level": "high",
+     "raised": [
+      {
+       "seed": "花園町駅",
+       "capacity_before": 1,
+       "capacity_after": 9,
+       "stop_after": "exhausted"
+      }
+     ],
+     "verdict": "AMBIGUOUS",
+     "states_adopted": 0,
+     "crosses_read": 4
+    }
+   ],
+   "final_level": "high"
+  },
+  "verdict": "AMBIGUOUS",
+  "states": 0,
+  "secs_ask": 122.3
+ },
+ {
+  "id": "a32",
+  "question": "叱らない母親の作者は誰ですか",
+  "gold": "小野拓実",
+  "budget_raise": {
+   "mode": "on_demand",
+   "levels": [
+    "high",
+    "max"
+   ],
+   "needed": true,
+   "steps": [
+    {
+     "level": "high",
+     "raised": [
+      {
+       "seed": "作者",
+       "capacity_before": 1,
+       "capacity_after": 1,
+       "stop_after": "budget"
+      }
+     ],
+     "verdict": "AMBIGUOUS",
+     "states_adopted": 0,
+     "crosses_read": 7
+    },
+    {
+     "level": "max",
+     "raised": [
+      {
+       "seed": "作者",
+       "capacity_before": 1,
+       "capacity_after": 10,
+       "stop_after": "exhausted"
+      }
+     ],
+     "verdict": "CHOICE",
+     "states_adopted": 1890,
+     "crosses_read": 7
+    }
+   ],
+   "final_level": "max"
+  },
+  "verdict": "CHOICE",
+  "states": 1890,
+  "secs_ask": 103.3,
+  "plain": {
+   "verdict": "CHOICE",
+   "items": 1890,
+   "gold_in_path": false,
+   "trace_ok": true
+  },
+  "merged": {
+   "verdict": "CHOICE",
+   "items": 1890,
+   "gold_in_path": false,
+   "trace_ok": true
+  }
+ },
+ {
+  "id": "a42",
+  "question": "破局噴火とは何ですか",
+  "gold": "噴火|マグマ|噴火形式",
+  "budget_raise": {
+   "mode": "on_demand",
+   "levels": [
+    "high",
+    "max"
+   ],
+   "needed": true,
+   "steps": [
+    {
+     "level": "high",
+     "raised": [
+      {
+       "seed": "破局噴火",
+       "capacity_before": 1,
+       "capacity_after": 1,
+       "stop_after": "budget"
+      }
+     ],
+     "verdict": "UNKNOWN_NO_EVIDENCE",
+     "states_adopted": 0,
+     "crosses_read": 1
+    },
+    {
+     "level": "max",
+     "raised": [
+      {
+       "seed": "破局噴火",
+       "capacity_before": 1,
+       "capacity_after": 1,
+       "stop_after": "budget"
+      }
+     ],
+     "verdict": "UNKNOWN_NO_EVIDENCE",
+     "states_adopted": 0,
+     "crosses_read": 1
+    }
+   ],
+   "final_level": "max"
+  },
+  "verdict": "UNKNOWN_NO_EVIDENCE",
+  "states": 0,
+  "secs_ask": 21.5
+ },
+ {
+  "id": "a57",
+  "question": "ハッシュテーブルとは何ですか",
+  "gold": "データ構造",
+  "budget_raise": {
+   "mode": "on_demand",
+   "levels": [
+    "high",
+    "max"
+   ],
+   "needed": true,
+   "steps": [
+    {
+     "level": "high",
+     "raised": [
+      {
+       "seed": "ハッシュテーブル",
+       "capacity_before": 1,
+       "capacity_after": 1,
+       "stop_after": "budget"
+      }
+     ],
+     "verdict": "UNKNOWN_NO_EVIDENCE",
+     "states_adopted": 0,
+     "crosses_read": 1
+    },
+    {
+     "level": "max",
+     "raised": [
+      {
+       "seed": "ハッシュテーブル",
+       "capacity_before": 1,
+       "capacity_after": 1,
+       "stop_after": "budget"
+      }
+     ],
+     "verdict": "UNKNOWN_NO_EVIDENCE",
+     "states_adopted": 0,
+     "crosses_read": 1
+    }
+   ],
+   "final_level": "max"
+  },
+  "verdict": "UNKNOWN_NO_EVIDENCE",
+  "states": 0,
+  "secs_ask": 9.0
+ }
+]

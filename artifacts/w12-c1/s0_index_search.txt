@@ -1,0 +1,139 @@
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "語彙層 初期搭載",
+  "searched": 698,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 57,
+    "module": 296,
+    "prereg": 80,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}
+{
+  "verdict": "ANSWER",
+  "query": "粒度の階段",
+  "searched": 698,
+  "hits": [
+    {
+      "kind": "module",
+      "name": "granularity",
+      "about": "Composition across granularities — where a closed system stops being closed.",
+      "where": "verantyx/granularity.py"
+    },
+    {
+      "kind": "module",
+      "name": "resolution",
+      "about": "A ladder of resolutions over one corpus — agreement as calibrated doubt.",
+      "where": "verantyx/resolution.py"
+    },
+    {
+      "kind": "fork",
+      "name": "granularity_composes_fork",
+      "about": "Two granularities over one corpus can form what one cannot.",
+      "where": "verantyx/cross_geometry_forks.py",
+      "registered": "yes"
+    },
+    {
+      "kind": "fork",
+      "name": "placement_granularity_fork",
+      "about": "The same information, poured two ways, is not the same knowledge.",
+      "where": "verantyx/cross_geometry_forks.py",
+      "registered": "yes"
+    },
+    {
+      "kind": "fork",
+      "name": "resolution_ladder_grades_doubt_fork",
+      "about": "A tied rung abstains, and unanimity therefore means something.",
+      "where": "verantyx/cross_geometry_forks.py",
+      "registered": "yes"
+    },
+    {
+      "kind": "door",
+      "name": "heartbeat",
+      "about": "Milestone M's autonomous growth tick (closed-domain modules,",
+      "where": "verantyx/mcp_server.py"
+    },
+    {
+      "kind": "door",
+      "name": "log_transfer_attempt",
+      "about": "Milestone R3: record that a structurally-matched resolution",
+      "where": "verantyx/mcp_server.py"
+    },
+    {
+      "kind": "door",
+      "name": "propose_web_evidence",
+      "about": "Quarantine ONE raw web-search excerpt, verbatim, for human review",
+      "where": "verantyx/mcp_server.py"
+    },
+    {
+      "kind": "door",
+      "name": "record_asset_outcome",
+      "about": "What happened when an asset was used for a need — and, when",
+      "where": "verantyx/mcp_server.py"
+    },
+    {
+      "kind": "door",
+      "name": "record_refusal_outcome",
+      "about": "A typed refusal was handed to an action branch (gather-evidence,",
+      "where": "verantyx/mcp_server.py"
+    },
+    {
+      "kind": "module",
+      "name": "constellation",
+      "about": "Sovereigns in parallel, with nothing above them.",
+      "where": "verantyx/constellation.py"
+    },
+    {
+      "kind": "module",
+      "name": "cross_geometry_forks",
+      "about": "Forks for the three unbuilt pieces of the original conception:",
+      "where": "verantyx/cross_geometry_forks.py"
+    }
+  ],
+  "total_hits": 38
+}
+{
+  "verdict": "ANSWER",
+  "query": "知識量の階段 一致",
+  "searched": 698,
+  "hits": [
+    {
+      "kind": "results",
+      "name": "RESULTS",
+      "about": "到達性の棚卸し(2026-08-19) — 「実装済み未到達」の体系的検査",
+      "where": "experiments/reachability_audit/RESULTS.md"
+    }
+  ],
+  "total_hits": 1
+}
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "no-llm serve",
+  "searched": 698,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 57,
+    "module": 296,
+    "prereg": 80,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "confidence tiers",
+  "searched": 698,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 57,
+    "module": 296,
+    "prereg": 80,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}

@@ -14,6 +14,7 @@ import pytest
 from verantyx import basis_policy as bp
 
 DOC = Path(__file__).resolve().parents[1] / "docs" / "BASIS_POLICY.md"
+W5F_MEMORY_IDS = {"store_id": "store-w5f-test", "confirm_id": "0123456789abcdef01234567"}
 
 
 def _prereg() -> str:
@@ -115,8 +116,9 @@ def test_mixed_basis_has_its_own_reason_and_is_not_an_answer():
 
 
 def test_decide_accepts_a_classification_result_as_the_basis():
+    # W5-f（F-4、分類の規則 v5）: 有効な識別子を持つソブリン出典の分類結果を渡す。
     # W5-c r3（監査役の判断 2026-10-03 20:40）: 入力の人の出典を明示の人（origin: human_confirmed）にした。期待は同じ
-    sc = bp.classify_sources([{"family": "memory_sovereign", "origin": "human_confirmed", "text": "x"}])
+    sc = bp.classify_sources([{**W5F_MEMORY_IDS, "family": "memory_sovereign", "origin": "human_confirmed", "text": "x"}])
     assert sc.basis == "HUMAN"
     assert bp.decide("factual", sc, False, False).outcome == "ANSWER_HUMAN_BASIS"
 
@@ -140,7 +142,8 @@ def test_rule2_generated_origin():
 
 
 def test_rule3_human_confirmed_origin_is_human():
-    sc = bp.classify_sources([{"family": "memory_sovereign", "origin": "human_confirmed"}])
+    # W5-f（F-4、分類の規則 v5）: 条件を満たす識別子とともに規則 3 を確かめる。
+    sc = bp.classify_sources([{**W5F_MEMORY_IDS, "family": "memory_sovereign", "origin": "human_confirmed"}])
     assert sc.counts["human"] == 1 and sc.basis == "HUMAN"
 
 
@@ -175,8 +178,9 @@ def test_generated_next_to_the_request_text_is_still_generated_only():
 
 
 def test_human_and_generated_together_is_mixed():
+    # W5-f（F-4、分類の規則 v5）: 条件を満たすソブリン出典と生成出典を混ぜる。
     # W5-c r3（監査役の判断 2026-10-03 20:40）: 入力の人の出典を明示の人（origin: human_confirmed）にした。期待は同じ
-    sc = bp.classify_sources([{"family": "memory_sovereign", "origin": "human_confirmed"}, {"family": "local", "origin": "generated"}])
+    sc = bp.classify_sources([{**W5F_MEMORY_IDS, "family": "memory_sovereign", "origin": "human_confirmed"}, {"family": "local", "origin": "generated"}])
     assert sc.basis == "MIXED" and sc.cited == 2
 
 

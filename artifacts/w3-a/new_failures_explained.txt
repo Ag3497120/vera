@@ -1,0 +1,13 @@
+new failure: tests/bank_score/test_bs_end_to_end.py::test_s6_two_runs_agree_except_timing_and_recount_matches
+
+Reproduces alone (2 of 2 isolated runs fail), so it is not a fluke of the full run.  Cause (not a regression in behaviour):
+the failing assertion is  meta["verantyx_untouched"] is True  (the line `assert meta["child_env"]["HOME"] == "<WORK>/home" and meta["verantyx_untouched"] is True`).
+tools/bank_score/cli.py:277 computes it as  `git status --porcelain -- verantyx` == "".
+This ticket's ALLOWED new files live under verantyx/ (verantyx/coarse_place.py, verantyx/coarse_types.py), and they are untracked until the
+auditor commits them, so the status is non-empty (see below) and the harness reports "verantyx touched".  No existing file under verantyx/ was changed
+(git diff is empty for tracked files).  The same test appeared once as "new" in W2-c for the same reason (W3-a plan, step 7).
+It passes on a tree whose verantyx/ has no pending change (after the commit).  I did not delete, skip or weaken it.
+
+git status --porcelain -- verantyx  (at the time of the full run):
+?? verantyx/coarse_place.py
+?? verantyx/coarse_types.py

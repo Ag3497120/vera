@@ -1,0 +1,4 @@
+Rows: 130; recorded human answers: 72; exact option labels: 27.
+conduct_ask outcomes on the recorded answers: {'ESCALATED': 72}.
+Escalation reasons (recorded answers): {'VOCAB_UNMAPPED': 58, 'HUMAN_APPROVAL_REQUIRED': 5, 'FRAME_SILENT': 9}.
+Triage: NO_INFO=61, FRAME_SAYS_ESCALATE=10, INFO_NOT_RETRIEVED=1, UNTRIAGED=0

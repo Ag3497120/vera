@@ -1,0 +1,11 @@
+ M docs/FUSION.md
+ M verantyx/decode_grammar.py
+ M verantyx/vera_server.py
+?? artifacts/w16-t3/
+?? tests/test_w16t3_quote_check.py
+?? tests/test_w16t3_serve.py
+?? verantyx/quote_check.py
+ docs/FUSION.md             | 430 +++++++++++++++++++++++++++++++++++++++++++++
+ verantyx/decode_grammar.py |  81 ++++++++-
+ verantyx/vera_server.py    |   2 +-
+ 3 files changed, 511 insertions(+), 2 deletions(-)

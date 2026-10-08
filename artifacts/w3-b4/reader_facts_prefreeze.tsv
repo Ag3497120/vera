@@ -1,0 +1,319 @@
+text	n_clauses	rule	unsupported	trigger_w3b1	trigger_w3b2	predicate	ctype	tail_gate	derived_gate	base_entry	base_reason
+兄が校庭で遊んだ。	1	frame	ambiguous case role: で	-	U3	遊ぶ	五段-バ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+弟が森林で遊んだ。	1	frame	ambiguous case role: で	-	U3	遊ぶ	五段-バ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+犬が道路で遊んだ。	1	frame	ambiguous case role: で	-	U3	遊ぶ	五段-バ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+花子が校庭で遊んだ。	1	frame	ambiguous case role: で	-	U3	遊ぶ	五段-バ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+姉が歩道で働いた。	1	frame	ambiguous case role: で	-	U3	働く	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+先生が校庭で働かなかった。	1	frame	ambiguous case role: で	-	U3	働く	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兵士が国道で戦った。	1	frame	ambiguous case role: で	-	U3	戦う	五段-ワア行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+軍が山林で戦う。	1	frame	ambiguous case role: で	-	U3	戦う	五段-ワア行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+選手が土俵で戦った。	1	frame	ambiguous case role: で	-	U3	戦う	五段-ワア行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+母が校庭で生徒を守った。	1	frame	ambiguous case role: で	-	U3	守る	五段-ラ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+警官が交差点で市民を守る。	1	frame	ambiguous case role: で	-	U3	守る	五段-ラ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が道路で荷車を押した。	1	frame	ambiguous case role: で	-	U3	押す	五段-サ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+父が国道で荷車を引いた。	1	frame	ambiguous case role: で	-	U3	引く	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+農家が農道で荷車を引かなかった。	1	frame	ambiguous case role: で	-	U3	引く	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+母が川で皿を洗った。	1	frame	ambiguous case role: で	-	U3	洗う	五段-ワア行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+祖母が校舎で箱を拭いた。	1	frame	ambiguous case role: で	-	U3	拭く	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+弟が山頂で木を切った。	1	frame	ambiguous case role: で	-	U3	切る	五段-ラ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が校庭で草を取り除いた。	1	frame	ambiguous case role: で	-	U3	取り除く	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+母が川で米を洗った。	1	frame	ambiguous case role: で	-	U3	洗う	五段-ワア行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+母が校庭で扉を拭いた。	1	frame	ambiguous case role: で	-	U3	拭く	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が荷車を畑へ押した。	1	frame		U	-	押す	五段-サ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:押す
+父が荷車を国道へ引いた。	1	frame		U	-	引く	五段-カ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:引く
+弟が荷車を校舎へ引かなかった。	1	frame		U	-	引く	五段-カ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:引く
+農家が荷車を農道へ引く。	1	frame		U	-	引く	五段-カ行	ok	ok	abstain	AGENT_EVIDENCE_MISSING:農家
+父が国道で畑から荷車を引いた。	1	frame	ambiguous case role: で	-	U3	引く	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が町の校庭で遊んだ。	1	frame	ambiguous case role: で	-	U3	遊ぶ	五段-バ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が校庭に遊んだ。	1	frame		U	-	遊ぶ	五段-バ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:遊ぶ
+兄が荷車を校庭に押した。	1	frame	ambiguous case role: に	U	-	押す	五段-サ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が学校へ働いた。	1	frame		U	-	働く	五段-カ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:働く
+父が荷車を会社へ引いた。	1	frame		U	-	引く	五段-カ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:引く
+兄が机で遊んだ。	1	frame	ambiguous case role: で	-	U3	遊ぶ	五段-バ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+弟が椅子で働いた。	1	frame	ambiguous case role: で	-	U3	働く	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が街角で遊んだ。	1	frame	ambiguous case role: で	-	U3	遊ぶ	五段-バ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+母が階段で皿を洗った。	1	frame	ambiguous case role: で	-	U3	洗う	五段-ワア行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+客が校庭で遊んだ。	1	frame	ambiguous case role: で	-	U3	遊ぶ	五段-バ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+医者が校庭で働いた。	1	frame	ambiguous case role: で	-	U3	働く	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+母が校庭で窓を拭いた。	1	frame	ambiguous case role: で	-	U3	拭く	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+弟が国道で水を引いた。	1	frame	ambiguous case role: で	-	U3	引く	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+母が校庭で荷物を洗った。	1	frame	ambiguous case role: で	-	U3	洗う	五段-ワア行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が書斎で遊んだ。	1	frame	ambiguous case role: で	-	U3	遊ぶ	五段-バ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+弟が廊下で働いた。	1	frame	ambiguous case role: で	-	U3	働く	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+祖母が縁側で皿を拭いた。	1	frame	ambiguous case role: で	-	U3	拭く	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+子供が校庭で遊んだ。	1	frame	ambiguous case role: で	-	U3	遊ぶ	五段-バ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+委員会が校庭で働いた。	1	frame	ambiguous case role: で	-	U3	働く	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兵士が校庭で国境を守った。	1	frame	ambiguous case role: で	-	U3	守る	五段-ラ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+機械が校庭で働いた。	1	frame	ambiguous case role: で	-	U3	働く	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+母が機械で皿を洗った。	1	frame	ambiguous case role: で	-	U3	洗う	五段-ワア行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄があまり校庭で遊ばなかった。	1	frame	ambiguous case role: で;unrepresented source content;unrepresented source content	-	-	遊ぶ	五段-バ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が全然国道で働かなかった。	1	frame	ambiguous case role: で;unrepresented source content;unrepresented source content	-	-	働く	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が校庭で犬と遊んだ。	1	frame	ambiguous case role: で;ambiguous case role: と;duplicate role in clause	-	-	遊ぶ	五段-バ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が荷車を持って、校庭で押した。	2	frame		-	-	持つ	五段-タ行	PLACEMENT_PREDICATE_TAIL_UNINTERPRETED:連用形-促音便:助詞	ok	abstain	UNSUPPORTED_CLAUSE
+兄が校庭で皿を集めた。	1	frame	ambiguous case role: で	-	U3	集める	下一段-マ行	ok	PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-マ行	abstain	NO_SUPPORTED_CLAUSE
+兄が校庭で遊んでいる。	1	frame	ambiguous case role: で	-	U3	遊ぶ	五段-バ行	PLACEMENT_PREDICATE_TAIL_UNINTERPRETED:連用形-撥音便:助詞	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が校庭で働かされた。	1	frame	ambiguous case role: で	-	U3	働かす	五段-サ行	PLACEMENT_PREDICATE_TAIL_UNINTERPRETED:未然形-一般:助動詞	PLACEMENT_PREDICATE_POSSIBLY_DERIVED:五段-サ行	abstain	NO_SUPPORTED_CLAUSE
+兄が校庭で変わった。	1	frame	ambiguous case role: で	-	U3	変わる	五段-ラ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+弟が歩道で変わった。	1	frame	ambiguous case role: で	-	U3	変わる	五段-ラ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+猫が道路で落ちた。	1	frame	ambiguous case role: で	-	U3	落ちる	上一段-タ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+鳥が湖で落ちた。	1	frame	ambiguous case role: で	-	U3	落ちる	上一段-タ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兵士が国道で減った。	1	frame	ambiguous case role: で	-	U3	減る	五段-ラ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+村人が農道で減った。	1	frame	ambiguous case role: で	-	U3	減る	五段-ラ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+馬が校庭で凍った。	1	frame	ambiguous case role: で	-	U3	凍る	五段-ラ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+鳥が国道で凍った。	1	frame	ambiguous case role: で	-	U3	凍る	五段-ラ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+先生が山頂で凍らなかった。	1	frame	ambiguous case role: で	-	U3	凍る	五段-ラ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+チームが校庭で変わった。	1	frame	ambiguous case role: で	-	U3	変わる	五段-ラ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+軍が山林で広がった。	1	frame	ambiguous case role: で	-	U3	広がる	五段-ラ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+政府が国道で変わらなかった。	1	frame	ambiguous case role: で	-	U3	変わる	五段-ラ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+花子が校庭で落ちた。	1	frame	ambiguous case role: で	-	U3	落ちる	上一段-タ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+子猫が道路で落ちた。	1	frame	ambiguous case role: で	-	U3	落ちる	上一段-タ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+警察が交差点で減った。	1	frame	ambiguous case role: で	-	U3	減る	五段-ラ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+猫が屋根へ落ちた。	1	frame		U	-	落ちる	上一段-タ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:落ちる
+鳥が湖へ落ちた。	1	frame		U	-	落ちる	上一段-タ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:落ちる
+兵士が山頂へ広がった。	1	frame		U	-	広がる	五段-ラ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:広がる
+村人が校庭へ広がった。	1	frame		U	-	広がる	五段-ラ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:広がる
+犬が池へ落ちた。	1	frame		U	-	落ちる	上一段-タ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:落ちる
+兄が畑へ落ちなかった。	1	frame		U	-	落ちる	上一段-タ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:落ちる
+猫が校庭で屋根から落ちた。	1	frame	ambiguous case role: で	-	U3	落ちる	上一段-タ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+犬が農道で屋根から落ちた。	1	frame	ambiguous case role: で	-	U3	落ちる	上一段-タ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が山頂で屋根から落ちなかった。	1	frame	ambiguous case role: で	-	U3	落ちる	上一段-タ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+猫が屋根から池へ落ちた。	1	frame		U	-	落ちる	上一段-タ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:落ちる
+村人が国道から校庭へ広がった。	1	frame		U	-	広がる	五段-ラ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:広がる
+兄が町の校庭で変わった。	1	frame	ambiguous case role: で	-	U3	変わる	五段-ラ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兵士が山頂に広がった。	1	frame		U	-	広がる	五段-ラ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:広がる
+兄が校庭に落ちた。	1	frame		U	-	落ちる	上一段-タ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:落ちる
+猫が屋根に落ちた。	1	frame		U	-	落ちる	上一段-タ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:落ちる
+犬が池に落ちた。	1	frame		U	-	落ちる	上一段-タ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:落ちる
+兄が校庭で荷車を落ちた。	1	frame	ambiguous case role: で	-	U3	落ちる	上一段-タ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+猫が校庭で坂を落ちた。	1	frame	ambiguous case role: で	-	U3	落ちる	上一段-タ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+鳥が国道ではしごを落ちた。	1	frame	ambiguous case role: で	-	U3	落ちる	上一段-タ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+雨が校庭で変わった。	1	frame	ambiguous case role: で	-	U3	変わる	五段-ラ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+雪が国道で減った。	1	frame	ambiguous case role: で	-	U3	減る	五段-ラ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+氷が校庭で広がった。	1	frame	ambiguous case role: で	-	U3	広がる	五段-ラ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+客が校庭で減った。	1	frame	ambiguous case role: で	-	U3	減る	五段-ラ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+医者が国道で変わった。	1	frame	ambiguous case role: で	-	U3	変わる	五段-ラ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+猫が階段で落ちた。	1	frame	ambiguous case role: で	-	U3	落ちる	上一段-タ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+鳥が街角で減った。	1	frame	ambiguous case role: で	-	U3	減る	五段-ラ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+猫が階段へ落ちた。	1	frame		U	-	落ちる	上一段-タ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:落ちる
+犬が裏庭へ落ちた。	1	frame		U	-	落ちる	上一段-タ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:落ちる
+チームが会社へ広がった。	1	frame		U	-	広がる	五段-ラ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:広がる
+村人が学校へ広がった。	1	frame		U	-	広がる	五段-ラ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:広がる
+猫が屋根で落ちた。	1	frame	ambiguous case role: で	-	U3	落ちる	上一段-タ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が書斎で変わった。	1	frame	ambiguous case role: で	-	U3	変わる	五段-ラ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+弟が廊下で落ちた。	1	frame	ambiguous case role: で	-	U3	落ちる	上一段-タ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+子供が校庭で落ちた。	1	frame	ambiguous case role: で	-	U3	落ちる	上一段-タ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+委員会が国道で変わった。	1	frame	ambiguous case role: で	-	U3	変わる	五段-ラ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄があまり校庭で変わらなかった。	1	frame	ambiguous case role: で;unrepresented source content;unrepresented source content	-	-	変わる	五段-ラ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が全然国道で終わらなかった。	1	copula	copula value is a predicate phrase	-	-	identity	助動詞-タ	PLACEMENT_PREDICATE_TAIL_UNINTERPRETED:head:なし	ok	abstain	NO_PREDICATE_TOKEN
+兄が校庭で犬と変わらなかった。	1	frame	ambiguous case role: で;ambiguous case role: と;duplicate role in clause	-	-	変わる	五段-ラ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が荷車を引いて、校庭で落ちた。	2	frame		-	-	引く	五段-カ行	PLACEMENT_PREDICATE_TAIL_UNINTERPRETED:連用形-イ音便:助詞	ok	abstain	UNSUPPORTED_CLAUSE
+兄が校庭で消えた。	1	frame	ambiguous case role: で	-	U3	消える	下一段-ア行	ok	PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-ア行	abstain	NO_SUPPORTED_CLAUSE
+猫が道路で消えた。	1	frame	ambiguous case role: で	-	U3	消える	下一段-ア行	ok	PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-ア行	abstain	NO_SUPPORTED_CLAUSE
+兄が校庭で変わっている。	1	frame	ambiguous case role: で	-	U3	変わる	五段-ラ行	PLACEMENT_PREDICATE_TAIL_UNINTERPRETED:連用形-促音便:助詞	ok	abstain	NO_SUPPORTED_CLAUSE
+父が校庭で絵を描いた。	1	frame	ambiguous case role: で	-	U3	描く	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+姉が森林で絵を描いた。	1	frame	ambiguous case role: で	-	U3	描く	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+母が校庭で歌を作った。	1	frame	ambiguous case role: で	-	U3	作る	五段-ラ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が国道で規則を作った。	1	frame	ambiguous case role: で	-	U3	作る	五段-ラ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+先生が校舎で約束を作った。	1	frame	ambiguous case role: で	-	U3	作る	五段-ラ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が校庭で手紙を書いた。	1	frame	ambiguous case role: で	-	U3	書く	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+弟が校舎で日記を書いた。	1	frame	ambiguous case role: で	-	U3	書く	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+姉が湖で絵本を描いた。	1	frame	ambiguous case role: で	-	U3	描く	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+母が校庭で魚を焼いた。	1	frame	ambiguous case role: で	-	U3	焼く	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+祖母が校庭で肉を焼かなかった。	1	frame	ambiguous case role: で	-	U3	焼く	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+母が川で野菜を煮た。	1	frame	ambiguous case role: で	-	U3	煮る	上一段-ナ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+父が山頂で豆を煮た。	1	frame	ambiguous case role: で	-	U3	煮る	上一段-ナ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+祖父が山林で芋を掘った。	1	frame	ambiguous case role: で	-	U3	掘る	五段-ラ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+農家が農道で芋を掘る。	1	frame	ambiguous case role: で	-	U3	掘る	五段-ラ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+祖母が校庭で帽子を編んだ。	1	frame	ambiguous case role: で	-	U3	編む	五段-マ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+母が校舎で服を縫った。	1	frame	ambiguous case role: で	-	U3	縫う	五段-ワア行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+母が校庭で米を炊いた。	1	frame	ambiguous case role: で	-	U3	炊く	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+母が国道で卵焼きを作った。	1	frame	ambiguous case role: で	-	U3	作る	五段-ラ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+母が校庭で餅を作らなかった。	1	frame	ambiguous case role: で	-	U3	作る	五段-ラ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が校庭でスープを作った。	1	frame	ambiguous case role: で	-	U3	作る	五段-ラ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+先生が校庭で絵を描かなかった。	1	frame	ambiguous case role: で	-	U3	描く	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+弟が遊歩道で歌を書いた。	1	frame	ambiguous case role: で	-	U3	書く	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+祖母が神社で餅を焼いた。	1	frame	ambiguous case role: で	-	U3	焼く	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+父が教会で絵を描いた。	1	frame	ambiguous case role: で	-	U3	描く	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+花子が校庭で絵を描いた。	1	frame	ambiguous case role: で	-	U3	描く	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+警察が交差点で規則を作った。	1	frame	ambiguous case role: で	-	U3	作る	五段-ラ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+母が町の校庭でスープを煮た。	1	frame	ambiguous case role: で	-	U3	煮る	上一段-ナ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が山頂で音楽を作った。	1	frame	ambiguous case role: で	-	U3	作る	五段-ラ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+母が兄に帽子を編んだ。	1	frame		U	-	編む	五段-マ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:編む
+母が弟にスープを作った。	1	frame		U	-	作る	五段-ラ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:作る
+祖母が妹に服を縫った。	1	frame		U	-	縫う	五段-ワア行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:縫う
+姉が妹に絵を描いた。	1	frame		U	-	描く	五段-カ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:描く
+祖父が山頂に芋を掘った。	1	frame	ambiguous case role: に	U	-	掘る	五段-ラ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+母が兄へ服を縫った。	1	frame		U	-	縫う	五段-ワア行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:縫う
+兄が校庭で川から芋を掘った。	1	frame	ambiguous case role: で	-	U3	掘る	五段-ラ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が校庭で橋を築いた。	1	frame	ambiguous case role: で	-	U3	築く	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兵士が国道で井戸を掘った。	1	frame	ambiguous case role: で	-	U3	掘る	五段-ラ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+機械が校庭で絵を描いた。	1	frame	ambiguous case role: で	-	U3	描く	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+風が森林で歌を作った。	1	frame	ambiguous case role: で	-	U3	作る	五段-ラ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+客が校庭で絵を描いた。	1	frame	ambiguous case role: で	-	U3	描く	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+母が校庭で窓を作った。	1	frame	ambiguous case role: で	-	U3	作る	五段-ラ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+母が校庭で水を煮た。	1	frame	ambiguous case role: で	-	U3	煮る	上一段-ナ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+母が校庭で紙を作った。	1	frame	ambiguous case role: で	-	U3	作る	五段-ラ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+加藤が校庭で絵を描いた。	1	frame	ambiguous case role: で	-	U3	描く	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+母が校庭で石鹸を作った。	1	frame	ambiguous case role: で	-	U3	作る	五段-ラ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が校庭で報告書を書いた。	1	frame	ambiguous case role: で	-	U3	書く	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が書斎で手紙を書いた。	1	frame	ambiguous case role: で	-	U3	書く	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+母が居間で絵を描いた。	1	frame	ambiguous case role: で	-	U3	描く	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+父が縁側で歌を作った。	1	frame	ambiguous case role: で	-	U3	作る	五段-ラ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が机で絵を描いた。	1	frame	ambiguous case role: で	-	U3	描く	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+母が階段で絵を描いた。	1	frame	ambiguous case role: で	-	U3	描く	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+母が機械で餅を作った。	1	frame	ambiguous case role: で	-	U3	作る	五段-ラ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄があまり校庭で絵を描かなかった。	1	frame	ambiguous case role: で;unrepresented source content;unrepresented source content	-	-	描く	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が全然校庭で歌を作らなかった。	1	frame	ambiguous case role: で;unrepresented source content;unrepresented source content	-	-	作る	五段-ラ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が校庭で弟と絵を描いた。	1	frame	ambiguous case role: で;ambiguous case role: と;duplicate role in clause	-	-	描く	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+母が餅を作って、校庭で焼いた。	2	frame		-	-	作る	五段-ラ行	PLACEMENT_PREDICATE_TAIL_UNINTERPRETED:連用形-促音便:助詞	ok	abstain	UNSUPPORTED_CLAUSE
+母が校庭で魚を揚げた。	1	frame	ambiguous case role: で	-	U3	揚げる	下一段-ガ行	ok	PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-ガ行	abstain	NO_SUPPORTED_CLAUSE
+祖父が校庭で花を育てた。	1	frame	ambiguous case role: で	-	U3	育てる	下一段-タ行	ok	PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-タ行	abstain	NO_SUPPORTED_CLAUSE
+母が校庭で魚を焼いている。	1	frame	ambiguous case role: で	-	U3	焼く	五段-カ行	PLACEMENT_PREDICATE_TAIL_UNINTERPRETED:連用形-イ音便:助詞	ok	abstain	NO_SUPPORTED_CLAUSE
+母が校庭で餅を作らせた。	1	frame	ambiguous case role: で	-	U3	作らせる	五段-ラ行	PLACEMENT_PREDICATE_TAIL_UNINTERPRETED:未然形-一般:助動詞	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が校庭で薬を飲んだ。	1	frame	ambiguous case role: で	-	U3	飲む	五段-マ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+弟が森林で酒を飲んだ。	1	frame	ambiguous case role: で	-	U3	飲む	五段-マ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+祖母が神社で茶を飲んだ。	1	frame	ambiguous case role: で	-	U3	飲む	五段-マ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+母が川で薬を飲まなかった。	1	frame	ambiguous case role: で	-	U3	飲む	五段-マ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が校庭で道具を使った。	1	frame	ambiguous case role: で	-	U3	使う	五段-ワア行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+弟が道路で機械を使った。	1	frame	ambiguous case role: で	-	U3	使う	五段-ワア行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+先生が校舎で道具を用いた。	1	frame	ambiguous case role: で	-	U3	用いる	上一段-ア行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+先生が校庭で規則を用いた。	1	frame	ambiguous case role: で	-	U3	用いる	上一段-ア行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が校庭で服を着た。	1	frame	ambiguous case role: で	-	U3	着る	上一段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+弟が森林で帽子を脱いだ。	1	frame	ambiguous case role: で	-	U3	脱ぐ	五段-ガ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+姉が教会で服を脱がなかった。	1	frame	ambiguous case role: で	-	U3	脱ぐ	五段-ガ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+農家が農道で肉を噛んだ。	1	frame	ambiguous case role: で	-	U3	噛む	五段-マ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が校庭で豆を噛んだ。	1	frame	ambiguous case role: で	-	U3	噛む	五段-マ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+母が神社で餅を味わった。	1	frame	ambiguous case role: で	-	U3	味わう	五段-ワア行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+祖父が山頂で酒を味わう。	1	frame	ambiguous case role: で	-	U3	味わう	五段-ワア行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+父が国道で油を使った。	1	frame	ambiguous case role: で	-	U3	使う	五段-ワア行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が校庭で歌を味わった。	1	frame	ambiguous case role: で	-	U3	味わう	五段-ワア行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+母が川で米を使った。	1	frame	ambiguous case role: で	-	U3	使う	五段-ワア行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が校庭で手紙を用いた。	1	frame	ambiguous case role: で	-	U3	用いる	上一段-ア行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が夜に校庭で薬を飲んだ。	1	frame	ambiguous case role: で	-	U3	飲む	五段-マ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+弟が放課後に校庭で道具を使った。	1	frame	ambiguous case role: で	-	U3	使う	五段-ワア行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+祖母が休日に神社で茶を飲んだ。	1	frame	ambiguous case role: で	-	U3	飲む	五段-マ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が冬に山頂で酒を飲んだ。	1	frame	ambiguous case role: で	-	U3	飲む	五段-マ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+母が祝日に川で服を着た。	1	frame	ambiguous case role: で	-	U3	着る	上一段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+先生が昼に校庭で薬を飲まなかった。	1	frame	ambiguous case role: で	-	U3	飲む	五段-マ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+父が年末に湖で酒を味わった。	1	frame	ambiguous case role: で	-	U3	味わう	五段-ワア行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+弟が国道で酒を飲み込んだ。	1	frame	ambiguous case role: で	-	U3	飲み込む	五段-マ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が校庭で川から茶を飲んだ。	1	frame	ambiguous case role: で	-	U3	飲む	五段-マ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+母が町の校庭で薬を飲んだ。	1	frame	ambiguous case role: で	-	U3	飲む	五段-マ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が夕食に薬を飲んだ。	1	frame	ambiguous case role: に	U	-	飲む	五段-マ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+弟が夕食に道具を使った。	1	frame	ambiguous case role: に	U	-	使う	五段-ワア行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+母が弁当に服を着た。	1	frame	ambiguous case role: に	U	-	着る	上一段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+弟が畑へ酒を飲んだ。	1	frame		U	-	飲む	五段-マ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:飲む
+兄が机で薬を飲んだ。	1	frame	ambiguous case role: で	-	U3	飲む	五段-マ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+母が階段で服を着た。	1	frame	ambiguous case role: で	-	U3	着る	上一段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+弟が街角で酒を飲んだ。	1	frame	ambiguous case role: で	-	U3	飲む	五段-マ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が書斎で薬を飲んだ。	1	frame	ambiguous case role: で	-	U3	飲む	五段-マ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+母が居間で服を着た。	1	frame	ambiguous case role: で	-	U3	着る	上一段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+祖父が縁側で茶を飲んだ。	1	frame	ambiguous case role: で	-	U3	飲む	五段-マ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+弟が廊下で道具を使った。	1	frame	ambiguous case role: で	-	U3	使う	五段-ワア行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が馬車で薬を飲んだ。	1	frame	ambiguous case role: で	-	U3	飲む	五段-マ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が国道で湖を味わった。	1	frame	ambiguous case role: で	-	U3	味わう	五段-ワア行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が校庭で川を使った。	1	frame	ambiguous case role: で	-	U3	使う	五段-ワア行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+機械が校庭で薬を飲んだ。	1	frame	ambiguous case role: で	-	U3	飲む	五段-マ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+風が森林で酒を飲んだ。	1	frame	ambiguous case role: で	-	U3	飲む	五段-マ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+客が校庭で薬を飲んだ。	1	frame	ambiguous case role: で	-	U3	飲む	五段-マ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が校庭で水を飲んだ。	1	frame	ambiguous case role: で	-	U3	飲む	五段-マ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+弟が国道でご飯を味わった。	1	frame	ambiguous case role: で	-	U3	味わう	五段-ワア行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+母が校庭で窓を使った。	1	frame	ambiguous case role: で	-	U3	使う	五段-ワア行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が校庭で靴を履いた。	1	frame	ambiguous case role: で	-	U3	履く	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+弟が国道で荷物を使った。	1	frame	ambiguous case role: で	-	U3	使う	五段-ワア行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が校庭で傘を使った。	1	frame	ambiguous case role: で	-	U3	使う	五段-ワア行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が校庭でズボンを履いた。	1	frame	ambiguous case role: で	-	U3	履く	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+子供が校庭で薬を飲んだ。	1	frame	ambiguous case role: で	-	U3	飲む	五段-マ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が校庭で肉を食べた。	1	frame	ambiguous case role: で	-	U3	食べる	下一段-バ行	ok	PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-バ行	abstain	NO_SUPPORTED_CLAUSE
+兄があまり校庭で薬を飲まなかった。	1	frame	ambiguous case role: で;unrepresented source content;unrepresented source content	-	-	飲む	五段-マ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が全然校庭で服を着なかった。	1	frame	ambiguous case role: で;unrepresented source content;unrepresented source content	-	-	着る	上一段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が校庭で弟と薬を飲んだ。	1	frame	ambiguous case role: で;ambiguous case role: と;duplicate role in clause	-	-	飲む	五段-マ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+母が薬を買って、校庭で飲んだ。	2	frame		-	-	買う	五段-ワア行	PLACEMENT_PREDICATE_TAIL_UNINTERPRETED:連用形-促音便:助詞	ok	abstain	UNSUPPORTED_CLAUSE
+兄が校庭で薬を飲んでいる。	1	frame	ambiguous case role: で	-	U3	飲む	五段-マ行	PLACEMENT_PREDICATE_TAIL_UNINTERPRETED:連用形-撥音便:助詞	ok	abstain	NO_SUPPORTED_CLAUSE
+母が校庭で薬を飲ませた。	1	frame	ambiguous case role: で	-	U3	飲ませる	五段-マ行	PLACEMENT_PREDICATE_TAIL_UNINTERPRETED:未然形-一般:助動詞	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が校庭で泣いた。	1	frame	ambiguous case role: で	-	U3	泣く	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+弟が森林で泣いた。	1	frame	ambiguous case role: で	-	U3	泣く	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+姉が歩道で泣いた。	1	frame	ambiguous case role: で	-	U3	泣く	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+先生が校庭で泣かなかった。	1	frame	ambiguous case role: で	-	U3	泣く	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+母が山頂で笑った。	1	frame	ambiguous case role: で	-	U3	笑う	五段-ワア行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+警官が交差点で笑った。	1	frame	ambiguous case role: で	-	U3	笑う	五段-ワア行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兵士が国道で驚いた。	1	frame	ambiguous case role: で	-	U3	驚く	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+村人が農道で驚かなかった。	1	frame	ambiguous case role: で	-	U3	驚く	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+選手が土俵で喜んだ。	1	frame	ambiguous case role: で	-	U3	喜ぶ	五段-バ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+チームが校庭で喜んだ。	1	frame	ambiguous case role: で	-	U3	喜ぶ	五段-バ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+花子が校庭で笑った。	1	frame	ambiguous case role: で	-	U3	笑う	五段-ワア行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+政府が国道で怒った。	1	frame	ambiguous case role: で	-	U3	怒る	五段-ラ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+警察が校庭で怒った。	1	frame	ambiguous case role: で	-	U3	怒る	五段-ラ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が校庭で試合を楽しんだ。	1	frame	ambiguous case role: で	-	U3	楽しむ	五段-マ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+弟が森林で歌を楽しんだ。	1	frame	ambiguous case role: で	-	U3	楽しむ	五段-マ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+姉が湖で音楽を楽しむ。	1	frame	ambiguous case role: で	-	U3	楽しむ	五段-マ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+母が神社で歌を好んだ。	1	frame	ambiguous case role: で	-	U3	好む	五段-マ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+祖父が山頂で酒を好んだ。	1	frame	ambiguous case role: で	-	U3	好む	五段-マ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が校庭で弟を笑った。	1	frame	ambiguous case role: で	-	U3	笑う	五段-ワア行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+先生が校庭で生徒を笑わなかった。	1	frame	ambiguous case role: で	-	U3	笑う	五段-ワア行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が校庭で喧嘩を楽しんだ。	1	frame	ambiguous case role: で	-	U3	楽しむ	五段-マ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+父が国道で約束を喜んだ。	1	frame	ambiguous case role: で	-	U3	喜ぶ	五段-バ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+弟が校庭で絵を好んだ。	1	frame	ambiguous case role: で	-	U3	好む	五段-マ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が町の校庭で泣いた。	1	frame	ambiguous case role: で	-	U3	泣く	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が校庭で手紙を喜んだ。	1	frame	ambiguous case role: で	-	U3	喜ぶ	五段-バ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+母が校庭で絵本を楽しんだ。	1	frame	ambiguous case role: で	-	U3	楽しむ	五段-マ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が風に驚いた。	1	frame		U	-	驚く	五段-カ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:驚く
+弟が雨に喜んだ。	1	frame		U	-	喜ぶ	五段-バ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:喜ぶ
+姉が雪に驚いた。	1	frame		U	-	驚く	五段-カ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:驚く
+兄が弟に怒った。	1	frame		U	-	怒る	五段-ラ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:怒る
+母が先生に怒った。	1	frame		U	-	怒る	五段-ラ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:怒る
+兄が休日に校庭で喜んだ。	1	frame	ambiguous case role: で	-	U3	喜ぶ	五段-バ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+弟が校庭で屋根から笑った。	1	frame	ambiguous case role: で	-	U3	笑う	五段-ワア行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が畑へ泣いた。	1	frame		U	-	泣く	五段-カ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:泣く
+兄が試合で喜んだ。	1	frame	ambiguous case role: で	-	U3	喜ぶ	五段-バ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+弟が喧嘩で泣いた。	1	frame	ambiguous case role: で	-	U3	泣く	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+母が約束で喜んだ。	1	frame	ambiguous case role: で	-	U3	喜ぶ	五段-バ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が野球で喜んだ。	1	frame	ambiguous case role: で	-	U3	喜ぶ	五段-バ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+姉が勝利で泣いた。	1	frame	ambiguous case role: で	-	U3	泣く	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+機械が校庭で笑った。	1	frame	ambiguous case role: で	-	U3	笑う	五段-ワア行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+風が森林で笑った。	1	frame	ambiguous case role: で	-	U3	笑う	五段-ワア行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+客が校庭で泣いた。	1	frame	ambiguous case role: で	-	U3	泣く	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+医者が国道で笑った。	1	frame	ambiguous case role: で	-	U3	笑う	五段-ワア行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+伊藤が校庭で泣いた。	1	frame	ambiguous case role: で	-	U3	泣く	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+加藤が国道で笑った。	1	frame	ambiguous case role: で	-	U3	笑う	五段-ワア行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が書斎で泣いた。	1	frame	ambiguous case role: で	-	U3	泣く	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+母が廊下で笑った。	1	frame	ambiguous case role: で	-	U3	笑う	五段-ワア行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+弟が縁側で驚いた。	1	frame	ambiguous case role: で	-	U3	驚く	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が街角で泣いた。	1	frame	ambiguous case role: で	-	U3	泣く	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が国道で湖を楽しんだ。	1	frame	ambiguous case role: で	-	U3	楽しむ	五段-マ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+弟が校庭で川を好んだ。	1	frame	ambiguous case role: で	-	U3	好む	五段-マ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+弟が校庭で水を好んだ。	1	frame	ambiguous case role: で	-	U3	好む	五段-マ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+母が校庭で話を楽しんだ。	1	frame	ambiguous case role: で	-	U3	楽しむ	五段-マ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が校庭で歴史を楽しんだ。	1	frame	ambiguous case role: で	-	U3	楽しむ	五段-マ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+子供が校庭で泣いた。	1	frame	ambiguous case role: で	-	U3	泣く	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄があまり校庭で泣かなかった。	1	frame	ambiguous case role: で;unrepresented source content;unrepresented source content	-	-	泣く	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が全然国道で笑わなかった。	1	frame	ambiguous case role: で;unrepresented source content;unrepresented source content	-	-	笑う	五段-ワア行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が校庭で弟と笑った。	1	frame	ambiguous case role: で;ambiguous case role: と;duplicate role in clause	-	-	笑う	五段-ワア行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が弟を呼んで、校庭で笑った。	2	frame		-	-	呼ぶ	五段-バ行	PLACEMENT_PREDICATE_TAIL_UNINTERPRETED:連用形-撥音便:助詞	ok	abstain	UNSUPPORTED_CLAUSE
+兄が校庭で慌てた。	1	frame	ambiguous case role: で	-	U3	慌てる	下一段-タ行	ok	PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-タ行	abstain	NO_SUPPORTED_CLAUSE
+兄が国道で疲れた。	1	frame	ambiguous case role: で	-	U3	疲れる	下一段-ラ行	ok	PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-ラ行	abstain	NO_SUPPORTED_CLAUSE
+兄が校庭で泣いている。	1	frame	ambiguous case role: で	-	U3	泣く	五段-カ行	PLACEMENT_PREDICATE_TAIL_UNINTERPRETED:連用形-イ音便:助詞	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が校庭で泣かされた。	1	frame	ambiguous case role: で	-	U3	泣かす	五段-サ行	PLACEMENT_PREDICATE_TAIL_UNINTERPRETED:未然形-一般:助動詞	PLACEMENT_PREDICATE_POSSIBLY_DERIVED:五段-サ行	abstain	NO_SUPPORTED_CLAUSE
+兄が校庭で本を買った。	1	frame	ambiguous case role: で	-	U3	買う	五段-ワア行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+弟が国道で本を買った。	1	frame	ambiguous case role: で	-	U3	買う	五段-ワア行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+姉が森林で荷車を出した。	1	frame	ambiguous case role: で	-	U3	出す	五段-サ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+母が校庭で皿を買った。	1	frame	ambiguous case role: で	-	U3	買う	五段-ワア行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が校庭で鳥を見た。	1	frame	ambiguous case role: で	-	U3	見る	上一段-マ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+弟が森林で鳥を探した。	1	frame	ambiguous case role: で	-	U3	探す	五段-サ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+姉が山頂で鳥を探した。	1	frame	ambiguous case role: で	-	U3	探す	五段-サ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+母が湖で魚を見た。	1	frame	ambiguous case role: で	-	U3	見る	上一段-マ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が校庭で休んだ。	1	frame	ambiguous case role: で	-	U3	休む	五段-マ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+弟が森林で待った。	1	frame	ambiguous case role: で	-	U3	待つ	五段-タ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+姉が歩道で座った。	1	frame	ambiguous case role: で	-	U3	座る	五段-ラ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+祖父が神社で泊まった。	1	frame	ambiguous case role: で	-	U3	泊まる	五段-ラ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が校庭で財布を拾った。	1	frame	ambiguous case role: で	-	U3	拾う	五段-ワア行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+弟が国道で財布を取った。	1	frame	ambiguous case role: で	-	U3	取る	五段-ラ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+母が湖で箱を握った。	1	frame	ambiguous case role: で	-	U3	握る	五段-ラ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が校庭で財布を失った。	1	frame	ambiguous case role: で	-	U3	失う	五段-ワア行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が校庭で忙しかった。	1	copula	copula value is a predicate phrase	-	-	identity	助動詞-タ	PLACEMENT_PREDICATE_TAIL_UNINTERPRETED:head:なし	ok	abstain	NO_SUPPORTED_CLAUSE
+弟が森林で美しかった。	1	copula	copula value is a predicate phrase	-	-	identity	助動詞-タ	PLACEMENT_PREDICATE_TAIL_UNINTERPRETED:head:なし	ok	abstain	NO_SUPPORTED_CLAUSE
+姉が歩道で忙しくなかった。	0	-	-	-	-	-	None	None	None	abstain	UNREAD_SPAN:unsupported negative adjective
+兄が校庭で歌を学んだ。	1	frame	ambiguous case role: で	-	U3	学ぶ	五段-バ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+弟が森林で規則を学んだ。	1	frame	ambiguous case role: で	-	U3	学ぶ	五段-バ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+姉が山頂で歌を知った。	1	frame	ambiguous case role: で	-	U3	知る	五段-ラ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+母が神社で約束を思った。	1	frame	ambiguous case role: で	-	U3	思う	五段-ワア行	ok	ok	abstain	NO_SUPPORTED_CLAUSE

@@ -1,0 +1,59 @@
+[jawiki 1/30] 17s
+[jawiki 2/30] 17s
+[jawiki 3/30] 17s
+[jawiki 4/30] 18s
+[jawiki 5/30] 18s
+[jawiki 6/30] 29s
+[jawiki 7/30] 30s
+[jawiki 8/30] 30s
+[jawiki 9/30] 31s
+[jawiki 10/30] 31s
+[jawiki 11/30] 43s
+[jawiki 12/30] 43s
+[jawiki 13/30] 44s
+[jawiki 14/30] 44s
+[jawiki 15/30] 45s
+[jawiki 16/30] 57s
+[jawiki 17/30] 58s
+[jawiki 18/30] 58s
+[jawiki 19/30] 59s
+[jawiki 20/30] 60s
+[jawiki 21/30] 71s
+[jawiki 22/30] 72s
+[jawiki 23/30] 73s
+[jawiki 24/30] 74s
+[jawiki 25/30] 74s
+[jawiki 26/30] 85s
+[jawiki 27/30] 86s
+[jawiki 28/30] 86s
+[jawiki 29/30] 87s
+[jawiki 30/30] 87s
+[codex 1/165] 10s
+[codex 21/165] 37s
+Process ForkPoolWorker-6:
+Process ForkPoolWorker-7:
+Process ForkPoolWorker-8:
+Process ForkPoolWorker-9:
+Process ForkPoolWorker-10:
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/multiprocessing/pool.py", line 856, in next
+    item = self._items.popleft()
+           ^^^^^^^^^^^^^^^^^^^^^
+IndexError: pop from an empty deque
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/motonisihikoudai/Projects/vera-impl/wt/W3-a6-S/tools/build_coarse_placement.py", line 2961, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/Users/motonisihikoudai/Projects/vera-impl/wt/W3-a6-S/tools/build_coarse_placement.py", line 2956, in main
+    return cmd_build(args)
+           ^^^^^^^^^^^^^^^
+  File "/Users/motonisihikoudai/Projects/vera-impl/wt/W3-a6-S/tools/build_coarse_placement.py", line 2492, in cmd_build
+    for k, r in enumerate(pool.imap(work_codex, ctasks)):
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/multiprocessing/pool.py", line 861, in next
+    self._cond.wait(timeout)
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/threading.py", line 327, in wait
+    waiter.acquire()
+KeyboardInterrupt

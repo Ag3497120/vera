@@ -1,0 +1,16 @@
+兄が右で打った。 True {'agent': '兄', 'place': '右'} {"w3b1_trigger": null, "w3b1": null, "w3b2_trigger": "U3", "w3b2": "READ", "frame": null}
+兄が右で皿を洗った。 True {'agent': '兄', 'patient': '皿', 'place': '右'} {"w3b1_trigger": null, "w3b1": null, "w3b2_trigger": "U3", "w3b2": "READ", "frame": null}
+兄が上で打った。 False None {"w3b1_trigger": null, "w3b1": null, "w3b2_trigger": "U3", "w3b2": "RELATIONAL_NOUN_FILLER:place", "frame": null}
+兄が前で打った。 False None {"w3b1_trigger": null, "w3b1": null, "w3b2_trigger": "U3", "w3b2": "RELATIONAL_NOUN_FILLER:place", "frame": null}
+兄が中で打った。 False None {"w3b1_trigger": null, "w3b1": null, "w3b2_trigger": "U3", "w3b2": "RELATIONAL_NOUN_FILLER:place", "frame": null}
+兄が校庭で打った。 True {'agent': '兄', 'place': '校庭'} {"w3b1_trigger": null, "w3b1": null, "w3b2_trigger": "U3", "w3b2": "READ", "frame": null}
+弟が右から倉庫へ打った。 True {'agent': '弟', 'goal': '倉庫', 'source': '右'} {"w3b1_trigger": "U", "w3b1": "PLACEMENT_FRAME_NOT_READ:P_ACT", "w3b2_trigger": "U", "w3b2": "READ", "frame": null}
+弟が上から倉庫へ打った。 False None {"w3b1_trigger": "U", "w3b1": "PLACEMENT_FRAME_NOT_READ:P_ACT", "w3b2_trigger": "U", "w3b2": "RELATIONAL_NOUN_FILLER:source", "frame": null}
+弟が前から倉庫へ打った。 False None {"w3b1_trigger": "U", "w3b1": "PLACEMENT_FRAME_NOT_READ:P_ACT", "w3b2_trigger": "U", "w3b2": "RELATIONAL_NOUN_FILLER:source", "frame": null}
+弟が畑から倉庫へ打った。 True {'agent': '弟', 'goal': '倉庫', 'source': '畑'} {"w3b1_trigger": "U", "w3b1": "PLACEMENT_FRAME_NOT_READ:P_ACT", "w3b2_trigger": "U", "w3b2": "READ", "frame": null}
+兄が荷車を上へ押した。 False None {"w3b1_trigger": "U", "w3b1": "PLACEMENT_FRAME_NOT_READ:P_ACT", "w3b2_trigger": "U", "w3b2": "RELATIONAL_NOUN_FILLER:goal", "frame": null}
+兄が荷車を畑へ押した。 True {'agent': '兄', 'patient': '荷車', 'goal': '畑'} {"w3b1_trigger": "U", "w3b1": "PLACEMENT_FRAME_NOT_READ:P_ACT", "w3b2_trigger": "U", "w3b2": "READ", "frame": null}
+兄が荷車を駅前へ押した。 True {'agent': '兄', 'patient': '荷車', 'goal': '駅前'} {"w3b1_trigger": "U", "w3b1": "PLACEMENT_FRAME_NOT_READ:P_ACT", "w3b2_trigger": "U", "w3b2": "READ", "frame": null}
+兄が中から走った。 True {'agent': '兄', 'source': '中'} {"w3b1_trigger": null, "w3b1": null, "w3b2_trigger": null, "w3b2": null, "frame": null}
+兄が上から走った。 True {'agent': '兄', 'source': '上'} {"w3b1_trigger": null, "w3b1": null, "w3b2_trigger": null, "w3b2": null, "frame": null}
+兄が倉庫へ「も」走った。 False None {"w3b1_trigger": "U", "w3b1": "PLACEMENT_QUOTED_PARTICLE_AFTER_CASE:へ", "w3b2_trigger": "U", "w3b2": "PLACEMENT_QUOTED_PARTICLE_AFTER_CASE:へ", "frame": null}

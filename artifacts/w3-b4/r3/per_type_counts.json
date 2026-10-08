@@ -1,0 +1,114 @@
+{
+ "P_ACT": {
+  "abstain": 54,
+  "read": 4,
+  "reasons_of_the_refused_rows": {
+   "PLACEMENT_DIRECT_VIA_GENERATED": 1,
+   "PLACEMENT_ESTIMATED_GENERATED": 1,
+   "PLACEMENT_MULTIPLE": 4,
+   "PLACEMENT_PARTICLE_NOT_IN_FRAME": 38,
+   "PLACEMENT_TYPE_MISMATCH": 4,
+   "PLACEMENT_UNPLACED": 1,
+   "PLACEMENT_VOICE_NOT_ACTIVE": 1,
+   "PLACEMENT_W3B2_NOT_TRIGGERED": 4
+  },
+  "rows": 58
+ },
+ "P_CHANGE": {
+  "abstain": 61,
+  "read": 0,
+  "reasons_of_the_refused_rows": {
+   "NO_TYPED_STEP_RAN": 1,
+   "PLACEMENT_FRAME_NOT_READ": 57,
+   "PLACEMENT_W3B2_NOT_TRIGGERED": 3
+  },
+  "rows": 61
+ },
+ "P_COGNITION": {
+  "abstain": 4,
+  "read": 0,
+  "reasons_of_the_refused_rows": {
+   "PLACEMENT_FRAME_NOT_READ": 4
+  },
+  "rows": 4
+ },
+ "P_CONSUME": {
+  "abstain": 62,
+  "read": 0,
+  "reasons_of_the_refused_rows": {
+   "PLACEMENT_FRAME_NOT_READ": 57,
+   "PLACEMENT_VOICE_NOT_ACTIVE": 1,
+   "PLACEMENT_W3B2_NOT_TRIGGERED": 4
+  },
+  "rows": 62
+ },
+ "P_CREATE": {
+  "abstain": 64,
+  "read": 0,
+  "reasons_of_the_refused_rows": {
+   "PLACEMENT_ESTIMATED_GENERATED": 2,
+   "PLACEMENT_MULTIPLE": 3,
+   "PLACEMENT_PARTICLE_NOT_IN_FRAME": 48,
+   "PLACEMENT_TYPE_MISMATCH": 4,
+   "PLACEMENT_UNPLACED": 2,
+   "PLACEMENT_VOICE_NOT_ACTIVE": 1,
+   "PLACEMENT_W3B2_NOT_TRIGGERED": 4
+  },
+  "rows": 64
+ },
+ "P_EMOTION": {
+  "abstain": 65,
+  "read": 0,
+  "reasons_of_the_refused_rows": {
+   "PLACEMENT_DIRECT_VIA_GENERATED": 1,
+   "PLACEMENT_ESTIMATED_GENERATED": 1,
+   "PLACEMENT_MULTIPLE": 3,
+   "PLACEMENT_PARTICLE_NOT_IN_FRAME": 48,
+   "PLACEMENT_TYPE_MISMATCH": 4,
+   "PLACEMENT_UNPLACED": 3,
+   "PLACEMENT_VOICE_NOT_ACTIVE": 1,
+   "PLACEMENT_W3B2_NOT_TRIGGERED": 4
+  },
+  "rows": 65
+ },
+ "P_EXIST": {
+  "abstain": 4,
+  "read": 0,
+  "reasons_of_the_refused_rows": {
+   "PLACEMENT_FRAME_NOT_READ": 4
+  },
+  "rows": 4
+ },
+ "P_GIVE": {
+  "abstain": 4,
+  "read": 0,
+  "reasons_of_the_refused_rows": {
+   "PLACEMENT_FRAME_NOT_READ": 4
+  },
+  "rows": 4
+ },
+ "P_PERCEIVE": {
+  "abstain": 4,
+  "read": 0,
+  "reasons_of_the_refused_rows": {
+   "PLACEMENT_FRAME_NOT_READ": 4
+  },
+  "rows": 4
+ },
+ "P_POSSESS": {
+  "abstain": 4,
+  "read": 0,
+  "reasons_of_the_refused_rows": {
+   "PLACEMENT_FRAME_NOT_READ": 4
+  },
+  "rows": 4
+ },
+ "P_STATE": {
+  "abstain": 3,
+  "read": 0,
+  "reasons_of_the_refused_rows": {
+   "PLACEMENT_W3B2_NOT_TRIGGERED": 3
+  },
+  "rows": 3
+ }
+}

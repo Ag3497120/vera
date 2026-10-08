@@ -1,0 +1,24 @@
+== mode r8 (base vs after; byte identical: yes)
+inputs=4149 same=4149 newly_read=0 frame_stopped=0 read_to_abstain_other=0 changed=0 refusal_changed=0 error_changed=0
+verdicts: {}
+frame_stopped by reason: {}
+by source and kind: {}
+exit=0
+== mode r7 (base vs after; byte identical: yes)
+inputs=4149 same=4149 newly_read=0 frame_stopped=0 read_to_abstain_other=0 changed=0 refusal_changed=0 error_changed=0
+verdicts: {}
+frame_stopped by reason: {}
+by source and kind: {}
+exit=0
+== mode estimated (base vs after; byte identical: yes)
+inputs=4149 same=4149 newly_read=0 frame_stopped=0 read_to_abstain_other=0 changed=0 refusal_changed=0 error_changed=0
+verdicts: {}
+frame_stopped by reason: {}
+by source and kind: {}
+exit=0
+== mode multiple (base vs after; byte identical: yes)
+inputs=4149 same=4149 newly_read=0 frame_stopped=0 read_to_abstain_other=0 changed=0 refusal_changed=0 error_changed=0
+verdicts: {}
+frame_stopped by reason: {}
+by source and kind: {}
+exit=0

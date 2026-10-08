@@ -1,0 +1,872 @@
+"""Real-LLM closed choice: which frame term is an out-of-frame word closest to?
+
+The structure solves everything inside the finite frame vocabulary.  Only the
+last step -- "which of these listed terms is this unlisted word closest to" --
+is put to a model, and the model's answer is a *testimony*, never a vote:
+
+* the answer must be ``{"choice": <shown number>}`` or ``{"choice": null}``;
+  a word outside the list, an explanation, a code fence, several choices are
+  all *invalid* and are never adopted (parsing is ``memory_frame.parse_choice``);
+* a provider failure (timeout, non-zero exit, empty output, usage limit, missing
+  binary) is a typed failure.  It is never turned into "none of them";
+* two asks with differently ordered candidates and differently worded prompts
+  must name the *same* candidate.  Disagreement, an invalid or empty answer, or
+  "none of them" in either ask abstains.  There is no tie-break, no majority
+  and no score;
+* an adopted mapping is typed ``LLM_TESTIMONY_MAPPING`` (constructed, testimony,
+  not evidence) and every ask is appended to a hash-chained, append-only ledger
+  with the order it was shown in and the raw reply.  The cache of earlier
+  decisions is rebuilt from that ledger; no other file holds it.
+
+Nothing here is reached unless a caller passes a chooser explicitly.
+"""
+from __future__ import annotations
+
+import argparse
+import fcntl
+import hashlib
+import json
+import os
+import random
+import re
+import subprocess
+import sys
+import tempfile
+import time
+import unicodedata
+import uuid
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Any, Callable, Literal, Optional, Sequence
+
+from .memory_frame import parse_choice
+
+FailureKind = Literal["TIMEOUT", "NONZERO_EXIT", "EMPTY_OUTPUT", "LIMIT_REACHED", "NOT_FOUND", "OS_ERROR"]
+AskVerdict = Literal["PICK", "NONE", "INVALID", "FAILED", "SKIPPED_DECIDED"]
+DecisionStatus = Literal["ADOPTED", "ABSTAINED", "FAILED", "REFUSED"]
+
+MAPPING_TYPE = "LLM_TESTIMONY_MAPPING"
+PROTOCOL = "llm_choice/v1"
+GENESIS = "0" * 64
+
+# Default usage-limit patterns (case-insensitive).  Matched against stdout,
+# stderr and the output file, whatever the exit status.
+DEFAULT_LIMIT_PATTERNS: tuple[str, ...] = (
+    r"you(?:'|’|‘)ve hit your (?:\w+ )?limit",
+    r"(?:usage|session|rate) limit (?:reached|exceeded)",
+)
+
+
+# ------------------------------------------------------------------ small helpers
+def _norm(text: str) -> str:
+    return unicodedata.normalize("NFKC", text).strip()
+
+
+def _canonical(obj: Any) -> str:
+    """The one serialization used for hashing, keys and ledger lines."""
+    return json.dumps(obj, sort_keys=True, ensure_ascii=False, separators=(",", ":"))
+
+
+def _sha256(text: str) -> str:
+    return hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+
+def _safe_json(value: Any) -> str:
+    """JSON on one physical line; format/control/separator characters become \\uXXXX.
+
+    ``json.dumps`` escapes ``\\n`` but leaves U+0085, U+2028/2029 and Cf
+    characters alone, and ``str.splitlines`` would split on some of them.
+    """
+    raw = json.dumps(value, ensure_ascii=False, sort_keys=True)
+    out = []
+    for char in raw:
+        if unicodedata.category(char) in ("Cc", "Cf", "Zl", "Zp"):
+            code = ord(char)
+            if code > 0xFFFF:
+                code -= 0x10000
+                out.append("\\u%04x\\u%04x" % (0xD800 + (code >> 10), 0xDC00 + (code & 0x3FF)))
+            else:
+                out.append("\\u%04x" % code)
+        else:
+            out.append(char)
+    return "".join(out)
+
+
+def _trim(text: str, limit: int) -> str:
+    return text if len(text) <= limit else text[:limit]
+
+
+# ------------------------------------------------------------------ types
+@dataclass(frozen=True)
+class ProviderReply:
+    """One provider invocation: either text, or a typed failure.  Never both."""
+
+    text: Optional[str]
+    failure: Optional[str]
+    provider: str
+    model: str
+    effort: str
+    returncode: Optional[int] = None
+    detail: str = ""
+
+    @classmethod
+    def success(cls, text: str, provider: str = "fake", model: str = "", effort: str = "") -> "ProviderReply":
+        return cls(text, None, provider, model, effort)
+
+    @classmethod
+    def failed(cls, kind: str, provider: str = "fake", model: str = "", effort: str = "",
+               detail: str = "", returncode: Optional[int] = None) -> "ProviderReply":
+        return cls(None, kind, provider, model, effort, returncode, detail)
+
+
+class ProviderError(Exception):
+    """Raised by ``Provider.__call__``: a failure is never flattened to ''."""
+
+    def __init__(self, reply: ProviderReply):
+        super().__init__(f"{reply.provider} failed: {reply.failure} {reply.detail}".strip())
+        self.reply = reply
+
+
+@dataclass(frozen=True)
+class ChoiceCandidate:
+    """One frame term and the frame sentences it is used in (context for the asker)."""
+
+    term: str
+    used_in: tuple[str, ...] = ()
+
+
+@dataclass(frozen=True)
+class LLMMapping:
+    """An adopted word -> frame-term mapping.  Constructed testimony, not evidence."""
+
+    word: str
+    choice: str
+    ledger_decision_id: str
+    mapping_type: str = MAPPING_TYPE
+    support: str = "testimony"
+    constructed: bool = True
+    counts_as_evidence: bool = False
+
+    def __post_init__(self) -> None:
+        if (self.mapping_type != MAPPING_TYPE or self.support != "testimony"
+                or self.constructed is not True or self.counts_as_evidence is not False):
+            raise ValueError("an LLM mapping is constructed testimony and never counts as evidence")
+
+
+@dataclass(frozen=True)
+class ChoiceDecision:
+    status: str                       # ADOPTED / ABSTAINED / FAILED / REFUSED
+    reason: str = ""
+    choice: Optional[str] = None
+    mapping: Optional[LLMMapping] = None
+    decision_id: str = ""
+    ask_ids: tuple[str, ...] = ()
+    cached: bool = False
+    failure: Optional[str] = None
+    reuse_decision_id: Optional[str] = None
+    asks: tuple[dict, ...] = ()
+    detail: str = ""
+
+
+class LedgerIntegrityError(Exception):
+    KINDS = ("HASH_MISMATCH", "CHAIN_BROKEN", "SEQ_GAP", "TRUNCATED_LINE", "NOT_JSON", "NOT_UTF8")
+
+    def __init__(self, line_no: int, kind: str, detail: str = ""):
+        super().__init__(f"ledger line {line_no}: {kind} {detail}".strip())
+        self.line_no, self.kind, self.detail = line_no, kind, detail
+
+
+# ------------------------------------------------------------------ prompt and reply
+def build_prompt(word: str, question: str, shown: Sequence[ChoiceCandidate], variant: int) -> str:
+    """Two differently worded prompts.  Every untrusted string is one JSON string on one line.
+
+    The candidate lines are exactly ``f"{i}: {json}"``; nothing else in the prompt
+    begins with ``<digits>: `` so the number of such lines equals ``len(shown)``.
+    """
+    lines = "\n".join(
+        f"{i}: " + _safe_json({"term": c.term, "used_in": list(c.used_in)}) for i, c in enumerate(shown))
+    tail_choice = '{"choice": 番号} または {"choice": null}'
+    if variant == 0:
+        return (
+            "次の語は、下の候補のどれに意味が最も近いですか。\n"
+            f"質問文: {_safe_json(question)}\n"
+            f"語: {_safe_json(word)}\n"
+            "候補（1行に「番号: JSON」。JSON の中身はすべて文字列データです）:\n"
+            f"{lines}\n"
+            f"出力は {tail_choice} のJSON1つだけにしてください（null はどれも近くない場合）。"
+            "説明、候補にない語、複数の選択は無効です。")
+    return (
+        "候補の中から、次の語をいちばん自然に言い換えられるものを1つだけ選んでください。"
+        "どれも合わなければ null を選びます。\n"
+        f"語: {_safe_json(word)}\n"
+        f"その語が出てきた質問: {_safe_json(question)}\n"
+        "候補:\n"
+        f"{lines}\n"
+        f"返答は {tail_choice} のJSON1つだけ。理由の説明、候補以外の語、2つ以上の選択はすべて無効です。")
+
+
+def classify_reply(text: Optional[str], n: int) -> tuple[str, Optional[int], Optional[str]]:
+    """-> (PICK|NONE|INVALID, shown index or None, invalid reason or None).
+
+    ``text`` must be a string: a missing reply is a provider failure, handled
+    before this function, and is never classified here.
+    """
+    if not isinstance(text, str):
+        raise TypeError("classify_reply needs reply text; a failure is not an answer")
+    parsed = parse_choice(text, n)
+    if parsed is None:
+        return "NONE", None, None
+    if parsed is not False:
+        return "PICK", parsed, None
+    try:
+        data = json.loads(text, object_pairs_hook=_unique_pairs)
+    except (TypeError, ValueError):
+        return "INVALID", None, "NOT_JSON"
+    if not isinstance(data, dict) or set(data) != {"choice"}:
+        return "INVALID", None, "NOT_CHOICE_OBJECT"
+    choice = data["choice"]
+    if type(choice) is not int:
+        return "INVALID", None, "NOT_INTEGER"
+    return "INVALID", None, "OUT_OF_RANGE"
+
+
+RECORD_DECIDES = ("決まる", "決まらない")
+RELATION_LABELS = ("一致", "矛盾", "無関係")
+
+
+def classify_records_reply(text: Optional[str], n: int) -> tuple[str, Optional[tuple[int, ...]], Optional[str], Optional[str]]:
+    """Closed multi-select over ``n`` shown records.  -> (NONE|PICK|INVALID, shown indexes (ascending) or None,
+    decides or None, invalid reason or None).
+
+    The only valid replies are one JSON object: ``{"records": []}`` (none of them) or
+    ``{"records": [i, ...], "decides": "決まる"|"決まらない"}``.  Any other key (an "answer", an option number),
+    a code fence, an explanation, a bool, an index out of range or repeated, a duplicate JSON key is invalid.
+    """
+    if not isinstance(text, str):
+        raise TypeError("classify_records_reply needs reply text; a failure is not an answer")
+    try:
+        data = json.loads(text, object_pairs_hook=_unique_pairs)
+    except (TypeError, ValueError):
+        return "INVALID", None, None, "NOT_JSON"
+    if not isinstance(data, dict) or "records" not in data or not isinstance(data["records"], list):
+        return "INVALID", None, None, "NOT_RECORDS_OBJECT"
+    records = data["records"]
+    if set(data) != ({"records"} if not records else {"records", "decides"}):
+        return "INVALID", None, None, "NOT_RECORDS_OBJECT"
+    for value in records:
+        if type(value) is not int:
+            return "INVALID", None, None, "NOT_INTEGER"
+    if any(value < 0 or value >= n for value in records):
+        return "INVALID", None, None, "OUT_OF_RANGE"
+    if len(set(records)) != len(records):
+        return "INVALID", None, None, "DUPLICATE"
+    if not records:
+        return "NONE", None, None, None
+    decides = data["decides"]
+    if not isinstance(decides, str) or decides not in RECORD_DECIDES:
+        return "INVALID", None, None, "BAD_DECIDES"
+    return "PICK", tuple(sorted(records)), decides, None
+
+
+def classify_relations_reply(text: Optional[str], k: int) -> tuple[str, Optional[tuple[str, ...]], Optional[str]]:
+    """Closed three-way label for each of ``k`` shown options.  -> (PICK|INVALID, labels in shown order or None,
+    invalid reason or None).  The only valid reply is ``{"relations": [v0, ..., v(k-1)]}``, each v one of
+    "一致" "矛盾" "無関係", exactly ``k`` of them."""
+    if not isinstance(text, str):
+        raise TypeError("classify_relations_reply needs reply text; a failure is not an answer")
+    try:
+        data = json.loads(text, object_pairs_hook=_unique_pairs)
+    except (TypeError, ValueError):
+        return "INVALID", None, "NOT_JSON"
+    if not isinstance(data, dict) or set(data) != {"relations"} or not isinstance(data["relations"], list):
+        return "INVALID", None, "NOT_RELATIONS_OBJECT"
+    labels = data["relations"]
+    if len(labels) != k:
+        return "INVALID", None, "BAD_LENGTH"
+    if any(not isinstance(v, str) or v not in RELATION_LABELS for v in labels):
+        return "INVALID", None, "BAD_LABEL"
+    return "PICK", tuple(labels), None
+
+
+def _unique_pairs(pairs: list) -> dict:
+    out: dict = {}
+    for key, value in pairs:
+        if key in out:
+            raise ValueError("duplicate JSON key")
+        out[key] = value
+    return out
+
+
+def choice_key(word: str, candidate_terms: Sequence[str]) -> str:
+    """Cache key: normalized word + the *set* of normalized candidate terms (order-free)."""
+    return _canonical({"word": _norm(word), "candidates": sorted({_norm(t) for t in candidate_terms})})
+
+
+# ------------------------------------------------------------------ ledger
+def _chain_hash(prev: str, body: dict) -> str:
+    """The only place a ledger hash is computed (append and verify both call it)."""
+    return _sha256(prev + _canonical(body))
+
+
+def _decode_ledger(data: bytes) -> str:
+    """The only place ledger bytes become text.  Bytes that are not UTF-8 are a typed
+    ``LedgerIntegrityError(NOT_UTF8)`` (line = 1 + newlines before the bad byte), never a bare
+    ``UnicodeDecodeError``: a ledger that cannot be read is reported as unreadable."""
+    try:
+        return data.decode("utf-8")
+    except UnicodeDecodeError as exc:
+        raise LedgerIntegrityError(data.count(b"\n", 0, exc.start) + 1, "NOT_UTF8",
+                                   f"byte offset {exc.start}") from None
+
+
+def _verify_text(text: str) -> list[dict]:
+    """Verify a whole ledger text; return its entries or raise LedgerIntegrityError."""
+    if text == "":
+        return []
+    parts = text.split("\n")
+    if parts[-1] != "":
+        raise LedgerIntegrityError(len(parts), "TRUNCATED_LINE", "last line has no newline")
+    entries: list[dict] = []
+    prev = GENESIS
+    for number, line in enumerate(parts[:-1], start=1):
+        try:
+            entry = json.loads(line)
+        except ValueError:
+            raise LedgerIntegrityError(number, "NOT_JSON") from None
+        if not isinstance(entry, dict):
+            raise LedgerIntegrityError(number, "NOT_JSON", "line is not an object")
+        stored = entry.get("hash")
+        body = {k: v for k, v in entry.items() if k != "hash"}
+        if not isinstance(stored, str) or _chain_hash(str(entry.get("prev", "")), body) != stored:
+            raise LedgerIntegrityError(number, "HASH_MISMATCH")
+        if entry.get("seq") != number - 1:
+            raise LedgerIntegrityError(number, "SEQ_GAP", f"seq={entry.get('seq')!r}")
+        if entry.get("prev") != prev:
+            raise LedgerIntegrityError(number, "CHAIN_BROKEN")
+        prev = stored
+        entries.append(entry)
+    return entries
+
+
+class ChoiceLedger:
+    """Append-only, hash-chained JSONL ledger.  ``path=None`` keeps the same chain in memory.
+
+    There is no update or delete.  Opening verifies every line.
+    """
+
+    def __init__(self, path: Optional[str | Path] = None, clock: Optional[Callable[[], str]] = None):
+        self.path = Path(path) if path is not None else None
+        self._clock = clock or (lambda: time.strftime("%Y-%m-%dT%H:%M:%S", time.gmtime()) + "Z")
+        self._memory_text = ""
+        self.verify()
+
+    def now(self) -> str:
+        return self._clock()
+
+    def _read_text(self) -> str:
+        if self.path is None:
+            return self._memory_text
+        if not self.path.exists():
+            return ""
+        return _decode_ledger(self.path.read_bytes())
+
+    def verify(self) -> dict:
+        """Re-read and verify the whole ledger; raise LedgerIntegrityError if broken."""
+        entries = _verify_text(self._read_text())
+        return {"lines": len(entries), "last_hash": entries[-1]["hash"] if entries else GENESIS}
+
+    def entries(self) -> tuple[dict, ...]:
+        return tuple(_verify_text(self._read_text()))
+
+    def append(self, entry: dict) -> dict:
+        if not isinstance(entry, dict) or not isinstance(entry.get("type"), str):
+            raise ValueError("a ledger entry needs a string 'type'")
+        if self.path is None:
+            return self._append_locked(entry, None)
+        self.path.parent.mkdir(parents=True, exist_ok=True)
+        with open(self.path, "a+b") as handle:
+            fcntl.flock(handle.fileno(), fcntl.LOCK_EX)
+            try:
+                return self._append_locked(entry, handle)
+            finally:
+                fcntl.flock(handle.fileno(), fcntl.LOCK_UN)
+
+    def _append_locked(self, entry: dict, handle: Any) -> dict:
+        if handle is None:
+            text = self._memory_text
+        else:
+            handle.seek(0)
+            text = _decode_ledger(handle.read())
+        entries = _verify_text(text)            # refuses to extend a broken ledger
+        prev = entries[-1]["hash"] if entries else GENESIS
+        body = {k: v for k, v in entry.items() if k not in ("hash", "seq", "prev")}
+        body["seq"] = len(entries)
+        body["prev"] = prev
+        stored = dict(body, hash=_chain_hash(prev, body))
+        line = _canonical(stored) + "\n"
+        if handle is None:
+            self._memory_text = text + line
+        else:
+            handle.seek(0, os.SEEK_END)
+            handle.write(line.encode("utf-8"))
+            handle.flush()
+            os.fsync(handle.fileno())
+        return stored
+
+    def cache(self) -> dict[str, dict]:
+        """Rebuilt from decision lines.  ADOPTED and ABSTAINED only; first decision per key wins."""
+        out: dict[str, dict] = {}
+        for entry in self.entries():
+            if entry.get("type") == "decision" and entry.get("status") in ("ADOPTED", "ABSTAINED"):
+                out.setdefault(entry["key"], entry)
+        return out
+
+    def verify_adoption(self, decision_id: str, word: str, choice: str, candidate_terms: Sequence[str]) -> bool:
+        """True only if the ledger holds this ADOPTED decision for exactly this word/choice/candidate set,
+        backed by two PICK ask lines that name the same term."""
+        try:
+            entries = self.entries()
+        except LedgerIntegrityError:
+            return False
+        decisions = [e for e in entries if e.get("type") == "decision" and e.get("decision_id") == decision_id]
+        if len(decisions) != 1:
+            return False
+        decision = decisions[0]
+        if decision.get("status") != "ADOPTED" or decision.get("key") != choice_key(word, candidate_terms):
+            return False
+        if _norm(str(decision.get("choice", ""))) != _norm(choice):
+            return False
+        if _norm(choice) not in {_norm(t) for t in candidate_terms}:
+            return False
+        ids = decision.get("ask_ids")
+        if not isinstance(ids, list) or len(ids) != 2:
+            return False
+        by_id = {e.get("id"): e for e in entries if e.get("type") == "ask"}
+        asks = [by_id.get(i) for i in ids]
+        if any(a is None for a in asks):
+            return False
+        return all(a.get("verdict") == "PICK" and _norm(str(a.get("picked_term", ""))) == _norm(choice)
+                   and a.get("decision_id") == decision_id for a in asks)
+
+    def summary(self) -> dict:
+        entries = self.entries()
+
+        def count(rows, field_name):
+            out: dict[str, int] = {}
+            for row in rows:
+                value = str(row.get(field_name))
+                out[value] = out.get(value, 0) + 1
+            return dict(sorted(out.items()))
+
+        asks = [e for e in entries if e.get("type") == "ask"]
+        decisions = [e for e in entries if e.get("type") == "decision"]
+        reasons: dict[str, int] = {}
+        for d in decisions:
+            tag = f"{d.get('status')}:{d.get('reason') or ''}"
+            reasons[tag] = reasons.get(tag, 0) + 1
+        return {
+            "chain": "OK",
+            "lines": len(entries),
+            "by_type": count(entries, "type"),
+            "ask_verdicts": count(asks, "verdict"),
+            "ask_failures": count([a for a in asks if a.get("failure")], "failure"),
+            "ask_rows_invoking_provider": sum(1 for a in asks if a.get("verdict") != "SKIPPED_DECIDED"),
+            "decision_status": count(decisions, "status"),
+            "decision_reasons": dict(sorted(reasons.items())),
+            "reuse_rows": sum(1 for e in entries if e.get("type") == "reuse"),
+            "last_hash": entries[-1]["hash"] if entries else GENESIS,
+        }
+
+
+# ------------------------------------------------------------------ providers
+@dataclass(frozen=True)
+class CommandSpec:
+    argv: list[str]
+    stdin: Literal["DEVNULL"]
+    cwd: str
+    output_file: Optional[str] = None
+
+
+class _CommandProvider:
+    """Runs one external CLI per ask and turns every outcome into a ProviderReply."""
+
+    name = "command"
+
+    def __init__(self, model: str, effort: str, binary: str, timeout: float = 240.0,
+                 limit_patterns: Sequence[str] = DEFAULT_LIMIT_PATTERNS,
+                 runner: Callable[..., Any] = subprocess.run,
+                 command_builder: Optional[Callable[[str, str], CommandSpec]] = None):
+        self.model, self.effort, self.binary, self.timeout = model, effort, binary, timeout
+        self.limit_patterns = tuple(limit_patterns)
+        self._limit_res = tuple(re.compile(p, re.IGNORECASE) for p in self.limit_patterns)
+        self.runner, self.command_builder = runner, command_builder
+
+    def default_command(self, prompt: str, workdir: str) -> CommandSpec:  # pragma: no cover - abstract
+        raise NotImplementedError
+
+    def build_command(self, prompt: str, workdir: str) -> CommandSpec:
+        builder = self.command_builder or self.default_command
+        spec = builder(prompt, workdir)
+        if not isinstance(spec, CommandSpec) or not isinstance(spec.argv, list) \
+                or not all(isinstance(a, str) for a in spec.argv):
+            raise TypeError("command builder must return a CommandSpec whose argv is a list of str")
+        if spec.stdin != "DEVNULL":
+            raise ValueError("stdin must be closed (DEVNULL)")
+        return spec
+
+    def _reply(self, text: Optional[str], failure: Optional[str], returncode: Optional[int] = None,
+               detail: str = "") -> ProviderReply:
+        return ProviderReply(text, failure, self.name, self.model, self.effort, returncode, detail)
+
+    def ask(self, prompt: str) -> ProviderReply:
+        with tempfile.TemporaryDirectory() as workdir:
+            spec = self.build_command(prompt, workdir)
+            try:
+                proc = self.runner(spec.argv, stdin=subprocess.DEVNULL, capture_output=True, text=True,
+                                   errors="replace", timeout=self.timeout, cwd=spec.cwd)
+            except subprocess.TimeoutExpired:
+                return self._reply(None, "TIMEOUT", detail=f"no result within {self.timeout}s")
+            except FileNotFoundError as exc:
+                return self._reply(None, "NOT_FOUND", detail=str(exc))
+            except OSError as exc:
+                return self._reply(None, "OS_ERROR", detail=f"{type(exc).__name__}: {exc}")
+
+            stdout = proc.stdout if isinstance(proc.stdout, str) else ""
+            stderr = proc.stderr if isinstance(proc.stderr, str) else ""
+            file_text: Optional[str] = None
+            if spec.output_file:
+                try:
+                    file_text = Path(spec.output_file).read_bytes().decode("utf-8", errors="replace")
+                except FileNotFoundError:
+                    file_text = None
+                except OSError as exc:
+                    return self._reply(None, "OS_ERROR", proc.returncode,
+                                       f"output file unreadable: {type(exc).__name__}: {exc}")
+            haystack = "\n".join((stdout, stderr, file_text or ""))
+            for pattern in self._limit_res:
+                hit = pattern.search(haystack)
+                if hit:
+                    return self._reply(None, "LIMIT_REACHED", proc.returncode, f"matched: {hit.group(0)}")
+            if proc.returncode != 0:
+                return self._reply(None, "NONZERO_EXIT", proc.returncode, stderr.strip()[-300:])
+            text = file_text if spec.output_file else stdout
+            if text is None or not text.strip():
+                return self._reply(None, "EMPTY_OUTPUT", proc.returncode, stderr.strip()[-300:])
+            return self._reply(text, None, proc.returncode)
+
+    def __call__(self, prompt: str) -> str:
+        """ClosedChoiceAsker-compatible; a failure raises instead of returning ''."""
+        reply = self.ask(prompt)
+        if reply.failure is not None:
+            raise ProviderError(reply)
+        assert reply.text is not None
+        return reply.text
+
+
+class CodexProvider(_CommandProvider):
+    name = "codex"
+
+    def __init__(self, model: str = "gpt-6-luna", effort: str = "low",
+                 binary: str = "/Applications/ChatGPT.app/Contents/Resources/codex-cli/bin/codex",
+                 timeout: float = 240.0, service_tier: Optional[str] = None,
+                 limit_patterns: Sequence[str] = DEFAULT_LIMIT_PATTERNS,
+                 runner: Callable[..., Any] = subprocess.run,
+                 command_builder: Optional[Callable[[str, str], CommandSpec]] = None):
+        super().__init__(model, effort, binary, timeout, limit_patterns, runner, command_builder)
+        self.service_tier = service_tier
+
+    def default_command(self, prompt: str, workdir: str) -> CommandSpec:
+        out = str(Path(workdir) / "last.txt")
+        argv = [self.binary, "exec", "--ignore-user-config", "--ignore-rules", "-m", self.model]
+        if self.service_tier is not None:
+            argv += ["-c", f'service_tier="{self.service_tier}"']
+        argv += ["-c", f'model_reasoning_effort="{self.effort}"', "--skip-git-repo-check", "--ephemeral",
+                 "-s", "read-only", "--color", "never", "-C", workdir, "-o", out, "--", prompt]
+        return CommandSpec(argv, "DEVNULL", workdir, out)
+
+
+class ClaudeProvider(_CommandProvider):
+    name = "claude"
+
+    def __init__(self, model: str = "sonnet", effort: str = "low", binary: str = "claude",
+                 timeout: float = 240.0, limit_patterns: Sequence[str] = DEFAULT_LIMIT_PATTERNS,
+                 runner: Callable[..., Any] = subprocess.run,
+                 command_builder: Optional[Callable[[str, str], CommandSpec]] = None):
+        super().__init__(model, effort, binary, timeout, limit_patterns, runner, command_builder)
+
+    def default_command(self, prompt: str, workdir: str) -> CommandSpec:
+        # --tools takes a variable number of values: the prompt must follow a "--".
+        argv = [self.binary, "-p", "--model", self.model, "--effort", self.effort, "--output-format", "text",
+                "--tools", "", "--no-session-persistence", "--safe-mode", "--strict-mcp-config", "--", prompt]
+        return CommandSpec(argv, "DEVNULL", workdir, None)
+
+
+class _CallableProvider:
+    """Adapts a ClosedChoiceAsker-style ``callable(prompt) -> str``; ProviderError keeps its type."""
+
+    def __init__(self, fn: Callable[[str], str]):
+        self.fn = fn
+        self.name = type(fn).__name__
+
+    def ask(self, prompt: str) -> ProviderReply:
+        try:
+            text = self.fn(prompt)
+        except ProviderError as exc:
+            return exc.reply
+        if not isinstance(text, str) or not text.strip():
+            return ProviderReply(None, "EMPTY_OUTPUT", self.name, "", "")
+        return ProviderReply(text, None, self.name, "", "")
+
+
+def _as_provider(provider: Any) -> Any:
+    return provider if hasattr(provider, "ask") else _CallableProvider(provider)
+
+
+# ------------------------------------------------------------------ chooser
+def system_random_order(n: int) -> list[int]:
+    order = list(range(n))
+    random.SystemRandom().shuffle(order)
+    return order
+
+
+class LLMChooser:
+    """Two independent closed asks; adopt only when both name the same candidate."""
+
+    def __init__(self, providers: Any, ledger: ChoiceLedger, *, max_candidates: int = 16,
+                 order_source: Optional[Callable[[int], Sequence[int]]] = None,
+                 max_raw_chars: int = 8192, max_used_in: int = 3, max_text_chars: int = 200,
+                 id_source: Optional[Callable[[], str]] = None):
+        if isinstance(providers, (tuple, list)):
+            if len(providers) != 2:
+                raise ValueError("pass one provider or exactly two")
+            pair = tuple(_as_provider(p) for p in providers)
+        else:
+            single = _as_provider(providers)
+            pair = (single, single)
+        self.providers = pair
+        self.ledger = ledger
+        self.max_candidates = max_candidates
+        self.order_source = order_source or system_random_order
+        self.max_raw_chars = max_raw_chars
+        self.max_used_in, self.max_text_chars = max_used_in, max_text_chars
+        self._new_id = id_source or (lambda: uuid.uuid4().hex[:16])
+        self.unrecorded_refusals = 0       # refusals that could not be written (broken ledger)
+
+    # ---- helpers
+    def _prepare(self, candidates: Sequence[ChoiceCandidate]) -> tuple[list[ChoiceCandidate], list[str]]:
+        kept: list[ChoiceCandidate] = []
+        index: dict[str, int] = {}
+        merged: list[str] = []
+        for cand in candidates:
+            if not isinstance(cand, ChoiceCandidate) or not isinstance(cand.term, str) or not _norm(cand.term):
+                raise ValueError("every candidate must be a ChoiceCandidate with a non-empty term")
+            key = _norm(cand.term)
+            used = tuple(_trim(u, self.max_text_chars) for u in cand.used_in if isinstance(u, str) and u.strip())
+            if key in index:
+                merged.append(cand.term)
+                prior = kept[index[key]]
+                union = tuple(dict.fromkeys(prior.used_in + used))[: self.max_used_in]
+                kept[index[key]] = ChoiceCandidate(prior.term, union)
+                continue
+            index[key] = len(kept)
+            kept.append(ChoiceCandidate(cand.term.strip(), tuple(dict.fromkeys(used))[: self.max_used_in]))
+        return kept, merged
+
+    def _order(self, n: int) -> list[int]:
+        order = list(self.order_source(n))
+        if sorted(order) != list(range(n)):
+            raise ValueError("order_source must return a permutation of range(n)")
+        return order
+
+    def _decision_line(self, decision_id: str, key: str, word: str, cands: list[ChoiceCandidate], status: str,
+                       reason: str, choice: Optional[str], ask_ids: Sequence[str], merged: list[str],
+                       failure: Optional[str] = None, detail: str = "") -> dict:
+        return self.ledger.append({
+            "type": "decision", "decision_id": decision_id, "key": key, "word": word,
+            "candidates": [c.term for c in cands], "merged_duplicates": merged, "status": status,
+            "reason": reason, "choice": choice, "ask_ids": list(ask_ids), "failure": failure,
+            "detail": detail, "mapping_type": MAPPING_TYPE if status == "ADOPTED" else None,
+            "counts_as_evidence": False, "ts": self.ledger.now(),
+        })
+
+    # ---- main entry
+    def choose(self, word: str, candidates: Sequence[ChoiceCandidate], question: str = "") -> ChoiceDecision:
+        if not isinstance(word, str) or not _norm(word):
+            raise ValueError("word must be a non-empty string")
+        shown_word = word.strip()
+        question = _trim(question or "", self.max_text_chars * 2)
+        cands, merged = self._prepare(candidates)
+        key = choice_key(shown_word, [c.term for c in cands])
+        decision_id = self._new_id()
+
+        try:
+            self.ledger.verify()
+        except LedgerIntegrityError as exc:
+            self.unrecorded_refusals += 1
+            return ChoiceDecision("REFUSED", "LEDGER_INTEGRITY", decision_id=decision_id,
+                                  detail=f"line {exc.line_no} {exc.kind}")
+        if not cands:
+            self._decision_line(decision_id, key, shown_word, cands, "REFUSED", "NO_CANDIDATES", None, (), merged)
+            return ChoiceDecision("REFUSED", "NO_CANDIDATES", decision_id=decision_id)
+        if len(cands) > self.max_candidates:
+            self._decision_line(decision_id, key, shown_word, cands, "REFUSED", "TOO_MANY_CANDIDATES", None, (),
+                                merged, detail=f"{len(cands)} > max_candidates={self.max_candidates}")
+            return ChoiceDecision("REFUSED", "TOO_MANY_CANDIDATES", decision_id=decision_id,
+                                  detail=f"{len(cands)} > max_candidates={self.max_candidates}")
+
+        hit = self.ledger.cache().get(key)
+        if hit is not None:
+            reuse = self.ledger.append({"type": "reuse", "decision_id": decision_id,
+                                        "reused_decision_id": hit["decision_id"], "key": key,
+                                        "word": shown_word, "ts": self.ledger.now()})
+            return self._from_cached(hit, reuse["decision_id"])
+
+        n = len(cands)
+        asks: list[dict] = []
+        first_order = self._order(n)
+        second_order = self._order(n)
+        if n >= 2 and second_order == first_order:
+            second_order = second_order[1:] + second_order[:1]
+        orders = (first_order, second_order)
+
+        first = self._ask(decision_id, 0, shown_word, question, cands, orders[0], 0)
+        asks.append(first)
+        if first["verdict"] != "PICK":
+            skipped = self._skipped(decision_id, 1, shown_word, question, cands, first)
+            asks.append(skipped)
+            return self._finish(decision_id, key, shown_word, cands, merged, asks)
+        second = self._ask(decision_id, 1, shown_word, question, cands, orders[1], 1)
+        asks.append(second)
+        return self._finish(decision_id, key, shown_word, cands, merged, asks)
+
+    def _from_cached(self, hit: dict, reuse_id: str) -> ChoiceDecision:
+        did = hit["decision_id"]
+        if hit["status"] == "ADOPTED":
+            mapping = LLMMapping(hit["word"], hit["choice"], did)
+            return ChoiceDecision("ADOPTED", "ADOPTED", hit["choice"], mapping, did, tuple(hit["ask_ids"]),
+                                  True, None, reuse_id, self._ask_summaries(hit["ask_ids"]))
+        return ChoiceDecision("ABSTAINED", hit["reason"], None, None, did, tuple(hit["ask_ids"]), True, None,
+                              reuse_id, self._ask_summaries(hit["ask_ids"]))
+
+    def _ask_summaries(self, ask_ids: Sequence[str]) -> tuple[dict, ...]:
+        by_id = {e["id"]: e for e in self.ledger.entries() if e.get("type") == "ask"}
+        return tuple(self._summary(by_id[i]) for i in ask_ids if i in by_id)
+
+    @staticmethod
+    def _summary(row: dict) -> dict:
+        return {k: row.get(k) for k in ("id", "ask_index", "variant", "order", "shown", "provider", "model",
+                                        "effort", "verdict", "picked_term", "failure")}
+
+    # ---- one ask
+    def _ask(self, decision_id: str, index: int, word: str, question: str, cands: list[ChoiceCandidate],
+             order: Sequence[int], variant: int) -> dict:
+        shown = [cands[i] for i in order]
+        prompt = build_prompt(word, question, shown, variant)
+        reply = self.providers[index].ask(prompt)
+        if reply.failure is None and (not isinstance(reply.text, str) or not reply.text.strip()):
+            # a provider that returns no text without naming a failure is still a failure, not an answer
+            reply = ProviderReply(None, "EMPTY_OUTPUT", reply.provider, reply.model, reply.effort,
+                                  reply.returncode, "provider returned no text")
+        verdict, picked_term, invalid, raw = "", None, None, reply.text
+        if reply.failure is not None:
+            verdict = "FAILED"
+        else:
+            verdict, shown_idx, invalid = classify_reply(reply.text, len(shown))
+            if verdict == "PICK":
+                picked_term = shown[shown_idx].term
+        row = self._ask_row(decision_id, index, word, question, cands, order, shown, variant, prompt, reply,
+                            raw, verdict, picked_term, invalid)
+        return self.ledger.append(row)
+
+    def _ask_row(self, decision_id, index, word, question, cands, order, shown, variant, prompt, reply, raw,
+                 verdict, picked_term, invalid) -> dict:
+        raw_text = raw if isinstance(raw, str) else None
+        stored = _trim(raw_text, self.max_raw_chars) if raw_text is not None else None
+        return {
+            "type": "ask", "id": f"{decision_id}.{index}", "decision_id": decision_id, "ask_index": index,
+            "word": word, "question": question, "candidates": [c.term for c in cands],
+            "contexts": [list(c.used_in) for c in cands], "order": list(order),
+            "shown": [c.term for c in shown], "variant": variant, "provider": reply.provider,
+            "model": reply.model, "effort": reply.effort, "prompt": prompt, "prompt_sha256": _sha256(prompt),
+            "raw_reply": stored, "raw_truncated": bool(raw_text is not None and len(raw_text) > self.max_raw_chars),
+            "raw_len": len(raw_text) if raw_text is not None else None,
+            "raw_sha256": _sha256(raw_text) if raw_text is not None else None,
+            "verdict": verdict, "picked_term": picked_term, "invalid_reason": invalid,
+            "failure": reply.failure, "failure_detail": reply.detail or None, "returncode": reply.returncode,
+            "skip_reason": None, "ts": self.ledger.now(),
+        }
+
+    def _skipped(self, decision_id: str, index: int, word: str, question: str, cands: list[ChoiceCandidate],
+                 first: dict) -> dict:
+        return self.ledger.append({
+            "type": "ask", "id": f"{decision_id}.{index}", "decision_id": decision_id, "ask_index": index,
+            "word": word, "question": question, "candidates": [c.term for c in cands],
+            "contexts": [list(c.used_in) for c in cands], "order": None, "shown": None, "variant": index,
+            "provider": None, "model": None, "effort": None, "prompt": None, "prompt_sha256": None,
+            "raw_reply": None, "raw_truncated": False, "raw_len": None, "raw_sha256": None,
+            "verdict": "SKIPPED_DECIDED", "picked_term": None, "invalid_reason": None, "failure": None,
+            "failure_detail": None, "returncode": None,
+            "skip_reason": f"first ask was {first['verdict']}: outcome already decided", "ts": self.ledger.now(),
+        })
+
+    # ---- the verdict (the only place a decision status is chosen)
+    def _finish(self, decision_id: str, key: str, word: str, cands: list[ChoiceCandidate], merged: list[str],
+                asks: list[dict]) -> ChoiceDecision:
+        a, b = asks
+        ids = tuple(x["id"] for x in asks)
+        summaries = tuple(self._summary(x) for x in asks)
+        status, reason, choice, failure, detail = "ABSTAINED", "", None, None, ""
+        for row in (a, b):
+            if row["verdict"] == "FAILED":
+                status, reason, failure = "FAILED", row["failure"], row["failure"]
+                detail = row.get("failure_detail") or ""
+                break
+        else:
+            if a["verdict"] == "PICK" and b["verdict"] == "PICK":
+                if a["picked_term"] == b["picked_term"]:
+                    status, reason, choice = "ADOPTED", "ADOPTED", a["picked_term"]
+                else:
+                    reason = "DISAGREE"
+            elif "INVALID" in (a["verdict"], b["verdict"]):
+                reason = "INVALID_ANSWER"
+            else:
+                reason = "NONE_SELECTED"
+        line = self._decision_line(decision_id, key, word, cands, status, reason, choice, ids, merged,
+                                   failure, detail)
+        mapping = LLMMapping(word, choice, line["decision_id"]) if status == "ADOPTED" and choice else None
+        return ChoiceDecision(status, reason, choice, mapping, decision_id, ids, False, failure, None,
+                              summaries, detail)
+
+
+__all__ = [
+    "AskVerdict", "ChoiceCandidate", "ChoiceDecision", "ChoiceLedger", "ClaudeProvider", "CodexProvider",
+    "CommandSpec", "DecisionStatus", "FailureKind", "LLMChooser", "LLMMapping", "LedgerIntegrityError",
+    "ProviderError", "ProviderReply", "build_prompt", "choice_key", "classify_reply", "system_random_order",
+    "RECORD_DECIDES", "RELATION_LABELS", "classify_records_reply", "classify_relations_reply",
+]
+
+
+# ------------------------------------------------------------------ entry: verify a ledger (never asks)
+def main(argv: Optional[Sequence[str]] = None) -> int:
+    parser = argparse.ArgumentParser(prog="python -m verantyx.llm_choice",
+                                     description="Verify an LLM-choice ledger. This never queries a model.")
+    sub = parser.add_subparsers(dest="command", required=True)
+    verify = sub.add_parser("verify", help="verify the hash chain and print a summary as JSON")
+    verify.add_argument("ledger")
+    args = parser.parse_args(argv)
+    path = Path(args.ledger)
+    if not path.exists():
+        print(json.dumps({"chain": "NOT_FOUND", "path": str(path)}, ensure_ascii=False))
+        return 3
+    try:
+        summary = ChoiceLedger(path).summary()
+    except LedgerIntegrityError as exc:
+        print(json.dumps({"chain": "BROKEN", "line_no": exc.line_no, "kind": exc.kind, "detail": exc.detail},
+                         ensure_ascii=False))
+        return 2
+    print(json.dumps(summary, ensure_ascii=False, indent=2, sort_keys=True))
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

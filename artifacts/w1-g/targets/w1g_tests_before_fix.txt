@@ -1,0 +1,893 @@
+F...FFFFFF.FFFFF.....FF..F.FFFFF.FFFFFFFFF.FFFF.....FF.FFFFFFF...        [100%]
+==================================== ERRORS ====================================
+___________ ERROR collecting tests/test_w1g_decision_bc_supersede.py ___________
+ImportError while importing test module '/Users/motonisihikoudai/Projects/vera-impl/wt/W1-g-S/tests/test_w1g_decision_bc_supersede.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_w1g_decision_bc_supersede.py:15: in <module>
+    from verantyx.memory_merge import (
+E   ImportError: cannot import name 'MergeReport' from 'verantyx.memory_merge' (/Users/motonisihikoudai/Projects/vera-impl/wt/W1-g-S/verantyx/memory_merge.py)
+=================================== FAILURES ===================================
+__________ test_displayed_word_is_the_json_string_verbatim[backslash] __________
+
+name = 'backslash', baseline_line_count = [7, 7]
+
+    @pytest.mark.parametrize("name", sorted(TERMS))
+    def test_displayed_word_is_the_json_string_verbatim(name, baseline_line_count):
+        term = TERMS[name]
+        result, prompts = _run(term)
+        assert len(prompts) == 2
+        for variant, prompt in enumerate(prompts):
+            seg = _segment(prompt)
+            # 1. the segment decodes back to exactly the queried word
+>           assert json.loads(seg) == term
+E           AssertionError: assert 'a\\\\b' == 'a\\b'
+E             
+E             - a\b
+E             + a\\b
+E             ?   +
+
+tests/test_w1g_b03_choice_prompt.py:80: AssertionError
+______ test_displayed_word_is_the_json_string_verbatim[line_separator_zl] ______
+
+name = 'line_separator_zl', baseline_line_count = [7, 7]
+
+    @pytest.mark.parametrize("name", sorted(TERMS))
+    def test_displayed_word_is_the_json_string_verbatim(name, baseline_line_count):
+        term = TERMS[name]
+        result, prompts = _run(term)
+        assert len(prompts) == 2
+        for variant, prompt in enumerate(prompts):
+            seg = _segment(prompt)
+            # 1. the segment decodes back to exactly the queried word
+>           assert json.loads(seg) == term
+E           AssertionError: assert 'l1\\u2028l2' == 'l1\u2028l2'
+E             
+E             + l1\u2028l2
+E             - l1
+E             
+E             - l2
+
+tests/test_w1g_b03_choice_prompt.py:80: AssertionError
+___ test_displayed_word_is_the_json_string_verbatim[paragraph_separator_zp] ____
+
+name = 'paragraph_separator_zp', baseline_line_count = [7, 7]
+
+    @pytest.mark.parametrize("name", sorted(TERMS))
+    def test_displayed_word_is_the_json_string_verbatim(name, baseline_line_count):
+        term = TERMS[name]
+        result, prompts = _run(term)
+        assert len(prompts) == 2
+        for variant, prompt in enumerate(prompts):
+            seg = _segment(prompt)
+            # 1. the segment decodes back to exactly the queried word
+>           assert json.loads(seg) == term
+E           AssertionError: assert 'p1\\u2029p2' == 'p1\u2029p2'
+E             
+E             + p1\u2029p2
+E             - p1
+E             
+E             - p2
+
+tests/test_w1g_b03_choice_prompt.py:80: AssertionError
+_______ test_displayed_word_is_the_json_string_verbatim[quote_tab_cr_lf] _______
+
+name = 'quote_tab_cr_lf', baseline_line_count = [7, 7]
+
+    @pytest.mark.parametrize("name", sorted(TERMS))
+    def test_displayed_word_is_the_json_string_verbatim(name, baseline_line_count):
+        term = TERMS[name]
+        result, prompts = _run(term)
+        assert len(prompts) == 2
+        for variant, prompt in enumerate(prompts):
+            seg = _segment(prompt)
+            # 1. the segment decodes back to exactly the queried word
+>           assert json.loads(seg) == term
+                   ^^^^^^^^^^^^^^^
+
+tests/test_w1g_b03_choice_prompt.py:80: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/json/__init__.py:346: in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <json.decoder.JSONDecoder object at 0x10812e1d0>
+s = '"\\\\"q\\\\" \\\\t\\\\r\\\\n"'
+_w = <built-in method match of re.Pattern object at 0x1081192f0>
+
+    def decode(self, s, _w=WHITESPACE.match):
+        """Return the Python representation of ``s`` (a ``str`` instance
+        containing a JSON document).
+    
+        """
+        obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+        end = _w(s, end).end()
+        if end != len(s):
+>           raise JSONDecodeError("Extra data", s, end)
+E           json.decoder.JSONDecodeError: Extra data: line 1 column 5 (char 4)
+
+/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/json/decoder.py:340: JSONDecodeError
+_______ test_displayed_word_is_the_json_string_verbatim[six_char_u000a] ________
+
+name = 'six_char_u000a', baseline_line_count = [7, 7]
+
+    @pytest.mark.parametrize("name", sorted(TERMS))
+    def test_displayed_word_is_the_json_string_verbatim(name, baseline_line_count):
+        term = TERMS[name]
+        result, prompts = _run(term)
+        assert len(prompts) == 2
+        for variant, prompt in enumerate(prompts):
+            seg = _segment(prompt)
+            # 1. the segment decodes back to exactly the queried word
+>           assert json.loads(seg) == term
+E           AssertionError: assert '\\\\u000a' == '\\u000a'
+E             
+E             - \u000a
+E             + \\u000a
+E             ? +
+
+tests/test_w1g_b03_choice_prompt.py:80: AssertionError
+________ test_displayed_word_is_the_json_string_verbatim[zero_width_cf] ________
+
+name = 'zero_width_cf', baseline_line_count = [7, 7]
+
+    @pytest.mark.parametrize("name", sorted(TERMS))
+    def test_displayed_word_is_the_json_string_verbatim(name, baseline_line_count):
+        term = TERMS[name]
+        result, prompts = _run(term)
+        assert len(prompts) == 2
+        for variant, prompt in enumerate(prompts):
+            seg = _segment(prompt)
+            # 1. the segment decodes back to exactly the queried word
+>           assert json.loads(seg) == term
+E           AssertionError: assert 'zw\\u200bj' == 'zw\u200bj'
+E             
+E             - zw​j
+E             + zw\u200bj
+
+tests/test_w1g_b03_choice_prompt.py:80: AssertionError
+________________________ test_backslash_is_not_doubled _________________________
+
+    def test_backslash_is_not_doubled():
+        # json.dumps('a\\b') is the 6-character text "a\\b" with an escaped backslash;
+        # the old double escape produced 8 characters between the quotes.
+        _, prompts = _run("a\\b")
+>       assert _segment(prompts[0]) == json.dumps("a\\b", ensure_ascii=False)
+E       assert '"a\\\\\\\\b"' == '"a\\\\b"'
+E         
+E         - "a\\b"
+E         + "a\\\\b"
+E         ?     ++
+
+tests/test_w1g_b03_choice_prompt.py:95: AssertionError
+_________________ test_file_sha256_is_read_once_by_memory_ask __________________
+
+counter = <class 'test_w1g_b04_single_read.C'>
+
+    def test_file_sha256_is_read_once_by_memory_ask(counter):
+        w = {'kind': 'file_sha256', 'path': str(counter.src), 'sha256': _sha(CONTENT)}
+        answer = _ask_memory(_record(w))
+        assert answer['verdict'] == 'ANSWER' and answer['values'] == ['12']
+>       assert counter.reads == ['read_bytes']
+E       AssertionError: assert ['read_bytes', 'read_bytes'] == ['read_bytes']
+E         
+E         Left contains one more item: 'read_bytes'
+E         Use -v to get more diff
+
+tests/test_w1g_b04_single_read.py:86: AssertionError
+_____________ test_file_sha256_is_read_once_by_revalidating_memory _____________
+
+counter = <class 'test_w1g_b04_single_read.C'>
+
+    def test_file_sha256_is_read_once_by_revalidating_memory(counter):
+        w = {'kind': 'file_sha256', 'path': str(counter.src), 'sha256': _sha(CONTENT)}
+        answer = _ask_revalidating(_record(w))
+        assert answer['verdict'] == 'ANSWER' and answer['values'] == ['12']
+>       assert counter.reads == ['read_bytes']
+E       AssertionError: assert ['read_bytes', 'read_bytes'] == ['read_bytes']
+E         
+E         Left contains one more item: 'read_bytes'
+E         Use -v to get more diff
+
+tests/test_w1g_b04_single_read.py:93: AssertionError
+__________________ test_file_hash_is_read_once_by_memory_ask ___________________
+
+counter = <class 'test_w1g_b04_single_read.C'>
+
+    def test_file_hash_is_read_once_by_memory_ask(counter):
+        w = {'kind': 'file_hash', 'path': str(counter.src), 'sha256': _sha(CONTENT)}
+        answer = _ask_memory(_record(w))
+        assert answer['verdict'] == 'ANSWER'
+>       assert counter.reads == ['read_bytes']
+E       AssertionError: assert ['read_bytes', 'read_bytes'] == ['read_bytes']
+E         
+E         Left contains one more item: 'read_bytes'
+E         Use -v to get more diff
+
+tests/test_w1g_b04_single_read.py:100: AssertionError
+_________________ test_text_in_file_is_read_once_by_memory_ask _________________
+
+counter = <class 'test_w1g_b04_single_read.C'>
+
+    def test_text_in_file_is_read_once_by_memory_ask(counter):
+        w = {'kind': 'text_in_file', 'path': str(counter.src), 'needle': SENTENCE}
+        answer = _ask_memory(_record(w))
+        assert answer['verdict'] == 'ANSWER' and answer['values'] == ['12']
+>       assert counter.reads == ['read_text']
+E       AssertionError: assert ['read_text', 'read_text'] == ['read_text']
+E         
+E         Left contains one more item: 'read_text'
+E         Use -v to get more diff
+
+tests/test_w1g_b04_single_read.py:107: AssertionError
+________________ test_git_commit_is_launched_once_by_memory_ask ________________
+
+counter = <class 'test_w1g_b04_single_read.C'>
+
+    def test_git_commit_is_launched_once_by_memory_ask(counter):
+        w = {'kind': 'git_commit', 'repo': 'repo', 'commit': 'abc'}
+        answer = _ask_memory(_record(w))
+        assert answer['verdict'] == 'ANSWER'
+>       assert counter.reads == ['git']
+E       AssertionError: assert ['git', 'git'] == ['git']
+E         
+E         Left contains one more item: 'git'
+E         Use -v to get more diff
+
+tests/test_w1g_b04_single_read.py:114: AssertionError
+____________ test_needle_present_but_not_the_claim_is_not_an_answer ____________
+
+counter = <class 'test_w1g_b04_single_read.C'>
+
+    def test_needle_present_but_not_the_claim_is_not_an_answer(counter):
+        w = {'kind': 'text_in_file', 'path': str(counter.src), 'needle': 'other line'}
+        answer = _ask_memory(_record(w))
+        assert answer['verdict'] != 'ANSWER'
+>       assert counter.reads == ['read_text']
+E       AssertionError: assert ['read_text', 'read_text'] == ['read_text']
+E         
+E         Left contains one more item: 'read_text'
+E         Use -v to get more diff
+
+tests/test_w1g_b04_single_read.py:155: AssertionError
+______________ test_git_that_cannot_start_does_not_become_support ______________
+
+counter = <class 'test_w1g_b04_single_read.C'>
+
+    def test_git_that_cannot_start_does_not_become_support(counter):
+        counter.git['mode'] = 'oserror'
+        w = {'kind': 'git_commit', 'repo': 'repo', 'commit': 'abc'}
+        for require_fresh in (True, False):
+            counter.reads.clear()
+            answer = _ask_memory(_record(w), require_fresh=require_fresh)
+            assert answer['verdict'] != 'ANSWER' and answer['values'] == []
+>           assert counter.reads == ['git']
+E           AssertionError: assert ['git', 'git'] == ['git']
+E             
+E             Left contains one more item: 'git'
+E             Use -v to get more diff
+
+tests/test_w1g_b04_single_read.py:165: AssertionError
+____________ test_witness_supports_without_status_behaves_as_before ____________
+
+counter = <class 'test_w1g_b04_single_read.C'>
+
+    def test_witness_supports_without_status_behaves_as_before(counter):
+        w = {'kind': 'text_in_file', 'path': str(counter.src), 'needle': SENTENCE}
+        assert Memory._witness_supports(_record(w)) is True
+>       assert Memory._witness_supports(_record(w), status='FRESH') is True
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: Memory._witness_supports() got an unexpected keyword argument 'status'
+
+tests/test_w1g_b04_single_read.py:194: TypeError
+_________ test_work_is_exactly_the_hand_counted_words[accented_latin] __________
+
+name = 'accented_latin', text = 'café crème', words = ['café', 'crème']
+
+    @pytest.mark.parametrize("name,text,words", CASES, ids=IDS)
+    def test_work_is_exactly_the_hand_counted_words(name, text, words):
+        work = len(words)
+        view = _words_only_view(text)
+>       assert unknown_candidates(view, "unseen", budget=work - 1).status == "BUDGET_REFUSAL"
+E       AssertionError: assert 'CANDIDATES' == 'BUDGET_REFUSAL'
+E         
+E         - BUDGET_REFUSAL
+E         + CANDIDATES
+
+tests/test_w1g_b05_budget_words.py:53: AssertionError
+____________ test_work_is_exactly_the_hand_counted_words[cyrillic] _____________
+
+name = 'cyrillic', text = 'привет мир', words = ['привет', 'мир']
+
+    @pytest.mark.parametrize("name,text,words", CASES, ids=IDS)
+    def test_work_is_exactly_the_hand_counted_words(name, text, words):
+        work = len(words)
+        view = _words_only_view(text)
+>       assert unknown_candidates(view, "unseen", budget=work - 1).status == "BUDGET_REFUSAL"
+E       AssertionError: assert 'CANDIDATES' == 'BUDGET_REFUSAL'
+E         
+E         - BUDGET_REFUSAL
+E         + CANDIDATES
+
+tests/test_w1g_b05_budget_words.py:53: AssertionError
+_____________ test_work_is_exactly_the_hand_counted_words[hangul] ______________
+
+name = 'hangul', text = '안녕 세계', words = ['안녕', '세계']
+
+    @pytest.mark.parametrize("name,text,words", CASES, ids=IDS)
+    def test_work_is_exactly_the_hand_counted_words(name, text, words):
+        work = len(words)
+        view = _words_only_view(text)
+>       assert unknown_candidates(view, "unseen", budget=work - 1).status == "BUDGET_REFUSAL"
+E       AssertionError: assert 'CANDIDATES' == 'BUDGET_REFUSAL'
+E         
+E         - BUDGET_REFUSAL
+E         + CANDIDATES
+
+tests/test_w1g_b05_budget_words.py:53: AssertionError
+______ test_work_is_exactly_the_hand_counted_words[ascii_after_japanese] _______
+
+name = 'ascii_after_japanese', text = 'Alice猫 Bob'
+words = ['Alice', '猫', 'Bob']
+
+    @pytest.mark.parametrize("name,text,words", CASES, ids=IDS)
+    def test_work_is_exactly_the_hand_counted_words(name, text, words):
+        work = len(words)
+        view = _words_only_view(text)
+>       assert unknown_candidates(view, "unseen", budget=work - 1).status == "BUDGET_REFUSAL"
+E       AssertionError: assert 'CANDIDATES' == 'BUDGET_REFUSAL'
+E         
+E         - BUDGET_REFUSAL
+E         + CANDIDATES
+
+tests/test_w1g_b05_budget_words.py:53: AssertionError
+_ test_work_is_exactly_the_hand_counted_words[japanese_punctuation_separates] __
+
+name = 'japanese_punctuation_separates', text = 'alpha、beta。gamma'
+words = ['alpha', 'beta', 'gamma']
+
+    @pytest.mark.parametrize("name,text,words", CASES, ids=IDS)
+    def test_work_is_exactly_the_hand_counted_words(name, text, words):
+        work = len(words)
+        view = _words_only_view(text)
+>       assert unknown_candidates(view, "unseen", budget=work - 1).status == "BUDGET_REFUSAL"
+E       AssertionError: assert 'CANDIDATES' == 'BUDGET_REFUSAL'
+E         
+E         - BUDGET_REFUSAL
+E         + CANDIDATES
+
+tests/test_w1g_b05_budget_words.py:53: AssertionError
+___ test_work_is_exactly_the_hand_counted_words[ascii_duplicates_count_once] ___
+
+name = 'ascii_duplicates_count_once', text = 'alpha beta alpha'
+words = ['alpha', 'beta']
+
+    @pytest.mark.parametrize("name,text,words", CASES, ids=IDS)
+    def test_work_is_exactly_the_hand_counted_words(name, text, words):
+        work = len(words)
+        view = _words_only_view(text)
+>       assert unknown_candidates(view, "unseen", budget=work - 1).status == "BUDGET_REFUSAL"
+E       AssertionError: assert 'CANDIDATES' == 'BUDGET_REFUSAL'
+E         
+E         - BUDGET_REFUSAL
+E         + CANDIDATES
+
+tests/test_w1g_b05_budget_words.py:53: AssertionError
+____ test_work_adds_clauses_roles_and_words_across_sources[accented_latin] _____
+
+name = 'accented_latin', text = 'café crème', words = ['café', 'crème']
+
+    @pytest.mark.parametrize("name,text,words", CASES, ids=IDS)
+    def test_work_adds_clauses_roles_and_words_across_sources(name, text, words):
+        # 1 clause + 2 role terms + the words of both sources. "Alice" is a word of both
+        # sources in the "Alice猫 Bob" case and of the alpha/beta cases only once each.
+        distinct = {"Alice", "likes", "cats"} | set(words)
+        work = 1 + 2 + len(distinct)
+        view = _clause_view(text)
+>       assert unknown_candidates(view, "unseen", budget=work - 1).status == "BUDGET_REFUSAL"
+E       AssertionError: assert 'CANDIDATES' == 'BUDGET_REFUSAL'
+E         
+E         - BUDGET_REFUSAL
+E         + CANDIDATES
+
+tests/test_w1g_b05_budget_words.py:64: AssertionError
+_______ test_work_adds_clauses_roles_and_words_across_sources[cyrillic] ________
+
+name = 'cyrillic', text = 'привет мир', words = ['привет', 'мир']
+
+    @pytest.mark.parametrize("name,text,words", CASES, ids=IDS)
+    def test_work_adds_clauses_roles_and_words_across_sources(name, text, words):
+        # 1 clause + 2 role terms + the words of both sources. "Alice" is a word of both
+        # sources in the "Alice猫 Bob" case and of the alpha/beta cases only once each.
+        distinct = {"Alice", "likes", "cats"} | set(words)
+        work = 1 + 2 + len(distinct)
+        view = _clause_view(text)
+>       assert unknown_candidates(view, "unseen", budget=work - 1).status == "BUDGET_REFUSAL"
+E       AssertionError: assert 'CANDIDATES' == 'BUDGET_REFUSAL'
+E         
+E         - BUDGET_REFUSAL
+E         + CANDIDATES
+
+tests/test_w1g_b05_budget_words.py:64: AssertionError
+________ test_work_adds_clauses_roles_and_words_across_sources[hangul] _________
+
+name = 'hangul', text = '안녕 세계', words = ['안녕', '세계']
+
+    @pytest.mark.parametrize("name,text,words", CASES, ids=IDS)
+    def test_work_adds_clauses_roles_and_words_across_sources(name, text, words):
+        # 1 clause + 2 role terms + the words of both sources. "Alice" is a word of both
+        # sources in the "Alice猫 Bob" case and of the alpha/beta cases only once each.
+        distinct = {"Alice", "likes", "cats"} | set(words)
+        work = 1 + 2 + len(distinct)
+        view = _clause_view(text)
+>       assert unknown_candidates(view, "unseen", budget=work - 1).status == "BUDGET_REFUSAL"
+E       AssertionError: assert 'CANDIDATES' == 'BUDGET_REFUSAL'
+E         
+E         - BUDGET_REFUSAL
+E         + CANDIDATES
+
+tests/test_w1g_b05_budget_words.py:64: AssertionError
+_ test_work_adds_clauses_roles_and_words_across_sources[ascii_after_japanese] __
+
+name = 'ascii_after_japanese', text = 'Alice猫 Bob'
+words = ['Alice', '猫', 'Bob']
+
+    @pytest.mark.parametrize("name,text,words", CASES, ids=IDS)
+    def test_work_adds_clauses_roles_and_words_across_sources(name, text, words):
+        # 1 clause + 2 role terms + the words of both sources. "Alice" is a word of both
+        # sources in the "Alice猫 Bob" case and of the alpha/beta cases only once each.
+        distinct = {"Alice", "likes", "cats"} | set(words)
+        work = 1 + 2 + len(distinct)
+        view = _clause_view(text)
+>       assert unknown_candidates(view, "unseen", budget=work - 1).status == "BUDGET_REFUSAL"
+E       AssertionError: assert 'CANDIDATES' == 'BUDGET_REFUSAL'
+E         
+E         - BUDGET_REFUSAL
+E         + CANDIDATES
+
+tests/test_w1g_b05_budget_words.py:64: AssertionError
+_ test_work_adds_clauses_roles_and_words_across_sources[japanese_punctuation_separates] _
+
+name = 'japanese_punctuation_separates', text = 'alpha、beta。gamma'
+words = ['alpha', 'beta', 'gamma']
+
+    @pytest.mark.parametrize("name,text,words", CASES, ids=IDS)
+    def test_work_adds_clauses_roles_and_words_across_sources(name, text, words):
+        # 1 clause + 2 role terms + the words of both sources. "Alice" is a word of both
+        # sources in the "Alice猫 Bob" case and of the alpha/beta cases only once each.
+        distinct = {"Alice", "likes", "cats"} | set(words)
+        work = 1 + 2 + len(distinct)
+        view = _clause_view(text)
+>       assert unknown_candidates(view, "unseen", budget=work - 1).status == "BUDGET_REFUSAL"
+E       AssertionError: assert 'CANDIDATES' == 'BUDGET_REFUSAL'
+E         
+E         - BUDGET_REFUSAL
+E         + CANDIDATES
+
+tests/test_w1g_b05_budget_words.py:64: AssertionError
+___ test_work_adds_clauses_roles_and_words_across_sources[japanese_sentence] ___
+
+name = 'japanese_sentence', text = '花子が太郎に資料を渡した。'
+words = ['花子', '太郎', '資料', '渡']
+
+    @pytest.mark.parametrize("name,text,words", CASES, ids=IDS)
+    def test_work_adds_clauses_roles_and_words_across_sources(name, text, words):
+        # 1 clause + 2 role terms + the words of both sources. "Alice" is a word of both
+        # sources in the "Alice猫 Bob" case and of the alpha/beta cases only once each.
+        distinct = {"Alice", "likes", "cats"} | set(words)
+        work = 1 + 2 + len(distinct)
+        view = _clause_view(text)
+>       assert unknown_candidates(view, "unseen", budget=work - 1).status == "BUDGET_REFUSAL"
+E       AssertionError: assert 'CANDIDATES' == 'BUDGET_REFUSAL'
+E         
+E         - BUDGET_REFUSAL
+E         + CANDIDATES
+
+tests/test_w1g_b05_budget_words.py:64: AssertionError
+_ test_work_adds_clauses_roles_and_words_across_sources[ascii_duplicates_count_once] _
+
+name = 'ascii_duplicates_count_once', text = 'alpha beta alpha'
+words = ['alpha', 'beta']
+
+    @pytest.mark.parametrize("name,text,words", CASES, ids=IDS)
+    def test_work_adds_clauses_roles_and_words_across_sources(name, text, words):
+        # 1 clause + 2 role terms + the words of both sources. "Alice" is a word of both
+        # sources in the "Alice猫 Bob" case and of the alpha/beta cases only once each.
+        distinct = {"Alice", "likes", "cats"} | set(words)
+        work = 1 + 2 + len(distinct)
+        view = _clause_view(text)
+>       assert unknown_candidates(view, "unseen", budget=work - 1).status == "BUDGET_REFUSAL"
+E       AssertionError: assert 'CANDIDATES' == 'BUDGET_REFUSAL'
+E         
+E         - BUDGET_REFUSAL
+E         + CANDIDATES
+
+tests/test_w1g_b05_budget_words.py:64: AssertionError
+_________ test_ascii_whitespace_documents_count_like_split[alpha beta] _________
+
+text = 'alpha beta'
+
+    @pytest.mark.parametrize("text", [
+        "alpha beta", "one", "a b c d e f", "x  y\tz\nw", "  lead and trail  ",
+        "punct, stays. attached! to-words", "", "   ",
+    ])
+    def test_ascii_whitespace_documents_count_like_split(text):
+        expected = len(set(text.split()))
+        view = _words_only_view(text)
+        if expected >= 1:
+            assert unknown_candidates(view, "unseen", budget=expected).status != "BUDGET_REFUSAL"
+        if expected >= 2:
+>           assert unknown_candidates(view, "unseen", budget=expected - 1).status == "BUDGET_REFUSAL"
+E           AssertionError: assert 'CANDIDATES' == 'BUDGET_REFUSAL'
+E             
+E             - BUDGET_REFUSAL
+E             + CANDIDATES
+
+tests/test_w1g_b05_budget_words.py:78: AssertionError
+________ test_ascii_whitespace_documents_count_like_split[a b c d e f] _________
+
+text = 'a b c d e f'
+
+    @pytest.mark.parametrize("text", [
+        "alpha beta", "one", "a b c d e f", "x  y\tz\nw", "  lead and trail  ",
+        "punct, stays. attached! to-words", "", "   ",
+    ])
+    def test_ascii_whitespace_documents_count_like_split(text):
+        expected = len(set(text.split()))
+        view = _words_only_view(text)
+        if expected >= 1:
+            assert unknown_candidates(view, "unseen", budget=expected).status != "BUDGET_REFUSAL"
+        if expected >= 2:
+>           assert unknown_candidates(view, "unseen", budget=expected - 1).status == "BUDGET_REFUSAL"
+E           AssertionError: assert 'CANDIDATES' == 'BUDGET_REFUSAL'
+E             
+E             - BUDGET_REFUSAL
+E             + CANDIDATES
+
+tests/test_w1g_b05_budget_words.py:78: AssertionError
+_________ test_ascii_whitespace_documents_count_like_split[x  y\tz\nw] _________
+
+text = 'x  y\tz\nw'
+
+    @pytest.mark.parametrize("text", [
+        "alpha beta", "one", "a b c d e f", "x  y\tz\nw", "  lead and trail  ",
+        "punct, stays. attached! to-words", "", "   ",
+    ])
+    def test_ascii_whitespace_documents_count_like_split(text):
+        expected = len(set(text.split()))
+        view = _words_only_view(text)
+        if expected >= 1:
+            assert unknown_candidates(view, "unseen", budget=expected).status != "BUDGET_REFUSAL"
+        if expected >= 2:
+>           assert unknown_candidates(view, "unseen", budget=expected - 1).status == "BUDGET_REFUSAL"
+E           AssertionError: assert 'CANDIDATES' == 'BUDGET_REFUSAL'
+E             
+E             - BUDGET_REFUSAL
+E             + CANDIDATES
+
+tests/test_w1g_b05_budget_words.py:78: AssertionError
+_____ test_ascii_whitespace_documents_count_like_split[  lead and trail  ] _____
+
+text = '  lead and trail  '
+
+    @pytest.mark.parametrize("text", [
+        "alpha beta", "one", "a b c d e f", "x  y\tz\nw", "  lead and trail  ",
+        "punct, stays. attached! to-words", "", "   ",
+    ])
+    def test_ascii_whitespace_documents_count_like_split(text):
+        expected = len(set(text.split()))
+        view = _words_only_view(text)
+        if expected >= 1:
+            assert unknown_candidates(view, "unseen", budget=expected).status != "BUDGET_REFUSAL"
+        if expected >= 2:
+>           assert unknown_candidates(view, "unseen", budget=expected - 1).status == "BUDGET_REFUSAL"
+E           AssertionError: assert 'CANDIDATES' == 'BUDGET_REFUSAL'
+E             
+E             - BUDGET_REFUSAL
+E             + CANDIDATES
+
+tests/test_w1g_b05_budget_words.py:78: AssertionError
+_ test_ascii_whitespace_documents_count_like_split[punct, stays. attached! to-words] _
+
+text = 'punct, stays. attached! to-words'
+
+    @pytest.mark.parametrize("text", [
+        "alpha beta", "one", "a b c d e f", "x  y\tz\nw", "  lead and trail  ",
+        "punct, stays. attached! to-words", "", "   ",
+    ])
+    def test_ascii_whitespace_documents_count_like_split(text):
+        expected = len(set(text.split()))
+        view = _words_only_view(text)
+        if expected >= 1:
+            assert unknown_candidates(view, "unseen", budget=expected).status != "BUDGET_REFUSAL"
+        if expected >= 2:
+>           assert unknown_candidates(view, "unseen", budget=expected - 1).status == "BUDGET_REFUSAL"
+E           AssertionError: assert 'CANDIDATES' == 'BUDGET_REFUSAL'
+E             
+E             - BUDGET_REFUSAL
+E             + CANDIDATES
+
+tests/test_w1g_b05_budget_words.py:78: AssertionError
+___ test_unverified_record_is_accepted_and_read_as_neither_failure_nor_done ____
+
+tmp_path = PosixPath('/private/tmp/pytest-of-motonisihikoudai/pytest-540/test_unverified_record_is_acce0')
+
+    def test_unverified_record_is_accepted_and_read_as_neither_failure_nor_done(tmp_path):
+        frame, acceptance = _independent(tmp_path)
+        assert _verify(frame).kind == "ASK_VERIFIER"
+>       record = _record(frame, acceptance, "UNVERIFIED")
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_w1g_decision_a_unverified.py:42: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_w1g_decision_a_unverified.py:31: in _record
+    return frame.record_verification(acceptance["id"], result, verifier_id=verifier, claimant_id=claimant,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <verantyx.conductor.ProjectFrame object at 0x118f22e90>
+acceptance_id = '39d22af47612', result = 'UNVERIFIED'
+verifier_id = 'agent-auditor', claimant_id = 'worker-a'
+evidence_ref = 'evidence-1', template_id = 'acceptance_independent_v1'
+supersedes = None
+
+    def record_verification(
+        self,
+        acceptance_id: str,
+        result: str,
+        *,
+        verifier_id: str,
+        claimant_id: str,
+        evidence_ref: str = "",
+        template_id: Optional[str] = None,
+        supersedes: Optional[str] = None,
+    ) -> dict:
+        acceptance = self._active_record(acceptance_id)
+        if acceptance is None or acceptance.get("kind") != "ACCEPTANCE":
+            raise WriteRejected("verification must name an active ACCEPTANCE record")
+        spec = acceptance.get("witness", {}).get("acceptance", {})
+        if result not in {"PASS", "FAIL"}:
+>           raise WriteRejected("verification result must be PASS or FAIL")
+E           verantyx.memory_frame.WriteRejected: verification result must be PASS or FAIL
+
+verantyx/conductor.py:531: WriteRejected
+___________ test_unverified_is_superseded_by_pass_and_then_completes ___________
+
+tmp_path = PosixPath('/private/tmp/pytest-of-motonisihikoudai/pytest-540/test_unverified_is_superseded_0')
+
+    def test_unverified_is_superseded_by_pass_and_then_completes(tmp_path):
+        frame, acceptance = _independent(tmp_path)
+>       first = _record(frame, acceptance, "UNVERIFIED")
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_w1g_decision_a_unverified.py:54: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_w1g_decision_a_unverified.py:31: in _record
+    return frame.record_verification(acceptance["id"], result, verifier_id=verifier, claimant_id=claimant,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <verantyx.conductor.ProjectFrame object at 0x118e243d0>
+acceptance_id = '39d22af47612', result = 'UNVERIFIED'
+verifier_id = 'agent-auditor', claimant_id = 'worker-a'
+evidence_ref = 'evidence-1', template_id = 'acceptance_independent_v1'
+supersedes = None
+
+    def record_verification(
+        self,
+        acceptance_id: str,
+        result: str,
+        *,
+        verifier_id: str,
+        claimant_id: str,
+        evidence_ref: str = "",
+        template_id: Optional[str] = None,
+        supersedes: Optional[str] = None,
+    ) -> dict:
+        acceptance = self._active_record(acceptance_id)
+        if acceptance is None or acceptance.get("kind") != "ACCEPTANCE":
+            raise WriteRejected("verification must name an active ACCEPTANCE record")
+        spec = acceptance.get("witness", {}).get("acceptance", {})
+        if result not in {"PASS", "FAIL"}:
+>           raise WriteRejected("verification result must be PASS or FAIL")
+E           verantyx.memory_frame.WriteRejected: verification result must be PASS or FAIL
+
+verantyx/conductor.py:531: WriteRejected
+_______________ test_unverified_can_supersede_a_fail_and_a_pass ________________
+
+tmp_path = PosixPath('/private/tmp/pytest-of-motonisihikoudai/pytest-540/test_unverified_can_supersede_0')
+
+    def test_unverified_can_supersede_a_fail_and_a_pass(tmp_path):
+        frame, acceptance = _independent(tmp_path)
+        failed = _record(frame, acceptance, "FAIL")
+>       unverified = _record(frame, acceptance, "UNVERIFIED", supersedes=failed["id"])
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_w1g_decision_a_unverified.py:73: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_w1g_decision_a_unverified.py:31: in _record
+    return frame.record_verification(acceptance["id"], result, verifier_id=verifier, claimant_id=claimant,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <verantyx.conductor.ProjectFrame object at 0x118d06d50>
+acceptance_id = '39d22af47612', result = 'UNVERIFIED'
+verifier_id = 'agent-auditor', claimant_id = 'worker-a'
+evidence_ref = 'evidence-1', template_id = 'acceptance_independent_v1'
+supersedes = 'ffeceef7ff28'
+
+    def record_verification(
+        self,
+        acceptance_id: str,
+        result: str,
+        *,
+        verifier_id: str,
+        claimant_id: str,
+        evidence_ref: str = "",
+        template_id: Optional[str] = None,
+        supersedes: Optional[str] = None,
+    ) -> dict:
+        acceptance = self._active_record(acceptance_id)
+        if acceptance is None or acceptance.get("kind") != "ACCEPTANCE":
+            raise WriteRejected("verification must name an active ACCEPTANCE record")
+        spec = acceptance.get("witness", {}).get("acceptance", {})
+        if result not in {"PASS", "FAIL"}:
+>           raise WriteRejected("verification result must be PASS or FAIL")
+E           verantyx.memory_frame.WriteRejected: verification result must be PASS or FAIL
+
+verantyx/conductor.py:531: WriteRejected
+______________ test_other_result_values_are_still_rejected[MAYBE] ______________
+
+tmp_path = PosixPath('/private/tmp/pytest-of-motonisihikoudai/pytest-540/test_other_result_values_are_s0')
+bad = 'MAYBE'
+
+    @pytest.mark.parametrize("bad", ["MAYBE", "pass", "unverified", "", "PASS "])
+    def test_other_result_values_are_still_rejected(tmp_path, bad):
+        frame, acceptance = _independent(tmp_path)
+>       with pytest.raises(WriteRejected, match="PASS, FAIL or UNVERIFIED"):
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'PASS, FAIL or UNVERIFIED'
+E         Actual message: 'verification result must be PASS or FAIL'
+
+tests/test_w1g_decision_a_unverified.py:85: AssertionError
+______________ test_other_result_values_are_still_rejected[pass] _______________
+
+tmp_path = PosixPath('/private/tmp/pytest-of-motonisihikoudai/pytest-540/test_other_result_values_are_s1')
+bad = 'pass'
+
+    @pytest.mark.parametrize("bad", ["MAYBE", "pass", "unverified", "", "PASS "])
+    def test_other_result_values_are_still_rejected(tmp_path, bad):
+        frame, acceptance = _independent(tmp_path)
+>       with pytest.raises(WriteRejected, match="PASS, FAIL or UNVERIFIED"):
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'PASS, FAIL or UNVERIFIED'
+E         Actual message: 'verification result must be PASS or FAIL'
+
+tests/test_w1g_decision_a_unverified.py:85: AssertionError
+___________ test_other_result_values_are_still_rejected[unverified] ____________
+
+tmp_path = PosixPath('/private/tmp/pytest-of-motonisihikoudai/pytest-540/test_other_result_values_are_s2')
+bad = 'unverified'
+
+    @pytest.mark.parametrize("bad", ["MAYBE", "pass", "unverified", "", "PASS "])
+    def test_other_result_values_are_still_rejected(tmp_path, bad):
+        frame, acceptance = _independent(tmp_path)
+>       with pytest.raises(WriteRejected, match="PASS, FAIL or UNVERIFIED"):
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'PASS, FAIL or UNVERIFIED'
+E         Actual message: 'verification result must be PASS or FAIL'
+
+tests/test_w1g_decision_a_unverified.py:85: AssertionError
+________________ test_other_result_values_are_still_rejected[] _________________
+
+tmp_path = PosixPath('/private/tmp/pytest-of-motonisihikoudai/pytest-540/test_other_result_values_are_s3')
+bad = ''
+
+    @pytest.mark.parametrize("bad", ["MAYBE", "pass", "unverified", "", "PASS "])
+    def test_other_result_values_are_still_rejected(tmp_path, bad):
+        frame, acceptance = _independent(tmp_path)
+>       with pytest.raises(WriteRejected, match="PASS, FAIL or UNVERIFIED"):
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'PASS, FAIL or UNVERIFIED'
+E         Actual message: 'verification result must be PASS or FAIL'
+
+tests/test_w1g_decision_a_unverified.py:85: AssertionError
+______________ test_other_result_values_are_still_rejected[PASS ] ______________
+
+tmp_path = PosixPath('/private/tmp/pytest-of-motonisihikoudai/pytest-540/test_other_result_values_are_s4')
+bad = 'PASS '
+
+    @pytest.mark.parametrize("bad", ["MAYBE", "pass", "unverified", "", "PASS "])
+    def test_other_result_values_are_still_rejected(tmp_path, bad):
+        frame, acceptance = _independent(tmp_path)
+>       with pytest.raises(WriteRejected, match="PASS, FAIL or UNVERIFIED"):
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'PASS, FAIL or UNVERIFIED'
+E         Actual message: 'verification result must be PASS or FAIL'
+
+tests/test_w1g_decision_a_unverified.py:85: AssertionError
+________________ test_human_judged_unverified_does_not_complete ________________
+
+tmp_path = PosixPath('/private/tmp/pytest-of-motonisihikoudai/pytest-540/test_human_judged_unverified_d0')
+
+    def test_human_judged_unverified_does_not_complete(tmp_path):
+        frame = _frame(tmp_path)
+        acceptance = frame.add_acceptance("task-1", "visual check", human_judged=True)
+        frame.add_goal("task-1", "visual check")
+>       record = frame.record_verification(acceptance["id"], "UNVERIFIED", verifier_id="human:reviewer",
+                                           claimant_id=CLAIMANT, evidence_ref="could not open the build")
+
+tests/test_w1g_decision_a_unverified.py:93: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <verantyx.conductor.ProjectFrame object at 0x118e24f10>
+acceptance_id = '5713eb1497d2', result = 'UNVERIFIED'
+verifier_id = 'human:reviewer', claimant_id = 'worker-a'
+evidence_ref = 'could not open the build', template_id = None, supersedes = None
+
+    def record_verification(
+        self,
+        acceptance_id: str,
+        result: str,
+        *,
+        verifier_id: str,
+        claimant_id: str,
+        evidence_ref: str = "",
+        template_id: Optional[str] = None,
+        supersedes: Optional[str] = None,
+    ) -> dict:
+        acceptance = self._active_record(acceptance_id)
+        if acceptance is None or acceptance.get("kind") != "ACCEPTANCE":
+            raise WriteRejected("verification must name an active ACCEPTANCE record")
+        spec = acceptance.get("witness", {}).get("acceptance", {})
+        if result not in {"PASS", "FAIL"}:
+>           raise WriteRejected("verification result must be PASS or FAIL")
+E           verantyx.memory_frame.WriteRejected: verification result must be PASS or FAIL
+
+verantyx/conductor.py:531: WriteRejected
+=========================== short test summary info ============================
+FAILED tests/test_w1g_b03_choice_prompt.py::test_displayed_word_is_the_json_string_verbatim[backslash]
+FAILED tests/test_w1g_b03_choice_prompt.py::test_displayed_word_is_the_json_string_verbatim[line_separator_zl]
+FAILED tests/test_w1g_b03_choice_prompt.py::test_displayed_word_is_the_json_string_verbatim[paragraph_separator_zp]
+FAILED tests/test_w1g_b03_choice_prompt.py::test_displayed_word_is_the_json_string_verbatim[quote_tab_cr_lf]
+FAILED tests/test_w1g_b03_choice_prompt.py::test_displayed_word_is_the_json_string_verbatim[six_char_u000a]
+FAILED tests/test_w1g_b03_choice_prompt.py::test_displayed_word_is_the_json_string_verbatim[zero_width_cf]
+FAILED tests/test_w1g_b03_choice_prompt.py::test_backslash_is_not_doubled - a...
+FAILED tests/test_w1g_b04_single_read.py::test_file_sha256_is_read_once_by_memory_ask
+FAILED tests/test_w1g_b04_single_read.py::test_file_sha256_is_read_once_by_revalidating_memory
+FAILED tests/test_w1g_b04_single_read.py::test_file_hash_is_read_once_by_memory_ask
+FAILED tests/test_w1g_b04_single_read.py::test_text_in_file_is_read_once_by_memory_ask
+FAILED tests/test_w1g_b04_single_read.py::test_git_commit_is_launched_once_by_memory_ask
+FAILED tests/test_w1g_b04_single_read.py::test_needle_present_but_not_the_claim_is_not_an_answer
+FAILED tests/test_w1g_b04_single_read.py::test_git_that_cannot_start_does_not_become_support
+FAILED tests/test_w1g_b04_single_read.py::test_witness_supports_without_status_behaves_as_before
+FAILED tests/test_w1g_b05_budget_words.py::test_work_is_exactly_the_hand_counted_words[accented_latin]
+FAILED tests/test_w1g_b05_budget_words.py::test_work_is_exactly_the_hand_counted_words[cyrillic]
+FAILED tests/test_w1g_b05_budget_words.py::test_work_is_exactly_the_hand_counted_words[hangul]
+FAILED tests/test_w1g_b05_budget_words.py::test_work_is_exactly_the_hand_counted_words[ascii_after_japanese]
+FAILED tests/test_w1g_b05_budget_words.py::test_work_is_exactly_the_hand_counted_words[japanese_punctuation_separates]
+FAILED tests/test_w1g_b05_budget_words.py::test_work_is_exactly_the_hand_counted_words[ascii_duplicates_count_once]
+FAILED tests/test_w1g_b05_budget_words.py::test_work_adds_clauses_roles_and_words_across_sources[accented_latin]
+FAILED tests/test_w1g_b05_budget_words.py::test_work_adds_clauses_roles_and_words_across_sources[cyrillic]
+FAILED tests/test_w1g_b05_budget_words.py::test_work_adds_clauses_roles_and_words_across_sources[hangul]
+FAILED tests/test_w1g_b05_budget_words.py::test_work_adds_clauses_roles_and_words_across_sources[ascii_after_japanese]
+FAILED tests/test_w1g_b05_budget_words.py::test_work_adds_clauses_roles_and_words_across_sources[japanese_punctuation_separates]
+FAILED tests/test_w1g_b05_budget_words.py::test_work_adds_clauses_roles_and_words_across_sources[japanese_sentence]
+FAILED tests/test_w1g_b05_budget_words.py::test_work_adds_clauses_roles_and_words_across_sources[ascii_duplicates_count_once]
+FAILED tests/test_w1g_b05_budget_words.py::test_ascii_whitespace_documents_count_like_split[alpha beta]
+FAILED tests/test_w1g_b05_budget_words.py::test_ascii_whitespace_documents_count_like_split[a b c d e f]
+FAILED tests/test_w1g_b05_budget_words.py::test_ascii_whitespace_documents_count_like_split[x  y\tz\nw]
+FAILED tests/test_w1g_b05_budget_words.py::test_ascii_whitespace_documents_count_like_split[  lead and trail  ]
+FAILED tests/test_w1g_b05_budget_words.py::test_ascii_whitespace_documents_count_like_split[punct, stays. attached! to-words]
+FAILED tests/test_w1g_decision_a_unverified.py::test_unverified_record_is_accepted_and_read_as_neither_failure_nor_done
+FAILED tests/test_w1g_decision_a_unverified.py::test_unverified_is_superseded_by_pass_and_then_completes
+FAILED tests/test_w1g_decision_a_unverified.py::test_unverified_can_supersede_a_fail_and_a_pass
+FAILED tests/test_w1g_decision_a_unverified.py::test_other_result_values_are_still_rejected[MAYBE]
+FAILED tests/test_w1g_decision_a_unverified.py::test_other_result_values_are_still_rejected[pass]
+FAILED tests/test_w1g_decision_a_unverified.py::test_other_result_values_are_still_rejected[unverified]
+FAILED tests/test_w1g_decision_a_unverified.py::test_other_result_values_are_still_rejected[]
+FAILED tests/test_w1g_decision_a_unverified.py::test_other_result_values_are_still_rejected[PASS ]
+FAILED tests/test_w1g_decision_a_unverified.py::test_human_judged_unverified_does_not_complete
+ERROR tests/test_w1g_decision_bc_supersede.py
+42 failed, 23 passed, 1 error in 0.58s

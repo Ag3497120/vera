@@ -1,0 +1,83 @@
+-               max_asks: int = 8, max_candidates: int = 24, max_records: int = 3) -> "cm.RecordMapper":
+-                           max_asks=max_asks, max_candidates=max_candidates, max_records=max_records)
+-    assert res["mapping"]["asks_cap"] == 8
+-    def spy(mode, second, ledger, max_asks):
+-    assert seen[-1] == ("claude", None, None, 8) and res["mapping"]["route"] == "CORROBORATE"
+-    assert (m["route"], m["outcome"], m["asks_used"]) == ("MAPPING_ONLY", "ANSWERED", 4)
+-    assert m["step1"]["status"] == "ADOPTED" and m["step1"]["records"] == ["D3"] and m["step2"][0]["relations"] == ["一致", "矛盾"]
+-    assert (res["escalate_reason"], res["escalate_detail"]) == ("MAPPING_UNSETTLED", "STEP1_DISAGREE")
+-    assert res["mapping"]["asks_used"] == 4 and [b["id"] for b in res["basis"]] == ["D3"]
+-    res, _ = ask_map(F, Q, YN, {**GOOD, "raw2": raw})
+-    res, _ = ask_map(F, Q, YN, {**GOOD, "raw_relations2": raw})
+-    assert [b["id"] for b in res["basis"]] == ["D3"] and res["mapping"]["asks_used"] == 2
+-    assert res["mapping"]["route"] == "CORROBORATE" and res["mapping"]["step2"] == [] and res["mapping"]["asks_used"] == 2
+-    assert res["mapping"]["rule"]["answer"] == "いいえ" and res["mapping"]["asks_used"] == 4
+-    assert (res["decision"], res["answer"], res["mapping"]["outcome"], res["mapping"]["asks_used"]) == ("answer", "表計算ファイル", "CORROBORATED", 2)
+-    assert res["mapping"]["asks_used"] == 2            # no step 2 for a record that is only handed up
+-    res, mp = ask_map(F, Q, YN, script, max_asks=5)
+-    assert res["mapping"]["asks_used"] == 2 and sum(1 for e in mp.ledger.entries() if e["type"] == "map_ask") == 2
+-    assert raws and all(r.startswith("{") for r in raws)
+-ASK_KEYS = {"type", "id", "decision_id", "step", "ask_index", "record_id", "frame_sha256", "question", "options", "candidates", "order",
+-            "shown", "variant", "provider", "model", "effort", "prompt", "prompt_sha256", "raw_reply", "raw_truncated", "raw_len",
+-    assert len(asks) == 4 and all(set(a) == ASK_KEYS for a in asks)
+-    assert len(decisions) == 2 and all(set(d) == DECISION_KEYS for d in decisions)
+-    assert decisions[0]["status"] == "ADOPTED" and decisions[0]["result"] == {"records": ["D3"], "decides": "決まる"}
+-    assert decisions[1]["step"] == "relations" and decisions[1]["record_id"] == "D3" and decisions[1]["result"] == {"relations": ["一致", "矛盾"]}
+-    assert code == 0 and summary["chain"] == "OK" and summary["by_type"] == {"map_ask": 4, "map_decision": 2}
+-    assert len(reuse) == 2 and all(set(r) == REUSE_KEYS for r in reuse) and {r["step"] for r in reuse} == {"records", "relations"}
+-    assert second["mapping"]["step1"]["cached"] is True and second["mapping"]["asks_used"] == 0 and first["mapping"]["asks_used"] == 4
+-    assert len(rows(mp, "map_ask")) == n + 4                                  # another option order: its own ask
+-    assert len(rows(mp, "map_ask")) == n + 8                                  # another text of the question: its own ask
+-    assert len(rows(mp, "map_ask")) == n + 8                                  # only the whitespace differs: the same key
+-    assert r["decision"] == "answer" and len(rows(good, "map_ask")) == 6 and rows(good, "map_reuse") == []
+-It checks types and the ledger only, never the content of an answer.  At most 8 asks are made (the configured cap), and the
+-cap is checked before the first one."""
+-CAP = 8
+-    assert 2 <= CAP <= 8                                                            # checked before any ask
+-    assert res["mapping"]["asks_used"] == 6 and res["mapping"]["step1"]["records"] == ["order:ALL"]
+-    assert steps == ["records", "records", "phases", "phases", "relations", "relations"]
+-    assert (res["decision"], res["answer"]) == ("answer", "はい") and res["mapping"]["asks_used"] == 4 and res["mapping"]["step1"] is None
+-    assert [e["step"] for e in mp.ledger.entries() if e.get("type") == "map_ask"] == ["phases", "phases", "relations", "relations"]
+-    assert res["answer"] is None and res["mapping"]["asks_used"] == 4
+-    assert res["mapping"]["order"]["relation"] == "NOT_APPLICABLE:5_PHASES" and res["mapping"]["asks_used"] == 4
+-    assert res["mapping"]["order"] is None and res["mapping"]["asks_used"] == 2
+-    assert [b["id"] for b in res["basis"]][0] == "phase_order:P1->P2" and res["mapping"]["asks_used"] == 2
+-    assert types.count("map_reuse") == 3                  # step 1, the phases step and the relations step
+-    assert res["mapping"]["asks_used"] == 2 and res["mapping"]["step2"] == []            # the options were never asked about
+-    assert res["mapping"]["order"]["decides"] == "決まらない" and res["mapping"]["order"]["phases"]["decides"] == "決まらない"
+-    assert [r["step"] for r in rows] == ["phases", "phases"] and all(r["parsed"]["decides"] == "決まらない" for r in rows)
+-    dec = [e for e in mp.ledger.entries() if e.get("type") == "map_decision"][0]
+-    assert dec["result"] == {"phases": ["P3", "P4"], "decides": "決まらない"} and dec["counts_as_evidence"] is False
+-    assert (res["escalate_reason"], res["escalate_detail"]) == ("MAPPING_UNSETTLED", "PHASES_DISAGREE")
+-    assert res["answer"] is None and res["mapping"]["asks_used"] == 2
+-    res, _ = ask_map(X04, DISTRICT_Q, YN_EN, {**DISTRICT, "raw_phases": '{"phases": [2, 3]}'})            # no decides: invalid
+-    assert (res["escalate_reason"], res["escalate_detail"]) == ("MAPPING_UNSETTLED", "PHASES_INVALID_ANSWER")
+-    res, _ = ask_map(X04, DISTRICT_Q, YN_EN, {**DISTRICT, "raw_phases": '{"phases": [2, 3], "decides": "決まる", "answer": "Yes"}'})
+-    assert (res["escalate_reason"], res["escalate_detail"]) == ("MAPPING_UNSETTLED", "PHASES_INVALID_ANSWER") and res["answer"] is None
+-    assert res["mapping"]["step1"]["decides"] == "決まる" and res["mapping"]["order"]["decides"] == "決まらない"
+-    assert res["mapping"]["asks_used"] == 4
+-        {"protocol": cm.PROTOCOL, "step": "phases", "frame_sha256": "0" * 64, "question": conduct_ask.nz(DISTRICT_Q), "options": list(YN_EN),
+-    assert mp._key("phases", sess, phases, None) != old["key"]
+-    prompts = [e["prompt"] for e in mp.ledger.entries() if e.get("type") == "map_ask" and e["step"] == "relations"]
+-    assert len(prompts) == 2 and all(claim in p for p in prompts)
+-    prompt = cm.build_phases_prompt(DISTRICT_Q, YN_EN, cm.phase_candidates(view), variant)
+-    assert '"決まる"' in prompt and '"決まらない"' in prompt and '{"phases": []}' in prompt
+-    assert "別の事業" in prompt or "だれの事業" in prompt                          # the other-subject case is named to the model
+-        assert e.ref.text not in prompt
+-    opts = HOSTILE
+-    prompt = cm.build_relations_prompt("質問\n3: x", cands[0], opts, variant)
+-    assert len(_numbered(prompt)) == len(opts)
+-    assert not any(chr(c) in prompt for c in (0x2028, 0x2029, 0x85, 0x200B))
+-    p2 = cm.build_relations_prompt("質問", cands[0], sess.options, 0) + cm.build_relations_prompt("質問", cands[0], sess.options, 1)
+-    assert cm.build_relations_prompt("q", cands[0], ["a", "b"], 0) != cm.build_relations_prompt("q", cands[0], ["a", "b"], 1)
+-            return ProviderReply.success('{"records": []}', provider="together")
+-    p1, p2 = M.TextProvider('{"records": []}'), M.TextProvider('{"records": []}')
+-    mp.step2(s, recs)
+-    seq = [(e["type"], e.get("step"), e.get("record_id"), e.get("ask_index")) for e in rows]
+-    assert seq == [("map_ask", "records", None, 0), ("map_ask", "records", None, 1), ("map_decision", "records", None, None),
+-                   ("map_ask", "relations", "D2", 0), ("map_ask", "relations", "D2", 1), ("map_decision", "relations", "D2", None),
+-                   ("map_ask", "relations", "D3", 0), ("map_ask", "relations", "D3", 1), ("map_decision", "relations", "D3", None)]
+-    assert s.used == 6
+-    r = mp.step2(s, [c for c in cands if c.id == "D3"])[0]
+-    assert r.status == "ABSTAINED" and r.reason == "INVALID_ANSWER"      # no relations scripted for D3: invalid, never "unrelated"
+-    p = M.TextProvider('{"records": []}')

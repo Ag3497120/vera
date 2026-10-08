@@ -1,0 +1,4 @@
+$ vpy -m pytest -q -p no:cacheprovider tests/test_conduct_routing.py -k R5 or legacy
+...                                                                      [100%]
+3 passed, 33 deselected in 4.19s
+exit=0

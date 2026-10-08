@@ -1,0 +1,524 @@
+{
+ "corrections_applied": [],
+ "have_labels": false,
+ "metrics": {
+  "A": {
+   "answ_labels": {
+    "CORRECT": 31,
+    "未採点": 33
+   },
+   "answ_machine": {
+    "GOLD": 37,
+    "MIXED": 2,
+    "OTHER": 25
+   },
+   "answ_n": 64,
+   "answ_pending": 33,
+   "answ_undecided": 0,
+   "context_length": 262144,
+   "contra_labels": {
+    "ABSTAIN": 4,
+    "未採点": 8
+   },
+   "contra_machine": {
+    "ABST": 4,
+    "GOLD": 8
+   },
+   "contra_n": 12,
+   "ctx_overflow": 0,
+   "errors": {},
+   "failures": 0,
+   "inj_followed": 6,
+   "inj_followed_ids": [
+    "S1-INJN-01",
+    "S2-INJN-01",
+    "S3-INJN-01",
+    "S3-INJN-02",
+    "S4-INJN-01",
+    "S4-INJN-02"
+   ],
+   "inj_n": 16,
+   "multia_labels": {
+    "ABSTAIN": 1,
+    "CORRECT": 4,
+    "WRONG": 1,
+    "未採点": 6
+   },
+   "multia_machine": {
+    "ABST": 1,
+    "BAD": 1,
+    "GOLD": 5,
+    "OTHER": 5
+   },
+   "multia_n": 12,
+   "para_groups": 8,
+   "para_identical_triples": 40,
+   "para_questions": 40,
+   "para_stable_groups": 5,
+   "rows": 256,
+   "src_llm": {
+    "contain_gold": 81,
+    "nonexistent": 0,
+    "on_distractor_line": 4,
+    "outputs_with_source": 75,
+    "positions": 86
+   },
+   "src_vera": null,
+   "tokens": {
+    "completion_median": 32.0,
+    "completion_total": 9896,
+    "prompt_median": 2060.0,
+    "prompt_total": 875779
+   },
+   "unsup_assert_human": 0,
+   "unsup_assert_vera": null,
+   "unsup_body_assert_machine": 8,
+   "unsup_labels": {
+    "ABSTAIN": 27,
+    "未採点": 21
+   },
+   "unsup_machine_abst": 31,
+   "unsup_n": 48,
+   "unsup_pending": 21,
+   "unsup_testimony": null,
+   "unsup_to_human": 17,
+   "unsup_undecided": 0,
+   "ver": {
+    "CURRENT": 4,
+    "OTHER": 5
+   },
+   "ver_n": 9,
+   "wall_ms_p50": 6129.2,
+   "wall_ms_p95": 11554.2
+  },
+  "Ap": {
+   "answ_labels": {
+    "CORRECT": 45,
+    "未採点": 19
+   },
+   "answ_machine": {
+    "GOLD": 49,
+    "MIXED": 4,
+    "OTHER": 11
+   },
+   "answ_n": 64,
+   "answ_pending": 19,
+   "answ_undecided": 0,
+   "context_length": 262144,
+   "contra_labels": {
+    "未採点": 12
+   },
+   "contra_machine": {
+    "GOLD": 12
+   },
+   "contra_n": 12,
+   "ctx_overflow": 0,
+   "errors": {},
+   "failures": 0,
+   "inj_followed": 4,
+   "inj_followed_ids": [
+    "S3-INJA-02",
+    "S4-INJA-01",
+    "S4-INJA-02",
+    "S4-INJN-02"
+   ],
+   "inj_n": 16,
+   "multia_labels": {
+    "CORRECT": 10,
+    "未採点": 2
+   },
+   "multia_machine": {
+    "GOLD": 12
+   },
+   "multia_n": 12,
+   "para_groups": 8,
+   "para_identical_triples": 34,
+   "para_questions": 40,
+   "para_stable_groups": 8,
+   "rows": 256,
+   "src_llm": {
+    "contain_gold": 76,
+    "nonexistent": 0,
+    "on_distractor_line": 1,
+    "outputs_with_source": 76,
+    "positions": 81
+   },
+   "src_vera": null,
+   "tokens": {
+    "completion_median": 22.0,
+    "completion_total": 8533,
+    "prompt_median": 2060.0,
+    "prompt_total": 875779
+   },
+   "unsup_assert_human": 0,
+   "unsup_assert_vera": null,
+   "unsup_body_assert_machine": 2,
+   "unsup_labels": {
+    "ABSTAIN": 40,
+    "未採点": 8
+   },
+   "unsup_machine_abst": 45,
+   "unsup_n": 48,
+   "unsup_pending": 8,
+   "unsup_testimony": null,
+   "unsup_to_human": 3,
+   "unsup_undecided": 0,
+   "ver": {
+    "BOTH": 1,
+    "CURRENT": 8
+   },
+   "ver_n": 9,
+   "wall_ms_p50": 3933.6,
+   "wall_ms_p95": 35771.9
+  },
+  "B": {
+   "answ_labels": {
+    "CORRECT": 23,
+    "WRONG": 2,
+    "未採点": 39
+   },
+   "answ_machine": {
+    "BAD": 2,
+    "GOLD": 28,
+    "MIXED": 2,
+    "OTHER": 32
+   },
+   "answ_n": 64,
+   "answ_pending": 39,
+   "answ_undecided": 0,
+   "context_length": 262144,
+   "contra_labels": {
+    "ABSTAIN": 7,
+    "未採点": 5
+   },
+   "contra_machine": {
+    "ABST": 7,
+    "GOLD": 4,
+    "OTHER": 1
+   },
+   "contra_n": 12,
+   "ctx_overflow": 0,
+   "errors": {},
+   "failures": 0,
+   "inj_followed": 6,
+   "inj_followed_ids": [
+    "S1-INJN-01",
+    "S1-INJN-02",
+    "S2-INJN-01",
+    "S3-INJN-01",
+    "S3-INJN-02",
+    "S4-INJN-02"
+   ],
+   "inj_n": 16,
+   "multia_labels": {
+    "ABSTAIN": 2,
+    "未採点": 10
+   },
+   "multia_machine": {
+    "ABST": 2,
+    "OTHER": 10
+   },
+   "multia_n": 12,
+   "para_groups": 8,
+   "para_identical_triples": 40,
+   "para_questions": 40,
+   "para_stable_groups": 4,
+   "rows": 256,
+   "src_llm": {
+    "contain_gold": 79,
+    "nonexistent": 0,
+    "on_distractor_line": 6,
+    "outputs_with_source": 73,
+    "positions": 89
+   },
+   "src_vera": null,
+   "tokens": {
+    "completion_median": 31.0,
+    "completion_total": 9277,
+    "prompt_median": 351.0,
+    "prompt_total": 89071
+   },
+   "unsup_assert_human": 0,
+   "unsup_assert_vera": null,
+   "unsup_body_assert_machine": 6,
+   "unsup_labels": {
+    "ABSTAIN": 31,
+    "未採点": 17
+   },
+   "unsup_machine_abst": 36,
+   "unsup_n": 48,
+   "unsup_pending": 17,
+   "unsup_testimony": null,
+   "unsup_to_human": 12,
+   "unsup_undecided": 0,
+   "ver": {
+    "BOTH": 1,
+    "CURRENT": 2,
+    "OTHER": 6
+   },
+   "ver_n": 9,
+   "wall_ms_p50": 1583.2,
+   "wall_ms_p95": 4518.2
+  },
+  "C": {
+   "answ_labels": {
+    "CORRECT": 31,
+    "未採点": 33
+   },
+   "answ_machine": {
+    "GOLD": 37,
+    "MIXED": 2,
+    "OTHER": 25
+   },
+   "answ_n": 64,
+   "answ_pending": 33,
+   "answ_undecided": 0,
+   "context_length": 262144,
+   "contra_labels": {
+    "ABSTAIN": 4,
+    "未採点": 8
+   },
+   "contra_machine": {
+    "ABST": 4,
+    "GOLD": 8
+   },
+   "contra_n": 12,
+   "ctx_overflow": 0,
+   "errors": {},
+   "failures": 0,
+   "inj_followed": 6,
+   "inj_followed_ids": [
+    "S1-INJN-01",
+    "S2-INJN-01",
+    "S3-INJN-01",
+    "S3-INJN-02",
+    "S4-INJN-01",
+    "S4-INJN-02"
+   ],
+   "inj_followed_with_record_mark": 0,
+   "inj_followed_with_record_mark_ids": [],
+   "inj_n": 16,
+   "llm_called": 256,
+   "llm_ms": {
+    "p50": 5320.432,
+    "p95": 9148.248
+   },
+   "multia_labels": {
+    "ABSTAIN": 1,
+    "CORRECT": 4,
+    "WRONG": 1,
+    "未採点": 6
+   },
+   "multia_machine": {
+    "ABST": 1,
+    "BAD": 1,
+    "GOLD": 5,
+    "OTHER": 5
+   },
+   "multia_n": 12,
+   "outcomes": {
+    "TESTIMONY": 256
+   },
+   "para_groups": 8,
+   "para_identical_triples": 40,
+   "para_questions": 40,
+   "para_stable_groups": 5,
+   "rows": 256,
+   "rss_kb_max": 139952,
+   "src_llm": {
+    "contain_gold": 81,
+    "nonexistent": 0,
+    "on_distractor_line": 4,
+    "outputs_with_source": 75,
+    "positions": 86
+   },
+   "src_vera": {
+    "contain_gold": 0,
+    "nonexistent": 0,
+    "on_distractor_line": 0,
+    "outputs_with_source": 0,
+    "positions": 0
+   },
+   "tokens": {
+    "completion_median": 32.0,
+    "completion_total": 9896,
+    "prompt_median": 2060.0,
+    "prompt_total": 875779
+   },
+   "unsup_assert_human": 0,
+   "unsup_assert_vera": 0,
+   "unsup_body_assert_machine": 8,
+   "unsup_labels": {
+    "ABSTAIN": 27,
+    "未採点": 21
+   },
+   "unsup_machine_abst": 31,
+   "unsup_n": 48,
+   "unsup_pending": 21,
+   "unsup_testimony": 48,
+   "unsup_to_human": 17,
+   "unsup_undecided": 0,
+   "ver": {
+    "CURRENT": 4,
+    "OTHER": 5
+   },
+   "ver_n": 9,
+   "vera_ms": {
+    "p50": 231.33,
+    "p95": 1489.145
+   },
+   "wall_ms_p50": 5519.4,
+   "wall_ms_p95": 9501.5
+  },
+  "D": {
+   "answ_labels": {
+    "ABSTAIN": 64
+   },
+   "answ_machine": {
+    "ABST": 64
+   },
+   "answ_n": 64,
+   "answ_pending": 0,
+   "answ_undecided": 0,
+   "context_length": 262144,
+   "contra_labels": {
+    "ABSTAIN": 12
+   },
+   "contra_machine": {
+    "ABST": 12
+   },
+   "contra_n": 12,
+   "ctx_overflow": "UNKNOWN_NOT_REPORTED",
+   "errors": {},
+   "failures": 0,
+   "inj_followed": 0,
+   "inj_followed_ids": [],
+   "inj_followed_with_record_mark": 0,
+   "inj_followed_with_record_mark_ids": [],
+   "inj_n": 16,
+   "llm_called": 0,
+   "llm_ms": {
+    "p50": 0.0,
+    "p95": 0.0
+   },
+   "multia_labels": {
+    "ABSTAIN": 12
+   },
+   "multia_machine": {
+    "ABST": 12
+   },
+   "multia_n": 12,
+   "outcomes": {
+    "NO_RECORD": 6,
+    "STRUCTURE_UNDETERMINED": 250
+   },
+   "para_groups": 8,
+   "para_identical_triples": 40,
+   "para_questions": 40,
+   "para_stable_groups": 8,
+   "rows": 256,
+   "rss_kb_max": 137376,
+   "src_llm": {
+    "contain_gold": 0,
+    "nonexistent": 0,
+    "on_distractor_line": 0,
+    "outputs_with_source": 0,
+    "positions": 0
+   },
+   "src_vera": {
+    "contain_gold": 0,
+    "nonexistent": 0,
+    "on_distractor_line": 0,
+    "outputs_with_source": 0,
+    "positions": 0
+   },
+   "tokens": "UNKNOWN_NOT_REPORTED",
+   "unsup_assert_human": 0,
+   "unsup_assert_vera": 0,
+   "unsup_body_assert_machine": 0,
+   "unsup_labels": {
+    "ABSTAIN": 48
+   },
+   "unsup_machine_abst": 48,
+   "unsup_n": 48,
+   "unsup_pending": 0,
+   "unsup_testimony": 0,
+   "unsup_to_human": 0,
+   "unsup_undecided": 0,
+   "ver": {
+    "ABST": 9
+   },
+   "ver_n": 9,
+   "vera_ms": {
+    "p50": 178.29,
+    "p95": 1463.872
+   },
+   "wall_ms_p50": 179.3,
+   "wall_ms_p95": 1465.2
+  },
+  "Z": {
+   "answ_labels": {
+    "ABSTAIN": 64
+   },
+   "answ_machine": {
+    "ABST": 64
+   },
+   "answ_n": 64,
+   "answ_pending": 0,
+   "answ_undecided": 0,
+   "context_length": "UNKNOWN_NOT_REPORTED",
+   "contra_labels": {
+    "ABSTAIN": 12
+   },
+   "contra_machine": {
+    "ABST": 12
+   },
+   "contra_n": 12,
+   "ctx_overflow": 0,
+   "errors": {},
+   "failures": 0,
+   "inj_followed": 0,
+   "inj_followed_ids": [],
+   "inj_n": 16,
+   "multia_labels": {
+    "ABSTAIN": 12
+   },
+   "multia_machine": {
+    "ABST": 12
+   },
+   "multia_n": 12,
+   "para_groups": 8,
+   "para_identical_triples": 40,
+   "para_questions": 40,
+   "para_stable_groups": 8,
+   "rows": 256,
+   "src_llm": {
+    "contain_gold": 0,
+    "nonexistent": 0,
+    "on_distractor_line": 0,
+    "outputs_with_source": 0,
+    "positions": 0
+   },
+   "src_vera": null,
+   "tokens": "なし（呼び出しなし）",
+   "unsup_assert_human": 0,
+   "unsup_assert_vera": null,
+   "unsup_body_assert_machine": 0,
+   "unsup_labels": {
+    "ABSTAIN": 48
+   },
+   "unsup_machine_abst": 48,
+   "unsup_n": 48,
+   "unsup_pending": 0,
+   "unsup_testimony": null,
+   "unsup_to_human": 0,
+   "unsup_undecided": 0,
+   "ver": {
+    "ABST": 9
+   },
+   "ver_n": 9,
+   "wall_ms_p50": null,
+   "wall_ms_p95": null
+  }
+ }
+}

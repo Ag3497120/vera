@@ -1,0 +1,57 @@
+{
+ "examples": {
+  "dev_unknown": [],
+  "dev_vocab": [
+   "お盆",
+   "むくみ",
+   "アマゾン川",
+   "アリクイ",
+   "アルマジロ",
+   "イモリ",
+   "ウミガメ",
+   "キャッチコピー",
+   "ゲーテ",
+   "ゲーム理論"
+  ],
+  "predicate_check": [
+   "かじる",
+   "こしらえる",
+   "こする",
+   "ささやく",
+   "そびえる",
+   "作り上げる",
+   "冷める",
+   "受け継ぐ",
+   "召し上がる",
+   "和む"
+  ],
+  "typed_vocab": [
+   "こころ",
+   "ご飯",
+   "アインシュタイン",
+   "ウミウシ",
+   "エジソン",
+   "エタノール",
+   "エルニーニョ",
+   "エンジン",
+   "オーロラ",
+   "カタツムリ"
+  ],
+  "unknown_words": []
+ },
+ "needs_total": 60382,
+ "overlap": {
+  "dev_unknown": 0,
+  "dev_vocab": 193,
+  "predicate_check": 72,
+  "typed_vocab": 436,
+  "unknown_words": 0
+ },
+ "test_terms": {
+  "dev_unknown": 65,
+  "dev_vocab": 583,
+  "predicate_check": 119,
+  "typed_vocab": 1075,
+  "unknown_words": 234
+ }
+}

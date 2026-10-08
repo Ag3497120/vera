@@ -1,0 +1,2 @@
+69063d9e84690428dea558108997bfcf4b6acb4afba9026a0037211e081e9ae9  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-e2-S/verantyx/semantic_read.py
+b99986ff7f7083a54432091e764ce64c6d589cbb4e42d766969a042335459c4c  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-e2-S/verantyx/testimony_ledger.py

@@ -1,0 +1,42 @@
+
+## 10. W16-t3b: 引用の照合の狭め（R13–R16）（事前登録 2026-10-06 04:23:45 +0900）
+
+攻撃の第 2 波（W16-atk1b）が破った 4 つの型を狭める。**狭める方向だけ**（今 anchored でない行の verdict・reason は変えない）。読解器は使わない。品詞・見出し語・活用形（助動詞）だけ。この節は検査データ・コードより先に書く。予想・目標値は書かない。§9 の既存の文は変えない。
+
+### 10.1 共通
+- 形態素解析は今の `_analyze`（`(表層, pos1, pos2, 見出し語, 開始, 終了)`）だけ。`semantic_reader`・`decode_grammar` の新しい関数は使わない。語の一覧を新しく作らない（助詞は品詞＋チケットが名指しした は・が・も・の だけ）。
+- **印の順**（上から最初に当たったもの。既存の 1〜3d は変えない）: 1 -> 2 conflict -> 3 -> 3c YESNO_NOT_CHECKED -> 3b ANSWER_CONTENT_NOT_IN_QUOTE -> 3e NO_CONTENT_TO_CHECK -> 3d POLARITY_DIFFERS -> **3f ANSWER_SPLIT_ACROSS_QUOTES（R15）-> 3g ROLE_PARTICLE_DIFFERS:<語>（R13）-> 3h TENSE_DIFFERS:<見出し語>（R14）** -> 4 anchored。新しい段は anchored の直前だけ。先に付いた reason は上書きしない（`reason = reason or …`）。`to_dict` の鍵は増やさない（R16 の relocated の項目の鍵を除く）。
+- 計算は「規則 3b の準備」のブロック（`if valid and not answer_bad:`）の中で行う。
+
+### 10.2 R15 1 つの引用で支える
+- 照合する項目 = 答えの要素 `a_els` ＋ 3b で被覆を確かめる内容語 `checked`。`checked = [wd for wd in words if not _covered(wd, qtoks)]`（選択の問いでは `qtoks` は空）。R12 (i)（要素が空・`words` が空でない・`checked` が空）のときは `checked = words`。
+- 実在した引用 j が **支え** = `a_els` のすべてが j の要素に同じ `(kind, value)` で現れ、かつ `checked` のすべてが j の解析に `_covered`。
+- 支えが 1 つも無ければ 3f。項目が空なら全部の引用が支え。理由は `ANSWER_SPLIT_ACROSS_QUOTES`（後ろに語を付けない）。
+
+### 10.3 R13 役割の助詞
+- 語の単位 = **名詞の連なり**: `pos1 ∈ {名詞, 接頭辞}` または `(pos1 == 接尾辞 かつ pos2 == 名詞的)` の連続する最大の並び。最後の語が `pos1 ∈ {名詞, 接尾辞}` で `pos2 != 非自立可能` のときだけ扱う。鍵 = 連なりの表層の連結。
+- 連なりの直後の 1 語が助詞で、`pos2 == 格助詞`（表層 `の` を除く）または表層が `は`・`も` のとき、その **組** を記録する。`は`・`が`・`も` は 1 つの組。それ以外は表層そのもの（を・に・へ・と・で・から・より …）。
+- 答えの連なり N の組の集合 `A[N]`、支えの引用 j の `Q_j[N]`。N が `Q_j` にあり `A[N]` が `Q_j[N]` の部分集合でないとき食い違う。支えのどれか 1 つで食い違えば 3g。理由 `ROLE_PARTICLE_DIFFERS:` ＋ 食い違った語を答えの出現順・重複なしで `、` 連結。
+
+### 10.4 R14 時制
+- 述語 = `pos1 ∈ {動詞, 形容詞}`（非自立可能も含む）、または形状詞で直後が助動詞 `だ`・`です`。
+- 述語の後ろの連なり = 直後から続く、助動詞・接続助詞 `て`／`で`・`pos2 == 非自立可能` の動詞／形容詞 の最大の並び。連なりに **見出し語 `た` の助動詞** があれば過去。無く、連なりの最後が接続助詞なら **決まらない**（比べない）。それ以外は非過去。
+- 答えの見出し語 L の時制の集合 `A[L]`、支えの引用 j の `Q_j[L]`（決まらないものは入れない）。L が `Q_j` にあり `A[L]` が `Q_j[L]` の部分集合でないとき食い違う。支えのどれか 1 つで食い違えば 3h。理由 `TENSE_DIFFERS:` ＋ 見出し語（unidic のまま。表層に直さない）を答えの出現順・重複なしで `、` 連結。
+
+### 10.5 R16 出典の名前
+- `_dir_differs(given, recorded)` = `norm(given)` の `os.path.dirname` が空でなく、`norm(recorded)` の dirname と違う。
+- 今の exact（basename 一致した記録の指定行に部分一致）で `pos` が取れたとき、**`pos` のすべての位置で `_dir_differs`** なら `found = "relocated"`、`relocated_to`、`source_claimed`（与えられたまま）、`source_record`（`pos` の source を重複なく出現順に list）を持つ。**`pos` は変えない**（印・found_in・conflicts は R16 で変わらない）。項目の鍵の順は `source, line, text, relocated_to, source_claimed, source_record, found`。
+- ディレクトリの部分の無い source は従来どおり basename で一致（exact）。
+
+### 10.6 判断（J-t3b）
+1. R13 の単位は名詞の連なり（名詞 1 語では `支店` が答えにも引用にも が と を を持ち Q01 を見逃す）。
+2. は・が・も 以外（を・に・へ・と …）は別の組。語の一覧を足さない。正しい言い換えでも別の組なら偽の錨なしになる（開示する）。
+3. て／で で終わる連なりは時制を決めない。たら は見出し語 た なので過去に数える。
+4. R13・R14 は R15 の支えの引用とだけ比べる。支えが複数なら 1 つでも食い違えば落とす。
+5. R16 は印を変えず `found` と鍵だけを変える。`./x`・絶対パスもディレクトリの部分を持つので relocated。
+6. 新しい段は anchored の直前。順は R15 -> R13 -> R14。
+
+### 10.7 検査データの決まり（Q1。コードより先に凍結する）
+- `artifacts/w16-t3b/cases.jsonl`。合計 24 件以上。型 RO（R13）・TE（R14）・SP（R15）・SR（R16）が各 4 件以上、各型に正しい対照（expect が anchored、SR は expect_found が exact）が 1 件以上。H は規則どおりの偽の錨なし・閉じない型の開示（任意）。
+- 期待は規則から手で決める（コードを流して決めない）。文は攻撃の Q01〜Q04 の 4 文を除き自分で書く。
+- 直す前の赤は誤答側（RO・TE・SP の誤答、SR の `expect_found` が relocated の項目）に出ること。

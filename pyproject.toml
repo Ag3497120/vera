@@ -3,26 +3,38 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "vera-ja"
-version = "0.2.0a1"
-description = "Vera base for Japanese: a chat and checker with no weights (rules + stereo-cross routing over predicate-argument records)"
+name = "verantyx-vera"
+version = "0.1.0a1"
+description = "Verantyx Vera α — deterministic cross-structure knowledge & reasoning engine (no LM, typed refusal)"
 readme = "README.md"
+requires-python = ">=3.9"
 license = { text = "MIT" }
-requires-python = ">=3.10"
-dependencies = ["fugashi>=1.5,<2", "unidic-lite==1.0.8"]
+authors = [{ name = "Verantyx" }]
+keywords = ["knowledge-graph", "symbolic", "deterministic", "mcp", "source-linked"]
 
-[project.urls]
-Homepage = "https://github.com/Ag3497120/vera"
+[project.optional-dependencies]
+ja = ["fugashi>=1.5,<2", "unidic-lite==1.0.8"]
+hf = ["datasets", "huggingface_hub"]
+mcp = ["mcp[cli]>=1.2,<2"]
+obfuscate = ["cryptography"]
+docs = ["pypdf"]
+all = ["datasets", "huggingface_hub", "mcp[cli]>=1.2,<2", "cryptography", "pypdf", "fugashi>=1.5,<2", "unidic-lite==1.0.8"]
 
 [project.scripts]
 vera = "verantyx.cli:main"
-vera-chat = "vera_base.chat_entry:main"
-vera-server = "vera_base.server:main"
-vera-bot = "vera_base.cli:main"
+
+[tool.setuptools]
+include-package-data = true
 
 [tool.setuptools.packages.find]
-include = ["vera_base*", "verantyx"]
+where = ["."]
+include = ["verantyx*"]
+namespaces = true
 
+# The field app's page ships INSIDE the package rather than being generated in
+# Python. It has to be one file a person can read and audit — a municipal IT
+# reviewer should be able to open it and confirm for themselves that nothing
+# loads from anywhere — and a page assembled from string fragments cannot be
+# read that way.
 [tool.setuptools.package-data]
-"vera_base" = ["data/*.json"]
-"vera_base.verantyx" = ["lang_data/*.json", "data/*.json"]
+"*" = ["*.json", "*.html"]

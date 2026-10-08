@@ -1,0 +1,169 @@
+--- /Users/motonisihikoudai/Projects/vera-impl/wt/W3-b4-S/artifacts/w3-b4/r4/test_semantic_read_w3b4.py.before_r4	2026-10-04 04:03:16
++++ tests/test_semantic_read_w3b4.py	2026-10-04 04:05:26
+@@ -15,6 +15,7 @@
+ import subprocess
+ import sys
+ from pathlib import Path
++from types import SimpleNamespace
+ 
+ import pytest
+ 
+@@ -222,12 +223,19 @@
+ 
+ 
+ def test_the_name_the_entry_calls_is_the_plan_of_w3b4_and_the_plan_of_w3b2_stays_under_a_name_of_its_own():
+-    assert R.typed_plan_u_w3b2_ja is R.typed_plan_u_w3b4_ja
++    # round 4 (K186): the two names the entry calls are the plans wrapped by the focus gate; the plan under the gate is the plan of rounds 1-3 (`ungated`)
++    assert R.typed_plan_u_w3b2_ja.ungated is R.typed_plan_u_w3b4_ja
++    assert R.typed_plan_u_ja.ungated is R.typed_plan_u_w3b1_ungated_ja
++    assert R.typed_plan_u_w3b1_ungated_ja.__name__ == 'typed_plan_u_ja'                  # the function of the base commit, unchanged
+     assert R.typed_plan_u_w3b2_v1_ja is not R.typed_plan_u_w3b4_ja and R.typed_plan_u_w3b2_v1_ja.__name__ == 'typed_plan_u_w3b2_ja'
+     assert (R.typed_plan_u_w3b4_ja.__code__.co_names != R.typed_plan_u_w3b2_v1_ja.__code__.co_names)
+-    # the tail of the file: the last statement is the one-line replacement of the name
+-    tail = ast.parse((TREE / 'verantyx' / 'semantic_reader.py').read_text(encoding='utf-8')).body[-1]
+-    assert isinstance(tail, ast.Assign) and tail.targets[0].id == 'typed_plan_u_w3b2_ja' and tail.value.id == 'typed_plan_u_w3b4_ja'
++    # the tail of the file (by ast, not by text): the last three statements are the round-4 replacement of the two names, and the one-line replacement of round 3 is still above them
++    body = ast.parse((TREE / 'verantyx' / 'semantic_reader.py').read_text(encoding='utf-8')).body
++    def assign(n):
++        return (n.targets[0].id, ast.unparse(n.value)) if isinstance(n, ast.Assign) and isinstance(n.targets[0], ast.Name) else None
++    assert [assign(n) for n in body[-3:]] == [('typed_plan_u_w3b1_ungated_ja', 'typed_plan_u_ja'), ('typed_plan_u_ja', '_typed_plan_focus_gated(typed_plan_u_w3b1_ungated_ja)'),
++                                              ('typed_plan_u_w3b2_ja', '_typed_plan_focus_gated(typed_plan_u_w3b4_ja)')]
++    assert ('typed_plan_u_w3b2_ja', 'typed_plan_u_w3b4_ja') in [assign(n) for n in body[:-3]]
+ 
+ 
+ def test_the_only_readers_of_a_placement_answer_are_still_the_gate_and_the_adapter():
+@@ -480,7 +488,7 @@
+ def test_the_five_sentences_of_the_review_are_in_the_data_as_refused_rows_at_its_end_and_the_frozen_rows_stay():
+     ids = [i for rec in NARROWED.values() for i in rec['rows_appended_to_the_data']]
+     assert ids == ['W3B4-CHANGE-A-901', 'W3B4-CHANGE-A-902', 'W3B4-CHANGE-A-903', 'W3B4-CHANGE-A-904', 'W3B4-CONSUME-A-901']
+-    assert [r['id'] for r in DATA[318:323]] == ids and len(DATA) == 333      # round 3: ten more rows after them
++    assert [r['id'] for r in DATA[318:323]] == ids and len(DATA) == 339      # round 3: ten more rows after them, round 4: six more
+     for r in DATA[318:323]:
+         assert r['entry_expect'] == 'abstain' and r['expect']['readable'] is False and r['behavior'] == 'abstain'
+         assert r['w3b4_expect'] == 'PLACEMENT_FRAME_NOT_READ:' + r['pred_type'] and r['pred_type'] in NARROWED
+@@ -553,7 +561,7 @@
+ 
+ def test_the_ten_sentences_of_review_r2_are_appended_as_refused_rows_and_the_frozen_rows_stay():
+     import hashlib
+-    assert len(DATA) == 333
++    assert len(DATA) == 339     # round 4: six more rows after the ten (DATA[333:339])
+     for r, (i, t, text) in zip(DATA[323:333], TEN):
+         assert (r['id'], r['pred_type'], r['input']) == (i, t, text)
+         assert r['entry_expect'] == 'abstain' and r['behavior'] == 'abstain' and r['expect'] == {'readable': False, 'clauses': [], 'relations': [], 'must_not': []}
+@@ -598,3 +606,116 @@
+         elif r['w3b4_expect'] == 'READ': assert before[r['id']]['w3b2'] == 'READ', r['id']
+         else: assert (before[r['id']]['w3b2'] or '').startswith(r['w3b4_expect']), r['id']
+         if out['readable']: assert b1.judge(r['expect'], 'ja', out)['verdict'] == 'correct', r['id']
++
++
++# ===================================================================================================================================
++# round 4 (docs K186, the auditor's decision 2): the gate of a focus particle right after a case particle, on the plans of paths U and U3
++# ===================================================================================================================================
++FOCUS_ROWS = DATA[333:339]
++X_REFUSED = {'readable': False, 'clauses': [], 'relations': [], 'must_not': []}
++GATE_PREFIX = 'PLACEMENT_FOCUS_PARTICLE_AFTER_CASE:'
++SIX_SENTENCES = (('W3B4-ACT-A-911', '兄が台車を倉庫へさえ押した。', 'さえ'), ('W3B4-ACT-A-912', '兄が台車を倉庫へすら押した。', 'すら'), ('W3B4-ACT-A-913', '兄が台車を倉庫へこそ押した。', 'こそ'),
++                 ('W3B4-ACT-A-914', '兄が台車を倉庫へまで押した。', 'まで'), ('W3B4-ACT-A-915', '兄が台車を倉庫へなど押した。', 'など'), ('W3B4-ACT-A-916', '兄が台車を倉庫へさえ押さなかった。', 'さえ'))
++
++
++def ungate(monkeypatch):
++    """Put the plans under the gate back (the plans of rounds 1-3), for the evidence. monkeypatch only: nothing leaks into another test."""
++    monkeypatch.setattr(R, 'typed_plan_u_ja', R.typed_plan_u_ja.ungated)
++    monkeypatch.setattr(R, 'typed_plan_u_w3b2_ja', R.typed_plan_u_w3b2_ja.ungated)
++
++
++def _focus(text):
++    return R.typed_focus_after_case_ja(R._tokens(text), SimpleNamespace(span=SimpleNamespace(start=0, end=len(text))))
++
++
++def test_the_focus_gate_decides_by_parts_of_speech_and_adjacency_only():
++    G = GATE_PREFIX
++    cases = (('兄が台車を倉庫へさえ押した。', G + 'へ:さえ'), ('兄が荷車を畑へも押した。', G + 'へ:も'), ('兄が荷車を畑へは押した。', G + 'へ:は'),
++             ('兄が台車をも倉庫へ押した。', G + 'を:も'), ('兄が台車を納屋からさえ倉庫へ押した。', G + 'から:さえ'), ('兄が国道でさえ走った。', G + 'で:さえ'),
++             ('兄が荷車を畑へ、さえ押した。', G + 'へ:さえ'), ('兄が荷車を畑へ\u3000さえ押した。', G + 'へ:さえ'),
++             ('兄が荷車を畑へと押した。', None), ('兄は荷車を畑へ押した。', None), ('兄が倉庫まで走った。', None), ('兄だけが倉庫へ走った。', None))
++    for text, want in cases: assert _focus(text) == want, (text, _focus(text))
++    # no list of words in the gate: the only string constants of its body are names of parts of speech and the format of the reason
++    fn = next(n for n in ast.parse((TREE / 'verantyx' / 'semantic_reader.py').read_text(encoding='utf-8')).body if isinstance(n, ast.FunctionDef) and n.name == 'typed_focus_after_case_ja')
++    body = fn.body[1:] if isinstance(fn.body[0], ast.Expr) and isinstance(fn.body[0].value, ast.Constant) else fn.body
++    consts = {c.value for st in body for c in ast.walk(st) if isinstance(c, ast.Constant) and isinstance(c.value, str)}
++    assert consts <= {'助詞', '格助詞', '係助詞', '副助詞', '補助記号', '空白', 'PLACEMENT_FOCUS_PARTICLE_AFTER_CASE:%s:%s'}, consts
++    assert {'助詞', '格助詞', '係助詞', '副助詞'} <= consts
++
++
++def test_the_six_sentences_of_review_w3b4_2_are_appended_as_refused_rows_and_the_frozen_rows_stay():
++    import hashlib
++    assert len(DATA) == 339 and len(FOCUS_ROWS) == 6
++    for r, (i, text, part) in zip(FOCUS_ROWS, SIX_SENTENCES):
++        assert (r['id'], r['input'], r['pred_type'], r['path']) == (i, text, 'P_ACT', 'U')
++        assert r['entry_expect'] == 'abstain' and r['behavior'] == 'abstain' and r['expect'] == X_REFUSED
++        assert r['w3b4_expect'] == GATE_PREFIX + 'へ:' + part
++        # the placement is the answer of r7 as it is (nothing lifted to a seed): the misread appeared with the live r7
++        for w in ('兄', '台車', '倉庫'): assert 'seed' not in r['placement'][w]['decided_by'], (i, w)
++        assert r['placement']['押す'] == {'top': ['P_ACT'], 'decided_by': ['seed']}      # 押す is a word of the seed in r7 itself
++    lines = DATA_FILE.read_text(encoding='utf-8').splitlines()
++    sha = lambda n: hashlib.sha256(''.join(l + '\n' for l in lines[:n]).encode('utf-8')).hexdigest()
++    assert sha(333) == (TREE / 'artifacts' / 'w3-b4' / 'r3' / 'bank_freeze_after_r3.sha256').read_text(encoding='utf-8').split()[0]
++    assert sha(323) == (TREE / 'artifacts' / 'w3-b4' / 'r2' / 'bank_freeze_after_r2.sha256').read_text(encoding='utf-8').split()[0]
++    assert sha(318) == (TREE / 'artifacts' / 'w3-b4' / 'bank_freeze.sha256').read_text(encoding='utf-8').split()[0]
++
++
++def test_the_six_sentences_were_misread_without_the_focus_gate_and_the_gate_refuses_them(monkeypatch):
++    """The evidence for the gate, kept as a test: with the gate the six sentences are refused (the diagnosis of the plan of W3-b4 is the reason of the gate; the output keeps the
++    reason of the plan of W3-b1 that stops first); with the plans put back (monkeypatch) they are READ as goal 倉庫 and judged a misread."""
++    for r in FOCUS_ROWS:
++        out = SR.read(r['input'], placement=query_of(r))
++        assert out['readable'] is False, r['input']
++        assert SR.typed_explain_ja(r['input'], query_of(r))['w3b2'] == r['w3b4_expect']
++        base = SR.read(r['input'], placement=None)
++        assert out['abstain']['reasons'] == [base['abstain']['reasons'][0], 'PLACEMENT_FRAME_NOT_READ:P_ACT'], out['abstain']
++    ungate(monkeypatch)
++    for r in FOCUS_ROWS:
++        out = SR.read(r['input'], placement=query_of(r))
++        assert out['readable'] is True, r['input']
++        assert out['clauses'][0]['roles'] == {'agent': '兄', 'patient': '台車', 'goal': '倉庫'}, out
++        assert b1.judge(r['expect'], 'ja', out)['verdict'] == 'misread', (r['input'], out)
++        assert SR.typed_explain_ja(r['input'], query_of(r))['w3b2'] == 'READ'
++
++
++def test_the_focus_gate_closes_the_hole_of_v1_with_the_real_placement_r7(monkeypatch):
++    if not os.path.isdir(R7): pytest.skip('the placement r7 is not on this machine')
++    cases = (('兄が倉庫へさえ走った。', 'さえ'), ('兄が倉庫へすら走った。', 'すら'), ('兄が倉庫へまで走った。', 'まで'), ('兄が倉庫へ、さえ走った。', 'さえ'))
++    for text, part in cases:
++        out = SR.read(text, placement=R.CoarseQuery(R7))
++        ex = SR.typed_explain_ja(text, R.CoarseQuery(R7))
++        assert out['readable'] is False, text
++        assert ex['w3b1'] == ex['w3b2'] == GATE_PREFIX + 'へ:' + part, (text, ex)
++        assert out['abstain']['reasons'][1] == GATE_PREFIX + 'へ:' + part, out['abstain']
++    ungate(monkeypatch)
++    for text, part in cases:
++        out = SR.read(text, placement=R.CoarseQuery(R7))
++        assert out['readable'] is True and out['clauses'][0]['roles'] == {'agent': '兄', 'goal': '倉庫'}, (text, out)
++        assert b1.judge(X_REFUSED, 'ja', out)['verdict'] == 'misread', (text, out)
++        assert SR.typed_explain_ja(text, R.CoarseQuery(R7))['w3b1'] == 'READ'
++
++
++def test_the_cost_of_the_focus_gate_correct_readings_with_mo_and_wa_after_a_case_particle_are_refused(monkeypatch):
++    """A cost, recorded: the conventions (section 3) read a sentence with は or も after a case particle by dropping the particle, and that reading is correct. The gate decides by parts of speech
++    and adjacency and keeps no list of words, so it does not tell は・も from さえ・すら. The two sentences below are refused now: a decrease of correct readings, not a misread."""
++    if not os.path.isdir(R7): pytest.skip('the placement r7 is not on this machine')
++    for text, part in (('兄が荷車を畑へも押した。', 'も'), ('兄が荷車を畑へは押した。', 'は')):
++        out = SR.read(text, placement=R.CoarseQuery(R7))
++        assert out['readable'] is False and SR.typed_explain_ja(text, R.CoarseQuery(R7))['w3b2'] == GATE_PREFIX + 'へ:' + part, (text, out)
++    ungate(monkeypatch)
++    for text in ('兄が荷車を畑へも押した。', '兄が荷車を畑へは押した。'):
++        out = SR.read(text, placement=R.CoarseQuery(R7))
++        assert out['readable'] is True and out['clauses'][0]['roles'] == {'agent': '兄', 'patient': '荷車', 'goal': '畑'}, (text, out)
++
++
++def test_the_focus_gate_changes_no_diagnosis_and_no_output_of_the_frozen_rows(monkeypatch):
++    frozen = DATA[:333]
++    now = {r['id']: (SR.read(r['input'], placement=query_of(r)), explain(r)) for r in frozen}
++    ungate(monkeypatch)
++    before = {r['id']: (SR.read(r['input'], placement=query_of(r)), explain(r)) for r in frozen}
++    assert now == before
++
++
++def test_the_focus_gate_is_on_the_plans_of_paths_u_and_u3_only():
++    for name in ('typed_plan_s4_ja', 'typed_plan_s4_w3b2_ja'): assert not hasattr(getattr(R, name), 'ungated'), name
++    for name in ('typed_plan_u_ja', 'typed_plan_u_w3b2_ja'): assert callable(getattr(R, name).ungated), name

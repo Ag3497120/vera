@@ -14,6 +14,7 @@ import time
 import unittest
 from unittest.mock import Mock, patch
 
+import _vera_env
 from verantyx import contract_sandbox as sandbox
 
 
@@ -191,7 +192,7 @@ class OutputAccountingTests(unittest.TestCase):
         self.assertEqual(expired['launches'],0);popen.assert_not_called()
 
 
-@unittest.skipUnless(os.environ.get('VERA_SANDBOX_INTEGRATION')=='1','root-owned actual OS worker only')
+@unittest.skipUnless(_vera_env.available('sandbox_integration'),_vera_env.reason('sandbox_integration'))
 class ActualBatchTests(unittest.TestCase):
     def test_python_global_builtin_shadow_and_inputs_reset(self):
         source='counter=0\noriginal_len=len\ndef observe(items):\n    global counter,len\n    counter+=1\n    count=original_len(items)\n    len=lambda value: 999\n    items.append(7)\n    return [counter,count]'

@@ -1,0 +1,544 @@
+.FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF..............                            [100%]
+=================================== FAILURES ===================================
+___________ test_time_word_is_not_fused_into_the_place[sfx-fused-00] ___________
+
+row = {'id': 'sfx-fused-00', 'kind': 'fused', 'time_word': '来週', 'place': '港', ...}
+tmp_path = PosixPath('/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/r2/bt3/test_time_word_is_not_fused_in0')
+
+    @pytest.mark.parametrize("row", [r for r in ROWS if r["kind"] == "fused"], ids=lambda r: r["id"])
+    def test_time_word_is_not_fused_into_the_place(row, tmp_path):
+        out = ask(tmp_path, row["document"], row["question"])
+        vals = [NFKC(v) for v in out.get("values", [])]
+>       assert not (out.get("verdict") == "ANSWER" and any(NFKC(row["time_word"]) in v for v in vals)), (out.get("verdict"), vals)
+E       AssertionError: ('ANSWER', ['来週港'])
+E       assert not ('ANSWER' == 'ANSWER'
+E         
+E           ANSWER and True)
+E        +  where True = any(<generator object test_time_word_is_not_fused_into_the_place.<locals>.<genexpr> at 0x11aed6e30>)
+
+tests/test_w3f1_time_place_suffix_answer.py:42: AssertionError
+___________ test_time_word_is_not_fused_into_the_place[sfx-fused-01] ___________
+
+row = {'id': 'sfx-fused-01', 'kind': 'fused', 'time_word': '来週', 'place': '室', ...}
+tmp_path = PosixPath('/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/r2/bt3/test_time_word_is_not_fused_in1')
+
+    @pytest.mark.parametrize("row", [r for r in ROWS if r["kind"] == "fused"], ids=lambda r: r["id"])
+    def test_time_word_is_not_fused_into_the_place(row, tmp_path):
+        out = ask(tmp_path, row["document"], row["question"])
+        vals = [NFKC(v) for v in out.get("values", [])]
+>       assert not (out.get("verdict") == "ANSWER" and any(NFKC(row["time_word"]) in v for v in vals)), (out.get("verdict"), vals)
+E       AssertionError: ('ANSWER', ['来週室'])
+E       assert not ('ANSWER' == 'ANSWER'
+E         
+E           ANSWER and True)
+E        +  where True = any(<generator object test_time_word_is_not_fused_into_the_place.<locals>.<genexpr> at 0x12ab5a2f0>)
+
+tests/test_w3f1_time_place_suffix_answer.py:42: AssertionError
+___________ test_time_word_is_not_fused_into_the_place[sfx-fused-02] ___________
+
+row = {'id': 'sfx-fused-02', 'kind': 'fused', 'time_word': '来週', 'place': '港', ...}
+tmp_path = PosixPath('/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/r2/bt3/test_time_word_is_not_fused_in2')
+
+    @pytest.mark.parametrize("row", [r for r in ROWS if r["kind"] == "fused"], ids=lambda r: r["id"])
+    def test_time_word_is_not_fused_into_the_place(row, tmp_path):
+        out = ask(tmp_path, row["document"], row["question"])
+        vals = [NFKC(v) for v in out.get("values", [])]
+>       assert not (out.get("verdict") == "ANSWER" and any(NFKC(row["time_word"]) in v for v in vals)), (out.get("verdict"), vals)
+E       AssertionError: ('ANSWER', ['来週港'])
+E       assert not ('ANSWER' == 'ANSWER'
+E         
+E           ANSWER and True)
+E        +  where True = any(<generator object test_time_word_is_not_fused_into_the_place.<locals>.<genexpr> at 0x12ab5a2f0>)
+
+tests/test_w3f1_time_place_suffix_answer.py:42: AssertionError
+___________ test_time_word_is_not_fused_into_the_place[sfx-fused-03] ___________
+
+row = {'id': 'sfx-fused-03', 'kind': 'fused', 'time_word': '毎朝', 'place': '館', ...}
+tmp_path = PosixPath('/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/r2/bt3/test_time_word_is_not_fused_in3')
+
+    @pytest.mark.parametrize("row", [r for r in ROWS if r["kind"] == "fused"], ids=lambda r: r["id"])
+    def test_time_word_is_not_fused_into_the_place(row, tmp_path):
+        out = ask(tmp_path, row["document"], row["question"])
+        vals = [NFKC(v) for v in out.get("values", [])]
+>       assert not (out.get("verdict") == "ANSWER" and any(NFKC(row["time_word"]) in v for v in vals)), (out.get("verdict"), vals)
+E       AssertionError: ('ANSWER', ['毎朝館'])
+E       assert not ('ANSWER' == 'ANSWER'
+E         
+E           ANSWER and True)
+E        +  where True = any(<generator object test_time_word_is_not_fused_into_the_place.<locals>.<genexpr> at 0x10abfc4f0>)
+
+tests/test_w3f1_time_place_suffix_answer.py:42: AssertionError
+___________ test_time_word_is_not_fused_into_the_place[sfx-fused-04] ___________
+
+row = {'id': 'sfx-fused-04', 'kind': 'fused', 'time_word': '毎朝', 'place': '院', ...}
+tmp_path = PosixPath('/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/r2/bt3/test_time_word_is_not_fused_in4')
+
+    @pytest.mark.parametrize("row", [r for r in ROWS if r["kind"] == "fused"], ids=lambda r: r["id"])
+    def test_time_word_is_not_fused_into_the_place(row, tmp_path):
+        out = ask(tmp_path, row["document"], row["question"])
+        vals = [NFKC(v) for v in out.get("values", [])]
+>       assert not (out.get("verdict") == "ANSWER" and any(NFKC(row["time_word"]) in v for v in vals)), (out.get("verdict"), vals)
+E       AssertionError: ('ANSWER', ['毎朝院'])
+E       assert not ('ANSWER' == 'ANSWER'
+E         
+E           ANSWER and True)
+E        +  where True = any(<generator object test_time_word_is_not_fused_into_the_place.<locals>.<genexpr> at 0x12aca1a80>)
+
+tests/test_w3f1_time_place_suffix_answer.py:42: AssertionError
+___________ test_time_word_is_not_fused_into_the_place[sfx-fused-05] ___________
+
+row = {'id': 'sfx-fused-05', 'kind': 'fused', 'time_word': '毎朝', 'place': '館', ...}
+tmp_path = PosixPath('/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/r2/bt3/test_time_word_is_not_fused_in5')
+
+    @pytest.mark.parametrize("row", [r for r in ROWS if r["kind"] == "fused"], ids=lambda r: r["id"])
+    def test_time_word_is_not_fused_into_the_place(row, tmp_path):
+        out = ask(tmp_path, row["document"], row["question"])
+        vals = [NFKC(v) for v in out.get("values", [])]
+>       assert not (out.get("verdict") == "ANSWER" and any(NFKC(row["time_word"]) in v for v in vals)), (out.get("verdict"), vals)
+E       AssertionError: ('ANSWER', ['毎朝館'])
+E       assert not ('ANSWER' == 'ANSWER'
+E         
+E           ANSWER and True)
+E        +  where True = any(<generator object test_time_word_is_not_fused_into_the_place.<locals>.<genexpr> at 0x10abfc4f0>)
+
+tests/test_w3f1_time_place_suffix_answer.py:42: AssertionError
+___________ test_time_word_is_not_fused_into_the_place[sfx-fused-06] ___________
+
+row = {'id': 'sfx-fused-06', 'kind': 'fused', 'time_word': '明後日', 'place': '室', ...}
+tmp_path = PosixPath('/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/r2/bt3/test_time_word_is_not_fused_in6')
+
+    @pytest.mark.parametrize("row", [r for r in ROWS if r["kind"] == "fused"], ids=lambda r: r["id"])
+    def test_time_word_is_not_fused_into_the_place(row, tmp_path):
+        out = ask(tmp_path, row["document"], row["question"])
+        vals = [NFKC(v) for v in out.get("values", [])]
+>       assert not (out.get("verdict") == "ANSWER" and any(NFKC(row["time_word"]) in v for v in vals)), (out.get("verdict"), vals)
+E       AssertionError: ('ANSWER', ['明後日室'])
+E       assert not ('ANSWER' == 'ANSWER'
+E         
+E           ANSWER and True)
+E        +  where True = any(<generator object test_time_word_is_not_fused_into_the_place.<locals>.<genexpr> at 0x12ab5a2f0>)
+
+tests/test_w3f1_time_place_suffix_answer.py:42: AssertionError
+___________ test_time_word_is_not_fused_into_the_place[sfx-fused-07] ___________
+
+row = {'id': 'sfx-fused-07', 'kind': 'fused', 'time_word': '明後日', 'place': '港', ...}
+tmp_path = PosixPath('/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/r2/bt3/test_time_word_is_not_fused_in7')
+
+    @pytest.mark.parametrize("row", [r for r in ROWS if r["kind"] == "fused"], ids=lambda r: r["id"])
+    def test_time_word_is_not_fused_into_the_place(row, tmp_path):
+        out = ask(tmp_path, row["document"], row["question"])
+        vals = [NFKC(v) for v in out.get("values", [])]
+>       assert not (out.get("verdict") == "ANSWER" and any(NFKC(row["time_word"]) in v for v in vals)), (out.get("verdict"), vals)
+E       AssertionError: ('ANSWER', ['明後日港'])
+E       assert not ('ANSWER' == 'ANSWER'
+E         
+E           ANSWER and True)
+E        +  where True = any(<generator object test_time_word_is_not_fused_into_the_place.<locals>.<genexpr> at 0x11aed6e30>)
+
+tests/test_w3f1_time_place_suffix_answer.py:42: AssertionError
+___________ test_time_word_is_not_fused_into_the_place[sfx-fused-08] ___________
+
+row = {'id': 'sfx-fused-08', 'kind': 'fused', 'time_word': '明後日', 'place': '室', ...}
+tmp_path = PosixPath('/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/r2/bt3/test_time_word_is_not_fused_in8')
+
+    @pytest.mark.parametrize("row", [r for r in ROWS if r["kind"] == "fused"], ids=lambda r: r["id"])
+    def test_time_word_is_not_fused_into_the_place(row, tmp_path):
+        out = ask(tmp_path, row["document"], row["question"])
+        vals = [NFKC(v) for v in out.get("values", [])]
+>       assert not (out.get("verdict") == "ANSWER" and any(NFKC(row["time_word"]) in v for v in vals)), (out.get("verdict"), vals)
+E       AssertionError: ('ANSWER', ['明後日室'])
+E       assert not ('ANSWER' == 'ANSWER'
+E         
+E           ANSWER and True)
+E        +  where True = any(<generator object test_time_word_is_not_fused_into_the_place.<locals>.<genexpr> at 0x12aca26b0>)
+
+tests/test_w3f1_time_place_suffix_answer.py:42: AssertionError
+___________ test_time_word_is_not_fused_into_the_place[sfx-fused-09] ___________
+
+row = {'id': 'sfx-fused-09', 'kind': 'fused', 'time_word': '今夜', 'place': '院', ...}
+tmp_path = PosixPath('/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/r2/bt3/test_time_word_is_not_fused_in9')
+
+    @pytest.mark.parametrize("row", [r for r in ROWS if r["kind"] == "fused"], ids=lambda r: r["id"])
+    def test_time_word_is_not_fused_into_the_place(row, tmp_path):
+        out = ask(tmp_path, row["document"], row["question"])
+        vals = [NFKC(v) for v in out.get("values", [])]
+>       assert not (out.get("verdict") == "ANSWER" and any(NFKC(row["time_word"]) in v for v in vals)), (out.get("verdict"), vals)
+E       AssertionError: ('ANSWER', ['今夜院'])
+E       assert not ('ANSWER' == 'ANSWER'
+E         
+E           ANSWER and True)
+E        +  where True = any(<generator object test_time_word_is_not_fused_into_the_place.<locals>.<genexpr> at 0x12aca3010>)
+
+tests/test_w3f1_time_place_suffix_answer.py:42: AssertionError
+___________ test_time_word_is_not_fused_into_the_place[sfx-fused-10] ___________
+
+row = {'id': 'sfx-fused-10', 'kind': 'fused', 'time_word': '今夜', 'place': '館', ...}
+tmp_path = PosixPath('/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/r2/bt3/test_time_word_is_not_fused_in10')
+
+    @pytest.mark.parametrize("row", [r for r in ROWS if r["kind"] == "fused"], ids=lambda r: r["id"])
+    def test_time_word_is_not_fused_into_the_place(row, tmp_path):
+        out = ask(tmp_path, row["document"], row["question"])
+        vals = [NFKC(v) for v in out.get("values", [])]
+>       assert not (out.get("verdict") == "ANSWER" and any(NFKC(row["time_word"]) in v for v in vals)), (out.get("verdict"), vals)
+E       AssertionError: ('ANSWER', ['今夜館'])
+E       assert not ('ANSWER' == 'ANSWER'
+E         
+E           ANSWER and True)
+E        +  where True = any(<generator object test_time_word_is_not_fused_into_the_place.<locals>.<genexpr> at 0x12aca1a80>)
+
+tests/test_w3f1_time_place_suffix_answer.py:42: AssertionError
+___________ test_time_word_is_not_fused_into_the_place[sfx-fused-11] ___________
+
+row = {'id': 'sfx-fused-11', 'kind': 'fused', 'time_word': '今夜', 'place': '院', ...}
+tmp_path = PosixPath('/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/r2/bt3/test_time_word_is_not_fused_in11')
+
+    @pytest.mark.parametrize("row", [r for r in ROWS if r["kind"] == "fused"], ids=lambda r: r["id"])
+    def test_time_word_is_not_fused_into_the_place(row, tmp_path):
+        out = ask(tmp_path, row["document"], row["question"])
+        vals = [NFKC(v) for v in out.get("values", [])]
+>       assert not (out.get("verdict") == "ANSWER" and any(NFKC(row["time_word"]) in v for v in vals)), (out.get("verdict"), vals)
+E       AssertionError: ('ANSWER', ['今夜院'])
+E       assert not ('ANSWER' == 'ANSWER'
+E         
+E           ANSWER and True)
+E        +  where True = any(<generator object test_time_word_is_not_fused_into_the_place.<locals>.<genexpr> at 0x12aca33d0>)
+
+tests/test_w3f1_time_place_suffix_answer.py:42: AssertionError
+___________ test_time_word_is_not_fused_into_the_place[sfx-fused-12] ___________
+
+row = {'id': 'sfx-fused-12', 'kind': 'fused', 'time_word': '来月', 'place': '港', ...}
+tmp_path = PosixPath('/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/r2/bt3/test_time_word_is_not_fused_in12')
+
+    @pytest.mark.parametrize("row", [r for r in ROWS if r["kind"] == "fused"], ids=lambda r: r["id"])
+    def test_time_word_is_not_fused_into_the_place(row, tmp_path):
+        out = ask(tmp_path, row["document"], row["question"])
+        vals = [NFKC(v) for v in out.get("values", [])]
+>       assert not (out.get("verdict") == "ANSWER" and any(NFKC(row["time_word"]) in v for v in vals)), (out.get("verdict"), vals)
+E       AssertionError: ('ANSWER', ['来月港'])
+E       assert not ('ANSWER' == 'ANSWER'
+E         
+E           ANSWER and True)
+E        +  where True = any(<generator object test_time_word_is_not_fused_into_the_place.<locals>.<genexpr> at 0x10abfc4f0>)
+
+tests/test_w3f1_time_place_suffix_answer.py:42: AssertionError
+___________ test_time_word_is_not_fused_into_the_place[sfx-fused-13] ___________
+
+row = {'id': 'sfx-fused-13', 'kind': 'fused', 'time_word': '来月', 'place': '室', ...}
+tmp_path = PosixPath('/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/r2/bt3/test_time_word_is_not_fused_in13')
+
+    @pytest.mark.parametrize("row", [r for r in ROWS if r["kind"] == "fused"], ids=lambda r: r["id"])
+    def test_time_word_is_not_fused_into_the_place(row, tmp_path):
+        out = ask(tmp_path, row["document"], row["question"])
+        vals = [NFKC(v) for v in out.get("values", [])]
+>       assert not (out.get("verdict") == "ANSWER" and any(NFKC(row["time_word"]) in v for v in vals)), (out.get("verdict"), vals)
+E       AssertionError: ('ANSWER', ['来月室'])
+E       assert not ('ANSWER' == 'ANSWER'
+E         
+E           ANSWER and True)
+E        +  where True = any(<generator object test_time_word_is_not_fused_into_the_place.<locals>.<genexpr> at 0x12aca2d40>)
+
+tests/test_w3f1_time_place_suffix_answer.py:42: AssertionError
+___________ test_time_word_is_not_fused_into_the_place[sfx-fused-14] ___________
+
+row = {'id': 'sfx-fused-14', 'kind': 'fused', 'time_word': '来月', 'place': '港', ...}
+tmp_path = PosixPath('/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/r2/bt3/test_time_word_is_not_fused_in14')
+
+    @pytest.mark.parametrize("row", [r for r in ROWS if r["kind"] == "fused"], ids=lambda r: r["id"])
+    def test_time_word_is_not_fused_into_the_place(row, tmp_path):
+        out = ask(tmp_path, row["document"], row["question"])
+        vals = [NFKC(v) for v in out.get("values", [])]
+>       assert not (out.get("verdict") == "ANSWER" and any(NFKC(row["time_word"]) in v for v in vals)), (out.get("verdict"), vals)
+E       AssertionError: ('ANSWER', ['来月港'])
+E       assert not ('ANSWER' == 'ANSWER'
+E         
+E           ANSWER and True)
+E        +  where True = any(<generator object test_time_word_is_not_fused_into_the_place.<locals>.<genexpr> at 0x12ab58130>)
+
+tests/test_w3f1_time_place_suffix_answer.py:42: AssertionError
+___________ test_time_word_is_not_fused_into_the_place[sfx-fused-15] ___________
+
+row = {'id': 'sfx-fused-15', 'kind': 'fused', 'time_word': '先週', 'place': '館', ...}
+tmp_path = PosixPath('/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/r2/bt3/test_time_word_is_not_fused_in15')
+
+    @pytest.mark.parametrize("row", [r for r in ROWS if r["kind"] == "fused"], ids=lambda r: r["id"])
+    def test_time_word_is_not_fused_into_the_place(row, tmp_path):
+        out = ask(tmp_path, row["document"], row["question"])
+        vals = [NFKC(v) for v in out.get("values", [])]
+>       assert not (out.get("verdict") == "ANSWER" and any(NFKC(row["time_word"]) in v for v in vals)), (out.get("verdict"), vals)
+E       AssertionError: ('ANSWER', ['先週館'])
+E       assert not ('ANSWER' == 'ANSWER'
+E         
+E           ANSWER and True)
+E        +  where True = any(<generator object test_time_word_is_not_fused_into_the_place.<locals>.<genexpr> at 0x12aca36a0>)
+
+tests/test_w3f1_time_place_suffix_answer.py:42: AssertionError
+___________ test_time_word_is_not_fused_into_the_place[sfx-fused-16] ___________
+
+row = {'id': 'sfx-fused-16', 'kind': 'fused', 'time_word': '先週', 'place': '院', ...}
+tmp_path = PosixPath('/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/r2/bt3/test_time_word_is_not_fused_in16')
+
+    @pytest.mark.parametrize("row", [r for r in ROWS if r["kind"] == "fused"], ids=lambda r: r["id"])
+    def test_time_word_is_not_fused_into_the_place(row, tmp_path):
+        out = ask(tmp_path, row["document"], row["question"])
+        vals = [NFKC(v) for v in out.get("values", [])]
+>       assert not (out.get("verdict") == "ANSWER" and any(NFKC(row["time_word"]) in v for v in vals)), (out.get("verdict"), vals)
+E       AssertionError: ('ANSWER', ['先週院'])
+E       assert not ('ANSWER' == 'ANSWER'
+E         
+E           ANSWER and True)
+E        +  where True = any(<generator object test_time_word_is_not_fused_into_the_place.<locals>.<genexpr> at 0x13a574130>)
+
+tests/test_w3f1_time_place_suffix_answer.py:42: AssertionError
+___________ test_time_word_is_not_fused_into_the_place[sfx-fused-17] ___________
+
+row = {'id': 'sfx-fused-17', 'kind': 'fused', 'time_word': '先週', 'place': '館', ...}
+tmp_path = PosixPath('/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/r2/bt3/test_time_word_is_not_fused_in17')
+
+    @pytest.mark.parametrize("row", [r for r in ROWS if r["kind"] == "fused"], ids=lambda r: r["id"])
+    def test_time_word_is_not_fused_into_the_place(row, tmp_path):
+        out = ask(tmp_path, row["document"], row["question"])
+        vals = [NFKC(v) for v in out.get("values", [])]
+>       assert not (out.get("verdict") == "ANSWER" and any(NFKC(row["time_word"]) in v for v in vals)), (out.get("verdict"), vals)
+E       AssertionError: ('ANSWER', ['先週館'])
+E       assert not ('ANSWER' == 'ANSWER'
+E         
+E           ANSWER and True)
+E        +  where True = any(<generator object test_time_word_is_not_fused_into_the_place.<locals>.<genexpr> at 0x12ab58130>)
+
+tests/test_w3f1_time_place_suffix_answer.py:42: AssertionError
+___________ test_time_word_is_not_fused_into_the_place[sfx-fused-18] ___________
+
+row = {'id': 'sfx-fused-18', 'kind': 'fused', 'time_word': '去年', 'place': '室', ...}
+tmp_path = PosixPath('/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/r2/bt3/test_time_word_is_not_fused_in18')
+
+    @pytest.mark.parametrize("row", [r for r in ROWS if r["kind"] == "fused"], ids=lambda r: r["id"])
+    def test_time_word_is_not_fused_into_the_place(row, tmp_path):
+        out = ask(tmp_path, row["document"], row["question"])
+        vals = [NFKC(v) for v in out.get("values", [])]
+>       assert not (out.get("verdict") == "ANSWER" and any(NFKC(row["time_word"]) in v for v in vals)), (out.get("verdict"), vals)
+E       AssertionError: ('ANSWER', ['去年室'])
+E       assert not ('ANSWER' == 'ANSWER'
+E         
+E           ANSWER and True)
+E        +  where True = any(<generator object test_time_word_is_not_fused_into_the_place.<locals>.<genexpr> at 0x12aca1a80>)
+
+tests/test_w3f1_time_place_suffix_answer.py:42: AssertionError
+___________ test_time_word_is_not_fused_into_the_place[sfx-fused-19] ___________
+
+row = {'id': 'sfx-fused-19', 'kind': 'fused', 'time_word': '去年', 'place': '港', ...}
+tmp_path = PosixPath('/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/r2/bt3/test_time_word_is_not_fused_in19')
+
+    @pytest.mark.parametrize("row", [r for r in ROWS if r["kind"] == "fused"], ids=lambda r: r["id"])
+    def test_time_word_is_not_fused_into_the_place(row, tmp_path):
+        out = ask(tmp_path, row["document"], row["question"])
+        vals = [NFKC(v) for v in out.get("values", [])]
+>       assert not (out.get("verdict") == "ANSWER" and any(NFKC(row["time_word"]) in v for v in vals)), (out.get("verdict"), vals)
+E       AssertionError: ('ANSWER', ['去年港'])
+E       assert not ('ANSWER' == 'ANSWER'
+E         
+E           ANSWER and True)
+E        +  where True = any(<generator object test_time_word_is_not_fused_into_the_place.<locals>.<genexpr> at 0x11b09fc40>)
+
+tests/test_w3f1_time_place_suffix_answer.py:42: AssertionError
+___________ test_time_word_is_not_fused_into_the_place[sfx-fused-20] ___________
+
+row = {'id': 'sfx-fused-20', 'kind': 'fused', 'time_word': '去年', 'place': '室', ...}
+tmp_path = PosixPath('/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/r2/bt3/test_time_word_is_not_fused_in20')
+
+    @pytest.mark.parametrize("row", [r for r in ROWS if r["kind"] == "fused"], ids=lambda r: r["id"])
+    def test_time_word_is_not_fused_into_the_place(row, tmp_path):
+        out = ask(tmp_path, row["document"], row["question"])
+        vals = [NFKC(v) for v in out.get("values", [])]
+>       assert not (out.get("verdict") == "ANSWER" and any(NFKC(row["time_word"]) in v for v in vals)), (out.get("verdict"), vals)
+E       AssertionError: ('ANSWER', ['去年室'])
+E       assert not ('ANSWER' == 'ANSWER'
+E         
+E           ANSWER and True)
+E        +  where True = any(<generator object test_time_word_is_not_fused_into_the_place.<locals>.<genexpr> at 0x11abb8e50>)
+
+tests/test_w3f1_time_place_suffix_answer.py:42: AssertionError
+___________ test_time_word_is_not_fused_into_the_place[sfx-fused-21] ___________
+
+row = {'id': 'sfx-fused-21', 'kind': 'fused', 'time_word': '翌朝', 'place': '院', ...}
+tmp_path = PosixPath('/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/r2/bt3/test_time_word_is_not_fused_in21')
+
+    @pytest.mark.parametrize("row", [r for r in ROWS if r["kind"] == "fused"], ids=lambda r: r["id"])
+    def test_time_word_is_not_fused_into_the_place(row, tmp_path):
+        out = ask(tmp_path, row["document"], row["question"])
+        vals = [NFKC(v) for v in out.get("values", [])]
+>       assert not (out.get("verdict") == "ANSWER" and any(NFKC(row["time_word"]) in v for v in vals)), (out.get("verdict"), vals)
+E       AssertionError: ('ANSWER', ['翌朝院'])
+E       assert not ('ANSWER' == 'ANSWER'
+E         
+E           ANSWER and True)
+E        +  where True = any(<generator object test_time_word_is_not_fused_into_the_place.<locals>.<genexpr> at 0x12ab5b880>)
+
+tests/test_w3f1_time_place_suffix_answer.py:42: AssertionError
+___________ test_time_word_is_not_fused_into_the_place[sfx-fused-22] ___________
+
+row = {'id': 'sfx-fused-22', 'kind': 'fused', 'time_word': '翌朝', 'place': '館', ...}
+tmp_path = PosixPath('/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/r2/bt3/test_time_word_is_not_fused_in22')
+
+    @pytest.mark.parametrize("row", [r for r in ROWS if r["kind"] == "fused"], ids=lambda r: r["id"])
+    def test_time_word_is_not_fused_into_the_place(row, tmp_path):
+        out = ask(tmp_path, row["document"], row["question"])
+        vals = [NFKC(v) for v in out.get("values", [])]
+>       assert not (out.get("verdict") == "ANSWER" and any(NFKC(row["time_word"]) in v for v in vals)), (out.get("verdict"), vals)
+E       AssertionError: ('ANSWER', ['翌朝館'])
+E       assert not ('ANSWER' == 'ANSWER'
+E         
+E           ANSWER and True)
+E        +  where True = any(<generator object test_time_word_is_not_fused_into_the_place.<locals>.<genexpr> at 0x10abfc4f0>)
+
+tests/test_w3f1_time_place_suffix_answer.py:42: AssertionError
+___________ test_time_word_is_not_fused_into_the_place[sfx-fused-23] ___________
+
+row = {'id': 'sfx-fused-23', 'kind': 'fused', 'time_word': '翌朝', 'place': '院', ...}
+tmp_path = PosixPath('/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/r2/bt3/test_time_word_is_not_fused_in23')
+
+    @pytest.mark.parametrize("row", [r for r in ROWS if r["kind"] == "fused"], ids=lambda r: r["id"])
+    def test_time_word_is_not_fused_into_the_place(row, tmp_path):
+        out = ask(tmp_path, row["document"], row["question"])
+        vals = [NFKC(v) for v in out.get("values", [])]
+>       assert not (out.get("verdict") == "ANSWER" and any(NFKC(row["time_word"]) in v for v in vals)), (out.get("verdict"), vals)
+E       AssertionError: ('ANSWER', ['翌朝院'])
+E       assert not ('ANSWER' == 'ANSWER'
+E         
+E           ANSWER and True)
+E        +  where True = any(<generator object test_time_word_is_not_fused_into_the_place.<locals>.<genexpr> at 0x12aca3a60>)
+
+tests/test_w3f1_time_place_suffix_answer.py:42: AssertionError
+___________ test_time_word_is_not_fused_into_the_place[sfx-fused-24] ___________
+
+row = {'id': 'sfx-fused-24', 'kind': 'fused', 'time_word': '毎晩', 'place': '港', ...}
+tmp_path = PosixPath('/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/r2/bt3/test_time_word_is_not_fused_in24')
+
+    @pytest.mark.parametrize("row", [r for r in ROWS if r["kind"] == "fused"], ids=lambda r: r["id"])
+    def test_time_word_is_not_fused_into_the_place(row, tmp_path):
+        out = ask(tmp_path, row["document"], row["question"])
+        vals = [NFKC(v) for v in out.get("values", [])]
+>       assert not (out.get("verdict") == "ANSWER" and any(NFKC(row["time_word"]) in v for v in vals)), (out.get("verdict"), vals)
+E       AssertionError: ('ANSWER', ['毎晩港'])
+E       assert not ('ANSWER' == 'ANSWER'
+E         
+E           ANSWER and True)
+E        +  where True = any(<generator object test_time_word_is_not_fused_into_the_place.<locals>.<genexpr> at 0x12ab58130>)
+
+tests/test_w3f1_time_place_suffix_answer.py:42: AssertionError
+___________ test_time_word_is_not_fused_into_the_place[sfx-fused-25] ___________
+
+row = {'id': 'sfx-fused-25', 'kind': 'fused', 'time_word': '毎晩', 'place': '室', ...}
+tmp_path = PosixPath('/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/r2/bt3/test_time_word_is_not_fused_in25')
+
+    @pytest.mark.parametrize("row", [r for r in ROWS if r["kind"] == "fused"], ids=lambda r: r["id"])
+    def test_time_word_is_not_fused_into_the_place(row, tmp_path):
+        out = ask(tmp_path, row["document"], row["question"])
+        vals = [NFKC(v) for v in out.get("values", [])]
+>       assert not (out.get("verdict") == "ANSWER" and any(NFKC(row["time_word"]) in v for v in vals)), (out.get("verdict"), vals)
+E       AssertionError: ('ANSWER', ['毎晩室'])
+E       assert not ('ANSWER' == 'ANSWER'
+E         
+E           ANSWER and True)
+E        +  where True = any(<generator object test_time_word_is_not_fused_into_the_place.<locals>.<genexpr> at 0x12aca3e20>)
+
+tests/test_w3f1_time_place_suffix_answer.py:42: AssertionError
+___________ test_time_word_is_not_fused_into_the_place[sfx-fused-26] ___________
+
+row = {'id': 'sfx-fused-26', 'kind': 'fused', 'time_word': '毎晩', 'place': '港', ...}
+tmp_path = PosixPath('/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/r2/bt3/test_time_word_is_not_fused_in26')
+
+    @pytest.mark.parametrize("row", [r for r in ROWS if r["kind"] == "fused"], ids=lambda r: r["id"])
+    def test_time_word_is_not_fused_into_the_place(row, tmp_path):
+        out = ask(tmp_path, row["document"], row["question"])
+        vals = [NFKC(v) for v in out.get("values", [])]
+>       assert not (out.get("verdict") == "ANSWER" and any(NFKC(row["time_word"]) in v for v in vals)), (out.get("verdict"), vals)
+E       AssertionError: ('ANSWER', ['毎晩港'])
+E       assert not ('ANSWER' == 'ANSWER'
+E         
+E           ANSWER and True)
+E        +  where True = any(<generator object test_time_word_is_not_fused_into_the_place.<locals>.<genexpr> at 0x12aa0b100>)
+
+tests/test_w3f1_time_place_suffix_answer.py:42: AssertionError
+___________ test_time_word_is_not_fused_into_the_place[sfx-fused-27] ___________
+
+row = {'id': 'sfx-fused-27', 'kind': 'fused', 'time_word': '明日', 'place': '園', ...}
+tmp_path = PosixPath('/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/r2/bt3/test_time_word_is_not_fused_in27')
+
+    @pytest.mark.parametrize("row", [r for r in ROWS if r["kind"] == "fused"], ids=lambda r: r["id"])
+    def test_time_word_is_not_fused_into_the_place(row, tmp_path):
+        out = ask(tmp_path, row["document"], row["question"])
+        vals = [NFKC(v) for v in out.get("values", [])]
+>       assert not (out.get("verdict") == "ANSWER" and any(NFKC(row["time_word"]) in v for v in vals)), (out.get("verdict"), vals)
+E       AssertionError: ('ANSWER', ['明日園'])
+E       assert not ('ANSWER' == 'ANSWER'
+E         
+E           ANSWER and True)
+E        +  where True = any(<generator object test_time_word_is_not_fused_into_the_place.<locals>.<genexpr> at 0x12aca2e30>)
+
+tests/test_w3f1_time_place_suffix_answer.py:42: AssertionError
+___________ test_time_word_is_not_fused_into_the_place[sfx-fused-28] ___________
+
+row = {'id': 'sfx-fused-28', 'kind': 'fused', 'time_word': '明日', 'place': '館', ...}
+tmp_path = PosixPath('/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/r2/bt3/test_time_word_is_not_fused_in28')
+
+    @pytest.mark.parametrize("row", [r for r in ROWS if r["kind"] == "fused"], ids=lambda r: r["id"])
+    def test_time_word_is_not_fused_into_the_place(row, tmp_path):
+        out = ask(tmp_path, row["document"], row["question"])
+        vals = [NFKC(v) for v in out.get("values", [])]
+>       assert not (out.get("verdict") == "ANSWER" and any(NFKC(row["time_word"]) in v for v in vals)), (out.get("verdict"), vals)
+E       AssertionError: ('ANSWER', ['明日館'])
+E       assert not ('ANSWER' == 'ANSWER'
+E         
+E           ANSWER and True)
+E        +  where True = any(<generator object test_time_word_is_not_fused_into_the_place.<locals>.<genexpr> at 0x12aca2f20>)
+
+tests/test_w3f1_time_place_suffix_answer.py:42: AssertionError
+___________ test_time_word_is_not_fused_into_the_place[sfx-fused-29] ___________
+
+row = {'id': 'sfx-fused-29', 'kind': 'fused', 'time_word': '明日', 'place': '院', ...}
+tmp_path = PosixPath('/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/r2/bt3/test_time_word_is_not_fused_in29')
+
+    @pytest.mark.parametrize("row", [r for r in ROWS if r["kind"] == "fused"], ids=lambda r: r["id"])
+    def test_time_word_is_not_fused_into_the_place(row, tmp_path):
+        out = ask(tmp_path, row["document"], row["question"])
+        vals = [NFKC(v) for v in out.get("values", [])]
+>       assert not (out.get("verdict") == "ANSWER" and any(NFKC(row["time_word"]) in v for v in vals)), (out.get("verdict"), vals)
+E       AssertionError: ('ANSWER', ['明日院'])
+E       assert not ('ANSWER' == 'ANSWER'
+E         
+E           ANSWER and True)
+E        +  where True = any(<generator object test_time_word_is_not_fused_into_the_place.<locals>.<genexpr> at 0x12ab58130>)
+
+tests/test_w3f1_time_place_suffix_answer.py:42: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_w3f1_time_place_suffix_answer.py::test_time_word_is_not_fused_into_the_place[sfx-fused-00]
+FAILED tests/test_w3f1_time_place_suffix_answer.py::test_time_word_is_not_fused_into_the_place[sfx-fused-01]
+FAILED tests/test_w3f1_time_place_suffix_answer.py::test_time_word_is_not_fused_into_the_place[sfx-fused-02]
+FAILED tests/test_w3f1_time_place_suffix_answer.py::test_time_word_is_not_fused_into_the_place[sfx-fused-03]
+FAILED tests/test_w3f1_time_place_suffix_answer.py::test_time_word_is_not_fused_into_the_place[sfx-fused-04]
+FAILED tests/test_w3f1_time_place_suffix_answer.py::test_time_word_is_not_fused_into_the_place[sfx-fused-05]
+FAILED tests/test_w3f1_time_place_suffix_answer.py::test_time_word_is_not_fused_into_the_place[sfx-fused-06]
+FAILED tests/test_w3f1_time_place_suffix_answer.py::test_time_word_is_not_fused_into_the_place[sfx-fused-07]
+FAILED tests/test_w3f1_time_place_suffix_answer.py::test_time_word_is_not_fused_into_the_place[sfx-fused-08]
+FAILED tests/test_w3f1_time_place_suffix_answer.py::test_time_word_is_not_fused_into_the_place[sfx-fused-09]
+FAILED tests/test_w3f1_time_place_suffix_answer.py::test_time_word_is_not_fused_into_the_place[sfx-fused-10]
+FAILED tests/test_w3f1_time_place_suffix_answer.py::test_time_word_is_not_fused_into_the_place[sfx-fused-11]
+FAILED tests/test_w3f1_time_place_suffix_answer.py::test_time_word_is_not_fused_into_the_place[sfx-fused-12]
+FAILED tests/test_w3f1_time_place_suffix_answer.py::test_time_word_is_not_fused_into_the_place[sfx-fused-13]
+FAILED tests/test_w3f1_time_place_suffix_answer.py::test_time_word_is_not_fused_into_the_place[sfx-fused-14]
+FAILED tests/test_w3f1_time_place_suffix_answer.py::test_time_word_is_not_fused_into_the_place[sfx-fused-15]
+FAILED tests/test_w3f1_time_place_suffix_answer.py::test_time_word_is_not_fused_into_the_place[sfx-fused-16]
+FAILED tests/test_w3f1_time_place_suffix_answer.py::test_time_word_is_not_fused_into_the_place[sfx-fused-17]
+FAILED tests/test_w3f1_time_place_suffix_answer.py::test_time_word_is_not_fused_into_the_place[sfx-fused-18]
+FAILED tests/test_w3f1_time_place_suffix_answer.py::test_time_word_is_not_fused_into_the_place[sfx-fused-19]
+FAILED tests/test_w3f1_time_place_suffix_answer.py::test_time_word_is_not_fused_into_the_place[sfx-fused-20]
+FAILED tests/test_w3f1_time_place_suffix_answer.py::test_time_word_is_not_fused_into_the_place[sfx-fused-21]
+FAILED tests/test_w3f1_time_place_suffix_answer.py::test_time_word_is_not_fused_into_the_place[sfx-fused-22]
+FAILED tests/test_w3f1_time_place_suffix_answer.py::test_time_word_is_not_fused_into_the_place[sfx-fused-23]
+FAILED tests/test_w3f1_time_place_suffix_answer.py::test_time_word_is_not_fused_into_the_place[sfx-fused-24]
+FAILED tests/test_w3f1_time_place_suffix_answer.py::test_time_word_is_not_fused_into_the_place[sfx-fused-25]
+FAILED tests/test_w3f1_time_place_suffix_answer.py::test_time_word_is_not_fused_into_the_place[sfx-fused-26]
+FAILED tests/test_w3f1_time_place_suffix_answer.py::test_time_word_is_not_fused_into_the_place[sfx-fused-27]
+FAILED tests/test_w3f1_time_place_suffix_answer.py::test_time_word_is_not_fused_into_the_place[sfx-fused-28]
+FAILED tests/test_w3f1_time_place_suffix_answer.py::test_time_word_is_not_fused_into_the_place[sfx-fused-29]
+30 failed, 15 passed in 0.91s

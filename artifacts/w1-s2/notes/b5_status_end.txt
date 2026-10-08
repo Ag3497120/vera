@@ -1,0 +1,38 @@
+# B5 の状態（作業の最後）
+## ls audit
+ADOPTION_r3fix.md
+FINAL.md
+FINAL_r3.md
+REVIEW.md
+baseline.json
+baseline_after_quarantine.json
+baseline_after_quarantine.log
+baseline_check.log
+baseline_check.py
+baseline_r3.json
+baseline_r3.log
+baseline_r3.py
+items_before_r3.jsonl
+items_before_r3fix.jsonl
+quarantine.json
+quarantine_r2.json
+sim
+## sha256
+3067f29f0cc163be6f4b1890b7fc4cdd0af945d027291c40fd8f60970a291d49  /Users/motonisihikoudai/Projects/vera-impl/hidden/banks/B5_conductor/v2/items.jsonl
+71d33b80b577cd34d0cff016185ae103890e747b904b9857ac248d3f98fb2f7f  /Users/motonisihikoudai/Projects/vera-impl/hidden/banks/B5_conductor/v2/audit/quarantine.json
+3215d4034750039674012d650338d82849a0a37b468e0b2f6c32120981623f30  /Users/motonisihikoudai/Projects/vera-impl/hidden/banks/B5_conductor/v2/audit/FINAL_r3.md
+d10596852ad22de123ddd444cc3eb2271ea5dc0b654d086b6ed9c29e7c5f23d0  /Users/motonisihikoudai/Projects/vera-impl/hidden/banks/B5_conductor/v2/audit/ADOPTION_r3fix.md
+d22b7f574bd24b5a36b66edc0867580a6712d5004352ee13984ab9e42e03412b  /Users/motonisihikoudai/Projects/vera-impl/hidden/banks/B5_conductor/v2/audit/sim/r3_fix_baseline.json
+3067f29f0cc163be6f4b1890b7fc4cdd0af945d027291c40fd8f60970a291d49  /Users/motonisihikoudai/Projects/vera-impl/hidden/banks/B5_conductor/v2/audit/sim/r3_fix_items.jsonl
+ef17af48c39576f9a2f86b1e289fd4e2a37a1a87853a912a1d1d22392a340bb4  /Users/motonisihikoudai/Projects/vera-impl/hidden/banks/B5_conductor/v2/frames/b5v2-u01.md
+9d4fe18ec5885f817b4aef4ee59fc41f2d8e5bde9c57f7fe72d785343e973d1a  /Users/motonisihikoudai/Projects/vera-impl/hidden/banks/B5_conductor/v2/frames/b5v2-u02.md
+952224d122023cc8c1ed004dc6bd18d98bfe69b63b7a60c261cd5e9020125736  /Users/motonisihikoudai/Projects/vera-impl/hidden/banks/B5_conductor/v2/frames/b5v2-u03.md
+396e2755bf879f91c689b6adf34e68c065d0efb1c1f53ad5fe46f6fd951de555  /Users/motonisihikoudai/Projects/vera-impl/hidden/banks/B5_conductor/v2/frames/b5v2-u04.md
+de556190f4b2c367d3b5c8c68f2c6bf219219fe14f4fa09cab9541b71774567a  /Users/motonisihikoudai/Projects/vera-impl/hidden/banks/B5_conductor/v2/frames/b5v2-u05.md
+bb78eb2a400e5480ce0d3b2afb847100b039930bbdef3d4db91176f7b1020adf  /Users/motonisihikoudai/Projects/vera-impl/hidden/banks/B5_conductor/v2/frames/b5v2-u06.md
+9119a056c6af2f472c10b2b5d0ccc74c8aaa6931d6c5d70bb5321301d9ab5f5d  /Users/motonisihikoudai/Projects/vera-impl/hidden/banks/B5_conductor/v2/frames/b5v2-u07.md
+c5c85e2ef255b4bcd56b8321558408e317b934d7d55b1436b505ba27e10195bb  /Users/motonisihikoudai/Projects/vera-impl/hidden/banks/B5_conductor/v2/frames/b5v2-u08.md
+7fd03a38e606ddf28fade0e256c7058c0a4854552ef0f94ae064625db13b5af7  /Users/motonisihikoudai/Projects/vera-impl/hidden/banks/B5_conductor/v2/frames/b5v2-u09.md
+8572a4638ce8f989ab41026728fb28c71b4e2d5caefb007954825a72e3cb82e7  /Users/motonisihikoudai/Projects/vera-impl/hidden/banks/B5_conductor/v2/frames/b5v2-u10.md
+7c1ee8a191c6e0ad80f02df10f407be70f2e1bc23411d9b0433a536a19c506ea  /Users/motonisihikoudai/Projects/vera-impl/hidden/banks/B5_conductor/v2/frames/b5v2-u11.md
+53a009f836b02abd936f29b947f97c2c26450adc8f987bea04e3ca9e82c4d4bf  /Users/motonisihikoudai/Projects/vera-impl/hidden/banks/B5_conductor/v2/frames/b5v2-u12.md

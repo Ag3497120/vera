@@ -1,0 +1,13 @@
+order of work (mtime of the files, then the dates written in the files)
+2026-10-04 02:06:12  artifacts/w3-c4/prereg.txt
+2026-10-04 02:12:32  tests/observe/question_ask/FROZEN.json
+2026-10-04 02:26:31  tests/observe/question_ask/FROZEN_EXTRA.json
+2026-10-04 02:12:40  verantyx/observe.py
+2026-10-04 02:24:31  verantyx/cli.py
+prereg.txt first line: 2026-10-04 02:06:12 +0900
+FROZEN.json frozen_at: 2026-10-04 02:12:32 +0900
+FROZEN_EXTRA.json frozen_at: 2026-10-04 02:26:31 +0900
+(the data files themselves have not been touched since the freeze: tests/test_ask_question_cross_data.py::test_the_frozen_files_are_unchanged)
+frozen data files: newest mtime
+-rw-r--r--  1 motonisihikoudai  staff  28451 Oct  4 02:11:29 2026 tests/observe/question_ask/questions.jsonl
+-rw-r--r--  1 motonisihikoudai  staff  14836 Oct  4 02:11:29 2026 tests/observe/question_ask/placement_ask.json

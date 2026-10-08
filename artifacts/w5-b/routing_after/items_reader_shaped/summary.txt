@@ -1,0 +1,11 @@
+items: 16  errors: 0
+route questions (a route is the right answer): 11  routed correctly: 6  abstained: 5  routed to a different agent: 0
+undecided questions (undecided is the right answer): 5  answered undecided: 5  returned an agent: 0
+misroutes: 0   (= undecided answered with an agent + a route answered with a different agent)
+correct in total: 11 of 16   (always abstain would be correct on 5)
+undecided_reason: {"ALL_EXCLUDED": 5, "NOT_COVERED": 5, "None": 6}
+abstention.type: {"None": 16}
+basis_kind: {"condition": 2, "explicit": 4, "independence": 5, "silence": 5}
+units by status, per explanation:
+  r1: 8 of 8 units read and mapped (MAPPED 7, COMPARISON_ONLY 1); 8 questions
+  r2: 6 of 6 units read and mapped (MAPPED 6); 8 questions

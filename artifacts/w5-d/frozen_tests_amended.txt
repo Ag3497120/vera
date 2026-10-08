@@ -1,0 +1,11 @@
+# W5-d: the one existing test file amended (permitted: a single function, name unchanged); artifacts/w6-a/frozen_tests.sha256 is NOT touched.
+# before (c875ed3) / after:
+184ea9e9c99eee0891d55b1afd4236924c3654e5b775e781c1ca7fb32cd16841  tests/test_basis_policy_confirm.py  (BEFORE: 184ea9e9c99eee0891d55b1afd4236924c3654e5b775e781c1ca7fb32cd16841)
+78f2d072474cd27bceabaff4375c1c748a11484bc238f609329d4d8993508630  tests/test_basis_policy_confirm.py
+# amended function: tests/test_basis_policy_confirm.py::test_two_confirmed_records_with_the_same_claim_are_not_a_split (before/after text: amended_before.txt, amended_after.txt)
+# new test files (not amended: added):
+94faac0f70606de022bbc5eb572030fd7eb4f7bc9a014950b02f52ccbe10a4ea  tests/test_question_cross_w5d.py
+1b9e70704cfc8886cab8f1974666cc343d49115b2c69954c58c8a10cc854e9fd  tests/test_basis_policy_w5d.py
+cc0b5d0296aad3b1e23e9c863c76adb2e145956eaaf2abadc3086ca43c15448d  tests/test_routing_from_text_w5d.py
+3a95a897d72bb76975b66db032d04e38b551d34a5e8d2f769756bcae4eefaf54  tests/coarse_place/test_coarse_place_w5d_frame_types.py
+b8a4cf7d4c5794eb79cdb0b433d2147dcdc07d1ba245dd20c5e37c28e583f300  tests/attack/w3a3/test_w5d_r7_frame_types.py

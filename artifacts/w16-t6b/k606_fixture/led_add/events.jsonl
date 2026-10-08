@@ -1,0 +1,1 @@
+{"actor":{"id":"unknown","type":"agent"},"data":{"cmd":"python -m pytest -q tests/test_a.py -p no:cacheprovider","exit_code":0,"redactions":0},"kind":"test_run","prev":"0000000000000000000000000000000000000000000000000000000000000000","sha":"8c34e417fcfb3a87c9554d622e318bdd227afc2489c19aea026c59b44f68b0ae","ts":"2026-10-05T19:18:06.005581Z"}

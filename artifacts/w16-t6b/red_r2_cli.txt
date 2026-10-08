@@ -1,0 +1,64 @@
+F.FF.                                                                    [100%]
+=================================== FAILURES ===================================
+__________ test_cli_recomputed_forgery_with_pinned_head_is_unverified __________
+
+tree = '/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2296/test_cli_recomputed_forgery_wi0/tree'
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2296/test_cli_recomputed_forgery_wi0')
+
+    def test_cli_recomputed_forgery_with_pinned_head_is_unverified(tree, tmp_path):
+        d, pinned = forged(tmp_path, "f1")
+        p = run_cli(tmp_path, tree, d, head=pinned)
+>       assert p.returncode == 4, p.stderr[-400:] + p.stdout[-400:]
+E       AssertionError: ats,conduct,guard,heartbeat,propose-ai-facts,review-ai-facts,chat,math,simplify,code,compile,verify,hub,lab,mcp,field,lexicon,self-evolve,placement,sovereign,self-audit,audit,serve,setup,wizard,agent,obfuscate,deobfuscate,watermark,attest,push-store,run,events,hooks}
+E                     ...
+E         vera: error: unrecognized arguments: --ledger-head 60ae5a7f4fbcd3625cbd01cef36a0cb3362d01513cf0b15975a780c3810100da
+E         
+E       assert 2 == 4
+E        +  where 2 = CompletedProcess(args=['/Users/motonisihikoudai/vera-wiring/env/bin/python', '-P', '-m', 'verantyx.cli', 'attest', '/p...vera: error: unrecognized arguments: --ledger-head 60ae5a7f4fbcd3625cbd01cef36a0cb3362d01513cf0b15975a780c3810100da\n').returncode
+
+tests/test_w16t6b_cli_head.py:94: AssertionError
+______________ test_cli_truncated_with_pinned_head_is_unverified _______________
+
+tree = '/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2296/test_cli_truncated_with_pinned0/tree'
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2296/test_cli_truncated_with_pinned0')
+
+    def test_cli_truncated_with_pinned_head_is_unverified(tree, tmp_path):
+        d = make(tmp_path, "t3", [("test_run", {"cmd": CMD_A, "exit_code": 0}), ("test_run", {"cmd": CMD_B, "exit_code": 0})])
+        pinned = head_of(d)
+        rows = rows_of(d)[:-1]
+        (d / "events.jsonl").write_text("".join(LE.canonical(r) + "\n" for r in rows))
+        (d / "HEAD").write_text(rows[-1]["sha"] + "\n")
+        assert LE.verify(d)["status"] == "OK"
+        p = run_cli(tmp_path, tree, d, head=pinned)
+>       assert p.returncode == 4, p.stderr[-400:] + p.stdout[-400:]
+E       AssertionError: ats,conduct,guard,heartbeat,propose-ai-facts,review-ai-facts,chat,math,simplify,code,compile,verify,hub,lab,mcp,field,lexicon,self-evolve,placement,sovereign,self-audit,audit,serve,setup,wizard,agent,obfuscate,deobfuscate,watermark,attest,push-store,run,events,hooks}
+E                     ...
+E         vera: error: unrecognized arguments: --ledger-head 98cc25cadf6142b0f3d94edcc64edfd2c3c34de40b61097fd4277d7276c3b890
+E         
+E       assert 2 == 4
+E        +  where 2 = CompletedProcess(args=['/Users/motonisihikoudai/vera-wiring/env/bin/python', '-P', '-m', 'verantyx.cli', 'attest', '/p...vera: error: unrecognized arguments: --ledger-head 98cc25cadf6142b0f3d94edcc64edfd2c3c34de40b61097fd4277d7276c3b890\n').returncode
+
+tests/test_w16t6b_cli_head.py:116: AssertionError
+______________________ test_cli_correct_head_keeps_record ______________________
+
+tree = '/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2296/test_cli_correct_head_keeps_re0/tree'
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2296/test_cli_correct_head_keeps_re0')
+
+    def test_cli_correct_head_keeps_record(tree, tmp_path):
+        d = make(tmp_path, "t4", [("test_run", {"cmd": CMD_A, "exit_code": 0})])
+        pinned = head_of(d)
+        p = run_cli(tmp_path, tree, d, head=pinned)
+>       assert p.returncode == 0, p.stderr[-400:] + p.stdout[-400:]
+E       AssertionError: ats,conduct,guard,heartbeat,propose-ai-facts,review-ai-facts,chat,math,simplify,code,compile,verify,hub,lab,mcp,field,lexicon,self-evolve,placement,sovereign,self-audit,audit,serve,setup,wizard,agent,obfuscate,deobfuscate,watermark,attest,push-store,run,events,hooks}
+E                     ...
+E         vera: error: unrecognized arguments: --ledger-head 96d8e01bbfaef1fa750539f6f1770b53757cbf947c398e9a9260274cc828e86c
+E         
+E       assert 2 == 0
+E        +  where 2 = CompletedProcess(args=['/Users/motonisihikoudai/vera-wiring/env/bin/python', '-P', '-m', 'verantyx.cli', 'attest', '/p...vera: error: unrecognized arguments: --ledger-head 96d8e01bbfaef1fa750539f6f1770b53757cbf947c398e9a9260274cc828e86c\n').returncode
+
+tests/test_w16t6b_cli_head.py:126: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_w16t6b_cli_head.py::test_cli_recomputed_forgery_with_pinned_head_is_unverified
+FAILED tests/test_w16t6b_cli_head.py::test_cli_truncated_with_pinned_head_is_unverified
+FAILED tests/test_w16t6b_cli_head.py::test_cli_correct_head_keeps_record - As...
+3 failed, 2 passed in 1.60s

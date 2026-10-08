@@ -1,0 +1,14 @@
+$ F1: pytest tests/test_semantic_read_w3b4.py -k "no_placement or base"
+..                                                                       [100%]
+2 passed, 339 deselected in 1.47s
+
+$ F2: pytest tests/test_semantic_read_w3b4.py -k "table or frames or disjoint or not_read or same_body" tests/coarse_place/test_k62_v1_subset_v2.py
+..............                                                           [100%]
+14 passed, 332 deselected in 0.54s
+
+$ git diff c875ed3 -- verantyx/semantic_reader.py | grep -c "^-[^-]"
+0
+
+$ frozen tests of W3-b1/W3-b2 and the K62 copy of W3-a3
+.............                                                            [100%]
+13 passed in 1.25s

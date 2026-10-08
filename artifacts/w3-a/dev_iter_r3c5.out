@@ -1,0 +1,11 @@
+{"state": "BUILT", "out": "/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/dev/r3c5", "content_sha256": "eaee8a6361f6f3663bc66ab3a0ac5ee34ae47fcc39bfcc646625fb066f24e32b", "headwords": 1758846, "placed_direct": 990470, "duration_sec": 218.8}
+{"n": 580, "correct_rate": 0.4655, "wrong_single_rate": 0.0414, "trap_wrong_single_rate": 0.1081, "non_direct": {"None/other": 191, "estimated/correct": 49, "estimated/wrong_single": 16}, "pass": {"correct>=0.85": false, "wrong<=0.08": true, "trap_wrong<=0.05": false, "n>=800": true, "trap_n>=100": true}}
+{"typed_n": 50, "unknown_n": 15, "correct_rate": 0.52, "wrong_rate": 0.0, "unknown_among_typed": 24, "returned_type_rate": 0.0667, "leaks_direct_not_notation": [], "pass": {"correct>=0.65": false, "wrong<=0.15": true, "returned_type<=0.20": true, "no_leaks": true, "no_unmarked": true}}
+{"sentences": 1000, "tokens": 11108, "token_cover_rate": 0.7107, "distinct": 5126, "distinct_cover_rate": 0.5714, "by_pos_rate": {"名詞": 0.687, "動詞": 0.8404, "形容詞": 1.0, "形状詞": 1.0}, "placed_direct_headwords": 990470, "pass": {"token_cover>=0.90": false, "placed>=100000": true}}
+placement: /Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/dev/r3c5
+小説家 2212 [(('NONE', ''), 1838), (('UNPLACED', ''), 371), (('DECIDED', 'PERSON'), 2), (('DECIDED', 'PLANT'), 1)]
+僧 826 [(('NONE', ''), 640), (('UNPLACED', ''), 185), (('MULTIPLE', 'IDENTIFIER,PERSON'), 1)]
+大名 1566 [(('NONE', ''), 1398), (('UNPLACED', ''), 168)]
+placement: /Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/dev/r3c5
+only-definition_recovered words in dev_vocab: 8  correct 6  wrong_single 2  other 0
+rule: wrong > correct/3 -> do not let it decide:  wrong*3 > correct = False

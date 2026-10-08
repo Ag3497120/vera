@@ -1,0 +1,24 @@
+59a60,82
+> 
+> 
+> # ---- W5-d probe (scratchpad copy only): the default lookup of routing_from_text.explain becomes a placement that answers UNPLACED for every word
+> # (applied once, at import, so that module-scoped fixtures that call explain() see it too)
+> from verantyx import routing_from_text as _rt_probe
+> from verantyx.event_cross import PlaceResult as _PR_probe
+> 
+> 
+> class _AllUnplacedProbe:
+>     id = "probe-all-unplaced/1"
+> 
+>     def lookup(self, lemma):
+>         return _PR_probe("UNPLACED", provenance={"probe": True})
+> 
+> 
+> _orig_explain_probe = _rt_probe.explain
+> 
+> 
+> def _explain_probe(text, source, reader=None, lookup=None):
+>     return _orig_explain_probe(text, source, reader, lookup if lookup is not None else _AllUnplacedProbe())
+> 
+> 
+> _rt_probe.explain = _explain_probe

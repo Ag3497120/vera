@@ -1,0 +1,45 @@
+{"title": "土手", "text": "土手（どて）は、川に沿って築かれた場所。", "source": "fixture", "sha": "fx000", "split": "train"}
+{"title": "歌い手", "text": "歌い手（うたいて）は、歌を歌う人のこと。", "source": "fixture", "sha": "fx001", "split": "train"}
+{"title": "書き手", "text": "書き手は、文章を書く人である。", "source": "fixture", "sha": "fx002", "split": "train"}
+{"title": "売り手", "text": "売り手は、物を売る人。", "source": "fixture", "sha": "fx003", "split": "train"}
+{"title": "聞き手", "text": "聞き手は、話を聞く人である。", "source": "fixture", "sha": "fx004", "split": "train"}
+{"title": "語り手", "text": "語り手は、物語を語る人。", "source": "fixture", "sha": "fx005", "split": "train"}
+{"title": "石土手", "text": "石土手は、石を積んだ場所の一種である。", "source": "fixture", "sha": "fx006", "split": "train"}
+{"title": "ハサミ", "text": "ハサミは、物を切る道具である。", "source": "fixture", "sha": "fx007", "split": "train"}
+{"title": "ミドリ会社", "text": "ミドリ会社は、日本の会社である。", "source": "fixture", "sha": "fx008", "split": "train"}
+{"title": "アカ会社", "text": "アカ会社は、日本の企業。", "source": "fixture", "sha": "fx009", "split": "train"}
+{"title": "アオ会社", "text": "アオ会社は、東京の企業である。", "source": "fixture", "sha": "fx010", "split": "train"}
+{"title": "キイ会社", "text": "キイ会社は、大阪の会社。", "source": "fixture", "sha": "fx011", "split": "train"}
+{"title": "ライオン (動物)", "text": "ライオンは、アフリカに住む動物である。", "source": "fixture", "sha": "fx012", "split": "train"}
+{"title": "ライオン (企業)", "text": "ライオン株式会社は、日本の企業。", "source": "fixture", "sha": "fx013", "split": "train"}
+{"title": "ゆず", "text": "ゆずは、日本の歌手。", "source": "fixture", "sha": "fx014", "split": "train"}
+{"title": "柚子", "text": "柚子（ゆず）は、ミカン科の植物である。", "source": "fixture", "sha": "fx015", "split": "train"}
+{"title": "ゆず", "redirect": "柚子", "split": "train"}
+{"title": "サクラ", "text": "サクラは、春に咲く花。", "source": "fixture", "sha": "fx017", "split": "train"}
+{"title": "サクラ", "text": "サクラは、日本の歌手。", "source": "fixture", "sha": "fx018", "split": "train"}
+{"title": "鏡餅", "text": "鏡餅は、正月に飾る食品の一種である。", "source": "fixture", "sha": "fx019", "split": "train"}
+{"title": "餅鏡", "redirect": "鏡餅", "split": "train"}
+{"title": "Wikipedia:メタ", "redirect": "鏡餅", "split": "train"}
+{"title": "日本の漫画家一覧", "text": "日本の漫画家一覧は、漫画家の一覧である。", "source": "fixture", "sha": "fx022", "split": "train"}
+{"title": "長谷川 裕一", "text": "長谷川 裕一（はせがわ ゆういち、1961年 - ）は、日本の漫画家・同人作家・特撮評論家。", "source": "fixture", "sha": "fx023", "split": "train"}
+{"title": "漫画家", "text": "漫画家は、漫画を描く職業の人である。", "source": "fixture", "sha": "fx024", "split": "train"}
+{"title": "同人作家", "text": "同人作家は、同人誌を作る人。", "source": "fixture", "sha": "fx025", "split": "train"}
+{"title": "言語", "text": "は、音声により知識を共有するための記号体系である。", "source": "fixture", "sha": "fx026", "split": "train"}
+{"title": "桜 (曖昧さ回避)", "text": "桜", "source": "fixture", "sha": "fx027", "split": "train"}
+{"title": "1月8日", "text": "1月8日は、グレゴリオ暦で年始から8日目に当たる。", "source": "fixture", "sha": "fx028", "split": "train"}
+{"title": "乗り物の話", "text": "乗り物の話は、昔に作られた物語を指す。", "source": "fixture", "sha": "fx029", "split": "train"}
+{"title": "コーヒー", "text": "コーヒーは、豆から作る飲料である。", "source": "fixture", "sha": "fx030", "split": "train"}
+{"title": "紅茶", "text": "紅茶は、茶葉から作る飲料の一種。", "source": "fixture", "sha": "fx031", "split": "train"}
+{"title": "暗号", "text": "暗号は、秘密を守るための文字列である。", "source": "fixture", "sha": "fx032", "split": "train"}
+{"title": "ポル語", "text": "ポル語は、ある地域で使われる言語。", "source": "fixture", "sha": "fx033", "split": "train"}
+{"title": "研究所", "text": "研究所は、研究を行う施設である。", "source": "fixture", "sha": "fx034", "split": "train"}
+{"title": "水族館", "text": "水族館は、魚を展示する施設である。", "source": "fixture", "sha": "fx035", "split": "train"}
+{"title": "図書館", "text": "図書館は、本を集めて貸す施設である。", "source": "fixture", "sha": "fx036", "split": "train"}
+{"title": "風車", "text": "風車（かざぐるま）は、風で回る玩具である。", "source": "fixture", "sha": "fx037", "split": "train"}
+{"title": "火山灰", "text": "火山灰は、噴火で出る物質である。", "source": "fixture", "sha": "fx038", "split": "train"}
+{"title": "リンゴ", "text": "リンゴは、バラ科の果樹である。", "source": "fixture", "sha": "fx039", "split": "train"}
+{"title": "犬小屋0", "text": "犬小屋0は、犬が住む場所である。", "source": "fixture", "sha": "fx040", "split": "train"}
+{"title": "犬小屋1", "text": "犬小屋1は、犬が住む場所である。", "source": "fixture", "sha": "fx041", "split": "train"}
+{"title": "犬小屋2", "text": "犬小屋2は、犬が住む場所である。", "source": "fixture", "sha": "fx042", "split": "train"}
+{"title": "谷間", "text": "谷間は、山と山の間の場所。", "source": "fixture", "sha": "fx900", "split": "train"}
+{"title": "押し引き", "text": "押し引きは、力の入れ方のこと。", "source": "fixture", "sha": "fx901", "split": "train"}

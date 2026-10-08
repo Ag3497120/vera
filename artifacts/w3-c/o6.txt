@@ -1,0 +1,5 @@
+prereg_before_data: ok (registered 2026-10-03 12:20:51+09:00, first data 2026-10-03 12:38:40+09:00)
+frozen_order: ok (inputs 12:38:40 < inputs_add1 12:39:30 < expected 12:41:30 < first_observation 12:44:44 < disagreements 12:45:10 < disagreements_o4 12:47:46 < inputs_r2 13:19:40 < expected_r2 13:19:43 < first_observation_r2 13:21:27)
+frozen_files_unchanged: ok
+change3_before_r2_data: ok (change 3 recorded 13:18:31; inputs_r2 13:19:40 < expected_r2 13:19:43 < first_observation_r2 13:21:27)
+section_sha: changed, changes_logged: 2 (prereg.txt records 2 change(s) of the section; the log has 3 entries, one of them a clarification that left the section alone)

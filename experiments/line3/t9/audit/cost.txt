@@ -1,0 +1,26 @@
+== fulllead intra2 fast (re-run, 4/2 workers, wall ms include contention)
+ L0 RUN: sum 44 s (8% of layer-0), med 0.0 max 13.3 | crosses read med 4, would read in full med 12 max 71 | members read med 4 max 885 | states expanded med 12 max 8959 | max class size of a read cross 735 | cross units med 4.0
+ L0 WORD: sum 113 s (21% of layer-0), med 0.1 max 18.0 | crosses read med 4, would read in full med 31 max 436 | members read med 6 max 383 | states expanded med 44 max 3785 | max class size of a read cross 380 | cross units med 5
+ L0 CHAR: sum 388 s (71% of layer-0), med 4.6 max 23.8 | crosses read med 4, would read in full med 360 max 585 | members read med 6 max 14 | states expanded med 100 max 257 | max class size of a read cross 8 | cross units med 61.5
+  path RUN: sum 5 s, med 0.0, max 2.1 | layers built med 1 max 1 | upper members read med 4 max 20
+  path WORD: sum 60 s, med 0.0, max 4.5 | layers built med 1 max 1 | upper members read med 4 max 20
+  path CHAR: sum 611 s, med 6.2, max 36.0 | layers built med 1 max 1 | upper members read med 4 max 4
+  seatsPath RUN: sum 6 s, med 0.0, max 2.6 | layers built med 1 max 1 | upper members read med 4 max 20
+  seatsPath WORD: sum 79 s, med 0.0, max 6.7 | layers built med 1 max 1 | upper members read med 4 max 20
+  seatsPath CHAR: sum 838 s, med 9.3, max 34.4 | layers built med 1 max 1 | upper members read med 4 max 4
+  slowest L0 I2-041 23.827 {'CHAR': (23, 12, 241), 'RUN': (0, 3, 3), 'WORD': (0, 3, 11)}
+  slowest L0 I2-003 22.069 {'CHAR': (1, 6, 85), 'RUN': (2, 180, 2392), 'WORD': (17, 57, 2289)}
+  slowest L0 I2-005 21.321 {'CHAR': (1, 5, 73), 'RUN': (2, 180, 2449), 'WORD': (17, 58, 2202)}
+== fulllead intra2 standard (re-run, 4/2 workers, wall ms include contention)
+ L0 RUN: sum 262 s (10% of layer-0), med 0.0 max 50.6 | crosses read med 7, would read in full med 12 max 71 | members read med 12 max 3679 | states expanded med 69 max 38751 | max class size of a read cross 735 | cross units med 4.0
+ L0 WORD: sum 427 s (17% of layer-0), med 2.4 max 149.9 | crosses read med 10, would read in full med 31 max 436 | members read med 24 max 2418 | states expanded med 376 max 52486 | max class size of a read cross 603 | cross units med 8
+ L0 CHAR: sum 1819 s (73% of layer-0), med 25.8 max 61.5 | crosses read med 10, would read in full med 360 max 585 | members read med 20 max 37 | states expanded med 331 max 585 | max class size of a read cross 21 | cross units med 78
+  path RUN: sum 240 s, med 0.1, max 26.3 | layers built med 1 max 2 | upper members read med 31 max 480
+  path WORD: sum 491 s, med 5.8, max 27.7 | layers built med 2 max 2 | upper members read med 230 max 480
+  path CHAR: sum 3271 s, med 41.1, max 111.0 | layers built med 2 max 2 | upper members read med 214 max 252
+  seatsPath RUN: sum 283 s, med 0.3, max 29.0 | layers built med 1 max 2 | upper members read med 31 max 480
+  seatsPath WORD: sum 533 s, med 6.6, max 20.7 | layers built med 2 max 2 | upper members read med 230 max 480
+  seatsPath CHAR: sum 2553 s, med 36.1, max 66.4 | layers built med 2 max 2 | upper members read med 214 max 252
+  slowest L0 I2-031 190.062 {'CHAR': (35, 21, 411), 'RUN': (4, 527, 3269), 'WORD': (149, 2418, 52486)}
+  slowest L0 I2-004 89.577 {'CHAR': (16, 15, 334), 'RUN': (50, 2211, 38751), 'WORD': (22, 75, 2783)}
+  slowest L0 I2-047 83.692 {'CHAR': (40, 21, 412), 'RUN': (40, 3679, 30035), 'WORD': (2, 23, 424)}

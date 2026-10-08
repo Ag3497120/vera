@@ -1,0 +1,29 @@
+{
+ "apply": "OK",
+ "commit": "8e396b786a8a25535374fdc560ee4c2980624352",
+ "files": [
+  "verantyx/conductor_escalate.py"
+ ],
+ "log": [
+  {
+   "apply": "OK",
+   "step": [
+    "revert",
+    "8e396b786a8a25535374fdc560ee4c2980624352"
+   ]
+  }
+ ],
+ "newly_failing": [
+  "tests/test_conductor_escalate.py::test_stale_default_active_memory_record_does_not_resolve"
+ ],
+ "newly_failing_confirmed": [
+  "tests/test_conductor_escalate.py::test_stale_default_active_memory_record_does_not_resolve"
+ ],
+ "newly_passing": [
+  "tests/attack/test_conductor_escalate_realtext.py::test_reask_citation_must_name_an_active_record_and_then_closes"
+ ],
+ "partial_method": null,
+ "still_failing_count": 123,
+ "subject": "unit fix_w_escalate_2",
+ "summary_line": "124 failed, 3684 passed, 28 skipped, 82 xfailed, 68 xpassed, 37 subtests passed"
+}

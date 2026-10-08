@@ -1,0 +1,25 @@
+{
+ "apply": "OK",
+ "commit": "38a91186173561db9db1deba09578e3bed1ad050",
+ "files": [
+  "verantyx/semantic_unknown.py"
+ ],
+ "log": [
+  {
+   "apply": "OK",
+   "step": [
+    "revert",
+    "38a91186173561db9db1deba09578e3bed1ad050"
+   ]
+  }
+ ],
+ "newly_failing": [],
+ "newly_failing_confirmed": [],
+ "newly_passing": [
+  "tests/attack/test_semantic_unknown_fabrication.py::test_budget_below_clause_and_role_work_floor_refuses"
+ ],
+ "partial_method": null,
+ "still_failing_count": 123,
+ "subject": "unit finish_semantic_unknown",
+ "summary_line": "123 failed, 3685 passed, 28 skipped, 82 xfailed, 68 xpassed, 37 subtests passed"
+}

@@ -1,0 +1,35 @@
+tree=/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b1-5-S
+A3-01 verdict=UNKNOWN_NO_EVIDENCE values=[] text='この要求を裏づける導出を確認できません。' forbidden_hit=[] answered=False :: 2024年5月に新しい規則が定められた。 / 誰が規則を定めた？
+A3-02 verdict=UNKNOWN_NO_EVIDENCE values=[] text='この要求を裏づける導出を確認できません。' forbidden_hit=[] answered=False :: 9月3日に大会が開かれた。 / 誰が大会を開いた？
+A3-03 verdict=UNKNOWN_NO_EVIDENCE values=[] text='この要求を裏づける導出を確認できません。' forbidden_hit=[] answered=False :: 1995年に旧校舎が取り壊された。 / 誰が旧校舎を取り壊した？
+A3-04 verdict=UNKNOWN_NO_EVIDENCE values=[] text='この要求を裏づける導出を確認できません。' forbidden_hit=[] answered=False :: 駅前で集会が開かれた。 / 誰が集会を開いた？
+A3-05 verdict=UNKNOWN_NO_EVIDENCE values=[] text='この要求を裏づける導出を確認できません。' forbidden_hit=[] answered=False :: 公園で祭りが催された。 / 誰が祭りを催した？
+A3-06 verdict=UNKNOWN_NO_EVIDENCE values=[] text='この要求を裏づける導出を確認できません。' forbidden_hit=[] answered=False :: 市役所で説明会が行われた。 / 誰が説明会を行った？
+A3-07 verdict=UNKNOWN_NO_EVIDENCE values=[] text='この要求を裏づける導出を確認できません。' forbidden_hit=[] answered=False :: 大阪で展覧会が開かれた。 / 誰が展覧会を開いた？
+A3-08 verdict=UNKNOWN_NO_EVIDENCE values=[] text='この要求を裏づける導出を確認できません。' forbidden_hit=[] answered=False :: 3時に会議室で書類が配られた。 / 誰が書類を配った？
+A3R2-01 verdict=UNKNOWN_UNSUPPORTED_EVIDENCE values=[] text='この要求を裏づける導出を確認できません。' forbidden_hit=[] answered=False :: 窓辺に鉢植えが並べられた。 / 誰が鉢植えを並べた？
+A3R2-02 verdict=UNKNOWN_UNSUPPORTED_EVIDENCE values=[] text='この要求を裏づける導出を確認できません。' forbidden_hit=[] answered=False :: 校庭の隅に遊具が設置された。 / 誰が遊具を設置した？
+A3R2-03 verdict=UNKNOWN_UNSUPPORTED_EVIDENCE values=[] text='この要求を裏づける導出を確認できません。' forbidden_hit=[] answered=False :: 棚の上に写真が飾られた。 / 誰が写真を飾った？
+A3R2-04 verdict=UNKNOWN_NO_EVIDENCE values=[] text='この要求を裏づける導出を確認できません。' forbidden_hit=[] answered=False :: 山頂に小さな社が建てられた。 / 誰が社を建てた？
+A3R2-05 verdict=UNKNOWN_NO_EVIDENCE values=[] text='この要求を裏づける導出を確認できません。' forbidden_hit=[] answered=False :: 7時半に開会式が行われた。 / 誰が開会式を行った？
+A3R2-06 verdict=UNKNOWN_NO_EVIDENCE values=[] text='この要求を裏づける導出を確認できません。' forbidden_hit=[] answered=False :: 2時過ぎに荷物が配達された。 / 誰が荷物を配達した？
+A3R2-07 verdict=UNKNOWN_NO_EVIDENCE values=[] text='この要求を裏づける導出を確認できません。' forbidden_hit=[] answered=False :: 30分後に説明会が始められた。 / 誰が説明会を始めた？
+A3R3-01 verdict=UNKNOWN_UNSUPPORTED_EVIDENCE values=[] text='この要求を裏づける導出を確認できません。' forbidden_hit=[] answered=False :: 境内に石碑が建てられた。 / 誰が石碑を建てた？
+A3R3-02 verdict=UNKNOWN_UNSUPPORTED_EVIDENCE values=[] text='この要求を裏づける導出を確認できません。' forbidden_hit=[] answered=False :: 礼拝堂に十字架が掲げられた。 / 誰が十字架を掲げた？
+A3R3-03 verdict=UNKNOWN_UNSUPPORTED_EVIDENCE values=[] text='この要求を裏づける導出を確認できません。' forbidden_hit=[] answered=False :: 展覧会に新作が出品された。 / 誰が新作を出品した？
+A3R3-04 verdict=UNKNOWN_UNSUPPORTED_EVIDENCE values=[] text='この要求を裏づける導出を確認できません。' forbidden_hit=[] answered=False :: 内部に補強材が取り付けられた。 / 誰が補強材を取り付けた？
+A3R3-05 verdict=UNKNOWN_UNSUPPORTED_EVIDENCE values=[] text='この要求を裏づける導出を確認できません。' forbidden_hit=[] answered=False :: 総会に議案が提出された。 / 誰が議案を提出した？
+A3R3-06 verdict=UNKNOWN_UNSUPPORTED_EVIDENCE values=[] text='この要求を裏づける導出を確認できません。' forbidden_hit=[] answered=False :: 製作所に注文が出された。 / 誰が注文を出した？
+A3R4-01 verdict=UNKNOWN_UNSUPPORTED_EVIDENCE values=[] text='この要求を裏づける導出を確認できません。' forbidden_hit=[] answered=False :: 山手に公園が造られた。 / 誰が公園を造った？
+A3R4-02 verdict=UNKNOWN_UNSUPPORTED_EVIDENCE values=[] text='この要求を裏づける導出を確認できません。' forbidden_hit=[] answered=False :: 切手に消印が押された。 / 誰が消印を押した？
+A3R4-03 verdict=UNKNOWN_UNSUPPORTED_EVIDENCE values=[] text='この要求を裏づける導出を確認できません。' forbidden_hit=[] answered=False :: 借家に表札が掛けられた。 / 誰が表札を掛けた？
+A3R4-04 verdict=UNKNOWN_UNSUPPORTED_EVIDENCE values=[] text='この要求を裏づける導出を確認できません。' forbidden_hit=[] answered=False :: 生家に記念碑が建てられた。 / 誰が記念碑を建てた？
+A3R4-05 verdict=UNKNOWN_UNSUPPORTED_EVIDENCE values=[] text='この要求を裏づける導出を確認できません。' forbidden_hit=[] answered=False :: 波長に補正が加えられた。 / 誰が補正を加えた？
+A3R4-06 verdict=UNKNOWN_UNSUPPORTED_EVIDENCE values=[] text='この要求を裏づける導出を確認できません。' forbidden_hit=[] answered=False :: 定員に上限が設けられた。 / 誰が上限を設けた？
+A3R4-07 verdict=UNKNOWN_UNSUPPORTED_EVIDENCE values=[] text='この要求を裏づける導出を確認できません。' forbidden_hit=[] answered=False :: 町家に格子が取り付けられた。 / 誰が格子を取り付けた？
+A3R5-01 verdict=UNKNOWN_UNSUPPORTED_EVIDENCE values=[] text='この要求を裏づける導出を確認できません。' forbidden_hit=[] answered=False :: ドラムに皮が張られた。 / 誰が皮を張った？
+A3R5-02 verdict=UNKNOWN_UNSUPPORTED_EVIDENCE values=[] text='この要求を裏づける導出を確認できません。' forbidden_hit=[] answered=False :: バイオリンに弦が付けられた。 / 誰が弦を付けた？
+A3R5-03 verdict=UNKNOWN_UNREAD values=[] text='この要求を裏づける導出を確認できません。' forbidden_hit=[] answered=False :: ストーブに薪が入れられた。 / 誰が薪を入れた？
+A3R5-04 verdict=UNKNOWN_UNSUPPORTED_EVIDENCE values=[] text='この要求を裏づける導出を確認できません。' forbidden_hit=[] answered=False :: ソファに布が掛けられた。 / 誰が布を掛けた？
+A3R5-05 verdict=UNKNOWN_UNSUPPORTED_EVIDENCE values=[] text='この要求を裏づける導出を確認できません。' forbidden_hit=[] answered=False :: ベッドにシーツが敷かれた。 / 誰がシーツを敷いた？
+rows=33 failed=0

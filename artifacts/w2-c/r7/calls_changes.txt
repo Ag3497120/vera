@@ -1,0 +1,32 @@
+# calls_before.jsonl lines: 1201 distinct (frame,q,opts): 909
+# calls_after.jsonl  lines: 1205 distinct (frame,q,opts): 912 same key set: False
+# keys only in before: 0 / only in after: 3 (a test of the new file that fails before the fix stops at its first failed assert, so a later question of the same test is not asked)
+# keys with more than one distinct result inside one run: 3
+# counts: {'answer->escalate': 19, 'escalate->answer': 0, 'answer value/index changed': 0, 'escalate reason/detail changed': 1}
+   only-after  f01_loan.md@e38d4768546e |  | null
+   only-after  f01_loan.md@e38d4768546e |     | null
+   only-after  no_such_frame.md@None | 何を先にしますか？ | null
+== answer->escalate 19
+   [test_conduct_ask_traps6.py] ferry.md@b4cd54947a97 | Can I edit KIOSK/fare.py? | ["Yes", "No"] | ('answer', 0, 'Yes') -> ('escalate', None, None, 'FRAME_SILENT', 'PATH_CASE_DIFFERS')
+   [test_conduct_ask_traps6.py] ferry.md@b4cd54947a97 | Can I edit Kiosk/fare.py? | ["Yes", "No"] | ('answer', 0, 'Yes') -> ('escalate', None, None, 'FRAME_SILENT', 'PATH_CASE_DIFFERS')
+   [test_conduct_ask_traps6.py] ferry.md@b4cd54947a97 | Can we export the passenger manifest now? | ["Yes", "No"] | ('answer', 1, 'No') -> ('escalate', None, None, 'HUMAN_APPROVAL_REQUIRED', 'INVARIANT_IS_CONDITIONAL')
+   [test_conduct_ask_traps6.py] ferry.md@b4cd54947a97 | May we export the passenger manifest? | ["Yes", "No"] | ('answer', 1, 'No') -> ('escalate', None, None, 'HUMAN_APPROVAL_REQUIRED', 'INVARIANT_IS_CONDITIONAL')
+   [test_conduct_ask_traps6.py] ferry.md@b4cd54947a97 | May we export the passenger manifest? | null | ('answer', None, 'not permitted') -> ('escalate', None, None, 'HUMAN_APPROVAL_REQUIRED', 'INVARIANT_IS_CONDITIONAL')
+   [test_conduct_ask_traps6.py] ferry.md@b4cd54947a97 | May we export the passenger manifest? The harbour master agreed. | ["Yes", "No"] | ('answer', 1, 'No') -> ('escalate', None, None, 'HUMAN_APPROVAL_REQUIRED', 'INVARIANT_IS_CONDITIONAL')
+   [test_conduct_ask_traps6.py] ferry_inv.md@8c623549f530 | May we export the passenger manifest? | ["Yes", "No"] | ('answer', 1, 'No') -> ('escalate', None, None, 'FRAME_SILENT', 'RECORD_STANCE_UNREADABLE')
+   [test_conduct_ask_traps6.py] ferry_neg.md@ab0b302f89c4 | Can we wipe the card reader now? | ["Yes", "No"] | ('answer', 1, 'No') -> ('escalate', None, None, 'FRAME_SILENT', 'RECORD_STANCE_UNREADABLE')
+   [test_conduct_ask_traps6.py] ferry_neg.md@ab0b302f89c4 | May we wipe the card reader? | ["Yes", "No"] | ('answer', 1, 'No') -> ('escalate', None, None, 'FRAME_SILENT', 'RECORD_STANCE_UNREADABLE')
+   [test_conduct_ask_traps6.py] ferry_neg.md@ab0b302f89c4 | May we wipe the card reader? | null | ('answer', None, 'not permitted') -> ('escalate', None, None, 'FRAME_SILENT', 'RECORD_STANCE_UNREADABLE')
+   [test_conduct_ask_traps6.py] inv_wins.md@34114c9e08cb | 外部の査読者に送ってよいですか？ 担当者の承認は得ています。 | ["はい", "いいえ"] | ('answer', 1, 'いいえ') -> ('escalate', None, None, 'HUMAN_APPROVAL_REQUIRED', 'INVARIANT_IS_CONDITIONAL')
+   [test_conduct_ask_traps6.py] nursery.md@9523e9a4e8e9 | App/notes.py を書き換えてよいですか？ | ["はい", "いいえ"] | ('answer', 0, 'はい') -> ('escalate', None, None, 'FRAME_SILENT', 'PATH_CASE_DIFFERS')
+   [test_conduct_ask_traps6.py] nursery.md@9523e9a4e8e9 | 園児の写真を外部へ送ってよいですか？ | ["はい", "いいえ"] | ('answer', 1, 'いいえ') -> ('escalate', None, None, 'HUMAN_APPROVAL_REQUIRED', 'INVARIANT_IS_CONDITIONAL')
+   [test_conduct_ask_traps6.py] nursery.md@9523e9a4e8e9 | 園児の写真を外部へ送ってよいですか？ 園長の承認はもらっています。 | ["はい", "いいえ"] | ('answer', 1, 'いいえ') -> ('escalate', None, None, 'HUMAN_APPROVAL_REQUIRED', 'INVARIANT_IS_CONDITIONAL')
+   [test_conduct_ask_traps6.py] nursery.md@9523e9a4e8e9 | 園長の承認を得たので、園児の写真を外部へ送ってよいですか？ | ["はい", "いいえ"] | ('answer', 1, 'いいえ') -> ('escalate', None, None, 'HUMAN_APPROVAL_REQUIRED', 'INVARIANT_IS_CONDITIONAL')
+   [test_conduct_ask_traps6.py] nursery.md@9523e9a4e8e9 | ＡＰＰ/notes.py を書き換えてよいですか？ | ["はい", "いいえ"] | ('answer', 0, 'はい') -> ('escalate', None, None, 'FRAME_SILENT', 'PATH_CASE_DIFFERS')
+   [test_conduct_ask_traps6.py] nursery_inv.md@c84b42debd04 | 園児の写真を外部へ送ってよいですか？ | ["はい", "いいえ"] | ('answer', 1, 'いいえ') -> ('escalate', None, None, 'FRAME_SILENT', 'RECORD_STANCE_UNREADABLE')
+   [test_conduct_ask_traps6.py] nursery_neg.md@c7d1b957729a | 連絡帳の記録を消去してよいですか？ | ["はい", "いいえ"] | ('answer', 1, 'いいえ') -> ('escalate', None, None, 'FRAME_SILENT', 'RECORD_STANCE_UNREADABLE')
+   [test_conduct_ask_traps6.py] nursery_neg.md@c7d1b957729a | 連絡帳の記録を消去してよいですか？ | null | ('answer', None, '不可') -> ('escalate', None, None, 'FRAME_SILENT', 'RECORD_STANCE_UNREADABLE')
+== escalate->answer 0
+== answer value/index changed 0
+== escalate reason/detail changed 1
+   [test_conduct_ask_traps6.py] ferry.md@b4cd54947a97 | May we export the passenger manifest before the ferry departs? | ["Yes", "No"] | ('escalate', None, None, 'FRAME_SILENT', 'PERMISSION_FOR_ANOTHER_SUBJECT_OR_CONDITION') -> ('escalate', None, None, 'HUMAN_APPROVAL_REQUIRED', 'INVARIANT_IS_CONDITIONAL')

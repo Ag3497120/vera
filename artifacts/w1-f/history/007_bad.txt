@@ -1,0 +1,32 @@
+# commit a9cad0ab448b649dc6c71584f14d203a5200289d
+# status FAIL
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 10 items / 9 deselected / 1 selected
+
+tests/attack/test_memory_brief_differential.py::test_kind_timestamp_and_id_order_break_ties FAILED [100%]
+
+=== FAILURES ===
+_________________ test_kind_timestamp_and_id_order_break_ties __________________
+
+    def test_kind_timestamp_and_id_order_break_ties():
+        records = [
+            rec("z", kind="FACT", ts="1", subject="S", attribute="a"),
+            rec("d", kind="DECISION", ts="3", subject="S"),
+            rec("b", kind="INVARIANT", ts="9", subject="S"),
+            rec("c", kind="DECISION", ts="2", subject="S"),
+            rec("a", kind="FACT", ts="1", subject="S", attribute="a"),
+        ]
+        memory = memory_with_sources(records, askable_ids={r["id"] for r in records})
+        result = compile_brief(memory, 500)
+>       assert [line.split("]", 1)[0][4:] for line in result.splitlines()] == ["b", "c", "d", "a", "z"]
+                                                      ^^^^^^^^^^^^^^^^^
+E       AttributeError: 'ContextBrief' object has no attribute 'splitlines'
+
+tests/attack/test_memory_brief_differential.py:188: AttributeError
+=== short test summary info ===
+FAILED tests/attack/test_memory_brief_differential.py::test_kind_timestamp_and_id_order_break_ties - AttributeError: 'ContextBrief' object has no attribute 'splitlines'
+=== 1 failed, 9 deselected ===

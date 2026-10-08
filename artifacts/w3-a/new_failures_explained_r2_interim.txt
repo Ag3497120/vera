@@ -1,0 +1,8 @@
+Round 2: the one failure that is not in the baseline is, as in round 1,
+tests/bank_score/test_bs_end_to_end.py::test_s6_two_runs_agree_except_timing_and_recount_matches
+(see pytest_full_r2.txt, new_failures_r2.txt).  It fails alone too: the bank-score tool
+(tools/bank_score/cli.py) requires `git status --porcelain -- verantyx` to be empty, and the two new
+UNTRACKED files verantyx/coarse_place.py and verantyx/coarse_types.py make it non-empty.  No product
+behaviour changed; after the files are committed the check has nothing to report.
+Baseline failures that no longer fail: 0.  Passed tests: 4998 (round 1: 4976; the difference is the
+new tests/coarse_place tests).

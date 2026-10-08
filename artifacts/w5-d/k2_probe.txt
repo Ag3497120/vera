@@ -1,0 +1,23 @@
+K2 probe (scratchpad copy of c875ed3 + the changed verantyx files; the test files are NOT changed; only tests/conftest.py of the copy gets the mechanical rewrite in k2_probe_rewrite.diff:
+the default lookup of routing_from_text.explain is a placement that answers UNPLACED for every word).
+
+K2 failing existing tests in the real tree:       51
+of those, still failing with the rewrite:       14  => pass with a placement that knows the names: 37
+  still failing: tests/test_routing_from_text.py::test_T3_the_same_content_as_a_hand_written_table_gives_the_same_decisions
+  still failing: tests/test_routing_from_text.py::test_constraint_human_and_wait_scopes_and_residual_and_conflict
+  still failing: tests/test_routing_from_text.py::test_constraint_independence_veto_for_two_other_roles
+  still failing: tests/test_routing_from_text.py::test_constraint_prohibition_veto_does_not_try_the_next_agent
+  still failing: tests/test_routing_from_text.py::test_gate_one_unread_unit_stops_every_job_and_the_router_is_not_called
+  still failing: tests/test_routing_from_text.py::test_output_keys_order_and_basis_kinds
+  still failing: tests/test_routing_from_text.py::test_relation_comparison_keeps_one_agent_only_and_comparison_only_does_not_stop
+  still failing: tests/test_routing_from_text.py::test_relation_independence_same_negated_distinct_and_a_different_phrase_is_held_as_ambiguous
+  still failing: tests/test_routing_from_text.py::test_relation_roles_independence_is_the_routers_default_r3_and_makes_no_record
+  still failing: tests/test_routing_from_text.py::test_router_call_passes_used_agents_only_no_chooser_and_the_first_names
+  still failing: tests/test_routing_from_text.py::test_router_reasons_are_written_through_from_the_routers_types
+  still failing: tests/test_routing_from_text.py::test_router_unknown_task_names_abstain_with_their_own_type
+  still failing: tests/test_routing_from_text_entry.py::test_T1_the_entry_returns_the_documented_shape_and_routes_through_the_real_reader
+  still failing: tests/test_routing_from_text_w5b.py::test_without_a_placement_nothing_is_checked_and_that_is_counted_not_hidden
+tests that fail only because of the rewrite:        0
+
+Reasons of the still-failing ones (from --tb=short): (a) assertions on the lookup id 'stub-no-placement/1' / the not_checked count / byte-exact output (tests that are ABOUT the no-placement stub: 4);
+(b) a sentence whose names come from splitting a parallel filler ('ハルとセキは同じ会社だ。'): the parts 'ハル' and 'セキ' have no placement answer of their own (the placement is asked about the filler 'ハルとセキ'), so R-J1 stops them as NAME_UNVERIFIED even with a placement (the gate then reads 6 mapped units instead of 7, and every test built on that text changes). This is a KNOWN HOLE of R-J1 as specified (over-abstention: the safe side) and is written in the docs; it is the main reason that K2 is not purely an 'old test gives no placement' conflict.

@@ -1,0 +1,15 @@
+{"id": "q01", "question": "誰が轆轤を回した？", "expect": {"verdict": "ANSWER", "values": ["陶芸家"]}}
+{"id": "q02", "question": "誰が釉薬を調合した？", "expect": {"verdict": "ANSWER", "values": ["弟子"]}}
+{"id": "q03", "question": "誰が高台を削った？", "expect": {"verdict": "ANSWER", "values": ["師匠"]}}
+{"id": "q04", "question": "誰が湯呑を成形した？", "expect": {"verdict": "ANSWER", "values": ["陶芸家"]}}
+{"id": "q05", "question": "誰が化粧土を塗った？", "expect": {"verdict": "ANSWER", "values": ["陶芸家"]}}
+{"id": "q06", "question": "誰が石膏型を洗った？", "expect": {"verdict": "ANSWER", "values": ["弟子"]}}
+{"id": "q07", "question": "誰が登り窯を焚いた？", "expect": {"verdict": "ANSWER", "values": ["師匠"]}}
+{"id": "q08", "question": "誰が呉須を溶いた？", "expect": {"verdict": "ANSWER", "values": ["弟子"]}}
+{"id": "q09", "question": "誰が匣鉢を運んだ？", "expect": {"verdict": "ANSWER", "values": ["弟子"]}}
+{"id": "q10", "question": "誰が天目茶碗を仕上げた？", "expect": {"verdict": "ANSWER", "values": ["陶芸家"]}}
+{"id": "u01", "question": "誰が轆轤を壊した？", "expect": "ABSTAIN"}
+{"id": "u02", "question": "誰が釉薬を捨てた？", "expect": "ABSTAIN"}
+{"id": "u03", "question": "誰が湯呑を割った？", "expect": "ABSTAIN"}
+{"id": "u04", "question": "誰が匣鉢を洗った？", "expect": "ABSTAIN"}
+{"id": "u05", "question": "誰が化粧土を買った？", "expect": "ABSTAIN"}

@@ -1,0 +1,707 @@
+{
+  "inputs": {
+    "answer_run": "artifacts/w2-g/live_g2/w2g2/low_answer",
+    "escalate_run": "artifacts/w2-g/live_g2/w2g2/low_escalate"
+  },
+  "table": [
+    {
+      "name": "v2 low (this round)",
+      "questions": 64,
+      "wrong": 0,
+      "answered_correctly": 15,
+      "answer_expected": 48,
+      "escalated_correctly": 16,
+      "escalate_expected": 16,
+      "q2_answer_rate": 0.3125,
+      "escalate_correct_rate": 1.0
+    },
+    {
+      "name": "round 3 wording b (after the result was seen), same questions",
+      "questions": 64,
+      "wrong": 0,
+      "answered_correctly": 27,
+      "answer_expected": 48,
+      "escalated_correctly": 16,
+      "escalate_expected": 16,
+      "q2_answer_rate": 0.5625,
+      "escalate_correct_rate": 1.0
+    },
+    {
+      "name": "round 3 wording a (pre-registered), same questions",
+      "questions": 64,
+      "wrong": 0,
+      "answered_correctly": 21,
+      "answer_expected": 48,
+      "escalated_correctly": 16,
+      "escalate_expected": 16,
+      "q2_answer_rate": 0.4375,
+      "escalate_correct_rate": 1.0
+    },
+    {
+      "name": "round 3 wording b, all 64",
+      "questions": 64,
+      "wrong": 0,
+      "answered_correctly": 27,
+      "answer_expected": 48,
+      "escalated_correctly": 16,
+      "escalate_expected": 16,
+      "q2_answer_rate": 0.5625,
+      "escalate_correct_rate": 1.0
+    },
+    {
+      "name": "round 3 wording a, all 64",
+      "questions": 64,
+      "wrong": 0,
+      "answered_correctly": 21,
+      "answer_expected": 48,
+      "escalated_correctly": 16,
+      "escalate_expected": 16,
+      "q2_answer_rate": 0.4375,
+      "escalate_correct_rate": 1.0
+    }
+  ],
+  "not_run": [],
+  "per_question": [
+    {
+      "id": "w2g2-x01-01",
+      "expect": "answer",
+      "v2": [
+        "correct",
+        "answer",
+        null,
+        null
+      ]
+    },
+    {
+      "id": "w2g2-x01-02",
+      "expect": "answer",
+      "v2": [
+        "correct",
+        "answer",
+        null,
+        null
+      ]
+    },
+    {
+      "id": "w2g2-x01-03",
+      "expect": "answer",
+      "v2": [
+        "over_escalate",
+        "escalate",
+        "MAPPING_UNSETTLED",
+        "DECIDES_DISAGREE"
+      ]
+    },
+    {
+      "id": "w2g2-x01-04",
+      "expect": "answer",
+      "v2": [
+        "over_escalate",
+        "escalate",
+        "MAPPING_UNSETTLED",
+        "DECIDES_DISAGREE"
+      ]
+    },
+    {
+      "id": "w2g2-x01-05",
+      "expect": "answer",
+      "v2": [
+        "over_escalate",
+        "escalate",
+        "MAPPING_UNSETTLED",
+        "DECIDES_DISAGREE"
+      ]
+    },
+    {
+      "id": "w2g2-x01-06",
+      "expect": "answer",
+      "v2": [
+        "over_escalate",
+        "escalate",
+        "MAPPING_UNSETTLED",
+        "DECIDES_DISAGREE"
+      ]
+    },
+    {
+      "id": "w2g2-x01-07",
+      "expect": "answer",
+      "v2": [
+        "over_escalate",
+        "escalate",
+        "FRAME_SILENT",
+        "MAP_RECORD_DOES_NOT_DECIDE"
+      ]
+    },
+    {
+      "id": "w2g2-x01-08",
+      "expect": "answer",
+      "v2": [
+        "over_escalate",
+        "escalate",
+        "MAPPING_UNSETTLED",
+        "DECIDES_DISAGREE"
+      ]
+    },
+    {
+      "id": "w2g2-x01-09",
+      "expect": "answer",
+      "v2": [
+        "correct",
+        "answer",
+        null,
+        null
+      ]
+    },
+    {
+      "id": "w2g2-x02-01",
+      "expect": "answer",
+      "v2": [
+        "over_escalate",
+        "escalate",
+        "MAPPING_UNSETTLED",
+        "STEP2_DISAGREE"
+      ]
+    },
+    {
+      "id": "w2g2-x02-02",
+      "expect": "answer",
+      "v2": [
+        "correct",
+        "answer",
+        null,
+        null
+      ]
+    },
+    {
+      "id": "w2g2-x02-03",
+      "expect": "answer",
+      "v2": [
+        "correct",
+        "answer",
+        null,
+        null
+      ]
+    },
+    {
+      "id": "w2g2-x02-04",
+      "expect": "answer",
+      "v2": [
+        "over_escalate",
+        "escalate",
+        "FRAME_SILENT",
+        "TERM_IN_WIDER_PHRASE"
+      ]
+    },
+    {
+      "id": "w2g2-x02-05",
+      "expect": "answer",
+      "v2": [
+        "over_escalate",
+        "escalate",
+        "MAPPING_UNSETTLED",
+        "DECIDES_DISAGREE"
+      ]
+    },
+    {
+      "id": "w2g2-x02-06",
+      "expect": "answer",
+      "v2": [
+        "over_escalate",
+        "escalate",
+        "MAPPING_UNSETTLED",
+        "DECIDES_DISAGREE"
+      ]
+    },
+    {
+      "id": "w2g2-x02-07",
+      "expect": "answer",
+      "v2": [
+        "over_escalate",
+        "escalate",
+        "MAPPING_UNSETTLED",
+        "STEP1_DISAGREE"
+      ]
+    },
+    {
+      "id": "w2g2-x02-08",
+      "expect": "answer",
+      "v2": [
+        "over_escalate",
+        "escalate",
+        "MAPPING_UNSETTLED",
+        "DECIDES_DISAGREE"
+      ]
+    },
+    {
+      "id": "w2g2-x02-09",
+      "expect": "answer",
+      "v2": [
+        "over_escalate",
+        "escalate",
+        "MAPPING_UNSETTLED",
+        "STEP2_DISAGREE"
+      ]
+    },
+    {
+      "id": "w2g2-x03-01",
+      "expect": "answer",
+      "v2": [
+        "over_escalate",
+        "escalate",
+        "FRAME_SILENT",
+        "MAP_RECORD_DOES_NOT_DECIDE"
+      ]
+    },
+    {
+      "id": "w2g2-x03-02",
+      "expect": "answer",
+      "v2": [
+        "over_escalate",
+        "escalate",
+        "MAPPING_UNSETTLED",
+        "STEP1_DISAGREE"
+      ]
+    },
+    {
+      "id": "w2g2-x03-03",
+      "expect": "answer",
+      "v2": [
+        "correct",
+        "answer",
+        null,
+        null
+      ]
+    },
+    {
+      "id": "w2g2-x03-04",
+      "expect": "answer",
+      "v2": [
+        "over_escalate",
+        "escalate",
+        "QUESTION_UNREADABLE",
+        "NEGATED_QUESTION"
+      ]
+    },
+    {
+      "id": "w2g2-x03-05",
+      "expect": "answer",
+      "v2": [
+        "correct",
+        "answer",
+        null,
+        null
+      ]
+    },
+    {
+      "id": "w2g2-x03-06",
+      "expect": "answer",
+      "v2": [
+        "correct",
+        "answer",
+        null,
+        null
+      ]
+    },
+    {
+      "id": "w2g2-x04-01",
+      "expect": "answer",
+      "v2": [
+        "over_escalate",
+        "escalate",
+        "MAPPING_UNSETTLED",
+        "DECIDES_DISAGREE"
+      ]
+    },
+    {
+      "id": "w2g2-x04-02",
+      "expect": "answer",
+      "v2": [
+        "over_escalate",
+        "escalate",
+        "FRAME_SILENT",
+        "MAP_RECORD_DOES_NOT_DECIDE"
+      ]
+    },
+    {
+      "id": "w2g2-x04-03",
+      "expect": "answer",
+      "v2": [
+        "over_escalate",
+        "escalate",
+        "FRAME_SILENT",
+        "PERMISSION_FOR_ANOTHER_SUBJECT_OR_CONDITION"
+      ]
+    },
+    {
+      "id": "w2g2-x04-04",
+      "expect": "answer",
+      "v2": [
+        "over_escalate",
+        "escalate",
+        "MAPPING_UNSETTLED",
+        "STEP2_DISAGREE"
+      ]
+    },
+    {
+      "id": "w2g2-x04-05",
+      "expect": "answer",
+      "v2": [
+        "correct",
+        "answer",
+        null,
+        null
+      ]
+    },
+    {
+      "id": "w2g2-x04-06",
+      "expect": "answer",
+      "v2": [
+        "over_escalate",
+        "escalate",
+        "MAPPING_UNSETTLED",
+        "STEP1_DISAGREE"
+      ]
+    },
+    {
+      "id": "w2g2-x04-07",
+      "expect": "answer",
+      "v2": [
+        "over_escalate",
+        "escalate",
+        "MAPPING_UNSETTLED",
+        "STEP2_DISAGREE"
+      ]
+    },
+    {
+      "id": "w2g2-x04-08",
+      "expect": "answer",
+      "v2": [
+        "correct",
+        "answer",
+        null,
+        null
+      ]
+    },
+    {
+      "id": "w2g2-x04-09",
+      "expect": "answer",
+      "v2": [
+        "over_escalate",
+        "escalate",
+        "QUESTION_UNREADABLE",
+        "INVERTED_QUESTION"
+      ]
+    },
+    {
+      "id": "w2g2-x05-01",
+      "expect": "answer",
+      "v2": [
+        "correct",
+        "answer",
+        null,
+        null
+      ]
+    },
+    {
+      "id": "w2g2-x05-02",
+      "expect": "answer",
+      "v2": [
+        "over_escalate",
+        "escalate",
+        "FRAME_SILENT",
+        "PERMISSION_FOR_ANOTHER_SUBJECT_OR_CONDITION"
+      ]
+    },
+    {
+      "id": "w2g2-x05-03",
+      "expect": "answer",
+      "v2": [
+        "correct",
+        "answer",
+        null,
+        null
+      ]
+    },
+    {
+      "id": "w2g2-x05-04",
+      "expect": "answer",
+      "v2": [
+        "over_escalate",
+        "escalate",
+        "FRAME_SILENT",
+        "TERM_IN_WIDER_PHRASE"
+      ]
+    },
+    {
+      "id": "w2g2-x05-05",
+      "expect": "answer",
+      "v2": [
+        "over_escalate",
+        "escalate",
+        "OUT_OF_RANGE",
+        "STATE_OR_REQUEST_QUESTION"
+      ]
+    },
+    {
+      "id": "w2g2-x05-06",
+      "expect": "answer",
+      "v2": [
+        "over_escalate",
+        "escalate",
+        "MAPPING_UNSETTLED",
+        "STEP1_DISAGREE"
+      ]
+    },
+    {
+      "id": "w2g2-x05-07",
+      "expect": "answer",
+      "v2": [
+        "correct",
+        "answer",
+        null,
+        null
+      ]
+    },
+    {
+      "id": "w2g2-x05-08",
+      "expect": "answer",
+      "v2": [
+        "over_escalate",
+        "escalate",
+        "MAPPING_UNSETTLED",
+        "STEP1_DISAGREE"
+      ]
+    },
+    {
+      "id": "w2g2-x05-09",
+      "expect": "answer",
+      "v2": [
+        "over_escalate",
+        "escalate",
+        "MAPPING_UNSETTLED",
+        "DECIDES_DISAGREE"
+      ]
+    },
+    {
+      "id": "w2g2-x06-01",
+      "expect": "answer",
+      "v2": [
+        "correct",
+        "answer",
+        null,
+        null
+      ]
+    },
+    {
+      "id": "w2g2-x06-02",
+      "expect": "answer",
+      "v2": [
+        "over_escalate",
+        "escalate",
+        "FRAME_SILENT",
+        "PERMISSION_FOR_ANOTHER_SUBJECT_OR_CONDITION"
+      ]
+    },
+    {
+      "id": "w2g2-x06-03",
+      "expect": "answer",
+      "v2": [
+        "correct",
+        "answer",
+        null,
+        null
+      ]
+    },
+    {
+      "id": "w2g2-x06-04",
+      "expect": "answer",
+      "v2": [
+        "over_escalate",
+        "escalate",
+        "MAPPING_UNSETTLED",
+        "STEP2_DISAGREE"
+      ]
+    },
+    {
+      "id": "w2g2-x06-05",
+      "expect": "answer",
+      "v2": [
+        "over_escalate",
+        "escalate",
+        "MAPPING_UNSETTLED",
+        "STEP2_DISAGREE"
+      ]
+    },
+    {
+      "id": "w2g2-x06-06",
+      "expect": "answer",
+      "v2": [
+        "over_escalate",
+        "escalate",
+        "FRAME_SILENT",
+        "MAP_RECORD_DOES_NOT_DECIDE"
+      ]
+    },
+    {
+      "id": "w2g2-x01-10",
+      "expect": "escalate",
+      "v2": [
+        "correct_escalate",
+        "escalate",
+        "FRAME_SILENT",
+        "MAP_NONE"
+      ]
+    },
+    {
+      "id": "w2g2-x01-11",
+      "expect": "escalate",
+      "v2": [
+        "correct_escalate",
+        "escalate",
+        "QUESTION_UNREADABLE",
+        "NEGATED_QUESTION"
+      ]
+    },
+    {
+      "id": "w2g2-x02-10",
+      "expect": "escalate",
+      "v2": [
+        "correct_escalate",
+        "escalate",
+        "FRAME_SILENT",
+        "MAP_NONE"
+      ]
+    },
+    {
+      "id": "w2g2-x02-11",
+      "expect": "escalate",
+      "v2": [
+        "correct_escalate",
+        "escalate",
+        "MAPPING_UNSETTLED",
+        "STEP1_DISAGREE"
+      ]
+    },
+    {
+      "id": "w2g2-x03-07",
+      "expect": "escalate",
+      "v2": [
+        "correct_escalate",
+        "escalate",
+        "FRAME_SILENT",
+        "MAP_NONE"
+      ]
+    },
+    {
+      "id": "w2g2-x03-08",
+      "expect": "escalate",
+      "v2": [
+        "correct_escalate",
+        "escalate",
+        "MAPPING_UNSETTLED",
+        "STEP1_DISAGREE"
+      ]
+    },
+    {
+      "id": "w2g2-x03-09",
+      "expect": "escalate",
+      "v2": [
+        "correct_escalate",
+        "escalate",
+        "QUESTION_UNREADABLE",
+        "NEGATED_QUESTION"
+      ]
+    },
+    {
+      "id": "w2g2-x03-10",
+      "expect": "escalate",
+      "v2": [
+        "correct_escalate",
+        "escalate",
+        "QUESTION_UNREADABLE",
+        "INVERTED_QUESTION"
+      ]
+    },
+    {
+      "id": "w2g2-x04-10",
+      "expect": "escalate",
+      "v2": [
+        "correct_escalate",
+        "escalate",
+        "MAPPING_UNSETTLED",
+        "STEP1_DISAGREE"
+      ]
+    },
+    {
+      "id": "w2g2-x04-11",
+      "expect": "escalate",
+      "v2": [
+        "correct_escalate",
+        "escalate",
+        "FRAME_SILENT",
+        "MAP_NONE"
+      ]
+    },
+    {
+      "id": "w2g2-x05-10",
+      "expect": "escalate",
+      "v2": [
+        "correct_escalate",
+        "escalate",
+        "FRAME_SILENT",
+        "UNORDERED"
+      ]
+    },
+    {
+      "id": "w2g2-x05-11",
+      "expect": "escalate",
+      "v2": [
+        "correct_escalate",
+        "escalate",
+        "MAPPING_UNSETTLED",
+        "STEP1_DISAGREE"
+      ]
+    },
+    {
+      "id": "w2g2-x06-07",
+      "expect": "escalate",
+      "v2": [
+        "correct_escalate",
+        "escalate",
+        "FRAME_SILENT",
+        "MAP_NONE"
+      ]
+    },
+    {
+      "id": "w2g2-x06-08",
+      "expect": "escalate",
+      "v2": [
+        "correct_escalate",
+        "escalate",
+        "FRAME_SILENT",
+        "ADVICE_NOT_PERMISSION"
+      ]
+    },
+    {
+      "id": "w2g2-x06-09",
+      "expect": "escalate",
+      "v2": [
+        "correct_escalate",
+        "escalate",
+        "HUMAN_APPROVAL_REQUIRED",
+        "PROTECTED_ACTION"
+      ]
+    },
+    {
+      "id": "w2g2-x06-10",
+      "expect": "escalate",
+      "v2": [
+        "correct_escalate",
+        "escalate",
+        "MAPPING_UNSETTLED",
+        "STEP1_DISAGREE"
+      ]
+    }
+  ],
+  "wrong_ids": []
+}

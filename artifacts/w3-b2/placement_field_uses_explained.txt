@@ -1,0 +1,13 @@
+# artifacts/w3-b2/placement_field_uses.txt (git diff 3b31258 -- verantyx, added lines that read a field of a placement answer), line by line
+92:  `note['frame'] = why_frame`                         semantic_read._typed_reread_ja: the key `frame` of the DIAGNOSIS dict (what typed_explain_ja returns), not a field of an answer.
+172: `if answer['origin'] == 'estimated':`               semantic_reader.placement_fit (K95: the estimated reasons of a split answer; placement_type has checked the contract first).
+173: `... answer['estimate_basis'] == 'proximity' ...`    semantic_reader.placement_fit (same).
+174: `arms = answer['decided_by']`                       semantic_reader.placement_fit (the generated-definition and the role-distribution-only reasons for a split answer).
+177: `types = tuple(sorted(answer['top']))`              semantic_reader.placement_fit (the candidate types of a split answer: the one thing the new gate adds).
+184: (docstring of predicate_frame: the words `frame_status` and `NOT_CONFIRMED`)       semantic_reader.predicate_frame (a comment, not a read).
+186: `if 'frame_status' not in answer: ...`              semantic_reader.predicate_frame.
+187: `status = answer['frame_status']`                   semantic_reader.predicate_frame.
+193: `answer.get('state') ... answer.get('origin')`      semantic_reader.predicate_frame (the invariants of a CONFIRMED frame, docs/COARSE_PLACEMENT.md 12.10).
+194: `answer.get('decided_by')`                          semantic_reader.predicate_frame (gen_frame must be among the arms of a CONFIRMED frame).
+No line is outside placement_fit / predicate_frame (typed_frame_check_ja reads the result of predicate_frame, not an answer field) / the diagnosis key. The cross reads the lookup's PlaceResult, not an answer
+(event_cross._agreement uses `place.state` / `place.types`: attributes of PlaceResult, which the grep pattern does not match).

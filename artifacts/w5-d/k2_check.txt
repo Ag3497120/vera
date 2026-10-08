@@ -1,0 +1,17 @@
+K2 check (step 5.3): failing tests of tests/test_routing_from_text*.py + attack files, now
+K2 check: existing routing tests failing now (tests/test_routing_from_text*.py) vs proto_new_failures.txt (without R-J2)
+mine:       51  proto:       51
+only in mine (caused by R-J2 or by the 17-type narrowing):
+only in proto:
+
+failing attack-copy tests among these:
+tests/attack/test_attack_w5b_wave2.py::test_yappari_sonomama_does_not_turn_an_addendum_into_replacement
+
+R1 attack (test_japanese_common_noun_without_placement_is_not_routed_as_an_agent) fails: 0 (0 = passes)
+total failing now:       52 = 51 existing (K2) + 1 attack R2 copy (K2)
+
+ids of the 51:
+  36 tests/test_routing_from_text.py
+   1 tests/test_routing_from_text_entry.py
+   2 tests/test_routing_from_text_regress.py
+  12 tests/test_routing_from_text_w5b.py

@@ -1,0 +1,98 @@
+completed 50/300
+completed 100/300
+completed 150/300
+completed 200/300
+completed 250/300
+completed 300/300
+{
+  "arms": {
+    "baseline": {
+      "asked": 300,
+      "correct": 14,
+      "wrong": 236,
+      "refusal": 50,
+      "reachable": 284,
+      "junk_top1": 57,
+      "junk_present": 142,
+      "empty_candidates": 1
+    },
+    "specificity": {
+      "asked": 300,
+      "correct": 10,
+      "wrong": 5,
+      "refusal": 285,
+      "reachable": 284,
+      "junk_top1": 57,
+      "junk_present": 142,
+      "empty_candidates": 1
+    },
+    "no_junk": {
+      "asked": 300,
+      "correct": 34,
+      "wrong": 229,
+      "refusal": 37,
+      "reachable": 280,
+      "junk_top1": 0,
+      "junk_present": 0,
+      "empty_candidates": 2
+    },
+    "no_junk_specificity": {
+      "asked": 300,
+      "correct": 32,
+      "wrong": 11,
+      "refusal": 257,
+      "reachable": 280,
+      "junk_top1": 0,
+      "junk_present": 0,
+      "empty_candidates": 2
+    }
+  },
+  "primary_criteria": {
+    "WRONG_DOWN": true,
+    "REFUSAL_NOT_WORSE": true,
+    "CORRECT_NOT_WORSE": false,
+    "PATH_MATCH": true
+  },
+  "auxiliary_vs_baseline": {
+    "WRONG_DOWN": true,
+    "REFUSAL_NOT_WORSE": true,
+    "CORRECT_NOT_WORSE": true
+  },
+  "transitions": {
+    "baseline -> specificity": {
+      "correct -> correct": 10,
+      "refusal -> refusal": 50,
+      "wrong -> refusal": 231,
+      "wrong -> wrong": 5,
+      "correct -> refusal": 4
+    },
+    "baseline -> no_junk": {
+      "correct -> correct": 12,
+      "refusal -> refusal": 28,
+      "wrong -> wrong": 214,
+      "wrong -> correct": 14,
+      "refusal -> correct": 8,
+      "refusal -> wrong": 14,
+      "wrong -> refusal": 8,
+      "correct -> wrong": 1,
+      "correct -> refusal": 1
+    },
+    "no_junk -> no_junk_specificity": {
+      "correct -> correct": 32,
+      "refusal -> refusal": 37,
+      "wrong -> refusal": 218,
+      "wrong -> wrong": 11,
+      "correct -> refusal": 2
+    },
+    "baseline -> no_junk_specificity": {
+      "correct -> correct": 10,
+      "refusal -> refusal": 40,
+      "wrong -> refusal": 213,
+      "wrong -> correct": 14,
+      "refusal -> correct": 8,
+      "wrong -> wrong": 9,
+      "refusal -> wrong": 2,
+      "correct -> refusal": 4
+    }
+  }
+}

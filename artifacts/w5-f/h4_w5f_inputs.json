@@ -1,0 +1,11 @@
+[
+  {"id":"no_ids","source":{"family":"memory_sovereign","origin":"human_confirmed"},"expect":"unknown_origin"},
+  {"id":"store_only","source":{"family":"memory_sovereign","origin":"human_confirmed","store_id":"store-r1"},"expect":"unknown_origin"},
+  {"id":"confirm_only","source":{"family":"memory_sovereign","origin":"human_confirmed","confirm_id":"0123456789abcdef01234567"},"expect":"unknown_origin"},
+  {"id":"empty_ids","source":{"family":"memory_sovereign","origin":"human_confirmed","store_id":"","confirm_id":""},"expect":"unknown_origin"},
+  {"id":"confirm_23","source":{"family":"memory_sovereign","origin":"human_confirmed","store_id":"store-r1","confirm_id":"0123456789abcdef0123456"},"expect":"unknown_origin"},
+  {"id":"confirm_25","source":{"family":"memory_sovereign","origin":"human_confirmed","store_id":"store-r1","confirm_id":"0123456789abcdef012345678"},"expect":"unknown_origin"},
+  {"id":"confirm_uppercase","source":{"family":"memory_sovereign","origin":"human_confirmed","store_id":"store-r1","confirm_id":"0123456789ABCDEF01234567"},"expect":"unknown_origin"},
+  {"id":"confirm_nonhex","source":{"family":"memory_sovereign","origin":"human_confirmed","store_id":"store-r1","confirm_id":"g123456789abcdef01234567"},"expect":"unknown_origin"},
+  {"id":"store_numeric","source":{"family":"memory_sovereign","origin":"human_confirmed","store_id":7,"confirm_id":"0123456789abcdef01234567"},"expect":"unknown_origin"}
+]

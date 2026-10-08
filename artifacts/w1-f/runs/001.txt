@@ -1,0 +1,33 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 11 items / 10 deselected / 1 selected
+
+tests/attack/test_conductor_escalate_realtext.py::test_reask_citation_must_name_an_active_record_and_then_closes FAILED [100%]
+
+=== FAILURES ===
+________ test_reask_citation_must_name_an_active_record_and_then_closes ________
+
+tmp_path = PosixPath('<CACHE><TMP>')
+
+    def test_reask_citation_must_name_an_active_record_and_then_closes(tmp_path):
+        handoff = _enrich(tmp_path)
+        assert check_resolved(
+            handoff,
+            _Conductor(Reply(kind="ANSWER", answer="yes", record_ids=("stale",)), ("active",)),
+        ) is False
+    
+        active_conductor = _Conductor(
+            Reply(kind="ANSWER", answer="yes", record_ids=("active",)), ("active",)
+        )
+>       assert check_resolved(handoff, active_conductor) is True
+E       AssertionError: assert False is True
+E        +  where False = check_resolved(Handoff(question=AgentQuestion(id='question-1', text='Which record supports this claim?', options=['supported', 'unknown'], claimed_state={'state': 'Unknown'}), reply=Reply(kind='ESCALATE', answer=None, record_ids=(), why='', reason='record is absent', missing='PERMIT_RECORD', question_kind='RECORD', template_id=None, target=None, spec=None), missing=MissingMaterial(kind='record_kind', value='PERMIT_RECORD', record_kind='PERMIT_RECORD', vocabulary=None, document_shelf=None, allowed_sources=(), instruction='sentences connecting the subject to the asked condition, if the connection is in fact true', coverage_hole=None), resolver='document', cause='RECORD|PERMIT_RECORD|record is absent', scope='agent_refusal', subject='Which record supports this claim?', branch='document', document_resolvable=True, protected_action=None, gap_id='gap_<HASH>', growth_path='<CACHE><TMP>', graph_path='<CACHE><TMP>'), <test_conductor_escalate_realtext._Conductor object at 0x<ADDR>>)
+
+tests/attack/test_conductor_escalate_realtext.py:171: AssertionError
+=== short test summary info ===
+FAILED tests/attack/test_conductor_escalate_realtext.py::test_reask_citation_must_name_an_active_record_and_then_closes - AssertionError: assert False is True
+ +  where False = check_resolved(Handoff(question=AgentQuestion(id='question-1', text='Which record supports this claim?', options=['supported', 'unknown'], claimed_state={'state': 'Unknown'}), reply=Reply(kind='ESCALATE', answer=None, record_ids=(), why='', reason='record is absent', missing='PERMIT_RECORD', question_kind='RECORD', template_id=None, target=None, spec=None), missing=MissingMaterial(kind='record_kind', value='PERMIT_RECORD', record_kind='PERMIT_RECORD', vocabulary=None, document_shelf=None, allowed_sources=(), instruction='sentences connecting the subject to the asked condition, if the connection is in fact true', coverage_hole=None), resolver='document', cause='RECORD|PERMIT_RECORD|record is absent', scope='agent_refusal', subject='Which record supports this claim?', branch='document', document_resolvable=True, protected_action=None, gap_id='gap_<HASH>', growth_path='<CACHE><TMP>', graph_path='<CACHE><TMP>'), <test_conductor_escalate_realtext._Conductor object at 0x<ADDR>>)
+=== 1 failed, 10 deselected ===

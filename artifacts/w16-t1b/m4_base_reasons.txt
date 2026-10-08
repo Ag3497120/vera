@@ -1,0 +1,4 @@
+由美は誠に手紙を届けてもらいたかった。 False {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE']} [['ill-typed role: a phrase that cannot act (not a person/organisation) as agent']]
+美咲も弁当を食べられた。 False {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE']} [['unrepresented source content']]
+大輔も写真を見られた。 False {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE']} [['unrepresented source content']]
+健太が弁当を作れば、 False {'kind': 'not_supported', 'reasons': ['UNREAD_SPAN:unsupported clause grammar']} [['unsupported clause grammar']]

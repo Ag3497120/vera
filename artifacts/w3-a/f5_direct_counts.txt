@@ -1,0 +1,6 @@
+016 {('direct', 'correct'): 537, ('direct', 'other'): 127, (None, 'other'): 277, ('direct', 'wrong_single'): 59, ('estimated', 'correct'): 56, ('estimated', 'wrong_single'): 16}
+016 direct 723 correct 537 precision 0.743
+036 {('direct', 'correct'): 567, (None, 'other'): 162, ('direct', 'other'): 125, ('estimated', 'correct'): 145, ('direct', 'wrong_single'): 47, ('estimated', 'wrong_single'): 26}
+036 direct 739 correct 567 precision 0.767
+041 {('direct', 'correct'): 567, (None, 'other'): 162, ('direct', 'other'): 125, ('estimated', 'correct'): 145, ('direct', 'wrong_single'): 47, ('estimated', 'wrong_single'): 26}
+041 direct 739 correct 567 precision 0.767

@@ -1,0 +1,43 @@
+YN=["はい","いいえ"]; YE=["Yes","No"]
+CANDS=[
+# negation that the detector must catch
+("z01_seedswap","種の発送サービスは、今回の範囲に入れないほうがよいですか？",YN,"neg"),
+("z01_seedswap","当日の来場者の人数集計は、範囲に入らないという理解で合っていますか？",YN,"neg"),
+("z03_festival","当番表の印刷は、しなくてもよいですか？",YN,"neg"),
+("z03_festival","屋台の出店料の集金は、今回の範囲に含めなくていいですか？",YN,"neg"),
+("z01_seedswap","種の発送サービスではなく、当日の来場者の人数集計を範囲に含めますか？",YN,"neg"),
+("z04_kiln","Isn't the kiln door sensor in scope?",YE,"neg"),
+("z04_kiln","Do we really not need the kiln door sensor?",YE,"neg"),
+("z04_kiln","Is it ok not to build the kiln door sensor?",YE,"neg"),
+("z05_tideclock","Why isn't the moon phase icon in scope?",YE,"neg"),
+("z06_choir","Would it be wrong to leave carpool matching out of scope?",YE,"neg"),
+("z06_choir","Are we sure that carpool matching is not in scope?",YE,"neg"),
+("z06_choir","Is there no need to include sheet music downloads?",YE,"neg"),
+("z04_kiln","Can't we run a test firing?",YE,"neg"),
+("z04_kiln","Shouldn't the temperature reader be finished first?",YE,"neg"),
+# inversion
+("z04_kiln","Which label size should we not pick?",["small","large"],"inv"),
+("z04_kiln","Which of the two log file layouts should we leave out, CSV or JSON?",["CSV","JSON"],"inv"),
+("z05_tideclock","Is the moon phase icon the first thing we can cut?",YE,"inv"),
+("z06_choir","Is carpool matching the only feature we may skip?",YE,"inv"),
+("z03_festival","当番表の印刷を外すのはいつですか？",None,"inv"),
+("z02_photos","撮影場所の記録を省くのは今回の範囲として正しいですか？",YN,"inv"),
+# builtin
+("z04_kiln","Can the team delete last year's kiln logs?",YE,"bi"),
+("z05_tideclock","Is deleting the old tide tables allowed?",YE,"bi"),
+("z06_choir","Do we have permission to publish the attendance sheet online?",YE,"bi"),
+("z04_kiln","Can we go ahead and wipe the old readings?",YE,"bi"),
+("z05_tideclock","Is it ok if we upload the table to the harbour site?",YE,"bi"),
+("z06_choir","Can I pay for the hall with the choir card?",YE,"bi"),
+("z01_seedswap","登録内容を全部削除してもかまいませんか？",YN,"bi"),
+("z03_festival","出店料の支払いは許可されていますか？",YN,"bi"),
+("z01_seedswap","古い名簿を削除することはできますか？",YN,"bi"),
+("z02_photos","写真データを公開しても問題ないですか？",YN,"bi"),
+# path
+("z04_kiln","Can I edit the file logs/firing.csv?",YE,"path"),
+("z06_choir","May I overwrite config/planner.yaml?",YE,"path"),
+("z04_kiln","Is it ok to append to logs/firing.csv?",YE,"path"),
+("z01_seedswap","docs/guide.md に追記してもよいですか？",YN,"path"),
+("z03_festival","config/seed.yaml を直してもよいですか？",YN,"path"),
+("z04_kiln","Can I replace data/readings.csv with a new one?",YE,"path"),
+]

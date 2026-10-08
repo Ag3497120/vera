@@ -1,0 +1,1 @@
+{"verdict": "INGESTED", "appended": 7, "corrected": 0, "skipped_unchanged": 0, "refused": [], "store": {"path": "/Users/motonisihikoudai/Projects/vera-impl/wt/W8-shadow-S/ops/plan_sovereign/stores/plan.sqlite", "file_sha256": "5a707ed28257ea1ccd41be02fc648d9b3dc830105f1572c27618e1390ea85d7a"}}

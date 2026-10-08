@@ -1,0 +1,36 @@
+=== run 1 (new tree)
+一致: 12 ファイル（除いた欄: results ['elapsed_ms'], raw ['elapsed_ms', 'ingest_ms', 'ms'], run_meta ['timing']）
+recount /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/W3-c4-impl/bt_s6_1/test_s6_two_runs_agree_except_0/a: summary.json 一致 / summary.md 一致
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-c4-S/tests/bank_score/test_bs_end_to_end.py:99: AssertionError: assert ('<WORK>/home' == '<WORK>/home'
+=========================== short test summary info ============================
+FAILED tests/bank_score/test_bs_end_to_end.py::test_s6_two_runs_agree_except_timing_and_recount_matches
+1 failed in 3.38s
+=== run 2 (new tree)
+一致: 12 ファイル（除いた欄: results ['elapsed_ms'], raw ['elapsed_ms', 'ingest_ms', 'ms'], run_meta ['timing']）
+recount /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/W3-c4-impl/bt_s6_2/test_s6_two_runs_agree_except_0/a: summary.json 一致 / summary.md 一致
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-c4-S/tests/bank_score/test_bs_end_to_end.py:99: AssertionError: assert ('<WORK>/home' == '<WORK>/home'
+=========================== short test summary info ============================
+FAILED tests/bank_score/test_bs_end_to_end.py::test_s6_two_runs_agree_except_timing_and_recount_matches
+1 failed in 3.42s
+=== run 3 (new tree)
+一致: 12 ファイル（除いた欄: results ['elapsed_ms'], raw ['elapsed_ms', 'ingest_ms', 'ms'], run_meta ['timing']）
+recount /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/W3-c4-impl/bt_s6_3/test_s6_two_runs_agree_except_0/a: summary.json 一致 / summary.md 一致
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-c4-S/tests/bank_score/test_bs_end_to_end.py:99: AssertionError: assert ('<WORK>/home' == '<WORK>/home'
+=========================== short test summary info ============================
+FAILED tests/bank_score/test_bs_end_to_end.py::test_s6_two_runs_agree_except_timing_and_recount_matches
+1 failed in 3.41s
+=== base tree copy (git archive c334fe6, no .git), same test
+    assert meta["child_env"]["HOME"] == "<WORK>/home" and meta["verantyx_untouched"] is True
+E   AssertionError: assert ('<WORK>/home' == '<WORK>/home'
+E     
+E       <WORK>/home and False is True)
+----------------------------- Captured stdout call -----------------------------
+B2 entry=cli-ask-round5 total=4 correct=0 wrong=0 misread=0 over_abstain=2 correct_abstain=1 false_compliance=0 unreachable=1 runtime_error=0 unscorable=0
+correct_rate=0.0 wrong_rate=0.0 false_compliance_rate=0.0
+B2 entry=cli-ask-round5 total=4 correct=0 wrong=0 misread=0 over_abstain=2 correct_abstain=1 false_compliance=0 unreachable=1 runtime_error=0 unscorable=0
+correct_rate=0.0 wrong_rate=0.0 false_compliance_rate=0.0
+一致: 12 ファイル（除いた欄: results ['elapsed_ms'], raw ['elapsed_ms', 'ingest_ms', 'ms'], run_meta ['timing']）
+recount /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/W3-c4-impl/bt_s6_base/test_s6_two_runs_agree_except_0/a: summary.json 一致 / summary.md 一致
+=========================== short test summary info ============================
+FAILED tests/bank_score/test_bs_end_to_end.py::test_s6_two_runs_agree_except_timing_and_recount_matches
+1 failed in 3.27s

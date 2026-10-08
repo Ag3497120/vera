@@ -1,0 +1,4 @@
+meta {"content_sha256": "5c969d454b39d39ac0e394191b5e985b4e0a10099591bb7b12fcc559e7d77ff1", "inputs": 702, "note": "coarse_place.query(term, placement=<run1>) の答えの抜粋(frame_status・frame つき)。配置のパスは書かない。テストの偽物 w3b2_fakes.FixtureQuery が使う", "terms": 941}
+states {'UNPLACED': 70, 'UNKNOWN': 350, 'DECIDED': 452, 'MULTIPLE': 69}
+frame_status {'NO_ANSWER': 489, 'NOT_PREDICATE': 216, 'NOT_CONFIRMED': 90, 'ESTIMATED': 142, 'CONFIRMED': 4}
+answers 941

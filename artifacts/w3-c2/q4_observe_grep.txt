@@ -1,0 +1,3 @@
+4:+    q = _observe_question(viewpoint, structure, lookup, neighbors, ledger)    # W3-c2: an anchor that is a question has a path of its own
+95:+def _observe_question(viewpoint: Viewpoint, structure: Structure, lookup: Any, neighbors: Any, ledger: Any) -> Optional[QuestionObservation]:
+116:+    trace = SAL.rank([], state).trace

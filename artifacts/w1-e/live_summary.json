@@ -1,0 +1,25 @@
+{
+  "ask_failures": {},
+  "ask_rows_invoking_provider": 5,
+  "ask_verdicts": {
+    "NONE": 1,
+    "PICK": 4,
+    "SKIPPED_DECIDED": 1
+  },
+  "by_type": {
+    "ask": 6,
+    "decision": 3
+  },
+  "chain": "OK",
+  "decision_reasons": {
+    "ABSTAINED:NONE_SELECTED": 1,
+    "ADOPTED:ADOPTED": 2
+  },
+  "decision_status": {
+    "ABSTAINED": 1,
+    "ADOPTED": 2
+  },
+  "last_hash": "658d4fe16bb1143ca2986b4cc7423cefd31cc60ac30af1d7f623942bb6a681ea",
+  "lines": 9,
+  "reuse_rows": 0
+}

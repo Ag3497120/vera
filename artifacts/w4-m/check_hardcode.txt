@@ -1,0 +1,100 @@
+added lines: 1356
+PROPER/NUMERIC (must be empty): []
+ENGLISH NAMES (must be empty): []
+common nouns found in added lines (list only): ['こと', '一覧', '入口', '分類', '利用', '変更', '契約', '指示', '答え', '結果', '規則']
+verb lemmas found in added lines (list only): ['ある', 'する', 'なる', '作る', '入る', '入れる', '出す', '分ける', '書く', '直す', '読む', '開く']
+english lowercase words found in added lines (list only; each with the added lines that hold it, so a reader can judge): ['abc', 'after', 'all', 'came', 'could', 'def', 'did', 'exactly', 'file', 'files', 'found', 'got', 'kept', 'left', 'let', 'missing', 'none', 'not', 'only', 'opened', 'read', 'run', 'since', 'that', 'the', 'types', 'unless', 'update', 'which', 'who', 'wrote']
+  [abc] 1 added line(s):
+      from collections.abc import Iterable, Mapping
+  [after] 1 added line(s):
+      help="an event id; print only the events after it")
+  [all] 2 added line(s):
+      q.add_argument("--all", dest="sov_all", action="store_true",
+      "scope": "all" if include_retired else "active", "promotions": rows}
+  [came] 1 added line(s):
+      # that came along in an exported file name another ledger and are left alone (not dropped)
+  [could] 1 added line(s):
+      # a sidecar is checked before the file is opened: opening could roll a hot journal back
+  [def] 72 added line(s):
+      def _sov_common(q, store_required=True):
+      def append(self, event: Mapping[str, Any]) -> str: ...
+      def events(self, since: Optional[str] = None) -> Iterable[Mapping[str, Any]]: ...
+  [did] 1 added line(s):
+      "note": "Vera detached its reference and did not touch the file; deleting it is the owner's operation"}
+  [exactly] 5 added line(s):
+      help="the store id again, exactly, as the explicit instruction")
+      "BEGIN SELECT RAISE(ABORT, 'meta holds exactly one row'); END")
+      "want": "exactly one of store_id or file"}
+  [file] 19 added line(s):
+      "create", help="記憶のソブリン: create one independent store (one file, append-only inside)"))
+      "detach", help="記憶のソブリン: cut the reference so the store cannot be read (the file stays)"))
+      "attach", help="記憶のソブリン: read a detached store again, or register an exported file in place"),
+  [files] 1 added line(s):
+      help="the folder the sovereign registry and files live in (no default)")
+  [found] 4 added line(s):
+      found = [
+      "rows": [r for r in found if r["structure_ref"] == sref
+      "other_structures": [r for r in found if r["structure_ref"] != sref],
+  [got] 4 added line(s):
+      got = {(t, n): s for t, n, s in rows}
+      missing = sorted(f"{t}:{n}" for (t, n) in exp if (t, n) not in got)
+      extra = sorted(f"{t}:{n}" for (t, n) in got if (t, n) not in exp)
+  [kept] 1 added line(s):
+      # the memory sovereign operations (W4-m), kept apart from the build below
+  [left] 2 added line(s):
+      "note": "the copy is left in place; delete it yourself if you do not want it"}
+      # that came along in an exported file name another ledger and are left alone (not dropped)
+  [let] 1 added line(s):
+      "release", help="記憶のソブリン: let the store go, cutting the reference and keeping the hash (the file stays)"))
+  [missing] 3 added line(s):
+      missing = sorted(f"{t}:{n}" for (t, n) in exp if (t, n) not in got)
+      if missing or extra or different:
+      raise SchemaMismatch(store_id, {"missing": missing, "unexpected": extra,
+  [none] 1 added line(s):
+      # `sov_` so that none of them can overwrite the build options above.
+  [not] 59 added line(s):
+      "--domain belongs to the build, not to the memory operations")
+      if not args.domain:
+      help="where to write the copy (must not exist)")
+  [only] 6 added line(s):
+      "create", help="記憶のソブリン: create one independent store (one file, append-only inside)"))
+      help="an event id; print only the events after it")
+      f"BEGIN SELECT RAISE(ABORT, '{name} is append-only: seq must be next'); END",
+  [opened] 1 added line(s):
+      # a sidecar is checked before the file is opened: opening could roll a hot journal back
+  [read] 3 added line(s):
+      "detach", help="記憶のソブリン: cut the reference so the store cannot be read (the file stays)"))
+      "attach", help="記憶のソブリン: read a detached store again, or register an exported file in place"),
+      for chunk in iter(lambda: f.read(1 << 20), b""):
+  [run] 2 added line(s):
+      # same promotion_id live again beside its retired row. Re-run release first.
+      "want": "run release again with --confirm to finish it"}
+  [since] 15 added line(s):
+      q.add_argument("--since", dest="sov_since",
+      def events(self, since: Optional[str] = None) -> Iterable[Mapping[str, Any]]: ...
+      """`since` がこの台帳の event id でない（空を返さず、分からないと言う）。"""
+  [that] 4 added line(s):
+      # `sov_` so that none of them can overwrite the build options above.
+      "promotions", help="記憶のソブリン: list the promotions that are still active"),
+      # only back-links that name THIS structure ledger and the row they point at count; links
+  [the] 27 added line(s):
+      # the memory sovereign operations (W4-m), kept apart from the build below
+      "--domain belongs to the build, not to the memory operations")
+      args.sovereign_parser.error("the following arguments are required: --domain")
+  [types] 1 added line(s):
+      # ---------------------------------------------------------------- types
+  [unless] 1 added line(s):
+      help="allow repeated observations to be promoted (off unless given)")
+  [update] 2 added line(s):
+      f"BEGIN SELECT RAISE(ABORT, '{name} is append-only: no update'); END",
+      h.update(chunk)
+  [which] 12 added line(s):
+      def _sov_statements(which: str) -> List[str]:
+      if which == "sovereign":
+      if which == "structure":
+  [who] 1 added line(s):
+      q.add_argument("--owner", dest="sov_owner", required=True, help="who the store belongs to")
+  [wrote] 3 added line(s):
+      "wrote": 0, "thresholds": thresholds}
+      # release wrote retirements and stopped before RELEASE: promoting now would make the
+      return {"verdict": "RELEASE_IN_PROGRESS", "store_id": store_id, "wrote": 0,

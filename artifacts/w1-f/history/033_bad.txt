@@ -1,0 +1,31 @@
+# commit a9cad0ab448b649dc6c71584f14d203a5200289d
+# status FAIL
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 17 items / 16 deselected / 1 selected
+
+tests/attack/test_memory_brief_limits.py::test_exact_character_budget_includes_full_selected_line FAILED [100%]
+
+=== FAILURES ===
+___________ test_exact_character_budget_includes_full_selected_line ____________
+
+    def test_exact_character_budget_includes_full_selected_line():
+        record = row("one", subject="s", sentence="A short sentence.")
+        expected = "[id:one] A short sentence."
+    
+>       assert compile_brief(MemoryStub([record]), len(expected)) == expected
+E       AssertionError: assert ContextBrief(text='Dropped record ids: one', records=(), dropped_ids=('one',)) == '[id:one] A short sentence.'
+E        +  where ContextBrief(text='Dropped record ids: one', records=(), dropped_ids=('one',)) = compile_brief(<test_memory_brief_limits.MemoryStub object at 0x<ADDR>>, 26)
+E        +    where <test_memory_brief_limits.MemoryStub object at 0x<ADDR>> = MemoryStub([{'id': 'one', 'kind': 'INVARIANT', 'sentence': 'A short sentence.', 'slots': {'subject': 's'}, 'ts': '2026-01-01'}])
+E        +    and   26 = len('[id:one] A short sentence.')
+
+tests/attack/test_memory_brief_limits.py:75: AssertionError
+=== short test summary info ===
+FAILED tests/attack/test_memory_brief_limits.py::test_exact_character_budget_includes_full_selected_line - AssertionError: assert ContextBrief(text='Dropped record ids: one', records=(), dropped_ids=('one',)) == '[id:one] A short sentence.'
+ +  where ContextBrief(text='Dropped record ids: one', records=(), dropped_ids=('one',)) = compile_brief(<test_memory_brief_limits.MemoryStub object at 0x<ADDR>>, 26)
+ +    where <test_memory_brief_limits.MemoryStub object at 0x<ADDR>> = MemoryStub([{'id': 'one', 'kind': 'INVARIANT', 'sentence': 'A short sentence.', 'slots': {'subject': 's'}, 'ts': '2026-01-01'}])
+ +    and   26 = len('[id:one] A short sentence.')
+=== 1 failed, 16 deselected ===

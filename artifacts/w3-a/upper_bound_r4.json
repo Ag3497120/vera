@@ -1,0 +1,8 @@
+{
+ "placement": "/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r4/run1",
+ "n": 1072,
+ "gold_type_in_evidence_with_generated": 870,
+ "gold_type_in_evidence_without_generated": 836,
+ "rate_with": 0.8116,
+ "rate_without": 0.7799
+}

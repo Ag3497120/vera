@@ -1,0 +1,13 @@
+inputs=2899
+now_none_equals_base=2899
+w5a_new_abstain=48
+now_readable=0
+now_second_reason=0
+w5a_reason_changed=118
+typed_read_now=66
+typed_read_w3b1=66
+both_identical=66
+both_different=0
+only_now=0
+only_w3b1=0
+w5a_new_abstain_first_reason_types={"AGENT_EVIDENCE_MISSING": 6, "PATH_ROLE_NOT_MAPPED": 1, "SUBJECT_TYPE_UNDETERMINED": 1, "UNDETERMINED_VOICE": 8, "UNSUPPORTED_CLAUSE": 32}

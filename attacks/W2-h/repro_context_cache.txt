@@ -1,0 +1,16 @@
+再現コマンド:
+PYTHONPATH=/Users/motonisihikoudai/Projects/vera-impl/wt/atk-W2-h PYTHONDONTWRITEBYTECODE=1 /Users/motonisihikoudai/vera-wiring/env/bin/python -m pytest -q attacks/W2-h/test_attack_routing_testimony_context_cache.py
+
+実際の出力:
+F                                                                        [100%]
+=================================== FAILURES ===================================
+___ test_routing_tie_cache_reuses_old_choice_after_candidate_reasons_change ___
+E       AssertionError: actual agent_id='A', cached=True, provider_asks=2, current reasons favor B
+E       assert 'A' == 'B'
+E         - B
+E         + A
+=========================== short test summary info ============================
+FAILED attacks/W2-h/test_attack_routing_testimony_context_cache.py::test_routing_tie_cache_reuses_old_choice_after_candidate_reasons_change
+1 failed in 0.22s
+
+このテストでは、1回目の証言で A を選び、同じ候補 ID のまま人間の規則理由を B 優位に変更しています。変更後なら provider の次の2返答は B で一致しますが、2回目の route は provider を呼ばず、cached な A を返します。

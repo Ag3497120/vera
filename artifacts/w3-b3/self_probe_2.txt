@@ -1,0 +1,44 @@
+no     母が弟に話した人は笑った。 CLAUSE_SCOPE_AMBIGUOUS:alternative_cut=1 | entry abstain
+READ   兄が弟に頼んだ本を母が読んだ。 [["頼む", {"agent": "兄", "patient": "本", "recipient": "弟"}, "+", "past"], ["読む", {"agent": "母", "patient": "本"}, "+", "past"]] [{'type': 'relative', 'from': 0, 'to': 1, 'head': {'from_role': 'patient', 'to_role': 'patient'}}]
+no     母が兄に言った言葉を弟が忘れた。 CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-ラ行 | entry abstain
+READ   先生が生徒に話した犬を母が見た。 [["話す", {"agent": "先生", "patient": "犬", "recipient": "生徒"}, "+", "past"], ["見る", {"agent": "母", "patient": "犬"}, "+", "past"]] [{'type': 'relative', 'from': 0, 'to': 1, 'head': {'from_role': 'patient', 'to_role': 'patient'}}]
+READ   姉が妹に頼んだ友達を兄が待った。 [["頼む", {"agent": "姉", "patient": "友達", "recipient": "妹"}, "+", "past"], ["待つ", {"agent": "兄", "patient": "友達"}, "+", "past"]] [{'type': 'relative', 'from': 0, 'to': 1, 'head': {'from_role': 'patient', 'to_role': 'patient'}}]
+no     母が弟に話した人が来て、兄が帰った。 W3B3_NOT_TRIGGERED:groups=3 | entry abstain
+READ   兄が来たので、弟が来た。 [["来る", {"agent": "兄"}, "+", "past"], ["来る", {"agent": "弟"}, "+", "past"]] [{'type': 'cause', 'from': 0, 'to': 1}]
+READ   兄が帰ったので、弟が来た。 [["帰る", {"agent": "兄"}, "+", "past"], ["来る", {"agent": "弟"}, "+", "past"]] [{'type': 'cause', 'from': 0, 'to': 1}]
+READ   兄が来たので、母が来た。 [["来る", {"agent": "兄"}, "+", "past"], ["来る", {"agent": "母"}, "+", "past"]] [{'type': 'cause', 'from': 0, 'to': 1}]
+READ   兄が来たが、弟が来た。 [["来る", {"agent": "兄"}, "+", "past"], ["来る", {"agent": "弟"}, "+", "past"]] [{'type': 'contrast', 'from': 0, 'to': 1}]
+READ   先生が来ると、生徒が立つ。 [["来る", {"agent": "先生"}, "+", "nonpast"], ["立つ", {"agent": "生徒"}, "+", "nonpast"]] [{'type': 'condition', 'from': 0, 'to': 1}]
+READ   先生が来ないと、生徒が座る。 [["来る", {"agent": "先生"}, "-", "nonpast"], ["座る", {"agent": "生徒"}, "+", "nonpast"]] [{'type': 'condition', 'from': 0, 'to': 1}]
+READ   兄が来るなら、母が座る。 [["来る", {"agent": "兄"}, "+", null], ["座る", {"agent": "母"}, "+", "nonpast"]] [{'type': 'condition', 'from': 0, 'to': 1}]
+READ   兄が帰れば、母が座る。 [["帰る", {"agent": "兄"}, "+", null], ["座る", {"agent": "母"}, "+", "nonpast"]] [{'type': 'condition', 'from': 0, 'to': 1}]
+READ   兄が帰っても、母が座る。 [["帰る", {"agent": "兄"}, "+", null], ["座る", {"agent": "母"}, "+", "nonpast"]] [{'type': 'concession', 'from': 0, 'to': 1}]
+no     兄が本を読んだけれど、弟は歌を歌った。 CLAUSE_SCOPE_AMBIGUOUS:topic_position | entry abstain
+READ   兄が本を読んだけれど、弟が来た。 [["読む", {"agent": "兄", "patient": "本"}, "+", "past"], ["来る", {"agent": "弟"}, "+", "past"]] [{'type': 'contrast', 'from': 0, 'to': 1}]
+READ   弟が本を読んだので、兄が歌を歌った。 [["読む", {"agent": "弟", "patient": "本"}, "+", "past"], ["歌う", {"agent": "兄", "patient": "歌"}, "+", "past"]] [{'type': 'cause', 'from': 0, 'to': 1}]
+READ   母が本を読んだので、兄が来た。 [["読む", {"agent": "母", "patient": "本"}, "+", "past"], ["来る", {"agent": "兄"}, "+", "past"]] [{'type': 'cause', 'from': 0, 'to': 1}]
+READ   先生が絵を描いたので、生徒が絵を描いた。 [["描く", {"agent": "先生", "patient": "絵"}, "+", "past"], ["描く", {"agent": "生徒", "patient": "絵"}, "+", "past"]] [{'type': 'cause', 'from': 0, 'to': 1}]
+READ   兄が弟を呼んだので、弟が来た。 [["呼ぶ", {"agent": "兄", "patient": "弟"}, "+", "past"], ["来る", {"agent": "弟"}, "+", "past"]] [{'type': 'cause', 'from': 0, 'to': 1}]
+READ   母が弟を呼んだので、母が来た。 [["呼ぶ", {"agent": "母", "patient": "弟"}, "+", "past"], ["来る", {"agent": "母"}, "+", "past"]] [{'type': 'cause', 'from': 0, 'to': 1}]
+READ   兄が歌を歌ったので、兄が帰った。 [["歌う", {"agent": "兄", "patient": "歌"}, "+", "past"], ["帰る", {"agent": "兄"}, "+", "past"]] [{'type': 'cause', 'from': 0, 'to': 1}]
+READ   兄が来たので、兄が帰った。 [["来る", {"agent": "兄"}, "+", "past"], ["帰る", {"agent": "兄"}, "+", "past"]] [{'type': 'cause', 'from': 0, 'to': 1}]
+no     兄が走ったので、弟が走った。 ELLIPSIS_UNDETERMINED:object | entry abstain
+no     兄が来たので、弟が走った。 ELLIPSIS_UNDETERMINED:object | entry abstain
+READ   兄が駅に着いたので、弟が駅に着いた。 [["着く", {"agent": "兄", "goal": "駅"}, "+", "past"], ["着く", {"agent": "弟", "goal": "駅"}, "+", "past"]] [{'type': 'cause', 'from': 0, 'to': 1}]
+no     兄が東京から来たので、弟が帰った。 ELLIPSIS_UNDETERMINED:source | entry abstain
+no     兄が来たので、弟が東京へ行った。 ELLIPSIS_UNDETERMINED:object | entry abstain
+no     兄が泣いたので、弟が笑った。 ELLIPSIS_UNDETERMINED:object | entry abstain
+no     兄が来ると、母は言う。 CLAUSE_SCOPE_AMBIGUOUS:topic_position | entry abstain
+no     兄が来ると母が言う。 RELATION_TYPE_UNDETERMINED:quote_possible | entry abstain
+no     兄が本を読んで、弟が歌を歌った。 RELATION_TYPE_UNDETERMINED:TE_UNDETERMINED | entry abstain
+no     兄が本を読み、弟が歌を歌った。 RELATION_TYPE_UNDETERMINED:PARALLEL_UNDETERMINED | entry abstain
+READ   兄が弟に本を渡したので、母が来た。 [["渡す", {"agent": "兄", "patient": "本", "recipient": "弟"}, "+", "past"], ["来る", {"agent": "母"}, "+", "past"]] [{'type': 'cause', 'from': 0, 'to': 1}]
+READ   兄が弟に本を話したので、母が来た。 [["話す", {"agent": "兄", "patient": "本", "recipient": "弟"}, "+", "past"], ["来る", {"agent": "母"}, "+", "past"]] [{'type': 'cause', 'from': 0, 'to': 1}]
+READ   兄が先生に本を言ったので、母が来た。 [["言う", {"agent": "兄", "patient": "本", "recipient": "先生"}, "+", "past"], ["来る", {"agent": "母"}, "+", "past"]] [{'type': 'cause', 'from': 0, 'to': 1}]
+READ   母が薬を飲んだので、弟が薬を飲んだ。 [["飲む", {"agent": "母", "patient": "薬"}, "+", "past"], ["飲む", {"agent": "弟", "patient": "薬"}, "+", "past"]] [{'type': 'cause', 'from': 0, 'to': 1}]
+no     兄が3回来たので、弟が帰った。 CLAUSE_UNREAD:0:NO_SUPPORTED_CLAUSE | entry abstain
+no     兄が三人来たので、弟が帰った。 CLAUSE_UNREAD:0:NO_SUPPORTED_CLAUSE | entry abstain
+no     兄だけが来たので、弟が帰った。 CLAUSE_SCOPE_AMBIGUOUS:alternative_cut=1 | entry abstain
+no     兄も来たので、弟が帰った。 CLAUSE_SCOPE_AMBIGUOUS:alternative_cut=1 | entry abstain
+no     兄が来たので、弟も帰った。 CLAUSE_SCOPE_AMBIGUOUS:alternative_cut=1 | entry abstain
+no     誰も来なかったので、弟が帰った。 CLAUSE_SCOPE_AMBIGUOUS:alternative_cut=1 | entry abstain

@@ -1,0 +1,11 @@
+rows=96 read=31 abstain=65 misread=2 incomplete=0 unjudged=0 mismatches={"mismatch_diag": 2, "mismatch_entry": 2, "mismatch_path": 2, "mismatch_plan": 2}
+read rows judged correct: 29 of 31 read
+path R rows=25 read=25
+path R-blocked rows=1 read=0
+path U rows=19 read=0
+path U3 rows=41 read=0
+path W3-b4 rows=2 read=2
+path base rows=4 read=4
+path none rows=4 read=0
+PROBLEM W3B6-K274-A-007 姉がナイフで肉を切った。 verdict=misread bad=['entry', 'diag', 'plan', 'path'] diag=READ plan=READ path=R expect_path=U3
+PROBLEM W3B6-K274-A-008 姉が箱を部屋から廊下へ押した。 verdict=misread bad=['entry', 'diag', 'plan', 'path'] diag=READ plan=READ path=W3-b4 expect_path=U

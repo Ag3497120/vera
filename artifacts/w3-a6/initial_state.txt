@@ -1,0 +1,16 @@
+基点: 0041606 Integration: ENV_MISSING skip for the r7-pinned W5-e2 cover tests
+
+最初の git status --short:
+ M docs/COARSE_PLACEMENT.md
+ M tools/gen_coarse_evidence.py
+ M verantyx/coarse_types.py
+?? artifacts/w3-a6/
+?? tests/coarse_place/data/w3a6_expect.json
+?? tests/coarse_place/test_coarse_place_w3a6_decide.py
+?? tests/coarse_place/test_coarse_place_w3a6_gen.py
+?? tests/coarse_place/test_coarse_place_w3a6_role_check.py
+?? tests/coarse_place/test_coarse_place_w3a6_types.py
+
+この状態は指示書 §0.1 の「差分なし」と一致しなかった。既存の途中作業を残して続行した。
+最初に存在した途中作業は型・生成器・判定関数・テスト・事前登録・期待凍結・N1 前・索引・環境確認まで。
+前回レビューは第1ラウンドのため存在しなかった。

@@ -1,0 +1,12 @@
+{
+  "expected_predicates": 10,
+  "expected_role_rows": 11,
+  "claimed_expected_roles": 4,
+  "confirmed_expected_roles": 1,
+  "unconfirmed_expected_roles": 4,
+  "confirmed_backing_checks_pass": true,
+  "query_status_counts_by_expected_row": {
+    "CONFIRMED": 8,
+    "ESTIMATED": 3
+  }
+}

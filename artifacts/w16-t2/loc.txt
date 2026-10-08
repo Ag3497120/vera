@@ -1,0 +1,9 @@
+find verantyx -name '*.py' | xargs cat | wc -l:
+  152914
+基点:152712
+79	188	verantyx/cli.py
+24	2	verantyx/coarse_place.py
+66	23	verantyx/decode_grammar.py
+5	1	verantyx/vera_server.py
+     242 verantyx/doc_answer.py
+tracked: added 174 deleted 214 net -40

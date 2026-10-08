@@ -1,0 +1,67 @@
+# W1-e ミューテーション確認（第 2 ラウンド）
+方法: ツリー W を ツリー外のスクラッチ領域へ rsync（.git と artifacts を除く）し、コピーの 1 ファイルに 1 件だけ変更を入れて
+`pytest tests/test_llm_choice.py tests/test_conductor_vocab_llm.py` を実行。件数は各 pytest の最終行そのまま。ツリー W には触れていない。
+
+## M1 採用条件の一致検査を常に真にする
+```diff
+--- a/verantyx/llm_choice.py
++++ b/verantyx/llm_choice.py
+@@ -767,3 +767,3 @@
+             if a["verdict"] == "PICK" and b["verdict"] == "PICK":
+-                if a["picked_term"] == b["picked_term"]:
++                if True:
+                     status, reason, choice = "ADOPTED", "ADOPTED", a["picked_term"]
+```
+結果（pytest 最終行）: `4 failed, 121 passed in 3.03s`
+
+## M2 上限判定の対象から stderr を外す
+```diff
+--- a/verantyx/llm_choice.py
++++ b/verantyx/llm_choice.py
+@@ -486,3 +486,3 @@
+                                        f"output file unreadable: {type(exc).__name__}: {exc}")
+-            haystack = "\n".join((stdout, stderr, file_text or ""))
++            haystack = "\n".join((stdout, file_text or ""))
+             for pattern in self._limit_res:
+```
+結果（pytest 最終行）: `4 failed, 121 passed in 3.17s`
+
+## M3 1 回目が PICK でなくても 2 回目を聞く
+```diff
+--- a/verantyx/llm_choice.py
++++ b/verantyx/llm_choice.py
+@@ -675,3 +675,3 @@
+         asks.append(first)
+-        if first["verdict"] != "PICK":
++        if False:
+             skipped = self._skipped(decision_id, 1, shown_word, question, cands, first)
+```
+結果（pytest 最終行）: `27 failed, 98 passed in 3.73s`
+
+## M4 候補行のエスケープ対象から Cc を外す
+```diff
+--- a/verantyx/llm_choice.py
++++ b/verantyx/llm_choice.py
+@@ -82,3 +82,3 @@
+     for char in raw:
+-        if unicodedata.category(char) in ("Cc", "Cf", "Zl", "Zp"):
++        if unicodedata.category(char) in ("Cf", "Zl", "Zp"):
+             code = ord(char)
+```
+結果（pytest 最終行）: `2 failed, 123 passed in 2.97s`
+
+## M5 NOT_UTF8 を型に変換せず UnicodeDecodeError をそのまま上げる（第 2 ラウンドの修正を戻す）
+```diff
+--- a/verantyx/llm_choice.py
++++ b/verantyx/llm_choice.py
+@@ -259,4 +259,3 @@
+     except UnicodeDecodeError as exc:
+-        raise LedgerIntegrityError(data.count(b"\n", 0, exc.start) + 1, "NOT_UTF8",
+-                                   f"byte offset {exc.start}") from None
++        raise
+ 
+```
+結果（pytest 最終行）: `4 failed, 121 passed in 2.99s`
+
+## 対照: 変更なしのコピー
+結果（pytest 最終行）: `125 passed in 2.92s`

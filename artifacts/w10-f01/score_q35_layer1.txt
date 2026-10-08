@@ -1,0 +1,13 @@
+layers={1: 120} wrong=0 generated_only_answers=0 errors=0 missing=0
+ONE   n=50 correct=18 wrong=0 missed=32
+        missed  22  STRUCTURE_UNDETERMINED|STRUCTURE_UNDETERMINED|QUESTION_NOT_READ
+        missed   3  NO_RECORD|NO_RECORD|NO_ATTESTED_CELL
+        missed   3  STRUCTURE_UNDETERMINED|STRUCTURE_UNDETERMINED|NO_VERIFIABLE_ALTERNATIVE
+        missed   3  NO_RECORD|NO_RECORD|NO_TYPED_CANDIDATE
+        missed   1  NO_RECORD|NO_RECORD|TYPE_EXCLUDED_ALL
+NONE  n=50 correct=50 wrong=0 llm_called=0 testimony_shown=0 record_marked_sentences=0
+CREATIVE n=20 constructed=20 abstained=0 wrong=0
+latency vera_ms_llm_called       n=38 median=10.1 max=179.7
+latency vera_ms_llm_not_called   n=82 median=27.2 max=68.1
+latency llm_ms                   n=38 median=2723.6 max=5718.2
+latency wall_ms                  n=120 median=35.3 max=5730.3

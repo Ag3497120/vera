@@ -1,0 +1,40 @@
+== sentence_kind
+docs/FUSION.md 
+== "record"\|`record`
+docs/FUSION.md 
+== testimony
+docs/ATTEST.md docs/FUSION.md 
+== constructed
+docs/FUSION.md 
+== UNREAD
+docs/ATTEST.md docs/FUSION.md 
+== anchored_testimony
+docs/FUSION.md 
+== unanchored
+docs/FUSION.md 
+== conflict
+docs/FUSION.md 
+== RECORD
+docs/RECORDER.md docs/FUSION.md docs/ATTEST.md 
+== TESTIMONY
+docs/ATTEST.md docs/FUSION.md 
+== MISMATCH
+docs/RECORDER.md docs/ATTEST.md docs/FUSION.md 
+== TAMPERED
+docs/RECORDER.md 
+== SHA_MISMATCH
+docs/RECORDER.md 
+== provenance
+docs/FUSION.md 
+== quote_check
+docs/FUSION.md 
+
+85:- `vera` 欄: `{"schema":"verantyx.fusion/1","layer":0|1,"request_kind","reading":{"type","state","reason","hole_role","hole_type","filler","sources"},"grammar":{…}|null,"grammar_id","llm":{"called","model","ok","error","raw","withheld","skipped
+110:- NONE: 答え系 = **WRONG**。層 1 では本文に LLM の文が出た（`content_shown` が真）= **WRONG**。層 0 では本文に LLM の文が出てよい（outcome `TESTIMONY`）が、**記録の印が付いた文**（`provenance[*].sent
+127:- `provenance[*]`（出力の文ごと）: `text`・`read`・`mark`（`UNREAD` か `null`）・`unread_reason`・`sentence_kind`（`record`／`testimony`／`constructed`）・`origin`・`evidence`（記録の `sentence_id` の列。文の印が `
+11:3. **事実の答えが「記録の印」で出るのは、記録で埋まった腕の文だけ**。LLM の文は、どの層でも `testimony`（証言）か `constructed`（構成）か `UNREAD`（未読）の印で出す。記録の印を LLM �
+71:3. 各文を `semantic_read.read` で再読。読めない・節が 1 つでない・relations がある → その文は `UNREAD`（`mark: "UNREAD"`）。読めた文の各腕と center を、記録の文の再読と比べる:
+127:- `provenance[*]`（出力の文ごと）: `text`・`read`・`mark`（`UNREAD` か `null`）・`unread_reason`・`sentence_kind`（`record`／`testimony`／`constructed`）・`origin`・`evidence`（記録の `sentence_id` の列。文の印が `
+19:- 行: LINE_UNPARSABLE（途中の壊れた行）、TORN_TAIL（最終行だけ改行無しで JSON 不正。書き込み中の中断の疑い）、BAD_SHAPE（キーが 6 つでない、kind・act
+21:- **status の閉じた一覧**: `OK` / `EMPTY` / `TAMPERED` / `TORN_TAIL` / `HEAD_MISMATCH`。複数当たるときの優先順は TAMPERED > TORN_TAIL > HEAD_MISMATCH（コード: `ledger_events.
+21:- **status の閉じた一覧**: `OK` / `EMPTY` / `TAMPERED` / `TORN_TAIL` / `HEAD_MISMATCH`。複数当たるときの優先順は TAMPERED > TORN_TAIL > HEAD_MISMATCH（コード: `ledger_events.

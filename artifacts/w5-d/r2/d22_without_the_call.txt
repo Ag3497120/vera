@@ -1,0 +1,26 @@
+# K2 test files run against the tree's own verantyx except routing_from_text.py = the tree's with ONLY the D2-2 call line removed (scratchpad copy 'r1tree'; diff below). 2026-10-04 01:20:13 +0900
+# diff tree/routing_from_text.py vs copy:
+445,446c445
+<         if lang == "ja":
+<             _ask_the_parts_of_parallel_fillers(got, lookup, event_cross)
+---
+>         # (round-1 state for the comparison: parts of parallel fillers are not asked)
+# command: PYTHONPATH-less env -i python scripts/run_k2_without_d22.py <copy> <basetemp> <routing test files + attack w5b_wave2>
+.....F.FF................................F........FFFFFFF...F........... [ 47%]
+........................................................................ [ 94%]
+.........                                                                [100%]
+=========================== short test summary info ============================
+FAILED tests/test_routing_from_text.py::test_relation_comparison_keeps_one_agent_only_and_comparison_only_does_not_stop
+FAILED tests/test_routing_from_text.py::test_relation_independence_same_negated_distinct_and_a_different_phrase_is_held_as_ambiguous
+FAILED tests/test_routing_from_text.py::test_relation_roles_independence_is_the_routers_default_r3_and_makes_no_record
+FAILED tests/test_routing_from_text.py::test_gate_one_unread_unit_stops_every_job_and_the_router_is_not_called
+FAILED tests/test_routing_from_text.py::test_T3_the_same_content_as_a_hand_written_table_gives_the_same_decisions
+FAILED tests/test_routing_from_text.py::test_router_call_passes_used_agents_only_no_chooser_and_the_first_names
+FAILED tests/test_routing_from_text.py::test_router_reasons_are_written_through_from_the_routers_types
+FAILED tests/test_routing_from_text.py::test_router_unknown_task_names_abstain_with_their_own_type
+FAILED tests/test_routing_from_text.py::test_constraint_prohibition_veto_does_not_try_the_next_agent
+FAILED tests/test_routing_from_text.py::test_constraint_human_and_wait_scopes_and_residual_and_conflict
+FAILED tests/test_routing_from_text.py::test_constraint_independence_veto_for_two_other_roles
+FAILED tests/test_routing_from_text.py::test_output_keys_order_and_basis_kinds
+12 failed, 141 passed in 9.26s
+LOADED <scratchpad>/r1tree/verantyx/routing_from_text.py

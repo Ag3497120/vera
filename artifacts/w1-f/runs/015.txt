@@ -1,0 +1,29 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 14 items / 13 deselected / 1 selected
+
+tests/attack/test_memory_brief_fabrication.py::test_focus_changes_order_without_changing_supported_sentences FAILED [100%]
+
+=== FAILURES ===
+________ test_focus_changes_order_without_changing_supported_sentences _________
+
+    def test_focus_changes_order_without_changing_supported_sentences():
+        work = _fact("work", "Aya", "job", "Aya is a researcher.", "2026-01-01")
+        home = _fact("home", "Aya", "city", "Aya lives in Kyoto.", "2026-01-02")
+    
+>       assert _brief(_TypedMemory([work, home]), focus="Kyoto") == (
+            "[id:home] Aya lives in Kyoto.\n[id:work] Aya is a researcher."
+        )
+E       AssertionError: assert ContextBrief(text='Dropped record ids: home, work', records=(), dropped_ids=('home', 'work')) == '[id:home] Aya lives in Kyoto.\n[id:work] Aya is a researcher.'
+E        +  where ContextBrief(text='Dropped record ids: home, work', records=(), dropped_ids=('home', 'work')) = _brief(<test_memory_brief_fabrication._TypedMemory object at 0x<ADDR>>, focus='Kyoto')
+E        +    where <test_memory_brief_fabrication._TypedMemory object at 0x<ADDR>> = _TypedMemory([{'id': 'work', 'kind': 'FACT', 'ts': '2026-01-01', 'sentence': 'Aya is a researcher.', 'slots': {'subject': 'Aya', 'attribute': 'job'}}, {'id': 'home', 'kind': 'FACT', 'ts': '2026-01-02', 'sentence': 'Aya lives in Kyoto.', 'slots': {'subject': 'Aya', 'attribute': 'city'}}])
+
+tests/attack/test_memory_brief_fabrication.py:131: AssertionError
+=== short test summary info ===
+FAILED tests/attack/test_memory_brief_fabrication.py::test_focus_changes_order_without_changing_supported_sentences - AssertionError: assert ContextBrief(text='Dropped record ids: home, work', records=(), dropped_ids=('home', 'work')) == '[id:home] Aya lives in Kyoto.\n[id:work] Aya is a researcher.'
+ +  where ContextBrief(text='Dropped record ids: home, work', records=(), dropped_ids=('home', 'work')) = _brief(<test_memory_brief_fabrication._TypedMemory object at 0x<ADDR>>, focus='Kyoto')
+ +    where <test_memory_brief_fabrication._TypedMemory object at 0x<ADDR>> = _TypedMemory([{'id': 'work', 'kind': 'FACT', 'ts': '2026-01-01', 'sentence': 'Aya is a researcher.', 'slots': {'subject': 'Aya', 'attribute': 'job'}}, {'id': 'home', 'kind': 'FACT', 'ts': '2026-01-02', 'sentence': 'Aya lives in Kyoto.', 'slots': {'subject': 'Aya', 'attribute': 'city'}}])
+=== 1 failed, 13 deselected ===

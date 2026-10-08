@@ -1,0 +1,1635 @@
+{
+ "summary": {
+  "mode": "live",
+  "rows": 118,
+  "verdicts": {
+   "abstain": 47,
+   "correct": 71
+  },
+  "verdicts_by_data": {
+   "B1_v2": {
+    "abstain": 17,
+    "correct": 48
+   },
+   "B1_v2_r2": {
+    "abstain": 17,
+    "correct": 19
+   },
+   "B1_v2_r3": {
+    "abstain": 13,
+    "correct": 4
+   }
+  },
+  "misread": 0,
+  "incomplete": 0,
+  "unjudged": 0,
+  "new_data_rows": 0,
+  "entry_expect_mismatch": {
+   "read_expected_but_abstained": 0,
+   "abstain_expected_but_read": 0
+  },
+  "reason_prefix_mismatch_among_abstained": 0,
+  "second_reason_prefixes": {
+   "PLACEMENT_FRAME_NOT_READ": 1,
+   "PLACEMENT_PART_NOT_NP": 1,
+   "PLACEMENT_PREDICATE_UNIDENTIFIED": 5,
+   "PLACEMENT_SLOT_EVIDENCE_ONLY": 1,
+   "PLACEMENT_UNPLACED": 1
+  },
+  "bad_verdicts": {}
+ },
+ "misses_in_fixture": [],
+ "read_expected_but_abstained": [],
+ "abstain_expected_but_read": [],
+ "reason_prefix_mismatch": [],
+ "rows": [
+  {
+   "id": "FX-J01",
+   "data": "B1_v2",
+   "input": "先生が生徒に地図を渡した。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": null,
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "先生",
+     "patient": "地図",
+     "recipient": "生徒"
+    }
+   ]
+  },
+  {
+   "id": "FX-J02",
+   "data": "B1_v2",
+   "input": "兄が本を読んだ。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": null,
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "兄",
+     "patient": "本"
+    }
+   ]
+  },
+  {
+   "id": "FX-J03",
+   "data": "B1_v2",
+   "input": "母が手紙を書いた。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": null,
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "母",
+     "patient": "手紙"
+    }
+   ]
+  },
+  {
+   "id": "FX-J04",
+   "data": "B1_v2",
+   "input": "弟は宿題を終えなかった。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": null,
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "弟",
+     "patient": "宿題"
+    }
+   ]
+  },
+  {
+   "id": "FX-J05",
+   "data": "B1_v2",
+   "input": "祖父が庭で花を育てている。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": null,
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "祖父",
+     "patient": "花",
+     "place": "庭"
+    }
+   ]
+  },
+  {
+   "id": "FX-J06",
+   "data": "B1_v2",
+   "input": "店員が客に商品を見せた。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": null,
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "店員",
+     "patient": "商品",
+     "recipient": "客"
+    }
+   ]
+  },
+  {
+   "id": "FX-J07",
+   "data": "B1_v2",
+   "input": "私は昨日、図書館で本を借りた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": null,
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "roles": null
+  },
+  {
+   "id": "FX-J08",
+   "data": "B1_v2",
+   "input": "窓が風で開いた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": null,
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "roles": null
+  },
+  {
+   "id": "FX-J09",
+   "data": "B1_v2",
+   "input": "桜が咲いた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": null,
+   "reasons": [
+    "SUBJECT_TYPE_UNDETERMINED:桜"
+   ],
+   "roles": null
+  },
+  {
+   "id": "FX-J10",
+   "data": "B1_v2",
+   "input": "手紙が兄に読まれた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": null,
+   "reasons": [
+    "UNDETERMINED_VOICE:passive or honorific"
+   ],
+   "roles": null
+  },
+  {
+   "id": "FX-J11",
+   "data": "B1_v2",
+   "input": "窓ガラスが子供に割られた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": null,
+   "reasons": [
+    "UNDETERMINED_VOICE:passive or honorific"
+   ],
+   "roles": null
+  },
+  {
+   "id": "FX-J12",
+   "data": "B1_v2",
+   "input": "姉は朝食を食べなかった。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": null,
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "姉",
+     "patient": "朝食"
+    }
+   ]
+  },
+  {
+   "id": "FX-J13",
+   "data": "B1_v2",
+   "input": "先生は生徒に宿題を出さなかった。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": null,
+   "reasons": [
+    "RECIPIENT_TYPE_UNDETERMINED:出す",
+    "PLACEMENT_FRAME_NOT_READ:P_GIVE"
+   ],
+   "roles": null
+  },
+  {
+   "id": "FX-J14",
+   "data": "B1_v2",
+   "input": "太郎は花子に花束を贈った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": null,
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "太郎",
+     "patient": "花束",
+     "recipient": "花子"
+    }
+   ]
+  },
+  {
+   "id": "FX-J15",
+   "data": "B1_v2",
+   "input": "父がこの本を読んだ。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": null,
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "父",
+     "patient": "本"
+    }
+   ]
+  },
+  {
+   "id": "FX-J16",
+   "data": "B1_v2",
+   "input": "妹が学校へ行った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": null,
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "妹",
+     "goal": "学校"
+    }
+   ]
+  },
+  {
+   "id": "FX-J17",
+   "data": "B1_v2",
+   "input": "弟が部屋に入った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": null,
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "弟",
+     "goal": "部屋"
+    }
+   ]
+  },
+  {
+   "id": "FX-J18",
+   "data": "B1_v2",
+   "input": "母が部屋に花瓶を置いた。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": null,
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "母",
+     "patient": "花瓶",
+     "goal": "部屋"
+    }
+   ]
+  },
+  {
+   "id": "FX-J19",
+   "data": "B1_v2",
+   "input": "祖母が病院で働いている。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": null,
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "祖母",
+     "place": "病院"
+    }
+   ]
+  },
+  {
+   "id": "FX-J20",
+   "data": "B1_v2",
+   "input": "兄が会社から帰った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": null,
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "兄",
+     "source": "会社"
+    }
+   ]
+  },
+  {
+   "id": "FX-J21",
+   "data": "B1_v2",
+   "input": "子供が公園で遊んだ。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": null,
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "子供",
+     "place": "公園"
+    }
+   ]
+  },
+  {
+   "id": "FX-J22",
+   "data": "B1_v2",
+   "input": "弟は犬に噛まれた。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": null,
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "犬",
+     "patient": "弟"
+    }
+   ]
+  },
+  {
+   "id": "FX-J23",
+   "data": "B1_v2",
+   "input": "先生が生徒に本を読ませた。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": null,
+   "reasons": null,
+   "roles": [
+    {
+     "causer": "先生",
+     "causee": "生徒",
+     "patient": "本"
+    }
+   ]
+  },
+  {
+   "id": "FX-J24",
+   "data": "B1_v2",
+   "input": "この問題は難しくない。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": null,
+   "reasons": [
+    "UNREAD_SPAN:unsupported negative adjective"
+   ],
+   "roles": null
+  },
+  {
+   "id": "FX-J25",
+   "data": "B1_v2",
+   "input": "姉は先月、京都を訪れた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": null,
+   "reasons": [
+    "UNMAPPED_ROLE:topic"
+   ],
+   "roles": null
+  },
+  {
+   "id": "FX-J26",
+   "data": "B1_v2",
+   "input": "田中さんは医者だ。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": null,
+   "reasons": null,
+   "roles": [
+    {
+     "entity": "田中さん",
+     "value": "医者"
+    }
+   ]
+  },
+  {
+   "id": "FX-J27",
+   "data": "B1_v2",
+   "input": "東京は日本の首都だ。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": null,
+   "reasons": null,
+   "roles": [
+    {
+     "entity": "東京",
+     "value": "日本の首都"
+    }
+   ]
+  },
+  {
+   "id": "FX-J28",
+   "data": "B1_v2",
+   "input": "山田さんは学生ではない。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": null,
+   "reasons": null,
+   "roles": [
+    {
+     "entity": "山田さん",
+     "value": "学生"
+    }
+   ]
+  },
+  {
+   "id": "FX-J29",
+   "data": "B1_v2",
+   "input": "犬が猫を追いかけた。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": null,
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "犬",
+     "patient": "猫"
+    }
+   ]
+  },
+  {
+   "id": "FX-J30",
+   "data": "B1_v2",
+   "input": "会社が新製品を発表した。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": null,
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "会社",
+     "patient": "新製品"
+    }
+   ]
+  },
+  {
+   "id": "FX-J31",
+   "data": "B1_v2",
+   "input": "兄は弟より強い。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": null,
+   "reasons": null,
+   "roles": [
+    {
+     "entity": "兄",
+     "standard": "弟"
+    }
+   ]
+  },
+  {
+   "id": "FX-J32",
+   "data": "B1_v2",
+   "input": "田中さんは毎朝走る。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": null,
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "roles": null
+  },
+  {
+   "id": "FX-J33",
+   "data": "B1_v2",
+   "input": "父は車で会社へ行った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": null,
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "父",
+     "goal": "会社",
+     "instrument": "車"
+    }
+   ]
+  },
+  {
+   "id": "FX-J34",
+   "data": "B1_v2",
+   "input": "母が娘に着物を仕立ててやった。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": null,
+   "reasons": [
+    "BENEFACTIVE_NOT_PRODUCED",
+    "PLACEMENT_UNPLACED:predicate:仕立てる"
+   ],
+   "roles": null
+  },
+  {
+   "id": "FX-J35",
+   "data": "B1_v2",
+   "input": "兄は宿題を終えなければならない。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": null,
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "roles": null
+  },
+  {
+   "id": "FX-J36",
+   "data": "B1_v2",
+   "input": "弟はピアノを弾くことができる。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": null,
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "roles": null
+  },
+  {
+   "id": "FX-J37",
+   "data": "B1_v2",
+   "input": "兄が買った本は面白い。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": null,
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "roles": null
+  },
+  {
+   "id": "FX-J38",
+   "data": "B1_v2",
+   "input": "雨が降ったので、試合は中止になった。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": null,
+   "reasons": [
+    "UNSUPPORTED_CLAUSE"
+   ],
+   "roles": null
+  },
+  {
+   "id": "FX-J39",
+   "data": "B1_v2",
+   "input": "兄は本を読みながら音楽を聞いた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": null,
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "roles": null
+  },
+  {
+   "id": "FX-J40",
+   "data": "B1_v2",
+   "input": "すべての生徒が宿題を終えた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": null,
+   "reasons": [
+    "QUANTIFIER_NOT_MAPPED:すべて"
+   ],
+   "roles": null
+  },
+  {
+   "id": "FX-E01",
+   "data": "B1_v2",
+   "input": "Ann sent the report to Ben.",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": null,
+   "reasons": [
+    "RECIPIENT_TYPE_UNDETERMINED:Ben"
+   ],
+   "roles": null
+  },
+  {
+   "id": "FX-E02",
+   "data": "B1_v2",
+   "input": "The teacher gave the students a test.",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": null,
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "teacher",
+     "patient": "test",
+     "recipient": "students"
+    }
+   ]
+  },
+  {
+   "id": "FX-E03",
+   "data": "B1_v2",
+   "input": "Tom did not finish the homework.",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": null,
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "Tom",
+     "patient": "homework"
+    }
+   ]
+  },
+  {
+   "id": "FX-E04",
+   "data": "B1_v2",
+   "input": "She opened the window.",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": null,
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "She",
+     "patient": "window"
+    }
+   ]
+  },
+  {
+   "id": "FX-E05",
+   "data": "B1_v2",
+   "input": "The dog chased the cat.",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": null,
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "dog",
+     "patient": "cat"
+    }
+   ]
+  },
+  {
+   "id": "FX-E06",
+   "data": "B1_v2",
+   "input": "Mary reads a book.",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": null,
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "Mary",
+     "patient": "book"
+    }
+   ]
+  },
+  {
+   "id": "FX-E07",
+   "data": "B1_v2",
+   "input": "The manager approved the budget.",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": null,
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "manager",
+     "patient": "budget"
+    }
+   ]
+  },
+  {
+   "id": "FX-E08",
+   "data": "B1_v2",
+   "input": "The report was written by Ann.",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": null,
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "Ann",
+     "patient": "report"
+    }
+   ]
+  },
+  {
+   "id": "FX-E09",
+   "data": "B1_v2",
+   "input": "They did not call the doctor.",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": null,
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "They",
+     "patient": "doctor"
+    }
+   ]
+  },
+  {
+   "id": "FX-E10",
+   "data": "B1_v2",
+   "input": "Ben handed Ann the keys.",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": null,
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "Ben",
+     "patient": "keys",
+     "recipient": "Ann"
+    }
+   ]
+  },
+  {
+   "id": "FX-E11",
+   "data": "B1_v2",
+   "input": "The company hired a new engineer.",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": null,
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "company",
+     "patient": "new engineer"
+    }
+   ]
+  },
+  {
+   "id": "FX-E12",
+   "data": "B1_v2",
+   "input": "Sara wrote the letter.",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": null,
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "Sara",
+     "patient": "letter"
+    }
+   ]
+  },
+  {
+   "id": "FX-U01",
+   "data": "B1_v2",
+   "input": "ありがとうございました。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": null,
+   "reasons": [
+    "INTERJECTION_OR_FORMULA"
+   ],
+   "roles": null
+  },
+  {
+   "id": "FX-U02",
+   "data": "B1_v2",
+   "input": "ええと、うーん。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": null,
+   "reasons": [
+    "INTERJECTION_OR_FORMULA"
+   ],
+   "roles": null
+  },
+  {
+   "id": "FX-U03",
+   "data": "B1_v2",
+   "input": "昨日の会議の資料。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": null,
+   "reasons": [
+    "NO_PREDICATE_TOKEN"
+   ],
+   "roles": null
+  },
+  {
+   "id": "FX-U04",
+   "data": "B1_v2",
+   "input": "青い机窓を走るそして食べるが。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": null,
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "roles": null
+  },
+  {
+   "id": "FX-U05",
+   "data": "B1_v2",
+   "input": "先生が生徒に地図をフォルノした。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": null,
+   "reasons": [
+    "UNKNOWN_PREDICATE_WORD:フォルノ"
+   ],
+   "roles": null
+  },
+  {
+   "id": "FX-U06",
+   "data": "B1_v2",
+   "input": "先生が生徒が地図を渡した。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": null,
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_SLOT_EVIDENCE_ONLY:part:生徒"
+   ],
+   "roles": null
+  },
+  {
+   "id": "FX-U07",
+   "data": "B1_v2",
+   "input": "雨が降ったので、試合をゴルマンした。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": null,
+   "reasons": [
+    "UNKNOWN_PREDICATE_WORD:ゴルマン"
+   ],
+   "roles": null
+  },
+  {
+   "id": "FX-U08",
+   "data": "B1_v2",
+   "input": "Thank you very much.",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": null,
+   "reasons": [
+    "INTERJECTION_OR_FORMULA"
+   ],
+   "roles": null
+  },
+  {
+   "id": "FX-U09",
+   "data": "B1_v2",
+   "input": "Oh!",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": null,
+   "reasons": [
+    "INTERJECTION_OR_FORMULA"
+   ],
+   "roles": null
+  },
+  {
+   "id": "FX-U10",
+   "data": "B1_v2",
+   "input": "in the red box",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": null,
+   "reasons": [
+    "UNKNOWN_PREDICATE",
+    "PLACEMENT_PREDICATE_UNIDENTIFIED"
+   ],
+   "roles": null
+  },
+  {
+   "id": "FX-U11",
+   "data": "B1_v2",
+   "input": "Table quickly purple because run.",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": null,
+   "reasons": [
+    "EN_UNREAD:subordinate clause: not representable"
+   ],
+   "roles": null
+  },
+  {
+   "id": "FX-U12",
+   "data": "B1_v2",
+   "input": "Ann blorped the report to Ben.",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": null,
+   "reasons": [
+    "UNKNOWN_PREDICATE",
+    "PLACEMENT_PREDICATE_UNIDENTIFIED"
+   ],
+   "roles": null
+  },
+  {
+   "id": "FX-U13",
+   "data": "B1_v2",
+   "input": "The teacher the student gave map a.",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": null,
+   "reasons": [
+    "EN_UNREAD:relative clause (reduced): not representable"
+   ],
+   "roles": null
+  },
+  {
+   "id": "FX2-J01",
+   "data": "B1_v2_r2",
+   "input": "兄は弟から本を借りた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": null,
+   "reasons": [
+    "PREDICATE_NORMALIZED:貸す<-借りる"
+   ],
+   "roles": null
+  },
+  {
+   "id": "FX2-J02",
+   "data": "B1_v2_r2",
+   "input": "兄は姉から手紙を受け取った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": null,
+   "reasons": [
+    "PREDICATE_NORMALIZED:渡す<-受け取る"
+   ],
+   "roles": null
+  },
+  {
+   "id": "FX2-J03",
+   "data": "B1_v2_r2",
+   "input": "弟は先生に英語を教わった。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": null,
+   "reasons": [
+    "PREDICATE_NORMALIZED:教える<-教わる"
+   ],
+   "roles": null
+  },
+  {
+   "id": "FX2-J04",
+   "data": "B1_v2_r2",
+   "input": "兄は弟に本をもらった。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": null,
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "弟",
+     "patient": "本",
+     "recipient": "兄"
+    }
+   ]
+  },
+  {
+   "id": "FX2-J05",
+   "data": "B1_v2_r2",
+   "input": "叔父が弟に時計をくれた。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": null,
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "叔父",
+     "patient": "時計",
+     "recipient": "弟"
+    }
+   ]
+  },
+  {
+   "id": "FX2-J06",
+   "data": "B1_v2_r2",
+   "input": "兄は東京に住んでいる。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": null,
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "兄",
+     "place": "東京"
+    }
+   ]
+  },
+  {
+   "id": "FX2-J07",
+   "data": "B1_v2_r2",
+   "input": "姉は大阪に滞在した。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": null,
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "姉",
+     "place": "大阪"
+    }
+   ]
+  },
+  {
+   "id": "FX2-J08",
+   "data": "B1_v2_r2",
+   "input": "結果が事務局から通知された。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": null,
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "roles": null
+  },
+  {
+   "id": "FX2-J09",
+   "data": "B1_v2_r2",
+   "input": "依頼書が本部から配られた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": null,
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "roles": null
+  },
+  {
+   "id": "FX2-J10",
+   "data": "B1_v2_r2",
+   "input": "荷物が広島から送られた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": null,
+   "reasons": [
+    "UNDETERMINED_VOICE:passive or honorific"
+   ],
+   "roles": null
+  },
+  {
+   "id": "FX2-J11",
+   "data": "B1_v2_r2",
+   "input": "ドラムに皮が張られた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": null,
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "roles": null
+  },
+  {
+   "id": "FX2-J12",
+   "data": "B1_v2_r2",
+   "input": "ソファに布が掛けられた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": null,
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "roles": null
+  },
+  {
+   "id": "FX2-J13",
+   "data": "B1_v2_r2",
+   "input": "祖母が昔話を孫娘に言い換えた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": null,
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "roles": null
+  },
+  {
+   "id": "FX2-J14",
+   "data": "B1_v2_r2",
+   "input": "兄が文章を英語に訳した。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": null,
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "兄",
+     "patient": "文章",
+     "result": "英語"
+    }
+   ]
+  },
+  {
+   "id": "FX2-J15",
+   "data": "B1_v2_r2",
+   "input": "母は釣りに行った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": null,
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "roles": null
+  },
+  {
+   "id": "FX2-J16",
+   "data": "B1_v2_r2",
+   "input": "妹が図書館へ行った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": null,
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "妹",
+     "goal": "図書館"
+    }
+   ]
+  },
+  {
+   "id": "FX2-J17",
+   "data": "B1_v2_r2",
+   "input": "兄が友人に手紙を渡した。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": null,
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "兄",
+     "patient": "手紙",
+     "recipient": "友人"
+    }
+   ]
+  },
+  {
+   "id": "FX2-J18",
+   "data": "B1_v2_r2",
+   "input": "雨が降った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": null,
+   "reasons": [
+    "SUBJECT_TYPE_UNDETERMINED:雨"
+   ],
+   "roles": null
+  },
+  {
+   "id": "FX2-J19",
+   "data": "B1_v2_r2",
+   "input": "犬が走った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": null,
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "犬"
+    }
+   ]
+  },
+  {
+   "id": "FX2-J20",
+   "data": "B1_v2_r2",
+   "input": "母が窓を開けなかった。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": null,
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "母",
+     "patient": "窓"
+    }
+   ]
+  },
+  {
+   "id": "FX2-E01",
+   "data": "B1_v2_r2",
+   "input": "Rain stopped.",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": null,
+   "reasons": [
+    "SUBJECT_TYPE_UNDETERMINED:Rain"
+   ],
+   "roles": null
+  },
+  {
+   "id": "FX2-E02",
+   "data": "B1_v2_r2",
+   "input": "Snow fell.",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": null,
+   "reasons": [
+    "SUBJECT_TYPE_UNDETERMINED:Snow"
+   ],
+   "roles": null
+  },
+  {
+   "id": "FX2-E03",
+   "data": "B1_v2_r2",
+   "input": "Prices dropped.",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": null,
+   "reasons": [
+    "SUBJECT_TYPE_UNDETERMINED:Prices"
+   ],
+   "roles": null
+  },
+  {
+   "id": "FX2-E04",
+   "data": "B1_v2_r2",
+   "input": "Ann taught Ben French.",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": null,
+   "reasons": [
+    "NP_BOUNDARY_UNDETERMINED:Ben French"
+   ],
+   "roles": null
+  },
+  {
+   "id": "FX2-E05",
+   "data": "B1_v2_r2",
+   "input": "Ben sent the report to Ann.",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": null,
+   "reasons": [
+    "RECIPIENT_TYPE_UNDETERMINED:Ann"
+   ],
+   "roles": null
+  },
+  {
+   "id": "FX2-E06",
+   "data": "B1_v2_r2",
+   "input": "The manager hired a clerk.",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": null,
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "manager",
+     "patient": "clerk"
+    }
+   ]
+  },
+  {
+   "id": "FX2-E07",
+   "data": "B1_v2_r2",
+   "input": "Ann received a letter from Ben.",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": null,
+   "reasons": [
+    "UNKNOWN_PREDICATE",
+    "PLACEMENT_PREDICATE_UNIDENTIFIED"
+   ],
+   "roles": null
+  },
+  {
+   "id": "FX2-E08",
+   "data": "B1_v2_r2",
+   "input": "The dog chased the cat.",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": null,
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "dog",
+     "patient": "cat"
+    }
+   ]
+  },
+  {
+   "id": "FX2-U01",
+   "data": "B1_v2_r2",
+   "input": "Thank you very much.",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": null,
+   "reasons": [
+    "INTERJECTION_OR_FORMULA"
+   ],
+   "roles": null
+  },
+  {
+   "id": "FX2-U02",
+   "data": "B1_v2_r2",
+   "input": "Oh!",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": null,
+   "reasons": [
+    "INTERJECTION_OR_FORMULA"
+   ],
+   "roles": null
+  },
+  {
+   "id": "FX2-U03",
+   "data": "B1_v2_r2",
+   "input": "お疲れさまでした。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": null,
+   "reasons": [
+    "UNREAD_SPAN:unsupported clause grammar"
+   ],
+   "roles": null
+  },
+  {
+   "id": "FX2-U04",
+   "data": "B1_v2_r2",
+   "input": "あれ、まあ。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": null,
+   "reasons": [
+    "NO_PREDICATE_TOKEN"
+   ],
+   "roles": null
+  },
+  {
+   "id": "FX2-U05",
+   "data": "B1_v2_r2",
+   "input": "駅の近くの古い店。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": null,
+   "reasons": [
+    "UNREAD_SPAN:unsupported clause grammar"
+   ],
+   "roles": null
+  },
+  {
+   "id": "FX2-U06",
+   "data": "B1_v2_r2",
+   "input": "机が静かに走って緑の。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": null,
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_PART_NOT_NP:形状詞"
+   ],
+   "roles": null
+  },
+  {
+   "id": "FX2-U07",
+   "data": "B1_v2_r2",
+   "input": "兄が窓をうぬぼった。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": null,
+   "reasons": [
+    "NO_PREDICATE_TOKEN"
+   ],
+   "roles": null
+  },
+  {
+   "id": "FX2-U08",
+   "data": "B1_v2_r2",
+   "input": "Ann gorped the door.",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": null,
+   "reasons": [
+    "UNKNOWN_PREDICATE",
+    "PLACEMENT_PREDICATE_UNIDENTIFIED"
+   ],
+   "roles": null
+  },
+  {
+   "id": "FX3-J01",
+   "data": "B1_v2_r3",
+   "input": "社長が社員に叱られた。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": null,
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "社員",
+     "patient": "社長"
+    }
+   ]
+  },
+  {
+   "id": "FX3-J02",
+   "data": "B1_v2_r3",
+   "input": "少年が教師に褒められた。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": null,
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "教師",
+     "patient": "少年"
+    }
+   ]
+  },
+  {
+   "id": "FX3-J03",
+   "data": "B1_v2_r3",
+   "input": "皿が割られた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": null,
+   "reasons": [
+    "UNDETERMINED_VOICE:passive or honorific"
+   ],
+   "roles": null
+  },
+  {
+   "id": "FX3-J04",
+   "data": "B1_v2_r3",
+   "input": "通訳が依頼人に訳した。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": null,
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "roles": null
+  },
+  {
+   "id": "FX3-J05",
+   "data": "B1_v2_r3",
+   "input": "講師が初心者に言い換えた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": null,
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "roles": null
+  },
+  {
+   "id": "FX3-J06",
+   "data": "B1_v2_r3",
+   "input": "兄が妹に翻訳した。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": null,
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "roles": null
+  },
+  {
+   "id": "FX3-J07",
+   "data": "B1_v2_r3",
+   "input": "姉は弁護士になった。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": null,
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "姉",
+     "result": "弁護士"
+    }
+   ]
+  },
+  {
+   "id": "FX3-J08",
+   "data": "B1_v2_r3",
+   "input": "絵が伊藤家に飾られた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": null,
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "roles": null
+  },
+  {
+   "id": "FX3-J09",
+   "data": "B1_v2_r3",
+   "input": "旗が清水家に掲げられた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": null,
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "roles": null
+  },
+  {
+   "id": "FX3-J10",
+   "data": "B1_v2_r3",
+   "input": "評論家に感想が求められた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": null,
+   "reasons": [
+    "UNDETERMINED_VOICE:passive or honorific"
+   ],
+   "roles": null
+  },
+  {
+   "id": "FX3-J11",
+   "data": "B1_v2_r3",
+   "input": "店主が客に怒られた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": null,
+   "reasons": [
+    "UNDETERMINED_VOICE:passive or honorific"
+   ],
+   "roles": null
+  },
+  {
+   "id": "FX3-E01",
+   "data": "B1_v2_r3",
+   "input": "Ann sent the package to London.",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": null,
+   "reasons": [
+    "RECIPIENT_TYPE_UNDETERMINED:London"
+   ],
+   "roles": null
+  },
+  {
+   "id": "FX3-E02",
+   "data": "B1_v2_r3",
+   "input": "The letter was sent to Paris.",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": null,
+   "reasons": [
+    "RECIPIENT_TYPE_UNDETERMINED:Paris"
+   ],
+   "roles": null
+  },
+  {
+   "id": "FX3-E03",
+   "data": "B1_v2_r3",
+   "input": "Lisa sent Paul a message.",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": null,
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "Lisa",
+     "patient": "message",
+     "recipient": "Paul"
+    }
+   ]
+  },
+  {
+   "id": "FX3-E04",
+   "data": "B1_v2_r3",
+   "input": "Tom shipped the crate to Berlin.",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": null,
+   "reasons": [
+    "UNKNOWN_PREDICATE",
+    "PLACEMENT_PREDICATE_UNIDENTIFIED"
+   ],
+   "roles": null
+  },
+  {
+   "id": "FX3-E05",
+   "data": "B1_v2_r3",
+   "input": "Ben handed the keys to Dana.",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": null,
+   "reasons": [
+    "RECIPIENT_TYPE_UNDETERMINED:Dana"
+   ],
+   "roles": null
+  },
+  {
+   "id": "FX3-E06",
+   "data": "B1_v2_r3",
+   "input": "Kate showed the photo to them.",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": null,
+   "reasons": [
+    "EN_UNREAD:infinitive complement: not representable"
+   ],
+   "roles": null
+  }
+ ]
+}

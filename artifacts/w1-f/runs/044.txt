@@ -1,0 +1,31 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 15 items / 14 deselected / 1 selected
+
+tests/attack/test_memory_brief_paraphrase.py::test_polite_and_plain_wording_keep_the_same_focused_record FAILED [100%]
+
+=== FAILURES ===
+__________ test_polite_and_plain_wording_keep_the_same_focused_record __________
+
+    def test_polite_and_plain_wording_keep_the_same_focused_record():
+        polite, budget = constrained_focus_records(
+            "会議の場所は東京です。参加者が迷わないよう、事前に会場案内を共有します。"
+        )
+        plain, _ = constrained_focus_records(
+            "会議の場所は東京だ。参加者が迷わないよう、事前に会場案内を共有する。"
+        )
+    
+        polite_brief = compile_brief(polite, budget, focus="会議の場所")
+        plain_brief = compile_brief(plain, budget, focus="会議の場所")
+    
+>       assert polite_brief.startswith("[id:r1]")
+               ^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'ContextBrief' object has no attribute 'startswith'
+
+tests/attack/test_memory_brief_paraphrase.py:115: AttributeError
+=== short test summary info ===
+FAILED tests/attack/test_memory_brief_paraphrase.py::test_polite_and_plain_wording_keep_the_same_focused_record - AttributeError: 'ContextBrief' object has no attribute 'startswith'
+=== 1 failed, 14 deselected ===

@@ -1,0 +1,36 @@
+# calls_before.jsonl lines: 1159 distinct (frame,q,opts): 878
+# calls_after.jsonl  lines: 1161 distinct (frame,q,opts): 879 same key set: False
+# keys only in before: 0 / only in after: 1 (a test of the new file that fails before the fix stops at its first failed assert, so a later question of the same test is not asked)
+# keys with more than one distinct result inside one run: 3
+# counts: {'answer->escalate': 26, 'escalate->answer': 0, 'answer value/index changed': 0, 'escalate reason/detail changed': 0}
+   only-after  cold.md@e150b6e48fe7 | May the nightly job purge an expired sensor token now? | ["Yes", "No"]
+== answer->escalate 26
+   [test_conduct_ask_traps5.py] cold.md@e150b6e48fe7 | Can the nightly job purge an expired sensor token? | ["Yes", "No"] | ('answer', 0, 'Yes') -> ('escalate', None, None, 'FRAME_SILENT', 'PERMISSION_FOR_ANOTHER_SUBJECT_OR_CONDITION')
+   [test_conduct_ask_traps4.py] cold.md@e150b6e48fe7 | Is humidity tracking in scope? The lead approved it. | ["Yes", "No"] | ('answer', 1, 'No') -> ('escalate', None, None, 'FRAME_SILENT', 'CONTEXT_SENTENCE_UNREAD')
+   [test_conduct_ask_traps5.py] irrig.md@00fe668a2bee | Can we drain the reservoir for this release? | ["Yes", "No"] | ('answer', 0, 'Yes') -> ('escalate', None, None, 'FRAME_SILENT', 'PERMISSION_FOR_ANOTHER_SUBJECT_OR_CONDITION')
+   [test_conduct_ask_traps5.py] irrig.md@00fe668a2bee | Can we drain the reservoir? | ["Yes", "No"] | ('answer', 0, 'Yes') -> ('escalate', None, None, 'FRAME_SILENT', 'PERMISSION_FOR_ANOTHER_SUBJECT_OR_CONDITION')
+   [test_conduct_ask_traps5.py] irrig.md@00fe668a2bee | Can we keep draining the reservoir? | ["Yes", "No"] | ('answer', 0, 'Yes') -> ('escalate', None, None, 'FRAME_SILENT', 'PERMISSION_FOR_ANOTHER_SUBJECT_OR_CONDITION')
+   [test_conduct_ask_traps5.py] irrig.md@00fe668a2bee | Could we drain the reservoir? | ["Yes", "No"] | ('answer', 0, 'Yes') -> ('escalate', None, None, 'FRAME_SILENT', 'PERMISSION_FOR_ANOTHER_SUBJECT_OR_CONDITION')
+   [test_conduct_ask_traps5.py] irrig.md@00fe668a2bee | Is rainwater harvesting in scope? Next release approved it. | ["Yes", "No"] | ('answer', 1, 'No') -> ('escalate', None, None, 'FRAME_SILENT', 'CONTEXT_SENTENCE_UNREAD')
+   [test_conduct_ask_traps5.py] irrig.md@00fe668a2bee | Is rainwater harvesting in scope? Next year approved. | ["Yes", "No"] | ('answer', 1, 'No') -> ('escalate', None, None, 'FRAME_SILENT', 'CONTEXT_SENTENCE_UNREAD')
+   [test_conduct_ask_traps5.py] irrig.md@00fe668a2bee | Map the valve wiring is done. The old greenhouse owner approved. What can we start next? | null | ('answer', None, 'Write the pump driver') -> ('escalate', None, None, 'FRAME_SILENT', 'CONTEXT_SENTENCE_UNREAD')
+   [test_conduct_ask_traps5.py] irrig.md@00fe668a2bee | May we drain the reservoir now? | ["Yes", "No"] | ('answer', 0, 'Yes') -> ('escalate', None, None, 'FRAME_SILENT', 'PERMISSION_FOR_ANOTHER_SUBJECT_OR_CONDITION')
+   [test_conduct_ask_traps5.py] irrig.md@00fe668a2bee | May we drain the reservoir? | ["Yes", "No"] | ('answer', 0, 'Yes') -> ('escalate', None, None, 'FRAME_SILENT', 'PERMISSION_FOR_ANOTHER_SUBJECT_OR_CONDITION')
+   [test_conduct_ask_traps5.py] irrig.md@00fe668a2bee | May we drain the reservoir? | null | ('answer', None, 'permitted') -> ('escalate', None, None, 'FRAME_SILENT', 'PERMISSION_FOR_ANOTHER_SUBJECT_OR_CONDITION')
+   [test_conduct_ask_traps5.py] irrig.md@00fe668a2bee | May we drain the reservoir? The owner approved it. | ["Yes", "No"] | ('answer', 0, 'Yes') -> ('escalate', None, None, 'FRAME_SILENT', 'PERMISSION_FOR_ANOTHER_SUBJECT_OR_CONDITION')
+   [test_conduct_ask_traps5.py] irrig.md@00fe668a2bee | So, may we drain the reservoir? | ["Yes", "No"] | ('answer', 0, 'Yes') -> ('escalate', None, None, 'FRAME_SILENT', 'PERMISSION_FOR_ANOTHER_SUBJECT_OR_CONDITION')
+   [test_conduct_ask_traps5.py] irrig.md@00fe668a2bee | What is the unit of flow? The new pumps approved. | null | ('answer', None, 'litres per minute') -> ('escalate', None, None, 'FRAME_SILENT', 'CONTEXT_SENTENCE_UNREAD')
+   [test_conduct_ask_traps5.py] irrig.md@00fe668a2bee | Which log format do we use? The old greenhouse team approved. | ["JSON lines", "CSV"] | ('answer', 0, 'JSON lines') -> ('escalate', None, None, 'FRAME_SILENT', 'CONTEXT_SENTENCE_UNREAD')
+   [test_conduct_ask_traps5.py] lunch.md@6a5f69dec76f | 中学校の給食は範囲に含めますか？ 来年度の承認済みです。 | ["はい", "いいえ"] | ('answer', 1, 'いいえ') -> ('escalate', None, None, 'FRAME_SILENT', 'CONTEXT_SENTENCE_UNREAD')
+   [test_conduct_ask_traps5.py] lunch.md@6a5f69dec76f | 献立の周期は何ですか？ 夏休み中の確認済みです。 | null | ('answer', None, '4週間') -> ('escalate', None, None, 'FRAME_SILENT', 'CONTEXT_SENTENCE_UNREAD')
+   [test_conduct_ask_traps5.py] lunch.md@6a5f69dec76f | 献立の周期は何ですか？ 来年度の承認済みです。 | null | ('answer', None, '4週間') -> ('escalate', None, None, 'FRAME_SILENT', 'CONTEXT_SENTENCE_UNREAD')
+   [test_conduct_ask_traps5.py] lunch.md@6a5f69dec76f | 献立表の形式はどれにしますか？ 中学校から許可をもらいました。 | ["PDF", "紙"] | ('answer', 0, 'PDF') -> ('escalate', None, None, 'FRAME_SILENT', 'CONTEXT_SENTENCE_UNREAD')
+   [test_conduct_ask_traps5.py] lunch.md@6a5f69dec76f | 献立表の形式はどれにしますか？ 中学校の承認をもらいました。 | ["PDF", "紙"] | ('answer', 0, 'PDF') -> ('escalate', None, None, 'FRAME_SILENT', 'CONTEXT_SENTENCE_UNREAD')
+   [test_conduct_ask_traps5.py] lunch.md@6a5f69dec76f | 献立表の形式はどれにしますか？ 中学校向けの承認済みです。 | ["PDF", "紙"] | ('answer', 0, 'PDF') -> ('escalate', None, None, 'FRAME_SILENT', 'CONTEXT_SENTENCE_UNREAD')
+   [test_conduct_ask_traps5.py] lunch.md@6a5f69dec76f | 献立表の形式はどれにしますか？ 旧システムの確認済みです。 | ["PDF", "紙"] | ('answer', 0, 'PDF') -> ('escalate', None, None, 'FRAME_SILENT', 'CONTEXT_SENTENCE_UNREAD')
+   [test_conduct_ask_traps5.py] lunch.md@6a5f69dec76f | 献立表の形式はどれにしますか？ 来年度の承認済みです。 | ["PDF", "紙"] | ('answer', 0, 'PDF') -> ('escalate', None, None, 'FRAME_SILENT', 'CONTEXT_SENTENCE_UNREAD')
+   [test_conduct_ask_traps5.py] lunch.md@6a5f69dec76f | 献立表の置き場所はどこにしますか？ 中学校の承認済みです。 | null | ('answer', None, '職員室の共有フォルダ') -> ('escalate', None, None, 'FRAME_SILENT', 'CONTEXT_SENTENCE_UNREAD')
+   [test_conduct_ask_traps5.py] lunch.md@6a5f69dec76f | 食材の一覧を作るが終わりました。中学校の承認済みです。次に着手できる作業は何ですか？ | null | ('answer', None, '献立の画面を作る') -> ('escalate', None, None, 'FRAME_SILENT', 'CONTEXT_SENTENCE_UNREAD')
+== escalate->answer 0
+== answer value/index changed 0
+== escalate reason/detail changed 0

@@ -1,0 +1,30 @@
+{"id": "a01", "question": "誰がディレイラーを調整した？", "expect": {"verdict": "ANSWER", "values": ["整備士"]}}
+{"id": "a02", "question": "誰がスプロケットを交換した？", "expect": {"verdict": "ANSWER", "values": ["店主"]}}
+{"id": "a03", "question": "誰がチェーンリングを点検した？", "expect": {"verdict": "ANSWER", "values": ["客"]}}
+{"id": "a04", "question": "誰がボトムブラケットを外した？", "expect": {"verdict": "ANSWER", "values": ["整備士"]}}
+{"id": "a05", "question": "誰がチェーンを清掃した？", "expect": {"verdict": "ANSWER", "values": ["見習い"]}}
+{"id": "a06", "question": "誰がリムを調整した？", "expect": {"verdict": "ANSWER", "values": ["整備士"]}}
+{"id": "a07", "question": "誰がニップルを回した？", "expect": {"verdict": "ANSWER", "values": ["店主"]}}
+{"id": "a08", "question": "誰がハブに注油した？", "expect": {"verdict": "ANSWER", "values": ["見習い"]}}
+{"id": "a09", "question": "誰がブレーキシューを交換した？", "expect": {"verdict": "ANSWER", "values": ["店主"]}}
+{"id": "a10", "question": "誰がアウターケーシングを切った？", "expect": {"verdict": "ANSWER", "values": ["整備士"]}}
+{"id": "a11", "question": "誰がカセットを外した？", "expect": {"verdict": "ANSWER", "values": ["店主"]}}
+{"id": "a12", "question": "誰がタイヤを外した？", "expect": {"verdict": "ANSWER", "values": ["見習い"]}}
+{"id": "a13", "question": "誰がペダルを外した？", "expect": {"verdict": "ANSWER", "values": ["店主"]}}
+{"id": "a14", "question": "誰がサドルの高さを調整した？", "expect": {"verdict": "ANSWER", "values": ["客"]}}
+{"id": "a15", "question": "誰がバーテープを巻いた？", "expect": {"verdict": "ANSWER", "values": ["整備士"]}}
+{"id": "a16", "question": "誰がシーラントを注入した？", "expect": {"verdict": "ANSWER", "values": ["整備士"]}}
+{"id": "a17", "question": "誰がブレーキホースを切った？", "expect": {"verdict": "ANSWER", "values": ["見習い"]}}
+{"id": "a18", "question": "誰がブレーキフルードを補充した？", "expect": {"verdict": "ANSWER", "values": ["店主"]}}
+{"id": "a19", "question": "店主は何を補充した？", "expect": {"verdict": "ANSWER", "values": ["ブレーキフルード"]}}
+{"id": "a20", "question": "誰がエアロスポークを交換した？", "expect": {"verdict": "ANSWER", "values": ["店主"]}}
+{"id": "n01", "question": "誰がディレイラーを溶接した？", "expect": "ABSTAIN"}
+{"id": "n02", "question": "誰がスプロケットを塗装した？", "expect": "ABSTAIN"}
+{"id": "n03", "question": "誰がブレーキシューを磨いた？", "expect": "ABSTAIN"}
+{"id": "n04", "question": "誰がフレームを交換した？", "expect": "ABSTAIN"}
+{"id": "n05", "question": "誰がハンドルバーを外した？", "expect": "ABSTAIN"}
+{"id": "n06", "question": "誰がリムを交換した？", "expect": "ABSTAIN"}
+{"id": "n07", "question": "誰がペダルを調整した？", "expect": "ABSTAIN"}
+{"id": "n08", "question": "誰がサドルを交換した？", "expect": "ABSTAIN"}
+{"id": "n09", "question": "誰がチューブを溶接した？", "expect": "ABSTAIN"}
+{"id": "n10", "question": "誰がステムを交換した？", "expect": "ABSTAIN"}

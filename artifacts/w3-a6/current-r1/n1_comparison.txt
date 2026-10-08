@@ -1,0 +1,12 @@
+N1 current-query summary
+
+r7/current: rows=1758845, sec=293.9, sha256=3feb7651ac8dcccac12e430e68fc32233e6792a3a7bc88823a0cd6cf6de79764
+r7/base recorded by reviewer: same hash; reviewer byte comparison exit 0.
+
+r8/current: rows=1766903, sec=297.1, sha256=5db28ae6e323bfe10e107bd47550c657958818b15f962705a2567952eb6d941a
+r8/base recorded by reviewer: same hash; reviewer byte comparison exit 0.
+
+none/current: rows=200, sec=0.0, sha256=a506a76cf8a262dbc4047444d4363b7486d56032eff77fa57b458cfa38ee2c27
+none/base recorded by reviewer: same hash; reviewer byte comparison exit 0.
+
+The reading-entry output for 4,149 sentences was not rerun in this round. The prior review report records byte equality for no-placement and r8, and no reading-entry source changed after that review.

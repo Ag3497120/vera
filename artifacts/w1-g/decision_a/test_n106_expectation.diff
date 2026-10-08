@@ -1,0 +1,11 @@
+--- a/tests/attack/test_verifier_agents_fabrication.py
++++ b/tests/attack/test_verifier_agents_fabrication.py
+@@ -185,7 +185,7 @@
+     assert len(frame.written) == 1
+     acceptance_id, result, kwargs = frame.written[0]
+     assert acceptance_id == "accept-1"
+-    assert result == "PASS"
++    assert result == "UNVERIFIED"
+     stored = json.loads(kwargs["evidence_ref"])
+     assert stored["verifiers"] == [
+         {"verifier_id": "alpha", "session_id": "session-alpha", "result": "PASS",

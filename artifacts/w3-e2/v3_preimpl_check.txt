@@ -1,0 +1,26 @@
+w3e2_p1.jsonl rows=49 assumed_expected=19 assumed_ok=16 abstain_expected=30 abstain_ok=16 wrong_assumption=16 wrong_source=1 documents_rows=6 documents_ok=2
+   FAIL W3E2-P1-004 ミナが走った。 read although the expectation is an abstention
+   FAIL W3E2-P1-006 リクが本を読んだ。 read although the expectation is an abstention
+   FAIL W3E2-P1-031 リンゴが落ちた。 read although the expectation is an abstention
+   FAIL W3E2-P1-032 リンゴが本を読んだ。 read although the expectation is an abstention
+   FAIL W3E2-P1-034 リンゴが落ちた。 assumption [{'word': 'リンゴ', 'kind': 'name_type', 'assumed': 'GROUP_ORG+PERSON', 'source': 'surface'}] != [{'word': 'リンゴ', 'kind': 'name_type', 'assumed': 'PERSON', 'source': 'llm:fake-model'}]
+   FAIL W3E2-P1-035 ミカンが腐った。 read although the expectation is an abstention
+   FAIL W3E2-P1-036 ミカンが本を読んだ。 read although the expectation is an abstention
+   FAIL W3E2-P1-037 ミカンが腐った。 assumption [{'word': 'ミカン', 'kind': 'name_type', 'assumed': 'GROUP_ORG+PERSON', 'source': 'surface'}] != [{'word': 'ミカン', 'kind': 'name_type', 'assumed': 'PERSON', 'source': 'llm:fake-model'}]
+   FAIL W3E2-P1-038 ヒカリが消えた。 read although the expectation is an abstention
+   FAIL W3E2-P1-039 モモが落ちた。 read although the expectation is an abstention
+   FAIL W3E2-P1-040 モモが本を読んだ。 read although the expectation is an abstention
+   FAIL W3E2-P1-041 モモが落ちた。 assumption [{'word': 'モモ', 'kind': 'name_type', 'assumed': 'PERSON', 'source': 'surface'}] != [{'word': 'モモ', 'kind': 'name_type', 'assumed': 'PERSON', 'source': 'llm:fake-model'}]
+   FAIL W3E2-P1-043 モモが落ちた。 read although the expectation is an abstention
+   FAIL W3E2-P1-044 ヨモが走った。 read although the expectation is an abstention
+   FAIL W3E2-P1-045 ヨモが本を読んだ。 read although the expectation is an abstention
+   FAIL W3E2-P1-046 ヨモが走った。 read although the expectation is an abstention
+   FAIL W3E2-P1-047 ヨモが走った。 read although the expectation is an abstention
+w3e2_p2.jsonl rows=33 assumed_expected=15 assumed_ok=15 abstain_expected=18 abstain_ok=13 wrong_assumption=5 wrong_source=0 documents_rows=0 documents_ok=0
+   FAIL W3E2-P2-010 ハルがザクった。 read although the expectation is an abstention
+   FAIL W3E2-P2-012 ハルがヨモります。 read although the expectation is an abstention
+   FAIL W3E2-P2-027 本がザクった。 read although the expectation is an abstention
+   FAIL W3E2-P2-028 本がザクった。 read although the expectation is an abstention
+   FAIL W3E2-P2-029 机がザクった。 read although the expectation is an abstention
+w3e2_p3.jsonl rows=29 assumed_expected=13 assumed_ok=13 abstain_expected=16 abstain_ok=15 wrong_assumption=1 wrong_source=0 documents_rows=5 documents_ok=4
+   FAIL W3E2-P3-027 ハルはグリスへ荷物を運んだ。 read although the expectation is an abstention

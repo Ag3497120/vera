@@ -1,0 +1,3 @@
+default general store /Users/motonisihikoudai/Projects/vera-corpus/build/general.db: exists=False
+without VERA_GENERAL: FAIL
+with VERA_GENERAL=<3 rows (借りる,を,傘) in a tiny sqlite>: PASS

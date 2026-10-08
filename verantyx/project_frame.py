@@ -1,0 +1,1632 @@
+"""Strict human-owned project frames compiled into typed conductor records.
+
+The file format is intentionally small and closed.  Each section appears once;
+unknown fields, duplicate sections, ambiguous list entries, and implicit empty
+sections are errors with source line numbers.  List sections can be explicitly
+empty with the sole line ``none: none``.
+
+Required sections, in any order, are ``[goal]``, ``[philosophy_invariants]``,
+``[completion_criteria]``, ``[phases]``, ``[phase_order]``, ``[decisions]``,
+``[vocabulary_aliases]``, ``[escalation_conditions]``, and
+``[protected_actions]``.  See ``docs/frames/vera_project_frame.md`` for the
+canonical example and entry grammar.
+
+Optional sections (absent is not the same as ``none: none``; the parser keeps
+which of them were declared) are ``[write_allowlist]`` (paths an agent may
+write), ``[forbidden_actions]`` (not permitted even with human approval, as
+opposed to ``[protected_actions]`` which a human may approve),
+``[conflict_precedence]`` (a closed partial order for conflicts between rule
+families) and ``[agent_settings]`` (model, effort and concurrency).  A machine
+checkable acceptance criterion is a ``[completion_criteria]`` entry with a JSON
+witness such as ``command_exit``.  ``[agents]``, ``[routing]`` and ``[routing_precedence]`` declare
+which agent does which job; this module only reads their rows into the records of
+``verantyx.agent_routing`` (one producer of them), which checks their meaning
+(docs/AGENT_ROUTING.md).
+
+The conduct entry (``load_conduct_frame`` and the typed ``FrameRefusal``) reads
+a frame file of either format, decides the format from its content, and refuses
+with a specific reason and a statement of what is missing; it never guesses an
+allowlist or an acceptance condition.
+"""
+from __future__ import annotations
+
+import hashlib
+import json
+import re
+import unicodedata
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Any, Mapping, Optional, Sequence
+
+from . import agent_routing, conductor, memory_frame
+from .agent_adapter import (validate_allowed_tools, validate_effort, validate_model,
+                            validate_permission_mode)
+from .memory_frame import Memory, WriteRejected
+
+
+SECTIONS = (
+    "goal",
+    "philosophy_invariants",
+    "completion_criteria",
+    "phases",
+    "phase_order",
+    "decisions",
+    "vocabulary_aliases",
+    "escalation_conditions",
+    "protected_actions",
+)
+OPTIONAL_SECTIONS = (
+    "write_allowlist",
+    "forbidden_actions",
+    "conflict_precedence",
+    "agent_settings",
+    "agents",
+    "routing",
+    "routing_precedence",
+)
+# The closed set of rule families a [conflict_precedence] entry may order.
+PRECEDENCE_FAMILIES = (
+    "forbidden_actions",
+    "philosophy_invariants",
+    "completion_criteria",
+    "protected_actions",
+)
+AGENT_SETTING_KEYS = (
+    "codex_model",
+    "codex_effort",
+    "claude_model",
+    "claude_effort",
+    "max_concurrency",
+    "agent_timeout_seconds",
+    "acceptance_timeout_seconds",
+    "claude_permission_mode",
+    "claude_allowed_tools",
+    "verifier_adapter",
+    "verifier_model",
+    "verifier_effort",
+    "verifier_timeout_seconds",
+    "verification_retries",
+    "task_kind",
+)
+# With an [agents] table the agent and its model come from the table, so these have no second meaning.
+ROUTED_CONFLICTING_SETTINGS = ("codex_model", "codex_effort", "claude_model", "claude_effort",
+                               "verifier_adapter", "verifier_model", "verifier_effort")
+VERIFIER_ADAPTERS = ("codex", "claude", "none")
+_VERIFICATION_RETRIES = re.compile(r"^[0-5]$")
+_MAX_CONCURRENCY = re.compile(r"^[1-9][0-9]{0,5}$")
+_TIMEOUT_SECONDS = re.compile(r"^[1-9][0-9]{0,4}$")
+MAX_TIMEOUT_SECONDS = 86400
+_GLOB_CHARS = frozenset("*?[]")
+_ID = re.compile(r"^[A-Za-z][A-Za-z0-9_-]*$")
+_HEADER = re.compile(r"^\[([a-z_]+)\]$")
+_HASH = re.compile(r"^[0-9a-fA-F]{64}$")
+_COMMIT = re.compile(r"^[0-9a-fA-F]{40,64}$")
+_POLICY_KINDS = frozenset(("CHOICE", "CONFIRM", "SCOPE"))
+_QUESTION_KINDS = frozenset(conductor.QUESTION_KINDS)
+
+
+class FrameError(ValueError):
+    """A frame error that always identifies the source and line."""
+
+    def __init__(self, source: str, line: int, message: str):
+        self.source = source
+        self.line = line
+        self.message = message
+        super().__init__(f"{source}:{line}: {message}")
+
+
+class FrameParseError(FrameError):
+    """Invalid or incomplete human frame syntax."""
+
+
+class FrameCompileError(FrameError):
+    """A valid frame entry could not be encoded as a typed record."""
+
+
+class RoutingParseError(FrameParseError):
+    """An [agents] / [routing] / [routing_precedence] problem; ``code`` is a RECORD_ERRORS or DSL_ERRORS code."""
+
+    def __init__(self, source: str, line: int, message: str, code: str):
+        if code not in agent_routing.RECORD_ERRORS + agent_routing.DSL_ERRORS:
+            raise ValueError(f"unknown routing error code {code!r}")
+        self.code = code
+        super().__init__(source, line, f"[{code}] {message}")
+
+
+@dataclass(frozen=True)
+class Invariant:
+    id: str
+    text: str
+    line: int
+
+
+@dataclass(frozen=True)
+class Criterion:
+    id: str
+    text: str
+    line: int
+    human_judged: bool
+    witness: Optional[dict[str, Any]]
+
+
+@dataclass(frozen=True)
+class Phase:
+    id: str
+    name: str
+    line: int
+
+
+@dataclass(frozen=True)
+class PhaseOrder:
+    before: str
+    after: str
+    reason: str
+    line: int
+
+
+@dataclass(frozen=True)
+class Decision:
+    id: str
+    subject: str
+    choice: str
+    line: int
+    question_kind: Optional[str] = None
+    condition: Optional[str] = None
+
+
+@dataclass(frozen=True)
+class DecisionDraft:
+    """A human decision with its exact value and an askable typed index record."""
+
+    subject: Optional[str]
+    attribute: str
+    value: str
+    normalized_key: str
+    question_key: str
+    session: Optional[str]
+    row: Optional[int]
+    who_decided: str
+    matched_option: Optional[str]
+    option_index: Optional[int]
+    record: dict[str, Any]
+
+    @property
+    def match_key(self) -> tuple[Optional[str], str, str, tuple[str, ...]]:
+        """Exact structural identity, scoped by session and the closed option vocabulary."""
+        options = self.record.get("witness", {}).get("options", [])
+        subject_key = _exchange_text_key(self.subject) if self.subject else self.question_key
+        option_key = tuple(sorted(_exchange_text_key(option) for option in options))
+        return (self.session, subject_key, _exchange_text_key(self.attribute), option_key)
+
+
+@dataclass(frozen=True)
+class Refusal:
+    """A typed reason an exchange cannot become a human decision record."""
+
+    reason: str
+    detail: str = ""
+
+
+class _ExchangeMemory(memory_frame.Memory):
+    """Memory writer with an in-process event log for a single draft."""
+
+    def __init__(self) -> None:
+        # Do not open or create a file for the standalone three-argument API.
+        self.path = Path("<decision-exchange-memory>")
+        self.now = lambda: "1970-01-01T00:00:00"
+        self.resolver = None
+        self.records = {}
+        self.superseded = {}
+        self.aliases = {}
+        self._view = None
+
+    def _append(self, event: dict[str, Any]) -> None:
+        self._apply(event)
+
+
+@dataclass(frozen=True)
+class Alias:
+    alias: str
+    canonical: str
+    line: int
+
+
+@dataclass(frozen=True)
+class Escalation:
+    id: str
+    condition: str
+    reason: str
+    missing: str
+    question_kind: Optional[str]
+    line: int
+
+
+@dataclass(frozen=True)
+class ProtectedAction:
+    action: str
+    reason: str
+    missing: str
+    line: int
+
+
+@dataclass(frozen=True)
+class WritePath:
+    id: str
+    path: str
+    line: int
+
+
+@dataclass(frozen=True)
+class ForbiddenAction:
+    """An operation that stays forbidden even when a human approves it."""
+
+    action: str
+    reason: str
+    line: int
+
+
+@dataclass(frozen=True)
+class PrecedenceRule:
+    """``higher`` wins over ``lower`` when two rule families conflict."""
+
+    id: str
+    higher: str
+    lower: str
+    reason: str
+    line: int
+
+
+@dataclass(frozen=True)
+class AgentSetting:
+    key: str
+    value: str
+    line: int
+
+
+@dataclass(frozen=True)
+class ProjectFrameSpec:
+    project: str
+    goal: str
+    goal_line: int
+    source: str
+    invariants: tuple[Invariant, ...]
+    criteria: tuple[Criterion, ...]
+    phases: tuple[Phase, ...]
+    phase_order: tuple[PhaseOrder, ...]
+    decisions: tuple[Decision, ...]
+    aliases: tuple[Alias, ...]
+    escalations: tuple[Escalation, ...]
+    protected_actions: tuple[ProtectedAction, ...]
+    # Optional sections.  ``declared_sections`` says which of them appeared, so an
+    # absent section stays distinguishable from an explicit ``none: none``.
+    write_allowlist: tuple[WritePath, ...] = ()
+    forbidden_actions: tuple[ForbiddenAction, ...] = ()
+    precedence: tuple[PrecedenceRule, ...] = ()
+    agent_settings: tuple[AgentSetting, ...] = ()
+    declared_sections: tuple[str, ...] = ()
+    # The agent table and routing rules as records (docs/AGENT_ROUTING.md); None when the frame has none.
+    routing: Optional[agent_routing.RoutingTable] = None
+
+
+@dataclass
+class Compilation:
+    """Compiled active records and the conductor that answers from them."""
+
+    spec: ProjectFrameSpec
+    memory: Memory
+    conductor: conductor.ProjectFrame
+    records: list[dict[str, Any]]
+
+
+def _fail(source: str, line: int, message: str) -> None:
+    raise FrameParseError(source, line, message)
+
+
+def _required_text(value: str, source: str, line: int, field: str) -> str:
+    value = value.strip()
+    if not value:
+        _fail(source, line, f"{field} must not be empty")
+    if "\n" in value or "\r" in value:
+        _fail(source, line, f"{field} must occupy one line")
+    return value
+
+
+def _entry_id(value: str, source: str, line: int, field: str = "entry id") -> str:
+    value = value.strip()
+    if not _ID.fullmatch(value):
+        _fail(source, line, f"invalid {field} {value!r}; use a letter followed by letters, digits, _ or -")
+    return value
+
+
+def _split_once(value: str, marker: str, source: str, line: int, field: str) -> tuple[str, str]:
+    if value.count(marker) != 1:
+        _fail(source, line, f"{field} must contain exactly one {marker!r}")
+    left, right = value.split(marker, 1)
+    return (_required_text(left, source, line, field), _required_text(right, source, line, field))
+
+
+def _strict_json_object(raw: str, source: str, line: int) -> dict[str, Any]:
+    def pairs(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
+        out: dict[str, Any] = {}
+        for key, value in pairs:
+            if key in out:
+                raise ValueError(f"duplicate JSON field {key!r}")
+            out[key] = value
+        return out
+
+    try:
+        value = json.loads(raw, object_pairs_hook=pairs)
+    except (json.JSONDecodeError, ValueError) as exc:
+        _fail(source, line, f"invalid witness JSON: {exc}")
+    if not isinstance(value, dict):
+        _fail(source, line, "machine witness must be a JSON object")
+    return value
+
+
+def _validate_witness(raw: str, source: str, line: int) -> dict[str, Any]:
+    witness = _strict_json_object(raw, source, line)
+    kind = witness.get("kind")
+    fields = {
+        "file_sha256": {"kind", "path", "sha256"},
+        "text_in_file": {"kind", "path", "needle"},
+        "git_commit": {"kind", "repo", "commit"},
+        "command_exit": {"kind", "command", "expected_exit"},
+    }
+    if not isinstance(kind, str) or kind not in fields:
+        _fail(source, line, "machine witness kind must be file_sha256, text_in_file, git_commit, or command_exit")
+    if set(witness) != fields[kind]:
+        _fail(source, line, f"{kind} witness fields must be exactly {sorted(fields[kind])}")
+    if kind == "file_sha256":
+        if not isinstance(witness["path"], str) or not witness["path"] or not isinstance(witness["sha256"], str) or not _HASH.fullmatch(witness["sha256"]):
+            _fail(source, line, "file_sha256 needs a nonempty path and 64 hexadecimal sha256 digits")
+        witness["sha256"] = witness["sha256"].lower()
+    elif kind == "text_in_file":
+        if not isinstance(witness["path"], str) or not witness["path"] or not isinstance(witness["needle"], str) or not witness["needle"]:
+            _fail(source, line, "text_in_file needs nonempty path and needle strings")
+    elif kind == "git_commit":
+        if not isinstance(witness["repo"], str) or not witness["repo"] or not isinstance(witness["commit"], str) or not _COMMIT.fullmatch(witness["commit"]):
+            _fail(source, line, "git_commit needs a nonempty repo and a full hexadecimal commit id")
+        witness["commit"] = witness["commit"].lower()
+    else:
+        command = witness["command"]
+        if (not isinstance(command, str) and not isinstance(command, list)) or not command:
+            _fail(source, line, "command_exit needs a nonempty command string or list of strings")
+        if isinstance(command, str) and not command.strip():
+            _fail(source, line, "command_exit command must not be whitespace")
+        if isinstance(command, list) and not all(isinstance(part, str) and part for part in command):
+            _fail(source, line, "command_exit command list must contain only nonempty strings")
+        if isinstance(witness["expected_exit"], bool) or not isinstance(witness["expected_exit"], int):
+            _fail(source, line, "command_exit expected_exit must be an integer")
+    return witness
+
+
+def _rows(section: str, sections: Mapping[str, list[tuple[int, str]]], source: str, eof: int) -> list[tuple[int, str]]:
+    rows = sections[section]
+    if not rows:
+        _fail(source, eof, f"[{section}] is empty; write 'none: none' to state that explicitly")
+    if any(text == "none: none" for _, text in rows):
+        if len(rows) != 1 or rows[0][1] != "none: none":
+            line = next(line for line, text in rows if text == "none: none")
+            _fail(source, line, "'none: none' must be the only entry in its section")
+        return []
+    return rows
+
+
+def _unique_ids(items: list[Any], source: str, label: str) -> None:
+    seen: set[str] = set()
+    for item in items:
+        if item.id in seen:
+            _fail(source, item.line, f"duplicate {label} id {item.id!r}")
+        seen.add(item.id)
+
+
+def _check_order_graph(phases: tuple[Phase, ...], orders: tuple[PhaseOrder, ...], source: str, eof: int) -> None:
+    known = {phase.id for phase in phases}
+    edges: dict[str, list[str]] = {phase.id: [] for phase in phases}
+    seen: set[tuple[str, str]] = set()
+    for order in orders:
+        if order.before not in known:
+            _fail(source, order.line, f"phase order references unknown phase {order.before!r}")
+        if order.after not in known:
+            _fail(source, order.line, f"phase order references unknown phase {order.after!r}")
+        if order.before == order.after:
+            _fail(source, order.line, "a phase cannot precede itself")
+        edge = (order.before, order.after)
+        if edge in seen:
+            _fail(source, order.line, f"duplicate phase order {order.before} -> {order.after}")
+        seen.add(edge)
+        edges[order.before].append(order.after)
+    visiting: set[str] = set()
+    visited: set[str] = set()
+
+    def visit(node: str) -> Optional[str]:
+        if node in visiting:
+            return node
+        if node in visited:
+            return None
+        visiting.add(node)
+        for child in edges[node]:
+            cycle = visit(child)
+            if cycle:
+                return cycle
+        visiting.remove(node)
+        visited.add(node)
+        return None
+
+    for phase in phases:
+        cycle = visit(phase.id)
+        if cycle:
+            line = next((item.line for item in orders if item.before == cycle), eof)
+            _fail(source, line, f"phase ordering contains a cycle through {cycle!r}")
+
+
+def validate_agent_setting(key: str, value: str) -> Optional[str]:
+    """Return why a setting value is unusable, or ``None`` when it is acceptable.
+
+    Model and effort end up in an argument array (and effort inside a TOML string),
+    so they are matched against closed patterns instead of being escaped.
+    """
+    if key not in AGENT_SETTING_KEYS:
+        return f"unknown agent setting {key!r}; use one of {', '.join(AGENT_SETTING_KEYS)}"
+    try:
+        if key in ("agent_timeout_seconds", "acceptance_timeout_seconds", "verifier_timeout_seconds"):
+            if (not isinstance(value, str) or not _TIMEOUT_SECONDS.fullmatch(value) or
+                    int(value) > MAX_TIMEOUT_SECONDS):
+                return f"{key} must be a whole number of seconds written in digits, 1 to {MAX_TIMEOUT_SECONDS}"
+        elif key == "verifier_adapter":
+            if value not in VERIFIER_ADAPTERS:
+                return f"verifier_adapter must be one of {', '.join(VERIFIER_ADAPTERS)}"
+        elif key == "task_kind":
+            if value not in agent_routing.TASK_KINDS:
+                return f"task_kind must be one of {', '.join(agent_routing.TASK_KINDS)}"
+        elif key == "verification_retries":
+            if not isinstance(value, str) or not _VERIFICATION_RETRIES.fullmatch(value):
+                return "verification_retries must be a whole number written in one digit, 0 to 5"
+        elif key == "claude_permission_mode":
+            validate_permission_mode(value)
+        elif key == "claude_allowed_tools":
+            validate_allowed_tools(value)
+        elif key.endswith("_model"):
+            validate_model(value)
+        elif key.endswith("_effort"):
+            validate_effort(value)
+        elif not isinstance(value, str) or not _MAX_CONCURRENCY.fullmatch(value):
+            return "max_concurrency must be a positive integer written in digits"
+    except ValueError as exc:
+        return str(exc)
+    return None
+
+
+def _write_path_problem(path: str) -> Optional[str]:
+    """Why a [write_allowlist] path cannot be matched by the runtime, or ``None``."""
+    if not path:
+        return "path is empty"
+    if any(char in _GLOB_CHARS for char in path):
+        return "glob characters (* ? [ ]) are not matched by the runtime; write a directory or file prefix"
+    if "\\" in path:
+        return "use '/' as the separator"
+    if path.startswith("/") or re.match(r"^[A-Za-z]:", path) or path.startswith("~"):
+        return "path must be relative to the repository root"
+    if "\x00" in path:
+        return "path contains a NUL"
+    parts = path.split("/")
+    if any(part == "" for part in parts):
+        return "path has an empty element (leading, doubled or trailing '/'); write 'dir/sub' without a trailing slash"
+    if any(part in {".", ".."} for part in parts):
+        return "path must not contain '.' or '..' elements"
+    if parts[0] == ".git":
+        return "the .git directory cannot be allowlisted"
+    return None
+
+
+def _precedence_path(edges: dict[str, list[str]], start: str, goal: str) -> Optional[list[str]]:
+    """A path of length >= 1 from ``start`` to ``goal`` over declared precedence edges, or ``None``."""
+    stack: list[list[str]] = [[start]]
+    visited: set[str] = set()
+    while stack:
+        path = stack.pop()
+        for child in edges[path[-1]]:
+            if child == goal:
+                return [*path, child]
+            if child not in visited:
+                visited.add(child)
+                stack.append([*path, child])
+    return None
+
+
+def _check_precedence_graph(rules: Sequence[PrecedenceRule], source: str) -> None:
+    seen: set[tuple[str, str]] = set()
+    edges: dict[str, list[str]] = {name: [] for name in PRECEDENCE_FAMILIES}
+    for rule in rules:
+        if rule.higher == "protected_actions" and rule.lower == "forbidden_actions":
+            _fail(source, rule.line, "protected_actions cannot take precedence over forbidden_actions: "
+                                     "a human approval never overrides a forbidden action")
+        edge = (rule.higher, rule.lower)
+        if edge in seen:
+            _fail(source, rule.line, f"duplicate precedence {rule.higher} > {rule.lower}")
+        seen.add(edge)
+        edges[rule.higher].append(rule.lower)
+        # An approval-unlockable family must not outrank a forbidden one through ANY chain of declared
+        # precedences: ordering is read transitively by the cycle check below, so the same reading
+        # applies here.  The line reported is the rule that closes the path.
+        path = _precedence_path(edges, "protected_actions", "forbidden_actions")
+        if path:
+            _fail(source, rule.line, "protected_actions cannot take precedence over forbidden_actions, "
+                                     "not even through a chain (" + " > ".join(path) + "): "
+                                     "a human approval never overrides a forbidden action")
+    state: dict[str, int] = {}
+
+    def visit(node: str) -> Optional[str]:
+        if state.get(node) == 1:
+            return node
+        if state.get(node) == 2:
+            return None
+        state[node] = 1
+        for child in edges[node]:
+            hit = visit(child)
+            if hit:
+                return hit
+        state[node] = 2
+        return None
+
+    for name in PRECEDENCE_FAMILIES:
+        cycle = visit(name)
+        if cycle:
+            line = next((rule.line for rule in rules if rule.higher == cycle), rules[0].line)
+            _fail(source, line, f"[conflict_precedence] contains a cycle through {cycle!r}")
+
+
+# In this row form the rule named DEFAULT is the role's "otherwise" (the record's ``fallback`` field is true).
+_FALLBACK_ROW_ID = "DEFAULT"
+_LINEAGE_TOKEN = re.compile(r"^[A-Za-z][A-Za-z0-9_.-]*$")
+_AGENT_FIELDS = ("adapter", "model", "effort", "roles", "kinds", "lineage", "concurrency", "note")
+_AGENT_REQUIRED = ("adapter", "model", "effort", "roles", "kinds", "lineage", "concurrency")
+
+
+def _routing_fail(source: str, line: int, code: str, message: str) -> None:
+    raise RoutingParseError(source, line, message, code)
+
+
+def _name_list(value: str, source: str, line: int, field: str) -> list[str]:
+    items = [piece.strip() for piece in value.split(",")]
+    if any(not piece for piece in items) or len(set(items)) != len(items):
+        _routing_fail(source, line, "MALFORMED_ROW", f"{field} is a comma-separated list of distinct names")
+    return items
+
+
+def _agent_record(line: int, row: str, source: str) -> agent_routing.AgentRecord:
+    """The DSL form ``ID: key=value key=value ...``.  Only the shape of the row is checked here."""
+    head, colon, rest = row.partition(":")
+    if not colon:
+        _routing_fail(source, line, "MALFORMED_ROW", "an agent row is 'ID: adapter=... model=... ...'")
+    agent_id = head.strip()
+    # The token form of an id and of a lineage is a limit of this row format (a row is cut at spaces, ':' and
+    # ',').  A producer of prose keeps the human's own words; the record layer does not require this form.
+    if not _ID.fullmatch(agent_id):
+        _routing_fail(source, line, "MALFORMED_ROW",
+                      f"an agent id in a row is letters, digits, '_' or '-', starting with a letter, not {agent_id!r}")
+    fields: dict[str, str] = {}
+    for token in rest.split():
+        key, equals, value = token.partition("=")
+        if not equals or not key or not value or "=" in value:
+            _routing_fail(source, line, "MALFORMED_ROW", f"agent fields are written key=value without spaces, not {token!r}")
+        if key not in _AGENT_FIELDS:
+            _routing_fail(source, line, "UNKNOWN_FIELD", f"unknown agent field {key!r}; use {', '.join(_AGENT_FIELDS)}")
+        if key in fields:
+            _routing_fail(source, line, "DUPLICATE_FIELD", f"agent field {key!r} is written twice")
+        fields[key] = value
+    for key in _AGENT_REQUIRED:
+        if key not in fields:
+            _routing_fail(source, line, "MISSING_FIELD", f"agent {agent_id or '?'} needs the field {key}=")
+    if not _LINEAGE_TOKEN.fullmatch(fields["lineage"]):
+        _routing_fail(source, line, "MALFORMED_ROW",
+                      f"a lineage in a row is letters, digits, '_', '.' or '-', starting with a letter, not {fields['lineage']!r}")
+    concurrency: Any = int(fields["concurrency"]) if fields["concurrency"].isdigit() else fields["concurrency"]
+    return agent_routing.AgentRecord(
+        id=agent_id, adapter=fields["adapter"], roles=frozenset(_name_list(fields["roles"], source, line, "roles")),
+        kinds=frozenset(_name_list(fields["kinds"], source, line, "kinds")), lineage=fields["lineage"],
+        basis=agent_routing.Basis.dsl(source, line, row), model=fields["model"], effort=fields["effort"],
+        concurrency=concurrency, note=fields.get("note"))
+
+
+def _routing_rule(line: int, row: str, source: str) -> agent_routing.RoutingRule:
+    """The DSL form ``ID: cond & cond => A1, A2: reason``."""
+    head, colon, body = row.partition(":")
+    if not colon or "=>" not in body or body.count("=>") != 1:
+        _routing_fail(source, line, "MALFORMED_ROW", "a routing rule is 'ID: condition & condition => AGENT, AGENT: reason'")
+    when, _, tail = body.partition("=>")
+    prefer, colon, reason = tail.partition(":")
+    if not colon:
+        _routing_fail(source, line, "MALFORMED_ROW", "a routing rule ends with ': reason' after its agent list")
+    conditions = []
+    for piece in when.split("&"):
+        name, equals, value = piece.strip().partition("=")
+        if not equals or not name.strip() or not value.strip():
+            _routing_fail(source, line, "MALFORMED_ROW", f"a condition is written name=value, not {piece.strip()!r}")
+        conditions.append(agent_routing.Condition(name.strip(), value.strip()))
+    if not reason.strip():     # a row of this form always says why; a prose reader may leave it out
+        _routing_fail(source, line, "MISSING_FIELD", "a routing rule row gives its reason after the agent list")
+    return agent_routing.RoutingRule(
+        head.strip(), tuple(conditions), tuple(_name_list(prefer, source, line, "the agent list")),
+        reason.strip(), agent_routing.Basis.dsl(source, line, row), head.strip() == _FALLBACK_ROW_ID)
+
+
+def _routing_precedence(line: int, row: str, source: str) -> agent_routing.RoutingPrecedence:
+    """The DSL form ``ID: HIGHER > LOWER: reason`` (the same shape as [conflict_precedence])."""
+    head, colon, body = row.partition(":")
+    relation, colon2, reason = body.partition(":")
+    if not colon or not colon2 or relation.count(">") != 1:
+        _routing_fail(source, line, "MALFORMED_ROW", "routing precedence is 'ID: HIGHER_RULE > LOWER_RULE: reason'")
+    higher, lower = (piece.strip() for piece in relation.split(">", 1))
+    if not reason.strip():
+        _routing_fail(source, line, "MISSING_FIELD", "a routing precedence row gives its reason after the relation")
+    return agent_routing.RoutingPrecedence(head.strip(), higher, lower, reason.strip(),
+                                           agent_routing.Basis.dsl(source, line, row))
+
+
+def _routing_from_sections(sections: Mapping[str, list[tuple[int, str]]], seen: set[str], settings: Sequence[AgentSetting],
+                           source: str, eof: int) -> Optional[agent_routing.RoutingTable]:
+    """The DSL producer of the routing records: rows in, a checked table out (or a RoutingParseError)."""
+    names = ("agents", "routing", "routing_precedence")
+    declared = [name for name in names if name in seen]
+    if not declared:
+        return None
+    for name in ("agents", "routing"):
+        if name not in seen:
+            _routing_fail(source, eof, "MISSING_SECTION",
+                          f"[{name}] is missing: a frame with {' / '.join('[' + d + ']' for d in declared)} also needs [{name}]")
+    for item in settings:
+        if item.key in ROUTED_CONFLICTING_SETTINGS:
+            _routing_fail(source, item.line, "AGENT_SETTINGS_CONFLICT",
+                          f"[agent_settings] {item.key} cannot be used with an [agents] table; "
+                          "write the model and effort on the agent's row")
+    agents = [_agent_record(line, row, source) for line, row in _rows("agents", sections, source, eof)]
+    rules = [_routing_rule(line, row, source) for line, row in _rows("routing", sections, source, eof)]
+    precedence = ([_routing_precedence(line, row, source) for line, row in _rows("routing_precedence", sections, source, eof)]
+                  if "routing_precedence" in seen else [])
+    try:
+        return agent_routing.build_routing_table(agents, rules, precedence)
+    except agent_routing.RoutingRecordError as exc:
+        line = exc.basis.line if exc.basis is not None and exc.basis.line is not None else eof
+        raise RoutingParseError(source, line, exc.message, exc.code) from exc
+
+
+def parse_frame(text: str, *, source: str = "<frame>") -> ProjectFrameSpec:
+    """Parse the closed human frame format, reporting every error with a line."""
+    if not isinstance(text, str):
+        raise TypeError("frame text must be a string")
+    lines = text.splitlines()
+    eof = len(lines) + 1
+    sections: dict[str, list[tuple[int, str]]] = {name: [] for name in (*SECTIONS, *OPTIONAL_SECTIONS)}
+    seen_sections: set[str] = set()
+    current: Optional[str] = None
+    for line_no, original in enumerate(lines, 1):
+        row = original.strip()
+        if not row or row.startswith("#"):
+            continue
+        if row.startswith("[") or row.endswith("]"):
+            match = _HEADER.fullmatch(row)
+            if not match:
+                _fail(source, line_no, "section header must be an exact lowercase [section_name]")
+            name = match.group(1)
+            if name not in sections:
+                _fail(source, line_no, f"unknown section [{name}]")
+            if name in seen_sections:
+                _fail(source, line_no, f"duplicate section [{name}]")
+            seen_sections.add(name)
+            current = name
+            continue
+        if current is None:
+            _fail(source, line_no, "content must appear inside a declared section")
+        sections[current].append((line_no, row))
+
+    missing_sections = [name for name in SECTIONS if name not in seen_sections]
+    if missing_sections:
+        _fail(source, eof, f"missing required section(s): {', '.join('[' + x + ']' for x in missing_sections)}")
+
+    goal_values: dict[str, tuple[int, str]] = {}
+    for line_no, row in sections["goal"]:
+        if ":" not in row:
+            _fail(source, line_no, "[goal] entries use 'project: ...' or 'statement: ...'")
+        key, value = row.split(":", 1)
+        key = key.strip()
+        if key not in {"project", "statement"}:
+            _fail(source, line_no, f"unknown [goal] field {key!r}")
+        if key in goal_values:
+            _fail(source, line_no, f"duplicate [goal] field {key!r}")
+        goal_values[key] = (line_no, _required_text(value, source, line_no, key))
+    for required in ("project", "statement"):
+        if required not in goal_values:
+            _fail(source, eof, f"[goal] requires {required!r}")
+    _, project = goal_values["project"]
+    goal_line, goal = goal_values["statement"]
+
+    invariants: list[Invariant] = []
+    for line_no, row in _rows("philosophy_invariants", sections, source, eof):
+        if ":" not in row:
+            _fail(source, line_no, "invariants use 'ID: invariant text'")
+        key, value = row.split(":", 1)
+        invariants.append(Invariant(_entry_id(key, source, line_no), _required_text(value, source, line_no, "invariant"), line_no))
+    _unique_ids(invariants, source, "invariant")
+
+    criteria: list[Criterion] = []
+    for line_no, row in _rows("completion_criteria", sections, source, eof):
+        if row.count("|") != 1:
+            _fail(source, line_no, "criteria use 'ID: criterion text | human-judged' or a JSON machine witness")
+        head, witness_text = row.split("|", 1)
+        if ":" not in head:
+            _fail(source, line_no, "criterion needs an ID followed by ':'")
+        key, value = head.split(":", 1)
+        criterion_text = _required_text(value, source, line_no, "criterion")
+        witness_text = _required_text(witness_text, source, line_no, "criterion witness")
+        if witness_text == "human-judged":
+            human_judged, witness = True, None
+        else:
+            human_judged = False
+            witness = _validate_witness(witness_text, source, line_no)
+        criteria.append(Criterion(_entry_id(key, source, line_no), criterion_text, line_no, human_judged, witness))
+    _unique_ids(criteria, source, "criterion")
+
+    phases: list[Phase] = []
+    for line_no, row in _rows("phases", sections, source, eof):
+        if ":" not in row:
+            _fail(source, line_no, "phases use 'ID: phase name'")
+        key, value = row.split(":", 1)
+        phases.append(Phase(_entry_id(key, source, line_no), _required_text(value, source, line_no, "phase name"), line_no))
+    _unique_ids(phases, source, "phase")
+
+    phase_order: list[PhaseOrder] = []
+    for line_no, row in _rows("phase_order", sections, source, eof):
+        if ":" not in row:
+            _fail(source, line_no, "phase order uses 'BEFORE -> AFTER: reason'")
+        relation, reason = row.split(":", 1)
+        if relation.count("->") != 1:
+            _fail(source, line_no, "phase order needs exactly one '->'")
+        before, after = (piece.strip() for piece in relation.split("->", 1))
+        phase_order.append(PhaseOrder(_entry_id(before, source, line_no, "phase id"),
+                                      _entry_id(after, source, line_no, "phase id"),
+                                      _required_text(reason, source, line_no, "phase-order reason"), line_no))
+
+    decisions: list[Decision] = []
+    for line_no, row in _rows("decisions", sections, source, eof):
+        if ":" not in row:
+            _fail(source, line_no, "decisions start with 'ID:'")
+        key, body = row.split(":", 1)
+        key = _entry_id(key, source, line_no, "decision id")
+        body = _required_text(body, source, line_no, "decision")
+        if "|" in body:
+            if body.count("|") != 2:
+                _fail(source, line_no, "policy decision uses 'ID: CHOICE|CONFIRM|SCOPE | condition | answer'")
+            kind, condition, answer = (part.strip() for part in body.split("|"))
+            if kind not in _POLICY_KINDS:
+                _fail(source, line_no, f"policy decision kind must be one of {', '.join(sorted(_POLICY_KINDS))}")
+            decisions.append(Decision(key, condition, _required_text(answer, source, line_no, "policy answer"),
+                                      line_no, kind, condition))
+        else:
+            subject, choice = _split_once(body, "=>", source, line_no, "decision")
+            decisions.append(Decision(key, subject, choice, line_no))
+    _unique_ids(decisions, source, "decision")
+
+    aliases: list[Alias] = []
+    for line_no, row in _rows("vocabulary_aliases", sections, source, eof):
+        alias, canonical = _split_once(row, "=>", source, line_no, "vocabulary alias")
+        if alias.casefold() == canonical.casefold():
+            _fail(source, line_no, "an alias must differ from its canonical term")
+        aliases.append(Alias(alias, canonical, line_no))
+    alias_keys = [item.alias.casefold() for item in aliases]
+    if len(alias_keys) != len(set(alias_keys)):
+        duplicate = next(item for item in aliases if alias_keys.count(item.alias.casefold()) > 1)
+        _fail(source, duplicate.line, f"duplicate vocabulary alias {duplicate.alias!r}")
+    for item in aliases:
+        if item.canonical.casefold() in alias_keys:
+            _fail(source, item.line, f"canonical term {item.canonical!r} is itself declared as an alias")
+
+    escalations: list[Escalation] = []
+    for line_no, row in _rows("escalation_conditions", sections, source, eof):
+        if ":" not in row:
+            _fail(source, line_no, "escalation uses 'ID: condition => reason => missing => scope'")
+        key, body = row.split(":", 1)
+        key = _entry_id(key, source, line_no, "escalation id")
+        if body.count("=>") != 3:
+            _fail(source, line_no, "escalation needs condition, reason, missing record, and scope separated by three '=>'")
+        condition, reason, missing, scope = (part.strip() for part in body.split("=>"))
+        condition = _required_text(condition, source, line_no, "escalation condition")
+        reason = _required_text(reason, source, line_no, "escalation reason")
+        missing = _required_text(missing, source, line_no, "missing record")
+        scope = _required_text(scope, source, line_no, "escalation scope")
+        if scope != "ANY" and scope not in _QUESTION_KINDS:
+            _fail(source, line_no, f"escalation scope must be ANY or a conductor question kind: {', '.join(sorted(_QUESTION_KINDS))}")
+        escalations.append(Escalation(key, condition, reason, missing, None if scope == "ANY" else scope, line_no))
+    _unique_ids(escalations, source, "escalation")
+
+    protected_actions: list[ProtectedAction] = []
+    for line_no, row in _rows("protected_actions", sections, source, eof):
+        if row.count("=>") != 2:
+            _fail(source, line_no, "protected action uses 'action => reason => missing record'")
+        action, reason, missing = (part.strip() for part in row.split("=>"))
+        protected_actions.append(ProtectedAction(_required_text(action, source, line_no, "protected action"),
+                                                 _required_text(reason, source, line_no, "protected-action reason"),
+                                                 _required_text(missing, source, line_no, "missing record"), line_no))
+    protected_keys = [item.action.casefold() for item in protected_actions]
+    if len(protected_keys) != len(set(protected_keys)):
+        duplicate = next(item for item in protected_actions if protected_keys.count(item.action.casefold()) > 1)
+        _fail(source, duplicate.line, f"duplicate protected action {duplicate.action!r}")
+
+    declared = tuple(name for name in OPTIONAL_SECTIONS if name in seen_sections)
+
+    write_paths: list[WritePath] = []
+    if "write_allowlist" in seen_sections:
+        for line_no, row in _rows("write_allowlist", sections, source, eof):
+            if ":" not in row:
+                _fail(source, line_no, "write allowlist uses 'ID: relative/path'")
+            key, value = row.split(":", 1)
+            path = _required_text(value, source, line_no, "write path")
+            problem = _write_path_problem(path)
+            if problem:
+                _fail(source, line_no, f"invalid write path {path!r}: {problem}")
+            write_paths.append(WritePath(_entry_id(key, source, line_no, "write allowlist id"), path, line_no))
+        _unique_ids(write_paths, source, "write allowlist")
+        paths_seen: set[str] = set()
+        for item in write_paths:
+            if item.path in paths_seen:
+                _fail(source, item.line, f"duplicate write path {item.path!r}")
+            paths_seen.add(item.path)
+
+    forbidden: list[ForbiddenAction] = []
+    if "forbidden_actions" in seen_sections:
+        for line_no, row in _rows("forbidden_actions", sections, source, eof):
+            if row.count("=>") != 1:
+                _fail(source, line_no, "forbidden action uses 'action => reason'")
+            action, reason = _split_once(row, "=>", source, line_no, "forbidden action")
+            forbidden.append(ForbiddenAction(action, reason, line_no))
+        forbidden_keys = [_exchange_text_key(item.action) for item in forbidden]
+        seen_actions: set[str] = set()
+        for item, key in zip(forbidden, forbidden_keys):
+            if key in seen_actions:
+                _fail(source, item.line, f"duplicate forbidden action {item.action!r}")
+            seen_actions.add(key)
+        protected_by_key = {_exchange_text_key(item.action): item for item in protected_actions}
+        for item, key in zip(forbidden, forbidden_keys):
+            if key in protected_by_key:
+                _fail(source, item.line,
+                      f"{item.action!r} is declared both forbidden and protected (line {protected_by_key[key].line}); "
+                      "a human cannot approve a forbidden action, so choose one section")
+
+    precedence: list[PrecedenceRule] = []
+    if "conflict_precedence" in seen_sections:
+        for line_no, row in _rows("conflict_precedence", sections, source, eof):
+            if ":" not in row:
+                _fail(source, line_no, "precedence uses 'ID: HIGHER > LOWER: reason'")
+            key, body = row.split(":", 1)
+            if ":" not in body:
+                _fail(source, line_no, "precedence uses 'ID: HIGHER > LOWER: reason'")
+            relation, reason = body.split(":", 1)
+            if relation.count(">") != 1:
+                _fail(source, line_no, "precedence needs exactly one '>' between the two rule families")
+            higher, lower = (piece.strip() for piece in relation.split(">", 1))
+            for family in (higher, lower):
+                if family not in PRECEDENCE_FAMILIES:
+                    _fail(source, line_no, f"unknown rule family {family!r}; use one of {', '.join(PRECEDENCE_FAMILIES)}")
+            if higher == lower:
+                _fail(source, line_no, "a rule family cannot take precedence over itself")
+            precedence.append(PrecedenceRule(_entry_id(key, source, line_no, "precedence id"), higher, lower,
+                                             _required_text(reason, source, line_no, "precedence reason"), line_no))
+        _unique_ids(precedence, source, "precedence")
+        _check_precedence_graph(precedence, source)
+
+    settings: list[AgentSetting] = []
+    if "agent_settings" in seen_sections:
+        for line_no, row in _rows("agent_settings", sections, source, eof):
+            if ":" not in row:
+                _fail(source, line_no, "agent settings use 'key: value'")
+            key, value = row.split(":", 1)
+            key = key.strip()
+            value = _required_text(value, source, line_no, "agent setting value")
+            problem = validate_agent_setting(key, value)
+            if problem:
+                _fail(source, line_no, problem)
+            if any(item.key == key for item in settings):
+                _fail(source, line_no, f"duplicate agent setting {key!r}")
+            settings.append(AgentSetting(key, value, line_no))
+
+    routing = _routing_from_sections(sections, seen_sections, settings, source, eof)
+
+    spec = ProjectFrameSpec(project, goal, goal_line, source, tuple(invariants), tuple(criteria), tuple(phases),
+                            tuple(phase_order), tuple(decisions), tuple(aliases), tuple(escalations),
+                            tuple(protected_actions), tuple(write_paths), tuple(forbidden), tuple(precedence),
+                            tuple(settings), declared, routing)
+    _check_order_graph(spec.phases, spec.phase_order, source, eof)
+    return spec
+
+
+def load_frame(path: str | Path) -> ProjectFrameSpec:
+    """Read and parse a UTF-8 frame file."""
+    frame_path = Path(path)
+    try:
+        text = frame_path.read_text(encoding="utf-8")
+    except OSError as exc:
+        raise FrameParseError(str(frame_path), 1, f"cannot read frame: {exc}") from exc
+    return parse_frame(text, source=str(frame_path))
+
+
+def _source_witness(spec: ProjectFrameSpec, section: str, line: int, entry: str, **extra: Any) -> dict[str, Any]:
+    return {"kind": "testimony", "by": "frame author", "source": spec.source,
+            "line": line, "section": section, "entry": entry, **extra}
+
+
+def _write(memory: Memory, kind: str, slots: dict[str, str], witness: dict[str, Any],
+           spec: ProjectFrameSpec, line: int) -> dict[str, Any]:
+    try:
+        return memory.write(kind, "frame author", witness=witness, **slots)
+    except (WriteRejected, KeyError, ValueError) as exc:
+        detail = getattr(exc, "reason", str(exc))
+        raise FrameCompileError(spec.source, line, f"cannot compile {kind} record: {detail}") from exc
+
+
+def compile_frame(spec: ProjectFrameSpec, memory: Memory | str | Path) -> Compilation:
+    """Compile a parsed frame into a fresh memory log and conductor records.
+
+    ``memory`` must be an empty ``Memory`` or a path to a new/empty memory log.
+    Existing records are never silently mixed into a frame compilation.
+    """
+    if not isinstance(spec, ProjectFrameSpec):
+        raise TypeError("compile_frame expects the ProjectFrameSpec returned by parse_frame/load_frame")
+    if isinstance(memory, Memory):
+        store = memory
+    else:
+        store = Memory(str(memory))
+    if store.records:
+        raise FrameCompileError(spec.source, spec.goal_line, "compilation requires an empty memory log")
+    frame = conductor.ProjectFrame(store)
+    records: list[dict[str, Any]] = []
+    source_text = f"{spec.project}: {spec.goal}"
+
+    goal_decision = _write(store, "DECISION", {"subject": f"{spec.project} goal", "choice": spec.goal},
+                           _source_witness(spec, "goal", spec.goal_line, source_text), spec, spec.goal_line)
+    records.append(goal_decision)
+
+    for item in spec.invariants:
+        record = _write(store, "INVARIANT", {"subject": f"invariant {item.id}", "rule": item.text},
+                        _source_witness(spec, "philosophy_invariants", item.line, item.text), spec, item.line)
+        records.append(record)
+
+    for item in spec.criteria:
+        witness_spec: dict[str, Any]
+        if item.human_judged:
+            check = "human judged"
+            acceptance_witness: dict[str, Any] = {"kind": "human-judged"}
+        else:
+            assert item.witness is not None
+            check_names = {"file_sha256": "file sha256", "text_in_file": "text in file",
+                           "git_commit": "git commit", "command_exit": "command exit"}
+            check = check_names[item.witness["kind"]]
+            acceptance_witness = dict(item.witness)
+        acceptance = {
+            "task_id": spec.project,
+            "item": item.text,
+            "witness": acceptance_witness,
+            "human_judged": item.human_judged,
+            "independent": False,
+        }
+        criterion_record = _write(
+            store, "ACCEPTANCE", {"subject": item.text, "check": check},
+            _source_witness(spec, "completion_criteria", item.line, item.text, acceptance=acceptance), spec, item.line)
+        records.append(criterion_record)
+        goal_record = _write(
+            store, "GOAL", {"subject": spec.project, "value": item.text},
+            _source_witness(spec, "goal", spec.goal_line, source_text,
+                            completion_criterion_id=item.id, acceptance_record_id=criterion_record["id"]),
+            spec, spec.goal_line)
+        records.append(goal_record)
+
+    for item in spec.decisions:
+        decision = _write(store, "DECISION", {"subject": item.subject, "choice": item.choice},
+                          _source_witness(spec, "decisions", item.line, f"{item.subject} => {item.choice}",
+                                          decision_id=item.id), spec, item.line)
+        records.append(decision)
+        if item.question_kind:
+            policy = _write(
+                store, "POLICY", {"subject": item.condition or item.subject, "answer": item.choice},
+                _source_witness(spec, "decisions", item.line, f"{item.question_kind} | {item.condition} | {item.choice}",
+                                question_kind=item.question_kind, condition=item.condition,
+                                authority_record_id=decision["id"]), spec, item.line)
+            records.append(policy)
+
+    for item in spec.phases:
+        phase_record = _write(
+            store, "DECISION", {"subject": f"phase {item.id}", "choice": item.name},
+            _source_witness(spec, "phases", item.line, item.name, phase_id=item.id), spec, item.line)
+        records.append(phase_record)
+
+    for item in spec.phase_order:
+        order_reason = f"phase order {item.before} to {item.after}"
+        reason_record = _write(
+            store, "DECISION", {"subject": order_reason, "choice": item.reason},
+            _source_witness(spec, "phase_order", item.line, f"{item.before} -> {item.after}: {item.reason}"),
+            spec, item.line)
+        records.append(reason_record)
+        order_record = _write(
+            store, "ORDER", {"subject": item.before, "target": item.after},
+            _source_witness(spec, "phase_order", item.line, f"{item.before} -> {item.after}: {item.reason}",
+                            reason_record_id=reason_record["id"]), spec, item.line)
+        records.append(order_record)
+
+    for item in spec.aliases:
+        alias_record = _write(store, "ALIAS", {"subject": item.alias, "value": item.canonical},
+                              _source_witness(spec, "vocabulary_aliases", item.line,
+                                              f"{item.alias} => {item.canonical}", scope="frame-vocabulary",
+                                              word=item.alias), spec, item.line)
+        records.append(alias_record)
+
+    for item in spec.escalations:
+        escalation = _write(
+            store, "ESCALATE", {"subject": item.condition, "target": "human"},
+            _source_witness(spec, "escalation_conditions", item.line, item.condition,
+                            condition=item.condition, reason=item.reason, missing=item.missing,
+                            question_kind=item.question_kind), spec, item.line)
+        records.append(escalation)
+
+    for index, item in enumerate(spec.protected_actions, 1):
+        code = f"PA{index}"
+        invariant_text = f"Human approval is required before {item.action}"
+        boundary = _write(
+            store, "INVARIANT", {"subject": f"protected action {code}", "rule": invariant_text},
+            _source_witness(spec, "protected_actions", item.line, item.action,
+                            authority_boundary=True, protected_action=item.action), spec, item.line)
+        records.append(boundary)
+        escalation = _write(
+            store, "ESCALATE", {"subject": item.action, "target": "human"},
+            _source_witness(spec, "protected_actions", item.line, item.action,
+                            condition=item.action, reason=item.reason, missing=item.missing,
+                            protected_action=True, question_kind=None), spec, item.line)
+        records.append(escalation)
+
+    # Records for the optional sections are written after every record of the nine
+    # required sections, so a frame without them compiles exactly as it always did.
+    for item in spec.write_allowlist:
+        records.append(_write(
+            store, "DECISION", {"subject": f"write allowlist {item.id}", "choice": item.path},
+            _source_witness(spec, "write_allowlist", item.line, f"{item.id}: {item.path}",
+                            allowlist_id=item.id, write_path=item.path), spec, item.line))
+
+    for index, item in enumerate(spec.forbidden_actions, 1):
+        records.append(_write(
+            store, "INVARIANT",
+            {"subject": f"forbidden action F{index}",
+             "rule": f"{item.action} is not permitted even with human approval"},
+            _source_witness(spec, "forbidden_actions", item.line, item.action,
+                            authority_boundary=True, forbidden_action=item.action,
+                            approval_effect="NOT_PERMITTED", reason=item.reason), spec, item.line))
+
+    for item in spec.precedence:
+        records.append(_write(
+            store, "DECISION", {"subject": f"precedence {item.id}", "choice": f"{item.higher} over {item.lower}"},
+            _source_witness(spec, "conflict_precedence", item.line,
+                            f"{item.higher} > {item.lower}: {item.reason}", precedence_id=item.id,
+                            higher=item.higher, lower=item.lower, reason=item.reason), spec, item.line))
+
+    for item in spec.agent_settings:
+        records.append(_write(
+            store, "DECISION", {"subject": f"agent setting {item.key}", "choice": item.value},
+            _source_witness(spec, "agent_settings", item.line, f"{item.key}: {item.value}",
+                            setting=item.key, value=item.value), spec, item.line))
+
+    return Compilation(spec, store, frame, records)
+
+
+def action_authority(spec: ProjectFrameSpec, action: str) -> str:
+    """Say whether a human approval can unlock ``action`` under this frame.
+
+    ``FORBIDDEN`` (declared in ``[forbidden_actions]``; no approval helps),
+    ``APPROVAL_REQUIRED`` (declared in ``[protected_actions]``) or ``UNDECLARED``
+    (the frame says nothing; that is not a statement that the action is allowed).
+    Names are compared after Unicode normalisation, case folding and whitespace
+    collapsing, never by similarity.
+    """
+    if not isinstance(spec, ProjectFrameSpec):
+        raise TypeError("action_authority expects a ProjectFrameSpec")
+    if not isinstance(action, str):
+        raise TypeError("action must be a string")
+    key = _exchange_text_key(action)
+    if key and any(_exchange_text_key(item.action) == key for item in spec.forbidden_actions):
+        return "FORBIDDEN"
+    if key and any(_exchange_text_key(item.action) == key for item in spec.protected_actions):
+        return "APPROVAL_REQUIRED"
+    return "UNDECLARED"
+
+
+def _exchange_text_key(value: str) -> str:
+    """Normalize only Unicode form, case, and whitespace for exact equality."""
+    return " ".join(unicodedata.normalize("NFKC", value).casefold().split())
+
+
+def _exchange_subject_and_attribute(question: str) -> tuple[Optional[str], str]:
+    """Take the topic and choice dimension from Japanese interrogative structure."""
+    surface = unicodedata.normalize("NFKC", question)
+    # Parentheses in these prompts are usually explanatory context, not the asked slot.
+    surface = re.sub(r"（[^（）]*）|\([^()]*\)|\[[^\[\]]*\]", " ", surface)
+    surface = re.sub(r"[「」『』\"“”]", "", surface)
+    surface = re.sub(r"\s+", "", surface).strip("?？。!！")
+    if not surface:
+        return None, "選択"
+
+    cues = (
+        ("どこから", "起点"), ("どこへ", "到達先"), ("どこに", "場所"),
+        ("どこで", "場所"), ("どこ", "場所"), ("いくつ", "数量"),
+        ("いくら", "価格"), ("いつ", "時期"), ("誰", "担当"),
+        ("だれ", "担当"), ("どの", "選択"), ("どれ", "選択"),
+        ("何を", "対象"), ("何に", "用途"), ("何が", "内容"),
+        ("何", "内容"), ("どう", "方法"),
+    )
+    cue_hit: Optional[tuple[int, str, str]] = None
+    for cue, category in cues:
+        pos = surface.rfind(cue)
+        if pos >= 0 and (cue_hit is None or pos > cue_hit[0] or
+                         (pos == cue_hit[0] and len(cue) > len(cue_hit[1]))):
+            cue_hit = (pos, cue, category)
+
+    if cue_hit is not None:
+        pos, cue, category = cue_hit
+        prefix, tail = surface[:pos], surface[pos + len(cue):]
+        # A following noun after どの/どれ identifies what is being chosen.
+        if cue == "どの":
+            target = re.match(r"([^をにはがで、。]+)", tail)
+            attribute = (target.group(1) + "選択") if target else category
+        elif cue == "どれ":
+            attribute = category
+        else:
+            action = tail.split("、", 1)[0].split("。", 1)[0]
+            action = re.sub(r"(?:に)?(?:しますか|ますか|ですか|するか|する|します|したい|できるか).*$", "", action)
+            action = action.strip("はがをにでへと、:：")
+            if cue.startswith("どこ"):
+                attribute = (action + "場所") if action else category
+                if cue == "どこから" and action and any(x in action for x in ("配布", "出", "取得")):
+                    attribute = action + "元"
+            elif category == "対象" and action:
+                attribute = action + category
+            elif category == "用途" and action:
+                attribute = action + category
+            elif category == "方法" and action:
+                attribute = action + "方"
+            else:
+                attribute = category
+    else:
+        # A yes/no prompt still has a structural choice dimension. Keep it generic
+        # when no action can be isolated without guessing.
+        prefix = surface
+        attribute = "可否" if re.search(r"(?:ます|です|よい|いい)か$", surface) else "選択"
+
+    clauses = re.split(r"[、,;；]", prefix)
+    prefix = next((clause for clause in reversed(clauses) if clause.strip()), prefix)
+    prefix = prefix.replace("として", "")
+    prefix = prefix.strip("はがをにでへと、:：?？。!！ ")
+    # Keep the last case-marked noun phrase, dropping a preceding clause.
+    markers = [m for m in re.finditer(r"[はがをへにでと]", prefix)]
+    if markers:
+        prefix = prefix[:markers[-1].start()].strip("はがをへにでと、:： ")
+    if "の" in prefix:
+        prefix = prefix.rsplit("の", 1)[-1]
+    subject = prefix.strip("はがをへにでと、:：?？。!！ \"'") or None
+    return subject, attribute or "選択"
+
+
+def _exchange_question_key(question: str, options: Sequence[str], subject: Optional[str],
+                           attribute: str) -> str:
+    payload = {
+        "question": _exchange_text_key(question),
+        "options": sorted(_exchange_text_key(option) for option in options),
+        "subject": _exchange_text_key(subject or ""),
+        "attribute": _exchange_text_key(attribute),
+    }
+    return json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+
+
+def _stable_exchange_token(prefix: str, value: str) -> str:
+    digest = hashlib.sha256(value.encode("utf-8")).hexdigest()
+    return f"{prefix}_{digest}"
+
+
+def decision_from_exchange(
+    question: str,
+    options: Sequence[str],
+    human_answer: Optional[str],
+    *,
+    session: Optional[str] = None,
+    row: Optional[int] = None,
+    who_decided: str = "human",
+    memory: Optional[Memory] = None,
+) -> DecisionDraft | Refusal:
+    """Build an askable DECISION from an exchange without generating answer text.
+
+    Option labels are matched only by normalized equality. Other answers remain
+    verbatim in the draft and testimony witness. The semantic writer may reject a
+    full sentence as its canonical value; in that case the DECISION stores a stable
+    value key while the testimony retains the exact human words for exact-match
+    retrieval. Both paths pass the unchanged typed writer askability check.
+    """
+    if not isinstance(question, str) or not question.strip():
+        return Refusal("empty_question", "a question is required to scope a decision")
+    if isinstance(options, (str, bytes)) or not isinstance(options, Sequence):
+        return Refusal("invalid_options", "options must be a sequence of strings")
+    if any(not isinstance(option, str) or not option.strip() for option in options):
+        return Refusal("invalid_options", "each option must be a nonempty string")
+    if human_answer is None or not isinstance(human_answer, str) or not human_answer.strip():
+        return Refusal("no_human_answer", "an absent or empty answer is not a decision")
+    answer_key = _exchange_text_key(human_answer)
+    if answer_key in {"unknown", "不明", "わからない", "わかりません"}:
+        return Refusal("unknown_answer", "unknown is not a human decision")
+    folded_answer = unicodedata.normalize("NFKC", human_answer).casefold()
+    if "user dismissed" in folded_answer and "wait for next instruction" in folded_answer:
+        return Refusal("dismissed_exchange", "the user dismissed the question")
+    if not isinstance(who_decided, str) or not who_decided.strip():
+        return Refusal("missing_decider", "who_decided must identify the human decision maker")
+    if session is not None and (not isinstance(session, str) or not session.strip()):
+        return Refusal("invalid_session", "session must be a nonempty string when supplied")
+    if row is not None and (type(row) is not int or row < 1):
+        return Refusal("invalid_row", "row must be a positive one-based integer when supplied")
+
+    clean_options = list(options)
+    matches = [i for i, option in enumerate(clean_options)
+               if _exchange_text_key(option) == answer_key]
+    if len(matches) > 1:
+        return Refusal("ambiguous_option", "normalized answer matches more than one option")
+    option_index = matches[0] if matches else None
+    matched_option = clean_options[option_index] if option_index is not None else None
+    subject, attribute = _exchange_subject_and_attribute(question)
+    question_key = _exchange_question_key(question, clean_options, subject, attribute)
+    session_scope = session or ""
+    option_key = tuple(sorted(_exchange_text_key(option) for option in clean_options))
+    subject_key = _exchange_text_key(subject) if subject else question_key
+    record_match_key = (session_scope, subject_key, _exchange_text_key(attribute), option_key)
+    opaque_record_subject = _stable_exchange_token(
+        "exchange", json.dumps(record_match_key, ensure_ascii=False, separators=(",", ":")))
+    record_subjects: list[str] = []
+    if subject:
+        session_tag = hashlib.sha256(session_scope.encode("utf-8")).hexdigest()[:12]
+        record_subjects.append(f"{subject}{attribute}_s{session_tag}")
+    record_subjects.append(opaque_record_subject)
+    record_value_key = _stable_exchange_token("value", answer_key)
+    witness: dict[str, Any] = {
+        "kind": "testimony",
+        "by": who_decided,
+        "who_decided": who_decided,
+        "session": session,
+        "row": row,
+        "question": question,
+        "options": clean_options,
+        "subject": subject,
+        "attribute": attribute,
+        "value": human_answer,
+        "normalized_key": answer_key,
+        "question_key": question_key,
+        "matched_option": matched_option,
+        "option_index": option_index,
+        "record_value_key": record_value_key,
+    }
+    store = memory if memory is not None else _ExchangeMemory()
+    if not isinstance(store, memory_frame.Memory):
+        return Refusal("invalid_memory", "memory must be a typed project-memory writer")
+
+    record: Optional[dict[str, Any]] = None
+    last_error: Optional[Exception] = None
+    for record_subject in record_subjects:
+        if human_answer == human_answer.strip():
+            direct_witness = {**witness, "record_subject": record_subject,
+                              "writer_value": "verbatim_value"}
+            try:
+                record = store.write("DECISION", who_decided, witness=direct_witness,
+                                     subject=record_subject, choice=human_answer)
+                if record["slots"]["choice"] == human_answer:
+                    break
+                record = None
+            except (WriteRejected, KeyError, ValueError) as exc:
+                last_error = exc
+        key_witness = {**witness, "record_subject": record_subject,
+                       "writer_value": "normalized_key"}
+        try:
+            record = store.write("DECISION", who_decided, witness=key_witness,
+                                 subject=record_subject, choice=record_value_key)
+            break
+        except (WriteRejected, KeyError, ValueError) as exc:
+            last_error = exc
+    if record is None:
+        detail = getattr(last_error, "reason", str(last_error or "typed writer rejected the record"))
+        return Refusal("typed_writer_rejected", detail)
+    return DecisionDraft(
+        subject=subject,
+        attribute=attribute,
+        value=human_answer,
+        normalized_key=answer_key,
+        question_key=question_key,
+        session=session,
+        row=row,
+        who_decided=who_decided,
+        matched_option=matched_option,
+        option_index=option_index,
+        record=record,
+    )
+
+
+# ---------------------------------------------------------------------------
+# Conduct entry: read a frame file of either format and refuse with a typed reason
+# ---------------------------------------------------------------------------
+
+REFUSAL_REASONS = (
+    "FRAME_NOT_FOUND", "FRAME_UNREADABLE", "FRAME_FORMAT_UNKNOWN", "FRAME_PARSE_ERROR",
+    "FRAME_JSONL_INVALID", "FRAME_COMPILE_ERROR", "WRITE_ALLOWLIST_MISSING", "WRITE_ALLOWLIST_EMPTY",
+    "MACHINE_ACCEPTANCE_MISSING", "REPO_NOT_FOUND", "REPO_NOT_GIT", "AGENT_SETTING_MISSING",
+    "AGENT_SETTING_INVALID", "NO_LAUNCH_PLANNED", "LEDGER_UNUSABLE", "INTERNAL_ERROR",
+    "ROUTING_INVALID", "ROUTING_UNDECIDED",
+)
+_JSONL_OPS = frozenset(("write", "supersede", "alias"))
+
+
+class FrameRefusal(Exception):
+    """A typed refusal.  ``missing`` always says what to add or fix; nothing is guessed."""
+
+    def __init__(self, reason: str, missing: str, detail: str = "", source: Optional[str] = None,
+                 line: Optional[int] = None, code: Optional[str] = None):
+        if reason not in REFUSAL_REASONS:
+            raise ValueError(f"unknown refusal reason {reason!r}")
+        self.reason = reason
+        self.missing = missing
+        self.detail = detail
+        self.source = source
+        self.line = line
+        self.code = code
+        super().__init__(f"{reason}: {missing}")
+
+    def as_dict(self) -> dict[str, Any]:
+        view = {"reason": self.reason, "missing": self.missing, "detail": self.detail,
+                "source": self.source, "line": self.line}
+        if self.code is not None:  # only the routing refusals carry a finer code; the older shape is unchanged
+            view["code"] = self.code
+        return view
+
+
+@dataclass(frozen=True)
+class ConductFrame:
+    """A frame file as the conduct entry sees it, before any compilation."""
+
+    source: str
+    sha256: str
+    size: int
+    format: str
+    blank_lines: int
+    comment_lines: int
+    spec: Optional[ProjectFrameSpec]
+    events: tuple[dict[str, Any], ...]
+    # None = the frame does not declare an allowlist; () = it declares none explicitly.
+    write_allowlist: Optional[tuple[str, ...]]
+    agent_settings: Mapping[str, tuple[str, ...]]
+    machine_criteria: int
+    human_criteria: int
+    text: str = ""
+    routing: Optional[agent_routing.RoutingTable] = None
+
+
+def read_frame_bytes(path: str | Path) -> bytes:
+    """Read a frame file, telling apart 'does not exist' from 'cannot be read'."""
+    frame_path = Path(path)
+    source = str(frame_path)
+    if not frame_path.exists() and not frame_path.is_symlink():
+        raise FrameRefusal("FRAME_NOT_FOUND", f"give --frame the path of an existing frame file; {source!r} does not exist",
+                           source=source)
+    if frame_path.is_dir():
+        raise FrameRefusal("FRAME_UNREADABLE", f"{source!r} is a directory; give the path of a frame file",
+                           "is a directory", source=source)
+    try:
+        return frame_path.read_bytes()
+    except OSError as exc:
+        raise FrameRefusal("FRAME_UNREADABLE", f"make {source!r} readable by this user and retry",
+                           f"{type(exc).__name__}: {exc.strerror or exc}", source=source) from exc
+
+
+def decode_frame(raw: bytes, source: str) -> str:
+    try:
+        text = raw.decode("utf-8")
+    except UnicodeDecodeError as exc:
+        raise FrameRefusal("FRAME_UNREADABLE",
+                           f"re-save {source!r} as UTF-8 text; byte {exc.start} is not valid UTF-8",
+                           f"not valid UTF-8 at byte {exc.start}", source=source) from exc
+    return text[1:] if text.startswith("\ufeff") else text
+
+
+def detect_frame_format(text: str, source: str = "<frame>") -> str:
+    """Decide ``markdown`` or ``jsonl`` from the content alone (the extension is ignored)."""
+    known = set(SECTIONS) | set(OPTIONAL_SECTIONS)
+    first = None
+    for line in text.splitlines():
+        row = line.strip()
+        if row and not row.startswith("#"):
+            first = row
+            break
+    if first is not None:
+        header = _HEADER.fullmatch(first)
+        if header and header.group(1) in known:
+            return "markdown"
+        try:
+            value = json.loads(first)
+        except (json.JSONDecodeError, ValueError, RecursionError):
+            value = None
+        if isinstance(value, dict) and value.get("op") in _JSONL_OPS:
+            return "jsonl"
+    raise FrameRefusal(
+        "FRAME_FORMAT_UNKNOWN",
+        "write a Markdown frame whose first line (after comments) is a section header such as [goal] "
+        "(see docs/frames/vera_project_frame.md), or a JSONL memory log whose lines are "
+        "{\"op\": \"write\"|\"supersede\"|\"alias\", ...} objects",
+        "the content is neither" if first is not None else "the file has no content", source=source)
+
+
+def _validate_jsonl(text: str, source: str) -> tuple[dict[str, Any], ...]:
+    conductor.install_conductor_kinds()
+    events: list[dict[str, Any]] = []
+    written: set[str] = set()
+
+    def bad(line: int, why: str, missing: str) -> FrameRefusal:
+        return FrameRefusal("FRAME_JSONL_INVALID", missing, why, source=source, line=line)
+
+    for number, raw_line in enumerate(text.splitlines(), 1):
+        if not raw_line.strip():
+            continue
+        try:
+            event = json.loads(raw_line)
+        except (json.JSONDecodeError, ValueError, RecursionError) as exc:
+            raise bad(number, f"not valid JSON: {exc}", f"fix or remove line {number} so that it is one JSON object") from exc
+        if not isinstance(event, dict) or event.get("op") not in _JSONL_OPS:
+            raise bad(number, "line is not an object with op write, supersede or alias",
+                      f"line {number} must be a JSON object with op 'write', 'supersede' or 'alias'")
+        op = event["op"]
+        if op == "write":
+            record = event.get("record")
+            if not isinstance(record, dict) or not isinstance(record.get("id"), str) or not record["id"]:
+                raise bad(number, "write event has no record with a string id", f"line {number} needs record.id")
+            kind = record.get("kind")
+            if not isinstance(kind, str) or kind not in memory_frame.KINDS:
+                raise bad(number, f"unknown record kind {kind!r}", f"line {number} needs record.kind to be one of "
+                          + ", ".join(sorted(memory_frame.KINDS)))
+            names = memory_frame.KINDS[kind][0]
+            slots = record.get("slots")
+            if (not isinstance(slots, dict) or set(slots) != set(names) or
+                    not all(isinstance(value, str) for value in slots.values())):
+                raise bad(number, f"{kind} slots must be exactly {list(names)} with text values",
+                          f"line {number} needs record.slots with exactly the keys {list(names)}")
+            witness = record.get("witness")
+            if witness is not None and not isinstance(witness, dict):
+                raise bad(number, "witness must be an object or null", f"line {number}: make record.witness an object")
+            if record["id"] in written:
+                raise bad(number, f"duplicate record id {record['id']!r}", f"line {number} repeats a record id; ids are unique")
+            written.add(record["id"])
+            section = witness.get("section") if isinstance(witness, dict) else None
+            if section == "write_allowlist":
+                problem = _write_path_problem(str(witness.get("write_path", "")))
+                if problem:
+                    raise bad(number, f"write_path {witness.get('write_path')!r}: {problem}",
+                              f"line {number}: give witness.write_path a repository-relative path without globs")
+            elif section == "agent_settings":
+                problem = validate_agent_setting(str(witness.get("setting", "")), str(witness.get("value", "")))
+                if problem:
+                    raise bad(number, problem, f"line {number}: fix witness.setting / witness.value")
+        elif op == "supersede":
+            if (not isinstance(event.get("id"), str) or not isinstance(event.get("by"), str) or
+                    event["id"] not in written or event["by"] not in written):
+                raise bad(number, "supersede must name two records written earlier in the log",
+                          f"line {number} needs id and by of records written on earlier lines")
+        else:
+            if not isinstance(event.get("scope"), str) or not isinstance(event.get("word"), str):
+                raise bad(number, "alias event needs string scope and word", f"line {number} needs scope and word")
+        events.append(event)
+    if not events:
+        raise bad(1, "no events", "the log is empty; write records or use a Markdown frame")
+    return tuple(events)
+
+
+def _jsonl_active(events: Sequence[Mapping[str, Any]]) -> list[dict[str, Any]]:
+    superseded = {event["id"] for event in events if event.get("op") == "supersede"}
+    return [event["record"] for event in events
+            if event.get("op") == "write" and event["record"]["id"] not in superseded]
+
+
+def load_conduct_frame(path: str | Path, *, on_read: Any = None) -> ConductFrame:
+    """Read ``path``, detect its format from the content, and parse or validate it.
+
+    Raises :class:`FrameRefusal` (FRAME_NOT_FOUND, FRAME_UNREADABLE, FRAME_FORMAT_UNKNOWN,
+    FRAME_PARSE_ERROR or FRAME_JSONL_INVALID); it does not decide whether the frame is
+    complete enough to start an agent, which is :func:`check_conduct_ready`.
+    ``on_read``, if given, is called once the file is read and its format known (before
+    parsing) with the path, digest, size, format and the counts of lines skipped.
+    """
+    source = str(path)
+    raw = read_frame_bytes(path)
+    text = decode_frame(raw, source)
+    fmt = detect_frame_format(text, source)
+    digest = hashlib.sha256(raw).hexdigest()
+    lines = text.splitlines()
+    blank = sum(1 for line in lines if not line.strip())
+    comments = sum(1 for line in lines if line.strip().startswith("#")) if fmt == "markdown" else 0
+    if on_read is not None:
+        on_read({"path": source, "sha256": digest, "bytes": len(raw), "format": fmt,
+                 "blank_lines": blank, "comment_lines": comments, "skipped_lines": blank + comments})
+    if fmt == "markdown":
+        try:
+            spec = parse_frame(text, source=source)
+        except RoutingParseError as exc:
+            raise FrameRefusal("ROUTING_INVALID", f"fix {source}:{exc.line}: {exc.message}", exc.message,
+                               source=source, line=exc.line, code=exc.code) from exc
+        except FrameParseError as exc:
+            raise FrameRefusal("FRAME_PARSE_ERROR", f"fix {source}:{exc.line}: {exc.message}", exc.message,
+                               source=source, line=exc.line) from exc
+        allowlist = (tuple(item.path for item in spec.write_allowlist)
+                     if "write_allowlist" in spec.declared_sections else None)
+        settings = {item.key: (item.value,) for item in spec.agent_settings}
+        machine = sum(1 for item in spec.criteria if not item.human_judged)
+        human = sum(1 for item in spec.criteria if item.human_judged)
+        return ConductFrame(source, digest, len(raw), fmt, blank, comments, spec, (), allowlist, settings,
+                            machine, human, text, spec.routing)
+    events = _validate_jsonl(text, source)
+    active = _jsonl_active(events)
+    paths = tuple(sorted({str(r["witness"]["write_path"]) for r in active
+                          if r["kind"] == "DECISION" and isinstance(r.get("witness"), dict) and
+                          r["witness"].get("section") == "write_allowlist"}))
+    values: dict[str, set[str]] = {}
+    for record in active:
+        witness = record.get("witness")
+        if record["kind"] == "DECISION" and isinstance(witness, dict) and witness.get("section") == "agent_settings":
+            values.setdefault(str(witness["setting"]), set()).add(str(witness["value"]))
+    machine = human = 0
+    for record in active:
+        if record["kind"] != "ACCEPTANCE":
+            continue
+        witness = record.get("witness")
+        acceptance = witness.get("acceptance") if isinstance(witness, dict) else None
+        if isinstance(acceptance, dict) and acceptance.get("human_judged") is False:
+            machine += 1
+        else:
+            human += 1
+    return ConductFrame(source, digest, len(raw), fmt, blank, 0, None, events, paths or None,
+                        {key: tuple(sorted(vals)) for key, vals in values.items()}, machine, human, text)
+
+
+def check_conduct_ready(frame: ConductFrame) -> Optional[FrameRefusal]:
+    """Say what a frame still lacks before an agent can be started, or ``None``.
+
+    The allowlist is never inferred and a human-judged criterion is never turned into a
+    command.  Every shortfall is listed in ``missing``; ``reason`` names the first.
+    """
+    problems: list[tuple[str, str]] = []
+    if frame.write_allowlist is None:
+        problems.append(("WRITE_ALLOWLIST_MISSING",
+                         "add a [write_allowlist] section listing the repository-relative paths the agent may write, "
+                         "one 'ID: path' per line (for example 'W1: src'); no path is guessed"))
+    elif not frame.write_allowlist:
+        problems.append(("WRITE_ALLOWLIST_EMPTY",
+                         "[write_allowlist] is explicitly empty ('none: none'); list at least one path, "
+                         "since an agent that may write nowhere cannot do the work"))
+    if frame.machine_criteria == 0:
+        if frame.human_criteria:
+            problems.append(("MACHINE_ACCEPTANCE_MISSING",
+                             f"all {frame.human_criteria} completion criteria are human-judged; add at least one "
+                             "machine-checkable criterion, for example "
+                             "'C9: tests pass | {\"kind\":\"command_exit\",\"command\":[\"python\",\"-m\",\"pytest\"],"
+                             "\"expected_exit\":0}'"))
+        else:
+            problems.append(("MACHINE_ACCEPTANCE_MISSING",
+                             "the frame has no completion criterion; add a machine-checkable one such as a "
+                             "command_exit witness under [completion_criteria]"))
+    if not problems:
+        return None
+    first = problems[0]
+    return FrameRefusal(first[0], " / ".join(text for _, text in problems),
+                        "; ".join(reason for reason, _ in problems), source=frame.source)
+
+
+__all__ = [
+    "AGENT_SETTING_KEYS", "Alias", "AgentSetting", "Compilation", "ConductFrame", "Criterion", "Decision",
+    "DecisionDraft", "Escalation", "ForbiddenAction", "FrameCompileError", "FrameError", "FrameParseError",
+    "FrameRefusal", "Invariant", "OPTIONAL_SECTIONS", "PRECEDENCE_FAMILIES", "Phase", "PhaseOrder", "RoutingParseError",
+    "PrecedenceRule", "ProjectFrameSpec", "ProtectedAction", "REFUSAL_REASONS", "Refusal", "SECTIONS",
+    "WritePath", "action_authority", "check_conduct_ready", "compile_frame", "decision_from_exchange",
+    "decode_frame", "detect_frame_format", "load_conduct_frame", "load_frame", "parse_frame",
+    "read_frame_bytes", "validate_agent_setting",
+]

@@ -1,0 +1,230 @@
+{
+ "argv": [
+  "ask",
+  "--",
+  "次の文を三つの箇条書きに分けてください。「会議は水曜の午後二時に第三会議室で開かれ、議題は予算案の確認で、資料は前日までに共有されます。」"
+ ],
+ "elapsed_ms": 248.0,
+ "entry": "cli-ask",
+ "exit_code": 0,
+ "id": "b2s-017",
+ "provenance": {
+  "modules": 62,
+  "outside": []
+ },
+ "reason": null,
+ "stderr": "",
+ "stdout_json": {
+  "as_core": null,
+  "as_facet_only": null,
+  "core": null,
+  "coverage": 0.0,
+  "door": "general",
+  "evidence": [],
+  "grain": {
+   "agree": 0,
+   "of": 6
+  },
+  "how_to_resolve": "sentences about the subject — the census found nothing to count",
+  "language": "ja",
+  "missing": [
+   "文",
+   "三つ",
+   "箇条書き",
+   "分",
+   "会議",
+   "水曜",
+   "午後二時",
+   "第三会議室",
+   "開",
+   "議題",
+   "予算案",
+   "確認",
+   "資料",
+   "前日",
+   "共有"
+  ],
+  "reason": "no_candidate_cross",
+  "remedy": {
+   "how": "remember / propose_ai_facts then accept_ai_fact",
+   "language": "ja",
+   "minimum": 3,
+   "missing": [
+    "文",
+    "三つ",
+    "箇条書き",
+    "分",
+    "会議",
+    "水曜",
+    "午後二時",
+    "第三会議室",
+    "開",
+    "議題",
+    "予算案",
+    "確認",
+    "資料",
+    "前日",
+    "共有"
+   ],
+   "needs_registration": true,
+   "note": "if the question names no content word at all, the honest route is a generator rather than a registration; see UNKNOWN_NO_SUBJECT",
+   "register": "sentences about the subject — the census found nothing to count",
+   "then": "rebuild the judge — measured 1.4s on 86,967 cores",
+   "verdict": "UNKNOWN_NO_EVIDENCE"
+  },
+  "retrieved": [],
+  "sources": [],
+  "staircase": "UNKNOWN_NOT_PRESENT",
+  "text": "",
+  "trace": [
+   {
+    "asked_slot": "what",
+    "case_frame": {
+     "arguments": [
+      "次の文",
+      "三つの箇条書き",
+      "会議",
+      "資料"
+     ],
+     "attribute": "",
+     "negated": false,
+     "predicates": [
+      "分ける",
+      "開く",
+      "共有する"
+     ],
+     "requested_unit": "",
+     "slot": "what",
+     "subject": "水曜の午後二時",
+     "who_role": ""
+    },
+    "kind": "fact",
+    "part": "question.read",
+    "status": "ran"
+   },
+   {
+    "part": "stage_split.split",
+    "status": "ran",
+    "verdict": "UNKNOWN_UNSEGMENTED"
+   },
+   {
+    "part": "typo_recovery.recover",
+    "status": "abstained",
+    "verdict": "LACK_OF_ASSET"
+   },
+   {
+    "part": "meaning_assets.lattice",
+    "reason": "writer.json",
+    "status": "abstained"
+   },
+   {
+    "part": "sense_split.resolve",
+    "status": "abstained",
+    "verdict": "LACK_OF_ASSET"
+   },
+   {
+    "count": 0,
+    "part": "polarity.observe_negation",
+    "status": "ran"
+   },
+   {
+    "act": "request",
+    "part": "intent.act_by_form",
+    "status": "ran"
+   },
+   {
+    "part": "intent_frames.parse",
+    "reason": "question is not an instruction",
+    "status": "abstained",
+    "verdict": "NOT_APPLICABLE"
+   },
+   {
+    "arm": null,
+    "part": "arm_schema.classify_intent",
+    "status": "ran"
+   },
+   {
+    "kind": null,
+    "part": "skills.answer",
+    "status": "abstained"
+   },
+   {
+    "ability": null,
+    "part": "abilities.Abilities.answer",
+    "status": "abstained"
+   },
+   {
+    "held": [
+     "ja"
+    ],
+    "language": "ja",
+    "part": "polyglot.Polyglot.route",
+    "status": "ran"
+   },
+   {
+    "part": "vera.Vera.ask",
+    "status": "ran",
+    "verdict": "UNKNOWN_NO_EVIDENCE"
+   },
+   {
+    "coverage": 0.0,
+    "part": "graded.GradedJudge.ask",
+    "status": "ran"
+   },
+   {
+    "part": "resolution.Ladder",
+    "reason": "graded judge builds and reads its nested ladders",
+    "status": "ran"
+   },
+   {
+    "part": "stacked.ask",
+    "status": "ran",
+    "verdict": "UNKNOWN_NO_EVIDENCE"
+   },
+   {
+    "part": "consensus_store.consensus_over_store",
+    "status": "ran",
+    "verdict": "UNKNOWN_NO_EVIDENCE"
+   },
+   {
+    "part": "reach.reach",
+    "reached": [],
+    "status": "ran"
+   },
+   {
+    "part": "explain.explain",
+    "reason": "no writer or no supported unit landing",
+    "status": "abstained"
+   },
+   {
+    "how_to_resolve": "sentences about the subject — the census found nothing to count",
+    "part": "remedy.remedy",
+    "status": "ran",
+    "verdict": "UNKNOWN_NO_EVIDENCE"
+   },
+   {
+    "asks": "",
+    "part": "ask_back.question",
+    "reason": "verdict has no human-answerable candidate",
+    "status": "abstained"
+   },
+   {
+    "part": "coverage.document_needed",
+    "reason": "no domain witnesses",
+    "status": "abstained"
+   },
+   {
+    "part": "gap_graph.refusal_to_gap",
+    "reason": "no opt-in gap_path",
+    "status": "abstained"
+   },
+   {
+    "part": "grow.log_refusal",
+    "reason": "no queue opt-in or different verdict",
+    "status": "abstained"
+   }
+  ],
+  "verdict": "UNKNOWN_NO_EVIDENCE"
+ },
+ "stdout_text": null
+}

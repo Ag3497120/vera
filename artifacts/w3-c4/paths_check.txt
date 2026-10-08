@@ -1,0 +1,30 @@
+$ git diff c334fe6 --stat -- verantyx/
+ verantyx/cli.py     | 130 +++++++++++++++++++++++++++++++++++++++++++++++++++-
+ verantyx/observe.py |  24 ++++++++++
+ 2 files changed, 153 insertions(+), 1 deletion(-)
+$ git diff c334fe6 -- verantyx/observe.py | grep ^- | grep -v ^---   (expect nothing)
+$ git diff c334fe6 -- verantyx/cli.py | grep ^- | grep -v ^---
+-        out, rc = apply_to_ask(v.ask(args.query), policy, query=args.query, mode="round5",
+$ git diff c334fe6 --stat -- docs/
+ docs/BASIS_POLICY.md |  38 +++++++++
+ docs/OBSERVATION.md  | 222 ++++++++++++++++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 259 insertions(+), 1 deletion(-)
+$ git diff c334fe6 -- docs/ | grep ^- | grep -v ^---   (the only removed line is the W3-c2 known-hole 12, re-written with an appended note, not deleted)
+-12. `vera ask --mode round5 --document` につながっていない（このチケットの範囲外）。
+$ tracked files deleted or renamed:
+(none above)
+$ stage code uses no file API:
+(none above)
+$ git status --short | grep -vE <allowed paths>
+(empty above = every change is inside the allowed paths)
+$ find __pycache__
+(none above)
+$ git status --short
+ M docs/BASIS_POLICY.md
+ M docs/OBSERVATION.md
+ M verantyx/cli.py
+ M verantyx/observe.py
+?? artifacts/w3-c4/
+?? tests/observe/question_ask/
+?? tests/test_ask_question_cross.py
+?? tests/test_ask_question_cross_data.py

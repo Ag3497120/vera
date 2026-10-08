@@ -1,0 +1,22 @@
+{
+ "dev_verbs": {
+  "by_kind": {
+   "typed": 124,
+   "unknown_coined": 0,
+   "unknown_fragment": 2
+  },
+  "on_the_list": 126,
+  "rows": 150
+ },
+ "needs_total": 5022,
+ "note": "counted only; the list was made without the test data; the mid-level auditor's 100 verbs are unknown to the implementer",
+ "verb_check_300": {
+  "by_kind": {
+   "typed": 258,
+   "unknown_coined": 0,
+   "unknown_fragment": 2
+  },
+  "on_the_list": 260,
+  "rows": 300
+ }
+}

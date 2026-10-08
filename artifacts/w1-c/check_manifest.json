@@ -1,0 +1,1866 @@
+{
+ "manifest": "artifacts/w1-c/manifest.json",
+ "seed": 20261002,
+ "files": [
+  {
+   "path": "out/sentences.jsonl",
+   "recount": {
+    "bytes": 304983990,
+    "lines": 1366290,
+    "sha256": "ecceb5343a782ec0b1f7092a384e36b6b8c38dacce40d6cb2a5d1b837792a46b",
+    "newlines": 1366290
+   },
+   "manifest": {
+    "bytes": 304983990,
+    "lines": 1366290,
+    "sha256": "ecceb5343a782ec0b1f7092a384e36b6b8c38dacce40d6cb2a5d1b837792a46b"
+   },
+   "bytes_match": true,
+   "lines_match": true,
+   "sha256_match": true,
+   "identity": true
+  },
+  {
+   "path": "code/items.jsonl",
+   "recount": {
+    "bytes": 518597240,
+    "lines": 1020930,
+    "sha256": "feb260ef94df77de355b1e5967720217e1898ae30d46c70d3725b1f5fc41007b",
+    "newlines": 1020930
+   },
+   "manifest": {
+    "bytes": 518597240,
+    "lines": 1020930,
+    "sha256": "feb260ef94df77de355b1e5967720217e1898ae30d46c70d3725b1f5fc41007b"
+   },
+   "bytes_match": true,
+   "lines_match": true,
+   "sha256_match": true,
+   "identity": true
+  },
+  {
+   "path": "even/code/items.jsonl",
+   "recount": {
+    "bytes": 199871186,
+    "lines": 384279,
+    "sha256": "40466f2bbb4bd0ac5bf18d848f962cf26d3cf344357834aca91b8d3785bb2cc1",
+    "newlines": 384279
+   },
+   "manifest": {
+    "bytes": 199871186,
+    "lines": 384279,
+    "sha256": "40466f2bbb4bd0ac5bf18d848f962cf26d3cf344357834aca91b8d3785bb2cc1"
+   },
+   "bytes_match": true,
+   "lines_match": true,
+   "sha256_match": true,
+   "identity": true
+  },
+  {
+   "path": "conversation/utterances.jsonl",
+   "recount": {
+    "bytes": 760707818,
+    "lines": 1751373,
+    "sha256": "5c591cbd9dff76c8f5ecfe764a55f80234c3993ad58d0444b77db4050a90ea8c",
+    "newlines": 1751373
+   },
+   "manifest": {
+    "bytes": 760707818,
+    "lines": 1751373,
+    "sha256": "5c591cbd9dff76c8f5ecfe764a55f80234c3993ad58d0444b77db4050a90ea8c"
+   },
+   "bytes_match": true,
+   "lines_match": true,
+   "sha256_match": true,
+   "identity": true
+  },
+  {
+   "path": "even/conversation/utterances.jsonl",
+   "recount": {
+    "bytes": 233373260,
+    "lines": 514199,
+    "sha256": "e611efafc56f3eca37d6751892a3cb46199c100ebca6f3594c2e518ca21420e7",
+    "newlines": 514199
+   },
+   "manifest": {
+    "bytes": 233373260,
+    "lines": 514199,
+    "sha256": "e611efafc56f3eca37d6751892a3cb46199c100ebca6f3594c2e518ca21420e7"
+   },
+   "bytes_match": true,
+   "lines_match": true,
+   "sha256_match": true,
+   "identity": true
+  },
+  {
+   "path": "general_qa/train/records.jsonl",
+   "recount": {
+    "bytes": 234192716,
+    "lines": 317423,
+    "sha256": "c7e85bd3441239be3fedefe3c890811765c38b7bdb24d51fc744e30c65ef985e",
+    "newlines": 317423
+   },
+   "manifest": {
+    "bytes": 234192716,
+    "lines": 317423,
+    "sha256": "c7e85bd3441239be3fedefe3c890811765c38b7bdb24d51fc744e30c65ef985e"
+   },
+   "bytes_match": true,
+   "lines_match": true,
+   "sha256_match": true,
+   "identity": true
+  },
+  {
+   "path": "code_qa/train/records.jsonl",
+   "recount": {
+    "bytes": 305158884,
+    "lines": 324639,
+    "sha256": "585ebfadf97f85281b6cd18a66a6be4a42e19aa9590e74adee23b76f06d1fdb5",
+    "newlines": 324639
+   },
+   "manifest": {
+    "bytes": 305158884,
+    "lines": 324639,
+    "sha256": "585ebfadf97f85281b6cd18a66a6be4a42e19aa9590e74adee23b76f06d1fdb5"
+   },
+   "bytes_match": true,
+   "lines_match": true,
+   "sha256_match": true,
+   "identity": true
+  },
+  {
+   "path": "figurative_commonsense/train/records.jsonl",
+   "recount": {
+    "bytes": 127829754,
+    "lines": 238905,
+    "sha256": "1ce1851c92e9c9be23e1882806d5ef8f6d7e553136b3a7afb5869c7ab72af300",
+    "newlines": 238905
+   },
+   "manifest": {
+    "bytes": 127829754,
+    "lines": 238905,
+    "sha256": "1ce1851c92e9c9be23e1882806d5ef8f6d7e553136b3a7afb5869c7ab72af300"
+   },
+   "bytes_match": true,
+   "lines_match": true,
+   "sha256_match": true,
+   "identity": true
+  },
+  {
+   "path": "narrative/train/records.jsonl",
+   "recount": {
+    "bytes": 92963878,
+    "lines": 146598,
+    "sha256": "4a2fbfb130fab93eb8338a6f504b3a69a0ca49014ca9fabbc17b2730160141d0",
+    "newlines": 146598
+   },
+   "manifest": {
+    "bytes": 92963878,
+    "lines": 146598,
+    "sha256": "4a2fbfb130fab93eb8338a6f504b3a69a0ca49014ca9fabbc17b2730160141d0"
+   },
+   "bytes_match": true,
+   "lines_match": true,
+   "sha256_match": true,
+   "identity": true
+  },
+  {
+   "path": "paraphrase_entail/train/records.jsonl",
+   "recount": {
+    "bytes": 176935921,
+    "lines": 379580,
+    "sha256": "76efded624774870481c1f8c14854f99ee4c5ddda386706b1192961fc553916b",
+    "newlines": 379580
+   },
+   "manifest": {
+    "bytes": 176935921,
+    "lines": 379580,
+    "sha256": "76efded624774870481c1f8c14854f99ee4c5ddda386706b1192961fc553916b"
+   },
+   "bytes_match": true,
+   "lines_match": true,
+   "sha256_match": true,
+   "identity": true
+  }
+ ],
+ "families": [
+  {
+   "family": "pro",
+   "db_rows": 1366290,
+   "meta_rows": 1366290,
+   "group_by_source_file": {
+    "out/sentences.jsonl": 1366290
+   },
+   "manifest_indexed": {
+    "out/sentences.jsonl": 1366290
+   },
+   "group_by_matches_manifest": true,
+   "rows_from_heldout_or_overlap_dropped": 0,
+   "distinct_family_values": [
+    "pro"
+   ],
+   "distinct_origin_values": [
+    "generated"
+   ],
+   "random_round_trips": {
+    "n": 20,
+    "all_match": true,
+    "items": [
+     {
+      "id": 337608,
+      "source_file": "out/sentences.jsonl",
+      "line": 337608,
+      "row_sha": "2153fb8357a4",
+      "source_sha": "2153fb8357a4",
+      "match": true
+     },
+     {
+      "id": 296789,
+      "source_file": "out/sentences.jsonl",
+      "line": 296789,
+      "row_sha": "beb210426e70",
+      "source_sha": "beb210426e70",
+      "match": true
+     },
+     {
+      "id": 1135252,
+      "source_file": "out/sentences.jsonl",
+      "line": 1135252,
+      "row_sha": "4e793b29cc94",
+      "source_sha": "4e793b29cc94",
+      "match": true
+     },
+     {
+      "id": 776914,
+      "source_file": "out/sentences.jsonl",
+      "line": 776914,
+      "row_sha": "ca2942378a4f",
+      "source_sha": "ca2942378a4f",
+      "match": true
+     },
+     {
+      "id": 851132,
+      "source_file": "out/sentences.jsonl",
+      "line": 851132,
+      "row_sha": "a3ca5d048ba0",
+      "source_sha": "a3ca5d048ba0",
+      "match": true
+     },
+     {
+      "id": 740875,
+      "source_file": "out/sentences.jsonl",
+      "line": 740875,
+      "row_sha": "b3f6f6c05b70",
+      "source_sha": "b3f6f6c05b70",
+      "match": true
+     },
+     {
+      "id": 196446,
+      "source_file": "out/sentences.jsonl",
+      "line": 196446,
+      "row_sha": "4e6d417536db",
+      "source_sha": "4e6d417536db",
+      "match": true
+     },
+     {
+      "id": 1364719,
+      "source_file": "out/sentences.jsonl",
+      "line": 1364719,
+      "row_sha": "04e94e9b787f",
+      "source_sha": "04e94e9b787f",
+      "match": true
+     },
+     {
+      "id": 1045375,
+      "source_file": "out/sentences.jsonl",
+      "line": 1045375,
+      "row_sha": "5f772a36ee80",
+      "source_sha": "5f772a36ee80",
+      "match": true
+     },
+     {
+      "id": 663612,
+      "source_file": "out/sentences.jsonl",
+      "line": 663612,
+      "row_sha": "b1d5a2e0da70",
+      "source_sha": "b1d5a2e0da70",
+      "match": true
+     },
+     {
+      "id": 570568,
+      "source_file": "out/sentences.jsonl",
+      "line": 570568,
+      "row_sha": "3e91a5758979",
+      "source_sha": "3e91a5758979",
+      "match": true
+     },
+     {
+      "id": 1000358,
+      "source_file": "out/sentences.jsonl",
+      "line": 1000358,
+      "row_sha": "a461473e025f",
+      "source_sha": "a461473e025f",
+      "match": true
+     },
+     {
+      "id": 1276842,
+      "source_file": "out/sentences.jsonl",
+      "line": 1276842,
+      "row_sha": "80b35bf77ca2",
+      "source_sha": "80b35bf77ca2",
+      "match": true
+     },
+     {
+      "id": 1282253,
+      "source_file": "out/sentences.jsonl",
+      "line": 1282253,
+      "row_sha": "e659aa21a335",
+      "source_sha": "e659aa21a335",
+      "match": true
+     },
+     {
+      "id": 559494,
+      "source_file": "out/sentences.jsonl",
+      "line": 559494,
+      "row_sha": "76b38f6671a6",
+      "source_sha": "76b38f6671a6",
+      "match": true
+     },
+     {
+      "id": 28448,
+      "source_file": "out/sentences.jsonl",
+      "line": 28448,
+      "row_sha": "de7f282ea0cf",
+      "source_sha": "de7f282ea0cf",
+      "match": true
+     },
+     {
+      "id": 943551,
+      "source_file": "out/sentences.jsonl",
+      "line": 943551,
+      "row_sha": "1bb78a57378a",
+      "source_sha": "1bb78a57378a",
+      "match": true
+     },
+     {
+      "id": 436401,
+      "source_file": "out/sentences.jsonl",
+      "line": 436401,
+      "row_sha": "607bb3d4ff02",
+      "source_sha": "607bb3d4ff02",
+      "match": true
+     },
+     {
+      "id": 599961,
+      "source_file": "out/sentences.jsonl",
+      "line": 599961,
+      "row_sha": "9f208260d0d3",
+      "source_sha": "9f208260d0d3",
+      "match": true
+     },
+     {
+      "id": 793701,
+      "source_file": "out/sentences.jsonl",
+      "line": 793701,
+      "row_sha": "ef19508d9578",
+      "source_sha": "ef19508d9578",
+      "match": true
+     }
+    ]
+   },
+   "ok": true
+  },
+  {
+   "family": "code",
+   "db_rows": 1405189,
+   "meta_rows": 1405189,
+   "group_by_source_file": {
+    "code/items.jsonl": 1020920,
+    "even/code/items.jsonl": 384269
+   },
+   "manifest_indexed": {
+    "code/items.jsonl": 1020920,
+    "even/code/items.jsonl": 384269
+   },
+   "group_by_matches_manifest": true,
+   "rows_from_heldout_or_overlap_dropped": 0,
+   "distinct_family_values": [
+    "code"
+   ],
+   "distinct_origin_values": [
+    "generated"
+   ],
+   "random_round_trips": {
+    "n": 20,
+    "all_match": true,
+    "items": [
+     {
+      "id": 1083685,
+      "source_file": "even/code/items.jsonl",
+      "line": 62768,
+      "row_sha": "b67e42f608e2",
+      "source_sha": "b67e42f608e2",
+      "match": true
+     },
+     {
+      "id": 174727,
+      "source_file": "code/items.jsonl",
+      "line": 174727,
+      "row_sha": "5040c0fe9236",
+      "source_sha": "5040c0fe9236",
+      "match": true
+     },
+     {
+      "id": 1074378,
+      "source_file": "even/code/items.jsonl",
+      "line": 53459,
+      "row_sha": "c17a355b1cda",
+      "source_sha": "c17a355b1cda",
+      "match": true
+     },
+     {
+      "id": 1330091,
+      "source_file": "even/code/items.jsonl",
+      "line": 309180,
+      "row_sha": "dc9158c50108",
+      "source_sha": "dc9158c50108",
+      "match": true
+     },
+     {
+      "id": 239806,
+      "source_file": "code/items.jsonl",
+      "line": 239806,
+      "row_sha": "3270b52560a3",
+      "source_sha": "3270b52560a3",
+      "match": true
+     },
+     {
+      "id": 33656,
+      "source_file": "code/items.jsonl",
+      "line": 33656,
+      "row_sha": "9e1cf95991ef",
+      "source_sha": "9e1cf95991ef",
+      "match": true
+     },
+     {
+      "id": 449182,
+      "source_file": "code/items.jsonl",
+      "line": 449184,
+      "row_sha": "4ba31c150784",
+      "source_sha": "4ba31c150784",
+      "match": true
+     },
+     {
+      "id": 1346932,
+      "source_file": "even/code/items.jsonl",
+      "line": 326021,
+      "row_sha": "5c7dfee5bb52",
+      "source_sha": "5c7dfee5bb52",
+      "match": true
+     },
+     {
+      "id": 229574,
+      "source_file": "code/items.jsonl",
+      "line": 229574,
+      "row_sha": "4f1216058418",
+      "source_sha": "4f1216058418",
+      "match": true
+     },
+     {
+      "id": 269031,
+      "source_file": "code/items.jsonl",
+      "line": 269031,
+      "row_sha": "c3fa837ed451",
+      "source_sha": "c3fa837ed451",
+      "match": true
+     },
+     {
+      "id": 707298,
+      "source_file": "code/items.jsonl",
+      "line": 707303,
+      "row_sha": "c837665d722d",
+      "source_sha": "c837665d722d",
+      "match": true
+     },
+     {
+      "id": 157847,
+      "source_file": "code/items.jsonl",
+      "line": 157847,
+      "row_sha": "b5632c7a6957",
+      "source_sha": "b5632c7a6957",
+      "match": true
+     },
+     {
+      "id": 107715,
+      "source_file": "code/items.jsonl",
+      "line": 107715,
+      "row_sha": "3fa836fab325",
+      "source_sha": "3fa836fab325",
+      "match": true
+     },
+     {
+      "id": 300587,
+      "source_file": "code/items.jsonl",
+      "line": 300587,
+      "row_sha": "5e1f5bac179c",
+      "source_sha": "5e1f5bac179c",
+      "match": true
+     },
+     {
+      "id": 1306773,
+      "source_file": "even/code/items.jsonl",
+      "line": 285862,
+      "row_sha": "96057ae256c0",
+      "source_sha": "96057ae256c0",
+      "match": true
+     },
+     {
+      "id": 952306,
+      "source_file": "code/items.jsonl",
+      "line": 952316,
+      "row_sha": "036f5bcecdff",
+      "source_sha": "036f5bcecdff",
+      "match": true
+     },
+     {
+      "id": 890763,
+      "source_file": "code/items.jsonl",
+      "line": 890772,
+      "row_sha": "fd128a50cee6",
+      "source_sha": "fd128a50cee6",
+      "match": true
+     },
+     {
+      "id": 546265,
+      "source_file": "code/items.jsonl",
+      "line": 546267,
+      "row_sha": "223ef6ef7f7b",
+      "source_sha": "223ef6ef7f7b",
+      "match": true
+     },
+     {
+      "id": 683776,
+      "source_file": "code/items.jsonl",
+      "line": 683781,
+      "row_sha": "2ae8129ae773",
+      "source_sha": "2ae8129ae773",
+      "match": true
+     },
+     {
+      "id": 1013647,
+      "source_file": "code/items.jsonl",
+      "line": 1013657,
+      "row_sha": "9810314b1938",
+      "source_sha": "9810314b1938",
+      "match": true
+     }
+    ]
+   },
+   "ok": true
+  },
+  {
+   "family": "conversation",
+   "db_rows": 2242864,
+   "meta_rows": 2242864,
+   "group_by_source_file": {
+    "conversation/utterances.jsonl": 1732912,
+    "even/conversation/utterances.jsonl": 509952
+   },
+   "manifest_indexed": {
+    "conversation/utterances.jsonl": 1732912,
+    "even/conversation/utterances.jsonl": 509952
+   },
+   "group_by_matches_manifest": true,
+   "rows_from_heldout_or_overlap_dropped": 0,
+   "distinct_family_values": [
+    "conversation"
+   ],
+   "distinct_origin_values": [
+    "generated"
+   ],
+   "random_round_trips": {
+    "n": 20,
+    "all_match": true,
+    "items": [
+     {
+      "id": 1003773,
+      "source_file": "conversation/utterances.jsonl",
+      "line": 1014462,
+      "row_sha": "bd2c335a3969",
+      "source_sha": "bd2c335a3969",
+      "match": true
+     },
+     {
+      "id": 2059763,
+      "source_file": "even/conversation/utterances.jsonl",
+      "line": 329600,
+      "row_sha": "1e5adcda71c7",
+      "source_sha": "1e5adcda71c7",
+      "match": true
+     },
+     {
+      "id": 1642377,
+      "source_file": "conversation/utterances.jsonl",
+      "line": 1659988,
+      "row_sha": "aa2b818e43ef",
+      "source_sha": "aa2b818e43ef",
+      "match": true
+     },
+     {
+      "id": 1664609,
+      "source_file": "conversation/utterances.jsonl",
+      "line": 1682479,
+      "row_sha": "237dd493397b",
+      "source_sha": "237dd493397b",
+      "match": true
+     },
+     {
+      "id": 785872,
+      "source_file": "conversation/utterances.jsonl",
+      "line": 794140,
+      "row_sha": "8e4e6e7b463b",
+      "source_sha": "8e4e6e7b463b",
+      "match": true
+     },
+     {
+      "id": 1607889,
+      "source_file": "conversation/utterances.jsonl",
+      "line": 1625106,
+      "row_sha": "22d6bd683993",
+      "source_sha": "22d6bd683993",
+      "match": true
+     },
+     {
+      "id": 818477,
+      "source_file": "conversation/utterances.jsonl",
+      "line": 827074,
+      "row_sha": "539974eea850",
+      "source_sha": "539974eea850",
+      "match": true
+     },
+     {
+      "id": 218344,
+      "source_file": "conversation/utterances.jsonl",
+      "line": 220430,
+      "row_sha": "4c9bd8254f89",
+      "source_sha": "4c9bd8254f89",
+      "match": true
+     },
+     {
+      "id": 952230,
+      "source_file": "conversation/utterances.jsonl",
+      "line": 962240,
+      "row_sha": "d1cca4aa9022",
+      "source_sha": "d1cca4aa9022",
+      "match": true
+     },
+     {
+      "id": 1988385,
+      "source_file": "even/conversation/utterances.jsonl",
+      "line": 257719,
+      "row_sha": "1e819eeec0b0",
+      "source_sha": "1e819eeec0b0",
+      "match": true
+     },
+     {
+      "id": 1461618,
+      "source_file": "conversation/utterances.jsonl",
+      "line": 1477497,
+      "row_sha": "e528d1e34dcd",
+      "source_sha": "e528d1e34dcd",
+      "match": true
+     },
+     {
+      "id": 35331,
+      "source_file": "conversation/utterances.jsonl",
+      "line": 35620,
+      "row_sha": "ee0e8d25cfce",
+      "source_sha": "ee0e8d25cfce",
+      "match": true
+     },
+     {
+      "id": 1067147,
+      "source_file": "conversation/utterances.jsonl",
+      "line": 1078656,
+      "row_sha": "6a260b6f81dd",
+      "source_sha": "6a260b6f81dd",
+      "match": true
+     },
+     {
+      "id": 614830,
+      "source_file": "conversation/utterances.jsonl",
+      "line": 621202,
+      "row_sha": "0bbf5ea73089",
+      "source_sha": "0bbf5ea73089",
+      "match": true
+     },
+     {
+      "id": 1685844,
+      "source_file": "conversation/utterances.jsonl",
+      "line": 1703926,
+      "row_sha": "24a1d0c19c3e",
+      "source_sha": "24a1d0c19c3e",
+      "match": true
+     },
+     {
+      "id": 196479,
+      "source_file": "conversation/utterances.jsonl",
+      "line": 198397,
+      "row_sha": "6304d515d131",
+      "source_sha": "6304d515d131",
+      "match": true
+     },
+     {
+      "id": 1457259,
+      "source_file": "conversation/utterances.jsonl",
+      "line": 1473112,
+      "row_sha": "bc7881acdf41",
+      "source_sha": "bc7881acdf41",
+      "match": true
+     },
+     {
+      "id": 828426,
+      "source_file": "conversation/utterances.jsonl",
+      "line": 837098,
+      "row_sha": "e496480f32c0",
+      "source_sha": "e496480f32c0",
+      "match": true
+     },
+     {
+      "id": 139667,
+      "source_file": "conversation/utterances.jsonl",
+      "line": 141053,
+      "row_sha": "c81b8800b117",
+      "source_sha": "c81b8800b117",
+      "match": true
+     },
+     {
+      "id": 991577,
+      "source_file": "conversation/utterances.jsonl",
+      "line": 1002139,
+      "row_sha": "574256ccb57f",
+      "source_sha": "574256ccb57f",
+      "match": true
+     }
+    ]
+   },
+   "ok": true
+  },
+  {
+   "family": "general_qa",
+   "db_rows": 317423,
+   "meta_rows": 317423,
+   "group_by_source_file": {
+    "general_qa/train/records.jsonl": 317423
+   },
+   "manifest_indexed": {
+    "general_qa/train/records.jsonl": 317423
+   },
+   "group_by_matches_manifest": true,
+   "rows_from_heldout_or_overlap_dropped": 0,
+   "distinct_family_values": [
+    "general_qa"
+   ],
+   "distinct_origin_values": [
+    "generated"
+   ],
+   "random_round_trips": {
+    "n": 20,
+    "all_match": true,
+    "items": [
+     {
+      "id": 139937,
+      "source_file": "general_qa/train/records.jsonl",
+      "line": 139937,
+      "row_sha": "9966d130949dc494",
+      "source_sha": "9966d130949dc494",
+      "match": true
+     },
+     {
+      "id": 177197,
+      "source_file": "general_qa/train/records.jsonl",
+      "line": 177197,
+      "row_sha": "7b286a7c005c9f32",
+      "source_sha": "7b286a7c005c9f32",
+      "match": true
+     },
+     {
+      "id": 292375,
+      "source_file": "general_qa/train/records.jsonl",
+      "line": 292375,
+      "row_sha": "fe48d13d2e821f0a",
+      "source_sha": "fe48d13d2e821f0a",
+      "match": true
+     },
+     {
+      "id": 153734,
+      "source_file": "general_qa/train/records.jsonl",
+      "line": 153734,
+      "row_sha": "56b3dd97d7a24a95",
+      "source_sha": "56b3dd97d7a24a95",
+      "match": true
+     },
+     {
+      "id": 215029,
+      "source_file": "general_qa/train/records.jsonl",
+      "line": 215029,
+      "row_sha": "9d9ea3e90e602cc8",
+      "source_sha": "9d9ea3e90e602cc8",
+      "match": true
+     },
+     {
+      "id": 234635,
+      "source_file": "general_qa/train/records.jsonl",
+      "line": 234635,
+      "row_sha": "ea1564b85d2c5945",
+      "source_sha": "ea1564b85d2c5945",
+      "match": true
+     },
+     {
+      "id": 96899,
+      "source_file": "general_qa/train/records.jsonl",
+      "line": 96899,
+      "row_sha": "7476f587ca07b09a",
+      "source_sha": "7476f587ca07b09a",
+      "match": true
+     },
+     {
+      "id": 222288,
+      "source_file": "general_qa/train/records.jsonl",
+      "line": 222288,
+      "row_sha": "8631442fda0900d6",
+      "source_sha": "8631442fda0900d6",
+      "match": true
+     },
+     {
+      "id": 247984,
+      "source_file": "general_qa/train/records.jsonl",
+      "line": 247984,
+      "row_sha": "4f4819a2b5289d6e",
+      "source_sha": "4f4819a2b5289d6e",
+      "match": true
+     },
+     {
+      "id": 33163,
+      "source_file": "general_qa/train/records.jsonl",
+      "line": 33163,
+      "row_sha": "597a24eed103a613",
+      "source_sha": "597a24eed103a613",
+      "match": true
+     },
+     {
+      "id": 69699,
+      "source_file": "general_qa/train/records.jsonl",
+      "line": 69699,
+      "row_sha": "76bf68d498cd1e08",
+      "source_sha": "76bf68d498cd1e08",
+      "match": true
+     },
+     {
+      "id": 39964,
+      "source_file": "general_qa/train/records.jsonl",
+      "line": 39964,
+      "row_sha": "26a8c106425c2f4e",
+      "source_sha": "26a8c106425c2f4e",
+      "match": true
+     },
+     {
+      "id": 43599,
+      "source_file": "general_qa/train/records.jsonl",
+      "line": 43599,
+      "row_sha": "a015e71c171b0ec4",
+      "source_sha": "a015e71c171b0ec4",
+      "match": true
+     },
+     {
+      "id": 70808,
+      "source_file": "general_qa/train/records.jsonl",
+      "line": 70808,
+      "row_sha": "437fbb46e797f7c5",
+      "source_sha": "437fbb46e797f7c5",
+      "match": true
+     },
+     {
+      "id": 19776,
+      "source_file": "general_qa/train/records.jsonl",
+      "line": 19776,
+      "row_sha": "6c7f554181f94d0f",
+      "source_sha": "6c7f554181f94d0f",
+      "match": true
+     },
+     {
+      "id": 281832,
+      "source_file": "general_qa/train/records.jsonl",
+      "line": 281832,
+      "row_sha": "9ca2d0f7598e8f8a",
+      "source_sha": "9ca2d0f7598e8f8a",
+      "match": true
+     },
+     {
+      "id": 32024,
+      "source_file": "general_qa/train/records.jsonl",
+      "line": 32024,
+      "row_sha": "598e8d150b492e47",
+      "source_sha": "598e8d150b492e47",
+      "match": true
+     },
+     {
+      "id": 66846,
+      "source_file": "general_qa/train/records.jsonl",
+      "line": 66846,
+      "row_sha": "7f8abe906143244d",
+      "source_sha": "7f8abe906143244d",
+      "match": true
+     },
+     {
+      "id": 131056,
+      "source_file": "general_qa/train/records.jsonl",
+      "line": 131056,
+      "row_sha": "7cfbb65a5c169fe6",
+      "source_sha": "7cfbb65a5c169fe6",
+      "match": true
+     },
+     {
+      "id": 30520,
+      "source_file": "general_qa/train/records.jsonl",
+      "line": 30520,
+      "row_sha": "9a9f4956fdb0418d",
+      "source_sha": "9a9f4956fdb0418d",
+      "match": true
+     }
+    ]
+   },
+   "ok": true
+  },
+  {
+   "family": "code_qa",
+   "db_rows": 324639,
+   "meta_rows": 324639,
+   "group_by_source_file": {
+    "code_qa/train/records.jsonl": 324639
+   },
+   "manifest_indexed": {
+    "code_qa/train/records.jsonl": 324639
+   },
+   "group_by_matches_manifest": true,
+   "rows_from_heldout_or_overlap_dropped": 0,
+   "distinct_family_values": [
+    "code_qa"
+   ],
+   "distinct_origin_values": [
+    "generated"
+   ],
+   "random_round_trips": {
+    "n": 20,
+    "all_match": true,
+    "items": [
+     {
+      "id": 267638,
+      "source_file": "code_qa/train/records.jsonl",
+      "line": 267638,
+      "row_sha": "b46dd47860ec1105",
+      "source_sha": "b46dd47860ec1105",
+      "match": true
+     },
+     {
+      "id": 43226,
+      "source_file": "code_qa/train/records.jsonl",
+      "line": 43226,
+      "row_sha": "0364c6b090d8de1d",
+      "source_sha": "0364c6b090d8de1d",
+      "match": true
+     },
+     {
+      "id": 260995,
+      "source_file": "code_qa/train/records.jsonl",
+      "line": 260995,
+      "row_sha": "afc8627513dfbbca",
+      "source_sha": "afc8627513dfbbca",
+      "match": true
+     },
+     {
+      "id": 76633,
+      "source_file": "code_qa/train/records.jsonl",
+      "line": 76633,
+      "row_sha": "7af3030e894cf57e",
+      "source_sha": "7af3030e894cf57e",
+      "match": true
+     },
+     {
+      "id": 212953,
+      "source_file": "code_qa/train/records.jsonl",
+      "line": 212953,
+      "row_sha": "56506f4027c03b66",
+      "source_sha": "56506f4027c03b66",
+      "match": true
+     },
+     {
+      "id": 54217,
+      "source_file": "code_qa/train/records.jsonl",
+      "line": 54217,
+      "row_sha": "1bc7cae7009c32f7",
+      "source_sha": "1bc7cae7009c32f7",
+      "match": true
+     },
+     {
+      "id": 171097,
+      "source_file": "code_qa/train/records.jsonl",
+      "line": 171097,
+      "row_sha": "3d143a1b303ad5e3",
+      "source_sha": "3d143a1b303ad5e3",
+      "match": true
+     },
+     {
+      "id": 207772,
+      "source_file": "code_qa/train/records.jsonl",
+      "line": 207772,
+      "row_sha": "39851e43e4b076c0",
+      "source_sha": "39851e43e4b076c0",
+      "match": true
+     },
+     {
+      "id": 245055,
+      "source_file": "code_qa/train/records.jsonl",
+      "line": 245055,
+      "row_sha": "b23b76df2dbeefd5",
+      "source_sha": "b23b76df2dbeefd5",
+      "match": true
+     },
+     {
+      "id": 155152,
+      "source_file": "code_qa/train/records.jsonl",
+      "line": 155152,
+      "row_sha": "5755b81714429bdd",
+      "source_sha": "5755b81714429bdd",
+      "match": true
+     },
+     {
+      "id": 19521,
+      "source_file": "code_qa/train/records.jsonl",
+      "line": 19521,
+      "row_sha": "98c3bd0a992b69f4",
+      "source_sha": "98c3bd0a992b69f4",
+      "match": true
+     },
+     {
+      "id": 204224,
+      "source_file": "code_qa/train/records.jsonl",
+      "line": 204224,
+      "row_sha": "07820d6a6b693695",
+      "source_sha": "07820d6a6b693695",
+      "match": true
+     },
+     {
+      "id": 230178,
+      "source_file": "code_qa/train/records.jsonl",
+      "line": 230178,
+      "row_sha": "c8a56f40d5e595ae",
+      "source_sha": "c8a56f40d5e595ae",
+      "match": true
+     },
+     {
+      "id": 88379,
+      "source_file": "code_qa/train/records.jsonl",
+      "line": 88379,
+      "row_sha": "fb40fc7f25e98d7e",
+      "source_sha": "fb40fc7f25e98d7e",
+      "match": true
+     },
+     {
+      "id": 289279,
+      "source_file": "code_qa/train/records.jsonl",
+      "line": 289279,
+      "row_sha": "a3349163b651f26c",
+      "source_sha": "a3349163b651f26c",
+      "match": true
+     },
+     {
+      "id": 91836,
+      "source_file": "code_qa/train/records.jsonl",
+      "line": 91836,
+      "row_sha": "1838a22b3606d9e1",
+      "source_sha": "1838a22b3606d9e1",
+      "match": true
+     },
+     {
+      "id": 204217,
+      "source_file": "code_qa/train/records.jsonl",
+      "line": 204217,
+      "row_sha": "937065a697c6e358",
+      "source_sha": "937065a697c6e358",
+      "match": true
+     },
+     {
+      "id": 205886,
+      "source_file": "code_qa/train/records.jsonl",
+      "line": 205886,
+      "row_sha": "1c54af9a57f72066",
+      "source_sha": "1c54af9a57f72066",
+      "match": true
+     },
+     {
+      "id": 135273,
+      "source_file": "code_qa/train/records.jsonl",
+      "line": 135273,
+      "row_sha": "3338fcb9bb610be7",
+      "source_sha": "3338fcb9bb610be7",
+      "match": true
+     },
+     {
+      "id": 199521,
+      "source_file": "code_qa/train/records.jsonl",
+      "line": 199521,
+      "row_sha": "fffb2bc71fc262ec",
+      "source_sha": "fffb2bc71fc262ec",
+      "match": true
+     }
+    ]
+   },
+   "ok": true
+  },
+  {
+   "family": "figurative_commonsense",
+   "db_rows": 238905,
+   "meta_rows": 238905,
+   "group_by_source_file": {
+    "figurative_commonsense/train/records.jsonl": 238905
+   },
+   "manifest_indexed": {
+    "figurative_commonsense/train/records.jsonl": 238905
+   },
+   "group_by_matches_manifest": true,
+   "rows_from_heldout_or_overlap_dropped": 0,
+   "distinct_family_values": [
+    "figurative_commonsense"
+   ],
+   "distinct_origin_values": [
+    "generated"
+   ],
+   "random_round_trips": {
+    "n": 20,
+    "all_match": true,
+    "items": [
+     {
+      "id": 68046,
+      "source_file": "figurative_commonsense/train/records.jsonl",
+      "line": 68046,
+      "row_sha": "09ad2a8cba65c2d6",
+      "source_sha": "09ad2a8cba65c2d6",
+      "match": true
+     },
+     {
+      "id": 112462,
+      "source_file": "figurative_commonsense/train/records.jsonl",
+      "line": 112462,
+      "row_sha": "77ef030ccc585812",
+      "source_sha": "77ef030ccc585812",
+      "match": true
+     },
+     {
+      "id": 192071,
+      "source_file": "figurative_commonsense/train/records.jsonl",
+      "line": 192071,
+      "row_sha": "86f1e865ed7a7853",
+      "source_sha": "86f1e865ed7a7853",
+      "match": true
+     },
+     {
+      "id": 126579,
+      "source_file": "figurative_commonsense/train/records.jsonl",
+      "line": 126579,
+      "row_sha": "b0c4ad1a4225ee03",
+      "source_sha": "b0c4ad1a4225ee03",
+      "match": true
+     },
+     {
+      "id": 106918,
+      "source_file": "figurative_commonsense/train/records.jsonl",
+      "line": 106918,
+      "row_sha": "99c84617d03a225d",
+      "source_sha": "99c84617d03a225d",
+      "match": true
+     },
+     {
+      "id": 131636,
+      "source_file": "figurative_commonsense/train/records.jsonl",
+      "line": 131636,
+      "row_sha": "271356734da7e8b4",
+      "source_sha": "271356734da7e8b4",
+      "match": true
+     },
+     {
+      "id": 90477,
+      "source_file": "figurative_commonsense/train/records.jsonl",
+      "line": 90477,
+      "row_sha": "1389675edc5d76de",
+      "source_sha": "1389675edc5d76de",
+      "match": true
+     },
+     {
+      "id": 216633,
+      "source_file": "figurative_commonsense/train/records.jsonl",
+      "line": 216633,
+      "row_sha": "c68c669710379b9c",
+      "source_sha": "c68c669710379b9c",
+      "match": true
+     },
+     {
+      "id": 223127,
+      "source_file": "figurative_commonsense/train/records.jsonl",
+      "line": 223127,
+      "row_sha": "5cf69c88b192b119",
+      "source_sha": "5cf69c88b192b119",
+      "match": true
+     },
+     {
+      "id": 101741,
+      "source_file": "figurative_commonsense/train/records.jsonl",
+      "line": 101741,
+      "row_sha": "86fa1a05e74a3c55",
+      "source_sha": "86fa1a05e74a3c55",
+      "match": true
+     },
+     {
+      "id": 173510,
+      "source_file": "figurative_commonsense/train/records.jsonl",
+      "line": 173510,
+      "row_sha": "4026fb3e95e08d7c",
+      "source_sha": "4026fb3e95e08d7c",
+      "match": true
+     },
+     {
+      "id": 229089,
+      "source_file": "figurative_commonsense/train/records.jsonl",
+      "line": 229089,
+      "row_sha": "7d6683b8ab5041df",
+      "source_sha": "7d6683b8ab5041df",
+      "match": true
+     },
+     {
+      "id": 5149,
+      "source_file": "figurative_commonsense/train/records.jsonl",
+      "line": 5149,
+      "row_sha": "eb0583a4634af76f",
+      "source_sha": "eb0583a4634af76f",
+      "match": true
+     },
+     {
+      "id": 139187,
+      "source_file": "figurative_commonsense/train/records.jsonl",
+      "line": 139187,
+      "row_sha": "bfe972137fca1aad",
+      "source_sha": "bfe972137fca1aad",
+      "match": true
+     },
+     {
+      "id": 187250,
+      "source_file": "figurative_commonsense/train/records.jsonl",
+      "line": 187250,
+      "row_sha": "d3b566e6c40572c3",
+      "source_sha": "d3b566e6c40572c3",
+      "match": true
+     },
+     {
+      "id": 44361,
+      "source_file": "figurative_commonsense/train/records.jsonl",
+      "line": 44361,
+      "row_sha": "76609856b82beedf",
+      "source_sha": "76609856b82beedf",
+      "match": true
+     },
+     {
+      "id": 232043,
+      "source_file": "figurative_commonsense/train/records.jsonl",
+      "line": 232043,
+      "row_sha": "9fe85872a796526f",
+      "source_sha": "9fe85872a796526f",
+      "match": true
+     },
+     {
+      "id": 131874,
+      "source_file": "figurative_commonsense/train/records.jsonl",
+      "line": 131874,
+      "row_sha": "1bf57ca40fb5cb0d",
+      "source_sha": "1bf57ca40fb5cb0d",
+      "match": true
+     },
+     {
+      "id": 128179,
+      "source_file": "figurative_commonsense/train/records.jsonl",
+      "line": 128179,
+      "row_sha": "5e03a5ab549e83f3",
+      "source_sha": "5e03a5ab549e83f3",
+      "match": true
+     },
+     {
+      "id": 120674,
+      "source_file": "figurative_commonsense/train/records.jsonl",
+      "line": 120674,
+      "row_sha": "d1eb29faac481a9f",
+      "source_sha": "d1eb29faac481a9f",
+      "match": true
+     }
+    ]
+   },
+   "ok": true
+  },
+  {
+   "family": "narrative",
+   "db_rows": 146598,
+   "meta_rows": 146598,
+   "group_by_source_file": {
+    "narrative/train/records.jsonl": 146598
+   },
+   "manifest_indexed": {
+    "narrative/train/records.jsonl": 146598
+   },
+   "group_by_matches_manifest": true,
+   "rows_from_heldout_or_overlap_dropped": 0,
+   "distinct_family_values": [
+    "narrative"
+   ],
+   "distinct_origin_values": [
+    "generated"
+   ],
+   "random_round_trips": {
+    "n": 20,
+    "all_match": true,
+    "items": [
+     {
+      "id": 7265,
+      "source_file": "narrative/train/records.jsonl",
+      "line": 7265,
+      "row_sha": "f2a8fd8b52d4beef",
+      "source_sha": "f2a8fd8b52d4beef",
+      "match": true
+     },
+     {
+      "id": 71157,
+      "source_file": "narrative/train/records.jsonl",
+      "line": 71157,
+      "row_sha": "12d2e58e598509d1",
+      "source_sha": "12d2e58e598509d1",
+      "match": true
+     },
+     {
+      "id": 58637,
+      "source_file": "narrative/train/records.jsonl",
+      "line": 58637,
+      "row_sha": "a4840fc3f111f9a7",
+      "source_sha": "a4840fc3f111f9a7",
+      "match": true
+     },
+     {
+      "id": 106693,
+      "source_file": "narrative/train/records.jsonl",
+      "line": 106693,
+      "row_sha": "65664e797f9cb618",
+      "source_sha": "65664e797f9cb618",
+      "match": true
+     },
+     {
+      "id": 56784,
+      "source_file": "narrative/train/records.jsonl",
+      "line": 56784,
+      "row_sha": "626383d35943fea2",
+      "source_sha": "626383d35943fea2",
+      "match": true
+     },
+     {
+      "id": 28982,
+      "source_file": "narrative/train/records.jsonl",
+      "line": 28982,
+      "row_sha": "035368de255241dd",
+      "source_sha": "035368de255241dd",
+      "match": true
+     },
+     {
+      "id": 36926,
+      "source_file": "narrative/train/records.jsonl",
+      "line": 36926,
+      "row_sha": "b9453527deeb7522",
+      "source_sha": "b9453527deeb7522",
+      "match": true
+     },
+     {
+      "id": 107315,
+      "source_file": "narrative/train/records.jsonl",
+      "line": 107315,
+      "row_sha": "f809e36500f96e12",
+      "source_sha": "f809e36500f96e12",
+      "match": true
+     },
+     {
+      "id": 30285,
+      "source_file": "narrative/train/records.jsonl",
+      "line": 30285,
+      "row_sha": "437ee8b6e48249cf",
+      "source_sha": "437ee8b6e48249cf",
+      "match": true
+     },
+     {
+      "id": 113101,
+      "source_file": "narrative/train/records.jsonl",
+      "line": 113101,
+      "row_sha": "0c5a0d385a41429a",
+      "source_sha": "0c5a0d385a41429a",
+      "match": true
+     },
+     {
+      "id": 356,
+      "source_file": "narrative/train/records.jsonl",
+      "line": 356,
+      "row_sha": "78405544e47e23d2",
+      "source_sha": "78405544e47e23d2",
+      "match": true
+     },
+     {
+      "id": 111738,
+      "source_file": "narrative/train/records.jsonl",
+      "line": 111738,
+      "row_sha": "cfbd0b69e6ee5ec1",
+      "source_sha": "cfbd0b69e6ee5ec1",
+      "match": true
+     },
+     {
+      "id": 39077,
+      "source_file": "narrative/train/records.jsonl",
+      "line": 39077,
+      "row_sha": "9be1f0a5443dfd1b",
+      "source_sha": "9be1f0a5443dfd1b",
+      "match": true
+     },
+     {
+      "id": 2966,
+      "source_file": "narrative/train/records.jsonl",
+      "line": 2966,
+      "row_sha": "bcb57a7fb615f5ab",
+      "source_sha": "bcb57a7fb615f5ab",
+      "match": true
+     },
+     {
+      "id": 119253,
+      "source_file": "narrative/train/records.jsonl",
+      "line": 119253,
+      "row_sha": "6e20d26b7c8b761c",
+      "source_sha": "6e20d26b7c8b761c",
+      "match": true
+     },
+     {
+      "id": 129772,
+      "source_file": "narrative/train/records.jsonl",
+      "line": 129772,
+      "row_sha": "b480cdd5f87f3e2c",
+      "source_sha": "b480cdd5f87f3e2c",
+      "match": true
+     },
+     {
+      "id": 28855,
+      "source_file": "narrative/train/records.jsonl",
+      "line": 28855,
+      "row_sha": "4b5a7bd25268cb5b",
+      "source_sha": "4b5a7bd25268cb5b",
+      "match": true
+     },
+     {
+      "id": 81685,
+      "source_file": "narrative/train/records.jsonl",
+      "line": 81685,
+      "row_sha": "f10b213f1ca10f4a",
+      "source_sha": "f10b213f1ca10f4a",
+      "match": true
+     },
+     {
+      "id": 96092,
+      "source_file": "narrative/train/records.jsonl",
+      "line": 96092,
+      "row_sha": "93966514322495ac",
+      "source_sha": "93966514322495ac",
+      "match": true
+     },
+     {
+      "id": 102880,
+      "source_file": "narrative/train/records.jsonl",
+      "line": 102880,
+      "row_sha": "ae1321203b09b3c0",
+      "source_sha": "ae1321203b09b3c0",
+      "match": true
+     }
+    ]
+   },
+   "ok": true
+  },
+  {
+   "family": "paraphrase_entail",
+   "db_rows": 379574,
+   "meta_rows": 379574,
+   "group_by_source_file": {
+    "paraphrase_entail/train/records.jsonl": 379574
+   },
+   "manifest_indexed": {
+    "paraphrase_entail/train/records.jsonl": 379574
+   },
+   "group_by_matches_manifest": true,
+   "rows_from_heldout_or_overlap_dropped": 0,
+   "distinct_family_values": [
+    "paraphrase_entail"
+   ],
+   "distinct_origin_values": [
+    "generated"
+   ],
+   "random_round_trips": {
+    "n": 20,
+    "all_match": true,
+    "items": [
+     {
+      "id": 146589,
+      "source_file": "paraphrase_entail/train/records.jsonl",
+      "line": 146591,
+      "row_sha": "eab67c47deb1e62d",
+      "source_sha": "eab67c47deb1e62d",
+      "match": true
+     },
+     {
+      "id": 353952,
+      "source_file": "paraphrase_entail/train/records.jsonl",
+      "line": 353958,
+      "row_sha": "ce916d7cce3d2067",
+      "source_sha": "ce916d7cce3d2067",
+      "match": true
+     },
+     {
+      "id": 81062,
+      "source_file": "paraphrase_entail/train/records.jsonl",
+      "line": 81064,
+      "row_sha": "e28e7d5f04289a40",
+      "source_sha": "e28e7d5f04289a40",
+      "match": true
+     },
+     {
+      "id": 217618,
+      "source_file": "paraphrase_entail/train/records.jsonl",
+      "line": 217622,
+      "row_sha": "2f8722b8e241f67d",
+      "source_sha": "2f8722b8e241f67d",
+      "match": true
+     },
+     {
+      "id": 168836,
+      "source_file": "paraphrase_entail/train/records.jsonl",
+      "line": 168839,
+      "row_sha": "b9434eb4513c8039",
+      "source_sha": "b9434eb4513c8039",
+      "match": true
+     },
+     {
+      "id": 109650,
+      "source_file": "paraphrase_entail/train/records.jsonl",
+      "line": 109652,
+      "row_sha": "5678ff5c88826db8",
+      "source_sha": "5678ff5c88826db8",
+      "match": true
+     },
+     {
+      "id": 157077,
+      "source_file": "paraphrase_entail/train/records.jsonl",
+      "line": 157079,
+      "row_sha": "8ff73b6691d51682",
+      "source_sha": "8ff73b6691d51682",
+      "match": true
+     },
+     {
+      "id": 333402,
+      "source_file": "paraphrase_entail/train/records.jsonl",
+      "line": 333408,
+      "row_sha": "ffc8a410c26d0dcf",
+      "source_sha": "ffc8a410c26d0dcf",
+      "match": true
+     },
+     {
+      "id": 215286,
+      "source_file": "paraphrase_entail/train/records.jsonl",
+      "line": 215290,
+      "row_sha": "1ee4df46f0447b43",
+      "source_sha": "1ee4df46f0447b43",
+      "match": true
+     },
+     {
+      "id": 328224,
+      "source_file": "paraphrase_entail/train/records.jsonl",
+      "line": 328230,
+      "row_sha": "cbc86e6fa56eaca5",
+      "source_sha": "cbc86e6fa56eaca5",
+      "match": true
+     },
+     {
+      "id": 324513,
+      "source_file": "paraphrase_entail/train/records.jsonl",
+      "line": 324519,
+      "row_sha": "8815bfc07170b648",
+      "source_sha": "8815bfc07170b648",
+      "match": true
+     },
+     {
+      "id": 191745,
+      "source_file": "paraphrase_entail/train/records.jsonl",
+      "line": 191749,
+      "row_sha": "83fd7a70a2a12d9c",
+      "source_sha": "83fd7a70a2a12d9c",
+      "match": true
+     },
+     {
+      "id": 214505,
+      "source_file": "paraphrase_entail/train/records.jsonl",
+      "line": 214509,
+      "row_sha": "cb81ef1b5ecd34ab",
+      "source_sha": "cb81ef1b5ecd34ab",
+      "match": true
+     },
+     {
+      "id": 198474,
+      "source_file": "paraphrase_entail/train/records.jsonl",
+      "line": 198478,
+      "row_sha": "f10afc9357056800",
+      "source_sha": "f10afc9357056800",
+      "match": true
+     },
+     {
+      "id": 229865,
+      "source_file": "paraphrase_entail/train/records.jsonl",
+      "line": 229869,
+      "row_sha": "69fbe59a2eeee891",
+      "source_sha": "69fbe59a2eeee891",
+      "match": true
+     },
+     {
+      "id": 348941,
+      "source_file": "paraphrase_entail/train/records.jsonl",
+      "line": 348947,
+      "row_sha": "e6530f2df6efe2ac",
+      "source_sha": "e6530f2df6efe2ac",
+      "match": true
+     },
+     {
+      "id": 32644,
+      "source_file": "paraphrase_entail/train/records.jsonl",
+      "line": 32646,
+      "row_sha": "7535269d17e9e607",
+      "source_sha": "7535269d17e9e607",
+      "match": true
+     },
+     {
+      "id": 40965,
+      "source_file": "paraphrase_entail/train/records.jsonl",
+      "line": 40967,
+      "row_sha": "2a8ae8b078b98d5b",
+      "source_sha": "2a8ae8b078b98d5b",
+      "match": true
+     },
+     {
+      "id": 87196,
+      "source_file": "paraphrase_entail/train/records.jsonl",
+      "line": 87198,
+      "row_sha": "6e35865fa62b7bc4",
+      "source_sha": "6e35865fa62b7bc4",
+      "match": true
+     },
+     {
+      "id": 183233,
+      "source_file": "paraphrase_entail/train/records.jsonl",
+      "line": 183237,
+      "row_sha": "c0386ae8692ad172",
+      "source_sha": "c0386ae8692ad172",
+      "match": true
+     }
+    ]
+   },
+   "ok": true
+  }
+ ],
+ "checks": {
+  "all_ok": true,
+  "files": 10,
+  "elapsed_seconds": 12.907
+ },
+ "heldout": [
+  {
+   "family": "code",
+   "path": "code/heldout/items.jsonl",
+   "recount": {
+    "bytes": 38579300,
+    "lines": 73642,
+    "sha256": "75aa084034f5d0be878012cf49c1fb358be71cd84b611db97535cf7c29a0ca1b",
+    "newlines": 73642
+   },
+   "manifest": {
+    "bytes": 38579300,
+    "lines": 73642,
+    "sha256": "75aa084034f5d0be878012cf49c1fb358be71cd84b611db97535cf7c29a0ca1b"
+   },
+   "matches_recount": true,
+   "matches_excluded_entry": true,
+   "unextractable": {}
+  },
+  {
+   "family": "code",
+   "path": "even/code/heldout/items.jsonl",
+   "recount": {
+    "bytes": 22379722,
+    "lines": 42674,
+    "sha256": "ca49d8fc5fb3171ceccb76ddd8926039d8547d144b7b3c54d14b033fb2957bc7",
+    "newlines": 42674
+   },
+   "manifest": {
+    "bytes": 22379722,
+    "lines": 42674,
+    "sha256": "ca49d8fc5fb3171ceccb76ddd8926039d8547d144b7b3c54d14b033fb2957bc7"
+   },
+   "matches_recount": true,
+   "matches_excluded_entry": true,
+   "unextractable": {}
+  },
+  {
+   "family": "conversation",
+   "path": "conversation/heldout/utterances.jsonl",
+   "recount": {
+    "bytes": 71035680,
+    "lines": 159676,
+    "sha256": "2b2e2a2937aa404290ae28c21c08902bfa3ce7153087e27e9600c66498395ef1",
+    "newlines": 159676
+   },
+   "manifest": {
+    "bytes": 71035680,
+    "lines": 159676,
+    "sha256": "2b2e2a2937aa404290ae28c21c08902bfa3ce7153087e27e9600c66498395ef1"
+   },
+   "matches_recount": true,
+   "matches_excluded_entry": true,
+   "unextractable": {}
+  },
+  {
+   "family": "conversation",
+   "path": "even/conversation/heldout/utterances.jsonl",
+   "recount": {
+    "bytes": 27078227,
+    "lines": 59609,
+    "sha256": "414d7896c8c84a09bc2df38847375faf61b63009adb2c50f07735a8eebdb649c",
+    "newlines": 59609
+   },
+   "manifest": {
+    "bytes": 27078227,
+    "lines": 59609,
+    "sha256": "414d7896c8c84a09bc2df38847375faf61b63009adb2c50f07735a8eebdb649c"
+   },
+   "matches_recount": true,
+   "matches_excluded_entry": true,
+   "unextractable": {}
+  },
+  {
+   "family": "general_qa",
+   "path": "general_qa/heldout/records.jsonl",
+   "recount": {
+    "bytes": 25354215,
+    "lines": 34171,
+    "sha256": "f941fa4f4dbd72a82bdbdff0f6e918a07730041f8d44b979eaab12034825a1a3",
+    "newlines": 34171
+   },
+   "manifest": {
+    "bytes": 25354215,
+    "lines": 34171,
+    "sha256": "f941fa4f4dbd72a82bdbdff0f6e918a07730041f8d44b979eaab12034825a1a3"
+   },
+   "matches_recount": true,
+   "matches_excluded_entry": true,
+   "unextractable": {}
+  },
+  {
+   "family": "code_qa",
+   "path": "code_qa/heldout/records.jsonl",
+   "recount": {
+    "bytes": 32672820,
+    "lines": 34523,
+    "sha256": "6f5fdf928ded3740e939000e549d08855be1ef6e275f67cc25ec51036deb1db2",
+    "newlines": 34523
+   },
+   "manifest": {
+    "bytes": 32672820,
+    "lines": 34523,
+    "sha256": "6f5fdf928ded3740e939000e549d08855be1ef6e275f67cc25ec51036deb1db2"
+   },
+   "matches_recount": true,
+   "matches_excluded_entry": true,
+   "unextractable": {}
+  },
+  {
+   "family": "figurative_commonsense",
+   "path": "figurative_commonsense/heldout/records.jsonl",
+   "recount": {
+    "bytes": 13456250,
+    "lines": 25074,
+    "sha256": "f459ff1579f8cfc855f01a34f8c0dfcff785d1ea28ccf8679f47126d0c95c82f",
+    "newlines": 25074
+   },
+   "manifest": {
+    "bytes": 13456250,
+    "lines": 25074,
+    "sha256": "f459ff1579f8cfc855f01a34f8c0dfcff785d1ea28ccf8679f47126d0c95c82f"
+   },
+   "matches_recount": true,
+   "matches_excluded_entry": true,
+   "unextractable": {}
+  },
+  {
+   "family": "narrative",
+   "path": "narrative/heldout/records.jsonl",
+   "recount": {
+    "bytes": 11482734,
+    "lines": 18193,
+    "sha256": "ae736cbeaf6657208fe20e081201445d9e4007b2146354c66ceb4812b547a42b",
+    "newlines": 18193
+   },
+   "manifest": {
+    "bytes": 11482734,
+    "lines": 18193,
+    "sha256": "ae736cbeaf6657208fe20e081201445d9e4007b2146354c66ceb4812b547a42b"
+   },
+   "matches_recount": true,
+   "matches_excluded_entry": true,
+   "unextractable": {}
+  },
+  {
+   "family": "paraphrase_entail",
+   "path": "paraphrase_entail/heldout/records.jsonl",
+   "recount": {
+    "bytes": 20495039,
+    "lines": 43544,
+    "sha256": "2deea92eeffdbbe3ee185ec5edabd6281acce5d00fe0f33fb01e1979fb222e50",
+    "newlines": 43544
+   },
+   "manifest": {
+    "bytes": 20495039,
+    "lines": 43544,
+    "sha256": "2deea92eeffdbbe3ee185ec5edabd6281acce5d00fe0f33fb01e1979fb222e50"
+   },
+   "matches_recount": true,
+   "matches_excluded_entry": true,
+   "unextractable": {}
+  }
+ ],
+ "heldout_unlisted": [],
+ "system_tool_recount": [
+  {
+   "path": "figurative_commonsense/train/records.jsonl",
+   "wc_l": 238905,
+   "shasum": "1ce1851c92e9c9be23e1882806d5ef8f6d7e553136b3a7afb5869c7ab72af300",
+   "manifest_newlines_equal": true,
+   "manifest_sha_equal": true
+  },
+  {
+   "path": "narrative/train/records.jsonl",
+   "wc_l": 146598,
+   "shasum": "4a2fbfb130fab93eb8338a6f504b3a69a0ca49014ca9fabbc17b2730160141d0",
+   "manifest_newlines_equal": true,
+   "manifest_sha_equal": true
+  }
+ ]
+}

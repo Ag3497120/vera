@@ -1,0 +1,17 @@
+59a60,75
+> 
+> 
+> # ---- W5-d probe (scratchpad copy only), K1: the stub lookup types the fillers that the question tests use (as a direct placement would)
+> from verantyx import event_cross as _ec_probe
+> 
+> _PROBE_TYPES = {"船長": "PERSON", "提督": "PERSON", "Ａ社": "GROUP_ORG", "A社": "GROUP_ORG", "Ｘ": "PERSON", "小包": "ARTIFACT", "商人": "PERSON", "人": "PERSON"}
+> _orig_stub_lookup = _ec_probe.StubLookup.lookup
+> 
+> 
+> def _typed_stub_lookup(self, lemma):
+>     if lemma in _PROBE_TYPES:
+>         return _ec_probe.PlaceResult(state="DECIDED", origin="direct", estimate_basis=None, types=(_PROBE_TYPES[lemma],), provenance={"probe": True})
+>     return _orig_stub_lookup(self, lemma)
+> 
+> 
+> _ec_probe.StubLookup.lookup = _typed_stub_lookup

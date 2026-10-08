@@ -1,0 +1,77 @@
+W3-e2 test data: v1 -> v2 (made AFTER stage E2 existed; recorded, not hidden)
+v1 (kept in artifacts/w3-e2/frozen_v1/, sha in data_freeze.v1.sha256, time data_freeze_time.v1.txt) was frozen at 12:38:21 before any stage code. Running it exposed slips of the data author
+against the plan's own decisions (not changes of the product to fit the data). v2 changes ONLY these rows (the product behaviour was fixed by the plan: D9 for narrowing, D6 gate (i) one token):
+  P1-004 ミナが走った。 (r9): expected GROUP_ORG+PERSON -> PERSON  (D9: r9 knows ミナ as PERSON/QUANTITY; the candidates are narrowed to PERSON). Sibling P1-029 added with placement none (expected GROUP_ORG+PERSON).
+  P1-006 リクが本を読んだ。 (r8): expected GROUP_ORG+PERSON -> PERSON  (D9: r8 knows リク as ANIMAL/PERSON).
+  P1-008 ハルはミナへ荷物を運んだ。 r9 -> none (the layer type PLACE is outside the base's candidates at r9); sibling P1-030 added at r9 expecting no assumption (D9).
+  P1-009 ハルはナナへ荷物を運んだ。 r9 -> none (r9: ナナ DECIDED PERSON; the fake LLM says PLACE).
+  P1-017 ハルはリクに住んでいる。 r9 -> none (at r9 the candidates narrow to PERSON; nothing reads).
+  P1-028 ミナがナナに本を渡した。: added_reason null -> ASSUMPTION_UNDETERMINED:ナナ:に (ミナ as the agent of 渡す is read; ナナ is the one premise).
+  P3-010 シートポスト -> グリス, P3-012 消耗品 -> ケーシング, P3-013 油圧ブレーキ -> フルード (the stand-in gate (i) wants one token; the three words are compounds of 2 tokens).
+Everything else (including all P2 rows) is unchanged. The `documents` rows (P1-014, P3-012, P3-013) are expected to read through source (c); source (c) is not built (D14: SOURCE_UNAVAILABLE:documents).
+
+
+W3-e2 test data: v2 -> v3 (round 3, auditor rulings 1-5, frozen 2026-10-05 14:30:47 +0900, BEFORE any round-3 product change; product sha at freeze in r3_freeze_product_sha.txt)
+v2 kept in artifacts/w3-e2/frozen_v2/ (sha data_freeze.v2.sha256, time data_freeze_time.v2.txt). The 7 changed rows and 29 added rows come from the intermediate reviewer (r3/v3_changed_rows.jsonl, r3/v3_new_rows.jsonl); I read every row and each expectation follows from rulings 1-5 and D-r3-1..5b. The intermediate reviewer reported a prototype judged with zero mismatches; that is his measurement, not mine.
+Note on P1-014: the ruling says (c) NOT_DECISIVE, but with no placement the documents cannot be read, so the real (c) result is SOURCE_UNAVAILABLE:documents (recorded as it is, not rewritten).
+
+=== 7 changed rows (before / after, full JSON) ===
+
+[W3E2-P1-004] reason: r3 ruling 3: r9 gives PERSON/QUANTITY, not inside the P1 types -> no (d)
+BEFORE: {"id": "W3E2-P1-004", "premise": "P1", "input": "ミナが走った。", "placement": "r9", "sources": {"layer_rows": null, "ledger_rows": null, "documents": null, "llm": "none"}, "expect": {"mode": "assumed", "assumptions": [{"word": "ミナ", "kind": "name_type", "assumed": "PERSON", "source": "surface"}], "clauses": [{"predicate": "走る", "roles": {"agent": "ミナ"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "abstain_reason": "SUBJECT_TYPE_UNDETERMINED:ミナ", "added_reason": null}, "note": "d: surface, が; v2: r9 knows ミナ as PERSON/QUANTITY, so D9 narrows the candidates to PERSON (v1 expected GROUP_ORG+PERSON: a slip against D9)"}
+AFTER:  {"id": "W3E2-P1-004", "premise": "P1", "input": "ミナが走った。", "placement": "r9", "sources": {"layer_rows": null, "ledger_rows": null, "documents": null, "llm": "none"}, "expect": {"mode": "abstain", "assumptions": [], "clauses": null, "abstain_reason": "SUBJECT_TYPE_UNDETERMINED:ミナ", "added_reason": "ASSUMPTION_UNDETERMINED:ミナ:が"}, "note": "d: surface, が; v2: r9 knows ミナ as PERSON/QUANTITY, so D9 narrows the candidates to PERSON (v1 expected GROUP_ORG+PERSON: a slip against D9) | v3: r3 ruling 3: r9 gives PERSON/QUANTITY, not inside the P1 types -> no (d)"}
+
+[W3E2-P1-006] reason: r3 ruling 2+3: リク (lemma 陸) is not a name form for (d); r8 gives ANIMAL/PERSON
+BEFORE: {"id": "W3E2-P1-006", "premise": "P1", "input": "リクが本を読んだ。", "placement": "r8", "sources": {"layer_rows": null, "ledger_rows": null, "documents": null, "llm": "none"}, "expect": {"mode": "assumed", "assumptions": [{"word": "リク", "kind": "name_type", "assumed": "PERSON", "source": "surface"}], "clauses": [{"predicate": "読む", "roles": {"agent": "リク", "patient": "本"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "abstain_reason": "AGENT_EVIDENCE_MISSING:リク", "added_reason": null}, "note": "d: AGENT_EVIDENCE_MISSING; v2: r8 knows リク as ANIMAL/PERSON, D9 narrows to PERSON (v1 slip)"}
+AFTER:  {"id": "W3E2-P1-006", "premise": "P1", "input": "リクが本を読んだ。", "placement": "r8", "sources": {"layer_rows": null, "ledger_rows": null, "documents": null, "llm": "none"}, "expect": {"mode": "abstain", "assumptions": [], "clauses": null, "abstain_reason": "AGENT_EVIDENCE_MISSING:リク", "added_reason": "ASSUMPTION_UNDETERMINED:リク:が"}, "note": "d: AGENT_EVIDENCE_MISSING; v2: r8 knows リク as ANIMAL/PERSON, D9 narrows to PERSON (v1 slip) | v3: r3 ruling 2+3: リク (lemma 陸) is not a name form for (d); r8 gives ANIMAL/PERSON"}
+
+[W3E2-P2-010] reason: r3 ruling 5: no placement and no layer: ハル has no type -> が is not read
+BEFORE: {"id": "W3E2-P2-010", "premise": "P2", "input": "ハルがザクった。", "placement": "none", "sources": {"layer_rows": null, "ledger_rows": null, "documents": null, "llm": "none"}, "expect": {"mode": "assumed", "assumptions": [{"word": "ザク", "kind": "nonce_predicate", "assumed": "UNTYPED_VERB", "source": "surface"}], "clauses": [{"predicate": "ザクる", "roles": {"agent": "ハル"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "abstain_reason": "NO_PREDICATE_TOKEN", "added_reason": null}, "note": ""}
+AFTER:  {"id": "W3E2-P2-010", "premise": "P2", "input": "ハルがザクった。", "placement": "none", "sources": {"layer_rows": null, "ledger_rows": null, "documents": null, "llm": "none"}, "expect": {"mode": "abstain", "assumptions": [], "clauses": null, "abstain_reason": "NO_PREDICATE_TOKEN", "added_reason": null}, "note": " | v3: r3 ruling 5: no placement and no layer: ハル has no type -> が is not read"}
+
+[W3E2-P2-012] reason: r3 ruling 5
+BEFORE: {"id": "W3E2-P2-012", "premise": "P2", "input": "ハルがヨモります。", "placement": "none", "sources": {"layer_rows": null, "ledger_rows": null, "documents": null, "llm": "none"}, "expect": {"mode": "assumed", "assumptions": [{"word": "ヨモ", "kind": "nonce_predicate", "assumed": "UNTYPED_VERB", "source": "surface"}], "clauses": [{"predicate": "ヨモる", "roles": {"agent": "ハル"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}], "abstain_reason": "NO_PREDICATE_TOKEN", "added_reason": null}, "note": ""}
+AFTER:  {"id": "W3E2-P2-012", "premise": "P2", "input": "ハルがヨモります。", "placement": "none", "sources": {"layer_rows": null, "ledger_rows": null, "documents": null, "llm": "none"}, "expect": {"mode": "abstain", "assumptions": [], "clauses": null, "abstain_reason": "NO_PREDICATE_TOKEN", "added_reason": null}, "note": " | v3: r3 ruling 5"}
+
+[W3E2-P1-014] reason: r3 ruling 1: no placement -> the documents cannot be read (SOURCE_UNAVAILABLE:documents); に splits -> abstain
+BEFORE: {"id": "W3E2-P1-014", "premise": "P1", "input": "ハルはミナに本を渡した。", "placement": "none", "sources": {"layer_rows": null, "ledger_rows": null, "documents": ["ミナはよく本を読んだ。", "先生がミナに本を渡した。"], "llm": "none"}, "expect": {"mode": "assumed", "assumptions": [{"word": "ミナ", "kind": "name_type", "assumed": "PERSON", "source": "documents"}], "clauses": [{"predicate": "渡す", "roles": {"agent": "ハル", "patient": "本", "recipient": "ミナ"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "abstain_reason": "RECIPIENT_TYPE_UNDETERMINED:ミナ", "added_reason": null}, "note": "c: documents (may be SOURCE_UNAVAILABLE:documents)"}
+AFTER:  {"id": "W3E2-P1-014", "premise": "P1", "input": "ハルはミナに本を渡した。", "placement": "none", "sources": {"layer_rows": null, "ledger_rows": null, "documents": ["ミナはよく本を読んだ。", "先生がミナに本を渡した。"], "llm": "none"}, "expect": {"mode": "abstain", "assumptions": [], "clauses": null, "abstain_reason": "RECIPIENT_TYPE_UNDETERMINED:ミナ", "added_reason": "ASSUMPTION_UNDETERMINED:ミナ:に", "documents_result": "SOURCE_UNAVAILABLE:documents"}, "note": "c: documents (may be SOURCE_UNAVAILABLE:documents) | v3: r3 ruling 1: no placement -> the documents cannot be read (SOURCE_UNAVAILABLE:documents); に splits -> abstain"}
+
+[W3E2-P3-012] reason: r3 ruling 1: the documents hold no XなどのY row for the word (NOT_DECISIVE) -> abstain
+BEFORE: {"id": "W3E2-P3-012", "premise": "P3", "input": "ハルはケーシングに手紙を送った。", "placement": "r9", "sources": {"layer_rows": null, "ledger_rows": null, "documents": ["店主がケーシングを発注した。", "ケーシングは店にある。"], "llm": "none"}, "expect": {"mode": "assumed", "assumptions": [{"word": "ケーシング", "kind": "noun_type", "assumed": "GROUP_ORG", "source": "documents"}], "clauses": [{"predicate": "送る", "roles": {"agent": "ハル", "patient": "手紙", "recipient": "ケーシング"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "abstain_reason": "RECIPIENT_TYPE_UNDETERMINED:ケーシング", "added_reason": null}, "note": "c (may be SOURCE_UNAVAILABLE:documents)"}
+AFTER:  {"id": "W3E2-P3-012", "premise": "P3", "input": "ハルはケーシングに手紙を送った。", "placement": "r9", "sources": {"layer_rows": null, "ledger_rows": null, "documents": ["店主がケーシングを発注した。", "ケーシングは店にある。"], "llm": "none"}, "expect": {"mode": "abstain", "assumptions": [], "clauses": null, "abstain_reason": "RECIPIENT_TYPE_UNDETERMINED:ケーシング", "added_reason": "ASSUMPTION_UNDETERMINED:ケーシング:に", "documents_result": "NOT_DECISIVE"}, "note": "c (may be SOURCE_UNAVAILABLE:documents) | v3: r3 ruling 1: the documents hold no XなどのY row for the word (NOT_DECISIVE) -> abstain"}
+
+[W3E2-P3-013] reason: r3 ruling 1: as P3-012
+BEFORE: {"id": "W3E2-P3-013", "premise": "P3", "input": "ハルはフルードへ荷物を運んだ。", "placement": "r9", "sources": {"layer_rows": null, "ledger_rows": null, "documents": ["フルードの工房がある。", "客がフルードへ行った。"], "llm": "none"}, "expect": {"mode": "assumed", "assumptions": [{"word": "フルード", "kind": "noun_type", "assumed": "PLACE", "source": "documents"}], "clauses": [{"predicate": "運ぶ", "roles": {"agent": "ハル", "patient": "荷物", "goal": "フルード"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "abstain_reason": "GOAL_TYPE_UNDETERMINED:フルード", "added_reason": null}, "note": "c"}
+AFTER:  {"id": "W3E2-P3-013", "premise": "P3", "input": "ハルはフルードへ荷物を運んだ。", "placement": "r9", "sources": {"layer_rows": null, "ledger_rows": null, "documents": ["フルードの工房がある。", "客がフルードへ行った。"], "llm": "none"}, "expect": {"mode": "abstain", "assumptions": [], "clauses": null, "abstain_reason": "GOAL_TYPE_UNDETERMINED:フルード", "added_reason": "ASSUMPTION_UNDETERMINED:フルード:へ", "documents_result": "NOT_DECISIVE"}, "note": "c | v3: r3 ruling 1: as P3-012"}
+
+=== 29 added rows ===
+W3E2-P1-031  none リンゴが落ちた。  expect=abstain  | r3 ruling 2: a dictionary katakana common noun (lemma 林檎) is not a name form for (d)
+W3E2-P1-032  none リンゴが本を読んだ。  expect=abstain  | r3 ruling 2
+W3E2-P1-033  none リンゴが落ちた。  expect=assumed  | r3 ruling 2: (a) layer may still assume
+W3E2-P1-034  none リンゴが落ちた。  expect=assumed  | r3 ruling 2: (e) may still assume
+W3E2-P1-035  none ミカンが腐った。  expect=abstain  | r3 ruling 2 (lemma 蜜柑)
+W3E2-P1-036  none ミカンが本を読んだ。  expect=abstain  | r3 ruling 2
+W3E2-P1-037  none ミカンが腐った。  expect=assumed  | r3 ruling 2: (e) may still assume
+W3E2-P1-038  none ヒカリが消えた。  expect=abstain  | r3 ruling 2 (lemma 光)
+W3E2-P1-039  r9 モモが落ちた。  expect=abstain  | r3 ruling 3: r9 gives ANIMAL/PERSON; not inside the P1 types -> no (d)
+W3E2-P1-040  r9 モモが本を読んだ。  expect=abstain  | r3 ruling 3
+W3E2-P1-041  r9 モモが落ちた。  expect=assumed  | r3 ruling 3: (e) may assume; asked among the base candidates
+W3E2-P1-042  r9 モモが落ちた。  expect=assumed  | r3 ruling 3: (a) may assume
+W3E2-P1-043  r9 モモが落ちた。  expect=abstain  | r3 ruling 3: the back end says ANIMAL, which does not read
+W3E2-P1-044  r9 ヨモが走った。  expect=abstain  | r3 ruling 4: one weak document row says PLACE -> no (d)
+W3E2-P1-045  r9 ヨモが本を読んだ。  expect=abstain  | r3 ruling 4
+W3E2-P1-046  r8 ヨモが走った。  expect=abstain  | r3 ruling 4
+W3E2-P1-047  r9 ヨモが走った。  expect=abstain  | r3 ruling 4 (D-r3-4): the weak counter-evidence stops the search, (e) is not asked
+W3E2-P1-048  r9 ヨモが走った。  expect=assumed  | r3 ruling 4 contrast: no documents -> (d)
+W3E2-P1-049  r9 ヨモが走った。  expect=assumed  | r3 ruling 4 contrast: the weak row is a type that reads -> not a counter, (d) as before
+W3E2-P2-027  none 本がザクった。  expect=abstain  | r3 ruling 5: が with a filler of no animate type
+W3E2-P2-028  r9 本がザクった。  expect=abstain  | r3 ruling 5: 本 is INFO_LANGUAGE at r9
+W3E2-P2-029  r9 机がザクった。  expect=abstain  | r3 ruling 5: 机 is ARTIFACT/PLACE at r9
+W3E2-P2-030  r9 ハルがザクった。  expect=assumed  | r3 ruling 5: ハル is ANIMAL/GROUP_ORG/PERSON at r9
+W3E2-P2-031  r9 先生がザクった。  expect=assumed  | r3 ruling 5: 先生 PERSON
+W3E2-P2-032  r9 犬がザクった。  expect=assumed  | r3 ruling 5: 犬 ANIMAL
+W3E2-P2-033  none ハルがザクった。  expect=assumed  | r3 ruling 5: the layer gives the type
+W3E2-P3-027  r9 ハルはグリスへ荷物を運んだ。  expect=abstain  | r3 ruling 4: one weak document row says ARTIFACT -> stop (also for P3)
+W3E2-P3-028  r9 ハルはグリスへ荷物を運んだ。  expect=assumed  | r3 ruling 4 contrast: the weak row is a type that reads
+W3E2-P3-029  r9 ハルはグリスへ荷物を運んだ。  expect=assumed  | r3 ruling 4: (a) is above (c)

@@ -1,0 +1,12 @@
+5000 175000 chars SYSTEM_ONLY 5000 0.004 s
+10000 350000 chars SYSTEM_ONLY 10000 0.008 s
+20000 700000 chars SYSTEM_ONLY 20000 0.017 s
+40000 1400000 chars SYSTEM_ONLY 40000 0.034 s
+ 6:34  up 5 days,  5:46, 2 users, load averages: 5.81 5.84 5.83
+MIXED claude_code_prompt_rows k=5000 chars=190003 rows=['system_message', 'owner_utterance'] 0.474s
+MIXED claude_code_prompt_rows k=10000 chars=380003 rows=['system_message', 'owner_utterance'] 0.968s
+MIXED claude_code_prompt_rows k=20000 chars=760003 rows=['system_message', 'owner_utterance'] 1.851s
+MIXED claude_code_prompt_rows k=40000 chars=1520003 rows=['system_message', 'owner_utterance'] 3.670s
+baseline build k=5000 chars=190003 0.126s
+baseline build k=20000 chars=760003 0.499s
+baseline build k=40000 chars=1520003 1.007s

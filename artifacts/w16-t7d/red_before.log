@@ -1,0 +1,520 @@
+FFFF.FFFFFFFF...FFFFFF..FFFFF.FF.FF                                      [100%]
+=================================== FAILURES ===================================
+__________________________ test_a1_notification_only ___________________________
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2335/test_a1_notification_only0')
+
+    def test_a1_notification_only(tmp_path):
+        led = tmp_path / "l"
+        r = submit(led, TN)
+        assert r.returncode == 0 and r.stdout == ""
+        rs = rows_of(led)
+        assert len(rs) == 1
+>       assert rs[0]["kind"] == "system_message" and rs[0]["actor"]["type"] == "system"
+E       AssertionError: assert ('owner_utterance' == 'system_message'
+E         
+E         - system_message
+E         + owner_utterance)
+
+tests/test_w16t7d_attribution.py:54: AssertionError
+_ test_a2_system_only_variants[<system-reminder>\nremember things\n</system-reminder>-tags0] _
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2335/test_a2_system_only_variants__0')
+prompt = '<system-reminder>\nremember things\n</system-reminder>'
+tags = ['system_reminder']
+
+    @pytest.mark.parametrize("prompt,tags", [
+        (SR, ["system_reminder"]),
+        (SR + TN, ["system_reminder", "task_notification"]),
+        (TN + "\n \n\t" + SR + "\n", ["task_notification", "system_reminder"]),
+    ])
+    def test_a2_system_only_variants(tmp_path, prompt, tags):
+        led = tmp_path / "l"
+        assert submit(led, prompt).returncode == 0
+        rs = rows_of(led)
+        assert len(rs) == 1
+>       assert (rs[0]["kind"], rs[0]["actor"]["type"]) == ("system_message", "system")
+E       AssertionError: assert ('owner_utterance', 'owner') == ('system_message', 'system')
+E         
+E         At index 0 diff: 'owner_utterance' != 'system_message'
+E         Use -v to get more diff
+
+tests/test_w16t7d_attribution.py:69: AssertionError
+_ test_a2_system_only_variants[<system-reminder>\nremember things\n</system-reminder><task-notification>\n<task-id>abc</task-id>\nbackground task done\n</task-notification>-tags1] _
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2335/test_a2_system_only_variants__1')
+prompt = '<system-reminder>\nremember things\n</system-reminder><task-notification>\n<task-id>abc</task-id>\nbackground task done\n</task-notification>'
+tags = ['system_reminder', 'task_notification']
+
+    @pytest.mark.parametrize("prompt,tags", [
+        (SR, ["system_reminder"]),
+        (SR + TN, ["system_reminder", "task_notification"]),
+        (TN + "\n \n\t" + SR + "\n", ["task_notification", "system_reminder"]),
+    ])
+    def test_a2_system_only_variants(tmp_path, prompt, tags):
+        led = tmp_path / "l"
+        assert submit(led, prompt).returncode == 0
+        rs = rows_of(led)
+        assert len(rs) == 1
+>       assert (rs[0]["kind"], rs[0]["actor"]["type"]) == ("system_message", "system")
+E       AssertionError: assert ('owner_utterance', 'owner') == ('system_message', 'system')
+E         
+E         At index 0 diff: 'owner_utterance' != 'system_message'
+E         Use -v to get more diff
+
+tests/test_w16t7d_attribution.py:69: AssertionError
+_ test_a2_system_only_variants[<task-notification>\n<task-id>abc</task-id>\nbackground task done\n</task-notification>\n \n\t<system-reminder>\nremember things\n</system-reminder>\n-tags2] _
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2335/test_a2_system_only_variants__2')
+prompt = '<task-notification>\n<task-id>abc</task-id>\nbackground task done\n</task-notification>\n \n\t<system-reminder>\nremember things\n</system-reminder>\n'
+tags = ['task_notification', 'system_reminder']
+
+    @pytest.mark.parametrize("prompt,tags", [
+        (SR, ["system_reminder"]),
+        (SR + TN, ["system_reminder", "task_notification"]),
+        (TN + "\n \n\t" + SR + "\n", ["task_notification", "system_reminder"]),
+    ])
+    def test_a2_system_only_variants(tmp_path, prompt, tags):
+        led = tmp_path / "l"
+        assert submit(led, prompt).returncode == 0
+        rs = rows_of(led)
+        assert len(rs) == 1
+>       assert (rs[0]["kind"], rs[0]["actor"]["type"]) == ("system_message", "system")
+E       AssertionError: assert ('owner_utterance', 'owner') == ('system_message', 'system')
+E         
+E         At index 0 diff: 'owner_utterance' != 'system_message'
+E         Use -v to get more diff
+
+tests/test_w16t7d_attribution.py:69: AssertionError
+_______________ test_a3b_owner_only_rows_equal_baseline_builder ________________
+
+    def test_a3b_owner_only_rows_equal_baseline_builder():
+        p = {"session_id": "s1", "hook_event_name": "UserPromptSubmit", "prompt": OWNER_PROMPT}
+>       rows = L.claude_code_prompt_rows(OWNER_PROMPT, "claude_code.UserPromptSubmit", "s1")
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'verantyx.ledger_events' has no attribute 'claude_code_prompt_rows'
+
+tests/test_w16t7d_attribution.py:88: AttributeError
+_ test_a4_mixed_two_rows[before <task-notification>\n<task-id>abc</task-id>\nbackground task done\n</task-notification>] _
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2335/test_a4_mixed_two_rows_before_0')
+prompt = 'before <task-notification>\n<task-id>abc</task-id>\nbackground task done\n</task-notification>'
+
+    @pytest.mark.parametrize("prompt", [
+        "before " + TN, TN + " after", "head\n" + SR + "\ntail", "a " + TN + " b " + SR + " c",
+    ])
+    def test_a4_mixed_two_rows(tmp_path, prompt):
+        led = tmp_path / "l"
+        assert submit(led, prompt).returncode == 0
+        rs = rows_of(led)
+>       assert len(rs) == 2
+E       AssertionError: assert 1 == 2
+E        +  where 1 = len([{'actor': {'id': 's1', 'type': 'owner'}, 'data': {'redactions': 2, 'session_id': 's1', 'source': 'claude_code.UserPro...ED:sk]>'}, 'kind': 'owner_utterance', 'prev': '0000000000000000000000000000000000000000000000000000000000000000', ...}])
+
+tests/test_w16t7d_attribution.py:100: AssertionError
+_ test_a4_mixed_two_rows[<task-notification>\n<task-id>abc</task-id>\nbackground task done\n</task-notification> after] _
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2335/test_a4_mixed_two_rows__task_n0')
+prompt = '<task-notification>\n<task-id>abc</task-id>\nbackground task done\n</task-notification> after'
+
+    @pytest.mark.parametrize("prompt", [
+        "before " + TN, TN + " after", "head\n" + SR + "\ntail", "a " + TN + " b " + SR + " c",
+    ])
+    def test_a4_mixed_two_rows(tmp_path, prompt):
+        led = tmp_path / "l"
+        assert submit(led, prompt).returncode == 0
+        rs = rows_of(led)
+>       assert len(rs) == 2
+E       AssertionError: assert 1 == 2
+E        +  where 1 = len([{'actor': {'id': 's1', 'type': 'owner'}, 'data': {'redactions': 2, 'session_id': 's1', 'source': 'claude_code.UserPro...> after'}, 'kind': 'owner_utterance', 'prev': '0000000000000000000000000000000000000000000000000000000000000000', ...}])
+
+tests/test_w16t7d_attribution.py:100: AssertionError
+_ test_a4_mixed_two_rows[head\n<system-reminder>\nremember things\n</system-reminder>\ntail] _
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2335/test_a4_mixed_two_rows_head_n_0')
+prompt = 'head\n<system-reminder>\nremember things\n</system-reminder>\ntail'
+
+    @pytest.mark.parametrize("prompt", [
+        "before " + TN, TN + " after", "head\n" + SR + "\ntail", "a " + TN + " b " + SR + " c",
+    ])
+    def test_a4_mixed_two_rows(tmp_path, prompt):
+        led = tmp_path / "l"
+        assert submit(led, prompt).returncode == 0
+        rs = rows_of(led)
+>       assert len(rs) == 2
+E       AssertionError: assert 1 == 2
+E        +  where 1 = len([{'actor': {'id': 's1', 'type': 'owner'}, 'data': {'redactions': 0, 'session_id': 's1', 'source': 'claude_code.UserPro...>\ntail'}, 'kind': 'owner_utterance', 'prev': '0000000000000000000000000000000000000000000000000000000000000000', ...}])
+
+tests/test_w16t7d_attribution.py:100: AssertionError
+_ test_a4_mixed_two_rows[a <task-notification>\n<task-id>abc</task-id>\nbackground task done\n</task-notification> b <system-reminder>\nremember things\n</system-reminder> c] _
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2335/test_a4_mixed_two_rows_a__task0')
+prompt = 'a <task-notification>\n<task-id>abc</task-id>\nbackground task done\n</task-notification> b <system-reminder>\nremember things\n</system-reminder> c'
+
+    @pytest.mark.parametrize("prompt", [
+        "before " + TN, TN + " after", "head\n" + SR + "\ntail", "a " + TN + " b " + SR + " c",
+    ])
+    def test_a4_mixed_two_rows(tmp_path, prompt):
+        led = tmp_path / "l"
+        assert submit(led, prompt).returncode == 0
+        rs = rows_of(led)
+>       assert len(rs) == 2
+E       AssertionError: assert 1 == 2
+E        +  where 1 = len([{'actor': {'id': 's1', 'type': 'owner'}, 'data': {'redactions': 2, 'session_id': 's1', 'source': 'claude_code.UserPro...nder> c'}, 'kind': 'owner_utterance', 'prev': '0000000000000000000000000000000000000000000000000000000000000000', ...}])
+
+tests/test_w16t7d_attribution.py:100: AssertionError
+_______ test_a5_malformed[<task-notification>\nx\nno close-UNCLOSED_TAG] _______
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2335/test_a5_malformed__task_notifi0')
+prompt = '<task-notification>\nx\nno close', reason = 'UNCLOSED_TAG'
+
+    @pytest.mark.parametrize("prompt,reason", [
+        ("<task-notification>\nx\nno close", "UNCLOSED_TAG"),
+        ("stray </system-reminder> close", "UNOPENED_CLOSE_TAG"),
+        ("<system-reminder><system-reminder>x</system-reminder></system-reminder>", "UNOPENED_CLOSE_TAG"),
+    ])
+    def test_a5_malformed(tmp_path, prompt, reason):
+        led = tmp_path / "l"
+        assert submit(led, prompt).returncode == 0
+        rs = rows_of(led)
+        assert len(rs) == 1
+>       assert (rs[0]["kind"], rs[0]["actor"]["type"]) == ("user_turn_unattributed", "unknown")
+E       AssertionError: assert ('owner_utterance', 'owner') == ('user_turn_u...d', 'unknown')
+E         
+E         At index 0 diff: 'owner_utterance' != 'user_turn_unattributed'
+E         Use -v to get more diff
+
+tests/test_w16t7d_attribution.py:121: AssertionError
+_____ test_a5_malformed[stray </system-reminder> close-UNOPENED_CLOSE_TAG] _____
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2335/test_a5_malformed_stray___syst0')
+prompt = 'stray </system-reminder> close', reason = 'UNOPENED_CLOSE_TAG'
+
+    @pytest.mark.parametrize("prompt,reason", [
+        ("<task-notification>\nx\nno close", "UNCLOSED_TAG"),
+        ("stray </system-reminder> close", "UNOPENED_CLOSE_TAG"),
+        ("<system-reminder><system-reminder>x</system-reminder></system-reminder>", "UNOPENED_CLOSE_TAG"),
+    ])
+    def test_a5_malformed(tmp_path, prompt, reason):
+        led = tmp_path / "l"
+        assert submit(led, prompt).returncode == 0
+        rs = rows_of(led)
+        assert len(rs) == 1
+>       assert (rs[0]["kind"], rs[0]["actor"]["type"]) == ("user_turn_unattributed", "unknown")
+E       AssertionError: assert ('owner_utterance', 'owner') == ('user_turn_u...d', 'unknown')
+E         
+E         At index 0 diff: 'owner_utterance' != 'user_turn_unattributed'
+E         Use -v to get more diff
+
+tests/test_w16t7d_attribution.py:121: AssertionError
+_ test_a5_malformed[<system-reminder><system-reminder>x</system-reminder></system-reminder>-UNOPENED_CLOSE_TAG] _
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2335/test_a5_malformed__system_remi0')
+prompt = '<system-reminder><system-reminder>x</system-reminder></system-reminder>'
+reason = 'UNOPENED_CLOSE_TAG'
+
+    @pytest.mark.parametrize("prompt,reason", [
+        ("<task-notification>\nx\nno close", "UNCLOSED_TAG"),
+        ("stray </system-reminder> close", "UNOPENED_CLOSE_TAG"),
+        ("<system-reminder><system-reminder>x</system-reminder></system-reminder>", "UNOPENED_CLOSE_TAG"),
+    ])
+    def test_a5_malformed(tmp_path, prompt, reason):
+        led = tmp_path / "l"
+        assert submit(led, prompt).returncode == 0
+        rs = rows_of(led)
+        assert len(rs) == 1
+>       assert (rs[0]["kind"], rs[0]["actor"]["type"]) == ("user_turn_unattributed", "unknown")
+E       AssertionError: assert ('owner_utterance', 'owner') == ('user_turn_u...d', 'unknown')
+E         
+E         At index 0 diff: 'owner_utterance' != 'user_turn_unattributed'
+E         Use -v to get more diff
+
+tests/test_w16t7d_attribution.py:121: AssertionError
+________________ test_a7_judged_on_raw_prompt_before_redaction _________________
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2335/test_a7_judged_on_raw_prompt_b0')
+
+    def test_a7_judged_on_raw_prompt_before_redaction(tmp_path):
+        led = tmp_path / "l"
+        prompt = "<task-notification>\ntoken=abcdefgh12345678\n</task-notification>"
+        assert submit(led, prompt).returncode == 0
+        rs = rows_of(led)
+>       assert len(rs) == 1 and rs[0]["kind"] == "system_message"
+E       AssertionError: assert (1 == 1 and 'owner_utterance' == 'system_message'
+E        +  where 1 = len([{'actor': {'id': 's1', 'type': 'owner'}, 'data': {'redactions': 3, 'session_id': 's1', 'source': 'claude_code.UserPro...ED:sk]>'}, 'kind': 'owner_utterance', 'prev': '0000000000000000000000000000000000000000000000000000000000000000', ...}])
+E         
+E         - system_message
+E         + owner_utterance)
+
+tests/test_w16t7d_attribution.py:138: AssertionError
+______ test_a7b_redaction_of_the_tag_name_is_the_reason_for_raw_judgement ______
+
+    def test_a7b_redaction_of_the_tag_name_is_the_reason_for_raw_judgement():
+        # 台帳に残る本文で判定すると task-notification は見つからない（だから生の prompt で判定する）
+        red, _ = L.redact(TN)
+>       assert L.split_system_blocks(red)["status"] == "OWNER_ONLY"
+               ^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'verantyx.ledger_events' has no attribute 'split_system_blocks'
+
+tests/test_w16t7d_attribution.py:150: AttributeError
+___________________________ test_a8_hook_path_mixed ____________________________
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2335/test_a8_hook_path_mixed0')
+
+    def test_a8_hook_path_mixed(tmp_path):
+        proj = tmp_path / "proj"
+        proj.mkdir()
+        r = cli("hooks", "print", "--claude-code")
+        tpl = json.loads(r.stdout)
+        cmd = tpl["hooks"]["UserPromptSubmit"][0]["hooks"][0]["command"]
+        payload = {"session_id": "s1", "hook_event_name": "UserPromptSubmit", "prompt": "hi " + TN + " there"}
+        h = subprocess.run(cmd, shell=True, capture_output=True, text=True, env=_env(CLAUDE_PROJECT_DIR=str(proj)),
+                           input=json.dumps(payload), cwd=str(proj))
+        assert h.returncode == 0 and h.stdout == ""
+        led = proj / ".vera" / "ledger"
+>       assert [r["kind"] for r in rows_of(led)] == ["system_message", "owner_utterance"]
+E       AssertionError: assert ['owner_utterance'] == ['system_mess...er_utterance']
+E         
+E         At index 0 diff: 'owner_utterance' != 'system_message'
+E         Right contains one more item: 'owner_utterance'
+E         Use -v to get more diff
+
+tests/test_w16t7d_attribution.py:165: AssertionError
+______________________________ test_a9_auto_path _______________________________
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2335/test_a9_auto_path0')
+
+    def test_a9_auto_path(tmp_path):
+        led = tmp_path / "l"
+        assert submit(led, TN, sub="auto").returncode == 0
+        assert submit(led, "plain words", sub="auto").returncode == 0
+        assert submit(led, "x " + SR, sub="auto").returncode == 0
+>       assert kinds(led) == [("system_message", "system"), ("owner_utterance", "owner"),
+                              ("system_message", "system"), ("owner_utterance", "owner")]
+E       AssertionError: assert [('owner_utte...ce', 'owner')] == [('system_mes...ce', 'owner')]
+E         
+E         At index 0 diff: ('owner_utterance', 'owner') != ('system_message', 'system')
+E         Right contains one more item: ('owner_utterance', 'owner')
+E         Use -v to get more diff
+
+tests/test_w16t7d_attribution.py:175: AssertionError
+___________________ test_a_rows_are_pure_function_of_prompt ____________________
+
+    def test_a_rows_are_pure_function_of_prompt():
+>       rows = L.claude_code_prompt_rows("a " + TN, "claude_code.UserPromptSubmit", "s1")
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'verantyx.ledger_events' has no attribute 'claude_code_prompt_rows'
+
+tests/test_w16t7d_attribution.py:180: AttributeError
+____________________ test_a_codes_not_raw_tag_names_in_data ____________________
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2335/test_a_codes_not_raw_tag_names0')
+
+    def test_a_codes_not_raw_tag_names_in_data(tmp_path):
+>       rows = L.claude_code_prompt_rows(TN + SR, "claude_code.UserPromptSubmit", "s1")
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'verantyx.ledger_events' has no attribute 'claude_code_prompt_rows'
+
+tests/test_w16t7d_attribution.py:187: AttributeError
+____________________ test_b1_correction_appended_verify_ok _____________________
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2335/test_b1_correction_appended_ve0')
+base_root = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2335/base0')
+
+    def test_b1_correction_appended_verify_ok(tmp_path, base_root):
+        led = tmp_path / "l"
+        sha = make_misattributed(led, base_root)
+        v0 = L.verify(led)
+        assert v0["status"] == "OK" and v0["n"] == 1
+        r = correct(led, sha[:12])
+>       assert r.returncode == 0, r.stderr + r.stdout
+E       AssertionError: usage: vera events [-h] [--ledger-dir LEDGER_DIR_TOP]
+E                            {tail,show,grep,verify,sweep,add} ...
+E         vera events: error: argument ev_cmd: invalid choice: 'correct' (choose from 'tail', 'show', 'grep', 'verify', 'sweep', 'add')
+E         
+E       assert 2 == 0
+E        +  where 2 = CompletedProcess(args=['/Users/motonisihikoudai/vera-wiring/env/bin/python', '-P', '-m', 'verantyx.cli', 'events', 'co...s: error: argument ev_cmd: invalid choice: 'correct' (choose from 'tail', 'show', 'grep', 'verify', 'sweep', 'add')\n").returncode
+
+tests/test_w16t7d_correction.py:74: AssertionError
+_______________________ test_b1b_original_row_untouched ________________________
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2335/test_b1b_original_row_untouche0')
+base_root = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2335/base0')
+
+    def test_b1b_original_row_untouched(tmp_path, base_root):
+        led = tmp_path / "l"
+        sha = make_misattributed(led, base_root)
+        before = (led / "events.jsonl").read_bytes()
+>       assert correct(led, sha).returncode == 0
+E       assert 2 == 0
+E        +  where 2 = CompletedProcess(args=['/Users/motonisihikoudai/vera-wiring/env/bin/python', '-P', '-m', 'verantyx.cli', 'events', 'co...s: error: argument ev_cmd: invalid choice: 'correct' (choose from 'tail', 'show', 'grep', 'verify', 'sweep', 'add')\n").returncode
+E        +    where CompletedProcess(args=['/Users/motonisihikoudai/vera-wiring/env/bin/python', '-P', '-m', 'verantyx.cli', 'events', 'co...s: error: argument ev_cmd: invalid choice: 'correct' (choose from 'tail', 'show', 'grep', 'verify', 'sweep', 'add')\n") = correct(PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2335/test_b1b_original_row_untouche0/l'), '41f0ffd7d47a4b6ae5732f65df21ba364be9c328e35df37c95fc2b3ef79e6ea9')
+
+tests/test_w16t7d_correction.py:92: AssertionError
+____________________ test_b2_annotations_on_tail_show_grep _____________________
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2335/test_b2_annotations_on_tail_sh0')
+base_root = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2335/base0')
+
+    def test_b2_annotations_on_tail_show_grep(tmp_path, base_root):
+        led = tmp_path / "l"
+        sha = make_misattributed(led, base_root)
+        cli("events", "add", "approval", "--ledger-dir", str(led), "--actor-type", "owner", "--actor-id", "o", "--text", "ok")
+        # 訂正の前: どの行にも corrected_by は無い
+        t = cli("events", "tail", "-n", "5", "--ledger-dir", str(led))
+        assert all("corrected_by" not in json.loads(x) for x in t.stdout.splitlines())
+>       assert correct(led, sha).returncode == 0
+E       assert 2 == 0
+E        +  where 2 = CompletedProcess(args=['/Users/motonisihikoudai/vera-wiring/env/bin/python', '-P', '-m', 'verantyx.cli', 'events', 'co...s: error: argument ev_cmd: invalid choice: 'correct' (choose from 'tail', 'show', 'grep', 'verify', 'sweep', 'add')\n").returncode
+E        +    where CompletedProcess(args=['/Users/motonisihikoudai/vera-wiring/env/bin/python', '-P', '-m', 'verantyx.cli', 'events', 'co...s: error: argument ev_cmd: invalid choice: 'correct' (choose from 'tail', 'show', 'grep', 'verify', 'sweep', 'add')\n") = correct(PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2335/test_b2_annotations_on_tail_sh0/l'), '4e542b3ea2df0e76f566bd58fedba9712bd25b8710ed4f48323d31700e288f79')
+
+tests/test_w16t7d_correction.py:103: AssertionError
+___________________ test_b2b_multiple_corrections_all_shown ____________________
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2335/test_b2b_multiple_corrections_0')
+base_root = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2335/base0')
+
+    def test_b2b_multiple_corrections_all_shown(tmp_path, base_root):
+        led = tmp_path / "l"
+        sha = make_misattributed(led, base_root)
+>       assert correct(led, sha, note="one").returncode == 0
+E       assert 2 == 0
+E        +  where 2 = CompletedProcess(args=['/Users/motonisihikoudai/vera-wiring/env/bin/python', '-P', '-m', 'verantyx.cli', 'events', 'co...s: error: argument ev_cmd: invalid choice: 'correct' (choose from 'tail', 'show', 'grep', 'verify', 'sweep', 'add')\n").returncode
+E        +    where CompletedProcess(args=['/Users/motonisihikoudai/vera-wiring/env/bin/python', '-P', '-m', 'verantyx.cli', 'events', 'co...s: error: argument ev_cmd: invalid choice: 'correct' (choose from 'tail', 'show', 'grep', 'verify', 'sweep', 'add')\n") = correct(PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2335/test_b2b_multiple_corrections_0/l'), '54f2fa408ad66b74ce8bbf7d2f5a8abadedf4f3ecc311f6835aa2847cf4c15e2', note='one')
+
+tests/test_w16t7d_correction.py:122: AssertionError
+___________________________ test_b3_typed_rejections ___________________________
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2335/test_b3_typed_rejections0')
+base_root = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2335/base0')
+
+    def test_b3_typed_rejections(tmp_path, base_root):
+        led = tmp_path / "l"
+        sha = make_misattributed(led, base_root)
+        cli("events", "add", "approval", "--ledger-dir", str(led), "--actor-type", "owner", "--actor-id", "o", "--text", "ok")
+        appr = rows_of(led)[-1]["sha"]
+        st = _state(led)
+    
+        def err(r):
+            return json.loads(r.stdout)["error"]
+    
+>       r = correct(led, sha[:7]); assert (r.returncode, err(r)) == (2, "PREFIX_TOO_SHORT")
+                                                         ^^^^^^
+
+tests/test_w16t7d_correction.py:142: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_w16t7d_correction.py:140: in err
+    return json.loads(r.stdout)["error"]
+           ^^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/json/__init__.py:346: in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/json/decoder.py:337: in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <json.decoder.JSONDecoder object at 0x105cb3f50>, s = '', idx = 0
+
+    def raw_decode(self, s, idx=0):
+        """Decode a JSON document from ``s`` (a ``str`` beginning with
+        a JSON document) and return a 2-tuple of the Python
+        representation and the index in ``s`` where the document ended.
+    
+        This can be used to decode a JSON document from a string that may
+        have extraneous data at the end.
+    
+        """
+        try:
+            obj, end = self.scan_once(s, idx)
+        except StopIteration as err:
+>           raise JSONDecodeError("Expecting value", s, err.value) from None
+E           json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/json/decoder.py:355: JSONDecodeError
+___________________ test_b3c_ambiguous_correct_via_function ____________________
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2335/test_b3c_ambiguous_correct_via0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x116c71350>
+
+    def test_b3c_ambiguous_correct_via_function(tmp_path, monkeypatch):
+        led = tmp_path / "l"
+        for i in range(1):
+            L.append(led, "owner_utterance", {"type": "owner", "id": "s"}, {"text": "a"})
+        monkeypatch.setattr(L, "find_by_prefix", lambda d, p: [{"sha": "a" * 64, "kind": "owner_utterance", "actor": {"type": "owner", "id": "s"}}] * 2)
+        with pytest.raises(L.LedgerError) as e:
+>           L.append_correction(led, "aaaaaaaa", "system_message", "n", {"type": "agent", "id": "x"})
+            ^^^^^^^^^^^^^^^^^^^
+E           AttributeError: module 'verantyx.ledger_events' has no attribute 'append_correction'
+
+tests/test_w16t7d_correction.py:170: AttributeError
+_____________________ test_b3d_tampered_ledger_unverified ______________________
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2335/test_b3d_tampered_ledger_unver0')
+base_root = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2335/base0')
+
+    def test_b3d_tampered_ledger_unverified(tmp_path, base_root):
+        led = tmp_path / "l"
+        sha = make_misattributed(led, base_root)
+        cli("events", "add", "approval", "--ledger-dir", str(led), "--actor-type", "owner", "--actor-id", "o", "--text", "ok")
+        p = led / "events.jsonl"
+        p.write_text(p.read_text().replace('"ok"', '"OK"'))
+        st = _state(led)
+        r = correct(led, sha)
+>       assert r.returncode == 1 and json.loads(r.stdout)["error"] == "LEDGER_UNVERIFIED"
+E       assert (2 == 1)
+E        +  where 2 = CompletedProcess(args=['/Users/motonisihikoudai/vera-wiring/env/bin/python', '-P', '-m', 'verantyx.cli', 'events', 'co...s: error: argument ev_cmd: invalid choice: 'correct' (choose from 'tail', 'show', 'grep', 'verify', 'sweep', 'add')\n").returncode
+
+tests/test_w16t7d_correction.py:182: AssertionError
+_________________________ test_b5_note_secret_redacted _________________________
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2335/test_b5_note_secret_redacted0')
+base_root = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2335/base0')
+
+    def test_b5_note_secret_redacted(tmp_path, base_root):
+        led = tmp_path / "l"
+        sha = make_misattributed(led, base_root)
+        r = correct(led, sha, note="leak sk-ant-abcdefgh12345678 here")
+>       assert r.returncode == 0
+E       assert 2 == 0
+E        +  where 2 = CompletedProcess(args=['/Users/motonisihikoudai/vera-wiring/env/bin/python', '-P', '-m', 'verantyx.cli', 'events', 'co...s: error: argument ev_cmd: invalid choice: 'correct' (choose from 'tail', 'show', 'grep', 'verify', 'sweep', 'add')\n").returncode
+
+tests/test_w16t7d_correction.py:197: AssertionError
+__________ test_b6_no_correction_ledger_output_identical_via_annotate __________
+
+    def test_b6_no_correction_ledger_output_identical_via_annotate():
+        row = {"sha": "a" * 64, "kind": "approval"}
+>       assert L.annotate_corrections(row, L.corrections_index([row])) is row
+               ^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'verantyx.ledger_events' has no attribute 'annotate_corrections'
+
+tests/test_w16t7d_correction.py:206: AttributeError
+=========================== short test summary info ============================
+FAILED tests/test_w16t7d_attribution.py::test_a1_notification_only - Assertio...
+FAILED tests/test_w16t7d_attribution.py::test_a2_system_only_variants[<system-reminder>\nremember things\n</system-reminder>-tags0]
+FAILED tests/test_w16t7d_attribution.py::test_a2_system_only_variants[<system-reminder>\nremember things\n</system-reminder><task-notification>\n<task-id>abc</task-id>\nbackground task done\n</task-notification>-tags1]
+FAILED tests/test_w16t7d_attribution.py::test_a2_system_only_variants[<task-notification>\n<task-id>abc</task-id>\nbackground task done\n</task-notification>\n \n\t<system-reminder>\nremember things\n</system-reminder>\n-tags2]
+FAILED tests/test_w16t7d_attribution.py::test_a3b_owner_only_rows_equal_baseline_builder
+FAILED tests/test_w16t7d_attribution.py::test_a4_mixed_two_rows[before <task-notification>\n<task-id>abc</task-id>\nbackground task done\n</task-notification>]
+FAILED tests/test_w16t7d_attribution.py::test_a4_mixed_two_rows[<task-notification>\n<task-id>abc</task-id>\nbackground task done\n</task-notification> after]
+FAILED tests/test_w16t7d_attribution.py::test_a4_mixed_two_rows[head\n<system-reminder>\nremember things\n</system-reminder>\ntail]
+FAILED tests/test_w16t7d_attribution.py::test_a4_mixed_two_rows[a <task-notification>\n<task-id>abc</task-id>\nbackground task done\n</task-notification> b <system-reminder>\nremember things\n</system-reminder> c]
+FAILED tests/test_w16t7d_attribution.py::test_a5_malformed[<task-notification>\nx\nno close-UNCLOSED_TAG]
+FAILED tests/test_w16t7d_attribution.py::test_a5_malformed[stray </system-reminder> close-UNOPENED_CLOSE_TAG]
+FAILED tests/test_w16t7d_attribution.py::test_a5_malformed[<system-reminder><system-reminder>x</system-reminder></system-reminder>-UNOPENED_CLOSE_TAG]
+FAILED tests/test_w16t7d_attribution.py::test_a7_judged_on_raw_prompt_before_redaction
+FAILED tests/test_w16t7d_attribution.py::test_a7b_redaction_of_the_tag_name_is_the_reason_for_raw_judgement
+FAILED tests/test_w16t7d_attribution.py::test_a8_hook_path_mixed - AssertionE...
+FAILED tests/test_w16t7d_attribution.py::test_a9_auto_path - AssertionError: ...
+FAILED tests/test_w16t7d_attribution.py::test_a_rows_are_pure_function_of_prompt
+FAILED tests/test_w16t7d_attribution.py::test_a_codes_not_raw_tag_names_in_data
+FAILED tests/test_w16t7d_correction.py::test_b1_correction_appended_verify_ok
+FAILED tests/test_w16t7d_correction.py::test_b1b_original_row_untouched - ass...
+FAILED tests/test_w16t7d_correction.py::test_b2_annotations_on_tail_show_grep
+FAILED tests/test_w16t7d_correction.py::test_b2b_multiple_corrections_all_shown
+FAILED tests/test_w16t7d_correction.py::test_b3_typed_rejections - json.decod...
+FAILED tests/test_w16t7d_correction.py::test_b3c_ambiguous_correct_via_function
+FAILED tests/test_w16t7d_correction.py::test_b3d_tampered_ledger_unverified
+FAILED tests/test_w16t7d_correction.py::test_b5_note_secret_redacted - assert...
+FAILED tests/test_w16t7d_correction.py::test_b6_no_correction_ledger_output_identical_via_annotate
+27 failed, 8 passed in 13.58s

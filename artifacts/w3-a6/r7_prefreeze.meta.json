@@ -1,0 +1,12 @@
+{
+  "sample_seed": 20261004,
+  "sample_population": 8311,
+  "sample_words": 60,
+  "sample_source_sha256": "a134ac9c47060072911630ee8de7f9fadaca3f1c480a3afe9c7710af983da198",
+  "n4_claim_rows": 60,
+  "n4_missing": 0,
+  "n4_abstained": 2,
+  "n3_relative_position_claims": 292,
+  "r8_rd_min_sources": 1,
+  "r9_role_frame_min_sources_candidate": 1
+}

@@ -1,0 +1,6 @@
+MODAL_MARKS なければ|なくては|なくちゃ|なきゃ|ねばならな|べき|べく|てもいい|てもよい|てもかまわ|てはいけ|てはなら|ちゃいけ|たい(?!へ)|たがる|つもり|ましょう|よう(?:と|か|に(?:なる|する))|てください|て下さい|なさい|てくれ(?:ない)?[。！？?]?$|かもしれ|かも[。！？?]?$|だろう|でしょう|はず|に違いない|そうだ|そうです|そうだった|らしい|ようだ|ようです|みたい|という(?:こと|話|噂)|と(?:言|いわ)れ|ことができ|できる|できた|できな|ようになっ|(?:か|かね|かな)[。！？?]*$|[？?]
+妹が夜、勉強出来た。 False ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_PART_NOT_FOLLOWED']
+弟が冬、勉強出来なかった。 False ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_PART_NOT_FOLLOWED']
+妹が夜、手紙を書く事が出来た。 False ['NO_SUPPORTED_CLAUSE']
+弟が冬、勉強ができた。 False ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_PART_NO_ROLE:EVENT_ACT:が']
+verantyx files outside tree: []

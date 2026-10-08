@@ -1,0 +1,885 @@
+{
+ "alias_stats": {
+  "paren_resolved": 102972,
+  "paren_unresolved_target": 155580,
+  "resolved": 312220,
+  "unresolved_target": 638331
+ },
+ "args": {
+  "codex_dir": "/Users/motonisihikoudai/Projects/vera-impl/wt/W12-c1-S/build/initial-layers/law/codex",
+  "exclude_terms": [
+   "tests/coarse_place/data/unknown_words.jsonl",
+   "tests/coarse_place/data/dev_unknown.jsonl",
+   "artifacts/w3-a3/exclude_coined.jsonl"
+  ],
+  "families": "general_qa",
+  "frozen": null,
+  "generated": null,
+  "generated_frames": null,
+  "generated_frames_ledger": null,
+  "generated_ledger": null,
+  "holdout": [
+   "artifacts/w3-a/holdout_2000.jsonl",
+   "artifacts/w3-a/dev_l1_1000.jsonl"
+  ],
+  "jawiki": "/Users/motonisihikoudai/vera-wiring/data/jawiki_leads.full.jsonl",
+  "jobs": 4,
+  "sample_stride": 1,
+  "stage_cache": "/Users/motonisihikoudai/Projects/vera-impl/wt/W12-c1-S/build/initial-layers/law/extract.pkl"
+ },
+ "argument_chains": {
+  "sahen_by_reason": {
+   "codex:general_qa": {
+    "counted": 17559,
+    "no_common_noun": 40,
+    "voice": 1950
+   },
+   "jawiki": {
+    "counted": 585987,
+    "no_common_noun": 5711,
+    "too_long": 5,
+    "voice": 252449
+   }
+  },
+  "sahen_verbs": {
+   "codex:general_qa": {
+    "distinct": 821,
+    "uses": 25681
+   },
+   "jawiki": {
+    "distinct": 11894,
+    "uses": 1224347
+   }
+  },
+  "skipped_or_counted_by_reason": {
+   "codex:general_qa": {
+    "chain_broken": 38794,
+    "counted": 53656,
+    "no_filler": 5,
+    "no_verb": 69,
+    "numeral_start": 1733,
+    "sahen": 19549,
+    "too_many_args": 4,
+    "voice": 4156
+   },
+   "jawiki": {
+    "chain_broken": 2006347,
+    "counted": 1676156,
+    "no_filler": 34941,
+    "no_verb": 3921,
+    "numeral_start": 619778,
+    "sahen": 844152,
+    "too_many_args": 406,
+    "voice": 156307
+   }
+  },
+  "stage2": {
+   "filler_typed_words": 993606,
+   "frame_decides": false,
+   "per_source": {
+    "codex:general_qa": {
+     "chains": 71215,
+     "global_place": 1375,
+     "global_quantity": 2392,
+     "global_time": 1263,
+     "noun_uses": 398588,
+     "rd_rows": 2430,
+     "rd_words": 207,
+     "sahen_chains": 17559,
+     "slot_rows_PLACE": 331,
+     "slot_rows_QUANTITY": 30,
+     "slot_rows_TIME": 352,
+     "typed_arguments": 27958,
+     "untyped_arguments": 41410
+    },
+    "jawiki": {
+     "chains": 2262143,
+     "global_place": 180481,
+     "global_quantity": 3548790,
+     "global_time": 125620,
+     "noun_uses": 35965608,
+     "rd_rows": 41507,
+     "rd_words": 1954,
+     "sahen_chains": 585987,
+     "slot_rows_PLACE": 57766,
+     "slot_rows_QUANTITY": 1335,
+     "slot_rows_TIME": 28624,
+     "typed_arguments": 845697,
+     "untyped_arguments": 1301323
+    }
+   },
+   "predicate_typed_words": 2232,
+   "words_with_new_rows": 79200
+  }
+ },
+ "build_finished_at_utc": "2026-10-05T04:16:26Z",
+ "build_started_at_utc": "2026-10-05T04:11:16Z",
+ "builder_sha256": "3ec866bd04f9b945bdd583e43e59e35647dfb3a0fa681fcaecc75d1c37100143",
+ "coarse_types_sha256": "b9a23e467c4da5384db7a20dc524c031968853c52330253b3fb20c8253c6d1af",
+ "config": {
+  "alias_min": 1,
+  "conflict_policy": "unknown",
+  "counter_latin_numerals_min": 6,
+  "counter_latin_share_pct": 10,
+  "counter_max_chars": 3,
+  "counter_max_chars_single": 6,
+  "counter_min": 80,
+  "counter_min_sources": 2,
+  "ctx_min_lift_pct": 300,
+  "ctx_min_share_pct": 70,
+  "ctx_min_total": 20,
+  "ctx_store_min": 20,
+  "def_min": 1,
+  "definition_outranks_role": false,
+  "donor_contra_min": 5,
+  "donor_stage_b": true,
+  "est_ctx_min_lift_pct": 300,
+  "est_ctx_min_share_pct": 70,
+  "est_ctx_min_sources": 2,
+  "est_ctx_min_total": 20,
+  "frame_cover_rule": "k62_he_by_ni_place",
+  "frame_decides": false,
+  "frame_min_total": 30,
+  "gen_upgrade_on_agreement": true,
+  "head_min_chars": 2,
+  "hearst_min": 2,
+  "hearst_min_share_pct": 70,
+  "kin_left": false,
+  "kin_left_min_count": 10,
+  "kin_left_min_share_pct": 90,
+  "kin_min_count": 3,
+  "kin_min_share_pct": 70,
+  "kin_min_unit_chars": 2,
+  "kin_store_min": 3,
+  "left_attested": true,
+  "left_recursive": true,
+  "max_chain_depth": 4,
+  "max_word_chars": 12,
+  "min_seen": 3,
+  "min_suffix_chars": 2,
+  "paren_alias_min": 1,
+  "pos_min": 3,
+  "qual_min": 999,
+  "rd_min_sources": 1,
+  "rd_min_total": 20,
+  "rd_particle_min": 10,
+  "rd_particle_share_pct": 30,
+  "rd_store_min": 20,
+  "rd_type_share_pct": 50,
+  "recovered_decides": true,
+  "role_frame_min_sources": 1,
+  "role_min": 5,
+  "role_min_share_pct": 70,
+  "role_min_sources": 2,
+  "sahen_min": 3,
+  "sahen_min_share_pct": 30,
+  "slot_lift_pct": 300,
+  "slot_min": 20,
+  "slot_share_pct": 30
+ },
+ "config_sha256": "f57dc99854ac24a5f5749ea2352fdbf15b77ba854e51784082951c43cdd5e888",
+ "content_sha256": "5f90eb083fda2207ef8fada9d69b75996b7cc017a80153da10f01d129e3fb694",
+ "donor_stats": {
+  "donor_contra_min": 5,
+  "enabled": true,
+  "excluded": {
+   "contra_arm": 336,
+   "not_decided": 388
+  },
+  "stage_a": {
+   "donors": 592434,
+   "non_seed_donors": 592059
+  },
+  "stage_b": {
+   "donors": 569523,
+   "non_seed_donors": 569148
+  },
+  "top_donors": [
+   {
+    "dependents": 45728,
+    "dependents_with_other_met_arm_elsewhere": 0,
+    "donor": "選手",
+    "type": "PERSON"
+   },
+   {
+    "dependents": 23471,
+    "dependents_with_other_met_arm_elsewhere": 2,
+    "donor": "政治家",
+    "type": "PERSON"
+   },
+   {
+    "dependents": 19612,
+    "dependents_with_other_met_arm_elsewhere": 0,
+    "donor": "学校",
+    "type": "GROUP_ORG"
+   },
+   {
+    "dependents": 18082,
+    "dependents_with_other_met_arm_elsewhere": 1,
+    "donor": "学者",
+    "type": "PERSON"
+   },
+   {
+    "dependents": 16483,
+    "dependents_with_other_met_arm_elsewhere": 1,
+    "donor": "俳優",
+    "type": "PERSON"
+   },
+   {
+    "dependents": 14424,
+    "dependents_with_other_met_arm_elsewhere": 0,
+    "donor": "番組",
+    "type": "WORK"
+   },
+   {
+    "dependents": 14345,
+    "dependents_with_other_met_arm_elsewhere": 0,
+    "donor": "駅",
+    "type": "PLACE"
+   },
+   {
+    "dependents": 14343,
+    "dependents_with_other_met_arm_elsewhere": 1,
+    "donor": "実業家",
+    "type": "PERSON"
+   },
+   {
+    "dependents": 13296,
+    "dependents_with_other_met_arm_elsewhere": 0,
+    "donor": "女優",
+    "type": "PERSON"
+   },
+   {
+    "dependents": 11997,
+    "dependents_with_other_met_arm_elsewhere": 14,
+    "donor": "映画",
+    "type": "WORK"
+   },
+   {
+    "dependents": 10440,
+    "dependents_with_other_met_arm_elsewhere": 5,
+    "donor": "作品",
+    "type": "WORK"
+   },
+   {
+    "dependents": 9646,
+    "dependents_with_other_met_arm_elsewhere": 8,
+    "donor": "アルバム",
+    "type": "WORK"
+   },
+   {
+    "dependents": 8457,
+    "dependents_with_other_met_arm_elsewhere": 0,
+    "donor": "歌手",
+    "type": "PERSON"
+   },
+   {
+    "dependents": 8131,
+    "dependents_with_other_met_arm_elsewhere": 0,
+    "donor": "声優",
+    "type": "PERSON"
+   },
+   {
+    "dependents": 7790,
+    "dependents_with_other_met_arm_elsewhere": 0,
+    "donor": "中学校",
+    "type": "GROUP_ORG"
+   },
+   {
+    "dependents": 7692,
+    "dependents_with_other_met_arm_elsewhere": 3,
+    "donor": "作家",
+    "type": "PERSON"
+   },
+   {
+    "dependents": 7143,
+    "dependents_with_other_met_arm_elsewhere": 2,
+    "donor": "村",
+    "type": "PLACE"
+   },
+   {
+    "dependents": 6522,
+    "dependents_with_other_met_arm_elsewhere": 9,
+    "donor": "企業",
+    "type": "GROUP_ORG"
+   },
+   {
+    "dependents": 6374,
+    "dependents_with_other_met_arm_elsewhere": 4,
+    "donor": "会社",
+    "type": "GROUP_ORG"
+   },
+   {
+    "dependents": 6319,
+    "dependents_with_other_met_arm_elsewhere": 3,
+    "donor": "漫画家",
+    "type": "PERSON"
+   },
+   {
+    "dependents": 5668,
+    "dependents_with_other_met_arm_elsewhere": 0,
+    "donor": "プロサッカー選手",
+    "type": "PERSON"
+   },
+   {
+    "dependents": 5441,
+    "dependents_with_other_met_arm_elsewhere": 1,
+    "donor": "プロ野球選手",
+    "type": "PERSON"
+   },
+   {
+    "dependents": 4792,
+    "dependents_with_other_met_arm_elsewhere": 2,
+    "donor": "人物",
+    "type": "PERSON"
+   },
+   {
+    "dependents": 4341,
+    "dependents_with_other_met_arm_elsewhere": 5,
+    "donor": "楽曲",
+    "type": "WORK"
+   },
+   {
+    "dependents": 4246,
+    "dependents_with_other_met_arm_elsewhere": 6,
+    "donor": "小説",
+    "type": "WORK"
+   },
+   {
+    "dependents": 4163,
+    "dependents_with_other_met_arm_elsewhere": 2,
+    "donor": "テレビドラマ",
+    "type": "WORK"
+   },
+   {
+    "dependents": 4094,
+    "dependents_with_other_met_arm_elsewhere": 0,
+    "donor": "経営者",
+    "type": "PERSON"
+   },
+   {
+    "dependents": 4071,
+    "dependents_with_other_met_arm_elsewhere": 1,
+    "donor": "町",
+    "type": "PLACE"
+   },
+   {
+    "dependents": 3984,
+    "dependents_with_other_met_arm_elsewhere": 0,
+    "donor": "県",
+    "type": "PLACE"
+   },
+   {
+    "dependents": 3927,
+    "dependents_with_other_met_arm_elsewhere": 1,
+    "donor": "本家",
+    "type": "PERSON"
+   },
+   {
+    "dependents": 3824,
+    "dependents_with_other_met_arm_elsewhere": 0,
+    "donor": "神社",
+    "type": "PLACE"
+   },
+   {
+    "dependents": 3639,
+    "dependents_with_other_met_arm_elsewhere": 2,
+    "donor": "施設",
+    "type": "PLACE"
+   },
+   {
+    "dependents": 3605,
+    "dependents_with_other_met_arm_elsewhere": 3,
+    "donor": "都市",
+    "type": "PLACE"
+   },
+   {
+    "dependents": 3473,
+    "dependents_with_other_met_arm_elsewhere": 0,
+    "donor": "アナウンサー",
+    "type": "PERSON"
+   },
+   {
+    "dependents": 3348,
+    "dependents_with_other_met_arm_elsewhere": 3,
+    "donor": "漫画",
+    "type": "WORK"
+   },
+   {
+    "dependents": 3310,
+    "dependents_with_other_met_arm_elsewhere": 4,
+    "donor": "グループ",
+    "type": "GROUP_ORG"
+   },
+   {
+    "dependents": 3309,
+    "dependents_with_other_met_arm_elsewhere": 0,
+    "donor": "AV女優",
+    "type": "PERSON"
+   },
+   {
+    "dependents": 3219,
+    "dependents_with_other_met_arm_elsewhere": 0,
+    "donor": "団体",
+    "type": "GROUP_ORG"
+   },
+   {
+    "dependents": 3138,
+    "dependents_with_other_met_arm_elsewhere": 0,
+    "donor": "教育者",
+    "type": "PERSON"
+   },
+   {
+    "dependents": 2974,
+    "dependents_with_other_met_arm_elsewhere": 1,
+    "donor": "シリーズ",
+    "type": "WORK"
+   },
+   {
+    "dependents": 2932,
+    "dependents_with_other_met_arm_elsewhere": 1,
+    "donor": "寺院",
+    "type": "PLACE"
+   },
+   {
+    "dependents": 2795,
+    "dependents_with_other_met_arm_elsewhere": 0,
+    "donor": "ジャーナリスト",
+    "type": "PERSON"
+   },
+   {
+    "dependents": 2789,
+    "dependents_with_other_met_arm_elsewhere": 1,
+    "donor": "イラストレーター",
+    "type": "PERSON"
+   },
+   {
+    "dependents": 2699,
+    "dependents_with_other_met_arm_elsewhere": 0,
+    "donor": "ラブ",
+    "type": "GROUP_ORG"
+   },
+   {
+    "dependents": 2681,
+    "dependents_with_other_met_arm_elsewhere": 0,
+    "donor": "詩人",
+    "type": "PERSON"
+   },
+   {
+    "dependents": 2657,
+    "dependents_with_other_met_arm_elsewhere": 0,
+    "donor": "事件",
+    "type": "EVENT_ACT"
+   },
+   {
+    "dependents": 2654,
+    "dependents_with_other_met_arm_elsewhere": 1,
+    "donor": "研究者",
+    "type": "PERSON"
+   },
+   {
+    "dependents": 2411,
+    "dependents_with_other_met_arm_elsewhere": 2,
+    "donor": "組織",
+    "type": "GROUP_ORG"
+   },
+   {
+    "dependents": 2400,
+    "dependents_with_other_met_arm_elsewhere": 0,
+    "donor": "山",
+    "type": "PLACE"
+   },
+   {
+    "dependents": 2380,
+    "dependents_with_other_met_arm_elsewhere": 0,
+    "donor": "プロレスラー",
+    "type": "PERSON"
+   }
+  ]
+ },
+ "donors": 569523,
+ "duration_sec": 309.5,
+ "excluded_term_hits": {
+  "codex:general_qa:前年同月比": 1,
+  "jawiki:ぴゅるむ": 2,
+  "jawiki:グルルン": 2,
+  "jawiki:ゴロニャン": 3,
+  "jawiki:ソペリ": 1,
+  "jawiki:テュペロ": 4,
+  "jawiki:ヌルポ": 11,
+  "jawiki:ポゾラ": 3,
+  "jawiki:ムルヴァ": 2,
+  "jawiki:ロヴィナ": 7,
+  "jawiki:ヴェゼル": 6,
+  "jawiki:倦怠感": 23,
+  "jawiki:元プロ野球選手": 8730,
+  "jawiki:公共選択論": 16,
+  "jawiki:内側広筋": 1,
+  "jawiki:冬型の気圧配置": 3,
+  "jawiki:冷凍餃子": 3,
+  "jawiki:古民家カフェ": 1,
+  "jawiki:咽頭扁桃": 1,
+  "jawiki:地下駐輪場": 1,
+  "jawiki:夏至前後": 1,
+  "jawiki:夜行バス": 15,
+  "jawiki:太陽フレア": 17,
+  "jawiki:季節性うつ": 1,
+  "jawiki:尺骨": 24,
+  "jawiki:年間降水量": 18,
+  "jawiki:循環型経済": 1,
+  "jawiki:情報倫理学": 4,
+  "jawiki:慢性的な腰痛": 2,
+  "jawiki:慢性胃炎": 7,
+  "jawiki:折りたたみ自転車": 1,
+  "jawiki:放射冷却現象": 1,
+  "jawiki:新入生歓迎会": 1,
+  "jawiki:方言辞典": 7,
+  "jawiki:最大積載量": 11,
+  "jawiki:梅雨明け直後": 1,
+  "jawiki:極度の緊張": 2,
+  "jawiki:横隔神経": 1,
+  "jawiki:比較文化論": 26,
+  "jawiki:河川敷公園": 2,
+  "jawiki:海霧": 4,
+  "jawiki:発酵バター": 4,
+  "jawiki:相互扶助の精神": 6,
+  "jawiki:眼窩": 88,
+  "jawiki:磁気嵐": 9,
+  "jawiki:累計販売台数": 3,
+  "jawiki:線状降水帯": 8,
+  "jawiki:肩甲下筋": 2,
+  "jawiki:脱成長主義": 1,
+  "jawiki:腓骨": 23,
+  "jawiki:臨時株主総会": 8,
+  "jawiki:臨海工業団地": 5,
+  "jawiki:自己責任論": 2,
+  "jawiki:舌下腺": 6,
+  "jawiki:蝸牛管": 4,
+  "jawiki:認知言語学": 30,
+  "jawiki:路上ライブ": 30,
+  "jawiki:郊外型ショッピングモール": 1,
+  "jawiki:霧降高原": 7,
+  "jawiki:食欲不振": 41,
+  "jawiki:高圧洗浄機": 2,
+  "jawiki:鷹ノ巣山": 7,
+  "jawiki:鼻腔粘膜": 2
+ },
+ "excluded_terms_total": 359,
+ "frozen_sha256": null,
+ "generated": null,
+ "generated_frames": null,
+ "git_dirty": true,
+ "git_head": "5e7df0912462dc5d1e579c1d88d1d267f5fca3e5",
+ "holdout": [
+  {
+   "codex_rows": 1000,
+   "jawiki_lines": 1000,
+   "path": "artifacts/w3-a/holdout_2000.jsonl",
+   "sha256": "c9772c535ee284b2cf10adcea45be63704b7f8494fe00778655c4f4ff1c30323"
+  },
+  {
+   "codex_rows": 500,
+   "jawiki_lines": 500,
+   "path": "artifacts/w3-a/dev_l1_1000.jsonl",
+   "sha256": "bf33fe42792a129e5e7e62b8d0b06108f835b6d55851056514c5d05cea20f86f"
+  }
+ ],
+ "hypernym_rounds": [
+  {
+   "decided_heads": 418925,
+   "donors": 375,
+   "round": 0
+  },
+  {
+   "decided_heads": 551284,
+   "donors": 419300,
+   "round": 1
+  },
+  {
+   "decided_heads": 563645,
+   "donors": 551659,
+   "round": 2
+  },
+  {
+   "decided_heads": 568485,
+   "donors": 564020,
+   "round": 3
+  },
+  {
+   "decided_heads": 569148,
+   "donors": 568860,
+   "round": 4
+  }
+ ],
+ "inputs": [
+  {
+   "bytes": 720529154,
+   "lines": 2455473,
+   "name": "jawiki_leads",
+   "path": "/Users/motonisihikoudai/vera-wiring/data/jawiki_leads.full.jsonl",
+   "sha256": "7585034b6149bf3b9f684cc0c354dbfb203ceed928e15955a399d1cbbdf045ae",
+   "stats": {
+    "chars": 138761374,
+    "redirect_rows": 953955,
+    "rows_used": 2441397,
+    "text_rows": 1500018
+   }
+  },
+  {
+   "bytes": 8544256,
+   "name": "codex:general_qa",
+   "origin": "generated",
+   "path": "/Users/motonisihikoudai/Projects/vera-impl/wt/W12-c1-S/build/initial-layers/law/codex/general_qa.db",
+   "rows": 9694,
+   "sha256": "4eb7b10322ee7d83698d275748f6363e0bff6048ca507c5daf80c7f4dffd0b93",
+   "stats": {
+    "chars": 1571599,
+    "rows": 9694,
+    "rows_used": 9692
+   }
+  }
+ ],
+ "materials": [
+  {
+   "name": "jawiki lead sentences",
+   "path": "/Users/motonisihikoudai/vera-wiring/data/jawiki_leads.full.jsonl",
+   "role": "definition / alias / role / pos material"
+  },
+  {
+   "name": "codex generated corpus index (train)",
+   "path": "/Users/motonisihikoudai/Projects/vera-impl/wt/W12-c1-S/build/initial-layers/law/codex",
+   "role": "role / pos material per family (origin: generated)"
+  },
+  {
+   "name": "hand-written seeds",
+   "path": "verantyx/coarse_types.py (SEEDS_NOUN, SEEDS_PRED)"
+  },
+  {
+   "name": "notation rules",
+   "path": "verantyx/coarse_types.py (notation_type)"
+  },
+  {
+   "name": "predicate frame rule table",
+   "path": "verantyx/coarse_types.py (PRED_FRAME_RULES)"
+  },
+  {
+   "name": "stop-word lists (they give no type)",
+   "path": "verantyx/coarse_types.py (GENERIC_HEADS, META_HEADS, RANK_WORDS)"
+  },
+  {
+   "name": "paren alias (the first bracket element after a title)",
+   "role": "derived from the jawiki leads above (an arm of its own)"
+  },
+  {
+   "name": "predicate argument chains (neighbouring noun runs + case particles + a verb)",
+   "role": "arms role_distribution (predicates) and slot (nouns): shown, never alone a decider; derived from the jawiki and codex material above"
+  },
+  {
+   "name": "K62 table (the predicate types and frames W3-b1 reads; a copy)",
+   "path": "verantyx/coarse_types.py (K62_FRAMES)",
+   "role": "reverse lookup of role_distribution"
+  },
+  {
+   "name": "unidic-lite via fugashi",
+   "use": "word segmentation, the coarse word class (pos1, pos2) and orthBase ONLY; no finer dictionary sense labels"
+  }
+ ],
+ "no_weights_no_models": true,
+ "outputs": {
+  "by_arm_placed": {
+   "alias": 312184,
+   "definition": 573693,
+   "definition_recovered": 8587,
+   "hearst@codex:general_qa": 35,
+   "hearst@jawiki": 852,
+   "paren_alias": 100379,
+   "pos_class@codex:general_qa": 146,
+   "pos_class@jawiki": 1946,
+   "role@codex:general_qa": 42,
+   "role@jawiki": 42,
+   "sahen@codex:general_qa": 303,
+   "sahen@jawiki": 4978,
+   "seed": 656
+  },
+  "by_kind_placed": {
+   "paren_alias": 97229,
+   "seed": 656,
+   "title": 895154,
+   "token": 7004
+  },
+  "by_ns_placed": {
+   "N": 997811,
+   "P": 2232
+  },
+  "by_state": {
+   "DECIDED": 995838,
+   "MULTIPLE": 4205,
+   "UNPLACED": 549857
+  },
+  "by_state_ns": {
+   "DECIDED/N": 993606,
+   "DECIDED/P": 2232,
+   "MULTIPLE/N": 4205,
+   "UNPLACED/N": 537674,
+   "UNPLACED/NP": 83,
+   "UNPLACED/P": 12100
+  },
+  "by_top_placed": {
+   "ABSTRACT": 28522,
+   "ANIMAL": 12268,
+   "ARTIFACT": 26044,
+   "BODY_PART": 1512,
+   "EVENT_ACT": 35304,
+   "GROUP_ORG": 165795,
+   "IDENTIFIER": 1153,
+   "INFO_LANGUAGE": 19681,
+   "NATURAL_PHENOMENON": 10393,
+   "PERSON": 332337,
+   "PLACE": 170850,
+   "PLANT": 9652,
+   "P_ACT": 25,
+   "P_CHANGE": 23,
+   "P_COGNITION": 23,
+   "P_COMMUNICATE": 24,
+   "P_CONSUME": 14,
+   "P_CREATE": 24,
+   "P_EMOTION": 10,
+   "P_EXIST": 24,
+   "P_GIVE": 22,
+   "P_MOVE": 24,
+   "P_PERCEIVE": 23,
+   "P_POSSESS": 21,
+   "P_STATE": 1975,
+   "QUANTITY": 12651,
+   "STATE_PROPERTY": 8340,
+   "SUBSTANCE_FOOD": 23182,
+   "TIME": 4530,
+   "WORK": 131392
+  },
+  "evidence_by_arm": {
+   "alias": 312216,
+   "definition": 577858,
+   "definition_recovered": 8646,
+   "frame": 77,
+   "hearst": 11290,
+   "ns_vote": 16,
+   "paren_alias": 100897,
+   "pos_class": 2161,
+   "role": 161022,
+   "role_distribution": 43937,
+   "sahen": 19985,
+   "seed": 656,
+   "slot": 88438,
+   "title_qualifier": 38590
+  },
+  "evidence_by_src": {
+   "codex:general_qa": 6645,
+   "hand": 656,
+   "jawiki": 1358488
+  },
+  "funnel": {
+   "alias_titles_with_typed_target": 312220,
+   "distinct_words_in_material_any_count": 3276806,
+   "distinct_words_in_material_min_seen": 581582,
+   "ns_conflict_or_tied_words": 90,
+   "paren_alias_words_with_typed_target": 100389,
+   "rows": 1549900,
+   "rows_placed_direct": 1000043,
+   "rows_with_any_evidence": 1167464,
+   "titles_with_definition_phrase": 573803,
+   "titles_with_qualifier_phrase": 50846,
+   "titles_with_recovered_phrase": 8596,
+   "words_with_a_met_arm_before_decision": 0
+  },
+  "headwords": 1549900,
+  "placed_direct": 1000043,
+  "placed_estimated_generated": 0,
+  "tables": {
+   "atoms": 7380,
+   "counters": 5,
+   "ctx": 25243,
+   "evidence": 1365789,
+   "generated": 0,
+   "generated_frames": 0,
+   "headwords": 1549900,
+   "meta": 4,
+   "unit_kin": 642479,
+   "unit_sample": 300652
+  }
+ },
+ "placement_bytes": 239026176,
+ "seed_counts": {
+  "noun": 375,
+  "pred": 281
+ },
+ "skipped_rows_by_reason": {
+  "codex:general_qa": {
+   "excluded_term": 1,
+   "holdout": 1
+  },
+  "jawiki": {
+   "bracket_rule_changed": 1611,
+   "bracket_text_last": 15425,
+   "bracket_text_part": 22162,
+   "bracket_text_part_first": 1501,
+   "bracket_text_part_middle": 110,
+   "caption_fragment": 87,
+   "caption_only": 11418,
+   "def_empty": 3319,
+   "def_ends_代名詞": 77,
+   "def_ends_代名詞_recovered": 2,
+   "def_ends_副詞": 228,
+   "def_ends_副詞_recovered": 10,
+   "def_ends_助動詞": 8420,
+   "def_ends_助動詞_recovered": 4767,
+   "def_ends_助詞": 3517,
+   "def_ends_助詞_recovered": 245,
+   "def_ends_動詞": 40190,
+   "def_ends_動詞_recovered": 20610,
+   "def_ends_形容詞": 587,
+   "def_ends_形容詞_recovered": 338,
+   "def_ends_形状詞": 458,
+   "def_ends_形状詞_recovered": 149,
+   "def_ends_感動詞": 91,
+   "def_ends_感動詞_recovered": 5,
+   "def_ends_接尾辞": 72,
+   "def_ends_接尾辞_recovered": 26,
+   "def_ends_接続詞": 18,
+   "def_ends_接続詞_recovered": 3,
+   "def_ends_接頭辞": 27,
+   "def_ends_接頭辞_recovered": 1,
+   "def_ends_空白": 4,
+   "def_ends_空白_recovered": 1,
+   "def_ends_記号": 1569,
+   "def_ends_記号_recovered": 109,
+   "def_ends_連体詞": 22,
+   "def_ends_連体詞_recovered": 1,
+   "def_no_noun_phrase": 9590,
+   "def_no_noun_phrase_recovered": 3345,
+   "disambiguation": 11851,
+   "excluded_term": 9250,
+   "holdout": 1500,
+   "list_article": 10589,
+   "meta_title": 3327,
+   "notation_title": 13674,
+   "title_too_long": 199463
+  }
+ },
+ "stage_seconds": {
+  "aliases_sec": 23.8,
+  "codex_sec": 1.1,
+  "ctx_sec": 24.8,
+  "decide_sec": 76.5,
+  "definitions_sec": 19.4,
+  "extraction_sec": 116.8,
+  "hearst_sec": 29.2,
+  "jawiki_sec": 115.7,
+  "resolve_sec": 171.7,
+  "stage_a_sec": 80.1,
+  "stage_b_sec": 90.6,
+  "units_sec": 88.7,
+  "votes_sec": 29.2,
+  "write_sec": 13.4
+ },
+ "types_version": "1"
+}

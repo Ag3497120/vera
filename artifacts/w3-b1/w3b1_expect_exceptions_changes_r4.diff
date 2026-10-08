@@ -1,0 +1,70 @@
+442a443,493
+>   },
+>   {
+>    "id": "W3B1-S4-003",
+>    "input": "姉が夜、扉を閉めた。",
+>    "kind": "row_returned_to_abstain",
+>    "registered": {
+>     "entry_expect": "read",
+>     "expect_reason_prefix": null
+>    },
+>    "observed": {
+>     "readable": false,
+>     "reasons": [
+>      "NO_SUPPORTED_CLAUSE",
+>      "PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-マ行"
+>     ]
+>    },
+>    "why": "met its registered expectation without the gate on a head that may be a derived verb (read: [{\"agent\": \"姉\", \"patient\": \"扉\", \"time\": \"夜\"}]) and no longer does, because that gate was added (docs K63, table change record 3, 2026-10-03 17:09:34 +0900; review.r3.md M8): the head is a shimo-ichidan verb, which may be a potential or a spontaneous verb. The entry now abstains (the safe direction); the data is not changed. the reader (document_view) returns clauses [[\"frame\", [\"unrepresented source content\"]]]"
+>   },
+>   {
+>    "id": "W3B1-S4-004",
+>    "input": "兄が冬、窓を閉めた。",
+>    "kind": "row_returned_to_abstain",
+>    "registered": {
+>     "entry_expect": "read",
+>     "expect_reason_prefix": null
+>    },
+>    "observed": {
+>     "readable": false,
+>     "reasons": [
+>      "NO_SUPPORTED_CLAUSE",
+>      "PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-マ行"
+>     ]
+>    },
+>    "why": "met its registered expectation without the gate on a head that may be a derived verb (read: [{\"agent\": \"兄\", \"patient\": \"窓\", \"time\": \"冬\"}]) and no longer does, because that gate was added (docs K63, table change record 3, 2026-10-03 17:09:34 +0900; review.r3.md M8): the head is a shimo-ichidan verb, which may be a potential or a spontaneous verb. The entry now abstains (the safe direction); the data is not changed. the reader (document_view) returns clauses [[\"frame\", [\"unrepresented source content\"]]]"
+>   },
+>   {
+>    "id": "W3B1-S4-013",
+>    "input": "父が平日、窓を開けた。",
+>    "kind": "row_returned_to_abstain",
+>    "registered": {
+>     "entry_expect": "read",
+>     "expect_reason_prefix": null
+>    },
+>    "observed": {
+>     "readable": false,
+>     "reasons": [
+>      "NO_SUPPORTED_CLAUSE",
+>      "PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-カ行"
+>     ]
+>    },
+>    "why": "met its registered expectation without the gate on a head that may be a derived verb (read: [{\"agent\": \"父\", \"patient\": \"窓\", \"time\": \"平日\"}]) and no longer does, because that gate was added (docs K63, table change record 3, 2026-10-03 17:09:34 +0900; review.r3.md M8): the head is a shimo-ichidan verb, which may be a potential or a spontaneous verb. The entry now abstains (the safe direction); the data is not changed. the reader (document_view) returns clauses [[\"frame\", [\"unrepresented source content\"]]]"
+444a496,512
+>    "id": "W3B1-S4-021",
+>    "input": "妹が放課後、窓を開けた。",
+>    "kind": "row_returned_to_abstain",
+>    "registered": {
+>     "entry_expect": "read",
+>     "expect_reason_prefix": null
+>    },
+>    "observed": {
+>     "readable": false,
+>     "reasons": [
+>      "NO_SUPPORTED_CLAUSE",
+>      "PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-カ行"
+>     ]
+>    },
+>    "why": "met its registered expectation without the gate on a head that may be a derived verb (read: [{\"agent\": \"妹\", \"patient\": \"窓\", \"time\": \"放課後\"}]) and no longer does, because that gate was added (docs K63, table change record 3, 2026-10-03 17:09:34 +0900; review.r3.md M8): the head is a shimo-ichidan verb, which may be a potential or a spontaneous verb. The entry now abstains (the safe direction); the data is not changed. the reader (document_view) returns clauses [[\"frame\", [\"unrepresented source content\"]]]"
+>   },
+>   {

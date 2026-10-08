@@ -1,0 +1,2 @@
+PYTHONHASHSEED=0 vs PYTHONHASHSEED=1: questions 20, same 20, differ 0
+mask keys (values set to 0, keys kept): elapsed_ms, ingest_ms

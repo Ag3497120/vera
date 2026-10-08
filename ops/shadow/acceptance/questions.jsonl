@@ -1,0 +1,20 @@
+{"id":"Q01","q":"「3 能力ができた」の基準は何ですか？","class":"has_answer","expected_values":["無作為の新しい問題でも同じ平均の比率が出ること"],"basis":"ops/decisions/three_abilities.md#3 能力の基準（オーナーの発言 4）"}
+{"id":"Q02","q":"記憶は何にして保持しますか？","class":"has_answer","expected_values":["別の階層のソブリン"],"basis":"ops/decisions/goals.md#目的の順序（オーナーの発言 1〜10）"}
+{"id":"Q03","q":"生成コーパスは Vera の何ですか？","class":"has_answer","expected_values":["基準点・ベース"],"basis":"ops/decisions/goals.md#目的の順序（オーナーの発言 1〜10）"}
+{"id":"Q04","q":"人間の説明を閉じた文法の枠に入れるのは何ですか？","class":"has_answer","expected_values":["初期版"],"basis":"ops/decisions/goals.md#目的の順序（オーナーの発言 1〜10）"}
+{"id":"Q05","q":"事実を問う依頼で、人が書いた出所に無ければどうしますか？","class":"has_answer","expected_values":["型付きで棄権"],"basis":"ops/decisions/basis_policy.md#オーナーの決定（2026-10-03 17:10。事前登録として扱う）"}
+{"id":"Q06","q":"製品の規則の実装は誰が行いますか？","class":"has_answer","expected_values":["Sonnet 5.5"],"basis":"ops/decisions/recommended_config.md#推奨構成（オーナー承認 2026-10-04 09:40）"}
+{"id":"Q07","q":"同点はどうしますか？","class":"has_answer","expected_values":["棄権する"],"basis":"ops/decisions/prohibitions.md#守る原則（破ると不合格）"}
+{"id":"Q08","q":"3 能力の「できた」で両方が上回る床は何ですか？","class":"has_answer","expected_values":["表層ベースラインの床（35%）"],"basis":"ops/decisions/three_abilities.md#3 能力の「できた」（監査役の運用化）"}
+{"id":"Q09","q":"Vera の開発はいつ始まりましたか？","class":"no_answer","expected_values":[],"basis":null}
+{"id":"Q10","q":"Opus 5.5 の料金はいくらですか？","class":"no_answer","expected_values":[],"basis":null}
+{"id":"Q11","q":"配置の語は何件ありますか？","class":"no_answer","expected_values":[],"basis":null}
+{"id":"Q12","q":"オーナーの名前は何ですか？","class":"no_answer","expected_values":[],"basis":null}
+{"id":"Q13","q":"Fable の effort は何ですか？","class":"no_answer","expected_values":[],"basis":null}
+{"id":"Q14","q":"W9 のチケットの担当は誰ですか？","class":"no_answer","expected_values":[],"basis":null}
+{"id":"Q15","q":"codex の effort は何ですか？","class":"split","expected_values":[],"basis":"ops/decisions/recommended_config.md（max と low の両方）"}
+{"id":"Q16","q":"Opus 5.5 の effort は何ですか？","class":"split","expected_values":[],"basis":"ops/decisions/recommended_config.md（medium と high の両方）"}
+{"id":"Q17","q":"実装は誰が行いますか？","class":"split","expected_values":[],"basis":"ops/decisions/recommended_config.md（Sonnet 5.5 と codex gpt-6-luna）"}
+{"id":"Q18","q":"codex は何を担当しますか？","class":"split","expected_values":[],"basis":"ops/decisions/recommended_config.md（builder など・攻撃・コーパスと枠の生成）"}
+{"id":"Q19","q":"Opus 5.5 は何を担当しますか？","class":"split","expected_values":[],"basis":"ops/decisions/recommended_config.md（指示書とレビュー）"}
+{"id":"Q20","q":"どの案が既定ですか？","class":"split","expected_values":[],"basis":"ops/decisions/basis_policy.md（A・C・E が既定）"}

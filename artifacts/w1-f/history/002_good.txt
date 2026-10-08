@@ -1,0 +1,15 @@
+# commit 9a44f9f81f72da3c84cadf16aa1d935acd778a9a
+# status PASS
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 11 items / 10 deselected / 1 selected
+
+tests/attack/test_conductor_escalate_realtext.py::test_repeated_resolution_check_does_not_duplicate_resolved_ledger_entry PASSED [100%]
+
+=== PASSES ===
+=== short test summary info ===
+PASSED tests/attack/test_conductor_escalate_realtext.py::test_repeated_resolution_check_does_not_duplicate_resolved_ledger_entry
+=== 1 passed, 10 deselected ===

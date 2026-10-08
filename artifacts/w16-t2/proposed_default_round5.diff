@@ -1,0 +1,45 @@
+--- a/verantyx/cli.py	2026-10-05 23:28:08
++++ b/verantyx/cli.py	2026-10-05 23:28:08
+@@ -321,8 +321,8 @@
+     engine.ask が束ねている層のどれも CLI からは届かなかった。
+     `--engine` はその単一入口を CLI にも開ける。既定は据え置き。
+     """
+-    mode = getattr(args, "mode", "legacy")
+     documents = list(getattr(args, "document", None) or [])
++    mode = getattr(args, "mode", None) or ("round5" if documents else "legacy")
+     if documents and mode != "round5":
+         _print({"kind": "unknown", "verdict": "UNKNOWN_ROUTE_CONFIGURATION",
+                 "reason": "--document requires --mode round5"})
+@@ -2344,8 +2344,8 @@
+ 
+     p = sub.add_parser("ask", help="one-shot question (typed verdict)")
+     p.add_argument("query")
+-    p.add_argument("--mode", choices=["legacy", "round5"], default="legacy",
+-                   help="explicit raw-request route; round5 can read --document inputs")
++    p.add_argument("--mode", choices=["legacy", "round5"], default=None,
++                   help="raw-request route; without it: round5 when --document is given, legacy otherwise (an explicit legacy with --document is refused)")
+     p.add_argument("--document", action="append", default=[],
+                    help="source document for --mode round5 (repeatable; this slice accepts one source event)")
+     p.add_argument("--engine", action="store_true",
+--- a/tests/test_basis_policy_entry.py	2026-10-05 23:28:08
++++ b/tests/test_basis_policy_entry.py	2026-10-05 23:28:08
+@@ -408,7 +408,7 @@
+ 
+ 
+ def test_an_existing_configuration_error_keeps_its_place_before_the_new_ones(tmp_path, capsys):
+-    rc, out = _ask(tmp_path, capsys, "こんにちは", "--document", "x.txt", "--confirm", "abc", "maybe")
++    rc, out = _ask(tmp_path, capsys, "こんにちは", "--mode", "legacy", "--document", "x.txt", "--confirm", "abc", "maybe")
+     assert rc == 2 and out["verdict"] == "UNKNOWN_ROUTE_CONFIGURATION"
+     assert out["reason"] == "--document requires --mode round5"
+ 
+--- a/tests/test_one_request_goal_route.py	2026-10-05 23:28:08
++++ b/tests/test_one_request_goal_route.py	2026-10-05 23:28:17
+@@ -268,7 +268,7 @@
+     source.write_text(SOURCE, encoding="utf-8")
+     result = main([
+         "--store", str(tmp_path / "unused-store.json"),
+-        "ask", RAW,
++        "ask", RAW, "--mode", "legacy",
+         "--document", str(source),
+     ])
+     output = json.loads(capsys.readouterr().out)

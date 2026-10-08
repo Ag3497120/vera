@@ -1,0 +1,26 @@
+{
+ "builder_sha256": "66d5795d10dc939bf2294df761cd8d5e50c20e7c743685ec4fd1b266d88ebe6c",
+ "cli_one_call_ms_including_load": 154.5,
+ "coarse_types_sha256": "e7a61b3aa02ca03b563ec1a634fdf05defd2dcd6a6ec09d01b3cebc859818c72",
+ "command": [
+  "l5",
+  "--placement",
+  "/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r3/run1"
+ ],
+ "config_sha256": "6783f0528cc33b07d2f8c31236b65c17c2c4701000d923f261696a65b24bc887",
+ "content_sha256": "eaee8a6361f6f3663bc66ab3a0ac5ee34ae47fcc39bfcc646625fb066f24e32b",
+ "data": "frozen",
+ "max_ms": 7.394,
+ "mean_ms": 0.087,
+ "median_ms": 0.072,
+ "n_queries": 23083,
+ "p95_ms": 0.196,
+ "pass": {
+  "mean<=50": true,
+  "p95<=50": true
+ },
+ "placement": "/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r3/run1",
+ "placement_bytes": 262848512,
+ "python_import_only_ms": 74.6,
+ "time_utc": "2026-10-03T00:28:26Z"
+}

@@ -1,0 +1,11 @@
+items 60 frames 6 per frame {'y01_hall': 10, 'y02_lunch': 10, 'y03_usedbooks': 10, 'y04_hives': 10, 'y05_water': 10, 'y06_stars': 10}
+category {'direct': 15, 'combined': 15, 'oov': 15, 'escalate': 15}
+language {'ja': 30, 'en': 30} by category {'direct': {'ja': 8, 'en': 7}, 'combined': {'ja': 7, 'en': 8}, 'oov': {'ja': 7, 'en': 8}, 'escalate': {'ja': 8, 'en': 7}}
+order questions with an answer expected 14 by category {'direct': 2, 'combined': 9, 'oov': 3}
+order questions: records per question {1: 3, 2: 7, 4: 2, 5: 2}
+escalate kinds {'A': 2, 'B_PAST': 1, 'C': 2, 'D': 1, 'E': 2, 'ORDER_DAYS': 1, 'ORDER_SUBJECT': 3, 'ORDER_WHO': 1, 'PREF_NOOPT': 2}
+order-shaped (days/who/subject) or preference-without-options escalations 7 (order-shaped 5, preference without options 2)
+questions without options 8 (value answers 6) option counts {0: 8, 2: 40, 3: 11, 4: 1}
+questions to answer with three or more options 12
+every expected option index is in range and equals the option text; every expected record id exists in its frame; no frame has a skipped record
+wrote tests/conduct_ask/w2g3/items.jsonl

@@ -1,0 +1,2 @@
+$ permitted-path check
+(blank above = only permitted paths)

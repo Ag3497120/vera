@@ -1,0 +1,1040 @@
+{
+  "layer": "bicycle-fake",
+  "layer_status": "OK",
+  "words": {
+    "direct": 2,
+    "human": 0,
+    "estimated": 61,
+    "conflict": 0
+  },
+  "words_total": 63,
+  "rows": 63,
+  "last_grown": "2026-10-05T07:42:18+0900",
+  "base_content_sha256": "e58908eb4eba8820fed9eafcd1ff42a5a70cdfdf4c35a9646b5dd49aaa002a21",
+  "ledger": {
+    "rows": 137,
+    "by_type": {
+      "distribution_backed": 2,
+      "header": 1,
+      "not_adopted": 5,
+      "promotable": 2,
+      "promoted_to_layer": 63,
+      "testimony": 64
+    },
+    "promoted_to_layer": 63,
+    "chain_ok": true,
+    "chain_mismatch": 0,
+    "chain_mismatch_ids": [],
+    "store_id": "c11db5e0950b4dd5"
+  },
+  "list": [
+    {
+      "word": "アウターケーシング",
+      "state": "estimated",
+      "types": {
+        "direct": [],
+        "estimated": [
+          "ARTIFACT"
+        ]
+      },
+      "origins": [
+        "layer_estimated"
+      ],
+      "ledger_seq": [
+        89
+      ]
+    },
+    {
+      "word": "エアロスポーク",
+      "state": "estimated",
+      "types": {
+        "direct": [],
+        "estimated": [
+          "ARTIFACT"
+        ]
+      },
+      "origins": [
+        "layer_estimated"
+      ],
+      "ledger_seq": [
+        128
+      ]
+    },
+    {
+      "word": "エア抜き",
+      "state": "estimated",
+      "types": {
+        "direct": [],
+        "estimated": [
+          "EVENT_ACT"
+        ]
+      },
+      "origins": [
+        "layer_estimated"
+      ],
+      "ledger_seq": [
+        131
+      ]
+    },
+    {
+      "word": "カセットスプロケット",
+      "state": "estimated",
+      "types": {
+        "direct": [],
+        "estimated": [
+          "ARTIFACT"
+        ]
+      },
+      "origins": [
+        "layer_estimated"
+      ],
+      "ledger_seq": [
+        124
+      ]
+    },
+    {
+      "word": "キャリパー",
+      "state": "estimated",
+      "types": {
+        "direct": [],
+        "estimated": [
+          "ARTIFACT"
+        ]
+      },
+      "origins": [
+        "layer_estimated"
+      ],
+      "ledger_seq": [
+        88
+      ]
+    },
+    {
+      "word": "グリス",
+      "state": "estimated",
+      "types": {
+        "direct": [],
+        "estimated": [
+          "SUBSTANCE_FOOD"
+        ]
+      },
+      "origins": [
+        "layer_estimated"
+      ],
+      "ledger_seq": [
+        84
+      ]
+    },
+    {
+      "word": "ケーシング",
+      "state": "estimated",
+      "types": {
+        "direct": [],
+        "estimated": [
+          "ARTIFACT"
+        ]
+      },
+      "origins": [
+        "layer_estimated"
+      ],
+      "ledger_seq": [
+        90
+      ]
+    },
+    {
+      "word": "シート",
+      "state": "estimated",
+      "types": {
+        "direct": [],
+        "estimated": [
+          "ARTIFACT"
+        ]
+      },
+      "origins": [
+        "layer_estimated"
+      ],
+      "ledger_seq": [
+        98
+      ]
+    },
+    {
+      "word": "シートチューブ",
+      "state": "estimated",
+      "types": {
+        "direct": [],
+        "estimated": [
+          "ARTIFACT"
+        ]
+      },
+      "origins": [
+        "layer_estimated"
+      ],
+      "ledger_seq": [
+        119
+      ]
+    },
+    {
+      "word": "シートポスト",
+      "state": "estimated",
+      "types": {
+        "direct": [],
+        "estimated": [
+          "ARTIFACT"
+        ]
+      },
+      "origins": [
+        "layer_estimated"
+      ],
+      "ledger_seq": [
+        99
+      ]
+    },
+    {
+      "word": "シーラント",
+      "state": "estimated",
+      "types": {
+        "direct": [],
+        "estimated": [
+          "SUBSTANCE_FOOD"
+        ]
+      },
+      "origins": [
+        "layer_estimated"
+      ],
+      "ledger_seq": [
+        127
+      ]
+    },
+    {
+      "word": "シール",
+      "state": "estimated",
+      "types": {
+        "direct": [],
+        "estimated": [
+          "ARTIFACT"
+        ]
+      },
+      "origins": [
+        "layer_estimated"
+      ],
+      "ledger_seq": [
+        120
+      ]
+    },
+    {
+      "word": "ステム",
+      "state": "estimated",
+      "types": {
+        "direct": [],
+        "estimated": [
+          "ARTIFACT"
+        ]
+      },
+      "origins": [
+        "layer_estimated"
+      ],
+      "ledger_seq": [
+        95
+      ]
+    },
+    {
+      "word": "スルーアクスル",
+      "state": "estimated",
+      "types": {
+        "direct": [],
+        "estimated": [
+          "ARTIFACT"
+        ]
+      },
+      "origins": [
+        "layer_estimated"
+      ],
+      "ledger_seq": [
+        114
+      ]
+    },
+    {
+      "word": "ダウンチューブ",
+      "state": "estimated",
+      "types": {
+        "direct": [],
+        "estimated": [
+          "ARTIFACT"
+        ]
+      },
+      "origins": [
+        "layer_estimated"
+      ],
+      "ledger_seq": [
+        115
+      ]
+    },
+    {
+      "word": "チェーンチェッカー",
+      "state": "estimated",
+      "types": {
+        "direct": [],
+        "estimated": [
+          "ARTIFACT"
+        ]
+      },
+      "origins": [
+        "layer_estimated"
+      ],
+      "ledger_seq": [
+        108
+      ]
+    },
+    {
+      "word": "チェーンリング",
+      "state": "direct",
+      "types": {
+        "direct": [
+          "ARTIFACT"
+        ],
+        "estimated": []
+      },
+      "origins": [
+        "layer_confirmed"
+      ],
+      "ledger_seq": [
+        79
+      ]
+    },
+    {
+      "word": "チューブ",
+      "state": "estimated",
+      "types": {
+        "direct": [],
+        "estimated": [
+          "ARTIFACT"
+        ]
+      },
+      "origins": [
+        "layer_estimated"
+      ],
+      "ledger_seq": [
+        91
+      ]
+    },
+    {
+      "word": "テープ",
+      "state": "estimated",
+      "types": {
+        "direct": [],
+        "estimated": [
+          "ARTIFACT"
+        ]
+      },
+      "origins": [
+        "layer_estimated"
+      ],
+      "ledger_seq": [
+        113
+      ]
+    },
+    {
+      "word": "ディスクローター",
+      "state": "estimated",
+      "types": {
+        "direct": [],
+        "estimated": [
+          "ARTIFACT"
+        ]
+      },
+      "origins": [
+        "layer_estimated"
+      ],
+      "ledger_seq": [
+        105
+      ]
+    },
+    {
+      "word": "ディレイラー",
+      "state": "direct",
+      "types": {
+        "direct": [
+          "ARTIFACT"
+        ],
+        "estimated": []
+      },
+      "origins": [
+        "layer_confirmed"
+      ],
+      "ledger_seq": [
+        73
+      ]
+    },
+    {
+      "word": "トップチューブ",
+      "state": "estimated",
+      "types": {
+        "direct": [],
+        "estimated": [
+          "ARTIFACT"
+        ]
+      },
+      "origins": [
+        "layer_estimated"
+      ],
+      "ledger_seq": [
+        118
+      ]
+    },
+    {
+      "word": "トルク",
+      "state": "estimated",
+      "types": {
+        "direct": [],
+        "estimated": [
+          "ABSTRACT"
+        ]
+      },
+      "origins": [
+        "layer_estimated"
+      ],
+      "ledger_seq": [
+        75
+      ]
+    },
+    {
+      "word": "ハンドル",
+      "state": "estimated",
+      "types": {
+        "direct": [],
+        "estimated": [
+          "ARTIFACT"
+        ]
+      },
+      "origins": [
+        "layer_estimated"
+      ],
+      "ledger_seq": [
+        96
+      ]
+    },
+    {
+      "word": "バー",
+      "state": "estimated",
+      "types": {
+        "direct": [],
+        "estimated": [
+          "ARTIFACT"
+        ]
+      },
+      "origins": [
+        "layer_estimated"
+      ],
+      "ledger_seq": [
+        97
+      ]
+    },
+    {
+      "word": "バーテープ",
+      "state": "estimated",
+      "types": {
+        "direct": [],
+        "estimated": [
+          "ARTIFACT"
+        ]
+      },
+      "origins": [
+        "layer_estimated"
+      ],
+      "ledger_seq": [
+        112
+      ]
+    },
+    {
+      "word": "パッド",
+      "state": "estimated",
+      "types": {
+        "direct": [],
+        "estimated": [
+          "ARTIFACT"
+        ]
+      },
+      "origins": [
+        "layer_estimated"
+      ],
+      "ledger_seq": [
+        106
+      ]
+    },
+    {
+      "word": "フォーク",
+      "state": "estimated",
+      "types": {
+        "direct": [],
+        "estimated": [
+          "ARTIFACT"
+        ]
+      },
+      "origins": [
+        "layer_estimated"
+      ],
+      "ledger_seq": [
+        101
+      ]
+    },
+    {
+      "word": "フリーホイール",
+      "state": "estimated",
+      "types": {
+        "direct": [],
+        "estimated": [
+          "ARTIFACT"
+        ]
+      },
+      "origins": [
+        "layer_estimated"
+      ],
+      "ledger_seq": [
+        103
+      ]
+    },
+    {
+      "word": "フルード",
+      "state": "estimated",
+      "types": {
+        "direct": [],
+        "estimated": [
+          "SUBSTANCE_FOOD"
+        ]
+      },
+      "origins": [
+        "layer_estimated"
+      ],
+      "ledger_seq": [
+        132
+      ]
+    },
+    {
+      "word": "フレーム",
+      "state": "estimated",
+      "types": {
+        "direct": [],
+        "estimated": [
+          "PERSON"
+        ]
+      },
+      "origins": [
+        "layer_estimated"
+      ],
+      "ledger_seq": [
+        102
+      ]
+    },
+    {
+      "word": "フロントディレイラー",
+      "state": "estimated",
+      "types": {
+        "direct": [],
+        "estimated": [
+          "ARTIFACT"
+        ]
+      },
+      "origins": [
+        "layer_estimated"
+      ],
+      "ledger_seq": [
+        123
+      ]
+    },
+    {
+      "word": "ブラケット",
+      "state": "estimated",
+      "types": {
+        "direct": [],
+        "estimated": [
+          "ARTIFACT"
+        ]
+      },
+      "origins": [
+        "layer_estimated"
+      ],
+      "ledger_seq": [
+        81
+      ]
+    },
+    {
+      "word": "ブレーキ",
+      "state": "estimated",
+      "types": {
+        "direct": [],
+        "estimated": [
+          "ARTIFACT"
+        ]
+      },
+      "origins": [
+        "layer_estimated"
+      ],
+      "ledger_seq": [
+        86
+      ]
+    },
+    {
+      "word": "ブレーキキャリパー",
+      "state": "estimated",
+      "types": {
+        "direct": [],
+        "estimated": [
+          "ARTIFACT"
+        ]
+      },
+      "origins": [
+        "layer_estimated"
+      ],
+      "ledger_seq": [
+        87
+      ]
+    },
+    {
+      "word": "ペダル",
+      "state": "estimated",
+      "types": {
+        "direct": [],
+        "estimated": [
+          "EVENT_ACT"
+        ]
+      },
+      "origins": [
+        "layer_estimated"
+      ],
+      "ledger_seq": [
+        94
+      ]
+    },
+    {
+      "word": "ホイール",
+      "state": "estimated",
+      "types": {
+        "direct": [],
+        "estimated": [
+          "PLACE"
+        ]
+      },
+      "origins": [
+        "layer_estimated"
+      ],
+      "ledger_seq": [
+        104
+      ]
+    },
+    {
+      "word": "ボルト",
+      "state": "estimated",
+      "types": {
+        "direct": [],
+        "estimated": [
+          "ARTIFACT"
+        ]
+      },
+      "origins": [
+        "layer_estimated"
+      ],
+      "ledger_seq": [
+        76
+      ]
+    },
+    {
+      "word": "ポスト",
+      "state": "estimated",
+      "types": {
+        "direct": [],
+        "estimated": [
+          "ARTIFACT"
+        ]
+      },
+      "origins": [
+        "layer_estimated"
+      ],
+      "ledger_seq": [
+        100
+      ]
+    },
+    {
+      "word": "リアディレイラー",
+      "state": "estimated",
+      "types": {
+        "direct": [],
+        "estimated": [
+          "ARTIFACT"
+        ]
+      },
+      "origins": [
+        "layer_estimated"
+      ],
+      "ledger_seq": [
+        121
+      ]
+    },
+    {
+      "word": "リムテープ",
+      "state": "estimated",
+      "types": {
+        "direct": [],
+        "estimated": [
+          "ARTIFACT"
+        ]
+      },
+      "origins": [
+        "layer_estimated"
+      ],
+      "ledger_seq": [
+        125
+      ]
+    },
+    {
+      "word": "リング",
+      "state": "estimated",
+      "types": {
+        "direct": [],
+        "estimated": [
+          "ARTIFACT"
+        ]
+      },
+      "origins": [
+        "layer_estimated"
+      ],
+      "ledger_seq": [
+        80
+      ]
+    },
+    {
+      "word": "位置",
+      "state": "estimated",
+      "types": {
+        "direct": [],
+        "estimated": [
+          "ABSTRACT"
+        ]
+      },
+      "origins": [
+        "layer_estimated"
+      ],
+      "ledger_seq": [
+        122
+      ]
+    },
+    {
+      "word": "作業",
+      "state": "estimated",
+      "types": {
+        "direct": [],
+        "estimated": [
+          "EVENT_ACT"
+        ]
+      },
+      "origins": [
+        "layer_estimated"
+      ],
+      "ledger_seq": [
+        70
+      ]
+    },
+    {
+      "word": "作業台",
+      "state": "estimated",
+      "types": {
+        "direct": [],
+        "estimated": [
+          "ARTIFACT"
+        ]
+      },
+      "origins": [
+        "layer_estimated"
+      ],
+      "ledger_seq": [
+        71
+      ]
+    },
+    {
+      "word": "修理",
+      "state": "estimated",
+      "types": {
+        "direct": [],
+        "estimated": [
+          "EVENT_ACT"
+        ]
+      },
+      "origins": [
+        "layer_estimated"
+      ],
+      "ledger_seq": [
+        93
+      ]
+    },
+    {
+      "word": "傷",
+      "state": "estimated",
+      "types": {
+        "direct": [],
+        "estimated": [
+          "STATE_PROPERTY"
+        ]
+      },
+      "origins": [
+        "layer_estimated"
+      ],
+      "ledger_seq": [
+        116
+      ]
+    },
+    {
+      "word": "午前",
+      "state": "estimated",
+      "types": {
+        "direct": [],
+        "estimated": [
+          "PLACE"
+        ]
+      },
+      "origins": [
+        "layer_estimated"
+      ],
+      "ledger_seq": [
+        74
+      ]
+    },
+    {
+      "word": "午後",
+      "state": "estimated",
+      "types": {
+        "direct": [],
+        "estimated": [
+          "TIME"
+        ]
+      },
+      "origins": [
+        "layer_estimated"
+      ],
+      "ledger_seq": [
+        111
+      ]
+    },
+    {
+      "word": "圧",
+      "state": "estimated",
+      "types": {
+        "direct": [],
+        "estimated": [
+          "STATE_PROPERTY"
+        ]
+      },
+      "origins": [
+        "layer_estimated"
+      ],
+      "ledger_seq": [
+        126
+      ]
+    },
+    {
+      "word": "完成",
+      "state": "estimated",
+      "types": {
+        "direct": [],
+        "estimated": [
+          "EVENT_ACT"
+        ]
+      },
+      "origins": [
+        "layer_estimated"
+      ],
+      "ledger_seq": [
+        133
+      ]
+    },
+    {
+      "word": "客",
+      "state": "estimated",
+      "types": {
+        "direct": [],
+        "estimated": [
+          "ARTIFACT"
+        ]
+      },
+      "origins": [
+        "layer_estimated"
+      ],
+      "ledger_seq": [
+        77
+      ]
+    },
+    {
+      "word": "店頭",
+      "state": "estimated",
+      "types": {
+        "direct": [],
+        "estimated": [
+          "PLACE"
+        ]
+      },
+      "origins": [
+        "layer_estimated"
+      ],
+      "ledger_seq": [
+        134
+      ]
+    },
+    {
+      "word": "振れ取り",
+      "state": "estimated",
+      "types": {
+        "direct": [],
+        "estimated": [
+          "EVENT_ACT"
+        ]
+      },
+      "origins": [
+        "layer_estimated"
+      ],
+      "ledger_seq": [
+        83
+      ]
+    },
+    {
+      "word": "整理",
+      "state": "estimated",
+      "types": {
+        "direct": [],
+        "estimated": [
+          "EVENT_ACT"
+        ]
+      },
+      "origins": [
+        "layer_estimated"
+      ],
+      "ledger_seq": [
+        109
+      ]
+    },
+    {
+      "word": "朝",
+      "state": "estimated",
+      "types": {
+        "direct": [],
+        "estimated": [
+          "TIME"
+        ]
+      },
+      "origins": [
+        "layer_estimated"
+      ],
+      "ledger_seq": [
+        82
+      ]
+    },
+    {
+      "word": "棚",
+      "state": "estimated",
+      "types": {
+        "direct": [],
+        "estimated": [
+          "ARTIFACT"
+        ]
+      },
+      "origins": [
+        "layer_estimated"
+      ],
+      "ledger_seq": [
+        107
+      ]
+    },
+    {
+      "word": "歪み",
+      "state": "estimated",
+      "types": {
+        "direct": [],
+        "estimated": [
+          "STATE_PROPERTY"
+        ]
+      },
+      "origins": [
+        "layer_estimated"
+      ],
+      "ledger_seq": [
+        117
+      ]
+    },
+    {
+      "word": "油圧",
+      "state": "estimated",
+      "types": {
+        "direct": [],
+        "estimated": [
+          "ABSTRACT"
+        ]
+      },
+      "origins": [
+        "layer_estimated"
+      ],
+      "ledger_seq": [
+        129
+      ]
+    },
+    {
+      "word": "油圧ブレーキ",
+      "state": "estimated",
+      "types": {
+        "direct": [],
+        "estimated": [
+          "ARTIFACT"
+        ]
+      },
+      "origins": [
+        "layer_estimated"
+      ],
+      "ledger_seq": [
+        130
+      ]
+    },
+    {
+      "word": "注油する",
+      "state": "estimated",
+      "types": {
+        "direct": [],
+        "estimated": [
+          "P_ACT"
+        ]
+      },
+      "origins": [
+        "layer_estimated"
+      ],
+      "ledger_seq": [
+        85
+      ]
+    },
+    {
+      "word": "消耗品",
+      "state": "estimated",
+      "types": {
+        "direct": [],
+        "estimated": [
+          "ARTIFACT"
+        ]
+      },
+      "origins": [
+        "layer_estimated"
+      ],
+      "ledger_seq": [
+        110
+      ]
+    },
+    {
+      "word": "空気",
+      "state": "estimated",
+      "types": {
+        "direct": [],
+        "estimated": [
+          "SUBSTANCE_FOOD"
+        ]
+      },
+      "origins": [
+        "layer_estimated"
+      ],
+      "ledger_seq": [
+        92
+      ]
+    }
+  ]
+}

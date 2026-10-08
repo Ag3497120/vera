@@ -1,0 +1,5 @@
+ docs/READING_CONVENTIONS.md |   1 +
+ docs/READING_SOUNDNESS.md   | 260 +++++++++++++++++++++++++++++
+ verantyx/semantic_read.py   |   2 +
+ verantyx/semantic_reader.py | 398 ++++++++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 661 insertions(+)

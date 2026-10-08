@@ -1,0 +1,34 @@
+# commit a9cad0ab448b649dc6c71584f14d203a5200289d
+# status FAIL
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 17 items / 16 deselected / 1 selected
+
+tests/attack/test_memory_brief_limits.py::test_dropped_ids_are_reported_when_selected_line_fits FAILED [100%]
+
+=== FAILURES ===
+____________ test_dropped_ids_are_reported_when_selected_line_fits _____________
+
+    def test_dropped_ids_are_reported_when_selected_line_fits():
+        records = [
+            row("kept", subject="s", sentence="Keep me."),
+            row("unaskable", sentence="No subject slot."),
+        ]
+        expected = "[id:kept] Keep me.\nDropped record ids: unaskable"
+    
+>       assert compile_brief(MemoryStub(records), len(expected)) == expected
+E       AssertionError: assert ContextBrief(text='Dropped record ids: kept, unaskable', records=(), dropped_ids=('kept', 'unaskable')) == '[id:kept] Keep me.\nDropped record ids: unaskable'
+E        +  where ContextBrief(text='Dropped record ids: kept, unaskable', records=(), dropped_ids=('kept', 'unaskable')) = compile_brief(<test_memory_brief_limits.MemoryStub object at 0x<ADDR>>, 48)
+E        +    where <test_memory_brief_limits.MemoryStub object at 0x<ADDR>> = MemoryStub([{'id': 'kept', 'kind': 'INVARIANT', 'sentence': 'Keep me.', 'slots': {'subject': 's'}, 'ts': '2026-01-01'}, {'id': 'unaskable', 'kind': 'INVARIANT', 'sentence': 'No subject slot.', 'slots': {}, 'ts': '2026-01-01'}])
+E        +    and   48 = len('[id:kept] Keep me.\nDropped record ids: unaskable')
+
+tests/attack/test_memory_brief_limits.py:85: AssertionError
+=== short test summary info ===
+FAILED tests/attack/test_memory_brief_limits.py::test_dropped_ids_are_reported_when_selected_line_fits - AssertionError: assert ContextBrief(text='Dropped record ids: kept, unaskable', records=(), dropped_ids=('kept', 'unaskable')) == '[id:kept] Keep me.\nDropped record ids: unaskable'
+ +  where ContextBrief(text='Dropped record ids: kept, unaskable', records=(), dropped_ids=('kept', 'unaskable')) = compile_brief(<test_memory_brief_limits.MemoryStub object at 0x<ADDR>>, 48)
+ +    where <test_memory_brief_limits.MemoryStub object at 0x<ADDR>> = MemoryStub([{'id': 'kept', 'kind': 'INVARIANT', 'sentence': 'Keep me.', 'slots': {'subject': 's'}, 'ts': '2026-01-01'}, {'id': 'unaskable', 'kind': 'INVARIANT', 'sentence': 'No subject slot.', 'slots': {}, 'ts': '2026-01-01'}])
+ +    and   48 = len('[id:kept] Keep me.\nDropped record ids: unaskable')
+=== 1 failed, 16 deselected ===

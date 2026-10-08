@@ -1,0 +1,11 @@
+module /Users/motonisihikoudai/Projects/vera-impl/wt/W5-a-S/verantyx/semantic_read.py
+test_routing_from_text_entry.py::test_T1_... | モモがテストを書く。 | pred=書く | transitivity=trans | classes=[] | subject_is_person=[False] | frame_known=True | readable=True | abstain=None
+test_routing_from_text_entry.py::test_T1_... | セキがコードを確かめる。 | pred=確かめる | transitivity=trans | classes=[] | subject_is_person=[False] | frame_known=True | readable=True | abstain=None
+test_routing_from_text_entry.py::test_T1_... | モモは検証をやらない。 | pred=やる | transitivity=trans | classes=['_TRANSFER_PREDICATES'] | subject_is_person=[False] | frame_known=True | readable=True | abstain=None
+test_routing_from_text_regress.py::test_M1_... | セキがレビューをやる。 | pred=やる | transitivity=trans | classes=['_TRANSFER_PREDICATES'] | subject_is_person=[False] | frame_known=True | readable=True | abstain=None
+test_observe_data.py::...[S-J06] | 車掌は乗客に切符を渡した。 | pred=渡す | transitivity=trans | classes=['_TRANSFER_PREDICATES'] | subject_is_person=[False] | frame_known=True | readable=True | abstain=None
+test_observe_data.py::...[S-J07] | 受付は客に鍵を渡した。 | pred=渡す | transitivity=trans | classes=['_TRANSFER_PREDICATES'] | subject_is_person=[False] | frame_known=True | readable=True | abstain=None
+test_observe_data.py::...[S-J13] | 農家は市場で果物を売った。 | pred=売る | transitivity=trans | classes=['_TRANSFER_PREDICATES'] | subject_is_person=[False] | frame_known=True | readable=True | abstain=None
+test_observe_data.py::...[S-J21] | 会計係は領収書を発行しなかった。 | pred=発行する | transitivity=trans | classes=[] | subject_is_person=[False] | frame_known=True | readable=True | abstain=None
+test_observe_data.py::...[M12-single-J05] | 駅員は乗客に切符を渡した。 | pred=渡す | transitivity=trans | classes=['_TRANSFER_PREDICATES'] | subject_is_person=[True] | frame_known=True | readable=True | abstain=None
+test_observe_data.py::...[M12-single-J05] | 車掌は乗客に切符を渡した。 | pred=渡す | transitivity=trans | classes=['_TRANSFER_PREDICATES'] | subject_is_person=[False] | frame_known=True | readable=True | abstain=None

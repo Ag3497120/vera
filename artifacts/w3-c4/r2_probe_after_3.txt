@@ -1,0 +1,60 @@
+先生は本を読んだらしかった。 先生は何を読んだ？ | UNKNOWN_UNREAD semantic_document FILLED PREDICATE_FORM_DIFFERS 
+先生は本を読んだらしかった。 誰が本を読んだ？ | ANSWER semantic_document None None agent: 先生
+先生は本を読んでほしい。 先生は何を読んだ？ | UNKNOWN_UNREAD semantic_document NO_ATTESTED_CELL NO_MATCHING_CROSS_IN_READ_SENTENCES 
+先生は本を読んでほしい。 誰が本を読んだ？ | UNKNOWN_NO_EVIDENCE semantic_document QUESTION_NOT_READ READER_ABSTAINED 
+先生は本を読んでもらいたかった。 先生は何を読んだ？ | UNKNOWN_UNREAD semantic_document NO_ATTESTED_CELL NO_MATCHING_CROSS_IN_READ_SENTENCES 
+先生は本を読んでもらいたかった。 誰が本を読んだ？ | UNKNOWN_NO_EVIDENCE semantic_document QUESTION_NOT_READ READER_ABSTAINED 
+先生は本を読んでみたかった。 先生は何を読んだ？ | UNKNOWN_UNREAD semantic_document FILLED PREDICATE_FORM_DIFFERS 
+先生は本を読んでみたかった。 誰が本を読んだ？ | ANSWER semantic_document None None agent: 先生
+先生は本を読みたくて泣いた。 先生は何を読んだ？ | UNKNOWN_UNREAD semantic_document NO_ATTESTED_CELL NO_MATCHING_CROSS_IN_READ_SENTENCES 
+先生は本を読みたくて泣いた。 誰が本を読んだ？ | UNKNOWN_UNSUPPORTED_EVIDENCE semantic_document None None 
+先生は本を読みたかったらしい。 先生は何を読んだ？ | UNKNOWN_UNREAD semantic_document NO_ATTESTED_CELL NO_MATCHING_CROSS_IN_READ_SENTENCES 
+先生は本を読みたかったらしい。 誰が本を読んだ？ | UNKNOWN_NO_EVIDENCE semantic_document QUESTION_NOT_READ READER_ABSTAINED 
+先生は本を読んだっけ。 先生は何を読んだ？ | UNKNOWN_UNREAD semantic_document NO_ATTESTED_CELL NO_MATCHING_CROSS_IN_READ_SENTENCES 
+先生は本を読んだっけ。 誰が本を読んだ？ | UNKNOWN_UNSUPPORTED_EVIDENCE semantic_document None None 
+先生は本を読んだのか。 先生は何を読んだ？ | UNKNOWN_UNREAD semantic_document NO_ATTESTED_CELL NO_MATCHING_CROSS_IN_READ_SENTENCES 
+先生は本を読んだのか。 誰が本を読んだ？ | UNKNOWN_UNSUPPORTED_EVIDENCE semantic_document None None 
+先生は本を読んだのだろうか。 先生は何を読んだ？ | UNKNOWN_UNREAD semantic_document NO_ATTESTED_CELL NO_MATCHING_CROSS_IN_READ_SENTENCES 
+先生は本を読んだのだろうか。 誰が本を読んだ？ | UNKNOWN_UNSUPPORTED_EVIDENCE semantic_document None None 
+先生は本を読まされた。 先生は何を読んだ？ | UNKNOWN_UNREAD semantic_document NO_ATTESTED_CELL NO_MATCHING_CROSS_IN_READ_SENTENCES 
+先生は本を読まされた。 誰が本を読んだ？ | UNKNOWN_NO_EVIDENCE semantic_document QUESTION_NOT_READ READER_ABSTAINED 
+先生は本を読んだかしら。 先生は何を読んだ？ | UNKNOWN_UNREAD semantic_document NO_ATTESTED_CELL NO_MATCHING_CROSS_IN_READ_SENTENCES 
+先生は本を読んだかしら。 誰が本を読んだ？ | UNKNOWN_UNSUPPORTED_EVIDENCE semantic_document None None 
+先生は本を読みたかったです。 先生は何を読んだ？ | UNKNOWN_UNREAD semantic_document FILLED PREDICATE_FORM_DIFFERS 
+先生は本を読みたかったです。 誰が本を読んだ？ | ANSWER semantic_document None None agent: 先生
+先生は本を読みたがっていた。 先生は何を読んだ？ | UNKNOWN_UNREAD semantic_document FILLED PREDICATE_FORM_DIFFERS 
+先生は本を読みたがっていた。 誰が本を読んだ？ | ANSWER semantic_document None None agent: 先生
+先生は本を読んだら喜んだ。 先生は何を読んだ？ | UNKNOWN_UNREAD semantic_document NO_ATTESTED_CELL NO_MATCHING_CROSS_IN_READ_SENTENCES 
+先生は本を読んだら喜んだ。 誰が本を読んだ？ | UNKNOWN_UNSUPPORTED_EVIDENCE semantic_document None None 
+先生は本を読みたかったのだ。 先生は何を読んだ？ | UNKNOWN_UNREAD semantic_document NO_ATTESTED_CELL NO_MATCHING_CROSS_IN_READ_SENTENCES 
+先生は本を読みたかったのだ。 誰が本を読んだ？ | ANSWER semantic_document None None agent: 先生
+先生は本を読んだんじゃない。 先生は何を読んだ？ | UNKNOWN_UNREAD semantic_document NO_ATTESTED_CELL NO_MATCHING_CROSS_IN_READ_SENTENCES 
+先生は本を読んだんじゃない。 誰が本を読んだ？ | UNKNOWN_UNSUPPORTED_EVIDENCE semantic_document None None 
+先生は本を読んでない。 先生は何を読んだ？ | UNKNOWN_UNREAD semantic_document NO_ATTESTED_CELL NO_MATCHING_CROSS_IN_READ_SENTENCES 
+先生は本を読んでない。 誰が本を読んだ？ | UNKNOWN_NO_EVIDENCE semantic_document QUESTION_NOT_READ READER_ABSTAINED 
+先生は本を読んだわけではない。 先生は何を読んだ？ | UNKNOWN_UNREAD semantic_document NO_ATTESTED_CELL NO_MATCHING_CROSS_IN_READ_SENTENCES 
+先生は本を読んだわけではない。 誰が本を読んだ？ | UNKNOWN_NO_EVIDENCE semantic_document QUESTION_NOT_READ READER_ABSTAINED 
+先生は本を読んだはずがない。 先生は何を読んだ？ | UNKNOWN_UNREAD semantic_document NO_ATTESTED_CELL NO_MATCHING_CROSS_IN_READ_SENTENCES 
+先生は本を読んだはずがない。 誰が本を読んだ？ | UNKNOWN_NO_EVIDENCE semantic_document QUESTION_NOT_READ READER_ABSTAINED 
+先生は本を読んだとは言えない。 先生は何を読んだ？ | UNKNOWN_UNREAD semantic_document NO_ATTESTED_CELL NO_MATCHING_CROSS_IN_READ_SENTENCES 
+先生は本を読んだとは言えない。 誰が本を読んだ？ | UNKNOWN_UNSUPPORTED_EVIDENCE semantic_document None None 
+先生は本を読まなかったわけではない。 先生は何を読んだ？ | UNKNOWN_UNREAD semantic_document NO_ATTESTED_CELL NO_MATCHING_CROSS_IN_READ_SENTENCES 
+先生は本を読まなかったわけではない。 誰が本を読んだ？ | UNKNOWN_UNSUPPORTED_EVIDENCE semantic_document None None 
+先生は本を読んだそう。 先生は何を読んだ？ | UNKNOWN_UNREAD semantic_document NO_ATTESTED_CELL NO_MATCHING_CROSS_IN_READ_SENTENCES 
+先生は本を読んだそう。 誰が本を読んだ？ | UNKNOWN_NO_EVIDENCE semantic_document QUESTION_NOT_READ READER_ABSTAINED 
+先生は本を読んだ気がする。 先生は何を読んだ？ | UNKNOWN_UNREAD semantic_document NO_ATTESTED_CELL NO_MATCHING_CROSS_IN_READ_SENTENCES 
+先生は本を読んだ気がする。 誰が本を読んだ？ | UNKNOWN_NO_EVIDENCE semantic_document QUESTION_NOT_READ READER_ABSTAINED 
+先生は本を読んだと思う。 先生は何を読んだ？ | UNKNOWN_UNREAD semantic_document NO_ATTESTED_CELL NO_MATCHING_CROSS_IN_READ_SENTENCES 
+先生は本を読んだと思う。 誰が本を読んだ？ | UNKNOWN_NO_EVIDENCE semantic_document QUESTION_NOT_READ READER_ABSTAINED 
+先生は本を読んだと思った。 先生は何を読んだ？ | UNKNOWN_UNREAD semantic_document NO_ATTESTED_CELL NO_MATCHING_CROSS_IN_READ_SENTENCES 
+先生は本を読んだと思った。 誰が本を読んだ？ | UNKNOWN_NO_EVIDENCE semantic_document QUESTION_NOT_READ READER_ABSTAINED 
+先生は本を読んだと聞いた。 先生は何を読んだ？ | UNKNOWN_UNREAD semantic_document NO_ATTESTED_CELL NO_MATCHING_CROSS_IN_READ_SENTENCES 
+先生は本を読んだと聞いた。 誰が本を読んだ？ | UNKNOWN_NO_EVIDENCE semantic_document QUESTION_NOT_READ READER_ABSTAINED 
+先生は本を読んだと書いてあった。 先生は何を読んだ？ | UNKNOWN_UNREAD semantic_document NO_ATTESTED_CELL NO_MATCHING_CROSS_IN_READ_SENTENCES 
+先生は本を読んだと書いてあった。 誰が本を読んだ？ | UNKNOWN_NO_EVIDENCE semantic_document QUESTION_NOT_READ READER_ABSTAINED 
+先生は本を読んだか。 先生は何を読んだ？ | UNKNOWN_UNREAD semantic_document NO_ATTESTED_CELL NO_MATCHING_CROSS_IN_READ_SENTENCES 
+先生は本を読んだか。 誰が本を読んだ？ | UNKNOWN_UNSUPPORTED_EVIDENCE semantic_document None None 
+先生は本を読みかねた。 先生は何を読んだ？ | UNKNOWN_UNREAD semantic_document NO_ATTESTED_CELL NO_MATCHING_CROSS_IN_READ_SENTENCES 
+先生は本を読みかねた。 誰が本を読んだ？ | UNKNOWN_NO_EVIDENCE semantic_document QUESTION_NOT_READ READER_ABSTAINED 
+先生は本を読みかねない。 先生は何を読んだ？ | UNKNOWN_UNREAD semantic_document NO_ATTESTED_CELL NO_MATCHING_CROSS_IN_READ_SENTENCES 
+先生は本を読みかねない。 誰が本を読んだ？ | UNKNOWN_NO_EVIDENCE semantic_document QUESTION_NOT_READ READER_ABSTAINED 

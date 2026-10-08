@@ -1,0 +1,3 @@
+rc=0
+B2 entry=cli-ask-round5 total=25 correct=0 wrong=0 misread=0 over_abstain=17 correct_abstain=6 false_compliance=0 unreachable=2 runtime_error=0 unscorable=0
+correct_rate=0.0 wrong_rate=0.0 false_compliance_rate=0.0

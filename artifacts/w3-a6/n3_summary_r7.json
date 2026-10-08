@@ -1,0 +1,14 @@
+{
+  "required_terms": 15,
+  "required_terms_not_lone_direct_place": 15,
+  "required_terms_lone_direct_place": 0,
+  "changed_nouns_from_place": 292,
+  "changed_noun_visual_labels": {
+    "正しい": 253,
+    "疑わしい": 37,
+    "誤り": 2
+  },
+  "changed_noun_obvious_errors": 2,
+  "changed_noun_obvious_error_rate": 0.00684931506849315,
+  "changed_noun_unassessed": 0
+}

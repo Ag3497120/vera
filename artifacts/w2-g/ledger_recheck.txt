@@ -1,0 +1,4 @@
+artifacts/w2-g/live/w2g2/codex_codex/ledger.jsonl: decisions 90 asks 180 steps {'phases': 10, 'records': 47, 'relations': 33} mismatches 0
+artifacts/w2-g/live/w2g2/codex_claude/ledger.jsonl: decisions 24 asks 48 steps {'phases': 3, 'records': 12, 'relations': 9} mismatches 0
+artifacts/w2-g/live/w2g1_rerun/codex_codex_subset/ledger.jsonl: decisions 53 asks 106 steps {'phases': 9, 'records': 23, 'relations': 21} mismatches 0
+TOTAL mismatches 0

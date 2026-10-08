@@ -1,0 +1,3 @@
+grep T2-3:
+verantyx/doc_answer.py:10:run (default `later_stage`): cli passes its own name so that its module-level hook stays the one the tests patch. This module does not import cli.
+exit=0

@@ -1,0 +1,296 @@
+[
+ {
+  "id": "a02",
+  "kind": "where",
+  "before": 1,
+  "after": 1,
+  "gold_in_path": true
+ },
+ {
+  "id": "a05",
+  "kind": "which",
+  "before": 161,
+  "after": 149,
+  "gold_in_path": true
+ },
+ {
+  "id": "a07",
+  "kind": "where",
+  "before": 1,
+  "after": 1,
+  "gold_in_path": true
+ },
+ {
+  "id": "a11",
+  "kind": "where",
+  "before": 854,
+  "after": 343,
+  "gold_in_path": false
+ },
+ {
+  "id": "a12",
+  "kind": "what",
+  "before": 1,
+  "after": 1,
+  "gold_in_path": false
+ },
+ {
+  "id": "a13",
+  "kind": "where",
+  "before": 1,
+  "after": 1,
+  "gold_in_path": true
+ },
+ {
+  "id": "a15",
+  "kind": "where",
+  "before": 1,
+  "after": 1,
+  "gold_in_path": true
+ },
+ {
+  "id": "a16",
+  "kind": "where",
+  "before": 139,
+  "after": 125,
+  "gold_in_path": true
+ },
+ {
+  "id": "a17",
+  "kind": "who",
+  "before": 1,
+  "after": 1,
+  "gold_in_path": true
+ },
+ {
+  "id": "a18",
+  "kind": "where",
+  "before": 1,
+  "after": 1,
+  "gold_in_path": true
+ },
+ {
+  "id": "a20",
+  "kind": "where",
+  "before": 1,
+  "after": 1,
+  "gold_in_path": true
+ },
+ {
+  "id": "a22",
+  "kind": "what",
+  "before": 1,
+  "after": 1,
+  "gold_in_path": true
+ },
+ {
+  "id": "a24",
+  "kind": "what",
+  "before": 261,
+  "after": 215,
+  "gold_in_path": true
+ },
+ {
+  "id": "a27",
+  "kind": "what",
+  "before": 311,
+  "after": 130,
+  "gold_in_path": true
+ },
+ {
+  "id": "a28",
+  "kind": "what",
+  "before": 1,
+  "after": 1,
+  "gold_in_path": true
+ },
+ {
+  "id": "a33",
+  "kind": "what",
+  "before": 164,
+  "after": 64,
+  "gold_in_path": true
+ },
+ {
+  "id": "a37",
+  "kind": "which",
+  "before": 160,
+  "after": 148,
+  "gold_in_path": false
+ },
+ {
+  "id": "a39",
+  "kind": "what",
+  "before": 1,
+  "after": 1,
+  "gold_in_path": true
+ },
+ {
+  "id": "a41",
+  "kind": "who",
+  "before": 1,
+  "after": 1,
+  "gold_in_path": false
+ },
+ {
+  "id": "a43",
+  "kind": "what",
+  "before": 123,
+  "after": 123,
+  "gold_in_path": true
+ },
+ {
+  "id": "a45",
+  "kind": "where",
+  "before": 1,
+  "after": 1,
+  "gold_in_path": true
+ },
+ {
+  "id": "a46",
+  "kind": "what",
+  "before": 1,
+  "after": 1,
+  "gold_in_path": true
+ },
+ {
+  "id": "a47",
+  "kind": "where",
+  "before": 84,
+  "after": 84,
+  "gold_in_path": true
+ },
+ {
+  "id": "a48",
+  "kind": "where",
+  "before": 135,
+  "after": 78,
+  "gold_in_path": true
+ },
+ {
+  "id": "a49",
+  "kind": "who",
+  "before": 1,
+  "after": 1,
+  "gold_in_path": false
+ },
+ {
+  "id": "a51",
+  "kind": "what",
+  "before": 1,
+  "after": 1,
+  "gold_in_path": true
+ },
+ {
+  "id": "a52",
+  "kind": "where",
+  "before": 2,
+  "after": 1,
+  "gold_in_path": true
+ },
+ {
+  "id": "a53",
+  "kind": "what",
+  "before": 1,
+  "after": 1,
+  "gold_in_path": true
+ },
+ {
+  "id": "a54",
+  "kind": "who",
+  "before": 1,
+  "after": 1,
+  "gold_in_path": true
+ },
+ {
+  "id": "a55",
+  "kind": "where",
+  "before": 159,
+  "after": 132,
+  "gold_in_path": true
+ },
+ {
+  "id": "a58",
+  "kind": "what",
+  "before": 1,
+  "after": 1,
+  "gold_in_path": true
+ },
+ {
+  "id": "a59",
+  "kind": "what",
+  "before": 6,
+  "after": 6,
+  "gold_in_path": true
+ },
+ {
+  "id": "a60",
+  "kind": "what",
+  "before": 1,
+  "after": 1,
+  "gold_in_path": true
+ },
+ {
+  "id": "u03",
+  "kind": "fict",
+  "before": 1056,
+  "after": 476,
+  "gold_in_path": false
+ },
+ {
+  "id": "u04",
+  "kind": "fict",
+  "before": 2,
+  "after": 2,
+  "gold_in_path": false
+ },
+ {
+  "id": "u09",
+  "kind": "fict",
+  "before": 1,
+  "after": 1,
+  "gold_in_path": false
+ },
+ {
+  "id": "u15",
+  "kind": "fict",
+  "before": 1,
+  "after": 1,
+  "gold_in_path": false
+ },
+ {
+  "id": "u19",
+  "kind": "fict",
+  "before": 851,
+  "after": 340,
+  "gold_in_path": false
+ },
+ {
+  "id": "u22",
+  "kind": "attr",
+  "before": 1,
+  "after": 1,
+  "gold_in_path": false
+ },
+ {
+  "id": "u26",
+  "kind": "attr",
+  "before": 47,
+  "after": 12,
+  "gold_in_path": false
+ },
+ {
+  "id": "u27",
+  "kind": "attr",
+  "before": 1,
+  "after": 1,
+  "gold_in_path": false
+ },
+ {
+  "id": "u30",
+  "kind": "attr",
+  "before": 407,
+  "after": 343,
+  "gold_in_path": false
+ }
+]

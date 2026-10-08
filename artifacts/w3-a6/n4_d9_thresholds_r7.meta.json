@@ -1,0 +1,8 @@
+{
+  "candidate_content_sha256": "72945370d9299600e1beca212fc2ed286940506d47fdd0fb50e403ee7bacb5a9",
+  "sample_sha256": "a11f58dd34853fbcf412ae54163b00a3d3df1012bbc2c6b86e6e057d6e5ea8a5",
+  "visual_labels_sha256": "bb8ca1644a3b5d090682775183843231e5e315a605f443614b5a30a97c626ec3",
+  "thresholds_sha256": "cec95752b5a7cbeca4f0c96858e725b80e53a0d2cdab1af217e5e7208a3436e1",
+  "confirmed_roles_sha256": "5dff205d6e5ec2ee1b1f2953f43df650e897614b24b51b5a8c95c5c10eecb414",
+  "query_projection_mismatches_at_threshold_1": []
+}

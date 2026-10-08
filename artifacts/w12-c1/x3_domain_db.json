@@ -1,0 +1,27 @@
+{
+ "control": {
+  "bytes": 8065024,
+  "control_of_scene": "法律と暮らし",
+  "ids_max": 317380,
+  "ids_min": 18,
+  "n": 9694,
+  "population": 307729,
+  "rows": 9694,
+  "rows_sha256": "574a8aed953b1c0fb49362a6bf2a977b3bd716849fe4cdd943a711e7acd69afd",
+  "seed": 20261005,
+  "sha256": "2d534d49fb4df911c362df4b255e3b44116ded47eb42f13988de7ad2ef88016c",
+  "source_db": "/Users/motonisihikoudai/Projects/vera-impl/build/p4-W1c/general_qa.db",
+  "source_db_bytes": 507125760
+ },
+ "law": {
+  "bytes": 8544256,
+  "ids_max": 312321,
+  "ids_min": 276,
+  "rows": 9694,
+  "rows_sha256": "3578135955d975d4264a51d22275970234d1420bc604f53e30849000d5b480be",
+  "scene": "法律と暮らし",
+  "sha256": "4eb7b10322ee7d83698d275748f6363e0bff6048ca507c5daf80c7f4dffd0b93",
+  "source_db": "/Users/motonisihikoudai/Projects/vera-impl/build/p4-W1c/general_qa.db",
+  "source_db_bytes": 507125760
+ }
+}

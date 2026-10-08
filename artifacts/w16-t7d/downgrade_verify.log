@@ -1,0 +1,7 @@
+## 新しいコードで取り違えを訂正した台帳（u2_demo.log と同じ手順で作った合成の台帳 /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/W16-t7d-impl/r2b/u2/led）を、基点のコード（d1942e2）と新しいコードで verify
+-- 基点 d1942e2:
+{"head": "328516ffe20d7a3ce7ddc23fb5dcdeff8aa3d8c350e7ffa9b86c22107a665ba7", "n": 2, "problems": [{"line": 2, "type": "BAD_SHAPE"}], "status": "TAMPERED"}
+rc=1
+-- W16-t7d 後:
+{"head": "328516ffe20d7a3ce7ddc23fb5dcdeff8aa3d8c350e7ffa9b86c22107a665ba7", "n": 2, "problems": [], "status": "OK"}
+rc=0

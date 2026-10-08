@@ -1,0 +1,15 @@
+# commit f22f0919df08627223dceadca21a4968406545bf
+# status PASS
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 15 items / 14 deselected / 1 selected
+
+tests/attack/test_semantic_unknown_choice_paraphrase.py::test_query_delimiters_and_line_breaks_stay_inside_the_json_string PASSED [100%]
+
+=== PASSES ===
+=== short test summary info ===
+PASSED tests/attack/test_semantic_unknown_choice_paraphrase.py::test_query_delimiters_and_line_breaks_stay_inside_the_json_string
+=== 1 passed, 14 deselected ===

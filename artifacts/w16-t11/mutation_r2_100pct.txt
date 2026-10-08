@@ -1,0 +1,5 @@
+README (/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/m.md) の照合: 不一致 1
+NG README_UNMARKED_NUMBER L445: 印の無い文に数値 ['100.0%']: Vera is right 100.0% of the time.
+FAIL
+exit=1
+real_exit=1 (numbers, 印の無い 100.0% を足した README)。claims も exit=1

@@ -1,0 +1,12 @@
+E-W3B3-01 兄が本を読んだので、弟が歌を歌った。 anchor_cross=0 EDGE:cause outcome=FOCUS cells_by_edge=1
+E-W3B3-02 兄が本を読んだので、弟が歌を歌った。 anchor_cross=1 EDGE:cause outcome=FOCUS cells_by_edge=1
+E-W3B3-03 兄が本を読んだが、弟が歌を歌った。 anchor_cross=0 EDGE:contrast outcome=FOCUS cells_by_edge=1
+E-W3B3-04 兄が来れば、弟が帰る。 anchor_cross=0 EDGE:condition outcome=FOCUS cells_by_edge=1
+E-W3B3-05 兄が来ても、弟が帰る。 anchor_cross=0 EDGE:concession outcome=FOCUS cells_by_edge=1
+E-W3B3-06 兄が本を読みながら、弟が歌を歌った。 anchor_cross=0 EDGE:simultaneous outcome=FOCUS cells_by_edge=1
+E-W3B3-07 母が弟に話した人を兄が呼んだ。 anchor_cross=0 EDGE:relative outcome=FOCUS cells_by_edge=1
+E-W3B3-08 母が弟に話した人を兄が呼んだ。 anchor_cross=1 EDGE:relative outcome=FOCUS cells_by_edge=1
+E-W3B3-09 歌を弟に頼んだ人を兄が呼んだ。 anchor_cross=0 EDGE:relative outcome=FOCUS cells_by_edge=1
+E-W3B3-10 兄は本を読んだので、歌を歌った。 anchor_cross=0 EDGE:cause outcome=FOCUS cells_by_edge=1
+E-W3B3-11 兄が本を読んだので、弟が歌を歌った。 anchor_cross=0 EDGE:relative outcome=NO_MOVE_LICENSED cells_by_edge=0
+cases=11 cases_with_an_edge_cell=10 cells_by_edge_total=10 elements=21 reobserved=21 mismatch=0

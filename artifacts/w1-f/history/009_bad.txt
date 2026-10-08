@@ -1,0 +1,29 @@
+# commit a9cad0ab448b649dc6c71584f14d203a5200289d
+# status FAIL
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 10 items / 9 deselected / 1 selected
+
+tests/attack/test_memory_brief_differential.py::test_nfkc_casefolded_focus_ranks_matching_record_first FAILED [100%]
+
+=== FAILURES ===
+____________ test_nfkc_casefolded_focus_ranks_matching_record_first ____________
+
+    def test_nfkc_casefolded_focus_ranks_matching_record_first():
+        records = [
+            rec("invariant", kind="INVARIANT", sentence="Always store this", subject="X"),
+            rec("fact", sentence="Use STRASSE data", subject="Y", attribute="source"),
+        ]
+        memory = memory_with_sources(records, askable_ids={"invariant", "fact"})
+        result = compile_brief(memory, 200, focus="ＳＴＲＡＳＳＥ")
+>       assert result.splitlines() == ["[id:fact] Use STRASSE data", "[id:invariant] Always store this"]
+               ^^^^^^^^^^^^^^^^^
+E       AttributeError: 'ContextBrief' object has no attribute 'splitlines'
+
+tests/attack/test_memory_brief_differential.py:174: AttributeError
+=== short test summary info ===
+FAILED tests/attack/test_memory_brief_differential.py::test_nfkc_casefolded_focus_ranks_matching_record_first - AttributeError: 'ContextBrief' object has no attribute 'splitlines'
+=== 1 failed, 9 deselected ===

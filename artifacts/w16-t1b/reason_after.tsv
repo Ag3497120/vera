@@ -1,0 +1,6 @@
+kind	reason	rows
+modal	MODALITY_NOT_READ:conditional	10
+modal	MODALITY_NOT_READ:desire	16
+modal	MODALITY_NOT_READ:hearsay	6
+modal	MODALITY_NOT_READ:potential	8
+range	MODALITY_NOT_READ:desire	8

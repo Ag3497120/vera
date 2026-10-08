@@ -1,0 +1,12 @@
+a29 {'base': (430.34, 'ANSWER', 'CHOICE'), 'V1': (0.01, 'UNKNOWN_NO_EVIDENCE', None), 'V3': (6.19, 'CHOICE', 'CHOICE')}
+a33 {'base': (463.97, 'ANSWER', 'CHOICE'), 'V1': (0.01, 'UNKNOWN_NO_EVIDENCE', None), 'V3': (6.58, 'CHOICE', 'CHOICE')}
+a40 {'base': (445.08, 'ANSWER', 'CHOICE'), 'V1': (0.01, 'UNKNOWN_NO_EVIDENCE', None), 'V3': (5.99, 'CHOICE', 'CHOICE')}
+a45 {'base': (433.36, 'ANSWER', 'CHOICE'), 'V1': (0.04, 'CHOICE', 'CHOICE'), 'V3': (5.66, 'CHOICE', 'CHOICE')}
+a53 {'base': (399.73, 'ANSWER', 'CHOICE'), 'V1': (0.01, 'ANSWER', 'CHOICE'), 'V3': (5.76, 'CHOICE', 'CHOICE')}
+a60 {'base': (388.34, 'ANSWER', 'CHOICE'), 'V1': (0.01, 'UNKNOWN_NO_EVIDENCE', None), 'V3': (1.44, 'CHOICE', 'CHOICE')}
+u02 {'base': (424.64, 'UNKNOWN_NO_EVIDENCE', None), 'V1': (0.01, 'UNKNOWN_NO_EVIDENCE', None), 'V3': (0.38, 'UNKNOWN_NO_FIXED_POINT', None)}
+u08 {'base': (423.79, 'UNKNOWN_NO_EVIDENCE', None), 'V1': (0.01, 'UNKNOWN_NO_EVIDENCE', None), 'V3': (0.39, 'UNKNOWN_NO_FIXED_POINT', None)}
+u14 {'base': (424.09, 'UNKNOWN_NO_EVIDENCE', None), 'V1': (0.01, 'UNKNOWN_NO_EVIDENCE', None), 'V3': (0.35, 'UNKNOWN_NO_FIXED_POINT', None)}
+u20 {'base': (425.72, 'UNKNOWN_NO_EVIDENCE', None), 'V1': (0.01, 'UNKNOWN_NO_EVIDENCE', None), 'V3': (0.38, 'UNKNOWN_NO_FIXED_POINT', None)}
+u25 {'base': (512.86, 'CHOICE', 'CHOICE'), 'V1': (0.43, 'ANSWER', 'CHOICE'), 'V3': (10.81, 'CHOICE', 'CHOICE')}
+QUEUE_DONE worker 22014 questions 11 wall 5141.1

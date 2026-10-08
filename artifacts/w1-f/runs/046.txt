@@ -1,0 +1,31 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 15 items / 14 deselected / 1 selected
+
+tests/attack/test_memory_brief_paraphrase.py::test_unaskable_record_is_accounted_for_as_dropped FAILED [100%]
+
+=== FAILURES ===
+______________ test_unaskable_record_is_accounted_for_as_dropped _______________
+
+    def test_unaskable_record_is_accounted_for_as_dropped():
+        unaskable = {
+            "id": "unaskable",
+            "kind": "FACT",
+            "sentence": "根拠レコードではありません。",
+            "slots": {"attribute": "状態", "value": "不明"},
+        }
+    
+>       assert compile_brief(Memory([unaskable]), 100) == "Dropped record ids: unaskable"
+E       AssertionError: assert ContextBrief(text='Dropped record ids: unaskable', records=(), dropped_ids=('unaskable',)) == 'Dropped record ids: unaskable'
+E        +  where ContextBrief(text='Dropped record ids: unaskable', records=(), dropped_ids=('unaskable',)) = compile_brief(<test_memory_brief_paraphrase.Memory object at 0x<ADDR>>, 100)
+E        +    where <test_memory_brief_paraphrase.Memory object at 0x<ADDR>> = Memory([{'id': 'unaskable', 'kind': 'FACT', 'sentence': '\u6839\u62e0\u30ec\u30b3\u30fc\u30c9\u3067\u306f\u3042\u308a\u307e\u305b\u3093\u3002', 'slots': {'attribute': '\u72b6\u614b', 'value': '\u4e0d\u660e'}}])
+
+tests/attack/test_memory_brief_paraphrase.py:174: AssertionError
+=== short test summary info ===
+FAILED tests/attack/test_memory_brief_paraphrase.py::test_unaskable_record_is_accounted_for_as_dropped - AssertionError: assert ContextBrief(text='Dropped record ids: unaskable', records=(), dropped_ids=('unaskable',)) == 'Dropped record ids: unaskable'
+ +  where ContextBrief(text='Dropped record ids: unaskable', records=(), dropped_ids=('unaskable',)) = compile_brief(<test_memory_brief_paraphrase.Memory object at 0x<ADDR>>, 100)
+ +    where <test_memory_brief_paraphrase.Memory object at 0x<ADDR>> = Memory([{'id': 'unaskable', 'kind': 'FACT', 'sentence': '\u6839\u62e0\u30ec\u30b3\u30fc\u30c9\u3067\u306f\u3042\u308a\u307e\u305b\u3093\u3002', 'slots': {'attribute': '\u72b6\u614b', 'value': '\u4e0d\u660e'}}])
+=== 1 failed, 14 deselected ===

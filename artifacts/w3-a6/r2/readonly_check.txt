@@ -1,0 +1,11 @@
+/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r7/run1/placement.sqlite: OK
+/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r7/run1/manifest.json: OK
+/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r8/run2/placement.sqlite: OK
+/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r8/run2/manifest.json: OK
+/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r8/stage/extract.pkl: OK
+/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r6/gen_pred/frames.jsonl: OK
+/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r6/gen_pred/ledger.jsonl: OK
+/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r8/gen_pred/frames.jsonl: OK
+/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r8/gen_pred/ledger.jsonl: OK
+/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/generated/definitions.jsonl: OK
+/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/generated/ledger.jsonl: OK

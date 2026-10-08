@@ -1,0 +1,95 @@
+{
+  "note": "W5-f r3 review r2 (must-fix 1): the 18 F2 rows of w5f_gates.jsonl are kept byte-identical to the frozen file (expect=abstain). Their abstain expectation is narrowed here (append-only record): the checker counts them DEFERRED_READ/DEFERRED_ABSTAIN, never a misread. This replaces the D3 rewrite of the frozen rows, which is withdrawn.",
+  "rows": {
+    "W5F-F2-001": {
+      "expect_was": "abstain",
+      "now": "deferred_w3b6",
+      "deferred_by": "auditor 2026-10-04 13:30:13 +0900 (F-2 removed; W3-a6 RELATIVE_POSITION, checked in W3-b6)"
+    },
+    "W5F-F2-002": {
+      "expect_was": "abstain",
+      "now": "deferred_w3b6",
+      "deferred_by": "auditor 2026-10-04 13:30:13 +0900 (F-2 removed; W3-a6 RELATIVE_POSITION, checked in W3-b6)"
+    },
+    "W5F-F2-003": {
+      "expect_was": "abstain",
+      "now": "deferred_w3b6",
+      "deferred_by": "auditor 2026-10-04 13:30:13 +0900 (F-2 removed; W3-a6 RELATIVE_POSITION, checked in W3-b6)"
+    },
+    "W5F-F2-004": {
+      "expect_was": "abstain",
+      "now": "deferred_w3b6",
+      "deferred_by": "auditor 2026-10-04 13:30:13 +0900 (F-2 removed; W3-a6 RELATIVE_POSITION, checked in W3-b6)"
+    },
+    "W5F-F2-005": {
+      "expect_was": "abstain",
+      "now": "deferred_w3b6",
+      "deferred_by": "auditor 2026-10-04 13:30:13 +0900 (F-2 removed; W3-a6 RELATIVE_POSITION, checked in W3-b6)"
+    },
+    "W5F-F2-006": {
+      "expect_was": "abstain",
+      "now": "deferred_w3b6",
+      "deferred_by": "auditor 2026-10-04 13:30:13 +0900 (F-2 removed; W3-a6 RELATIVE_POSITION, checked in W3-b6)"
+    },
+    "W5F-F2-007": {
+      "expect_was": "abstain",
+      "now": "deferred_w3b6",
+      "deferred_by": "auditor 2026-10-04 13:30:13 +0900 (F-2 removed; W3-a6 RELATIVE_POSITION, checked in W3-b6)"
+    },
+    "W5F-F2-008": {
+      "expect_was": "abstain",
+      "now": "deferred_w3b6",
+      "deferred_by": "auditor 2026-10-04 13:30:13 +0900 (F-2 removed; W3-a6 RELATIVE_POSITION, checked in W3-b6)"
+    },
+    "W5F-F2-009": {
+      "expect_was": "abstain",
+      "now": "deferred_w3b6",
+      "deferred_by": "auditor 2026-10-04 13:30:13 +0900 (F-2 removed; W3-a6 RELATIVE_POSITION, checked in W3-b6)"
+    },
+    "W5F-F2-010": {
+      "expect_was": "abstain",
+      "now": "deferred_w3b6",
+      "deferred_by": "auditor 2026-10-04 13:30:13 +0900 (F-2 removed; W3-a6 RELATIVE_POSITION, checked in W3-b6)"
+    },
+    "W5F-F2-011": {
+      "expect_was": "abstain",
+      "now": "deferred_w3b6",
+      "deferred_by": "auditor 2026-10-04 13:30:13 +0900 (F-2 removed; W3-a6 RELATIVE_POSITION, checked in W3-b6)"
+    },
+    "W5F-F2-012": {
+      "expect_was": "abstain",
+      "now": "deferred_w3b6",
+      "deferred_by": "auditor 2026-10-04 13:30:13 +0900 (F-2 removed; W3-a6 RELATIVE_POSITION, checked in W3-b6)"
+    },
+    "W5F-F2-013": {
+      "expect_was": "abstain",
+      "now": "deferred_w3b6",
+      "deferred_by": "auditor 2026-10-04 13:30:13 +0900 (F-2 removed; W3-a6 RELATIVE_POSITION, checked in W3-b6)"
+    },
+    "W5F-F2-014": {
+      "expect_was": "abstain",
+      "now": "deferred_w3b6",
+      "deferred_by": "auditor 2026-10-04 13:30:13 +0900 (F-2 removed; W3-a6 RELATIVE_POSITION, checked in W3-b6)"
+    },
+    "W5F-F2-015": {
+      "expect_was": "abstain",
+      "now": "deferred_w3b6",
+      "deferred_by": "auditor 2026-10-04 13:30:13 +0900 (F-2 removed; W3-a6 RELATIVE_POSITION, checked in W3-b6)"
+    },
+    "W5F-F2-016": {
+      "expect_was": "abstain",
+      "now": "deferred_w3b6",
+      "deferred_by": "auditor 2026-10-04 13:30:13 +0900 (F-2 removed; W3-a6 RELATIVE_POSITION, checked in W3-b6)"
+    },
+    "W5F-F2-017": {
+      "expect_was": "abstain",
+      "now": "deferred_w3b6",
+      "deferred_by": "auditor 2026-10-04 13:30:13 +0900 (F-2 removed; W3-a6 RELATIVE_POSITION, checked in W3-b6)"
+    },
+    "W5F-F2-018": {
+      "expect_was": "abstain",
+      "now": "deferred_w3b6",
+      "deferred_by": "auditor 2026-10-04 13:30:13 +0900 (F-2 removed; W3-a6 RELATIVE_POSITION, checked in W3-b6)"
+    }
+  }
+}

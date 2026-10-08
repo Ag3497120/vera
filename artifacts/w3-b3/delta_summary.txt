@@ -1,0 +1,3 @@
+inputs=3386 same=3344 newly_read=42 read_to_abstain=0 changed=0 refusal_changed=0 error_changed=0
+verdicts: {"CORRECT": 42}
+by source and kind: {"w3b3_connective.jsonl|newly_read": 29, "w3b3_relative.jsonl|newly_read": 13}

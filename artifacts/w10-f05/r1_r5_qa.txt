@@ -1,0 +1,7 @@
+{"file": "artifacts/w10-f05/r5_qa_none.jsonl", "questions": 30, "correct": 8, "wrong": 0, "abstained": 22, "answerable": {"correct": 8, "wrong": 0, "abstained": 12}, "unanswerable": {"correct": 0, "wrong": 0, "abstained": 10}, "verdicts": {"ANSWER": 8, "UNKNOWN_NO_EVIDENCE": 10, "UNKNOWN_UNREAD": 1, "UNKNOWN_UNSUPPORTED_EVIDENCE": 11}, "wrong_items": [], "to_check": []}
+{"file": "artifacts/w10-f05/r5_qa_bicycle-fake.jsonl", "questions": 30, "correct": 8, "wrong": 0, "abstained": 22, "answerable": {"correct": 8, "wrong": 0, "abstained": 12}, "unanswerable": {"correct": 0, "wrong": 0, "abstained": 10}, "verdicts": {"ANSWER": 8, "UNKNOWN_NO_EVIDENCE": 10, "UNKNOWN_UNREAD": 1, "UNKNOWN_UNSUPPORTED_EVIDENCE": 11}, "wrong_items": [], "to_check": []}
+{"file": "artifacts/w10-f05/r5_qa_bicycle-real.jsonl", "questions": 30, "correct": 8, "wrong": 0, "abstained": 22, "answerable": {"correct": 8, "wrong": 0, "abstained": 12}, "unanswerable": {"correct": 0, "wrong": 0, "abstained": 10}, "verdicts": {"ANSWER": 8, "UNKNOWN_NO_EVIDENCE": 10, "UNKNOWN_UNREAD": 1, "UNKNOWN_UNSUPPORTED_EVIDENCE": 11}, "wrong_items": [], "to_check": []}
+SUMMARY (questions 30)
+artifacts/w10-f05/r5_qa_none.jsonl: correct 8 wrong 0 abstained 22 | gained vs first [] lost []
+artifacts/w10-f05/r5_qa_bicycle-fake.jsonl: correct 8 wrong 0 abstained 22 | gained vs first [] lost []
+artifacts/w10-f05/r5_qa_bicycle-real.jsonl: correct 8 wrong 0 abstained 22 | gained vs first [] lost []

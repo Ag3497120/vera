@@ -1,0 +1,92 @@
+{
+ "de_cause": {
+  "abstain": 30,
+  "read": 0,
+  "reasons_of_the_refused_rows": {
+   "PLACEMENT_PARTICLE_NOT_IN_FRAME": 30
+  },
+  "rows": 30
+ },
+ "de_instrument": {
+  "abstain": 33,
+  "read": 0,
+  "reasons_of_the_refused_rows": {
+   "PLACEMENT_PARTICLE_NOT_IN_FRAME": 33
+  },
+  "rows": 33
+ },
+ "de_place": {
+  "abstain": 164,
+  "read": 6,
+  "reasons_of_the_refused_rows": {
+   "PLACEMENT_ESTIMATED_GENERATED": 7,
+   "PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED": 4,
+   "PLACEMENT_PARTICLE_NOT_IN_FRAME": 147,
+   "PLACEMENT_VOICE_NOT_ACTIVE": 3,
+   "PLACEMENT_W3B2_NOT_TRIGGERED": 3
+  },
+  "rows": 170
+ },
+ "mechanism": {
+  "abstain": 32,
+  "read": 0,
+  "reasons_of_the_refused_rows": {
+   "PLACEMENT_PARTICLE_NOT_IN_FRAME": 32
+  },
+  "rows": 32
+ },
+ "ni_goal": {
+  "abstain": 109,
+  "read": 0,
+  "reasons_of_the_refused_rows": {
+   "PLACEMENT_ESTIMATED_GENERATED": 3,
+   "PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED": 6,
+   "PLACEMENT_MULTIPLE": 2,
+   "PLACEMENT_PARTICLE_NOT_IN_FRAME": 26,
+   "PLACEMENT_SLOT_EVIDENCE_ONLY": 18,
+   "PLACEMENT_TYPE_MISMATCH": 52,
+   "PLACEMENT_UNKNOWN": 1,
+   "PLACEMENT_UNPLACED": 1
+  },
+  "rows": 109
+ },
+ "ni_other": {
+  "abstain": 38,
+  "read": 0,
+  "reasons_of_the_refused_rows": {
+   "PLACEMENT_PARTICLE_NOT_IN_FRAME": 38
+  },
+  "rows": 38
+ },
+ "ni_purpose": {
+  "abstain": 45,
+  "read": 0,
+  "reasons_of_the_refused_rows": {
+   "PLACEMENT_FRAME_NOT_READ": 5,
+   "PLACEMENT_SLOT_EVIDENCE_ONLY": 7,
+   "PLACEMENT_TYPE_MISMATCH": 33
+  },
+  "rows": 45
+ },
+ "ni_recipient": {
+  "abstain": 118,
+  "read": 0,
+  "reasons_of_the_refused_rows": {
+   "PLACEMENT_ESTIMATED_GENERATED": 3,
+   "PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED": 8,
+   "PLACEMENT_MULTIPLE": 10,
+   "PLACEMENT_SLOT_EVIDENCE_ONLY": 56,
+   "PLACEMENT_TYPE_MISMATCH": 40,
+   "PLACEMENT_UNPLACED": 1
+  },
+  "rows": 118
+ },
+ "ni_time": {
+  "abstain": 74,
+  "read": 0,
+  "reasons_of_the_refused_rows": {
+   "PLACEMENT_PARTICLE_NOT_IN_FRAME": 74
+  },
+  "rows": 74
+ }
+}

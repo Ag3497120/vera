@@ -1,0 +1,6 @@
+d6050258d452715c837a5eb12594b46ef6ae57bb3bc4bde637b85886035dcf96  -
+tests/reading_soundness/ja_r12.jsonl: OK
+/Users/motonisihikoudai/Projects/vera-impl/wt/W1-a5-S/artifacts/w1-a5/r2/k218_withdrawn_rows.json: OK
+tests/test_semantic_read_w1a5.py: OK
+     165 tests/reading_soundness/ja_r12.jsonl
+2026-10-04 07:03:22 +0900

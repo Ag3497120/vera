@@ -1,0 +1,10 @@
+run/fullwidth: OK (台帳 1400 バイト)
+posttooluse/fullwidth rc=0: OK (台帳 613 バイト)
+userprompt/fullwidth rc=0: OK (台帳 420 バイト)
+run/percent: OK (台帳 1399 バイト)
+posttooluse/percent rc=0: OK (台帳 612 バイト)
+userprompt/percent rc=0: OK (台帳 419 バイト)
+run/base64: OK (台帳 1399 バイト)
+posttooluse/base64 rc=0: OK (台帳 612 バイト)
+userprompt/base64 rc=0: OK (台帳 419 バイト)
+BAD 0

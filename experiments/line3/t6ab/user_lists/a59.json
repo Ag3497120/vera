@@ -1,0 +1,65 @@
+{
+ "question": "彫師とは何ですか",
+ "entries": [
+  {
+   "index": 0,
+   "words": [
+    "こす",
+    "のこと",
+    "起"
+   ],
+   "arrangements": 1,
+   "sentence": "彫師ほりし浮世絵版画板木起こす職人のこと"
+  },
+  {
+   "index": 1,
+   "words": [
+    "のこと",
+    "ほりし",
+    "起"
+   ],
+   "arrangements": 1,
+   "sentence": "彫師ほりし浮世絵版画板木起こす職人のこと"
+  },
+  {
+   "index": 2,
+   "words": [
+    "のこと",
+    "彫師",
+    "起"
+   ],
+   "arrangements": 1,
+   "sentence": "彫師ほりし浮世絵版画板木起こす職人のこと"
+  },
+  {
+   "index": 3,
+   "words": [
+    "のこと",
+    "板木",
+    "起"
+   ],
+   "arrangements": 1,
+   "sentence": "彫師ほりし浮世絵版画板木起こす職人のこと"
+  },
+  {
+   "index": 4,
+   "words": [
+    "のこと",
+    "浮世絵版画",
+    "起"
+   ],
+   "arrangements": 1,
+   "sentence": "彫師ほりし浮世絵版画板木起こす職人のこと"
+  },
+  {
+   "index": 5,
+   "words": [
+    "のこと",
+    "職人",
+    "起"
+   ],
+   "arrangements": 1,
+   "sentence": "彫師ほりし浮世絵版画板木起こす職人のこと"
+  }
+ ]
+}

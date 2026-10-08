@@ -1,0 +1,356 @@
+tree=/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/W1-a2-impl3/dev191
+revision=not a git tree (archive of 075d486 expected for DEVTREE)
+foreign_modules=[]
+type    n    正読    誤読    未対応    棄権正    正読&検査PASS     検査誤通過     半数以上正読
+E0      8     8     0      0      0            0         0       True
+E1      8     3     5      0      0            0         0      False
+E2      9     0     9      0      0            0         0      False
+E3      8     0     8      0      0            0         0      False
+E4      8     0     8      0      0            0         0      False
+E5      8     0     8      0      0            0         0      False
+E6      8     0     8      0      0            0         0      False
+F0      6     6     0      0      0            0         0       True
+F1      5     0     5      0      0            0         0      False
+F2      5     0     5      0      0            0         0      False
+F3      5     0     5      0      0            0         0      False
+F4      5     0     5      0      0            0         0      False
+F5      6     0     6      0      0            0         0      False
+F6      6     0     6      0      0            0         0      False
+J1     17     0    16      1      0            0        15      False
+J2     18    17     1      0      0           17         1       True
+J3     15     1     8      6      2            1         9      False
+J4     15     4    11      0      0            4        11      False
+J5     17     1    14      2      0            0        14      False
+J6     16    10     5      1      0           10         5       True
+J7     16     0    16      0      0            0        16      False
+J8     17    14     3      0      0           14         0       True
+J9     18    16     2      0      0            0         2       True
+K1     10     0     3      7      0            0         2      False
+K2      7     0     2      5      0            0         2      False
+K3      8     0     8      0      0            0         7      False
+K4      6     0     1      5      0            0         1      False
+K5      5     0     5      0      0            0         5      False
+K6      7     6     1      0      0            0         1       True
+L1     14     7     7      0      0            7         7       True
+L2     12     8     4      0      0            8         4       True
+L3      6     1     5      0      0            0         5      False
+N1     14     0    14      0      0            0        14      False
+N1c     6     6     0      0      0            6         0       True
+N2     12    12     0      0      0           12         0       True
+N2c     6     0     6      0      0            0         6      False
+N3     12     0    11      1      1            0        11      False
+N3c     4     0     4      0      0            0         4      False
+N4     14     0    11      3      3            0        10      False
+R1     14     0    14      0      0            0        14      False
+R1c     4     3     1      0      0            3         1       True
+R2     12    11     1      0      0           11         0       True
+R2c     5     0     5      0      0            0         5      False
+R3     12    12     0      0      0           12         0       True
+R3c     4     0     4      0      0            0         4      False
+R4     12     0    11      1      1            0        10      False
+R4c     5     5     0      0      0            5         0       True
+S1     16    16     0      0      0           16         0       True
+S1c     5     0     5      0      0            0         4      False
+S4     13     0    13      0      0            0        13      False
+S4c     4     4     0      0      0            4         0       True
+T7      7     0     7      0      0            0         6      False
+TOTAL misread=297 false_pass=209
+ESCALATED(known exception, listed by id: []) misread=0 false_pass=0
+UNESCALATED misread=297 false_pass=209
+MISREAD T7-01 2025年3月5日に東京で会議が開かれた。
+MISREAD T7-02 今朝、妹が駅で傘を買った。
+MISREAD T7-03 APIサーバーがリクエストをJSONに変換した。
+MISREAD T7-04 このモデルは前のモデルより速い。
+MISREAD T7-05 先生が生徒に作文を書かせた。
+MISREAD T7-06 彼は報告書を送らないわけではない。
+MISREAD T7-07 ありがとう。
+MISREAD J1-01 1998年4月に新しい図書館が建てられた。
+MISREAD J1-02 3時に会議室で書類が配られた。
+MISREAD J1-03 昭和30年に市役所が建設された。
+MISREAD J1-04 2019年10月に制度が改正された。
+MISREAD J1-05 8時に工場で試験が行われた。
+MISREAD J1-06 9時に授業が始まった。
+MISREAD J1-07 7時に姉が駅で友人を迎えた。
+MISREAD J1-08 10時に店長が店で看板を外した。
+MISREAD J1-09 2020年3月に兄が大学を卒業した。
+MISREAD J1-10 1990年に祖父が会社を設立した。
+MISREAD J1-11 8時に先輩が教室で資料を配った。
+MISREAD J1-12 駅前に新しい支店が置かれた。
+MISREAD J1-13 市内に大きな橋が造られた。
+MISREAD J1-14 公園の隅に小さな碑が建てられた。
+MISREAD J1-15 戦後は人口が増えた。
+MISREAD J1-17 戦後は若者が都会へ移った。
+MISREAD J2-16 私は友人に財布を盗まれた。
+MISREAD J3-01 先月、兄が会社で書類を作った。
+MISREAD J3-03 夕方、弟が公園で犬を見た。
+MISREAD J3-04 毎朝、父が庭で花を育てている。
+MISREAD J3-06 来週、先生が教室で試験を行う。
+MISREAD J3-10 先月兄が書類を提出した。
+MISREAD J3-11 昨年姉が学校で賞を取った。
+MISREAD J3-12 先週弟が会社で書類を作った。
+MISREAD J3-14 急いで、兄が駅で切符を買った。
+MISREAD J4-01 技術者がデータを表に整理した。
+MISREAD J4-02 学生が英文を日本語に訳した。
+MISREAD J4-03 職人が木を板に加工した。
+MISREAD J4-04 係員が列を二つに分けた。
+MISREAD J4-05 母が野菜をスープに変えた。
+MISREAD J4-06 先生が文章を短い要約にまとめた。
+MISREAD J4-07 担当者が書類を電子データに変換した。
+MISREAD J4-08 通訳が発言を英語に翻訳した。
+MISREAD J4-09 技師が設計図を模型に起こした。
+MISREAD J4-10 彼女が毛糸をマフラーに編み上げた。
+MISREAD J4-11 工場が鉄を部品に仕上げた。
+MISREAD J5-01 新しい橋は古い橋より長い。
+MISREAD J5-02 北の部屋は南の部屋より広い。
+MISREAD J5-03 この荷物はあの荷物より重い。
+MISREAD J5-04 兄の車は弟の車より速い。
+MISREAD J5-05 今回の試験は前回の試験より難しい。
+MISREAD J5-06 新型機は旧型機より軽い。
+MISREAD J5-07 この道はあの道より狭い。
+MISREAD J5-08 夏の気温は冬の気温より高い。
+MISREAD J5-09 姉は妹より背が高い。
+MISREAD J5-10 この町はあの町より人口が多い。
+MISREAD J5-11 東の池は西の池より水が少ない。
+MISREAD J5-12 電車より飛行機のほうが速い。
+MISREAD J5-13 弟より兄のほうが背が高い。
+MISREAD J5-14 犬より象のほうが大きい。
+MISREAD J6-01 この建物は市の図書館だ。
+MISREAD J6-02 その人は有名な医者です。
+MISREAD J6-03 あの山は富士山である。
+MISREAD J6-04 その箱は重い。
+MISREAD J6-05 あの部屋は広い。
+MISREAD J7-01 店長が店員に商品を並べさせた。
+MISREAD J7-02 先生が学生に論文を読ませた。
+MISREAD J7-03 社長が部下に資料を作らせた。
+MISREAD J7-04 兄が弟に荷物を運ばせた。
+MISREAD J7-05 母が娘に皿を洗わせた。
+MISREAD J7-06 隊長が兵士に水を汲ませた。
+MISREAD J7-07 親が子供に手紙を書かせた。
+MISREAD J7-08 先生が生徒を教室に戻らせた。
+MISREAD J7-09 母が子供を庭に走らせた。
+MISREAD J7-10 隊長が兵士を村へ向かわせた。
+MISREAD J7-11 店主が店員を駅へ行かせた。
+MISREAD J7-12 母が子供に野菜を食べさせた。
+MISREAD J7-13 姉が妹に服を着させた。
+MISREAD J7-14 教師が生徒に映画を見させた。
+MISREAD J7-15 親が子供に薬を飲ませた。
+MISREAD J7-16 祖母が孫に歌を歌わせた。
+MISREAD J8-15 兄は肉を食べなかったわけではない。
+MISREAD J8-16 母は手紙を書かなかったわけじゃない。
+MISREAD J8-17 先生は答えを教えなかったわけではない。
+MISREAD J9-03 ありがとうございます。
+MISREAD J9-06 すみません。
+MISREAD K1-05 2020年代に技術者が新工法を確立した。
+MISREAD K1-09 昼過ぎに配達員が荷物を届けた。
+MISREAD K1-10 数日後に結果が公表された。
+MISREAD K2-01 結局、祖父が駅で切符を買った。
+MISREAD K2-02 実際、先生が教室で実験を見せた。
+MISREAD K3-01 窓辺に鉢植えが並べられた。
+MISREAD K3-02 校門の脇に掲示板が設置された。
+MISREAD K3-03 玄関先に傘立てが置かれた。
+MISREAD K3-04 屋根裏に古い箱が仕舞われた。
+MISREAD K3-05 駐車場の隅に自転車が停められた。
+MISREAD K3-06 中庭に噴水が造られた。
+MISREAD K3-07 棚の上に時計が飾られた。
+MISREAD K3-08 渓谷の入口に小さな祠が建てられた。
+MISREAD K4-06 委員会が開票を3日に前倒しした。
+MISREAD K5-01 弟が壁を灰色に塗った。
+MISREAD K5-02 職人が柱を黒に塗った。
+MISREAD K5-03 祖母が襖を白に張り替えた。
+MISREAD K5-04 姉が爪を桃色に塗り直した。
+MISREAD K5-05 店主が看板を緑に塗った。
+MISREAD K6-03 お世話になりました。
+MISREAD L1-01 境内に石碑が建てられた。
+MISREAD L1-02 礼拝堂に十字架が掲げられた。
+MISREAD L1-03 下部に補強材が取り付けられた。
+MISREAD L1-04 展示会場に案内板が設置された。
+MISREAD L1-05 内部に配線が通された。
+MISREAD L1-06 町内会館に掲示板が設置された。
+MISREAD L1-07 校舎裏に倉庫が建てられた。
+MISREAD L2-09 市長が弁護士を顧問に任命した。
+MISREAD L2-10 委員会が会員を代表に選出した。
+MISREAD L2-11 王が騎士を隊長に抜擢した。
+MISREAD L2-12 工場長が職人を班長に登用した。
+MISREAD L3-01 このノートは姉のより重い。
+MISREAD L3-02 弟の自転車は私のより速い。
+MISREAD L3-03 北側の部屋は南側のより狭い。
+MISREAD L3-05 この川は隣町のより長い。
+MISREAD L3-06 犬の耳は猫のより長い。
+MISREAD N1-01 山手に公園が造られた。
+MISREAD N1-02 切手に消印が押された。
+MISREAD N1-03 借家に表札が掛けられた。
+MISREAD N1-04 生家に記念碑が建てられた。
+MISREAD N1-05 町家に格子が取り付けられた。
+MISREAD N1-06 波長に補正が加えられた。
+MISREAD N1-07 感官に刺激が加えられた。
+MISREAD N1-08 定員に上限が設けられた。
+MISREAD N1-09 衛生に注意が向けられた。
+MISREAD N1-10 港の山手に灯台が建てられた。
+MISREAD N1-11 古い借家に新しい門が取り付けられた。
+MISREAD N1-12 生家に石畳が敷かれた。
+MISREAD N1-13 町家に看板が掲げられた。
+MISREAD N1-14 山手に石畳が敷かれた。
+MISREAD N2c-01 係が写真を四つの山にまとめた。
+MISREAD N2c-02 職人が糸を藍色に染めた。
+MISREAD N2c-03 理容師が髪を銀色に染めた。
+MISREAD N2c-04 校正者が原稿を三段落にまとめた。
+MISREAD N2c-05 編集部が論文を改訂版にまとめた。
+MISREAD N2c-06 筆者が草稿を英語版に直した。
+MISREAD N3-01 同窓会に幹事が選ばれた。
+MISREAD N3-02 自治体に担当者が指名された。
+MISREAD N3-03 商店街に新しい代表が選出された。
+MISREAD N3-04 実行委員会に議長が指名された。
+MISREAD N3-05 保護者会に書記が選ばれた。
+MISREAD N3-06 研究室に連絡係が指名された。
+MISREAD N3-07 港町に新しい市長が選ばれた。
+MISREAD N3-08 音楽祭に審査員が選出された。
+MISREAD N3-09 管弦楽団に指揮者が任命された。
+MISREAD N3-10 農協に理事が選任された。
+MISREAD N3-11 学会に座長が指名された。
+MISREAD N3c-01 鈴木さんが店長に選ばれた。
+MISREAD N3c-02 野村さんが監督に任命された。
+MISREAD N3c-03 青木さんが課長に指名された。
+MISREAD N3c-04 吉田さんが校長に選出された。
+MISREAD N4-01 この商店街は去年ほど静かではない。
+MISREAD N4-02 この道は旧道ほど安全ではない。
+MISREAD N4-03 弟は兄ほど几帳面ではない。
+MISREAD N4-04 この部屋は隣の部屋ほど快適ではない。
+MISREAD N4-05 この店は本店ほど有名ではない。
+MISREAD N4-07 彼女は姉ほど社交的ではない。
+MISREAD N4-08 この橋は隣町のほど丈夫ではない。
+MISREAD N4-09 この料理は母のほど上品ではない。
+MISREAD N4-10 この湖は海くらい穏やかだ。
+MISREAD N4-12 この街は都心くらい華やかだ。
+MISREAD N4-13 この店は隣の店ぐらい親切ではない。
+MISREAD R1-01 ドラムに皮が張られた。
+MISREAD R1-02 バイオリンに弦が付けられた。
+MISREAD R1-03 テレビに保護シートが貼られた。
+MISREAD R1-04 ラジオに印が付けられた。
+MISREAD R1-05 コンピュータに装置が取り付けられた。
+MISREAD R1-06 ソファに布が掛けられた。
+MISREAD R1-07 ベッドにシーツが敷かれた。
+MISREAD R1-08 ストーブに薪が入れられた。
+MISREAD R1-09 プリンタに用紙が差し込まれた。
+MISREAD R1-10 マイクに布が巻かれた。
+MISREAD R1-11 フルートに飾りが付けられた。
+MISREAD R1-12 エアコンにフィルターが取り付けられた。
+MISREAD R1-13 トランペットに黒い布が掛けられた。
+MISREAD R1-14 クラリネットに印が刻まれた。
+MISREAD R1c-04 隣人に犬が可愛がられた。
+MISREAD R2-05 兄が文章を若旦那に訳した。
+MISREAD R2c-01 兄が文章を英語に訳した。
+MISREAD R2c-02 班長が名簿を三つの班に分類した。
+MISREAD R2c-03 教師が本文を方言に書き換えた。
+MISREAD R2c-04 係員が荷物を箱に分けた。
+MISREAD R2c-05 職員が資料を一覧に整理した。
+MISREAD R3c-01 畑から芋が掘り出された。
+MISREAD R3c-02 川から砂が運ばれた。
+MISREAD R3c-03 庭から古い壺が掘り出された。
+MISREAD R3c-04 広島から荷物が送られた。
+MISREAD R4-01 母は釣りに行った。
+MISREAD R4-02 弟は見学に来た。
+MISREAD R4-03 叔父は荷造りに戻った。
+MISREAD R4-04 姉は練習に向かった。
+MISREAD R4-05 兄は食事に出た。
+MISREAD R4-06 妹は勉強に行った。
+MISREAD R4-07 父は見回りに出た。
+MISREAD R4-08 先生は準備に戻った。
+MISREAD R4-09 彼は観光に来た。
+MISREAD R4-11 後輩は取材に向かった。
+MISREAD R4-12 祖母は昼寝に入った。
+MISREAD S1c-01 姉は弁護士になった。
+MISREAD S1c-02 兄は教員に変わった。
+MISREAD S1c-03 友人は医師になった。
+MISREAD S1c-04 彼は市長になった。
+MISREAD S1c-05 弟は技術者に成長した。
+MISREAD S4-01 絵が伊藤家に飾られた。
+MISREAD S4-02 提灯が小林家に吊るされた。
+MISREAD S4-03 荷物が加藤家に置かれた。
+MISREAD S4-04 家宝が吉田家に保管された。
+MISREAD S4-05 標識が山本家に立てられた。
+MISREAD S4-06 皿が松本家に並べられた。
+MISREAD S4-07 掛け軸が井上家に収められた。
+MISREAD S4-08 若木が木村家に植えられた。
+MISREAD S4-09 旗が清水家に掲げられた。
+MISREAD S4-10 壺が斎藤家に据えられた。
+MISREAD S4-11 衝立が森家に置かれた。
+MISREAD S4-12 鉢植えが石川家に並べられた。
+MISREAD S4-13 表彰状が橋本家に飾られた。
+MISREAD E1-04 Nobody approved the budget.
+MISREAD E1-05 No clerk sent the invoice to Mia.
+MISREAD E1-06 The auditor found nothing in the report.
+MISREAD E1-07 The intern never read the manual.
+MISREAD E1-08 None of the servers accepted the update.
+MISREAD E2-01 Every engineer updated the server.
+MISREAD E2-02 Each clerk sent an invoice to Mia.
+MISREAD E2-03 All students passed the exam.
+MISREAD E2-04 Some engineers did not update the server.
+MISREAD E2-05 Most customers approved the plan.
+MISREAD E2-06 Exactly two teams submitted the report.
+MISREAD E2-07 At least three nurses signed the form.
+MISREAD E2-08 No clerk signed every form.
+MISREAD E2-09 Not every clerk sent the invoice.
+MISREAD E3-01 The report that the intern wrote was long.
+MISREAD E3-02 The engineer who updated the server left.
+MISREAD E3-03 The invoice which Mia sent was late.
+MISREAD E3-04 The clerk whom Ken praised signed the form.
+MISREAD E3-05 The manager who approved the budget resigned.
+MISREAD E3-06 The server that the engineer updated crashed.
+MISREAD E3-07 A student who read the manual passed the exam.
+MISREAD E3-08 The package that Nora sent to Paul arrived.
+MISREAD E4-01 The manager made the intern rewrite the report.
+MISREAD E4-02 The teacher let the students leave early.
+MISREAD E4-03 The director had the clerk sign the form.
+MISREAD E4-04 She got the engineer to fix the server.
+MISREAD E4-05 The coach made the players run.
+MISREAD E4-06 Mom let the children play outside.
+MISREAD E4-07 He had his assistant book the flights.
+MISREAD E4-08 The doctor got the patient to rest.
+MISREAD E5-01 The new model is faster than the old model.
+MISREAD E5-02 Anna is taller than Ben.
+MISREAD E5-03 This server is as fast as that server.
+MISREAD E5-04 The red box is the heaviest box.
+MISREAD E5-05 Tokyo is larger than Osaka.
+MISREAD E5-06 Ken types more quickly than Lisa.
+MISREAD E5-07 The north room is less crowded than the south room.
+MISREAD E5-08 This route is the shortest route.
+MISREAD E6-01 Although the engineer updated the server, the site crashed.
+MISREAD E6-02 The clerk sent the invoice because Mia asked.
+MISREAD E6-03 When the manager approved the budget, the team cheered.
+MISREAD E6-04 If the intern writes the report, Ken will sign it.
+MISREAD E6-05 The clerk waited while Mia signed the form.
+MISREAD E6-06 After the engineer updated the server, the site recovered.
+MISREAD E6-07 Ken left unless Mia called.
+MISREAD E6-08 The team cheered after the manager approved the budget.
+MISREAD F1-01 The letter Mia wrote arrived late.
+MISREAD F1-02 Ken liked the report Lisa drafted.
+MISREAD F1-03 The tool the team built saved hours.
+MISREAD F1-04 Paul fixed the bug the tester found.
+MISREAD F1-05 Mia answered the call Ken missed.
+MISREAD F2-01 Ken signed the contract drafted by Lisa.
+MISREAD F2-02 The files stored on the server were deleted.
+MISREAD F2-03 Mia read the email sent by the client.
+MISREAD F2-04 The package delivered yesterday was damaged.
+MISREAD F2-05 Paul opened the window broken by the storm.
+MISREAD F3-01 Ken said Lisa signed the form.
+MISREAD F3-02 Mia believes the server is down.
+MISREAD F3-03 Paul knew the report was late.
+MISREAD F3-04 The clerk noticed the invoice was missing.
+MISREAD F3-05 Lisa hopes Ken sends the file.
+MISREAD F4-01 Ken called as Lisa left.
+MISREAD F4-02 The team left so that the room could be cleaned.
+MISREAD F4-03 Mia signed as soon as the invoice came.
+MISREAD F4-04 Paul waited since Lisa was late.
+MISREAD F4-05 Ken stayed provided that Lisa came.
+MISREAD F5-01 Three engineers fixed the bug.
+MISREAD F5-02 Only Lisa approved the plan.
+MISREAD F5-03 Even Ken signed the form.
+MISREAD F5-04 Two clerks sent the invoice.
+MISREAD F5-05 Just Paul answered the call.
+MISREAD F5-06 Nearly fifty guests joined the party.
+MISREAD F6-01 Ken kept the server running.
+MISREAD F6-02 Mia heard the alarm ringing.
+MISREAD F6-03 Paul watched the crowd gathering.
+MISREAD F6-04 Lisa saw Ken leaving the office.
+MISREAD F6-05 Ken felt the ground shake.
+MISREAD F6-06 Mia left the door unlocked.

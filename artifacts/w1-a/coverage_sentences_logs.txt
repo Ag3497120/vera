@@ -1,0 +1,6 @@
+tree=/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/dev
+documents=1500 supported_sentences=1365
+matches /Users/motonisihikoudai/Projects/vera-impl/wt/W1-a-S/artifacts/w1-a/coverage_before.json: 1365
+tree=/Users/motonisihikoudai/Projects/vera-impl/wt/W1-a-S
+documents=1500 supported_sentences=1355
+matches artifacts/w1-a/coverage_after.json: 1355

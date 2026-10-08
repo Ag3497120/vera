@@ -1,0 +1,26 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 14 items / 13 deselected / 1 selected
+
+tests/attack/test_memory_brief_fabrication.py::test_superseded_record_is_not_rendered_or_counted_as_active_input FAILED [100%]
+
+=== FAILURES ===
+______ test_superseded_record_is_not_rendered_or_counted_as_active_input _______
+
+    def test_superseded_record_is_not_rendered_or_counted_as_active_input():
+        old = _fact("old", "Aya", "city", "Aya lives in Osaka.", "2025-01-01")
+        current = _fact("current", "Aya", "city", "Aya lives in Kobe.", "2026-01-01")
+        memory = _TypedMemory([old, current], superseded={"old": "current"})
+    
+>       assert _brief(memory) == "[id:current] Aya lives in Kobe."
+E       AssertionError: assert ContextBrief(text='Dropped record ids: current', records=(), dropped_ids=('current',)) == '[id:current] Aya lives in Kobe.'
+E        +  where ContextBrief(text='Dropped record ids: current', records=(), dropped_ids=('current',)) = _brief(<test_memory_brief_fabrication._TypedMemory object at 0x<ADDR>>)
+
+tests/attack/test_memory_brief_fabrication.py:97: AssertionError
+=== short test summary info ===
+FAILED tests/attack/test_memory_brief_fabrication.py::test_superseded_record_is_not_rendered_or_counted_as_active_input - AssertionError: assert ContextBrief(text='Dropped record ids: current', records=(), dropped_ids=('current',)) == '[id:current] Aya lives in Kobe.'
+ +  where ContextBrief(text='Dropped record ids: current', records=(), dropped_ids=('current',)) = _brief(<test_memory_brief_fabrication._TypedMemory object at 0x<ADDR>>)
+=== 1 failed, 13 deselected ===

@@ -1,0 +1,32 @@
+# commit 1b2e7a44d4478b38dee14d006f78d81796a929da
+# status FAIL
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 16 items / 15 deselected / 1 selected
+
+tests/attack/test_semantic_coord_negation_modality.py::test_adjectival_naku_then_te_is_structurally_accepted FAILED [100%]
+
+=== FAILURES ===
+____________ test_adjectival_naku_then_te_is_structurally_accepted _____________
+
+    def test_adjectival_naku_then_te_is_structurally_accepted():
+        sentence = tags(
+            ('金', '名詞', '一般', '*'), ('が', '助詞', '格助詞', '*'),
+            ('なく', '形容詞', '自立', '連用形'), ('て', '助詞', '接続助詞', '*'),
+            ('戻る', '動詞', '自立', '終止形'),
+        )
+    
+>       assert coord.coordination_ok(sentence, [2, 4])
+E       AssertionError: assert False
+E        +  where False = <function coordination_ok at 0x<ADDR>>([('\u91d1', '\u540d\u8a5e', '\u4e00\u822c', '*', 0, 1), ('\u304c', '\u52a9\u8a5e', '\u683c\u52a9\u8a5e', '*', 1, 2), ('\u306a\u304f', '\u5f62\u5bb9\u8a5e', '\u81ea\u7acb', '\u9023\u7528\u5f62', 2, 4), ('\u3066', '\u52a9\u8a5e', '\u63a5\u7d9a\u52a9\u8a5e', '*', 4, 5), ('\u623b\u308b', '\u52d5\u8a5e', '\u81ea\u7acb', '\u7d42\u6b62\u5f62', 5, 7)], [2, 4])
+E        +    where <function coordination_ok at 0x<ADDR>> = coord.coordination_ok
+
+tests/attack/test_semantic_coord_negation_modality.py:33: AssertionError
+=== short test summary info ===
+FAILED tests/attack/test_semantic_coord_negation_modality.py::test_adjectival_naku_then_te_is_structurally_accepted - AssertionError: assert False
+ +  where False = <function coordination_ok at 0x<ADDR>>([('\u91d1', '\u540d\u8a5e', '\u4e00\u822c', '*', 0, 1), ('\u304c', '\u52a9\u8a5e', '\u683c\u52a9\u8a5e', '*', 1, 2), ('\u306a\u304f', '\u5f62\u5bb9\u8a5e', '\u81ea\u7acb', '\u9023\u7528\u5f62', 2, 4), ('\u3066', '\u52a9\u8a5e', '\u63a5\u7d9a\u52a9\u8a5e', '*', 4, 5), ('\u623b\u308b', '\u52d5\u8a5e', '\u81ea\u7acb', '\u7d42\u6b62\u5f62', 5, 7)], [2, 4])
+ +    where <function coordination_ok at 0x<ADDR>> = coord.coordination_ok
+=== 1 failed, 15 deselected ===

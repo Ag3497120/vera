@@ -1,0 +1,190 @@
+.........F.....FFF                                                       [100%]
+=================================== FAILURES ===================================
+_ test_attack_a_document_family_and_nonempty_documents_do_not_prove_the_source_text_is_user_supplied _
+
+    def test_attack_a_document_family_and_nonempty_documents_do_not_prove_the_source_text_is_user_supplied():
+        fabricated = {"family": "document", "source": "fabricated.txt", "text": "渡された文書に無い文。"}
+        out, rc = bp.apply_to_ask(
+            _answer([fabricated]), bp.AskPolicy(), query=QUERY, mode="round5", documents=["memo.txt"],
+        )
+        assert rc == 0
+        if out["basis_policy"]["outcome"] != "ABSTAIN":
+>           pytest.fail(json.dumps({
+                "documents": ["memo.txt"], "source": fabricated,
+                "outcome": out["basis_policy"]["outcome"], "basis": out["basis_policy"]["basis_original"],
+                "actual_verdict": out["verdict"], "actual_text": out["text"],
+            }, ensure_ascii=False, sort_keys=True))
+E           Failed: {"actual_text": "窓が光った。", "actual_verdict": "ANSWER", "basis": "HUMAN", "documents": ["memo.txt"], "outcome": "ANSWER_HUMAN_BASIS", "source": {"family": "document", "source": "fabricated.txt", "text": "渡された文書に無い文。"}}
+
+attacks/W5-c/test_attack_classification_binding.py:66: Failed
+_ test_attack_a_confirmed_sentence_must_equal_the_current_generated_claim[whitespace] _
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1383/test_attack_a_confirmed_senten0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x1288bf5d0>
+confirmed_claim = '窓が光った。', current_claim = '窓が 光った。', variant = 'whitespace'
+
+    @pytest.mark.parametrize("confirmed_claim,current_claim,variant", CASES)
+    def test_attack_a_confirmed_sentence_must_equal_the_current_generated_claim(
+        tmp_path, monkeypatch, confirmed_claim, current_claim, variant
+    ):
+        root = str(tmp_path / "sovereign")
+        assert sov.create(root, "store-a", "owner", consent_promote=True)["verdict"] == "CREATED"
+        monkeypatch.setenv("VERA_SOVEREIGN_ROOT", root)
+        monkeypatch.setenv("VERA_SOVEREIGN_STORE", "store-a")
+    
+        confirmed_source = {**{
+            "family": "local", "source": "local:old:1", "source_file": "old.jsonl", "line": 1,
+            "sha": "old", "origin": "generated",
+        }, "text": confirmed_claim}
+        confirmed_result = {"kind": "answer", "verdict": "ANSWER", "text": confirmed_claim,
+                            "sources": [confirmed_source], "evidence": [confirmed_claim], "door": "attack"}
+        question, question_rc = bp.apply_to_ask(
+            confirmed_result, bp.AskPolicy(human_present=True), query=QUERY, mode="legacy", documents=[],
+        )
+        assert question_rc == 0 and question["verdict"] == "CONFIRM_REQUEST"
+        accepted, accepted_rc = bp.apply_to_ask(
+            confirmed_result, bp.AskPolicy(confirm=(question["confirm"]["id"], "yes")),
+            query=QUERY, mode="legacy", documents=[],
+        )
+        assert accepted_rc == 0 and accepted["verdict"] == "CONFIRMED_HUMAN_RECORD" and accepted["wrote"] == 1
+    
+        generated = {
+            "family": "local", "source": "local:new:1", "source_file": "new.jsonl", "line": 1,
+            "sha": "new", "origin": "generated", "text": current_claim,
+        }
+        result, rc = bp.apply_to_ask(
+            {"kind": "answer", "verdict": "ANSWER", "text": current_claim,
+             "sources": [generated], "evidence": [current_claim], "door": "attack"},
+            bp.AskPolicy(), query=QUERY, mode="legacy", documents=[],
+        )
+    
+        assert rc == 0
+        if result["basis_policy"]["outcome"] != "ABSTAIN":
+>           pytest.fail(json.dumps({
+                "variant": variant,
+                "confirmed_claim": confirmed_claim,
+                "generated_claim": current_claim,
+                "actual_outcome": result["basis_policy"]["outcome"],
+                "actual_verdict": result["verdict"],
+                "actual_text": result["text"],
+                "record_use": result["basis_policy"]["sovereign"],
+            }, ensure_ascii=False, sort_keys=True))
+E           Failed: {"actual_outcome": "ANSWER_HUMAN_BASIS", "actual_text": "窓が光った。", "actual_verdict": "ANSWER", "confirmed_claim": "窓が光った。", "generated_claim": "窓が 光った。", "record_use": {"ambiguous": false, "confirmed_records_not_used": 0, "confirmed_records_used": 1, "records_read": 1, "rejected_by_user": 0, "state": "ACTIVE_CONSENTED", "store_id": "store-a"}, "variant": "whitespace"}
+
+attacks/W5-c/test_attack_confirmation_text_binding.py:63: Failed
+_ test_attack_a_confirmed_sentence_must_equal_the_current_generated_claim[punctuation] _
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1383/test_attack_a_confirmed_senten1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x1288bf990>
+confirmed_claim = '窓が光った。', current_claim = '窓が光った!', variant = 'punctuation'
+
+    @pytest.mark.parametrize("confirmed_claim,current_claim,variant", CASES)
+    def test_attack_a_confirmed_sentence_must_equal_the_current_generated_claim(
+        tmp_path, monkeypatch, confirmed_claim, current_claim, variant
+    ):
+        root = str(tmp_path / "sovereign")
+        assert sov.create(root, "store-a", "owner", consent_promote=True)["verdict"] == "CREATED"
+        monkeypatch.setenv("VERA_SOVEREIGN_ROOT", root)
+        monkeypatch.setenv("VERA_SOVEREIGN_STORE", "store-a")
+    
+        confirmed_source = {**{
+            "family": "local", "source": "local:old:1", "source_file": "old.jsonl", "line": 1,
+            "sha": "old", "origin": "generated",
+        }, "text": confirmed_claim}
+        confirmed_result = {"kind": "answer", "verdict": "ANSWER", "text": confirmed_claim,
+                            "sources": [confirmed_source], "evidence": [confirmed_claim], "door": "attack"}
+        question, question_rc = bp.apply_to_ask(
+            confirmed_result, bp.AskPolicy(human_present=True), query=QUERY, mode="legacy", documents=[],
+        )
+        assert question_rc == 0 and question["verdict"] == "CONFIRM_REQUEST"
+        accepted, accepted_rc = bp.apply_to_ask(
+            confirmed_result, bp.AskPolicy(confirm=(question["confirm"]["id"], "yes")),
+            query=QUERY, mode="legacy", documents=[],
+        )
+        assert accepted_rc == 0 and accepted["verdict"] == "CONFIRMED_HUMAN_RECORD" and accepted["wrote"] == 1
+    
+        generated = {
+            "family": "local", "source": "local:new:1", "source_file": "new.jsonl", "line": 1,
+            "sha": "new", "origin": "generated", "text": current_claim,
+        }
+        result, rc = bp.apply_to_ask(
+            {"kind": "answer", "verdict": "ANSWER", "text": current_claim,
+             "sources": [generated], "evidence": [current_claim], "door": "attack"},
+            bp.AskPolicy(), query=QUERY, mode="legacy", documents=[],
+        )
+    
+        assert rc == 0
+        if result["basis_policy"]["outcome"] != "ABSTAIN":
+>           pytest.fail(json.dumps({
+                "variant": variant,
+                "confirmed_claim": confirmed_claim,
+                "generated_claim": current_claim,
+                "actual_outcome": result["basis_policy"]["outcome"],
+                "actual_verdict": result["verdict"],
+                "actual_text": result["text"],
+                "record_use": result["basis_policy"]["sovereign"],
+            }, ensure_ascii=False, sort_keys=True))
+E           Failed: {"actual_outcome": "ANSWER_HUMAN_BASIS", "actual_text": "窓が光った。", "actual_verdict": "ANSWER", "confirmed_claim": "窓が光った。", "generated_claim": "窓が光った!", "record_use": {"ambiguous": false, "confirmed_records_not_used": 0, "confirmed_records_used": 1, "records_read": 1, "rejected_by_user": 0, "state": "ACTIVE_CONSENTED", "store_id": "store-a"}, "variant": "punctuation"}
+
+attacks/W5-c/test_attack_confirmation_text_binding.py:63: Failed
+_ test_attack_a_confirmed_sentence_must_equal_the_current_generated_claim[nfkc] _
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1383/test_attack_a_confirmed_senten2')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x12886b0d0>
+confirmed_claim = 'コードはＡＢＣです。', current_claim = 'コードはABCです。', variant = 'NFKC'
+
+    @pytest.mark.parametrize("confirmed_claim,current_claim,variant", CASES)
+    def test_attack_a_confirmed_sentence_must_equal_the_current_generated_claim(
+        tmp_path, monkeypatch, confirmed_claim, current_claim, variant
+    ):
+        root = str(tmp_path / "sovereign")
+        assert sov.create(root, "store-a", "owner", consent_promote=True)["verdict"] == "CREATED"
+        monkeypatch.setenv("VERA_SOVEREIGN_ROOT", root)
+        monkeypatch.setenv("VERA_SOVEREIGN_STORE", "store-a")
+    
+        confirmed_source = {**{
+            "family": "local", "source": "local:old:1", "source_file": "old.jsonl", "line": 1,
+            "sha": "old", "origin": "generated",
+        }, "text": confirmed_claim}
+        confirmed_result = {"kind": "answer", "verdict": "ANSWER", "text": confirmed_claim,
+                            "sources": [confirmed_source], "evidence": [confirmed_claim], "door": "attack"}
+        question, question_rc = bp.apply_to_ask(
+            confirmed_result, bp.AskPolicy(human_present=True), query=QUERY, mode="legacy", documents=[],
+        )
+        assert question_rc == 0 and question["verdict"] == "CONFIRM_REQUEST"
+        accepted, accepted_rc = bp.apply_to_ask(
+            confirmed_result, bp.AskPolicy(confirm=(question["confirm"]["id"], "yes")),
+            query=QUERY, mode="legacy", documents=[],
+        )
+        assert accepted_rc == 0 and accepted["verdict"] == "CONFIRMED_HUMAN_RECORD" and accepted["wrote"] == 1
+    
+        generated = {
+            "family": "local", "source": "local:new:1", "source_file": "new.jsonl", "line": 1,
+            "sha": "new", "origin": "generated", "text": current_claim,
+        }
+        result, rc = bp.apply_to_ask(
+            {"kind": "answer", "verdict": "ANSWER", "text": current_claim,
+             "sources": [generated], "evidence": [current_claim], "door": "attack"},
+            bp.AskPolicy(), query=QUERY, mode="legacy", documents=[],
+        )
+    
+        assert rc == 0
+        if result["basis_policy"]["outcome"] != "ABSTAIN":
+>           pytest.fail(json.dumps({
+                "variant": variant,
+                "confirmed_claim": confirmed_claim,
+                "generated_claim": current_claim,
+                "actual_outcome": result["basis_policy"]["outcome"],
+                "actual_verdict": result["verdict"],
+                "actual_text": result["text"],
+                "record_use": result["basis_policy"]["sovereign"],
+            }, ensure_ascii=False, sort_keys=True))
+E           Failed: {"actual_outcome": "ANSWER_HUMAN_BASIS", "actual_text": "コードはＡＢＣです。", "actual_verdict": "ANSWER", "confirmed_claim": "コードはＡＢＣです。", "generated_claim": "コードはABCです。", "record_use": {"ambiguous": false, "confirmed_records_not_used": 0, "confirmed_records_used": 1, "records_read": 1, "rejected_by_user": 0, "state": "ACTIVE_CONSENTED", "store_id": "store-a"}, "variant": "NFKC"}
+
+attacks/W5-c/test_attack_confirmation_text_binding.py:63: Failed
+=========================== short test summary info ============================
+FAILED attacks/W5-c/test_attack_classification_binding.py::test_attack_a_document_family_and_nonempty_documents_do_not_prove_the_source_text_is_user_supplied
+FAILED attacks/W5-c/test_attack_confirmation_text_binding.py::test_attack_a_confirmed_sentence_must_equal_the_current_generated_claim[whitespace]
+FAILED attacks/W5-c/test_attack_confirmation_text_binding.py::test_attack_a_confirmed_sentence_must_equal_the_current_generated_claim[punctuation]
+FAILED attacks/W5-c/test_attack_confirmation_text_binding.py::test_attack_a_confirmed_sentence_must_equal_the_current_generated_claim[nfkc]
+4 failed, 14 passed in 0.41s

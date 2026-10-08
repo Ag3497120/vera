@@ -1,0 +1,47 @@
+{"id": "BQ001", "docs": ["BA01.txt"], "question": "佐藤さんに報告書を渡したのは誰ですか？", "gold": {"verdict": "ANSWER", "values": ["森田課長"]}, "category": "b2like"}
+{"id": "BQ002", "docs": ["BA01.txt"], "question": "誰が佐藤さんに報告書を渡しましたか？", "gold": {"verdict": "ANSWER", "values": ["森田課長"]}, "category": "b2like"}
+{"id": "BQ003", "docs": ["BA01.txt"], "question": "森田課長は佐藤さんに何を渡した？", "gold": {"verdict": "ANSWER", "values": ["報告書"]}, "category": "b2like"}
+{"id": "BQ004", "docs": ["BA01.txt"], "question": "佐藤さんは会議室で何を読んだ？", "gold": {"verdict": "ANSWER", "values": ["報告書"]}, "category": "b2like"}
+{"id": "BQ005", "docs": ["BA01.txt"], "question": "田中部長はどこへ行った？", "gold": {"verdict": "ANSWER", "values": ["会議"]}, "category": "b2like"}
+{"id": "BQ006", "docs": ["BA01.txt"], "question": "誰が顧客に見積書を送った？", "gold": {"verdict": "ANSWER", "values": ["鈴木さん"]}, "category": "b2like"}
+{"id": "BQ007", "docs": ["BA01.txt"], "question": "顧客は何を読みましたか？", "gold": {"verdict": "ANSWER", "values": ["見積書"]}, "category": "b2like"}
+{"id": "BQ008", "docs": ["BA01.txt"], "question": "誰が課長に資料を渡した？", "gold": {"verdict": "ANSWER", "values": ["山田さん"]}, "category": "b2like"}
+{"id": "BQ009", "docs": ["BA01.txt"], "question": "田中部長は資料を読んだ？", "gold": {"verdict": "NOT_JUDGED", "values": [], "truth_kind": "YESNO"}, "category": "b2like"}
+{"id": "BQ010", "docs": ["BA01.txt"], "question": "田中部長は何を読まなかった？", "gold": {"verdict": "ANSWER", "values": ["資料"]}, "category": "b2like"}
+{"id": "BQ011", "docs": ["BA01.txt"], "question": "佐藤さんはどこから荷物を送った？", "gold": {"verdict": "ANSWER", "values": ["東京"]}, "category": "b2like"}
+{"id": "BQ012", "docs": ["BA01.txt"], "question": "鈴木さんは駅で何を買った？", "gold": {"verdict": "ANSWER", "values": ["切符"]}, "category": "b2like"}
+{"id": "BQ013", "docs": ["BA01.txt"], "question": "山田さんに鍵を貸したのは誰か教えて。", "gold": {"verdict": "ANSWER", "values": ["田中部長"]}, "category": "b2like"}
+{"id": "BQ014", "docs": ["BA01.txt"], "question": "顧客は店で何を買った？", "gold": {"verdict": "ANSWER", "values": ["地図"]}, "category": "b2like"}
+{"id": "BQ015", "docs": ["BA01.txt"], "question": "鈴木さんは顧客に何を渡した？", "gold": {"verdict": "ABSTAIN", "values": [], "truth_kind": "NONE"}, "category": "b2like"}
+{"id": "BQ016", "docs": ["BA02.txt"], "question": "誰がお客に傘を売ったか教えて。", "gold": {"verdict": "ANSWER", "values": ["店長"]}, "category": "b2like"}
+{"id": "BQ017", "docs": ["BA02.txt"], "question": "誰がお客に傘を売った？", "gold": {"verdict": "ANSWER", "values": ["店長"]}, "category": "b2like"}
+{"id": "BQ018", "docs": ["BA02.txt"], "question": "店員はお客に何を渡した？", "gold": {"verdict": "ANSWER", "values": ["袋"]}, "category": "b2like"}
+{"id": "BQ019", "docs": ["BA02.txt"], "question": "お客は何を買いましたか？", "gold": {"verdict": "ANSWER", "values": ["傘"]}, "category": "b2like"}
+{"id": "BQ020", "docs": ["BA02.txt"], "question": "配達員はどこから荷物を送った？", "gold": {"verdict": "ANSWER", "values": ["倉庫"]}, "category": "b2like"}
+{"id": "BQ021", "docs": ["BA02.txt"], "question": "誰が店長に手紙を書いた？", "gold": {"verdict": "ANSWER", "values": ["お客"]}, "category": "b2like"}
+{"id": "BQ022", "docs": ["BA02.txt"], "question": "お客は店長に何を書いた？", "gold": {"verdict": "ANSWER", "values": ["手紙"]}, "category": "b2like"}
+{"id": "BQ023", "docs": ["BA02.txt"], "question": "店員は何を受け取らなかった？", "gold": {"verdict": "ANSWER", "values": ["荷物"]}, "category": "b2like"}
+{"id": "BQ024", "docs": ["BA02.txt"], "question": "店員は何を受け取った？", "gold": {"verdict": "ABSTAIN", "values": [], "truth_kind": "NONE"}, "category": "b2like"}
+{"id": "BQ025", "docs": ["BA02.txt"], "question": "店長は倉庫で何を作った？", "gold": {"verdict": "ANSWER", "values": ["傘"]}, "category": "b2like"}
+{"id": "BQ026", "docs": ["BA02.txt"], "question": "店長はお客に何を売った？", "gold": {"verdict": "ANSWER", "values": ["傘"]}, "category": "b2like"}
+{"id": "BQ027", "docs": ["BA03.txt"], "question": "誰が生徒に宿題を配った？", "gold": {"verdict": "ANSWER", "values": ["先生"]}, "category": "b2like"}
+{"id": "BQ028", "docs": ["BA03.txt"], "question": "生徒は教室で何を書いた？", "gold": {"verdict": "ANSWER", "values": ["宿題"]}, "category": "b2like"}
+{"id": "BQ029", "docs": ["BA03.txt"], "question": "校長は職員室で何を読んだ？", "gold": {"verdict": "ANSWER", "values": ["新聞"]}, "category": "b2like"}
+{"id": "BQ030", "docs": ["BA03.txt"], "question": "誰が先生に花を贈ったか教えて。", "gold": {"verdict": "ANSWER", "values": ["保護者"]}, "category": "b2like"}
+{"id": "BQ031", "docs": ["BA03.txt"], "question": "生徒は図書館で何を借りた？", "gold": {"verdict": "ANSWER", "values": ["本"]}, "category": "b2like"}
+{"id": "BQ032", "docs": ["BA03.txt"], "question": "誰が保護者に案内を送った？", "gold": {"verdict": "ANSWER", "values": ["校長"]}, "category": "b2like"}
+{"id": "BQ033", "docs": ["BA03.txt"], "question": "保護者は何を読んだ？", "gold": {"verdict": "ANSWER", "values": ["案内"]}, "category": "b2like"}
+{"id": "BQ034", "docs": ["BA03.txt"], "question": "先生は何を集めなかった？", "gold": {"verdict": "ANSWER", "values": ["宿題"]}, "category": "b2like"}
+{"id": "BQ035", "docs": ["BA03.txt"], "question": "先生は何を集めた？", "gold": {"verdict": "ABSTAIN", "values": [], "truth_kind": "NONE"}, "category": "b2like"}
+{"id": "BQ036", "docs": ["BA03.txt"], "question": "生徒はどこへ走った？", "gold": {"verdict": "ANSWER", "values": ["校庭"]}, "category": "b2like"}
+{"id": "BQ037", "docs": ["BA03.txt"], "question": "誰が職員室で花を飾った？", "gold": {"verdict": "ANSWER", "values": ["先生"]}, "category": "b2like"}
+{"id": "BQ038", "docs": ["BA04.txt"], "question": "Who sent the report to the director?", "gold": {"verdict": "ANSWER", "values": ["manager"]}, "category": "b2like"}
+{"id": "BQ039", "docs": ["BA04.txt"], "question": "Could you tell me who wrote the memo?", "gold": {"verdict": "ANSWER", "values": ["director"]}, "category": "b2like"}
+{"id": "BQ040", "docs": ["BA04.txt"], "question": "What did the director read?", "gold": {"verdict": "ANSWER", "values": ["report"]}, "category": "b2like"}
+{"id": "BQ041", "docs": ["BA04.txt"], "question": "Who bought the umbrella?", "gold": {"verdict": "ANSWER", "values": ["customer"]}, "category": "b2like"}
+{"id": "BQ042", "docs": ["BA04.txt"], "question": "What did the clerk give to the customer?", "gold": {"verdict": "ANSWER", "values": ["receipt"]}, "category": "b2like"}
+{"id": "BQ043", "docs": ["BA04.txt"], "question": "Who delivered the parcel?", "gold": {"verdict": "ABSTAIN", "values": [], "truth_kind": "NONE"}, "category": "b2like"}
+{"id": "BQ044", "docs": ["BA04.txt"], "question": "Who sold the license to the customer?", "gold": {"verdict": "ANSWER", "values": ["manager"]}, "category": "b2like"}
+{"id": "BQ045", "docs": ["BA04.txt"], "question": "Who wrote the schedule?", "gold": {"verdict": "ANSWER", "values": ["assistant"]}, "category": "b2like"}
+{"id": "BQ046", "docs": ["BA04.txt"], "question": "What did the customer read?", "gold": {"verdict": "ANSWER", "values": ["receipt"]}, "category": "b2like"}
+{"id": "BQ047", "docs": ["BA04.txt"], "question": "Who sent a letter to the manager?", "gold": {"verdict": "ANSWER", "values": ["clerk"]}, "category": "b2like"}

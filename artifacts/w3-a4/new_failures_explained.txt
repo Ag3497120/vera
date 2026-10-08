@@ -1,0 +1,10 @@
+全体テストの最終行（pytest_full.txt）:
+117 failed, 12150 passed, 45 skipped, 75 xfailed, 75 xpassed, 1 warning, 37 subtests passed in 394.48s (0:06:34)
+失敗は一意に 117 件。基線 dev_c334fe6_failures.txt は 115 件。基線に無い失敗は次の 2 件（new_failures.txt）、基線にあって今は通る失敗は 0 件（fixed_failures.txt）。両方とも W5-d2 の全体テスト（docs §13 の w5d2-measured）でも同じ 2 件が基線に無い失敗として出ており、環境由来。
+
+1. tests/bank_score/test_bs_end_to_end.py::test_s6_two_runs_agree_except_timing_and_recount_matches
+   失敗の中身: meta["verantyx_untouched"] is True が False（99 行）。基点 c334fe6 の写し（scratchpad の base/）でも同じ失敗（単独で実行して確認）。
+   理由: ツリーの未コミットの変更を「verantyx が変わっていない」の検査が見る（チケットの共通指示の「test_s6_…（未コミットの間だけ）は環境由来」と同じ）。監査役のコミット後に通る見込み（実測ではない）。
+2. tests/test_gen_coarse_evidence.py::test_the_stop_signal_ends_the_run_with_an_interrupted_record
+   失敗の中身: 子プロセスが停止信号のあと 20 秒以内に終わらない（TimeoutExpired）。タイミング依存。
+   実測: 単独で 2 回流して通る（0.49 秒・0.63 秒）。ファイル全体を 3 回流して 1 回失敗・2 回通る（27.15 秒で失敗、7.35 秒で 2 回通る）。基点の写しでは単独で 2 回通る。この試験が触る tools/gen_coarse_evidence.py の run の部分（信号の扱い）は変えていない（変えたのは needs の部分だけ）。負荷の高いときに起きる不安定な試験として扱う。

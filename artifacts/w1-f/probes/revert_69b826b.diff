@@ -1,0 +1,29 @@
+diff --git a/verantyx/memory_merge.py b/verantyx/memory_merge.py
+index 76f6781..6c2f221 100644
+--- a/verantyx/memory_merge.py
++++ b/verantyx/memory_merge.py
+@@ -3,9 +3,8 @@
+ Logs contain ``write`` records and ``supersede`` links as emitted by
+ ``memory_frame.Memory``.  A merge is a canonical, duplicate-free union; it
+ never chooses between active values.  Supersession references may be pending
+-while partial logs are being combined. A supersede event is operative only
+-when its replacement record carries the matching ``supersedes`` pointer;
+-active-state inspection requires all operative references to be present.
++while partial logs are being combined, but active-state inspection requires
++all referenced records to be present.
+ """
+ from __future__ import annotations
+ 
+@@ -156,10 +155,8 @@ def merge_logs(left: Any, right: Any) -> list[dict]:
+ 
+     Inputs may be event iterables or paths to JSONL logs. Exact duplicate
+     writes and events are removed. A repeated id with different record data,
+-    or a supersession cycle, is rejected. Supersede events without their
+-    replacement record remain pending so staged three-way merges stay
+-    associative; a present replacement record must point back to the event's
+-    target for that relation to retire a record.
++    or a supersession cycle, is rejected. Links to records in a third partial
++    log are retained so that staged three-way merges remain associative.
+     """
+     _, _, merged = _state(_read_events(left) + _read_events(right))
+     return merged

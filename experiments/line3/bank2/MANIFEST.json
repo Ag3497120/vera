@@ -1,0 +1,37 @@
+{
+  "bank": {
+    "path": "bank2.tsv",
+    "sha256": "da1154978bb2123b9af7fcffece83b2ad7d3267dee1a27f12bcef2ee0a447baf",
+    "rows": 128,
+    "kinds": {
+      "intra2": 69,
+      "cross2": 9,
+      "unans": 50
+    },
+    "unans_by_corpus": {
+      "fulllead": 25,
+      "s3000": 25
+    }
+  },
+  "corpora": {
+    "s3000": {
+      "path": "../data/S3000.jsonl",
+      "sha256": "36abce43a6c7a06e693e8e380e6beae486761eba6fd022f9328d5c30c2b716d0",
+      "equals_author_copy": true
+    },
+    "fulllead": {
+      "path": "../data/S300_fulllead.jsonl",
+      "sha256": "d987fdee0e19283e9c69e461b2ae695e5f2681f7a64e2c486572fcd6d4f419ea",
+      "equals_author_copy": true
+    }
+  },
+  "provenance": {
+    "author": "codex gpt-6-luna (no access to Vera code), 2 rounds",
+    "auditor": "Claude Opus 5.5",
+    "audits": [
+      "AUDIT_r1.md",
+      "AUDIT_r2.md"
+    ],
+    "date": "2026-10-08"
+  }
+}

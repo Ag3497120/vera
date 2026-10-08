@@ -1,0 +1,34 @@
+words 4788 confirmed 35
+state/origin/top/frame_status changed 0
+frame reduced 30 non-confirmed changed 0
+frame empty after (CONFIRMED) 0 particle vanished from frame 1
+冠する {"を": ["ABSTRACT", "INFO_LANGUAGE"]} -> {"を": ["INFO_LANGUAGE"]} {"を": ["ABSTRACT"]}
+切り出す {"を": ["ABSTRACT", "EVENT_ACT", "INFO_LANGUAGE"]} -> {"を": ["INFO_LANGUAGE"]} {"を": ["ABSTRACT", "EVENT_ACT"]}
+受け付ける {"を": ["EVENT_ACT", "GROUP_ORG", "INFO_LANGUAGE", "PERSON"]} -> {"を": ["EVENT_ACT"]} {"を": ["GROUP_ORG", "INFO_LANGUAGE", "PERSON"]}
+口ずさむ {"を": ["INFO_LANGUAGE", "WORK"]} -> {"を": ["WORK"]} {"を": ["INFO_LANGUAGE"]}
+叫ぶ {"が": ["ANIMAL", "PERSON"], "を": ["INFO_LANGUAGE"]} -> {"が": ["PERSON"], "を": ["INFO_LANGUAGE"]} {"が": ["ANIMAL"]}
+呼び掛ける {"を": ["ABSTRACT", "EVENT_ACT", "INFO_LANGUAGE"]} -> {"を": ["EVENT_ACT"]} {"を": ["ABSTRACT", "INFO_LANGUAGE"], "に": ["GROUP_ORG", "PERSON"]}
+呼べる {"を": ["ANIMAL", "GROUP_ORG", "PERSON"]} -> {"を": ["PERSON"]} {"が": ["PERSON"], "を": ["ANIMAL", "GROUP_ORG"]}
+命ずる {"を": ["ABSTRACT", "EVENT_ACT"]} -> {"を": ["EVENT_ACT"]} {"を": ["ABSTRACT"], "に": ["GROUP_ORG", "PERSON"]}
+唱える {"を": ["ABSTRACT", "EVENT_ACT", "INFO_LANGUAGE"]} -> {"を": ["ABSTRACT"]} {"を": ["EVENT_ACT", "INFO_LANGUAGE"]}
+問う {"を": ["ABSTRACT", "INFO_LANGUAGE", "PERSON"]} -> {"を": ["INFO_LANGUAGE"]} {"が": ["PERSON"], "を": ["ABSTRACT", "PERSON"]}
+広める {"を": ["ABSTRACT", "INFO_LANGUAGE"]} -> {"を": ["ABSTRACT"]} {"を": ["INFO_LANGUAGE"]}
+戻れる {"に": ["PLACE"], "へ": ["PLACE"]} -> {"へ": ["PLACE"]} {"が": ["ANIMAL", "ARTIFACT", "PERSON"], "に": ["PLACE"]}
+教え合う {"を": ["ABSTRACT", "INFO_LANGUAGE"]} -> {"を": ["INFO_LANGUAGE"]} {"が": ["GROUP_ORG", "PERSON"], "を": ["ABSTRACT"], "と": ["GROUP_ORG", "PERSON"]}
+旅立つ {"が": ["ANIMAL", "PERSON"], "へ": ["PLACE"]} -> {"が": ["PERSON"], "へ": ["PLACE"]} {"が": ["ANIMAL"]}
+明かす {"を": ["ABSTRACT", "INFO_LANGUAGE"]} -> {"を": ["INFO_LANGUAGE"]} {"が": ["PERSON"], "を": ["ABSTRACT"]}
+書き表す {"を": ["ABSTRACT", "INFO_LANGUAGE"]} -> {"を": ["INFO_LANGUAGE"]} {"を": ["ABSTRACT"]}
+歌える {"を": ["INFO_LANGUAGE", "WORK"]} -> {"を": ["WORK"]} {"を": ["INFO_LANGUAGE"]}
+流れ出る {"から": ["ARTIFACT", "PLACE"]} -> {"から": ["PLACE"]} {"が": ["NATURAL_PHENOMENON", "SUBSTANCE_FOOD"], "から": ["ARTIFACT"]}
+申し入れる {"を": ["ABSTRACT", "EVENT_ACT", "INFO_LANGUAGE"]} -> {"を": ["EVENT_ACT"]} {"を": ["ABSTRACT", "INFO_LANGUAGE"], "に": ["GROUP_ORG", "PERSON"]}
+申し込める {"を": ["ABSTRACT", "ARTIFACT", "EVENT_ACT"]} -> {"を": ["EVENT_ACT"]} {"を": ["ABSTRACT", "ARTIFACT"], "に": ["GROUP_ORG", "PERSON", "PLACE"]}
+詫びる {"を": ["ABSTRACT", "EVENT_ACT"]} -> {"を": ["EVENT_ACT"]} {"を": ["ABSTRACT"], "に": ["GROUP_ORG", "PERSON"]}
+話し合う {"を": ["ABSTRACT", "EVENT_ACT", "INFO_LANGUAGE"]} -> {"を": ["ABSTRACT", "EVENT_ACT"]} {"が": ["GROUP_ORG", "PERSON"], "を": ["INFO_LANGUAGE"], "と": ["GROUP_ORG", "PERSON"]}
+話せる {"を": ["ABSTRACT", "INFO_LANGUAGE"]} -> {"を": ["INFO_LANGUAGE"]} {"を": ["ABSTRACT"], "と": ["GROUP_ORG", "PERSON"]}
+説く {"を": ["ABSTRACT", "EVENT_ACT", "INFO_LANGUAGE"]} -> {"を": ["ABSTRACT"]} {"を": ["EVENT_ACT", "INFO_LANGUAGE"], "に": ["PERSON"]}
+読み上げる {"を": ["INFO_LANGUAGE", "WORK"]} -> {"を": ["INFO_LANGUAGE"]} {"を": ["WORK"]}
+論ずる {"を": ["ABSTRACT", "EVENT_ACT", "INFO_LANGUAGE"]} -> {"を": ["ABSTRACT"]} {"を": ["EVENT_ACT", "INFO_LANGUAGE"]}
+起き上がる {"が": ["ANIMAL", "PERSON"], "から": ["PLACE"]} -> {"が": ["PERSON"], "から": ["PLACE"]} {"が": ["ANIMAL"]}
+離れる {"から": ["ARTIFACT", "PERSON", "PLACE"]} -> {"から": ["PLACE"]} {"が": ["ARTIFACT", "PERSON", "PLACE"], "から": ["ARTIFACT", "PERSON"]}
+頼める {"を": ["ABSTRACT", "EVENT_ACT", "INFO_LANGUAGE", "PERSON"]} -> {"を": ["EVENT_ACT"]} {"を": ["ABSTRACT", "INFO_LANGUAGE", "PERSON"]}
+飛び出す {"が": ["ANIMAL", "ARTIFACT", "NATURAL_PHENOMENON", "PERSON"], "から": ["PLACE"]} -> {"が": ["ANIMAL"], "から": ["PLACE"]} {"が": ["ARTIFACT", "NATURAL_PHENOMENON", "PERSON"], "を": ["ARTIFACT", "PLACE"]}

@@ -1,0 +1,89 @@
+{
+ "ask": {
+  "by_abstain_type": {
+   "UNKNOWN_UNREAD": 13,
+   "UNKNOWN_UNSUPPORTED_EVIDENCE": 7
+  },
+  "by_class": {
+   "abstain": 20,
+   "answer": 0,
+   "answer_untraced": 0,
+   "error": 0,
+   "unclassified_output": 0
+  },
+  "eligible_for_promotion": {
+   "eligible": false,
+   "n": 30,
+   "n_basis": "policy value, not measured",
+   "reason": "STREAK_BELOW_N",
+   "streak": 0
+  },
+  "invalid_verdict_values": 0,
+  "log": "/Users/motonisihikoudai/Projects/vera-impl/wt/W8-shadow-S/ops/shadow/acceptance/ask_log.jsonl",
+  "log_present": true,
+  "max_streak": 0,
+  "orphan_verdict_rows": 0,
+  "streak": 0,
+  "total_entries": 20,
+  "unknown_classes": {},
+  "unknown_type_lines": [],
+  "unparseable_lines": [],
+  "verdict_rows": 0,
+  "verdicts": {
+   "abstain_unjudged": 20,
+   "correct": 0,
+   "error_entries": 0,
+   "pending": 0,
+   "verdict_conflict": 0,
+   "verdict_on_abstain": 0,
+   "wrong": 0
+  }
+ },
+ "route": {
+  "by_abstention_type": {
+   "INCOMPLETE_READING": 30
+  },
+  "by_class": {
+   "error": 0,
+   "not_called": 0,
+   "route": 0,
+   "undecided": 30
+  },
+  "by_task_source": {
+   "task_file": 30
+  },
+  "by_task_status": {
+   "OK": 30
+  },
+  "by_undecided_reason": {
+   "ABSTAINED": 30
+  },
+  "eligible_for_promotion": {
+   "eligible": false,
+   "n": 30,
+   "n_basis": "policy value, not measured",
+   "reason": "STREAK_BELOW_N",
+   "streak": 0
+  },
+  "invalid_verdict_values": 0,
+  "log": "/Users/motonisihikoudai/Projects/vera-impl/wt/W8-shadow-S/ops/shadow/acceptance/route_log.jsonl",
+  "log_present": true,
+  "max_streak": 0,
+  "orphan_verdict_rows": 0,
+  "streak": 0,
+  "total_entries": 30,
+  "unknown_classes": {},
+  "unknown_type_lines": [],
+  "unparseable_lines": [],
+  "verdict_rows": 0,
+  "verdicts": {
+   "abstain_unjudged": 30,
+   "agree": 0,
+   "disagree": 0,
+   "error_entries": 0,
+   "pending": 0,
+   "verdict_conflict": 0,
+   "verdict_on_abstain": 0
+  }
+ }
+}

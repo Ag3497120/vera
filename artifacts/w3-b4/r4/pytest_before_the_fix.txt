@@ -1,0 +1,228 @@
+...........F............................................................ [ 19%]
+........................................................................ [ 38%]
+........................................................................ [ 57%]
+........................................................................ [ 76%]
+...........................................................FFFFFF.F..... [ 95%]
+..........F.FFFFF                                                        [100%]
+=================================== FAILURES ===================================
+_ test_the_name_the_entry_calls_is_the_plan_of_w3b4_and_the_plan_of_w3b2_stays_under_a_name_of_its_own _
+
+    def test_the_name_the_entry_calls_is_the_plan_of_w3b4_and_the_plan_of_w3b2_stays_under_a_name_of_its_own():
+        # round 4 (K186): the two names the entry calls are the plans wrapped by the focus gate; the plan under the gate is the plan of rounds 1-3 (`ungated`)
+>       assert R.typed_plan_u_w3b2_ja.ungated is R.typed_plan_u_w3b4_ja
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'function' object has no attribute 'ungated'
+
+tests/test_semantic_read_w3b4.py:227: AttributeError
+_ test_every_row_of_the_data_is_read_or_refused_as_registered_and_judged_correct_when_read[W3B4-ACT-A-911] _
+
+row = {'id': 'W3B4-ACT-A-911', 'lang': 'ja', 'input': '兄が台車を倉庫へさえ押した。', 'text': '兄が台車を倉庫へさえ押した。', ...}
+
+    @pytest.mark.parametrize('row', DATA, ids=[r['id'] for r in DATA])
+    def test_every_row_of_the_data_is_read_or_refused_as_registered_and_judged_correct_when_read(row):
+        q = query_of(row)
+        out = SR.read(row['input'], placement=q)
+        verdict = b1.judge(row['expect'], 'ja', out)['verdict']
+>       assert verdict not in ('misread', 'incomplete', 'UNJUDGED'), (verdict, out)
+E       AssertionError: ('misread', {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': True, 'clauses': [{'predicate': '押す', 'roles': {'agent': '兄', 'patient': '台車', 'goal': '倉庫'}, 'polarity': '+', 'tense': 'past', ...}], ...})
+E       assert 'misread' not in ('misread', 'incomplete', 'UNJUDGED')
+
+tests/test_semantic_read_w3b4.py:299: AssertionError
+_ test_every_row_of_the_data_is_read_or_refused_as_registered_and_judged_correct_when_read[W3B4-ACT-A-912] _
+
+row = {'id': 'W3B4-ACT-A-912', 'lang': 'ja', 'input': '兄が台車を倉庫へすら押した。', 'text': '兄が台車を倉庫へすら押した。', ...}
+
+    @pytest.mark.parametrize('row', DATA, ids=[r['id'] for r in DATA])
+    def test_every_row_of_the_data_is_read_or_refused_as_registered_and_judged_correct_when_read(row):
+        q = query_of(row)
+        out = SR.read(row['input'], placement=q)
+        verdict = b1.judge(row['expect'], 'ja', out)['verdict']
+>       assert verdict not in ('misread', 'incomplete', 'UNJUDGED'), (verdict, out)
+E       AssertionError: ('misread', {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': True, 'clauses': [{'predicate': '押す', 'roles': {'agent': '兄', 'patient': '台車', 'goal': '倉庫'}, 'polarity': '+', 'tense': 'past', ...}], ...})
+E       assert 'misread' not in ('misread', 'incomplete', 'UNJUDGED')
+
+tests/test_semantic_read_w3b4.py:299: AssertionError
+_ test_every_row_of_the_data_is_read_or_refused_as_registered_and_judged_correct_when_read[W3B4-ACT-A-913] _
+
+row = {'id': 'W3B4-ACT-A-913', 'lang': 'ja', 'input': '兄が台車を倉庫へこそ押した。', 'text': '兄が台車を倉庫へこそ押した。', ...}
+
+    @pytest.mark.parametrize('row', DATA, ids=[r['id'] for r in DATA])
+    def test_every_row_of_the_data_is_read_or_refused_as_registered_and_judged_correct_when_read(row):
+        q = query_of(row)
+        out = SR.read(row['input'], placement=q)
+        verdict = b1.judge(row['expect'], 'ja', out)['verdict']
+>       assert verdict not in ('misread', 'incomplete', 'UNJUDGED'), (verdict, out)
+E       AssertionError: ('misread', {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': True, 'clauses': [{'predicate': '押す', 'roles': {'agent': '兄', 'patient': '台車', 'goal': '倉庫'}, 'polarity': '+', 'tense': 'past', ...}], ...})
+E       assert 'misread' not in ('misread', 'incomplete', 'UNJUDGED')
+
+tests/test_semantic_read_w3b4.py:299: AssertionError
+_ test_every_row_of_the_data_is_read_or_refused_as_registered_and_judged_correct_when_read[W3B4-ACT-A-914] _
+
+row = {'id': 'W3B4-ACT-A-914', 'lang': 'ja', 'input': '兄が台車を倉庫へまで押した。', 'text': '兄が台車を倉庫へまで押した。', ...}
+
+    @pytest.mark.parametrize('row', DATA, ids=[r['id'] for r in DATA])
+    def test_every_row_of_the_data_is_read_or_refused_as_registered_and_judged_correct_when_read(row):
+        q = query_of(row)
+        out = SR.read(row['input'], placement=q)
+        verdict = b1.judge(row['expect'], 'ja', out)['verdict']
+>       assert verdict not in ('misread', 'incomplete', 'UNJUDGED'), (verdict, out)
+E       AssertionError: ('misread', {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': True, 'clauses': [{'predicate': '押す', 'roles': {'agent': '兄', 'patient': '台車', 'goal': '倉庫'}, 'polarity': '+', 'tense': 'past', ...}], ...})
+E       assert 'misread' not in ('misread', 'incomplete', 'UNJUDGED')
+
+tests/test_semantic_read_w3b4.py:299: AssertionError
+_ test_every_row_of_the_data_is_read_or_refused_as_registered_and_judged_correct_when_read[W3B4-ACT-A-915] _
+
+row = {'id': 'W3B4-ACT-A-915', 'lang': 'ja', 'input': '兄が台車を倉庫へなど押した。', 'text': '兄が台車を倉庫へなど押した。', ...}
+
+    @pytest.mark.parametrize('row', DATA, ids=[r['id'] for r in DATA])
+    def test_every_row_of_the_data_is_read_or_refused_as_registered_and_judged_correct_when_read(row):
+        q = query_of(row)
+        out = SR.read(row['input'], placement=q)
+        verdict = b1.judge(row['expect'], 'ja', out)['verdict']
+>       assert verdict not in ('misread', 'incomplete', 'UNJUDGED'), (verdict, out)
+E       AssertionError: ('misread', {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': True, 'clauses': [{'predicate': '押す', 'roles': {'agent': '兄', 'patient': '台車', 'goal': '倉庫'}, 'polarity': '+', 'tense': 'past', ...}], ...})
+E       assert 'misread' not in ('misread', 'incomplete', 'UNJUDGED')
+
+tests/test_semantic_read_w3b4.py:299: AssertionError
+_ test_every_row_of_the_data_is_read_or_refused_as_registered_and_judged_correct_when_read[W3B4-ACT-A-916] _
+
+row = {'id': 'W3B4-ACT-A-916', 'lang': 'ja', 'input': '兄が台車を倉庫へさえ押さなかった。', 'text': '兄が台車を倉庫へさえ押さなかった。', ...}
+
+    @pytest.mark.parametrize('row', DATA, ids=[r['id'] for r in DATA])
+    def test_every_row_of_the_data_is_read_or_refused_as_registered_and_judged_correct_when_read(row):
+        q = query_of(row)
+        out = SR.read(row['input'], placement=q)
+        verdict = b1.judge(row['expect'], 'ja', out)['verdict']
+>       assert verdict not in ('misread', 'incomplete', 'UNJUDGED'), (verdict, out)
+E       AssertionError: ('misread', {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': True, 'clauses': [{'predicate': '押す', 'roles': {'agent': '兄', 'patient': '台車', 'goal': '倉庫'}, 'polarity': '-', 'tense': 'past', ...}], ...})
+E       assert 'misread' not in ('misread', 'incomplete', 'UNJUDGED')
+
+tests/test_semantic_read_w3b4.py:299: AssertionError
+_ test_no_row_of_the_data_is_misread_or_incomplete_and_every_read_type_is_read_in_at_least_twenty_rows _
+
+    def test_no_row_of_the_data_is_misread_or_incomplete_and_every_read_type_is_read_in_at_least_twenty_rows():
+        """Round 3: the NAME is kept (a test is not renamed) but the claim "every read type is read in at least twenty rows" is no longer true and is not made: after the place/で rows were taken out,
+        the entry reads 4 rows of the data (P_ACT, へ/goal) and none of P_CREATE and P_EMOTION. What is checked instead: no row is misread or incomplete; of the frozen rows that registered `entry_expect: read`
+        (at least twenty per read type, as registered) every row is either judged `correct` or is a recorded narrowed row that the entry refuses; and the number of rows judged `correct` is pinned to the measured
+        one (artifacts/w3-b4/r3/per_type_counts.json): P_ACT 4, P_CREATE 0, P_EMOTION 0."""
+        verdicts, entries = {}, {}
+        for row in DATA:
+            out = SR.read(row['input'], placement=query_of(row))
+            verdicts[row['id']] = b1.judge(row['expect'], 'ja', out)['verdict']
+            entries[row['id']] = out['readable']
+>       assert not [i for i, v in verdicts.items() if v in ('misread', 'incomplete', 'UNJUDGED')]
+E       AssertionError: assert not ['W3B4-ACT-A-911', 'W3B4-ACT-A-912', 'W3B4-ACT-A-913', 'W3B4-ACT-A-914', 'W3B4-ACT-A-915', 'W3B4-ACT-A-916']
+
+tests/test_semantic_read_w3b4.py:372: AssertionError
+______ test_the_focus_gate_decides_by_parts_of_speech_and_adjacency_only _______
+
+    def test_the_focus_gate_decides_by_parts_of_speech_and_adjacency_only():
+        G = GATE_PREFIX
+        cases = (('兄が台車を倉庫へさえ押した。', G + 'へ:さえ'), ('兄が荷車を畑へも押した。', G + 'へ:も'), ('兄が荷車を畑へは押した。', G + 'へ:は'),
+                 ('兄が台車をも倉庫へ押した。', G + 'を:も'), ('兄が台車を納屋からさえ倉庫へ押した。', G + 'から:さえ'), ('兄が国道でさえ走った。', G + 'で:さえ'),
+                 ('兄が荷車を畑へ、さえ押した。', G + 'へ:さえ'), ('兄が荷車を畑へ\u3000さえ押した。', G + 'へ:さえ'),
+                 ('兄が荷車を畑へと押した。', None), ('兄は荷車を畑へ押した。', None), ('兄が倉庫まで走った。', None), ('兄だけが倉庫へ走った。', None))
+>       for text, want in cases: assert _focus(text) == want, (text, _focus(text))
+                                        ^^^^^^^^^^^^
+
+tests/test_semantic_read_w3b4.py:637: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+text = '兄が台車を倉庫へさえ押した。'
+
+    def _focus(text):
+>       return R.typed_focus_after_case_ja(R._tokens(text), SimpleNamespace(span=SimpleNamespace(start=0, end=len(text))))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'verantyx.semantic_reader' has no attribute 'typed_focus_after_case_ja'
+
+tests/test_semantic_read_w3b4.py:628: AttributeError
+_ test_the_six_sentences_were_misread_without_the_focus_gate_and_the_gate_refuses_them _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x117d797d0>
+
+    def test_the_six_sentences_were_misread_without_the_focus_gate_and_the_gate_refuses_them(monkeypatch):
+        """The evidence for the gate, kept as a test: with the gate the six sentences are refused (the diagnosis of the plan of W3-b4 is the reason of the gate; the output keeps the
+        reason of the plan of W3-b1 that stops first); with the plans put back (monkeypatch) they are READ as goal 倉庫 and judged a misread."""
+        for r in FOCUS_ROWS:
+            out = SR.read(r['input'], placement=query_of(r))
+>           assert out['readable'] is False, r['input']
+E           AssertionError: 兄が台車を倉庫へさえ押した。
+E           assert True is False
+
+tests/test_semantic_read_w3b4.py:668: AssertionError
+_____ test_the_focus_gate_closes_the_hole_of_v1_with_the_real_placement_r7 _____
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x117d78c10>
+
+    def test_the_focus_gate_closes_the_hole_of_v1_with_the_real_placement_r7(monkeypatch):
+        if not os.path.isdir(R7): pytest.skip('the placement r7 is not on this machine')
+        cases = (('兄が倉庫へさえ走った。', 'さえ'), ('兄が倉庫へすら走った。', 'すら'), ('兄が倉庫へまで走った。', 'まで'), ('兄が倉庫へ、さえ走った。', 'さえ'))
+        for text, part in cases:
+            out = SR.read(text, placement=R.CoarseQuery(R7))
+            ex = SR.typed_explain_ja(text, R.CoarseQuery(R7))
+>           assert out['readable'] is False, text
+E           AssertionError: 兄が倉庫へさえ走った。
+E           assert True is False
+
+tests/test_semantic_read_w3b4.py:687: AssertionError
+_ test_the_cost_of_the_focus_gate_correct_readings_with_mo_and_wa_after_a_case_particle_are_refused _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x117dab210>
+
+    def test_the_cost_of_the_focus_gate_correct_readings_with_mo_and_wa_after_a_case_particle_are_refused(monkeypatch):
+        """A cost, recorded: the conventions (section 3) read a sentence with は or も after a case particle by dropping the particle, and that reading is correct. The gate decides by parts of speech
+        and adjacency and keeps no list of words, so it does not tell は・も from さえ・すら. The two sentences below are refused now: a decrease of correct readings, not a misread."""
+        if not os.path.isdir(R7): pytest.skip('the placement r7 is not on this machine')
+        for text, part in (('兄が荷車を畑へも押した。', 'も'), ('兄が荷車を畑へは押した。', 'は')):
+            out = SR.read(text, placement=R.CoarseQuery(R7))
+>           assert out['readable'] is False and SR.typed_explain_ja(text, R.CoarseQuery(R7))['w3b2'] == GATE_PREFIX + 'へ:' + part, (text, out)
+E           AssertionError: ('兄が荷車を畑へも押した。', {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': True, 'clauses': [{'predicate': '押す', 'roles': {'agent': '兄', 'patient': '荷車', 'goal': '畑'}, 'polarity': '+', 'tense': 'past', ...}], ...})
+E           assert (True is False)
+
+tests/test_semantic_read_w3b4.py:704: AssertionError
+__ test_the_focus_gate_changes_no_diagnosis_and_no_output_of_the_frozen_rows ___
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x117a8c750>
+
+    def test_the_focus_gate_changes_no_diagnosis_and_no_output_of_the_frozen_rows(monkeypatch):
+        frozen = DATA[:333]
+        now = {r['id']: (SR.read(r['input'], placement=query_of(r)), explain(r)) for r in frozen}
+>       ungate(monkeypatch)
+
+tests/test_semantic_read_w3b4.py:714: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x117a8c750>
+
+    def ungate(monkeypatch):
+        """Put the plans under the gate back (the plans of rounds 1-3), for the evidence. monkeypatch only: nothing leaks into another test."""
+>       monkeypatch.setattr(R, 'typed_plan_u_ja', R.typed_plan_u_ja.ungated)
+                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'function' object has no attribute 'ungated'
+
+tests/test_semantic_read_w3b4.py:623: AttributeError
+__________ test_the_focus_gate_is_on_the_plans_of_paths_u_and_u3_only __________
+
+    def test_the_focus_gate_is_on_the_plans_of_paths_u_and_u3_only():
+        for name in ('typed_plan_s4_ja', 'typed_plan_s4_w3b2_ja'): assert not hasattr(getattr(R, name), 'ungated'), name
+>       for name in ('typed_plan_u_ja', 'typed_plan_u_w3b2_ja'): assert callable(getattr(R, name).ungated), name
+                                                                                 ^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'function' object has no attribute 'ungated'
+
+tests/test_semantic_read_w3b4.py:721: AttributeError
+=========================== short test summary info ============================
+FAILED tests/test_semantic_read_w3b4.py::test_the_name_the_entry_calls_is_the_plan_of_w3b4_and_the_plan_of_w3b2_stays_under_a_name_of_its_own
+FAILED tests/test_semantic_read_w3b4.py::test_every_row_of_the_data_is_read_or_refused_as_registered_and_judged_correct_when_read[W3B4-ACT-A-911]
+FAILED tests/test_semantic_read_w3b4.py::test_every_row_of_the_data_is_read_or_refused_as_registered_and_judged_correct_when_read[W3B4-ACT-A-912]
+FAILED tests/test_semantic_read_w3b4.py::test_every_row_of_the_data_is_read_or_refused_as_registered_and_judged_correct_when_read[W3B4-ACT-A-913]
+FAILED tests/test_semantic_read_w3b4.py::test_every_row_of_the_data_is_read_or_refused_as_registered_and_judged_correct_when_read[W3B4-ACT-A-914]
+FAILED tests/test_semantic_read_w3b4.py::test_every_row_of_the_data_is_read_or_refused_as_registered_and_judged_correct_when_read[W3B4-ACT-A-915]
+FAILED tests/test_semantic_read_w3b4.py::test_every_row_of_the_data_is_read_or_refused_as_registered_and_judged_correct_when_read[W3B4-ACT-A-916]
+FAILED tests/test_semantic_read_w3b4.py::test_no_row_of_the_data_is_misread_or_incomplete_and_every_read_type_is_read_in_at_least_twenty_rows
+FAILED tests/test_semantic_read_w3b4.py::test_the_focus_gate_decides_by_parts_of_speech_and_adjacency_only
+FAILED tests/test_semantic_read_w3b4.py::test_the_six_sentences_were_misread_without_the_focus_gate_and_the_gate_refuses_them
+FAILED tests/test_semantic_read_w3b4.py::test_the_focus_gate_closes_the_hole_of_v1_with_the_real_placement_r7
+FAILED tests/test_semantic_read_w3b4.py::test_the_cost_of_the_focus_gate_correct_readings_with_mo_and_wa_after_a_case_particle_are_refused
+FAILED tests/test_semantic_read_w3b4.py::test_the_focus_gate_changes_no_diagnosis_and_no_output_of_the_frozen_rows
+FAILED tests/test_semantic_read_w3b4.py::test_the_focus_gate_is_on_the_plans_of_paths_u_and_u3_only
+14 failed, 363 passed in 8.70s

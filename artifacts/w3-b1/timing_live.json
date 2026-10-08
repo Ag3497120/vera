@@ -1,0 +1,10 @@
+{
+ "mode": "live",
+ "inputs": 2899,
+ "load_1min_before": 1.96,
+ "load_1min_after": 1.96,
+ "wall_seconds": 2.681,
+ "median_ms_per_input": 0.687,
+ "max_ms_per_input": 84.389,
+ "mean_ms_per_input": 0.924
+}

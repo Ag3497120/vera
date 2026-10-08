@@ -1,0 +1,63 @@
+----- module origin (all must be under W)
+outside: []
+----- E1
+{"blocking": {"acceptance_items": ["Runtime does not use an LLM or learned model to produce an answer sentence fact or decision", "General QA and dialogue handle unseen wording and relations instead o
+exit=1
+AGENT_START_RETURNED count: 1
+FRAME_COMPILED record_count=62 kinds={'ACCEPTANCE': 6, 'ALIAS': 3, 'DECISION': 19, 'ESCALATE': 8, 'GOAL': 6, 'INVARIANT': 12, 'ORDER': 3, 'POLICY': 5}
+compile_after.json  record_count=62 kinds={'ACCEPTANCE': 6, 'ALIAS': 3, 'DECISION': 19, 'ESCALATE': 8, 'GOAL': 6, 'INVARIANT': 12, 'ORDER': 3, 'POLICY': 5}
+----- E2
+{"blocking": {"acceptance_items": ["Runtime does not use an LLM or learned model to produce an answer sentence fact or d
+exit=0
+{"blocking": {"acceptance_items": ["Runtime does not use an LLM or learned model to produce an answer sentence fact or d
+exit=0
+['codex', 'exec', '--ignore-user-config', '-m', 'gpt-6-luna', '-c', 'model_reasoning_effort="high"', '-s', 'workspace-write', '-C', '/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/tmp.OwTPTto1Dw/.verantyx-conduct/runs/e61d4e37b8f14324ad558e0d6cd34805/runtime/sessions/36c6f586c9ff4f17b162008dc20cf843/worktree', '-o', '/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/tmp.OwTPTto1Dw/.verantyx-conduct/runs/e61d4e37b8f14324ad558e0d6cd34805/runtime/sessions/36c6f586c9ff4f17b162008dc20cf843/last_message.txt', '-'] file
+['claude', '-p', '--model', 'claude-sonnet-5-5', '--effort', 'high'] file
+REFUSED AGENT_SETTING_MISSING
+exit=2 (AGENT_SETTING_MISSING expected)
+worktree list:
+/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/tmp.OwTPTto1Dw  0f859ff [main]
+----- E3
+REFUSED WRITE_ALLOWLIST_MISSING | add a [write_allowlist] section listing the repository-relative paths the agent may write, one 'ID: path' per 
+Traceback count: 0
+REFUSED MACHINE_ACCEPTANCE_MISSING | all 5 completion criteria are human-judged; add at least one machine-checkable criterion, for example 'C9: tes
+Traceback count: 0
+REFUSED FRAME_PARSE_ERROR | fix /var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/tmp.OwTPTto1Dw/broken.md:3: missing required section(s): 
+Traceback count: 0
+REFUSED FRAME_FORMAT_UNKNOWN | write a Markdown frame whose first line (after comments) is a section header such as [goal] (see docs/frames/v
+Traceback count: 0
+REFUSED FRAME_NOT_FOUND | give --frame the path of an existing frame file; '/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/tmp.OwTPTto
+Traceback count: 0
+----- E4
+       4
+OK /Users/motonisihikoudai/Projects/vera-impl/wt/W1-d-S/docs/frames/vera_project_frame.md
+OK /Users/motonisihikoudai/Projects/vera-impl/wt/W1-d-S/docs/frames/examples/experiment_data_pipeline.md
+OK /Users/motonisihikoudai/Projects/vera-impl/wt/W1-d-S/docs/frames/examples/firmware_update_tool.md
+OK /Users/motonisihikoudai/Projects/vera-impl/wt/W1-d-S/docs/frames/examples/library_catalog_search.md
+OK /Users/motonisihikoudai/Projects/vera-impl/wt/W1-d-S/docs/frames/examples/municipal_form_refit.md
+BYTE_IDENTICAL
+old_records=56 new_records=62 added=6
+added_by_section={"completion_criteria": 1, "goal": 1, "write_allowlist": 4}
+OK: OLD is an ordered subsequence of NEW; every added record comes from a new section or a declared added criterion
+-- control: the comparison must fail when an old record is altered
+FAIL: an OLD record is not an ordered subsequence of NEW: {"kind": "INVARIANT", "slots": {"rule": "Stack stages without pooling votes and abstain on ties", "sub
+........................................................................ [ 87%]
+..........                                                               [100%]
+82 passed, 66 deselected in 7.06s
+----- E5
+DEMO OK
+DEMO OK
+DEMO OK
+DEMO OK
+DEMO OK
+leftover .demo-* in W: 0
+----- new conduct tests
+........................................................................ [ 97%]
+....                                                                     [100%]
+148 passed in 35.44s
+----- scope check
+(nothing above = OK)
+(nothing above = untouched)
+deleted lines in conductor_run.py: 0
+deleted lines in vera_project_frame.md: 0
+deleted lines in agent_adapter.py: 0

@@ -1,0 +1,36 @@
+2386a2387,2421
+> 
+> 
+> # ===================================================================================================================================
+> # W3-b4 round 4 (docs 10D K186, the auditor's decision 2): the gate of a focus particle right after a case particle, on the plans of paths U and U3 (the plan of
+> # W3-b1 and the plan of W3-b2/W3-b4). A clause whose tokens (marks of punctuation and blanks skipped) have a case particle followed by a binding or adverbial particle
+> # is refused: the reading would drop that particle (K180). Parts of speech and adjacency only, no list of words. Checked after the plan decided a reading, so every
+> # reason of a refusal before is unchanged; it can only turn a reading into a refusal. Path S4 is not gated. Nothing above this block is changed.
+> # ===================================================================================================================================
+> def typed_focus_after_case_ja(toks, clause):
+>     """K186: 'PLACEMENT_FOCUS_PARTICLE_AFTER_CASE:<case particle>:<particle>' for the first token of 助詞/係助詞 or 助詞/副助詞 that follows a token of 助詞/格助詞
+>     inside the clause (tokens of 補助記号 and 空白 between them are skipped), else None."""
+>     lo, hi = clause.span.start, clause.span.end
+>     inside = [t for t in toks if t[1] >= lo and t[2] <= hi and t[0].feature.pos1 not in ('補助記号', '空白')]
+>     for (w, a, b), (w2, a2, b2) in zip(inside, inside[1:]):
+>         if w.feature.pos1 == '助詞' and w.feature.pos2 == '格助詞' and w2.feature.pos1 == '助詞' and w2.feature.pos2 in ('係助詞', '副助詞'):
+>             return 'PLACEMENT_FOCUS_PARTICLE_AFTER_CASE:%s:%s' % (w.surface, w2.surface)
+>     return None
+> 
+> 
+> def _typed_plan_focus_gated(plan):
+>     """K186: the plan `plan` (same arguments), then the gate on what it decided to read. The plan itself is kept as the attribute `ungated`."""
+>     def gated(clause, toks, query, *, voice, written, strip, role_map):
+>         typed, why = plan(clause, toks, query, voice=voice, written=written, strip=strip, role_map=role_map)
+>         if typed is None: return typed, why
+>         focus = typed_focus_after_case_ja(toks, clause)
+>         if focus: return None, focus
+>         return typed, why
+>     gated.__name__ = plan.__name__ + '_focus_gated'
+>     gated.ungated = plan
+>     return gated
+> 
+> 
+> typed_plan_u_w3b1_ungated_ja = typed_plan_u_ja           # the plan of W3-b1 (the function of the base commit, unchanged) under a name of its own
+> typed_plan_u_ja = _typed_plan_focus_gated(typed_plan_u_w3b1_ungated_ja)
+> typed_plan_u_w3b2_ja = _typed_plan_focus_gated(typed_plan_u_w3b4_ja)

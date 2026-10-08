@@ -1,0 +1,2 @@
+is-forbidden | C3: Wiping the card reader is forbidden | human-judged -> escalate None None FRAME_SILENT PERMISSION_FOR_ANOTHER_SUBJECT_OR_CONDITION ['forbidden_actions:L50', 'C3', 'R1']
+we-are-forbidden | C3: We are forbidden to wipe the card reader | human-judged -> escalate None None FRAME_SILENT PERMISSION_FOR_ANOTHER_SUBJECT_OR_CONDITION ['forbidden_actions:L50', 'C3', 'R1']

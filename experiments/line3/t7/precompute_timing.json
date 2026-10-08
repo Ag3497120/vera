@@ -1,0 +1,20 @@
+{
+ "CHAR": {
+  "seconds_cpu": 749.5,
+  "seconds_wall": 84.16,
+  "units": 1094
+ },
+ "RUN": {
+  "seconds_cpu": 1083.01,
+  "seconds_wall": 120.93,
+  "units": 2033
+ },
+ "WORD": {
+  "seconds_cpu": 1235.5,
+  "seconds_wall": 138.79,
+  "units": 2278
+ },
+ "_space_seconds": 0.06,
+ "_total_wall": 344.0,
+ "_workers": 9
+}

@@ -1,0 +1,20 @@
+rows=323
+# pred_type x frozen entry_expect x observed entry (rows). A row of a narrowed type (P_CHANGE, P_CONSUME) frozen as read is observed as abstain (docs 10D table change records 1, 2)
+P_ACT	abstain	abstain	28
+P_ACT	read	read	26
+P_CHANGE	abstain	abstain	34
+P_CHANGE	read	abstain	27
+P_COGNITION	abstain	abstain	4
+P_CONSUME	abstain	abstain	33
+P_CONSUME	read	abstain	29
+P_CREATE	abstain	abstain	32
+P_CREATE	read	read	28
+P_EMOTION	abstain	abstain	37
+P_EMOTION	read	read	26
+P_EXIST	abstain	abstain	4
+P_GIVE	abstain	abstain	4
+P_PERCEIVE	abstain	abstain	4
+P_POSSESS	abstain	abstain	4
+P_STATE	abstain	abstain	3
+# path x observed entry among the rows that are read
+{'U3': 76, 'U': 4}

@@ -1,0 +1,4 @@
+45c45
+< BASE_COMMIT = '0ff3f35'
+---
+> BASE_COMMIT = '2732274'  # integration: dev before the W3-b1 merge (W5-a changed the base reading)

@@ -1,0 +1,17 @@
+........................................................................ [ 32%]
+........................................................................ [ 64%]
+.......................F................................................ [ 97%]
+.....s                                                                   [100%]
+=================================== FAILURES ===================================
+_ test_T1_the_entry_returns_the_documented_shape_and_routes_through_the_real_reader _
+tests/test_routing_from_text_entry.py:41: in test_T1_the_entry_returns_the_documented_shape_and_routes_through_the_real_reader
+    assert out["abstention"]["units"] == [
+E   AssertionError: assert [{'index': 0,...EMENT']}, ...] == [{'index': 0,...EMENT']}, ...]
+E     
+E     At index 6 diff: {'index': 6, 'status': 'UNREAD', 'text': 'ハルとセキは同じ会社だ。', 'reasons': ['NO_SUPPORTED_CLAUSE']} != {'index': 6, 'status': 'NAME_UNRESOLVED', 'text': 'ハルとセキは同じ会社だ。', 'reasons': ['NAME_UNVERIFIED:ハル:NO_PLACEMENT']}
+E     Use -v to get more diff
+===================== environment classification of skips ======================
+UNCLASSIFIED_SKIP: tests/attack/test_attack_w5d.py::test_frame_confirmed_partial_intersection_does_not_authorize_unbacked_type
+=========================== short test summary info ============================
+FAILED tests/test_routing_from_text_entry.py::test_T1_the_entry_returns_the_documented_shape_and_routes_through_the_real_reader
+1 failed, 220 passed, 1 skipped in 7.38s

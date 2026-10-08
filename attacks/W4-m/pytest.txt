@@ -1,0 +1,154 @@
+FFFF......                                                               [100%]
+=================================== FAILURES ===================================
+___________________ test_tampered_export_cannot_be_attached ____________________
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1359/test_tampered_export_cannot_be0')
+
+    def test_tampered_export_cannot_be_attached(tmp_path):
+        """Drop a rewrite trigger, alter one row, restore its exact SQL, then attach the export."""
+        origin, moved = tmp_path / "origin", tmp_path / "moved"
+        sov.create(origin, "s1", "owner-a")
+        sov.open_ledger(origin, "s1").append(
+            {"kind": "utterance", "payload": {"phrase": "original"}})
+        exported = tmp_path / "s1.sqlite"
+        assert sov.export(origin, "s1", str(exported))["verdict"] == "EXPORTED"
+    
+        conn = sqlite3.connect(exported, isolation_level=None)
+        conn.execute("DROP TRIGGER event_log_no_update")
+        conn.execute("UPDATE event_log SET payload = ? WHERE seq = 1",
+                     (json.dumps({"phrase": "forged"}, separators=(",", ":")),))
+        conn.execute(
+            "CREATE TRIGGER event_log_no_update BEFORE UPDATE ON event_log "
+            "BEGIN SELECT RAISE(ABORT, 'event_log is append-only: no update'); END")
+        conn.close()
+    
+        attached = sov.attach(moved, file=str(exported))
+        observed = (attached["verdict"],
+                    sov.open_ledger(moved, "s1").events()[0]["payload"]["phrase"])
+>       assert observed == ("UNREADABLE_SCHEMA", "original"), observed
+E       AssertionError: ('ATTACHED', 'forged')
+E       assert ('ATTACHED', 'forged') == ('UNREADABLE_...', 'original')
+E         
+E         At index 0 diff: 'ATTACHED' != 'UNREADABLE_SCHEMA'
+E         Use -v to get more diff
+
+attacks/W4-m/test_attack_sovereign.py:48: AssertionError
+________ test_revoking_consent_while_promote_is_in_flight_stops_writes _________
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1359/test_revoking_consent_while_pr0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x106734f90>
+
+    def test_revoking_consent_while_promote_is_in_flight_stops_writes(tmp_path, monkeypatch):
+        """Pause after promote read consent=true; revoke before it appends either promotion row."""
+        _promotable(tmp_path)
+        analyzed, resume = threading.Event(), threading.Event()
+        real_analyze = sov._sov_analyze
+    
+        def pause_after_analysis(*args, **kwargs):
+            result = real_analyze(*args, **kwargs)
+            analyzed.set()
+            assert resume.wait(5), "test synchronization timed out"
+            return result
+    
+        monkeypatch.setattr(sov, "_sov_analyze", pause_after_analysis)
+        result, errors = [], []
+    
+        def run_promote():
+            try:
+                result.append(sov.promote(tmp_path, "s1", now=lambda: _day(3)))
+            except BaseException as exc:  # preserve worker errors for the main test thread
+                errors.append(exc)
+    
+        worker = threading.Thread(target=run_promote)
+        worker.start()
+        assert analyzed.wait(5), "promote did not reach the synchronized point"
+        sov.set_consent(tmp_path, "s1", False, now=lambda: _day(4))
+        resume.set()
+        worker.join(5)
+        assert not worker.is_alive(), "promote did not finish"
+        assert not errors, errors
+    
+        assert sov.describe(tmp_path, "s1").consent["promote"] is False
+>       assert result[0]["verdict"] == "NO_CONSENT", result[0]
+E       AssertionError: {'verdict': 'PROMOTED', 'store_id': 's1', 'basis': 'conversation:s1', 'promoted': [{'promotion_id': '60615ad34c223a0cbc9d2932', 'kind': 'construction_evidence', 'key': 'candidate', 'count': 3, ...}], ...}
+E       assert 'PROMOTED' == 'NO_CONSENT'
+E         
+E         - NO_CONSENT
+E         + PROMOTED
+
+attacks/W4-m/test_attack_sovereign.py:82: AssertionError
+_________ test_release_racing_with_promote_leaves_no_active_promotion __________
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1359/test_release_racing_with_promo0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x1066f88d0>
+
+    def test_release_racing_with_promote_leaves_no_active_promotion(tmp_path, monkeypatch):
+        """Pause before the structure-side promotion append; release completes, then resume."""
+        _promotable(tmp_path)
+        reached, resume = threading.Event(), threading.Event()
+        real_append = sov._sov_append_structure_promotion
+    
+        def pause_before_structure_append(*args, **kwargs):
+            reached.set()
+            assert resume.wait(5), "test synchronization timed out"
+            return real_append(*args, **kwargs)
+    
+        monkeypatch.setattr(sov, "_sov_append_structure_promotion", pause_before_structure_append)
+        result, errors = [], []
+    
+        def run_promote():
+            try:
+                result.append(sov.promote(tmp_path, "s1", now=lambda: _day(3)))
+            except BaseException as exc:
+                errors.append(exc)
+    
+        worker = threading.Thread(target=run_promote)
+        worker.start()
+        assert reached.wait(5), "promote did not reach the synchronized point"
+        assert sov.release(tmp_path, "s1", "s1", now=lambda: _day(4))["verdict"] == "RELEASED"
+        resume.set()
+        worker.join(5)
+        assert not worker.is_alive(), "promote did not finish"
+        assert not errors, errors
+    
+        answer = sov.promotions_answer(tmp_path, include_retired=False)
+>       assert answer["promotions"] == [], answer
+E       AssertionError: {'verdict': 'ANSWER', 'structure': 'PRESENT', 'scope': 'active', 'promotions': [{'seq': 1, 'ts': '2026-10-04T00:00:00+00:00', 'promotion_id': '60615ad34c223a0cbc9d2932', 'store_id': 's1', ...}]}
+E       assert [{'seq': 1, '...': 's1', ...}] == []
+E         
+E         Left contains one more item: {'seq': 1, 'ts': '2026-10-04T00:00:00+00:00', 'promotion_id': '60615ad34c223a0cbc9d2932', 'store_id': 's1', ...}
+E         Use -v to get more diff
+
+attacks/W4-m/test_attack_sovereign.py:115: AssertionError
+_______ test_two_process_promotions_do_not_duplicate_the_same_candidate ________
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1359/test_two_process_promotions_do0')
+
+    def test_two_process_promotions_do_not_duplicate_the_same_candidate(tmp_path):
+        if "fork" not in multiprocessing.get_all_start_methods():
+            pytest.skip("this race probe requires fork so both children inherit initialized test helpers")
+        _promotable(tmp_path)
+        ctx = multiprocessing.get_context("fork")
+        both_analyzed, result_queue = ctx.Barrier(2), ctx.Queue()
+        children = [ctx.Process(target=_promote_process,
+                                args=(str(tmp_path), both_analyzed, result_queue)) for _ in range(2)]
+        for child in children:
+            child.start()
+        results = [result_queue.get(timeout=15) for _ in children]
+        for child in children:
+            child.join(15)
+        assert all(child.exitcode == 0 for child in children), [child.exitcode for child in children]
+        assert all(status == "ok" for status, _ in results), results
+        active = sov.active_promotions(tmp_path, "s1")
+>       assert len(active) == 1, {"results": results, "active": active}
+E       AssertionError: {'results': [('ok', {'verdict': 'PROMOTED', 'store_id': 's1', 'basis': 'conversation:s1', 'promoted': [{'promotion_id'.....}, {'seq': 2, 'ts': '2026-10-04T00:00:00+00:00', 'promotion_id': '60615ad34c223a0cbc9d2932', 'store_id': 's1', ...}]}
+E       assert 2 == 1
+E        +  where 2 = len([{'seq': 1, 'ts': '2026-10-04T00:00:00+00:00', 'promotion_id': '60615ad34c223a0cbc9d2932', 'store_id': 's1', ...}, {'seq': 2, 'ts': '2026-10-04T00:00:00+00:00', 'promotion_id': '60615ad34c223a0cbc9d2932', 'store_id': 's1', ...}])
+
+attacks/W4-m/test_attack_sovereign.py:149: AssertionError
+=========================== short test summary info ============================
+FAILED attacks/W4-m/test_attack_sovereign.py::test_tampered_export_cannot_be_attached
+FAILED attacks/W4-m/test_attack_sovereign.py::test_revoking_consent_while_promote_is_in_flight_stops_writes
+FAILED attacks/W4-m/test_attack_sovereign.py::test_release_racing_with_promote_leaves_no_active_promotion
+FAILED attacks/W4-m/test_attack_sovereign.py::test_two_process_promotions_do_not_duplicate_the_same_candidate
+4 failed, 6 passed in 0.32s

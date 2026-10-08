@@ -1,0 +1,6 @@
+a01 {'V2': (1611.49, 'CHOICE', 'CHOICE'), 'V123': (0.01, 'UNKNOWN_NO_FIXED_POINT', None)}
+a02 {'V2': (1611.6, 'CHOICE', 'CHOICE'), 'V123': (0.01, 'ANSWER', 'CHOICE')}
+a03 {'V2': (1612.41, 'CHOICE', 'CHOICE'), 'V123': (0.01, 'UNKNOWN_NO_EVIDENCE', None)}
+a04 {'V2': (1628.47, 'CHOICE', 'CHOICE'), 'V123': (0.01, 'UNKNOWN_NO_EVIDENCE', None)}
+/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/multiprocessing/resource_tracker.py:254: UserWarning: resource_tracker: There appear to be 6 leaked semaphore objects to clean up at shutdown
+  warnings.warn('resource_tracker: There appear to be %d '

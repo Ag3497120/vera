@@ -1,0 +1,8 @@
+            ^^^^^^^^^^^^^^^^^^^
+E           AttributeError: '_NoInitMemory' object has no attribute '_supersede_log'
+
+verantyx/memory_frame.py:258: AttributeError
+=========================== short test summary info ============================
+FAILED tests/test_w1g_decision_bc_supersede.py::test_decision_from_exchange_without_memory_returns_a_draft
+FAILED tests/test_w1g_decision_bc_supersede.py::test_subclass_without_init_can_write_and_supersede_and_account
+FAILED tests/test_w1g_decision_bc_supersede.py::test_subclass_without_init_applies_an_event_that_arrives_before_its_record

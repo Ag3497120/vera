@@ -1,0 +1,32 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 12 items / 11 deselected / 1 selected
+
+tests/attack/test_semantic_unknown_paraphrase.py::test_changed_compound_meaning_changes_the_constructed_route FAILED [100%]
+
+=== FAILURES ===
+_________ test_changed_compound_meaning_changes_the_constructed_route __________
+
+    def test_changed_compound_meaning_changes_the_constructed_route():
+        view = _view("house and boat", (("place", "house"), ("object", "boat")))
+    
+        houseboat = unknown_candidates(view, "houseboat")
+        housecar = unknown_candidates(view, "housecar")
+    
+        assert houseboat.status == housecar.status == "CANDIDATES"
+>       assert houseboat.candidates[0].kind == "KIN_NEIGHBOURHOOD"
+E       AssertionError: assert 'NO_REACH' == 'KIN_NEIGHBOURHOOD'
+E         
+E         - KIN_NEIGHBOURHOOD
+E         + NO_REACH
+
+tests/attack/test_semantic_unknown_paraphrase.py:120: AssertionError
+=== short test summary info ===
+FAILED tests/attack/test_semantic_unknown_paraphrase.py::test_changed_compound_meaning_changes_the_constructed_route - AssertionError: assert 'NO_REACH' == 'KIN_NEIGHBOURHOOD'
+  
+  - KIN_NEIGHBOURHOOD
+  + NO_REACH
+=== 1 failed, 11 deselected ===

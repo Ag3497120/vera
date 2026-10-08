@@ -1,0 +1,4 @@
+$ vpy -m pytest -q -p no:cacheprovider tests/test_agent_routing.py -k R4
+...                                                                      [100%]
+3 passed, 93 deselected in 0.27s
+exit=0

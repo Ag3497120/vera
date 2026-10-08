@@ -1,0 +1,28 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 12 items / 11 deselected / 1 selected
+
+tests/attack/test_semantic_names_unicode_noise.py::test_name_split_preserves_decomposed_combining_sequence FAILED [100%]
+
+=== FAILURES ===
+___________ test_name_split_preserves_decomposed_combining_sequence ____________
+
+    def test_name_split_preserves_decomposed_combining_sequence():
+        decomposed_name = "か\u3099"
+        cover = [
+            _token("技師", "名詞", "一般", 0, 2),
+            _token(decomposed_name, "名詞", "固有名詞", 2, 4),
+        ]
+    
+>       assert name_split_in(cover, "技師" + decomposed_name) == ("技師", decomposed_name)
+E       AssertionError: assert None == ('\u6280\u5e2b', '\u304b\u3099')
+E        +  where None = name_split_in([('\u6280\u5e2b', '\u540d\u8a5e', '\u4e00\u822c', 0, 2), ('\u304b\u3099', '\u540d\u8a5e', '\u56fa\u6709\u540d\u8a5e', 2, 4)], ('\u6280\u5e2b' + '\u304b\u3099'))
+
+tests/attack/test_semantic_names_unicode_noise.py:89: AssertionError
+=== short test summary info ===
+FAILED tests/attack/test_semantic_names_unicode_noise.py::test_name_split_preserves_decomposed_combining_sequence - AssertionError: assert None == ('\u6280\u5e2b', '\u304b\u3099')
+ +  where None = name_split_in([('\u6280\u5e2b', '\u540d\u8a5e', '\u4e00\u822c', 0, 2), ('\u304b\u3099', '\u540d\u8a5e', '\u56fa\u6709\u540d\u8a5e', 2, 4)], ('\u6280\u5e2b' + '\u304b\u3099'))
+=== 1 failed, 11 deselected ===

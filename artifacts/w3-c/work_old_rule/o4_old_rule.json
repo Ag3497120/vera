@@ -1,0 +1,494 @@
+{
+ "all_rules_ok": false,
+ "pair_L09_L10": {
+  "differing_ledger_seqs": [
+   2
+  ],
+  "every_difference_is_made_by_the_differing_line": true,
+  "focus": {
+   "LG09": [
+    "貸す|+|past|agent=事務員;patient=辞書;recipient=学生",
+    "貸す|+|past|agent=犬;patient=辞書;recipient=学生"
+   ],
+   "LG10": "貸す|+|past|agent=教授;patient=辞書;recipient=学生"
+  },
+  "ok": true,
+  "outputs_differ": true,
+  "stage_differences": [
+   {
+    "cell": "cell:{\"arms\":[{\"kind\":\"FILLER\",\"role\":\"agent\",\"surfaces\":[\"事務員\"]},{\"kind\":\"FILLER\",\"role\":\"patient\",\"surfaces\":[\"辞書\"]},{\"kind\":\"FILLER\",\"role\":\"recipient\",\"surfaces\":[\"学生\"]}],\"center\":{\"modality\":null,\"polarity\":\"+\",\"predicate\":\"貸す\",\"tense\":\"past\",\"voice\":\"active\"}}",
+    "is_the_differing_line": true,
+    "ledger_seqs": [
+     2
+    ],
+    "stage": "recency"
+   },
+   {
+    "cell": "cell:{\"arms\":[{\"kind\":\"FILLER\",\"role\":\"agent\",\"surfaces\":[\"教授\"]},{\"kind\":\"FILLER\",\"role\":\"patient\",\"surfaces\":[\"辞書\"]},{\"kind\":\"FILLER\",\"role\":\"recipient\",\"surfaces\":[\"学生\"]}],\"center\":{\"modality\":null,\"polarity\":\"+\",\"predicate\":\"貸す\",\"tense\":\"past\",\"voice\":\"active\"}}",
+    "is_the_differing_line": true,
+    "ledger_seqs": [
+     2
+    ],
+    "stage": "recency"
+   }
+  ]
+ },
+ "pair_outputs_differ": true,
+ "rows": [
+  {
+   "alternative_exists": true,
+   "alternatives": 1,
+   "alternatives_at_turn1_state": 2,
+   "attribution_registered_reading": {
+    "appended_seqs": [
+     4,
+     5
+    ],
+    "ok": true,
+    "separations": [
+     {
+      "ledger_seqs": [
+       5
+      ],
+      "stage": "recency",
+      "turn1_appended_among_them": [
+       5
+      ]
+     }
+    ]
+   },
+   "attribution_turn1_reading": {
+    "appended_seqs": [
+     4,
+     5
+    ],
+    "ok": true,
+    "separations": [
+     {
+      "ledger_seqs": [
+       5
+      ],
+      "stage": "recency",
+      "turn1_appended_among_them": [
+       5
+      ]
+     }
+    ]
+   },
+   "case": "O4-a-L03",
+   "ledger": "L03",
+   "rule_ok": true,
+   "rule_ok_if_alternative_is_read_at_turn1_state": true,
+   "same_focus_and_realization": false,
+   "turn1_focus": "貸す|+|past|agent=教授;patient=辞書;recipient=学生",
+   "turn1_kind": "FOCUS",
+   "turn2_boundaries": [
+    {
+     "between": [
+      1,
+      2
+     ],
+     "decided_by": "recency"
+    },
+    {
+     "between": [
+      2,
+      3
+     ],
+     "decided_by": "utter_neighbor"
+    }
+   ],
+   "turn2_cells_ledger_seqs": {
+    "cell:{\"arms\":[{\"kind\":\"FILLER\",\"role\":\"agent\",\"surfaces\":[\"事務員\"]},{\"kind\":\"FILLER\",\"role\":\"patient\",\"surfaces\":[\"辞書\"]},{\"kind\":\"FILLER\",\"role\":\"recipient\",\"surfaces\":[\"学生\"]}],\"center\":{\"modality\":null,\"polarity\":\"+\",\"predicate\":\"貸す\",\"tense\":\"past\",\"voice\":\"active\"}}": {
+     "decided": [
+      3
+     ],
+     "distance": [],
+     "recency": [],
+     "utter_neighbor": [
+      4
+     ],
+     "utter_verbatim": []
+    },
+    "cell:{\"arms\":[{\"kind\":\"FILLER\",\"role\":\"agent\",\"surfaces\":[\"教授\"]},{\"kind\":\"FILLER\",\"role\":\"patient\",\"surfaces\":[\"辞書\"]},{\"kind\":\"FILLER\",\"role\":\"recipient\",\"surfaces\":[\"学生\"]}],\"center\":{\"modality\":null,\"polarity\":\"+\",\"predicate\":\"貸す\",\"tense\":\"past\",\"voice\":\"active\"}}": {
+     "decided": [
+      1,
+      2
+     ],
+     "distance": [],
+     "recency": [
+      5
+     ],
+     "utter_neighbor": [
+      4
+     ],
+     "utter_verbatim": []
+    },
+    "cell:{\"arms\":[{\"kind\":\"FILLER\",\"role\":\"agent\",\"surfaces\":[\"犬\"]},{\"kind\":\"FILLER\",\"role\":\"patient\",\"surfaces\":[\"辞書\"]},{\"kind\":\"FILLER\",\"role\":\"recipient\",\"surfaces\":[\"学生\"]}],\"center\":{\"modality\":null,\"polarity\":\"+\",\"predicate\":\"貸す\",\"tense\":\"past\",\"voice\":\"active\"}}": {
+     "decided": [],
+     "distance": [],
+     "recency": [],
+     "utter_neighbor": [],
+     "utter_verbatim": []
+    }
+   },
+   "turn2_focus": "貸す|+|past|agent=事務員;patient=辞書;recipient=学生",
+   "turn2_kind": "FOCUS",
+   "turn2_utterance": {
+    "skipped_same_as_anchor": [],
+    "used_seq": 4
+   }
+  },
+  {
+   "alternative_exists": false,
+   "alternatives": 0,
+   "alternatives_at_turn1_state": 0,
+   "attribution_registered_reading": null,
+   "attribution_turn1_reading": null,
+   "case": "O4-b-L04",
+   "ledger": "L04",
+   "rule_ok": true,
+   "rule_ok_if_alternative_is_read_at_turn1_state": true,
+   "same_focus_and_realization": true,
+   "turn1_focus": "渡す|+|past|agent=車掌;patient=切符;recipient=乗客",
+   "turn1_kind": "FOCUS",
+   "turn2_boundaries": [],
+   "turn2_cells_ledger_seqs": {
+    "cell:{\"arms\":[{\"kind\":\"FILLER\",\"role\":\"agent\",\"surfaces\":[\"車掌\"]},{\"kind\":\"FILLER\",\"role\":\"patient\",\"surfaces\":[\"切符\"]},{\"kind\":\"FILLER\",\"role\":\"recipient\",\"surfaces\":[\"乗客\"]}],\"center\":{\"modality\":null,\"polarity\":\"+\",\"predicate\":\"渡す\",\"tense\":\"past\",\"voice\":\"active\"}}": {
+     "decided": [],
+     "distance": [],
+     "recency": [
+      4
+     ],
+     "utter_neighbor": [
+      3
+     ],
+     "utter_verbatim": []
+    }
+   },
+   "turn2_focus": "渡す|+|past|agent=車掌;patient=切符;recipient=乗客",
+   "turn2_kind": "FOCUS",
+   "turn2_utterance": {
+    "skipped_same_as_anchor": [],
+    "used_seq": 3
+   }
+  },
+  {
+   "alternative_exists": true,
+   "alternatives": 1,
+   "alternatives_at_turn1_state": 0,
+   "attribution_registered_reading": {
+    "appended_seqs": [
+     2,
+     3
+    ],
+    "ok": true,
+    "separations": [
+     {
+      "ledger_seqs": [
+       3
+      ],
+      "stage": "recency",
+      "turn1_appended_among_them": [
+       3
+      ]
+     }
+    ]
+   },
+   "attribution_turn1_reading": null,
+   "case": "O4-c-L05",
+   "ledger": "L05",
+   "rule_ok": true,
+   "rule_ok_if_alternative_is_read_at_turn1_state": false,
+   "same_focus_and_realization": false,
+   "turn1_focus": "貸す|+|past|agent=教授;patient=辞書;recipient=学生",
+   "turn1_kind": "FOCUS",
+   "turn2_boundaries": [
+    {
+     "between": [
+      1,
+      2
+     ],
+     "decided_by": "recency"
+    },
+    {
+     "between": [
+      2,
+      3
+     ],
+     "decided_by": "utter_neighbor"
+    }
+   ],
+   "turn2_cells_ledger_seqs": {
+    "cell:{\"arms\":[{\"kind\":\"FILLER\",\"role\":\"agent\",\"surfaces\":[\"事務員\"]},{\"kind\":\"FILLER\",\"role\":\"patient\",\"surfaces\":[\"辞書\"]},{\"kind\":\"FILLER\",\"role\":\"recipient\",\"surfaces\":[\"学生\"]}],\"center\":{\"modality\":null,\"polarity\":\"+\",\"predicate\":\"貸す\",\"tense\":\"past\",\"voice\":\"active\"}}": {
+     "decided": [],
+     "distance": [],
+     "recency": [],
+     "utter_neighbor": [
+      2
+     ],
+     "utter_verbatim": []
+    },
+    "cell:{\"arms\":[{\"kind\":\"FILLER\",\"role\":\"agent\",\"surfaces\":[\"教授\"]},{\"kind\":\"FILLER\",\"role\":\"patient\",\"surfaces\":[\"辞書\"]},{\"kind\":\"FILLER\",\"role\":\"recipient\",\"surfaces\":[\"学生\"]}],\"center\":{\"modality\":null,\"polarity\":\"+\",\"predicate\":\"貸す\",\"tense\":\"past\",\"voice\":\"active\"}}": {
+     "decided": [],
+     "distance": [],
+     "recency": [
+      3
+     ],
+     "utter_neighbor": [
+      2
+     ],
+     "utter_verbatim": []
+    },
+    "cell:{\"arms\":[{\"kind\":\"FILLER\",\"role\":\"agent\",\"surfaces\":[\"犬\"]},{\"kind\":\"FILLER\",\"role\":\"patient\",\"surfaces\":[\"辞書\"]},{\"kind\":\"FILLER\",\"role\":\"recipient\",\"surfaces\":[\"学生\"]}],\"center\":{\"modality\":null,\"polarity\":\"+\",\"predicate\":\"貸す\",\"tense\":\"past\",\"voice\":\"active\"}}": {
+     "decided": [],
+     "distance": [],
+     "recency": [],
+     "utter_neighbor": [],
+     "utter_verbatim": []
+    }
+   },
+   "turn2_focus": "貸す|+|past|agent=事務員;patient=辞書;recipient=学生",
+   "turn2_kind": "FOCUS",
+   "turn2_utterance": {
+    "skipped_same_as_anchor": [],
+    "used_seq": 2
+   }
+  },
+  {
+   "alternative_exists": false,
+   "alternatives": 0,
+   "alternatives_at_turn1_state": 0,
+   "attribution_registered_reading": null,
+   "attribution_turn1_reading": null,
+   "case": "O4-d-L01",
+   "ledger": "L01",
+   "rule_ok": false,
+   "rule_ok_if_alternative_is_read_at_turn1_state": false,
+   "same_focus_and_realization": false,
+   "turn1_focus": [
+    "貸す|+|past|agent=事務員;patient=辞書;recipient=学生",
+    "貸す|+|past|agent=教授;patient=辞書;recipient=学生",
+    "貸す|+|past|agent=犬;patient=辞書;recipient=学生"
+   ],
+   "turn1_kind": "TIE",
+   "turn2_boundaries": [
+    {
+     "between": [
+      1,
+      2
+     ],
+     "decided_by": "utter_neighbor"
+    }
+   ],
+   "turn2_cells_ledger_seqs": {
+    "cell:{\"arms\":[{\"kind\":\"FILLER\",\"role\":\"agent\",\"surfaces\":[\"事務員\"]},{\"kind\":\"FILLER\",\"role\":\"patient\",\"surfaces\":[\"辞書\"]},{\"kind\":\"FILLER\",\"role\":\"recipient\",\"surfaces\":[\"学生\"]}],\"center\":{\"modality\":null,\"polarity\":\"+\",\"predicate\":\"貸す\",\"tense\":\"past\",\"voice\":\"active\"}}": {
+     "decided": [],
+     "distance": [],
+     "recency": [],
+     "utter_neighbor": [
+      1
+     ],
+     "utter_verbatim": []
+    },
+    "cell:{\"arms\":[{\"kind\":\"FILLER\",\"role\":\"agent\",\"surfaces\":[\"教授\"]},{\"kind\":\"FILLER\",\"role\":\"patient\",\"surfaces\":[\"辞書\"]},{\"kind\":\"FILLER\",\"role\":\"recipient\",\"surfaces\":[\"学生\"]}],\"center\":{\"modality\":null,\"polarity\":\"+\",\"predicate\":\"貸す\",\"tense\":\"past\",\"voice\":\"active\"}}": {
+     "decided": [],
+     "distance": [],
+     "recency": [],
+     "utter_neighbor": [
+      1
+     ],
+     "utter_verbatim": []
+    },
+    "cell:{\"arms\":[{\"kind\":\"FILLER\",\"role\":\"agent\",\"surfaces\":[\"犬\"]},{\"kind\":\"FILLER\",\"role\":\"patient\",\"surfaces\":[\"辞書\"]},{\"kind\":\"FILLER\",\"role\":\"recipient\",\"surfaces\":[\"学生\"]}],\"center\":{\"modality\":null,\"polarity\":\"+\",\"predicate\":\"貸す\",\"tense\":\"past\",\"voice\":\"active\"}}": {
+     "decided": [],
+     "distance": [],
+     "recency": [],
+     "utter_neighbor": [],
+     "utter_verbatim": []
+    }
+   },
+   "turn2_focus": [
+    "貸す|+|past|agent=事務員;patient=辞書;recipient=学生",
+    "貸す|+|past|agent=教授;patient=辞書;recipient=学生"
+   ],
+   "turn2_kind": "TIE",
+   "turn2_utterance": {
+    "skipped_same_as_anchor": [],
+    "used_seq": 1
+   }
+  },
+  {
+   "alternative_exists": false,
+   "alternatives": 0,
+   "alternatives_at_turn1_state": 2,
+   "attribution_registered_reading": null,
+   "attribution_turn1_reading": {
+    "appended_seqs": [
+     2,
+     3
+    ],
+    "ok": true,
+    "separations": [
+     {
+      "ledger_seqs": [
+       2
+      ],
+      "stage": "utter_neighbor",
+      "turn1_appended_among_them": [
+       2
+      ]
+     },
+     {
+      "ledger_seqs": [
+       2
+      ],
+      "stage": "utter_neighbor",
+      "turn1_appended_among_them": [
+       2
+      ]
+     }
+    ]
+   },
+   "case": "O4-e-L07",
+   "ledger": "L07",
+   "rule_ok": false,
+   "rule_ok_if_alternative_is_read_at_turn1_state": true,
+   "same_focus_and_realization": false,
+   "turn1_focus": "貸す|+|past|agent=犬;patient=辞書;recipient=学生",
+   "turn1_kind": "FOCUS",
+   "turn2_boundaries": [
+    {
+     "between": [
+      1,
+      2
+     ],
+     "decided_by": "utter_neighbor"
+    }
+   ],
+   "turn2_cells_ledger_seqs": {
+    "cell:{\"arms\":[{\"kind\":\"FILLER\",\"role\":\"agent\",\"surfaces\":[\"事務員\"]},{\"kind\":\"FILLER\",\"role\":\"patient\",\"surfaces\":[\"辞書\"]},{\"kind\":\"FILLER\",\"role\":\"recipient\",\"surfaces\":[\"学生\"]}],\"center\":{\"modality\":null,\"polarity\":\"+\",\"predicate\":\"貸す\",\"tense\":\"past\",\"voice\":\"active\"}}": {
+     "decided": [],
+     "distance": [],
+     "recency": [],
+     "utter_neighbor": [
+      2
+     ],
+     "utter_verbatim": []
+    },
+    "cell:{\"arms\":[{\"kind\":\"FILLER\",\"role\":\"agent\",\"surfaces\":[\"教授\"]},{\"kind\":\"FILLER\",\"role\":\"patient\",\"surfaces\":[\"辞書\"]},{\"kind\":\"FILLER\",\"role\":\"recipient\",\"surfaces\":[\"学生\"]}],\"center\":{\"modality\":null,\"polarity\":\"+\",\"predicate\":\"貸す\",\"tense\":\"past\",\"voice\":\"active\"}}": {
+     "decided": [],
+     "distance": [],
+     "recency": [],
+     "utter_neighbor": [
+      2
+     ],
+     "utter_verbatim": []
+    },
+    "cell:{\"arms\":[{\"kind\":\"FILLER\",\"role\":\"agent\",\"surfaces\":[\"犬\"]},{\"kind\":\"FILLER\",\"role\":\"patient\",\"surfaces\":[\"辞書\"]},{\"kind\":\"FILLER\",\"role\":\"recipient\",\"surfaces\":[\"学生\"]}],\"center\":{\"modality\":null,\"polarity\":\"+\",\"predicate\":\"貸す\",\"tense\":\"past\",\"voice\":\"active\"}}": {
+     "decided": [
+      1
+     ],
+     "distance": [],
+     "recency": [
+      3
+     ],
+     "utter_neighbor": [],
+     "utter_verbatim": []
+    }
+   },
+   "turn2_focus": [
+    "貸す|+|past|agent=事務員;patient=辞書;recipient=学生",
+    "貸す|+|past|agent=教授;patient=辞書;recipient=学生"
+   ],
+   "turn2_kind": "TIE",
+   "turn2_utterance": {
+    "skipped_same_as_anchor": [],
+    "used_seq": 2
+   }
+  },
+  {
+   "alternative_exists": false,
+   "alternatives": 0,
+   "alternatives_at_turn1_state": 0,
+   "attribution_registered_reading": null,
+   "attribution_turn1_reading": null,
+   "case": "O4-f-L08",
+   "ledger": "L08",
+   "rule_ok": false,
+   "rule_ok_if_alternative_is_read_at_turn1_state": false,
+   "same_focus_and_realization": false,
+   "turn1_focus": [
+    "貸す|+|past|agent=教授;patient=辞書;recipient=学生",
+    "貸す|+|past|agent=犬;patient=辞書;recipient=学生"
+   ],
+   "turn1_kind": "TIE",
+   "turn2_boundaries": [
+    {
+     "between": [
+      1,
+      2
+     ],
+     "decided_by": "recency"
+    },
+    {
+     "between": [
+      2,
+      3
+     ],
+     "decided_by": "utter_neighbor"
+    }
+   ],
+   "turn2_cells_ledger_seqs": {
+    "cell:{\"arms\":[{\"kind\":\"FILLER\",\"role\":\"agent\",\"surfaces\":[\"事務員\"]},{\"kind\":\"FILLER\",\"role\":\"patient\",\"surfaces\":[\"辞書\"]},{\"kind\":\"FILLER\",\"role\":\"recipient\",\"surfaces\":[\"学生\"]}],\"center\":{\"modality\":null,\"polarity\":\"+\",\"predicate\":\"貸す\",\"tense\":\"past\",\"voice\":\"active\"}}": {
+     "decided": [
+      1
+     ],
+     "distance": [],
+     "recency": [
+      3
+     ],
+     "utter_neighbor": [
+      4
+     ],
+     "utter_verbatim": []
+    },
+    "cell:{\"arms\":[{\"kind\":\"FILLER\",\"role\":\"agent\",\"surfaces\":[\"教授\"]},{\"kind\":\"FILLER\",\"role\":\"patient\",\"surfaces\":[\"辞書\"]},{\"kind\":\"FILLER\",\"role\":\"recipient\",\"surfaces\":[\"学生\"]}],\"center\":{\"modality\":null,\"polarity\":\"+\",\"predicate\":\"貸す\",\"tense\":\"past\",\"voice\":\"active\"}}": {
+     "decided": [],
+     "distance": [],
+     "recency": [],
+     "utter_neighbor": [
+      4
+     ],
+     "utter_verbatim": []
+    },
+    "cell:{\"arms\":[{\"kind\":\"FILLER\",\"role\":\"agent\",\"surfaces\":[\"犬\"]},{\"kind\":\"FILLER\",\"role\":\"patient\",\"surfaces\":[\"辞書\"]},{\"kind\":\"FILLER\",\"role\":\"recipient\",\"surfaces\":[\"学生\"]}],\"center\":{\"modality\":null,\"polarity\":\"+\",\"predicate\":\"貸す\",\"tense\":\"past\",\"voice\":\"active\"}}": {
+     "decided": [],
+     "distance": [],
+     "recency": [],
+     "utter_neighbor": [],
+     "utter_verbatim": []
+    }
+   },
+   "turn2_focus": "貸す|+|past|agent=教授;patient=辞書;recipient=学生",
+   "turn2_kind": "FOCUS",
+   "turn2_utterance": {
+    "skipped_same_as_anchor": [],
+    "used_seq": 4
+   }
+  }
+ ],
+ "rows_ok": 3,
+ "rows_ok_if_alternative_is_read_at_turn1_state": 3,
+ "rows_total": 6,
+ "violations": [
+  "O4-d-L01",
+  "O4-e-L07",
+  "O4-f-L08"
+ ],
+ "violations_if_alternative_is_read_at_turn1_state": [
+  "O4-c-L05",
+  "O4-d-L01",
+  "O4-f-L08"
+ ]
+}

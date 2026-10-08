@@ -1,0 +1,10 @@
+全体pytest前:
+- tests/attack/w3a3/r6_48_queries.jsonl SHA-256 556436a80a9d521af1826722dc789b25773f01d0d6e41d6422530498b1bbb642
+- tests/attack/w3a3/r6_audit_summary.json SHA-256 962492c2457a52401e6493d02adebbf5e4fa9592c1e2e3723ae76b5161111717
+- tests/attack/w3a3/state_probes.json SHA-256 c27484e44b6e54d7dba1e28d3dc7ff5809bb5a07ea2b23dae8c8488380185ee0
+
+全体pytest後の確認:
+- 48行をHEADと比較。変更キーは frame_generated のみ。
+- r6_audit_summary.json と state_probes.json のSHA-256は前後一致。
+- git show HEAD:tests/attack/w3a3/r6_48_queries.jsonl > tests/attack/w3a3/r6_48_queries.jsonl で実行前へ復元。
+- 復元後の r6_48_queries.jsonl SHA-256 は 556436a80a9d521af1826722dc789b25773f01d0d6e41d6422530498b1bbb642。

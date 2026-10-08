@@ -1,0 +1,861 @@
+{
+ "builder_sha256": "a244c9670d7436a760a96d248cd70ae8859c8b50bed26352ccf41350c81e55e5",
+ "by_decisive_stage": {
+  "-": {
+   "unknown": 42
+  },
+  "est:context": {
+   "correct": 2,
+   "wrong": 3
+  },
+  "est:morphology:head+morphology:kin": {
+   "correct": 1
+  },
+  "notation": {
+   "correct": 2
+  }
+ },
+ "by_gold_type": {
+  "ABSTRACT": {
+   "unknown": 2
+  },
+  "ANIMAL": {
+   "unknown": 2
+  },
+  "ARTIFACT": {
+   "unknown": 3
+  },
+  "BODY_PART": {
+   "unknown": 3
+  },
+  "EVENT_ACT": {
+   "unknown": 2
+  },
+  "EVENT_ACT,TIME": {
+   "unknown": 1
+  },
+  "GROUP_ORG": {
+   "correct": 1,
+   "unknown": 3
+  },
+  "IDENTIFIER": {
+   "correct": 2
+  },
+  "INFO_LANGUAGE": {
+   "wrong": 2
+  },
+  "NATURAL_PHENOMENON": {
+   "unknown": 2
+  },
+  "PERSON": {
+   "unknown": 7
+  },
+  "PLACE": {
+   "unknown": 5
+  },
+  "PLANT": {
+   "unknown": 2
+  },
+  "QUANTITY": {
+   "correct": 2,
+   "unknown": 1
+  },
+  "STATE_PROPERTY": {
+   "unknown": 2
+  },
+  "SUBSTANCE_FOOD": {
+   "unknown": 3
+  },
+  "TIME": {
+   "unknown": 2
+  },
+  "TIME,EVENT_ACT": {
+   "unknown": 1
+  },
+  "WORK": {
+   "unknown": 1,
+   "wrong": 1
+  }
+ },
+ "by_kind": {
+  "coinage": {
+   "unknown": 3
+  },
+  "compound": {
+   "correct": 3,
+   "unknown": 34,
+   "wrong": 3
+  },
+  "proper": {
+   "correct": 2,
+   "unknown": 5
+  }
+ },
+ "coarse_types_sha256": "3a77789cbd51b6b24dfaec3d1940d750c6ec36d68aec8f3fab501a6778eef74b",
+ "command": [
+  "l3",
+  "--placement",
+  "/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/sample/run1",
+  "--data",
+  "dev"
+ ],
+ "config_sha256": "f7b47d37f4f0517127a6e85e94ca5d6a009734452fdde9cd3b4926716c69ed7e",
+ "content_sha256": "6590365c1d54a6a574b1c82389309377d96ffaf6e72b77ddaf1676e5ce418707",
+ "correct": 5,
+ "correct_rate": 0.1,
+ "data": "dev",
+ "errors": [
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "PERSON"
+   ],
+   "id": "DU001",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "夜間保育士",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "PERSON"
+   ],
+   "id": "DU002",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "地域見守り隊員",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "PERSON"
+   ],
+   "id": "DU003",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "新米落語家",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "PERSON"
+   ],
+   "id": "DU004",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "空き家管理人",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "PERSON"
+   ],
+   "id": "DU005",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "元プロ野球選手",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "GROUP_ORG"
+   ],
+   "id": "DU006",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "市民合唱団",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "GROUP_ORG"
+   ],
+   "id": "DU007",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "小規模酒造会社",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "ANIMAL"
+   ],
+   "id": "DU009",
+   "kind": "coinage",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "キンイロオオトカゲ",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "ANIMAL"
+   ],
+   "id": "DU010",
+   "kind": "coinage",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "白頭ワシミミズク",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "PLANT"
+   ],
+   "id": "DU011",
+   "kind": "coinage",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "アオバスミレ",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "PLANT"
+   ],
+   "id": "DU012",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "大輪のシャクヤク",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "ARTIFACT"
+   ],
+   "id": "DU013",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "折りたたみ式電動キックボード",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "ARTIFACT"
+   ],
+   "id": "DU014",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "家庭用パン焼き機",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "ARTIFACT"
+   ],
+   "id": "DU015",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "自走式草刈りロボット",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "SUBSTANCE_FOOD"
+   ],
+   "id": "DU016",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "昆布出汁の茶碗蒸し",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "SUBSTANCE_FOOD"
+   ],
+   "id": "DU017",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "黒糖きな粉ドーナツ",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "SUBSTANCE_FOOD"
+   ],
+   "id": "DU018",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "自家製ぬか漬け",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "PLACE"
+   ],
+   "id": "DU019",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "海沿いの水族展示館",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "PLACE"
+   ],
+   "id": "DU020",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "旧街道の宿場跡",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "PLACE"
+   ],
+   "id": "DU021",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "町営バスの待合所",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "PLACE"
+   ],
+   "id": "DU022",
+   "kind": "proper",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "霧降高原",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "EVENT_ACT",
+    "TIME"
+   ],
+   "id": "DU023",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "年末の大掃除",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "TIME",
+    "EVENT_ACT"
+   ],
+   "id": "DU024",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "町内一斉清掃日",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "TIME"
+   ],
+   "id": "DU025",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "連休明けの朝",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "TIME"
+   ],
+   "id": "DU026",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "夏休み直前",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "QUANTITY"
+   ],
+   "id": "DU029",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "月間平均気温",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "EVENT_ACT"
+   ],
+   "id": "DU030",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "近隣合同防災訓練",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "EVENT_ACT"
+   ],
+   "id": "DU031",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "卒業記念コンサート",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "STATE_PROPERTY"
+   ],
+   "id": "DU032",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "慢性的な腰痛",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "STATE_PROPERTY"
+   ],
+   "id": "DU033",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "軽い目まい状態",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "ABSTRACT"
+   ],
+   "id": "DU034",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "再帰的自己言及論",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "ABSTRACT"
+   ],
+   "id": "DU035",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "公共選択論",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "wrong",
+   "decided_by": "est:context",
+   "gold": [
+    "INFO_LANGUAGE"
+   ],
+   "id": "DU036",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [
+    "context:codex:code_qa"
+   ],
+   "origin": "estimated",
+   "state": "DECIDED",
+   "term": "市民憲章の草案",
+   "top": [
+    "IDENTIFIER"
+   ],
+   "unmarked": false
+  },
+  {
+   "cls": "wrong",
+   "decided_by": "est:context",
+   "gold": [
+    "INFO_LANGUAGE"
+   ],
+   "id": "DU037",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [
+    "context:codex:code_qa"
+   ],
+   "origin": "estimated",
+   "state": "DECIDED",
+   "term": "英語論文の要約",
+   "top": [
+    "IDENTIFIER"
+   ],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "BODY_PART"
+   ],
+   "id": "DU038",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "内側広筋",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "BODY_PART"
+   ],
+   "id": "DU039",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "腓骨",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "BODY_PART"
+   ],
+   "id": "DU040",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "鼻腔粘膜",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "NATURAL_PHENOMENON"
+   ],
+   "id": "DU041",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "放射冷却現象",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "NATURAL_PHENOMENON"
+   ],
+   "id": "DU042",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "局地的な突風",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "WORK"
+   ],
+   "id": "DU043",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "夕暮れの協奏曲",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "wrong",
+   "decided_by": "est:context",
+   "gold": [
+    "WORK"
+   ],
+   "id": "DU044",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [
+    "context:codex:code_qa"
+   ],
+   "origin": "estimated",
+   "state": "DECIDED",
+   "term": "消えた灯台の謎",
+   "top": [
+    "IDENTIFIER"
+   ],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "PERSON"
+   ],
+   "id": "DU045",
+   "kind": "proper",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "月影シグレ",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "PERSON"
+   ],
+   "id": "DU046",
+   "kind": "proper",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "蒼井ハルト",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "GROUP_ORG"
+   ],
+   "id": "DU049",
+   "kind": "proper",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "石動電機製作所",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "PLACE"
+   ],
+   "id": "DU050",
+   "kind": "proper",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "葛城山麓",
+   "top": [],
+   "unmarked": false
+  }
+ ],
+ "leaks_direct_not_notation": [],
+ "pass": {
+  "correct>=0.65": false,
+  "no_leaks": true,
+  "no_unmarked": true,
+  "returned_type<=0.20": true,
+  "wrong<=0.15": true
+ },
+ "placement": "/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/sample/run1",
+ "returned_type_among_unknown": 0,
+ "returned_type_rate": 0.0,
+ "time_utc": "2026-10-02T20:58:27Z",
+ "typed_n": 50,
+ "unknown_among_typed": 42,
+ "unknown_n": 15,
+ "unmarked_estimates": [],
+ "wrong": 3,
+ "wrong_rate": 0.06
+}

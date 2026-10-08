@@ -1,0 +1,105 @@
+frames_tried=222 newly_readable=102 members_of_the_two_types=111
+placement predicates (ns=P headwords): 10971, of them written with ASCII only: 0
+sample (seed 5) of 3302 direct TIME nouns written in 1-6 Japanese characters: 池田宣政 世界トラの日 赤口日 同光 風呂上がり 紙婚式 貞符 生没同日 承元元年 かんふく 射精後不応期 防災の日 上治 現代 こうしょう ウィーク とうこく 嘉暦 居摂 三時代区分法 国連デー 文永 ちょうろ 景元 上部ジュラ系 えんこう 見習い社員 ベンディアン 大統 五代十国 ジュラき 長寿 国際障害者年 エルール 鉄路節 高市佳明 しょうほう みんぽうのひ 永慶 永德 安定成長期 ぶとく ほうわ あなごのひ いい歯の日 バランジュ期 開館日 ヘタンギアン カールニア階 キオゲニアン 今日中 元鼎 ネオジン 政隆宝応 秦興 治承 バイユー期 ジュディグラ ナイターオフ 国際ポテト年 保元 かいたい 呉市営バス 天平神護 ようわ 両大戦間期 しだい 初始 保証期限 正和
+P_MOVE	猫が庭へいく。	いく	{"agent": "猫", "goal": "庭"}
+P_MOVE	猫が庭へいたる。	いたる	{"agent": "猫", "goal": "庭"}
+P_MOVE	猫が庭へいらしゃる。	いらしゃる	{"agent": "猫", "goal": "庭"}
+P_MOVE	猫が庭へくる。	くる	{"agent": "猫", "goal": "庭"}
+P_MOVE	猫が庭へすむ。	すむ	{"agent": "猫", "goal": "庭"}
+P_MOVE	猫が庭へたどり着く。	たどり着く	{"agent": "猫", "goal": "庭"}
+P_MOVE	猫が庭へつぐ。	つぐ	{"agent": "猫", "goal": "庭"}
+P_MOVE	猫が庭へとどまる。	とどまる	{"agent": "猫", "goal": "庭"}
+P_MOVE	猫が庭へなくなる。	なくなる	{"agent": "猫", "goal": "庭"}
+P_MOVE	猫が庭へはみ出す。	はみ出す	{"agent": "猫", "goal": "庭"}
+P_MOVE	猫が庭へひびく。	ひびく	{"agent": "猫", "goal": "庭"}
+P_MOVE	猫が庭へ上がる。	上がる	{"agent": "猫", "goal": "庭"}
+P_MOVE	猫が庭へ上る。	上る	{"agent": "猫", "goal": "庭"}
+P_MOVE	猫が庭へ乗る。	乗る	{"agent": "猫", "goal": "庭"}
+P_MOVE	猫が庭へ付き添う。	付き添う	{"agent": "猫", "goal": "庭"}
+P_MOVE	猫が庭へ伝わる。	伝わる	{"agent": "猫", "goal": "庭"}
+P_MOVE	猫が庭へ停まる。	停まる	{"agent": "猫", "goal": "庭"}
+P_MOVE	猫が庭へ動く。	動く	{"agent": "猫", "goal": "庭"}
+P_MOVE	猫が庭へ参る。	参る	{"agent": "猫", "goal": "庭"}
+P_MOVE	猫が庭へ吹き下ろす。	吹き下ろす	{"agent": "猫", "goal": "庭"}
+P_MOVE	猫が庭へ回る。	回る	{"agent": "猫", "goal": "庭"}
+P_MOVE	猫が庭へ在る。	在る	{"agent": "猫", "goal": "庭"}
+P_MOVE	猫が庭へ寄る。	寄る	{"agent": "猫", "goal": "庭"}
+P_MOVE	猫が庭へ引き返す。	引き返す	{"agent": "猫", "goal": "庭"}
+P_MOVE	猫が庭へ戻す。	戻す	{"agent": "猫", "goal": "庭"}
+P_MOVE	猫が庭へ架かる。	架かる	{"agent": "猫", "goal": "庭"}
+P_MOVE	猫が庭へ棲む。	棲む	{"agent": "猫", "goal": "庭"}
+P_MOVE	猫が庭へ次ぐ。	次ぐ	{"agent": "猫", "goal": "庭"}
+P_MOVE	猫が庭へ歩く。	歩く	{"agent": "猫", "goal": "庭"}
+P_MOVE	猫が庭へ流れこむ。	流れこむ	{"agent": "猫", "goal": "庭"}
+P_MOVE	猫が庭へ流れ出す。	流れ出す	{"agent": "猫", "goal": "庭"}
+P_MOVE	猫が庭へ流れ込む。	流れ込む	{"agent": "猫", "goal": "庭"}
+P_MOVE	猫が庭へ満つ。	満つ	{"agent": "猫", "goal": "庭"}
+P_MOVE	猫が庭へ産する。	産する	{"agent": "猫", "goal": "庭"}
+P_MOVE	猫が庭へ登る。	登る	{"agent": "猫", "goal": "庭"}
+P_MOVE	猫が庭へ移り住む。	移り住む	{"agent": "猫", "goal": "庭"}
+P_MOVE	猫が庭へ突き出す。	突き出す	{"agent": "猫", "goal": "庭"}
+P_MOVE	猫が庭へ立ち寄る。	立ち寄る	{"agent": "猫", "goal": "庭"}
+P_MOVE	猫が庭へ葬る。	葬る	{"agent": "猫", "goal": "庭"}
+P_MOVE	猫が庭へ走る。	走る	{"agent": "猫", "goal": "庭"}
+P_MOVE	猫が庭へ赴く。	赴く	{"agent": "猫", "goal": "庭"}
+P_MOVE	猫が庭へ越す。	越す	{"agent": "猫", "goal": "庭"}
+P_MOVE	猫が庭へ跨がる。	跨がる	{"agent": "猫", "goal": "庭"}
+P_MOVE	猫が庭へ跨る。	跨る	{"agent": "猫", "goal": "庭"}
+P_MOVE	猫が庭へ通じる。	通じる	{"agent": "猫", "goal": "庭"}
+P_MOVE	猫が庭へ通る。	通る	{"agent": "猫", "goal": "庭"}
+P_MOVE	猫が庭へ連れ帰る。	連れ帰る	{"agent": "猫", "goal": "庭"}
+P_MOVE	猫が庭へ降りる。	降りる	{"agent": "猫", "goal": "庭"}
+P_MOVE	猫が庭へ集まる。	集まる	{"agent": "猫", "goal": "庭"}
+P_MOVE	猫が庭へ面する。	面する	{"agent": "猫", "goal": "庭"}
+P_MOVE	猫が庭へ飛ぶ。	飛ぶ	{"agent": "猫", "goal": "庭"}
+P_MOVE	兄が駅から公園へいく。	いく	{"agent": "兄", "goal": "公園", "source": "駅"}
+P_MOVE	兄が駅から公園へいたる。	いたる	{"agent": "兄", "goal": "公園", "source": "駅"}
+P_MOVE	兄が駅から公園へいらしゃる。	いらしゃる	{"agent": "兄", "goal": "公園", "source": "駅"}
+P_MOVE	兄が駅から公園へくる。	くる	{"agent": "兄", "goal": "公園", "source": "駅"}
+P_MOVE	兄が駅から公園へすむ。	すむ	{"agent": "兄", "goal": "公園", "source": "駅"}
+P_MOVE	兄が駅から公園へたどり着く。	たどり着く	{"agent": "兄", "goal": "公園", "source": "駅"}
+P_MOVE	兄が駅から公園へつぐ。	つぐ	{"agent": "兄", "goal": "公園", "source": "駅"}
+P_MOVE	兄が駅から公園へとどまる。	とどまる	{"agent": "兄", "goal": "公園", "source": "駅"}
+P_MOVE	兄が駅から公園へなくなる。	なくなる	{"agent": "兄", "goal": "公園", "source": "駅"}
+P_MOVE	兄が駅から公園へはみ出す。	はみ出す	{"agent": "兄", "goal": "公園", "source": "駅"}
+P_MOVE	兄が駅から公園へひびく。	ひびく	{"agent": "兄", "goal": "公園", "source": "駅"}
+P_MOVE	兄が駅から公園へ上がる。	上がる	{"agent": "兄", "goal": "公園", "source": "駅"}
+P_MOVE	兄が駅から公園へ上る。	上る	{"agent": "兄", "goal": "公園", "source": "駅"}
+P_MOVE	兄が駅から公園へ乗る。	乗る	{"agent": "兄", "goal": "公園", "source": "駅"}
+P_MOVE	兄が駅から公園へ付き添う。	付き添う	{"agent": "兄", "goal": "公園", "source": "駅"}
+P_MOVE	兄が駅から公園へ伝わる。	伝わる	{"agent": "兄", "goal": "公園", "source": "駅"}
+P_MOVE	兄が駅から公園へ停まる。	停まる	{"agent": "兄", "goal": "公園", "source": "駅"}
+P_MOVE	兄が駅から公園へ動く。	動く	{"agent": "兄", "goal": "公園", "source": "駅"}
+P_MOVE	兄が駅から公園へ参る。	参る	{"agent": "兄", "goal": "公園", "source": "駅"}
+P_MOVE	兄が駅から公園へ吹き下ろす。	吹き下ろす	{"agent": "兄", "goal": "公園", "source": "駅"}
+P_MOVE	兄が駅から公園へ回る。	回る	{"agent": "兄", "goal": "公園", "source": "駅"}
+P_MOVE	兄が駅から公園へ在る。	在る	{"agent": "兄", "goal": "公園", "source": "駅"}
+P_MOVE	兄が駅から公園へ寄る。	寄る	{"agent": "兄", "goal": "公園", "source": "駅"}
+P_MOVE	兄が駅から公園へ引き返す。	引き返す	{"agent": "兄", "goal": "公園", "source": "駅"}
+P_MOVE	兄が駅から公園へ戻す。	戻す	{"agent": "兄", "goal": "公園", "source": "駅"}
+P_MOVE	兄が駅から公園へ架かる。	架かる	{"agent": "兄", "goal": "公園", "source": "駅"}
+P_MOVE	兄が駅から公園へ棲む。	棲む	{"agent": "兄", "goal": "公園", "source": "駅"}
+P_MOVE	兄が駅から公園へ次ぐ。	次ぐ	{"agent": "兄", "goal": "公園", "source": "駅"}
+P_MOVE	兄が駅から公園へ歩く。	歩く	{"agent": "兄", "goal": "公園", "source": "駅"}
+P_MOVE	兄が駅から公園へ流れこむ。	流れこむ	{"agent": "兄", "goal": "公園", "source": "駅"}
+P_MOVE	兄が駅から公園へ流れ出す。	流れ出す	{"agent": "兄", "goal": "公園", "source": "駅"}
+P_MOVE	兄が駅から公園へ流れ込む。	流れ込む	{"agent": "兄", "goal": "公園", "source": "駅"}
+P_MOVE	兄が駅から公園へ満つ。	満つ	{"agent": "兄", "goal": "公園", "source": "駅"}
+P_MOVE	兄が駅から公園へ産する。	産する	{"agent": "兄", "goal": "公園", "source": "駅"}
+P_MOVE	兄が駅から公園へ登る。	登る	{"agent": "兄", "goal": "公園", "source": "駅"}
+P_MOVE	兄が駅から公園へ移り住む。	移り住む	{"agent": "兄", "goal": "公園", "source": "駅"}
+P_MOVE	兄が駅から公園へ突き出す。	突き出す	{"agent": "兄", "goal": "公園", "source": "駅"}
+P_MOVE	兄が駅から公園へ立ち寄る。	立ち寄る	{"agent": "兄", "goal": "公園", "source": "駅"}
+P_MOVE	兄が駅から公園へ葬る。	葬る	{"agent": "兄", "goal": "公園", "source": "駅"}
+P_MOVE	兄が駅から公園へ走る。	走る	{"agent": "兄", "goal": "公園", "source": "駅"}
+P_MOVE	兄が駅から公園へ赴く。	赴く	{"agent": "兄", "goal": "公園", "source": "駅"}
+P_MOVE	兄が駅から公園へ越す。	越す	{"agent": "兄", "goal": "公園", "source": "駅"}
+P_MOVE	兄が駅から公園へ跨がる。	跨がる	{"agent": "兄", "goal": "公園", "source": "駅"}
+P_MOVE	兄が駅から公園へ跨る。	跨る	{"agent": "兄", "goal": "公園", "source": "駅"}
+P_MOVE	兄が駅から公園へ通じる。	通じる	{"agent": "兄", "goal": "公園", "source": "駅"}
+P_MOVE	兄が駅から公園へ通る。	通る	{"agent": "兄", "goal": "公園", "source": "駅"}
+P_MOVE	兄が駅から公園へ連れ帰る。	連れ帰る	{"agent": "兄", "goal": "公園", "source": "駅"}
+P_MOVE	兄が駅から公園へ降りる。	降りる	{"agent": "兄", "goal": "公園", "source": "駅"}
+P_MOVE	兄が駅から公園へ集まる。	集まる	{"agent": "兄", "goal": "公園", "source": "駅"}
+P_MOVE	兄が駅から公園へ面する。	面する	{"agent": "兄", "goal": "公園", "source": "駅"}
+P_MOVE	兄が駅から公園へ飛ぶ。	飛ぶ	{"agent": "兄", "goal": "公園", "source": "駅"}

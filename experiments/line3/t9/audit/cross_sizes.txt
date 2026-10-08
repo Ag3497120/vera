@@ -1,0 +1,9 @@
+fulllead crosses (level mid, the T9 cache): placed units per cross incl. twins
+RUN crosses 3653 | placed units: median 1 mean 3.33 max 14 | dist (6=6+): [(1, 1946), (2, 127), (3, 138), (4, 198), (5, 253), (6, 991)] | stop {'budget': 2169, 'exhausted': 1484} | co-occurring units median 10 | expanded class size median 1 max 945
+WORD crosses 3557 | placed units: median 1 mean 3.25 max 37 | dist (6=6+): [(1, 2187), (2, 178), (3, 140), (4, 139), (5, 96), (6, 817)] | stop {'budget': 2895, 'exhausted': 662} | co-occurring units median 16 | expanded class size median 1 max 935
+CHAR crosses 1358 | placed units: median 7.5 mean 16.75 max 115 | dist (6=6+): [(1, 402), (2, 63), (3, 47), (4, 38), (5, 44), (6, 764)] | stop {'budget': 1287, 'exhausted': 71} | co-occurring units median 62.0 | expanded class size median 1.0 max 159
+budget level mid = Budget(max_class=1000, max_states=20000, max_moves=400000)
+RUN budget stops: reason Counter({'max_moves': 1785, 'max_states': 380, 'max_class': 4}) | size of the group that broke it (units tied at the same share) median 13 | crosses of size 1 that broke on the FIRST group: 1941 | that group share n(seed,v) median 1
+WORD budget stops: reason Counter({'max_moves': 2636, 'max_states': 259}) | size of the group that broke it (units tied at the same share) median 18 | crosses of size 1 that broke on the FIRST group: 2186 | that group share n(seed,v) median 1
+RUN gold units (evidence sentence, one unit): 53; corpus frequency n(gold) median 1; crosses OTHER than its own that seat it: median 1, zero for 13 of 53; co-occurring units of the gold sentence median 14
+all RUN units: seated in no other cross: 1646 of 3653

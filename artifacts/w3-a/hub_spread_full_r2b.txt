@@ -1,0 +1,7 @@
+placement: /Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r2b/run1
+小説家 2212 [(('DECIDED', 'GROUP_ORG'), 2070), (('NONE', ''), 140), (('MULTIPLE', 'GROUP_ORG,PLANT'), 1), (('MULTIPLE', 'GROUP_ORG,PERSON'), 1)]
+僧 826 [(('DECIDED', 'GROUP_ORG'), 768), (('NONE', ''), 57), (('MULTIPLE', 'GROUP_ORG,INFO_LANGUAGE,PERSON,QUANTITY'), 1)]
+大名 1566 [(('DECIDED', 'TIME'), 1496), (('NONE', ''), 70)]
+武将 6917 [(('NONE', ''), 5908), (('UNPLACED', ''), 1007), (('MULTIPLE', 'EVENT_ACT,PLACE'), 1), (('DECIDED', 'P_STATE'), 1)]
+僧侶 439 [(('NONE', ''), 380), (('UNPLACED', ''), 58), (('DECIDED', 'P_STATE'), 1)]
+網膜 0 []

@@ -1,0 +1,27 @@
+general_qa: 317423 rows in 26.806s
+pro: 1366290 rows in 33.585s
+figurative_commonsense: 238905 rows in 9.319s
+narrative: 146598 rows in 8.821s
+conversation: 2265572 rows in 63.929s
+paraphrase_entail: 379580 rows in 12.232s
+code_qa: 324639 rows in 43.315s
+code: 1405209 rows in 75.497s
+       76.02 real       248.17 user        23.86 sys
+           120815616  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+               58549  page reclaims
+                 363  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                6664  voluntary context switches
+               73607  involuntary context switches
+          3916564416  instructions retired
+          1396050570  cycles elapsed
+            74072544  peak memory footprint
+exit_code=0

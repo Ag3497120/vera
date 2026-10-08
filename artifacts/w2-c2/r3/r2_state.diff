@@ -1,0 +1,852 @@
+diff --git a/docs/CONDUCT_ASK.md b/docs/CONDUCT_ASK.md
+index 431c95b..17864a5 100644
+--- a/docs/CONDUCT_ASK.md
++++ b/docs/CONDUCT_ASK.md
+@@ -4,7 +4,8 @@
+ 人間が最初に枠（`docs/frames/vera_project_frame.md` の書式）に書いた内容から答える。**枠から決まらないことは推測せず、
+ 理由の型を付けて人間に上げる。** 第一の目標は「誤って答えない」こと、そのうえで答えられる範囲を広げること。
+ 
+-この文書の数値は、§1〜§12 は `artifacts/w2-c/`、§13（W2-g。LLM による枠の記録への対応づけ）は `artifacts/w2-g/`、§14（W2-g2。照会の分割と再照会）は `artifacts/w2-g/live_g2/` と `artifacts/w2-g/g2/` の出力から再計算できる（各節に出典と再計算コマンドを置く）。
++この文書の数値は、§1〜§12 は `artifacts/w2-c/`、§13（W2-g。LLM による枠の記録への対応づけ）は `artifacts/w2-g/`、§14（W2-g2。照会の分割と再照会）は `artifacts/w2-g/live_g2/` と `artifacts/w2-g/g2/` の出力から再計算できる（各節に出典と再計算コマンドを置く）。§15（W2-c2。罠の規則を「正の証拠があるときだけ上げる」形に反転）は `artifacts/w2-c2/` の出力から再計算できる。
++**§9 の数値は W2-c のコードの値**で、W2-c2 での差分は §15 の表（§9 は書き換えていない）。
+ 予想や未測定の値は書かない。
+ 
+ ## 1. 使い方
+@@ -69,7 +70,7 @@ python -m verantyx.conduct_ask --frame <枠.md|枠.jsonl> --question <文> [--op
+ | `FRAME_CONFLICT` | 枠の中で矛盾（同じ条件に違う値、優先順位が無い族どうしの衝突） | 枠内で矛盾 |
+ | `HUMAN_APPROVAL_REQUIRED` | `[protected_actions]`、`[escalation_conditions]`、枠が名指さない削除・公開・支出・認証情報に見える操作 | 人間の承認が必要 |
+ | `OUT_OF_RANGE` | 枠の決定を聞く質問ではない（進捗・状態、成果物の作成依頼） | 範囲外 |
+-| `VOCAB_UNMAPPED` | 質問の語が枠にも別名表にも無く、対応づけられない | 語彙が対応づけられない |
++| `VOCAB_UNMAPPED` | 質問の語が枠にも別名表にも無く、対応づけられない。または質問の語が、より広い語句の中にあって、同じものか別のものか分からない（W2-c2。`TERM_IN_WIDER_PHRASE`） | 語彙が対応づけられない |
+ | `QUESTION_UNREADABLE` | 質問が空・肢の誤り、否定形・反転した質問、工程の節が読めない、「許可が必要か」と聞く質問、述語が読めない質問、1 つの質問に複数の問い | 質問が読めない |
+ | `NO_OPTION_ALLOWED` | どの肢も枠に反する（無理に肢を選ばない） | （足した型） |
+ | `ANSWER_FORM_UNSUPPORTED` | 答えは決まるが、肢が無く 1 語句で表せない | （足した型） |
+@@ -83,6 +84,8 @@ python -m verantyx.conduct_ask --frame <枠.md|枠.jsonl> --question <文> [--op
+ `PATH_CASE_DIFFERS` = 質問のパスが許可リストと大文字・小文字を畳んだときだけ一致する（§7）。いずれも型付きで上げる。`escalate_detail` は下位の理由（例 `TIE`、`UNORDERED`、`NO_STATE`、`NEGATED_QUESTION`、`INVERTED_QUESTION`、
+ `TERM_IN_WIDER_PHRASE`、`AMBIGUOUS_TERM`、`REQUIREMENT_OF_PERMISSION`、`PREDICATE_UNREADABLE`、`MULTIPLE_QUESTIONS`、`HUMAN_JUDGED_NOT_STATED`、`OUTSIDE_ALLOWLIST`、`PATH_NOT_PLAIN`（第 5 ラウンド）、`CONTEXT_SENTENCE_UNREAD`（第 5 ラウンド）、`RECORD_STANCE_UNREADABLE` `PATH_CASE_DIFFERS`（`FRAME_SILENT`）と `INVARIANT_IS_CONDITIONAL`（`HUMAN_APPROVAL_REQUIRED`）（第 7 ラウンド）、`NO_PRECEDENCE`、`BUILTIN_PROTECTED`、`VOCAB_LLM_OFF`、`LLM_ABSTAINED:DISAGREE`、`LLM_FAILED:TIMEOUT`）。
+ 
++W2-c2 の detail: `TERM_IN_WIDER_PHRASE` は 2 つの reason を取る。**別のものだという正の証拠があるとき**（§5）は `FRAME_SILENT`、**証拠が無く、同じものかもしれないとき**は `VOCAB_UNMAPPED`（枠が沈黙しているのではなく、語がどの記録を指すか分からない）。後者は detail を問わず対応づけに回る（`conduct_map.RETRY_ALLOWED` の `VOCAB_UNMAPPED`）ので、対応づけが有効なら対応づけが決め、`--vocab-llm off` では答えずに上げる。`QUESTION_UNREADABLE` の `NEGATED_QUESTION` と `INVERTED_QUESTION`、`HUMAN_APPROVAL_REQUIRED` の `BUILTIN_PROTECTED`、`FRAME_SILENT` の `NO_ALLOWLIST` も、W2-c2 から正の証拠があるときだけ出る（§4、§6、§7、§15）。
++
+ W2-g の detail: `MAPPING_UNSETTLED` = `STEP1_DISAGREE` `STEP1_INVALID_ANSWER` `STEP1_FAILED:<種別>`（手順 1）、`STEP2_DISAGREE` `STEP2_INVALID_ANSWER` `STEP2_FAILED:<種別>`（手順 2。種別は `TIMEOUT` `LIMIT_REACHED` `PROVIDER_EXCEPTION` など）、
+ `PHASES_DISAGREE` `PHASES_INVALID_ANSWER` `PHASES_FAILED:<種別>`（順序の経路の工程の選択。第 2 ラウンド。第 3 ラウンドから、2 回の（工程の組, `decides`）の食い違いも `PHASES_DISAGREE`）、`ORDER_NOT_RESOLVED` `ORDER_MIXED_WITH_OTHER_RECORDS`（順序の記録のまとめを選んだのに工程の組が決まらない・ほかの記録と一緒に選んだ）、
+ `RULE_BASIS_EMPTY` `RULE_BASIS_NOT_CANDIDATE` `RULE_BASIS_NOT_MAPPED` `RULE_ANSWER_NOT_MAPPED[:<理由>/<detail>]`（規則の答えを裏づけない）、`TOO_MANY_CANDIDATES` `TOO_MANY_RECORDS` `ASK_BUDGET` `LEDGER_INTEGRITY`（照会しない）。W2-g2（protocol v2。§14）では、`decides` 段の `DECIDES_DISAGREE` `DECIDES_INVALID_ANSWER` `DECIDES_FAILED:<種別>`を足し、`STEP2_*` は最初に決まらなかった（記録, 肢）の組、`INVALID_ANSWER` は再照会しても無効だった意味になった。
+@@ -93,9 +96,9 @@ W2-g の detail: `MAPPING_UNSETTLED` = `STEP1_DISAGREE` `STEP1_INVALID_ANSWER` `
+ ## 4. 層の順序（最初に決まった層の結果を出す。層どうしの結果は足し合わせない）
+ 
+ 1. 入力の検査（空の質問・4000 文字超・肢が 1 個・空の肢・印を除いて同じになる肢）→ 型付き拒否、終了コード 2。
+-2. 否定形・反転した質問（否定語と同じ文に枠の語がある、または `avoid` / `以外` / `instead of` などがある）→ `QUESTION_UNREADABLE`。
++2. 否定形・反転した質問 → `QUESTION_UNREADABLE`。**W2-c2 から正の証拠があるときだけ**: 否定が質問の主述語にかかる閉じた形、または反転の語（`avoid` / `以外` / `instead of` など）が主述語の側にあるとき。選択肢と枠の語の中の語、従属節・条件節・義務の形（`〜なければなりませんか`）・副詞（`例外なく`）の中の語は数えない（§15）。第 2 ラウンドで、否定された行為の可否を問う形（`〜なくても大丈夫ですか` `〜ずに進めてよいですか`。`問題ない` `差し支えない` を消す**前**の文で見る）、評価・許可の枠の if 節の否定（`Is it OK if we don't …?` `Would it be a problem if we didn't …?`）、付加疑問の前の文の否定（`We don't need X, right?` `X isn't in scope, is it?`。付加疑問は主節にしない）を証拠に足した（§10 114）。
+ 3. `[escalation_conditions]` の条件語句（活用を許す）が質問に現れ、scope が ANY か質問の種別と同じ → `HUMAN_APPROVAL_REQUIRED`。
+-4. 語が長い語句の一部でないか（§5 の「より広い語句」。右側の付属語と、第 2 ラウンドで足した左側の修飾語）。
++4. 語が長い語句の一部でないか（§5 の「より広い語句」。右側の付属語と、第 2 ラウンドで足した左側の修飾語は、**形だけで `wider` を立てる**）。**別のものだという正の証拠があるときだけ** `FRAME_SILENT`、無ければ `VOCAB_UNMAPPED`（W2-c2。同じものかもしれない語は対応づけに回す）。
+ 5. 許可の 3 段（§7）。
+ 6. 解決器（順序・範囲・選択・受入条件）。複数が答えたら、全部同じ答えのときだけ答える（COMBINED）。違えば `FRAME_CONFLICT`。
+    **答えを出す解決器はすべて**、述語が閉じた許可リストに当たるときだけ答える（§8。第 3 ラウンドで、順序の「X の前に Y を始めてよいか」と範囲の極性だけでなく、
+@@ -123,7 +126,8 @@ W2-g の detail: `MAPPING_UNSETTLED` = `STEP1_DISAGREE` `STEP1_INVALID_ANSWER` `
+ - 操作名（禁止・保護・上げる条件）は活用を許す: `…する` は語幹で、それ以外のう段で終わる語は末尾 1 文字を落とした形で照合する。
+ - 工程の見出し語（日本語は最後の `を` より前、英語は先頭の動詞と冠詞を落とした残り）でも照合する。同じ見出し語が 2 つの工程にあれば使わない。
+ - 最長一致: 別の言及に厳密に含まれる言及は捨てて数える（`trace.mentions_dropped_as_contained`）。同じ位置に別々の役割の語が当たったら `AMBIGUOUS_TERM`。
+-- **より広い語句**: 当たった語が、質問の中でより長い名詞句の一部なら、別のものとして扱い `FRAME_SILENT`（`TERM_IN_WIDER_PHRASE`）。
++- **より広い語句**: 当たった語が、質問の中でより長い名詞句の一部に**見える**とき（形だけ。下の右側・左側の条件）、`Mention.wider` を立てる（W2-c から変わらない）。
++  **W2-c2 から、別のものとして `FRAME_SILENT`（`TERM_IN_WIDER_PHRASE`）で上げるのは、次のどちらかの正の証拠があるときだけ**: (E0) 日本語で、語の直後が `_JA_RIGHT_DENY` の語（`以外` `を除` `のみ` `だけ` `など` `等` `以降` `以前` `のコピー` `の一部` `の写し` `の複製` `の派生` `の中身` `のバックアップ`。別の対象・別の範囲を意味で名指す閉じた表）、(OTHER_RECORD) 長い語句そのものが、その言及の記録以外の枠の記録（工程・辺・方針・決定・操作・不変条件・受入条件・上げる条件・優先順位）の本文にそのまま現れる。どちらも無ければ「同じかもしれない」として `VOCAB_UNMAPPED`（detail は `TERM_IN_WIDER_PHRASE` のまま）で上げ、対応づけに回す。ただし第 2 ラウンドから、語を狭く（長い語句を同じものとして）読んだ場合の結果も見る: それが `FRAME_SILENT` で、detail が対応づけの再試行を許す型（`NO_RECORD_DECIDES` 系。どの層も決めなかった場合を含む）なら、その結果を返す（どちらの読みでも枠は黙っている）。狭い読みの結果が答えや別の上げ方のときは、それを採らない（`off` で狭い読みから答えを出さない）（§10 115）。第 3 の証拠（長い語句の主辞が枠の語と違う型であること。配置の型が直接に分かるときだけ）は、この入口に配置の照会が無いので確かめていない（`trace.resolver_outcomes.wider_phrase_head_type = NOT_CHECKED:NO_PLACEMENT`）。`wider` が立つ形の条件（W2-c から変更なし）:
+   右側: 日本語では語の直後が `の…`、`以外`、`のコピー` など、または直前が助詞・句読点でない文字。英語では語の直後に機能語・問いの動詞（`start` `begin` など）以外の語が続く。
+   **左側（第 2 ラウンド、第 3 ラウンドで改めた）**: 英語では語の直前の語が、閉じた機能語の表（冠詞・指示詞・助動詞・前置詞・接続詞・代名詞・wh 語）に無ければ修飾語とみなす（`secondary` `backup` `per-host` など）。
+   `use` `include` `start` `pick` のように名詞・形容詞にもなる動詞・動名詞（`test` `build` `record` `support` `target` `document` `ship` `run` `plan` `count` `keep` など）は、
+@@ -148,7 +152,7 @@ W2-g の detail: `MAPPING_UNSETTLED` = `STEP1_DISAGREE` `STEP1_INVALID_ANSWER` `
+ - 採用されたら、その語を質問の語の代わりにして、その役割の規則だけで 1 回やり直す。決まらなければ、やり直しの結果の型で上げる。
+   根拠（`basis`）は枠の行だけ。`vocab`: `{"question_term","candidates","frame_term","provenance":"LLM_TESTIMONY_MAPPING","counts_as_evidence":false,"outcome":"ADOPTED|ABSTAINED:<理由>|FAILED:<種別>|REFUSED:<理由>|OFF|…","ledger_decision_id","asks":[…]}`。
+ - 棄権 → `VOCAB_UNMAPPED`（`LLM_ABSTAINED:DISAGREE|NONE_SELECTED|INVALID_ANSWER`）、失敗 → `VOCAB_UNMAPPED`（`LLM_FAILED:<種別>`）、オフ → `VOCAB_UNMAPPED`（`VOCAB_LLM_OFF`）。
+-- 削除・公開・支出・認証情報に見える許可の質問は、最後まで対応づけられなければ `HUMAN_APPROVAL_REQUIRED`（`BUILTIN_PROTECTED`）で上げる（答えを出す方向には使わない）。
++- 削除・公開・支出・認証情報に見える許可の質問は、最後まで対応づけられなければ `HUMAN_APPROVAL_REQUIRED`（`BUILTIN_PROTECTED`）で上げる（答えを出す方向には使わない）。**W2-c2 から、保護された語が問われている操作の位置にあるときだけ**（許可の枠 `can we` `may I` `is it ok to` `are we allowed to` … の直後、または `〜してもよいですか` `〜できますか` `〜は許可されていますか` の直前）。選択肢の説明・背景・名詞として出るだけ（`release notes` `password reset screen` `公開の掲示板` `削除ボタン`）では上げない（§15）。
+ 
+ 作り物のプロバイダ（`--vocab-llm fake --vocab-fake <台本.json>`）。台本は JSON の 1 個のオブジェクト:
+ 
+@@ -202,7 +206,7 @@ W2-g の detail: `MAPPING_UNSETTLED` = `STEP1_DISAGREE` `STEP1_INVALID_ANSWER` `
+      （英語 `Approved.` `Approval was given.` `Approval is granted.` `Approval obtained.`、日本語 `承認済みです。` `許可をもらいました。` `承認を得ています。` など。`_PEN_APPROVED_BARE` `_PJA_APPROVED_BARE`）。
+      `Next year approved.` `The old greenhouse team approved.` `来年度の承認済みです。` `中学校の承認をもらいました。` `旧システムの確認済みです。` のように、誰が・いつ・何についての承認かを前に置いた文は上げる
+      （`CONTEXT_SENTENCE_UNREAD`）。許可の層の答えは従来の広い形のまま（`町内会長が許可しました。` `代表から承認をもらっています。` を答え続ける）。
+-4. `[write_allowlist]`: 質問のパスが許可リストの接頭辞（パスの区切り単位）の下なら可（上の門を通ったときだけ。`Can I edit <パス>?` の形で、`read` `copy` `業者が` `来月` `on another thing` は上げる）。**リストの外は不可と答えず `FRAME_SILENT`**。許可リストの節が無ければ `NO_ALLOWLIST`。
++4. `[write_allowlist]`: 質問のパスが許可リストの接頭辞（パスの区切り単位）の下なら可（上の門を通ったときだけ。`Can I edit <パス>?` の形で、`read` `copy` `業者が` `来月` `on another thing` は上げる）。**リストの外は不可と答えず `FRAME_SILENT`**。許可リストの節が無ければ、**パスが書き込み先として問われているとき**（W2-c2: 書き込みの動詞 `edit` `modify` `change` `update` `write to` `write` `create` `add to` `touch` の直後、または `<パス> を/に 編集して・書き換えて・更新して…` の形。第 2 ラウンドで、書き込みの動詞に `save` `append` `overwrite` `output` `export` `replace` `rewrite` `store` `copy` `move` `rename` `put` `dump` `generate` `produce` `patch` `fix` `persist` `archive` `log` `record` `delete` `remove` `erase` `wipe` `truncate` `clear` `empty` を足し、動詞とパスの間に名詞句（3 語まで。前置詞・接続詞を含まない。`of` は許す）と場所の前置詞（`to` `into` `in` `as` `onto` `at` `under`）が入る形、日本語でパスの後に同じ節の中（14 字まで）で `追記` `保存` `上書き` `出力` `書き出` `書き込` `コピー` `移動` `生成` `消して` などが来る形、`保存先は <パス>` の形を足した。詳細は §10 117）だけ `NO_ALLOWLIST`。例の `e.g.` や参照として挙げたファイル名（`as in export.csv`）は書き込み先ではないので、この罠では上げない。
+    **第 5 ラウンド**: パスの字句を `/` で分け、`.` や `..` だけから成る区切り（`a/../b` `a/./b`）があれば、許可リストの接頭辞に当たっていても照合せず `FRAME_SILENT`（`PATH_NOT_PLAIN`）で上げる
+    （正規化して判定し直さない。答える範囲を広げないため）。先頭の `./` を 1 つ落とすのは従来どおり。リストの外の `..` 付きのパスの型は従来の `OUTSIDE_ALLOWLIST` のまま。
+    **第 7 ラウンド（S-C、`PATH_CASE_DIFFERS`）**: 照合は大文字・小文字を畳んだ質問（`ctx.q`）で行うので、`KIOSK/x.py` が許可リストの `kiosk` に当たっていた。大文字・小文字は別のディレクトリになる
+@@ -637,6 +641,7 @@ S-C パスは大文字・小文字まで許可リストと一致したときだ
+     レビューが指定したのは「対応づけだけで答えになったとき」だが、**裏づけられた規則の答えにも当てた**。理由: 規則の `SCOPE` の解決器は `should we …?` に「はい」と答える（off で `Should we include volunteer sign-up in the project?` が `Yes`。第 2 のデータの 1 問で、off の誤答 1 件の正体）。
+     これを裏づけが通すと誤答になるので、門を裏づけの答えにも当てた（`--vocab-llm off` は対応づけが無効なので変わらない。G4）。`should` 系は答えが**肯定の肢**のときだけ上げる（否定の肢の答えは、規則も上げていない）。否定・反転は問い全体、過去形は各文に当てる。
+     代償: 規則の語の表が一般語を含むので、正しい答えも上がる（`drop-off` が反転の語 `drop` に、`出せない` が否定の `ない` に当たる。第 2 のデータで各 1 問。`artifacts/w2-g/fixture_errata.txt`）。別の主体・別の条件・別の時期（過去形の語を含まないもの）を見分ける語彙に頼らない検出器は無いので、LLM の「決まらない」だけが守りである（§11）。
++    **W2-c2 で直した**: 門の否定・反転の検出を、規則層と同じ新しい検出器（`_question_form_trap`。正の証拠があるときだけ）に差し替えた。`drop-off` `出せない`（関係節）`〜なければなりませんか`（義務）は、この門では上げなくなった（§15、§10 104〜113）。ただし 1 本の検出器に直したので、取りこぼしの危険は規則層にも門にも同じ向きで入る（§11 の W2-c2 の項）。
+ 79. **W2-g r2: 順序の質問は、記録ではなく工程を選ばせ、導いた真の文に対する肢の関係だけを聞く**（レビュー必須 1-1。§13.2）。工程名の閉じた複数選択（`classify_phases_reply`）を 2 回の独立した照会で聞き、一致したときだけ採用する。
+     答えを決めるのは規則で、工程の組から枠の**辺全部**のグラフに沿って、真である 1 つの文（「A を終えてからでなければ B には進めない」）を作る。LLM に聞くのは、その文に対する各肢の `一致` / `矛盾` / `無関係` だけ（手順 2 と同じ形）。
+     レビューの指示から広げた点: (1) 「X と Y をすべて終えてからでなければ Z には進めない」の形（ほかの全部が前にある工程がちょうど 1 つの 3〜4 工程）を足した（連鎖の質問の自然な形）。(2) 手がかりの表が当たらない言い方のために、手順 1 が順序の記録のまとめを選んだときにも入る（80）。
+@@ -709,6 +714,39 @@ S-C パスは大文字・小文字まで許可リストと一致したときだ
+ 103. **W2-g2: 保存物を書き換えない。** `final_run.sh` `full_pytest.sh` `dump_calls.sh` `guard_run.sh` は流さず、出力先を `artifacts/w2-g/g2/` にした写し（`*_g2.sh`）で同じ検査を行った。実プロバイダの台帳は `artifacts/w2-g/live_g2/`（第 1〜3 ラウンドの台帳の `budget.py` と `docs_check.py` の合計 1,094 回を変えないため）。
+     数値の再計算は `artifacts/w2-g/g2/docs_check_g2.py`（§14.7 の表は `make_docs_tables.py` の出力そのもの。手で写していない）。
+ 
++104. **W2-c2 D1: チケットの `decide()` は `conduct_map.decide()`（対応づけの決定の規則）と読む。** `conduct_ask.py` には `decide()` が無く、`_decide()` は層 3〜6 の入口で、広い語句の罠そのものを含む。`_decide()` の中で変えたのは広い語句のブロックだけ（層の順序・`layer_escalation_conditions`・`layer_permission`・`combine_resolvers` の呼び出しは変えていない）。`conduct_map.py` と `llm_choice.py` は変えていない。
++105. **W2-c2 D2: 広い語句で証拠が無いときは `VOCAB_UNMAPPED/TERM_IN_WIDER_PHRASE`。** 「より長い語句が枠の語と同じものか分からない」は、枠が黙っているのではなく語の対応づけの不明。`VOCAB_UNMAPPED` は detail を問わず対応づけが試す型なので、`conduct_map` を変えずに対応づけへ回る。detail は観察した現象のまま、reason が認識の状態（証拠あり = `FRAME_SILENT`、不明 = `VOCAB_UNMAPPED`）を運ぶ。
++    **この選択は、reason を固定している既存試験 1 本とぶつかった**: `tests/test_conduct_ask_policy.py::test_a_value_that_matches_but_whose_subject_is_not_asked_is_not_an_answer` は `Should the pump driver use the 30 seconds interval?`（f02）に `escalate_reason == "FRAME_SILENT"` を求める。この問いの『pump driver use』は動詞が右に続くだけの形（`wider` は立つが証拠は無い）で、新しい型は `VOCAB_UNMAPPED`。試験は変えていない（§11）。**第 2 ラウンドで、この問いは `FRAME_SILENT/NO_RECORD_DECIDES` に直った（§10 115）。**
++106. **W2-c2 D3: 証拠 (a)「主辞の型が違う」は確かめていない。** 基点には `coarse_*` が無く、`event_cross` の既定の照会は `StubLookup`（常に `NO_PLACEMENT`）。照会の部品は作らず、`trace.resolver_outcomes.wider_phrase_head_type = NOT_CHECKED:NO_PLACEMENT` と型で残した。
++107. **W2-c2 D4: 広い語句の証拠は E0 と OTHER_RECORD だけ。** 「別の」「次回の」「another」「legacy」などの語の表は足していない（自作文に合わせる W2-c の失敗の形になるため）。英語の E0 に当たる物も足していない（英語は OTHER_RECORD だけ）。`Mention.wider` の意味（形だけ）は変えず、証拠は別の欄 `wider_evidence` に置いた。`_is_wider` は変えず、長い語句の範囲を出すために同じ条件を `_wider_sides` に写した。
++108. **W2-c2 D5: 否定・反転は 1 つの新しい検出器 `_question_form_trap` を 3 か所で共有する**（`layer_negation`、語彙外の経路、`mapping_gate`）。`_negated` `_NEG_JA` `_NEG_EN` `_INVERT_CUE` `_NEG_JA_SAFE` は変えていない（`_record_stance` が枠の記録の向きの読み取りに使う）。
++    計画書から足した点（どれも「境目は証拠ありに倒す」「閉じた形」の範囲。(1)(2) は設計で決めた。(3)(4) は凍結後に自分で書いた攻撃の文 `artifacts/w2-c2/adv_probe.py` の結果から足した。(5) は凍結後の測定で新データの raise 5 問が上がらなかったので直した）:
++    (1) 検出の前に、**肢の文字列**と**当たった枠の語**の範囲を空白にする（枠の語の中の `除く`、肢の説明の中の `does not` は質問者の語ではない）。肢は、`はい` `Yes` のような答えの語（`reading` が `YES` `NO`）を除き、ラテン文字の肢は単語として見つかったときだけ（`no` が `not` の中に当たらない）。
++    (2) 英語の主節は、読点・セミコロン・コロンで区切った節のうち、問いの形で始まる最後のもの。`which` `what` などの疑問詞は**文の最初の節の頭にあるときだけ**主節の頭と数える（挿入の関係節『, which is not built yet,』を主節にしない）。`isn't` など `n't` で終わる語は助動詞として数える。主節の候補が無ければ最後の節。主節は最初の従属の語（2 語目以降）の前で切る。
++    (3) 英語で、命題を問う形の後ろの否定も証拠にした: 『is it true that』『are we sure that』『do we agree that』など（`sure certain true correct right clear confirmed agree know confirm mean say think believe assume understand the case` ＋ `that`）。
++    (4) 日本語の否定の証拠に `ない` ＋ `ほうが`、`ないべき`、`ではなく`（`でなくても` は除く）を足した（『しないほうがよいですか』が取りこぼされないように）。義務の形は否定とみなさない。
++    (5) 日本語の反転は、`以外` は文のどこにあっても証拠にした（名詞句にかかるので、問われている述語にかかるかが分からないため）。ほかの語は最後の節か、**条件・理由・逆接で終わらない節**にあるときだけ（『最悪の場合は、〜』は数えず、『避けるべきなのは、〜』は数える）。凍結データの raise の日本語の反転 5 問が、計画書どおりの『最後の読点より後ろ』では上がらなかったので直した（データではなく検出器を直した）。
++109. **W2-c2 D6: BUILTIN は規則層の 3 か所だけ狭める。** `_builtin_protected_asked` を `_layer_permission`（枠の語が無くパスがあるとき）・枠の語が当たったがどの層も決めなかったとき・枠の語が 1 つも無いときの 3 か所で使う。`conduct_map.resolve` に渡す `_builtin_protected(ctx)` は広いまま（対応づけの呼び出しに触れない）。
++    結果として、規則層で上がらなくなった問が対応づけで答えになりかけても、禁止の記録だけで答えた場合を除き、対応づけの出口で同じ `HUMAN_APPROVAL_REQUIRED/BUILTIN_PROTECTED` で上がる。計画書から足した点: 許可の枠に `can the team …`（主語が 1〜3 語）、`is it ok if we …`、`permission to …`、`is deleting … allowed`（動名詞が主語）、認証情報の名詞は次の語が機能語のとき（`token bucket` `password reset screen` は名詞の一部なので数えない）、日本語の `〜は許可されていますか`。
++110. **W2-c2 D7: NO_ALLOWLIST はパスが書き込み先として問われているときだけ。** `_path_status` は変えず、`_layer_permission` の中で、許可リストが無く（`NO_ALLOWLIST`）パスの字句が書き込みの形の隣に無いときは、パスを許可の対象と見ない。`OUTSIDE_ALLOWLIST` `PATH_NOT_PLAIN` `PATH_CASE_DIFFERS` は変えていない。
++    計画書から変えた順序: 計画書は「`path = None` にした後で BUILTIN を判定する」と読めるが、そうすると『`Can I delete logs/a.txt?`（許可リスト無し）』の削除の許可が BUILTIN で上がらなくなるので、**BUILTIN の判定はパスを見た時点の `path`（変える前）で行い**、その後で `NO_ALLOWLIST` のパスを外した。
++111. **W2-c2 D8: C1（凍結データで 1 問も変わらない）は字義では守れない。** 罠が正しく直れば、凍結データの罠で誤って上がっていた問は変わる。安全の線 S1〜S3（期待 escalate が新しく answer にならない、期待 answer が別の答えにならない、`off` で escalate → answer に変わったものは全件期待と一致）は必達とし、字義の C1（どれかの欄が変わった問の数）は全件を `artifacts/w2-c2/c1/c1_diff.tsv` に出した。0 にするために規則を個別の文へ合わせ込まず、凍結データの期待も変えていない。
++112. **W2-c2: 新データの route 9 問は、五つの罠の外の規則に止められた。** 凍結後の測定で、`route` のうち 9 問（`w2c2-negated-route-06`、`w2c2-no_allowlist-route-01〜07, 10`）が、罠ではなく W2-c の `POLARITY_QUESTION_ON_A_VALUE`（枠が決めた値への「はい／いいえ」の問いは答えず上げる）で上がった。基点では罠が先に上げていたので見えなかった。
++    これは私が書いたデータの設計の誤りで（値の極性の問いを route に使った）、凍結の約束どおり**差し替えていない**。計画書 §7.8 に従い、その規則を緩めて通してもいない。C2 の `route` は不合格として報告する（出力 `artifacts/w2-c2/c2_report.txt`）。`transfer` の 1 問（`w2c2-inverted-transfer-03`）も同じ規則で上がった。
++113. **W2-c2: 新しい `trace` のキー。** `wider_phrase_head_type`（広い語句の入口で、確かめていないことの宣言）を足した。`wider_phrase` の値は `ESCALATE:EVIDENCE:<証拠>` / `ESCALATE:UNDECIDED` に変えた（`ESCALATE` を固定している試験は無い）。
++
++114. **W2-c2 第 2 ラウンド M1: 否定の検出器の取りこぼしを直した**（第 1 ラウンドのレビュー。中間職が書いた攻撃の文で、本物の否定の問いが規則層でも門でも上がらず、素朴な対応づけの台本で答えが出た）。直した形はどれも閉じた形で、文ごとの語は足していない。
++    (a) 日本語: `〜なくて(も)` `〜ないで` `〜ずに` の後、同じ節の中（読点まで・16 字まで）に、許可・可否の結び（`_PJA_MAY` `_PJA_CAN`、`大丈夫` `差し支えない` `問題ない` `ok` `オーケー` `平気` `よろしい` ＋ `です(か)`）が文末にあれば証拠。`_NEG_JA_SAFE` が `問題ない` `構わない` `差し支えない` を消す**前**の文（空白を除いたもの）で見る。`〜ずに〜します` のような可否でない文は今までどおり当たらない（計画書 §3.2 の「`〜ずに` は当たらない」を、可否を問う文末に続くときに限って取り消した）。`ない、で合っていますか` も命題の否定に足した。
++    (b) 英語: 主節が評価・許可の枠（`is/would/will/could/may it be ok/okay/fine/alright/acceptable/allowed/permitted/a problem/an issue …`、`do/would you mind`、`would/does it hurt/matter/bother`）で、切った従属の語が `if` / `when` / `whenever` のときは、その節の中の否定も証拠にする。
++    (c) 英語: 最後の節が付加疑問（`right` `correct` `yes` `ok` `okay`、または助動詞（＋`n't` か `not`）＋代名詞だけの 1〜3 語）なら、その節を主節の候補から外す。反転の判定にも同じ主節を使う（`We should avoid X, right?` が反転で上がる）。
++    取りこぼしとして残る（基点でも上がっていなかった）: `を省いても大丈夫ですか` `leave out` `is out of scope, isn't it?` `Is X unnecessary?`（否定の語も反転の語の表の語も無い。表は計画書 D4・D5 のとおり足していない）。
++115. **W2-c2 第 2 ラウンド M2: 証拠の無い広い語句は、狭い読みも黙っているなら `FRAME_SILENT`（D2 を広げる、中間職の許可）。** 計画書 D2 の「証拠が無ければ `VOCAB_UNMAPPED`」は、reason を固定した既存試験 `test_a_value_that_matches_but_whose_subject_is_not_asked_is_not_an_answer`（`Should the pump driver use the 30 seconds interval?`）とぶつかった。`_decide` の広い語句のブロックの中で、証拠が無いとき語を狭く読んだ結果（`_narrow_reading`: `wider` を一時的に偽にして許可の層と解決器を流し、文脈を元に戻す。どの層も決めなかった場合は、パイプラインが枠の語のある問いに返す `FRAME_SILENT/NO_RECORD_DECIDES` と同じものとして扱う）を見て、`FRAME_SILENT` で detail が `conduct_map.retry_allowed` を満たすならその結果を返し、そうでなければ今までどおり `VOCAB_UNMAPPED/TERM_IN_WIDER_PHRASE`（`trace.resolver_outcomes.wider_phrase` は `ESCALATE:UNDECIDED:NARROW_READING_ALSO_SILENT` / `ESCALATE:UNDECIDED`）。狭い読みの答えは採らない。層の順序・`layer_permission`・`combine_resolvers` の呼び出しは変えていない。
++    **ぶつかった別の既存試験（未解決。試験は変えていない）**: `tests/test_conduct_ask_cli.py::test_markdown_and_jsonl_frames_give_the_same_decisions` が `w2c-f05-13`（`Does the usage documentation have to cover the circuit breaker?`）で落ちる。基点では markdown と jsonl のどちらも `FRAME_SILENT/TERM_IN_WIDER_PHRASE` だったが、狭い読みの結果が 2 つの形式で違う: markdown は決める層が無く（`NO_RECORD_DECIDES`）、jsonl は枠の語 `circuit breaker` に `subject` の記録も付いていて `POLARITY_QUESTION_ON_A_VALUE`（再試行を許さない型）なので `VOCAB_UNMAPPED`。つまり markdown と jsonl で枠の読み（`build_view`）が違うという W2-c からの食い違いが、広い語句の入口が狭い読みを見るようになったことで表に出た。`build_view` と枠の読みは許可パスの外なので触っていない。両方とも対応づけには回る（再試行を許す型）。この試験と上の既存試験の両方を満たす規則は、狭い読みの detail を無視しない限り作れなかった。
++116. **W2-c2 第 2 ラウンド M3: C2 の試験の扱いと補いのデータ。** 第 1 ラウンドは、C2 で不合格になった 9 問（`w2c2-negated-route-06`、`w2c2-no_allowlist-route-01〜07, 10`）を試験の中で例外として固定していて、C2 が落ちていても試験は通った。試験の名前と説明を「C2 の判定」から「C2 で不合格になった問の記録」に変え（`RECORDED_C2_FAILURES`。生きている集合と完全に一致することも試験する）、C2 の合否は `run_w2c2.py c2` の終了コード（元のデータでは 1）をそのまま報告する。凍結データ（`tests/conduct_ask/w2c2/items.jsonl`・`frames/`）は変えていない。
++    補いのデータ `tests/conduct_ask/w2c2/supp/`（`items.jsonl` と `frames/`。`NO_ALLOWLIST` の `route` と `NEGATED` の `route`、および第 1 ラウンドで取りこぼされた形の `raise`）を足した。条件は「枠に答えがある」「値の極性の問いではない」「基点で罠が発火する」。**M1・M2・M4 のコードを書く前に凍結した**（`artifacts/w2-c2/freeze_supp.txt`。その時点の `conduct_ask.py` のハッシュは第 1 ラウンドの版）。凍結の前に基点のコードで発火を確かめ（`artifacts/w2-c2/supp_base/`）、凍結後は差し替えていない。補いのデータの C2 は別の行で報告する（表 15-6・15-7、`c2_report_supp.txt`）。C2 の最終的な読み（元の 9 問をデータの誤りとして除くか）は監査役が決める。
++117. **W2-c2 第 2 ラウンド M4: 書き込み先の形を足した（D7 を広げる、中間職の許可）。** 書き込みの動詞の表と動詞‐パスの間の形を足した（§7 の 4 に一覧）。動詞の表を足すのは書き込みの動詞の取りこぼしを直すためで、個別の文に合わせたものではない。自分で書いた攻撃の文 `artifacts/w2-c2/adv_path.py` で、素朴な対応づけの台本でも答えが出ないことを確かめた。残った取りこぼし（基点でも上がっていなかった）: 許可の手がかり（`_PERM_CUE`）に無い問い（`〜しても大丈夫ですか`）はパスの判定まで行かない。許可の手がかりのある文で、動詞とパスの間に前置詞が入る形（`make changes to <パス>`）や `に手を入れて` は証拠にならない（新データの `transfer` に残る）。`of` を許したので、`the export of export.csv` のような名詞の `export` も証拠になる（上げる側に倒れる）。
++118. **W2-c2 第 2 ラウンド: 足さなかったもの。** 反転の語の表（`_INVERT_CUE` と同じ集合）に `leave out` `省く` を足さなかった（計画書 D5。基点でも上がっていない）。`_JA_RIGHT_DENY` の `を除` が `〜を除外する場合は` の `を除外` にも当たる（レビューの任意 O1）のは、表を変えない約束（D4）なので直さず §11 に書いた。`wider` の形の判定（`_is_wider`）は変えていない。
++
+ ## 11. 既知の穴
+ 
+ - 自作データは実装役が書いたため、評価バンクより易しい可能性がある。Q1 の 0 は、この検査データでの値であり、評価バンクでの値ではない。
+@@ -781,7 +819,7 @@ S-C パスは大文字・小文字まで許可リストと一致したときだ
+       2 回とも `決まる` と答える誤読が起きれば、誤答になる。
+     - **肢の無い値の答え**（第 2 ラウンドで足した。§10 77）は、「別の主体の好み」の問いに誤答しうる。レビューの罠 `V06`「Which unit of mass would volunteers prefer for the reports?」（肢なし。枠は重さの単位を `kilograms` と決めている）に、第 3 ラウンドのコードでも `kilograms` と答えた（`live/review_v06/result.json`: 手順 1 が決定 `D5` を `決まる` で 2 回選び、規則の答えが裏づけられた）。
+       規則側に「好み・推奨」の検出器を当てる案（`_PERM_SHOULD` 相当を値の答えにも）は、規則の語の表を広げる W2-c の範囲なので、していない。手順 1 のプロンプトに「好み・助言」を足す案は、全 64 問の測り直し（最悪 640 回）が予算に収まらないので、していない。残るリスクとして書く。
+-  - **質問の形の門は規則の語の表をそのまま使うので、正しい答えも上げる。** `drop-off` が反転の語 `drop` に、`出せない` が否定の `ない` に当たり、第 2 のデータの答えるのが正解の 2 問が上がった（§10 78）。規則の語の表を直すのは W2-c の範囲。
++  - **質問の形の門は規則の語の表をそのまま使うので、正しい答えも上げる。** `drop-off` が反転の語 `drop` に、`出せない` が否定の `ない` に当たり、第 2 のデータの答えるのが正解の 2 問が上がった（§10 78）。規則の語の表を直すのは W2-c の範囲。**W2-c2 で直した**: 門の検出器を `_question_form_trap` に差し替え、`drop-off` と関係節の `出せない` は上げなくなった（§15）。
+   - **質問を言い換えるたびに、手順 2 の 2 回の関係が食い違う問いがある**（第 2 のデータの本番で 5 問が上がった）。食い違いは棄権するので誤答にはならないが、答えるのが正解の問を取りこぼす。
+   - `{"records": [], "decides": "決まらない"}` を無効にしているので（§10 71）、「記録に当たらない」問いの上げる型が `MAP_NONE` ではなく `STEP1_INVALID_ANSWER` になる（第 2 のデータの 6 問）。上げるのは変わらない。
+   - **LLM が禁止の記録だけを選ぶと、W2-c4 review §6 の穴が残る。** 受入条件が「禁止の操作を否定してから要求する」枠では、off は禁止の行だけを根拠に「不可」と答える。対応づけが有効なとき、LLM が禁止と受入条件の**両方**を選べば上がる（`test_conduct_map_g1.py::test_g1_9…`）が、
+@@ -794,6 +832,18 @@ S-C パスは大文字・小文字まで許可リストと一致したときだ
+   - **対応づけの照会は、規則が答えた問いにも走る（裏づけ）ので、1 問あたりの照会が増える**（本番の 1 問の中央値は、第 1 のデータの第 1 ラウンドの実行 `live/codex_codex_r2` で 8.96 秒、第 2 のデータの codex 同士 `live/w2g2/codex_codex` で 10.44 秒）。実プロバイダの利用上限や時間切れは型付きで上げる（`STEP1_FAILED:<種別>`）。
+   - off のときは従来どおり規則だけで、§12 の残りのリスク（まだ誰も書いていない言い回しで誤答しうる）はそのまま残る。
+ 
++- **W2-c2 の既知の穴**（どれも `artifacts/w2-c2/` の出力で確かめた。予想は書いていない）:
++  - **既存試験 1 本と、reason が食い違った（第 1 ラウンド）→ 第 2 ラウンドで直した（§10 115）が、別の既存試験 1 本と食い違った。** `test_a_value_that_matches_but_whose_subject_is_not_asked_is_not_an_answer` は直った。`tests/test_conduct_ask_cli.py::test_markdown_and_jsonl_frames_give_the_same_decisions` の `w2c-f05-13` が、markdown と jsonl で枠の読み（`subject` の記録の有無）が違うために食い違う（§10 115）。試験は変えていない。選べる道: (1) 広い語句の入口の狭い読みの変更を戻す（上の試験が再び落ちる）、(2) 枠の読み（`build_view`。許可パスの外）を直して 2 つの形式を揃える、(3) 狭い読みの detail を無視して返す（型の偽りになるので採らなかった）。どれにするかは監査役の判断。
++  - **証拠 (a)（主辞の型）は未確認。** 英語の証拠は OTHER_RECORD だけで、日本語のように語の意味で別の対象を名指す閉じた表（E0）を持たない。『Which backup label size …』『Is the legacy time format in scope?』は証拠が無く `VOCAB_UNMAPPED` で対応づけに回る（新データの `transfer`。`off` では答えない）。
++  - **1 本の検出器にしたので、取りこぼしは規則層と門に同じ向きで入る。** 否定・反転の閉じた形に当たらない言い回しは、規則層でも門でも上がらない。**門は対応づけの答えに対する最後の安全網なので、取りこぼした本物の否定の問いは、対応づけが問いの向きを読まずに「はい」側に一致と言えば、誤答になりうる**（第 1 ラウンドのレビューで、日本語の `〜なくても大丈夫ですか` `〜ずに進めてよいですか`、英語の `Is it OK if we don't …?` と付加疑問がこの形で取りこぼされ、素朴な台本で答えが出た。第 2 ラウンドで閉じた形を足した: §10 114）。見つけた取りこぼしの例: 反転の語の表（`_INVERT_CUE` と同じ）に無い言い方（`leave out` `cut` `省く`）は基点でも上がっていない（`artifacts/w2-c2/adv_probe.txt`）。第 2 ラウンドで直した形は §10 114。条件節の中の否定・反転は上げない（『最悪の場合は、〜してもよいですか』）。
++    `Isn't …` `Do we really not need …` `〜ないほうがよいですか` `〜ないという理解で合っていますか` は、検出器の単体の試験に入れて上がることを確かめた。
++  - **BUILTIN は、問われている操作の位置の表（許可の枠の直後など）に当たらない依頼・代行の形を取りこぼす。** 『Can we ask someone to delete the old logs?』『古い名簿を削除する作業は実行委員に頼んでもよいですか』（新データの `transfer`）。規則層では上がらず、対応づけに回る。対応づけに渡す広い判定は残してあるので、対応づけが答えになりかけたら出口で上がる（禁止の記録だけで答えた場合を除く）。
++  - **`OUTSIDE_ALLOWLIST` の誤発火は未対応。** 許可リストのある枠で、例として挙げたファイル名（`e.g.`）を含む許可の質問は、`OUTSIDE_ALLOWLIST` で上がる（五つの罠に入っていない。新データでは許可リストの無い枠だけで書いた）。
++  - **`NO_ALLOWLIST` の書き込み先の形は閉じた表のまま。** 第 2 ラウンドで `the file` が間に入る形と日本語の `保存` `追記` などは足した（§10 117）。残る取りこぼし: 『May we make changes to config/planner.yaml?』『docs/guide.md に手を入れてもよいですか？』（新データの `transfer`）は規則層では上がらず対応づけに回る。許可の手がかり（`_PERM_CUE`）に無い問い（`〜しても大丈夫ですか`）は基点でもパスの判定まで行かない。
++  - **新データ（`route`）の 9 問は、罠の次の規則（`POLARITY_QUESTION_ON_A_VALUE`）で上がった**（§10 112）。C2 の `route` は元のデータでは不合格のまま。補いのデータ `supp/`（§10 116）では罠の `route` が全問合格（表 15-6）。
++  - **E0 の `を除` は `〜を除外する場合は` の `を除外` にも当たる**（レビューの任意 O1。表は変えない約束なので直していない）。
++  - **基点から既にある穴（今回の変更と無関係）**: 凍結データの `w2g2-x06-08` は期待が escalate なのに `off` が `Yes` と答える（基点のコードでも同じ。`artifacts/w2-c2/c1/c1_summary.json` の `S1_after_answer_when_expected_escalate_total`）。
++
+ ## 12. 既知の限界（規則だけで自然文の質問を読む方式）
+ 
+ - この入口は、自然文の質問を規則（閉じた形の列挙）で読み、列挙に無い形は上げる設計である。ただし列挙した形の中での読み違い（記録の向き・条件・主体・時・大文字小文字など）は、罠を書かれるたびに見つかってきた。
+@@ -903,10 +953,10 @@ S-C パスは大文字・小文字まで許可リストと一致したときだ
+   | `FRAME_SILENT` | `NO_RECORD_DECIDES` `NO_RECORD_DECIDES_AFTER_MAPPING` だけ |
+   | `QUESTION_UNREADABLE` | `PREDICATE_UNREADABLE` `ORDER_PHASES_UNCLEAR` `ORDER_CLAUSE_UNCLEAR` `TARGET_PHASE_UNCLEAR` だけ |
+ 
+-  対応づけだけの経路で、削除・公開・支出・認証情報に見える問い（W2-c の `_builtin_protected`）に答えになりかけたら、M が禁止の記録だけでできていない限り `HUMAN_APPROVAL_REQUIRED/BUILTIN_PROTECTED` で上げる。
++  対応づけだけの経路で、削除・公開・支出・認証情報に見える問い（W2-c の `_builtin_protected`。**W2-c2 でも、対応づけに渡す判定は広いまま**。規則層の判定だけを `_builtin_protected_asked` に狭めた。§15）に答えになりかけたら、M が禁止の記録だけでできていない限り `HUMAN_APPROVAL_REQUIRED/BUILTIN_PROTECTED` で上げる。
+ - 対応づけの答えも、W2-c の出口の検査（`REQUIREMENT_OF_PERMISSION` `MULTIPLE_QUESTIONS` `CONTEXT_SENTENCE_UNREAD`）を**同じ関数**で通る。
+ - **質問の形の門**（第 2 ラウンド。`conduct_ask.mapping_gate`、§10 78）: 対応づけが有効なとき、**答えになったもの**（対応づけだけの答えと、裏づけられた規則の答えの両方）に、W2-c の規則の検出器をそのまま当てる。
+-  否定（`_negated`）→ `QUESTION_UNREADABLE/NEGATED_QUESTION`、反転の語（`_INVERT_CUE`）→ `INVERTED_QUESTION`、各文の過去形の許可（`_PERM_PAST_EN` `_PERM_PAST_JA`）→ `PAST_TENSE_PERMISSION`、
++  否定・反転（**W2-c2 から** `_question_form_trap`。§15。正の証拠があるときだけ。`_negated` と `_INVERT_CUE` は枠の記録の向きの読み取りに使うので変えていない）→ `QUESTION_UNREADABLE/NEGATED_QUESTION` `INVERTED_QUESTION`、各文の過去形の許可（`_PERM_PAST_EN` `_PERM_PAST_JA`）→ `PAST_TENSE_PERMISSION`、
+   `should we` 系（`_PERM_SHOULD`）で答えが肯定の肢 → `FRAME_SILENT/ADVICE_NOT_PERMISSION`。規則は語彙が取れないと、これらの門に届く前に `VOCAB_UNMAPPED` で上げるので、門を通らずに答えが出る経路を塞ぐためである。
+   上げた件数は `mapping.exit_check` と集計の `exit_check_escalations` に数える。`--vocab-llm off` は対応づけが無効なので、この門は働かない。
+ 
+@@ -1268,3 +1318,124 @@ v1 の鍵（`records` `decides` `relations` `records2` `decides2` `relations2` `
+   台帳の鎖: `artifacts/w2-g/py.sh -m verantyx.llm_choice verify <ledger.jsonl>`。返答の数え直し: `artifacts/w2-g/py.sh artifacts/w2-g/g2/ledger_recheck_g2.py <ledger.jsonl>...`（`raw_reply` を最小形の読み手で読み直して、decision の status・結果・再照会の構造まで台帳と照合する）。
+ - 一連の検査（G1〜G9・凍結・予算）は `artifacts/w2-g/g2/final_run_g2.sh`（出力 `artifacts/w2-g/g2/final_run_g2.log`。第 1〜3 ラウンドの保存物は書き換えない）。
+ - 監査役の評価バンクの値はこの文書に書いていない。
++
++## 15. W2-c2: 罠の規則の反転（「否定の証拠が無いから上げる」から「上げるべき正の証拠があるときだけ上げる」へ）
++
++W2-c の罠の規則（§4 の 2・4、§6、§7）は、形が当たれば上げていた。実際の聞き返しには、枠に答えがあるのに「枠は黙っている」「質問が読めない」と上がるものがある。
++「分からないこと」と「偽であること」を混ぜないために、5 つの罠を「正の証拠があるときだけ上げる」に直した。**対応づけ（`conduct_map`）と対応づけの決定の規則（`conduct_map.decide`）は変えていない**（§10 104）。
++§9 は W2-c のコードの値で、書き換えていない。W2-c2 での差分は、この節の表。
++
++### 15.1 罠ごとの発火条件の変更（前 = 基点 `5cae978`、後 = W2-c2）
++
++| 罠（detail） | 変更前（形だけ） | 変更後（正の証拠） |
++|---|---|---|
++| `TERM_IN_WIDER_PHRASE`（`FRAME_SILENT`） | `_is_wider` が当たれば上げる（語の右に付属語以外、左に機能語以外の修飾） | `wider` は同じ形で立つ。**E0**（日本語。語の直後が `_JA_RIGHT_DENY` の語）または **OTHER_RECORD**（長い語句が、その言及の記録以外の枠の記録の本文にそのまま現れる）があれば `FRAME_SILENT`。無ければ、語を狭く読んだ結果が `FRAME_SILENT`（再試行を許す型）ならその結果、そうでなければ `VOCAB_UNMAPPED`（同じかもしれない。対応づけに回る）。証拠 (a) 主辞の型は未確認 |
++| `NEGATED_QUESTION`（`QUESTION_UNREADABLE`） | `_negated`（`ない` `ません` `なかった` `なく` `ず`、英語の否定語）が、枠の語を含む文（語彙外の経路と門は質問全体）のどこかに当たれば上げる | `_question_form_trap`: 肢と枠の語の範囲を除き、日本語は文末の述語の否定・`なくても＋よい`・`ないという理解で合って`・`ないほうが` `ないべき` `ではなく`、英語は主節の否定語（`whether or not` `yes or no` を除く）・`is it true that …` などの後の節の否定語。義務の形・副詞・従属節の否定は数えない。第 2 ラウンドで足した: `〜なくても大丈夫ですか` `〜ずに進めてよいですか`（可否の結びが同じ節にあるとき）、英語の評価・許可の枠の if 節の否定、付加疑問の前の文の否定 |
++| `INVERTED_QUESTION`（`QUESTION_UNREADABLE`） | `_INVERT_CUE` が同じ範囲のどこかに当たれば上げる（`drop-off` の `drop`、`worst-case` の `worst`、工程名の中の `除く` も当たる） | 英語は主節のトークンが反転の語と**完全一致**（`drop-off` は 1 トークン）、または主節に `instead of` `rather than`。日本語は `以外` はどこでも、ほかの語は最後の節か、条件・理由で終わらない節にあるとき。語の集合は `_INVERT_CUE` と同じ |
++| `BUILTIN_PROTECTED`（`HUMAN_APPROVAL_REQUIRED`） | `_builtin_protected` = 許可の手がかりと保護された語が質問全体のどこかにあれば上げる | `_builtin_protected_asked`: 許可の手がかりのある文の中で、保護された語が**問われている操作の位置**（許可の枠の直後、または `〜してもよいですか` などの直前）にあるとき。対応づけに渡す判定は広いまま |
++| `NO_ALLOWLIST`（`FRAME_SILENT`） | 許可の手がかりがあり、`_PATH_RX` に当たる字句があり、許可リストが無ければ上げる | 加えて、パスの字句が書き込みの動詞の直後・直前にあるとき（`_path_is_write_target`。第 2 ラウンドで、動詞の表と、動詞とパスの間の名詞句・前置詞、日本語の `保存` `追記` などを足した）。`e.g.` や参照のファイル名は書き込み先ではない |
++
++### 15.2 測定の表（`artifacts/w2-c2/` の出力そのもの）
++
++次の表は `artifacts/w2-c2/py.sh tests/conduct_ask/w2c2/run_w2c2.py table artifacts/w2-c2/base artifacts/w2-c2/after` の標準出力をそのまま貼ったもの。
++凍結データ = `tests/conduct_ask/{fixtures,w2g,w2g2,w2g3}`（349 問）、新データ = `tests/conduct_ask/w2c2/`（159 問、凍結は `artifacts/w2-c2/freeze.txt`）、補いのデータ = `tests/conduct_ask/w2c2/supp/`（46 問、第 2 ラウンドのコード変更の前に凍結: `artifacts/w2-c2/freeze_supp.txt`）。
++
++**表 15-1 規則層で上がる問の数**（`--vocab-llm fake` ＋ 空の対応づけの台本 = 作り物の対応づけ。`mapping.outcome` が `NOT_ASKED` で始まる問を、`mapping.rule.detail` 別に数えた。前 = 基点 `5cae978` のコード、後 = 変更後のコード）
++
++| detail | 凍結データ 期待 answer 前 | 後 | 凍結データ 期待 escalate 前 | 後 | 新データ 期待 answer 前 | 後 | 新データ 期待 escalate 前 | 後 |
++|---|---|---|---|---|---|---|---|---|
++| `TERM_IN_WIDER_PHRASE` | 8 | 0 | 4 | 1 | 15 | 0 | 21 | 15 |
++| `NEGATED_QUESTION` | 5 | 0 | 2 | 1 | 16 | 0 | 20 | 14 |
++| `INVERTED_QUESTION` | 0 | 0 | 1 | 1 | 10 | 0 | 19 | 13 |
++| `BUILTIN_PROTECTED` | 2 | 2 | 1 | 1 | 11 | 0 | 19 | 13 |
++| `NO_ALLOWLIST` | 0 | 0 | 0 | 0 | 10 | 0 | 18 | 16 |
++| 5 つの罠の計 | 15 | 2 | 8 | 4 | 62 | 0 | 97 | 71 |
++| 罠以外の規則の計 | 3 | 3 | 36 | 36 | 0 | 9 | 0 | 1 |
++| 問の総数 | 249 | 249 | 100 | 100 | 62 | 62 | 97 | 97 |
++
++**表 15-2 規則だけ（`off`）で罠の detail を返した問の数**（reason は問わない。上げ続けた問も、別の reason で上げ直した問も数える）
++
++| detail | 凍結データ 期待 answer 前 | 後 | 凍結データ 期待 escalate 前 | 後 | 新データ 期待 answer 前 | 後 | 新データ 期待 escalate 前 | 後 |
++|---|---|---|---|---|---|---|---|---|
++| `TERM_IN_WIDER_PHRASE` | 8 | 5 | 4 | 2 | 15 | 11 | 21 | 20 |
++| `NEGATED_QUESTION` | 5 | 0 | 2 | 1 | 16 | 0 | 20 | 14 |
++| `INVERTED_QUESTION` | 0 | 0 | 1 | 1 | 10 | 0 | 19 | 13 |
++| `BUILTIN_PROTECTED` | 2 | 2 | 1 | 1 | 11 | 0 | 19 | 13 |
++| `NO_ALLOWLIST` | 0 | 0 | 0 | 0 | 10 | 0 | 18 | 16 |
++
++**表 15-3 凍結データ（349 問 × 2 モード）で前後に変わった行（C1）と安全の線**
++
++| 項目 | 値 |
++|---|---|
++| 比べた凍結データの問 | 349 |
++| どれかの欄が変わった行（問 × モード） | 34 |
++| どれかの欄が変わった問 | 17 |
++| 　うち `off` で変わった問 | 17 |
++| 　うち `fakemap` で変わった問 | 17 |
++| 　変化の種類 `fakemap/NOT_ASKED->mapping` | 17 |
++| 　変化の種類 `off/FRAME_SILENT->VOCAB_UNMAPPED` | 5 |
++| 　変化の種類 `off/TERM_IN_WIDER_PHRASE->NO_RECORD_DECIDES(narrow reading also silent)` | 6 |
++| 　変化の種類 `off/other` | 6 |
++| S1: 期待 escalate で、前は答えず後は答えた問 | 0 |
++| S2: 期待 answer で、前は答え合っていた（または答えなかった）のに後に別の答えになった行 | 0 |
++| S3: `off` で escalate から answer に変わった行 | 0（全部が期待と一致: True） |
++
++**表 15-4 新データ（`tests/conduct_ask/w2c2/`）の C2 の判定（変更後のコード）**
++
++| 罠 | `raise` 合格/件数 | `route` 合格/件数 | `transfer` 合格/件数 |
++|---|---|---|---|
++| `WIDER` | 15/15 | 15/15 | 6/6 |
++| `NEGATED` | 14/14 | 15/16 | 6/6 |
++| `INVERTED` | 13/13 | 10/10 | 5/6 |
++| `BUILTIN` | 13/13 | 11/11 | 6/6 |
++| `NO_ALLOWLIST` | 12/12 | 2/10 | 2/6 |
++
++**表 15-5 新データの同じ判定を基点のコードで取ったもの**（`raise` は基点でも上がるので合格、`route` は基点では誤って上げるので不合格になる）
++
++| 罠 | `raise` 合格/件数 | `route` 合格/件数 | `transfer` 合格/件数 |
++|---|---|---|---|
++| `WIDER` | 15/15 | 0/15 | 0/6 |
++| `NEGATED` | 14/14 | 0/16 | 0/6 |
++| `INVERTED` | 13/13 | 0/10 | 0/6 |
++| `BUILTIN` | 13/13 | 0/11 | 0/6 |
++| `NO_ALLOWLIST` | 12/12 | 0/10 | 0/6 |
++
++**表 15-6 補いのデータ（`tests/conduct_ask/w2c2/supp/`、第 2 ラウンドの凍結）の C2 の判定（変更後のコード）**
++
++| 罠 | `raise` 合格/件数 | `route` 合格/件数 |
++|---|---|---|
++| `NEGATED` | 11/11 | 10/10 |
++| `NO_ALLOWLIST` | 10/10 | 15/15 |
++
++**表 15-7 補いのデータの同じ判定を基点のコードで取ったもの**
++
++| 罠 | `raise` 合格/件数 | `route` 合格/件数 |
++|---|---|---|
++| `NEGATED` | 11/11 | 0/10 |
++| `NO_ALLOWLIST` | 10/10 | 0/15 |
++
++読み方（数値は上の表から）:
++- 凍結データは、罠で規則層に上がっていた「答えるのが正解」の問が減り、「上げるのが正解」で上がり続ける問は残る（罠の証拠があるもの）。残った `BUILTIN_PROTECTED` は、保護された操作の許可を実際に問う形（削除・公開の許可）。
++- C1（字義）は 0 ではない。変わった行の全件は `artifacts/w2-c2/c1/c1_diff.tsv`。変化の種類は `FRAME_SILENT→VOCAB_UNMAPPED`（D2）、`TERM_IN_WIDER_PHRASE→NO_RECORD_DECIDES`（狭い読みも黙っている。§10 115）、`NOT_ASKED→対応づけ`（対応づけに回るようになった）、その他（否定・反転の罠が外れた後に別の規則が上げ直した）。`escalate→answer` になった行は無い（S1〜S3）。
++- 新データの route の一部は、罠の次の規則（`POLARITY_QUESTION_ON_A_VALUE`）で上がった（表 15-4 の `route` の不合格。§10 112）。第 2 ラウンドで足した補いのデータ（表 15-6）は、同じ判定で罠の `route` が合格している（§10 116）。表 15-4 の `raise` が全部合格のまま、`transfer` の合格が減ったのは、取りこぼしていた書き込み先の形を足したため、それらが上がるようになったから（`transfer` は合否に入れていない）。
++
++### 15.3 出典と再計算
++
++- 基点のコードの書き出し: `git -C <ツリー> archive 5cae978 verantyx | tar -x -C <書き出し先>`。ハッシュ `artifacts/w2-c2/base_hash.txt`（凍結時の `conduct_ask.py` が基点と同じことは `artifacts/w2-c2/freeze.txt` と比べる）。
++- 測定: `artifacts/w2-c2/py.sh tests/conduct_ask/w2c2/run_w2c2.py run --code-tree <書き出し先> --label base --out artifacts/w2-c2/base`（変更後は `--code-tree` をツリーにして `--label after --out artifacts/w2-c2/after`）。
++  `recount <出力>`（`summary.json` を `results.jsonl` から作り直して `MATCH`）、`diff base after --out artifacts/w2-c2/c1`（C1 と S1〜S3）、`c2 artifacts/w2-c2/after`（C2。出力 `artifacts/w2-c2/c2_report.txt`）、`probe`（`b5_rule_probe.py` と同じ数え方。出力 `probe_base.txt` `probe_after.txt`）、`bank`（新データを `b5_rule_probe.py` が読める形に）。
++  子プロセスは `env -i` と `PYTHONPATH=<--code-tree>` で起こし、読み込まれた `verantyx*` が全部 `--code-tree` の下にあることを子の中で確かめる。
++- 新データは `artifacts/w2-c2/build_items.py` の表から書き出した（読める形のソース）。凍結前の調査は `artifacts/w2-c2/survey.txt`、基点での発火の確認は `artifacts/w2-c2/base_c2_report.txt`。
++- この節の表の再計算の確認: `artifacts/w2-c2/py.sh tests/conduct_ask/w2c2/run_w2c2.py table artifacts/w2-c2/base artifacts/w2-c2/after` の出力が、この文書にそのまま入っていること（`artifacts/w2-c2/c5_check.txt`）。
++- 補いのデータ: `c2 artifacts/w2-c2/after --set supp`（出力 `c2_report_supp.txt`。基点は `c2_report_supp_base.txt`）。凍結前の基点での確認 `artifacts/w2-c2/supp_base/`、凍結 `freeze_supp.txt`。
++- 全体試験の失敗集合: 基点の書き出し全体（`git archive 5cae978 | tar -x -C <書き出し先>`）で 1 回（`c4_before.txt`）、変更後で 1 回（`c4_after.txt`）。
++- 試験: `tests/test_conduct_ask_w2c2.py`（データの形、凍結データと補いのデータのハッシュ、C2 を自分で判定（元のデータで不合格の問は記録として固定し、生きている集合と一致することを試験）、証拠の関数の単体、`mapping_gate`、凍結データの S1〜S3、狭い読み）。
++
++### 15.4 判断の要約（詳細は §10 104〜113）
++
++- D1 `decide()` は `conduct_map.decide()` と読む（触っていない）。D2 証拠の無い広い語句は `VOCAB_UNMAPPED/TERM_IN_WIDER_PHRASE`。D3 証拠 (a) は確かめていない（型で宣言）。D4 証拠は E0 と OTHER_RECORD だけで、語の表を足していない。
++- D5 否定・反転は 1 つの検出器を規則層・語彙外の経路・`mapping_gate` で共有する。D6 BUILTIN は規則層の 3 か所だけ狭める。D7 NO_ALLOWLIST はパスが書き込み先のときだけ。D8 C1 の字義は守れず、全件を報告した。
++- **非対称（D5・D6）**: 否定・反転・保護された操作は、境目の形では**証拠ありに倒す**（取りこぼすと、後段の規則や対応づけが問いの向きを取り違えて答える）。広い語句と `NO_ALLOWLIST` は、迷ったら**証拠なしに倒す**（広い語句は証拠が無くても `off` では答えず、許可リストの無い枠には書き込みを許す答えを作る経路が無い）。
++  対応づけに渡す `_builtin_protected` は広いまま（D6）なので、規則層で上がらなくなった問の一部は、対応づけの出口で同じ型で上がる。門の否定・反転は狭めた（D5）ので、門を通る答えが増える。
++- 第 2 ラウンド: D9（§10 114）否定の取りこぼしを閉じた形で直した。D10（§10 115）証拠の無い広い語句は狭い読みも黙っているとき `FRAME_SILENT`。D11（§10 116）C2 の試験の扱いと補いのデータ。D12（§10 117）書き込み先の形。
++- 既知の穴は §11 の W2-c2 の項。特に、`test_markdown_and_jsonl_frames_give_the_same_decisions` が `w2c2-f05-13` で食い違うこと（§10 115。未解決）と、新データの route 9 問が罠の次の規則で上がったこと（元のデータでは C2 不合格のまま）が残る。
+diff --git a/verantyx/conduct_ask.py b/verantyx/conduct_ask.py
+index 9e53ced..219a4f5 100644
+--- a/verantyx/conduct_ask.py
++++ b/verantyx/conduct_ask.py
+@@ -499,7 +499,8 @@ class Mention:
+     via: str = "direct"         # direct / alias / llm
+     alias: Optional[str] = None
+     ambiguous: bool = False
+-    wider: bool = False          # the term sits inside a longer noun phrase of the question (a different thing)
++    wider: bool = False          # the term sits inside a longer noun phrase of the question (in form only: see _is_wider)
++    wider_evidence: Optional[str] = None   # positive evidence that the longer phrase is ANOTHER thing (W2-c2: _wider_evidence)
+ 
+     def groups(self) -> set[str]:
+         return {e.group for e in self.entries}
+@@ -705,6 +706,112 @@ def _is_wider(q: str, m: "Mention", others: Sequence["Mention"] = ()) -> bool:
+     return first.group(0) not in _EN_RIGHT_STOP
+ 
+ 
++# ---------------------------------------------------------------------------------------------------------------------
++# W2-c2: positive evidence that a longer noun phrase is ANOTHER thing than the frame term inside it.
++#
++# ``_is_wider`` only sees a form (something attached to the term).  "<term>づくり", "<term> work", "the current <term>" are
++# usually the same thing under another name, so the form alone does not say that the longer phrase is a different thing:
++# that is a vocabulary question (VOCAB_UNMAPPED, handed to the record mapping), not a fact about the frame.  The phrase is
++# handed up as "the frame is silent" (FRAME_SILENT) only on one of two closed pieces of evidence:
++#   E0            (Japanese) the word right after the term names another object or range by its meaning
++#                 (_JA_RIGHT_DENY: のコピー, の一部, の写し, …);
++#   OTHER_RECORD  the longer phrase itself occurs in the text of another record of the frame (that record deals with the
++#                 longer phrase, so it is not the record of the term).
++# A third piece (the head noun of the longer phrase has another TYPE than the term) needs a placement lookup that this
++# entry does not have: it is not checked (trace: wider_phrase_head_type = NOT_CHECKED:NO_PLACEMENT).
++# ---------------------------------------------------------------------------------------------------------------------
++
++_JA_CHUNK_DELIM_NO_NO = "".join(c for c in _JA_CHUNK_DELIM if c != "の")
++
++
++def _wider_sides(q: str, m: "Mention", others: Sequence["Mention"]) -> tuple[Optional[int], Optional[int]]:
++    """Where the longer noun phrase around ``m`` starts and ends in ``q``: (start, end), ``None`` on a side where nothing
++    is attached.  The same conditions as ``_is_wider`` (which is left as it is), kept apart to give the extent."""
++    left: Optional[int] = None
++    right: Optional[int] = None
++    if has_cjk(m.term):
++        nxt = q[m.end:]
++        if nxt and (_JA_RIGHT_DENY.match(nxt) or (nxt[0] == "の" and not _JA_RIGHT_NO.match(nxt))
++                    or (nxt[0] not in "はがをにでとももやへの、。，,.?!！？ \t" and not re.match(
++                        r"^(?:前に|先に|後に|より|から|まで|について|に関|でき|ます|です|だ|か|って|なら|という|ごと|別)", nxt))):
++            j = m.end
++            while j < len(q) and q[j] not in _JA_CHUNK_DELIM_NO_NO:
++                j += 1
++            right = j
++        if m.start > 0 and q[m.start - 1] not in _JA_LEFT_OK:
++            cs = m.start
++            while cs > 0 and q[cs - 1] not in _JA_CHUNK_DELIM:
++                cs -= 1
++            left = cs
++        elif m.start > 0 and q[m.start - 1] == "の":
++            pre = q[:m.start]
++            general = any(pre.endswith(g) and (len(pre) == len(g) or pre[-len(g) - 1] in _JA_CHUNK_DELIM)
++                          for g in _JA_LEFT_GENERAL)
++            if not general:
++                for n in _JA_LEFT_NOUNS:
++                    if pre.endswith(n + "の"):
++                        before = pre[:-len(n) - 1]
++                        if any(before.endswith(d) and (len(before) == len(d) or before[-len(d) - 1] in _JA_CHUNK_DELIM)
++                               for d in _JA_LEFT_DEMONSTRATIVE):
++                            general = True
++            if not general and not any(o is not m and o.end == m.start - 1 for o in others):
++                cs = m.start - 1
++                while cs > 0 and q[cs - 1] not in _JA_CHUNK_DELIM:
++                    cs -= 1
++                if cs < m.start - 1:
++                    left = cs
++        return left, right
++    lm = re.search(r"([0-9a-z]+(?:['\-][0-9a-z]+)*)[ ]*$", q[:m.start])
++    if lm is not None:
++        w = lm.group(1)
++        if w in _EN_LEFT_VERBISH:
++            if not _en_verb_position(q, lm.start(1), w):
++                left = lm.start(1)
++        elif w not in _EN_LEFT_FUNC:
++            left = lm.start(1)
++    rest = q[m.end:].lstrip(" ")
++    if rest:
++        first = _TOKEN.match(rest)
++        if first is not None and first.group(0) not in _EN_RIGHT_STOP:
++            right = len(q) - len(rest) + first.end()
++    return left, right
++
++
++def _frame_records(view: "FrameView") -> list[Ref]:
++    """The text of every record a question may be about (not the vocabulary aliases and not the write allowlist)."""
++    refs: list[Ref] = []
++    groups: list[Sequence[Any]] = [view.phases, view.edges, view.policies, view.decisions, view.forbidden, view.protected,
++                                   view.invariants, view.criteria, view.escalations, view.precedence]
++    seen: set[tuple[str, int]] = set()
++    for g in groups:
++        for o in g:
++            r = getattr(o, "ref", None)
++            if isinstance(r, Ref) and (r.id, r.line) not in seen:
++                seen.add((r.id, r.line))
++                refs.append(r)
++    return refs
++
++
++def _wider_evidence(q: str, m: "Mention", others: Sequence["Mention"], view: "FrameView") -> Optional[str]:
++    """``"E0:<word>"`` / ``"OTHER_RECORD:<record id>"`` when the longer phrase around ``m`` is positively another thing,
++    else ``None`` (it may be the same thing under another name).  Only called for a mention that ``_is_wider`` marked."""
++    left, right = _wider_sides(q, m, others)
++    if left is None and right is None:
++        return None
++    if right is not None and has_cjk(m.term):
++        d = _JA_RIGHT_DENY.match(q[m.end:])
++        if d:
++            return "E0:" + d.group(0)
++    phrase = nz(q[left if left is not None else m.start: right if right is not None else m.end])
++    if len(phrase) <= len(nz(m.term)):
++        return None
++    own = {(r.id, r.line) for r in _mention_refs(m)}
++    for r in _frame_records(view):
++        if (r.id, r.line) not in own and phrase in nz(r.text):
++            return "OTHER_RECORD:" + r.id
++    return None
++
++
+ def find_mentions(q: str, index: TermIndex) -> tuple[list[Mention], int]:
+     """All mentions of frame terms in ``q`` (normalised), with the ones inside a longer mention removed."""
+     qtoks = [t for t in latin_tokens(q) if t[0] not in _ARTICLES]
+@@ -761,6 +868,7 @@ def find_mentions(q: str, index: TermIndex) -> tuple[list[Mention], int]:
+     for m in merged:
+         if m.groups() & {"policy", "subject", "phase"} and _is_wider(q, m, merged):
+             m.wider = True
++            m.wider_evidence = _wider_evidence(q, m, merged, index.view)
+     merged.sort(key=lambda m: (m.start, m.end))
+     return merged, dropped
+ 
+@@ -994,15 +1102,194 @@ def _sentence_of(ctx: Ctx, pos: int) -> int:
+     return len(ctx.sentences) - 1
+ 
+ 
++# ---------------------------------------------------------------------------------------------------------------------
++# W2-c2: a negated / inverted question is handed up only on POSITIVE evidence that the negation or inversion applies to
++# the predicate that is being asked.
++#
++# ``_negated`` and ``_INVERT_CUE`` (kept as they are: ``_record_stance`` reads a frame's own record with them) find a
++# negation WORD anywhere in a sentence, so an obligation ("〜なければなりませんか"), an adverb ("例外なく"), a clause
++# inside the question ("手間はかかりませんが、…"), the text of an offered option or "yes or no" are handed up although no
++# negated question was asked.  ``_question_form_trap`` returns the trap only on the closed forms below; words that sit
++# inside an offered option or inside a matched frame term are not the questioner's words and are not looked at.  Where the
++# boundary of "does it apply to the asked predicate" cannot be told, the form counts as evidence (a miss would let a later
++# rule or the record mapping read the question with the opposite polarity).
++# ---------------------------------------------------------------------------------------------------------------------
++
++_NEG_JA_OBLIGATION = re.compile(r"(?:なければ|なくては|なくちゃ|ないと)(?:なら|なり|いけ|だめ|ダメ)(?:ない|ません)")
++_NEG_JA_FINAL = re.compile(r"(?:ない|ません|なかった|ませんでした)(?:の|ん)?(?:です|でしょう|だろう)?(?:か|かね|よね|でしょうか)?$")
++_NEG_JA_ACTION = re.compile(r"(?:なくて|ないで)(?:も)?(?:よい|いい|良い|構わない|かまわない|よろしい)")
++_NEG_JA_PROPOSITION = re.compile(r"(?:ない|ません|なかった)[、,]?(?:ということ|という|との|って|と|の|で)(.*)")
++_NEG_JA_PROPOSITION_TAIL = re.compile(r"(?:理解|認識|想定|前提|こと)?(?:で|は|が)?(?:合って|正しい|間違い|よい|いい|大丈夫)")
++_NEG_JA_BOUNDARY = re.compile(r"(?:ない|なかった)(?:ほう|方)(?:が|は)|ないべき|(?:では|じゃ)なく(?!て?も)")
++_INVERT_JA = re.compile(r"避け|除外|除く|やめ|外す|外して|以外|最悪|最も不要")
++# a clause that ends like this is a condition / reason / concession ("最悪の場合は、", "除外する場合は、"), not the asked predicate
++_JA_SUBORDINATE_END = re.compile(r"(?:場合|とき|時|際|なら|ならば|たら|れば|ても|でも|ので|けれども|けれど|けど|のに|ために|ため|ながら|つつ|"
++                                 r"ですが|ますが|だが|(?<!の)が)(?:は|も|には)?$")
++_EN_MAIN_START = frozenset(("is are am was were do does did can could may might should shall will would must have has had cannot").split())
++_EN_WH_START = frozenset("which what how where when who why".split())
++_EN_SUBORDINATE = frozenset(("if when whenever unless because since although though while that which who whose whom where after "
++                             "before until once").split())
++_EN_DISCOURSE = frozenset("so and then also ok okay well now but or yet still actually".split())
++_EN_NEG_WORDS = frozenset(("not", "never", "no", "cannot"))
++_EN_INVERT_WORDS = frozenset("avoid avoiding exclude excluding except drop dropping reject skip without unlike worst least".split())
++# "is it true that X is not Y", "are we sure that ...", "do we agree that ...": what follows is the proposition that is asked about
++_EN_TRUE_THAT = re.compile(r"\b(?:sure|certain|true|correct|right|clear|confirmed|agree|agreed|know|confirm|mean|say|think|believe|"
++                           r"assume|understand|understood|the\s+case)\s+that\s+(.*)")
++_EN_CLAUSE_SPLIT = re.compile(r"[,;:]|\s[-–—]\s")
++
++
++def _option_spans(ctx: "Ctx") -> list[tuple[int, int]]:
++    """Where the text of an offered option stands inside the question: (start, length).  A yes / no option is the answer
++    word, not a description of an alternative, and a Latin option is found only as a whole word ("no" is not in "not")."""
++    q = ctx.q
++    spans: list[tuple[int, int]] = []
++    for o in ctx.options:
++        if o.reading in ("YES", "NO") or len(o.core) < 2:
++            continue
++        if has_cjk(o.core):
++            at = q.find(o.core)
++        else:
++            mm = re.search(r"(?<![0-9a-z])" + re.escape(o.core) + r"(?![0-9a-z])", q)
++            at = mm.start() if mm else -1
++        if at >= 0:
++            spans.append((at, len(o.core)))
++    return spans
++
++
++def _masked_question(ctx: "Ctx", mentions: bool = True) -> str:
++    """The question with the text of every offered option (and, with ``mentions``, of every matched frame term) blanked
++    out (same length)."""
++    q = ctx.q
++    spans = _option_spans(ctx)
++    if mentions:
++        spans += [(m.start, m.end - m.start) for m in ctx.mentions if m.end > m.start]
++    chars = list(q)
++    for at, n in spans:
++        for i in range(at, min(at + n, len(chars))):
++            chars[i] = " "
++    return "".join(chars)
++
++
++def _en_clause_is_main(clause: str, first: bool) -> bool:
++    toks = [t[0] for t in latin_tokens(clause)]
++    while toks and toks[0] in _EN_DISCOURSE:
++        toks = toks[1:]
++    if not toks:
++        return False
++    w = toks[0]
++    return w in _EN_MAIN_START or w.endswith("n't") or (first and w in _EN_WH_START)
++
++
++_EN_TAG_WORDS = frozenset("right correct yes ok okay".split())
++_EN_TAG_AUX = frozenset(("is are am was were do does did can could will would shall should has have had may might must "
++                         "isn't aren't wasn't weren't don't doesn't didn't can't couldn't won't wouldn't shan't shouldn't "
++                         "hasn't haven't hadn't mayn't mightn't mustn't ain't").split())
++_EN_TAG_PRON = frozenset("it they we you i he she there this that".split())
++# "(whether it is a problem) if / when ..." : the condition of an evaluation / permission frame is the thing that is asked about
++_EN_EVAL_FRAME = re.compile(
++    r"^\W*(?:(?:so|and|then|also|well|now|ok|okay)\W+)*(?:(?:is|was|would|will|could|might|may)\s+(?:it|that|this)\s+(?:be\s+)?"
++    r"(?:(?:a|an)\s+(?:(?:big|real|major|minor|serious)\s+)?(?:problem|issue|concern|deal)|"
++    r"(?:ok|okay|fine|alright|acceptable|allowed|permitted|permissible|good|bad|wrong|safe|possible)\b|a\s+(?:good|bad)\s+idea)|"
++    r"(?:do|would)\s+(?:you|they|we)\s+mind|(?:would|will|does|do)\s+it\s+(?:hurt|matter|bother))")
++
++
++def _en_is_tag(clause: str) -> bool:
++    """A tag question ("right", "correct", "is it", "aren't they"): it repeats the statement before it, it asks nothing of its own."""
++    toks = [t[0] for t in latin_tokens(clause)]
++    if len(toks) == 1:
++        return toks[0] in _EN_TAG_WORDS
++    if 2 <= len(toks) <= 3 and toks[0] in _EN_TAG_AUX:
++        rest = toks[1:]
++        if rest[0] == "not":
++            rest = rest[1:]
++        return len(rest) == 1 and rest[0] in _EN_TAG_PRON
++    return False
++
++
++def _en_main_parts(text: str) -> tuple[str, Optional[str], str]:
++    """The clause that carries the asked predicate: the last comma / semicolon clause that starts like a question or a
++    main clause (a wh-word only counts as the first word of the sentence, so a relative "which is not built yet" does not),
++    cut before its first subordinating word.  Without such a clause, the last clause.  A trailing tag question ("..., right?",
++    "..., is it?") is not a clause of its own.  Returns (main clause, the subordinating word it was cut at or None, the rest
++    of that clause from the subordinating word on)."""
++    clauses = _EN_CLAUSE_SPLIT.split(text)
++    while len(clauses) >= 2 and _en_is_tag(clauses[-1]):
++        clauses.pop()
++    cands = [i for i, c in enumerate(clauses) if _en_clause_is_main(c, i == 0)]
++    main = clauses[cands[-1]] if cands else clauses[-1]
++    for k, (w, s, _e) in enumerate(latin_tokens(main)):
++        if k >= 1 and w in _EN_SUBORDINATE:
++            return main[:s], w, main[s:]
++    return main, None, ""
++
++
++def _en_main_clause(text: str) -> str:
++    return _en_main_parts(text)[0]
++
++
++def _en_negated_tokens(text: str) -> bool:
++    toks = [t[0] for t in latin_tokens(text)]
++    for i, w in enumerate(toks):
++        if w in _EN_NEG_WORDS or w.endswith("n't"):
++            if w == "not" and toks[max(0, i - 2):i] == ["whether", "or"]:
++                continue                               # "whether or not"
++            if w == "no" and toks[max(0, i - 2):i] == ["yes", "or"]:
++                continue                               # "yes or no"
++            return True
++    return False
++
++
++def _negation_evidence(text: str) -> bool:
++    if has_cjk(text):
++        if _NEG_JA_ASKED_OK.search(re.sub(r"\s+", "", text)):
++            return True            # "〜なくても大丈夫ですか": looked at BEFORE _NEG_JA_SAFE blanks out 問題ない / 構わない / 差し支えない
++        t = _NEG_JA_SAFE.sub("", text)
++        t = _NEG_JA_OBLIGATION.sub("◇", t)
++        if _NEG_JA_FINAL.search(t.strip(" \t?？。!！.．…")):
++            return True
++        if _NEG_JA_ACTION.search(t) or _NEG_JA_BOUNDARY.search(t):
++            return True
++        return any(_NEG_JA_PROPOSITION_TAIL.search(mm.group(1)) for mm in _NEG_JA_PROPOSITION.finditer(t))
++    mt = _EN_TRUE_THAT.search(text)
++    if mt is not None and _en_negated_tokens(mt.group(1)):
++        return True
++    main, sub, tail = _en_main_parts(text)
++    if _en_negated_tokens(main):
++        return True
++    # "Is it OK if we don't ...?", "Would it be a problem if we didn't ...?": the if-clause is what is asked about
++    return sub in ("if", "when", "whenever") and bool(_EN_EVAL_FRAME.match(main)) and _en_negated_tokens(tail)
++
++
++def _inversion_evidence(text: str) -> bool:
++    if has_cjk(text):
++        if "以外" in text:
++            return True                                # attached to a noun phrase: whether it is the asked predicate cannot be told
++        clauses = [c.strip(" \t?？。!！.．") for c in re.split(r"[、，,]", text) if c.strip(" \t?？。!！.．")]
++        # a word of inversion inside the last clause, or in an earlier clause that is not a condition / reason ("避けるべきなのは、…")
++        return any(_INVERT_JA.search(c) and (i == len(clauses) - 1 or not _JA_SUBORDINATE_END.search(c)) for i, c in enumerate(clauses))
++    main = _en_main_clause(text)
++    return any(t[0] in _EN_INVERT_WORDS for t in latin_tokens(main)) or bool(re.search(r"\b(?:instead\s+of|rather\s+than)\b", main))
++
++
++def _question_form_trap(ctx: "Ctx", spans: Sequence[tuple[int, int]]) -> Optional[str]:
++    """``"NEGATED_QUESTION"`` / ``"INVERTED_QUESTION"`` / ``None``: the question form trap that the sentences ``spans``
++    (positions in ``ctx.q``) carry on positive evidence.  A negation anywhere is looked at before an inversion."""
++    text = _masked_question(ctx)
++    if any(_negation_evidence(text[a:b]) for a, b in spans):
++        return "NEGATED_QUESTION"
++    if any(_inversion_evidence(text[a:b]) for a, b in spans):
++        return "INVERTED_QUESTION"
++    return None
++
++
+ def layer_negation(ctx: Ctx) -> Optional[Outcome]:
+     """A negated question flips the meaning of yes/no and of 'which'; it is handed up, not guessed."""
+     for i, (a, b) in enumerate(ctx.sentences):
+         if not any(a <= m.start < b for m in ctx.mentions):
+             continue
+-        if _negated(ctx.q[a:b]):
+-            return _esc("QUESTION_UNREADABLE", "NEGATED_QUESTION", [], layer="negation")
+-        if _INVERT_CUE.search(ctx.q[a:b]):
+-            return _esc("QUESTION_UNREADABLE", "INVERTED_QUESTION", [], layer="negation")
++        trap = _question_form_trap(ctx, [(a, b)])
++        if trap is not None:
++            return _esc("QUESTION_UNREADABLE", trap, [], layer="negation")
+     return None
+ 
+ 
+@@ -1682,6 +1969,11 @@ _PJA_LEAD = re.compile(r"^" + _PJA_DISC + r"$")
+ _PJA_LEAD_APPROVAL = re.compile(r"^" + _PJA_DISC + r"(?:" + _PJA_APPROVAL + r")?$")
+ _PJA_MAY = r"(?:(?:も)?(?:よい|いい|良い|構わない|かまわない|よろしい)(?:です)?(?:か|でしょうか)|(?:も)?問題(?:ない|ありません)(?:です)?(?:か|でしょうか))"
+ _PJA_CAN = r"(?:でき|可能)(?:ます|る|です)(?:か|でしょうか)"
++# W2-c2 round 2: a NEGATED action whose permission / harmlessness is asked ("含めなくても大丈夫ですか", "入れずに進めてよいですか"):
++# 〜なくて(も) / 〜ないで / 〜ずに, then (in the same clause) the closing of a permission or harmlessness question.  Used by _negation_evidence.
++_JA_OK_TAIL = (r"(?:" + _PJA_MAY + r"|" + _PJA_CAN + r"|(?:大丈夫|差し支え(?:ない|ありません)|問題(?:ない|ありません)|ok|オーケー|平気|よろしい)"
++               r"(?:です|でしょう)?(?:か|でしょうか|かね))")
++_NEG_JA_ASKED_OK = re.compile(r"(?:なくて|ないで|ずに)(?:も)?[^、，,。?？!！]{0,16}?(?:も)?" + _JA_OK_TAIL + r"\s*[?？。!！.]*$")
+ _PJA_DO_TE = r"(?:し|行っ|おこなっ|実施し|実行し|やっ|始め|開始し|送っ)て"
+ _PJA_DO_DICT = r"(?:する|行う|おこなう|実施する|実行する|やる|始める|開始する|送る)"
+ _PJA_PATH_TE = r"(?:(?:書き換え|更新し|編集し|変更し|修正し|作成し|追加し|書い)て|書き込んで)"
+@@ -1896,6 +2188,105 @@ def _perm_form_ok(ctx: "Ctx", out: "Outcome") -> Optional[str]:
+     return _PERM_OP if all(d == _PERM_OP for d in details) else _PERM_SUBJ
+ 
+ 
++# ---------------------------------------------------------------------------------------------------------------------
++# W2-c2: the two hand-ups that need a positive reading of what is being ASKED.
++#
++# BUILTIN_PROTECTED: a permission question about an operation that looks like deleting, publishing, spending or a credential
++# is a question for a human.  The word alone is not that question: "the release notes page", "a password reset screen",
++# "the stickers we pay for" are only words in a description or a background.  ``_builtin_protected_asked`` is true only
++# when a protected word stands in the position of the operation that the permission question asks about (right after the
++# permission frame "can we / may I / is it ok to / are we allowed to ...", or right before the permission tail
++# "〜してもよいですか / 〜できますか").  ``_builtin_protected`` (the wide test) is still what the record mapping is given as
++# its safety net (conduct_map.resolve), unchanged.
++#
++# NO_ALLOWLIST: "e.g." and "export.csv" look like a path.  A frame without a write allowlist can only be asked about a
++# write when the path is where something is written: right after a write verb ("edit src/a.py") or right before one
++# ("src/a.py を編集してもよいですか").  Anything else that looks like a path is not asked about as a write target.
++# ---------------------------------------------------------------------------------------------------------------------
++
++_BI_MODAL_FRAMES = (
++    r"(?:{M})\s+(?:i|we|you|they|someone|anyone|everyone|(?:the|our|a|an|this|that|my|your)\s+[a-z][a-z\-']*(?:\s+[a-z][a-z\-']*)?)\s+",
++    r"(?:is|would)\s+it\s+(?:be\s+)?(?:ok|okay|fine|alright|allowed|permitted|acceptable)\s+"
++    r"(?:for\s+(?:us|me|them|[a-z]+)\s+to\s+|to\s+|if\s+(?:i|we|they|you|[a-z]+)\s+)",
++    r"(?:am\s+i|are\s+we|is\s+[a-z]+|are\s+(?:you|they))\s+(?:allowed|permitted)\s+to\s+",
++    r"(?:do\s+(?:i|we)\s+have\s+)?permission\s+to\s+",
++)
++_BI_ASKED_EN = re.compile(r"(?:" + "|".join(f.replace("{M}", _PEN_MODAL) for f in _BI_MODAL_FRAMES) + r")" + _PEN_GAP + r"$")
++_BI_ASKED_EN_OBJ = re.compile(r"(?:" + "|".join(f.replace("{M}", _PEN_MODAL) for f in _BI_MODAL_FRAMES) + r")" + _PEN_GAP +
++                              r"[a-z][a-z\-']*\s+(?:(?:the|our|a|an|this|that|these|those|my|your|any|all|their|its)\s+)?$")
++_BI_ASKED_GERUND = re.compile(r"(?:\bis|\bare|\bwould|\bwill|\bbe)\s+(?:it\s+)?$")
++_BI_EN_OP = re.compile(r"\b(?:delete|deleting|erase|remove|destroy|publish|deploy|release|upload|spend|purchase|buy|pay|charge)\b|"
++                       r"\b(?:send|share)\s+externally\b")
++_BI_EN_CRED = re.compile(r"\b(?:credentials?|passwords?|tokens?|api\s+keys?)\b")
++_BI_EN_CRED_NEXT = frozenset("in into to for on with from of at by and or so now today then too please here there when if as that which".split())
++_BI_JA_OP = re.compile(r"削除|消去|抹消|公開|公表|支出|支払|購入|課金|外部送信")
++_BI_JA_CRED = re.compile(r"パスワード|認証情報")
++_BI_JA_ASKED_OP = (
++    re.compile(r"[ぁ-ん]{0,2}(?:を|は)?(?:し|行い|行っ|実施し|実行し)?(?:て|で)" + _PJA_MAY),
++    re.compile(r"[ぁ-ん]{0,2}(?:を|は)?(?:する|行う|実施する|実行する)?(?:こと)?(?:は|が)?" + _PJA_CAN),
++    re.compile(r"[ぁ-ん]{0,2}(?:は|が)?(?:許可|承認)され(?:てい)?(?:ます|る)(?:か|でしょうか)"),
++)
++_BI_JA_ASKED_CRED = re.compile(r"(?:を|は)[^、。,\s]{1,8}(?:て|で)" + _PJA_MAY)
++
++
++def _builtin_protected_asked(ctx: Ctx) -> bool:
++    """A protected word stands where the permission question's operation stands (see the block comment above)."""
++    text = _masked_question(ctx, mentions=False)
++    for a, b in ctx.sentences:
++        sent = text[a:b]
++        if not _PERM_CUE.search(sent):
++            continue
++        if has_cjk(sent):
++            for mm in _BI_JA_OP.finditer(sent):
++                rest = sent[mm.end():].strip(" \t?？。!！")
++                if any(rx.fullmatch(rest) for rx in _BI_JA_ASKED_OP):
++                    return True
++            for mm in _BI_JA_CRED.finditer(sent):
++                if _BI_JA_ASKED_CRED.fullmatch(sent[mm.end():].strip(" \t?？。!！")):
++                    return True
++            continue
++        for mm in _BI_EN_OP.finditer(sent):
++            pre = sent[:mm.start()]
++            if _BI_ASKED_EN.search(pre) or (mm.group(0).endswith("ing") and _BI_ASKED_GERUND.search(pre)):
++                return True
++        for mm in _BI_EN_CRED.finditer(sent):
++            nxt = _TOKEN.match(sent[mm.end():].lstrip(" "))
++            if (nxt is None or nxt.group(0) in _BI_EN_CRED_NEXT) and _BI_ASKED_EN_OBJ.search(sent[:mm.start()]):
++                return True
++    return False
++
++
++_WRITE_TARGET_EN = re.compile(_PEN_GAPP + r"$")
++# W2-c2 round 2: a write verb, a noun phrase of up to three words (no preposition, no conjunction), a preposition of place, the
++# path ("modify the file src/a.py", "save the report to out/r.txt", "append the new rows to data/t.csv").  The verbs are the write
++# verbs of _PEN_GAPP plus the ones a write of a file is asked with: save, append, overwrite, output, export, replace, rewrite, store, copy, move, rename, put, dump, generate, produce, patch, fix, persist, archive, log, record.
++_WTE_VERB = (r"\b(?:edit|modify|change|update|write(?:\s+to)?|create|add(?:\s+to)?|touch|save|append|overwrite|output|export|replace|rewrite|"
++             r"store|copy|move|rename|put|dump|generate|produce|patch|fix|persist|archive|log|record|delete|remove|erase|wipe|truncate|clear|empty)\s+")
++_WTE_WORD = (r"(?:(?!(?:for|from|with|about|like|as|per|via|by|than|and|or|but|if|so|such|using|before|after|on|e\.g|i\.e|to|into|in|onto|at|under)\b)"
++             r"[a-z][a-z0-9\-']*\s+|of\s+)")
++_WRITE_TARGET_EN_NP = re.compile(_WTE_VERB + _WTE_WORD + r"{0,3}(?:(?:to|into|in|as|onto|at|under)\s+)?$")
++# Japanese: the path, a short stretch of the same clause (の / を / に + an object: "に結果を", "の中身を"), then the write verb
++_WRITE_TARGET_JA = re.compile(r"\s*[^、，,。.?？!！]{0,14}?(?:" + _PJA_PATH_TE + "|" + _PJA_PATH_DICT +
++                              "|追記|保存|上書き|出力|書き出|書き込|書き換え|書き足|書き加え|コピー|複写|移動|リネーム|名前を変え|生成|記録|直し|直す|消し|消す|削除|消去)")
++_WRITE_TARGET_JA_NOUN = re.compile(r"(?:保存先|出力先|書き込み先|書き出し先|格納先|書き込み先)(?:は|を|に|の|として)?\s*$")
++
++
++def _path_is_write_target(ctx: Ctx) -> bool:
++    """A path-looking word of a permission sentence stands where something is written (see the block comment above)."""
++    for a, b in ctx.sentences:
++        sent = ctx.q[a:b]
++        if not _PERM_CUE.search(sent):
++            continue
++        for mm in _PATH_RX.finditer(sent):
++            if re.fullmatch(r"[0-9.]+", mm.group(0).rstrip("/")):
++                continue
++            pre = sent[:mm.start()]
++            if (_WRITE_TARGET_EN.search(pre) or _WRITE_TARGET_EN_NP.search(pre) or _WRITE_TARGET_JA_NOUN.search(pre)
++                    or _WRITE_TARGET_JA.match(sent[mm.end():])):
++                return True
++    return False
++
++
+ def _layer_permission(ctx: Ctx) -> Optional[Outcome]:
+     cue = bool(_PERM_CUE.search(ctx.q))
+     statuses: list[tuple[str, list[Ref], Any]] = []
+@@ -1911,10 +2302,13 @@ def _layer_permission(ctx: Ctx) -> Optional[Outcome]:
+                 if pol.kind == "CONFIRM":
+                     statuses.append(("CONFIRM", [pol.ref], pol))
+     path = _path_status(ctx) if cue else None
++    path_seen = path is not None
++    if path_seen and path[0] == "NO_ALLOWLIST" and not _path_is_write_target(ctx):
++        path = None             # W2-c2: a path-looking word that is not where something is written is not asked as a write
++    if not statuses and path_seen and _builtin_protected_asked(ctx):
++        return _esc("HUMAN_APPROVAL_REQUIRED", "BUILTIN_PROTECTED", [], "PERMISSION", "permission")
+     if not statuses and path is None:
+         return None
+-    if not statuses and path is not None and _builtin_protected(ctx):
+-        return _esc("HUMAN_APPROVAL_REQUIRED", "BUILTIN_PROTECTED", [], "PERMISSION", "permission")
+     kinds = {s[0] for s in statuses}
+     if "FORBIDDEN" in kinds and not cue:
+         statuses = [s for s in statuses if s[0] != "FORBIDDEN"]
+@@ -2590,6 +2984,24 @@ def _classifier_kind(raw_q: str, options: Optional[list[str]]) -> str:
+         return "OTHER"
+ 
+ 
++def _narrow_reading(ctx: Ctx, wide: Sequence[Mention]) -> Optional[Outcome]:
++    """What the permission layer and the resolvers say when the terms in ``wide`` are read as the frame terms themselves (the
++    longer phrase is taken to be the same thing).  The context is left as it was (traces, premise sentences, ``wider``)."""
++    tried, out_trace, premise = list(ctx.trace_tried), dict(ctx.trace_out), list(ctx.premise_sents)
++    for m in wide:
++        m.wider = False
++    try:
++        out = layer_permission(ctx)
++        return out if out is not None else combine_resolvers(ctx)
++    finally:
++        for m in wide:
++            m.wider = True
++        ctx.trace_tried[:] = tried
++        ctx.trace_out.clear()
++        ctx.trace_out.update(out_trace)
++        ctx.premise_sents[:] = premise
++
++
+ def _decide(ctx: Ctx, only_role: Optional[str], kind_hint: str) -> tuple[Optional[Outcome], bool]:
+     """Layers 3-6.  Returns (outcome, hit_status_or_request)."""
+     if only_role is None:
+@@ -2600,11 +3012,29 @@ def _decide(ctx: Ctx, only_role: Optional[str], kind_hint: str) -> tuple[Optiona
+             return out, False
+     wide = [m for m in ctx.mentions if m.wider]
+     if wide and not any(g in m.groups() for m in ctx.mentions for g in ("forbidden", "protected")):
++        # W2-c2: the longer phrase is handed up as "the frame is silent" only on positive evidence that it is another
++        # thing; otherwise it may be the same thing under another name (a vocabulary question: VOCAB_UNMAPPED)
+         ctx.trace_tried.append("wider_phrase")
+-        ctx.trace_out["wider_phrase"] = "ESCALATE"
++        evidence = [m.wider_evidence for m in wide if m.wider_evidence]
++        ctx.trace_out["wider_phrase"] = f"ESCALATE:EVIDENCE:{evidence[0]}" if evidence else "ESCALATE:UNDECIDED"
++        ctx.trace_out["wider_phrase_head_type"] = "NOT_CHECKED:NO_PLACEMENT"
+         if _REQUEST_CUE.search(ctx.q) or _STATUS_CUE.search(ctx.q):
+             return _esc("OUT_OF_RANGE", "STATE_OR_REQUEST_QUESTION", [], "STATUS" if _STATUS_CUE.search(ctx.q) else "OTHER"), False
+-        return _esc("FRAME_SILENT", "TERM_IN_WIDER_PHRASE", [r for m in wide for r in _mention_refs(m)], layer="wider_phrase"), False
++        if not evidence:
++            # without evidence the longer phrase may be the same thing as the term.  If the frame is silent about the term read
++            # NARROWLY too (the same silence that the record mapping may retry), both readings agree: that result is returned.
++            # Anything else (an answer, another hand-up) is not taken from the narrow reading: it stays a vocabulary question.
++            narrow = _narrow_reading(ctx, wide)
++            if narrow is None and not _builtin_protected_asked(ctx):
++                # no rule decides: what the pipeline hands up for a question with frame terms when no layer decided
++                narrow = _esc("FRAME_SILENT", "NO_RECORD_DECIDES", [r for m in ctx.mentions for r in _mention_refs(m)])
++            if narrow is not None and narrow.decision == "escalate" and narrow.reason == "FRAME_SILENT":
++                from . import conduct_map
++                if conduct_map.retry_allowed(narrow.reason, narrow.detail):
++                    ctx.trace_out["wider_phrase"] = "ESCALATE:UNDECIDED:NARROW_READING_ALSO_SILENT"
++                    return narrow, False
++        reason = "FRAME_SILENT" if evidence else "VOCAB_UNMAPPED"
++        return _esc(reason, "TERM_IN_WIDER_PHRASE", [r for m in wide for r in _mention_refs(m)], layer="wider_phrase"), False
+     ctx.trace_tried.append("permission")
+     out = layer_permission(ctx)
+     ctx.trace_out["permission"] = "NOT_APPLICABLE" if out is None else ("ANSWER" if out.decision == "answer" else f"ESCALATE:{out.reason}:{out.detail}")
+@@ -2788,10 +3218,11 @@ def _answer_question(frame_path: str, question: str, options: Optional[Sequence[
+         """W2-c's own question-form detectors, applied to an answer reached through the record mapping (W2-g review 1,
+         must-fix 2): a negated or inverted question, a past-tense permission question and an advice question ("should we")
+         answered yes are handed up in the same types as the rules use.  The regular expressions are the rules' own."""
+-        if _negated(q):
++        form_trap = _question_form_trap(ctx, ctx.sentences)       # W2-c2: positive evidence only (not every negation word)
++        if form_trap == "NEGATED_QUESTION":
+             ctx.trace_out["mapping_gate"] = "NEGATED_QUESTION"
+             return _esc("QUESTION_UNREADABLE", "NEGATED_QUESTION", out.basis, out.kind, "mapping_gate")
+-        if _INVERT_CUE.search(q):
++        if form_trap == "INVERTED_QUESTION":
+             ctx.trace_out["mapping_gate"] = "INVERTED_QUESTION"
+             return _esc("QUESTION_UNREADABLE", "INVERTED_QUESTION", out.basis, out.kind, "mapping_gate")
+         sents = [q[a:b].strip() for a, b in ctx.sentences]
+@@ -2878,12 +3309,12 @@ def _answer_question(frame_path: str, question: str, options: Optional[Sequence[
+         ctx.trace_out["range"] = "OUT_OF_RANGE"
+         return finish(_esc("OUT_OF_RANGE", "STATE_OR_REQUEST_QUESTION", [], "STATUS" if _STATUS_CUE.search(q) else "OTHER"))
+     if ctx.mentions:
+-        if _builtin_protected(ctx):
++        if _builtin_protected_asked(ctx):
+             return finish(_esc("HUMAN_APPROVAL_REQUIRED", "BUILTIN_PROTECTED", [], "PERMISSION"))
+         return finish(_esc("FRAME_SILENT", "NO_RECORD_DECIDES", [m_ref for m in ctx.mentions for m_ref in _mention_refs(m)]))
+     # no frame term at all ------------------------------------------------------------------
+     def unmapped(detail: str, voc: Optional[dict] = None) -> dict[str, Any]:
+-        if _builtin_protected(ctx):   # a delete / publish / spend looking permission question: a human, not "unmapped"
++        if _builtin_protected_asked(ctx):   # a delete / publish / spend looking permission question: a human, not "unmapped"
+             return finish(_esc("HUMAN_APPROVAL_REQUIRED", "BUILTIN_PROTECTED", [], "PERMISSION"), voc)
+         return finish(_esc("VOCAB_UNMAPPED", detail), voc)
+ 
+@@ -2891,8 +3322,9 @@ def _answer_question(frame_path: str, question: str, options: Optional[Sequence[
+         role = _vocab_role(q)
+         if role is None:
+             return unmapped("NO_ROLE")
+-        if _negated(q) or _INVERT_CUE.search(q):
+-            return finish(_esc("QUESTION_UNREADABLE", "NEGATED_QUESTION" if _negated(q) else "INVERTED_QUESTION"))
++        form_trap = _question_form_trap(ctx, ctx.sentences)       # W2-c2: positive evidence only (not every negation word)
++        if form_trap is not None:
++            return finish(_esc("QUESTION_UNREADABLE", form_trap))
+         term, why = extract_term(ctx, role)
+         cands = candidates_for(ctx, role)
+         if term is None:

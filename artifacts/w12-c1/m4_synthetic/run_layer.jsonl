@@ -1,0 +1,4 @@
+{"id": "s1", "question": "誰が大根をおろした？", "expect": {"verdict": "ANSWER", "values": ["祖母"]}, "out": {"verdict": "ANSWER", "values": ["祖"]}}
+{"id": "s2", "question": "誰が魚を焼いた？", "expect": {"verdict": "ANSWER", "values": ["父"]}, "out": {"verdict": "ANSWER", "values": ["父"]}}
+{"id": "s3", "question": "誰が肉を煮た？", "expect": "ABSTAIN", "out": {"verdict": "ABSTAIN", "values": [], "reason": "X"}}
+{"id": "s4", "question": "誰が米を炊いた？", "expect": "ABSTAIN", "out": {"verdict": "ABSTAIN", "values": [], "reason": "X"}}

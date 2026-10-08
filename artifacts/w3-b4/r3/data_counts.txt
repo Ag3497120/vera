@@ -1,0 +1,27 @@
+# pred_type x frozen entry_expect x observed entry (rows). 333 rows = 323 frozen + 10 appended in round 3. A row of a narrowed type (P_CHANGE, P_CONSUME) or a narrowed row (narrowed_rows.json) frozen as read is observed as abstain
+P_ACT	abstain	abstain	32
+P_ACT	read	abstain	22
+P_ACT	read	read	4
+P_CHANGE	abstain	abstain	34
+P_CHANGE	read	abstain	27
+P_COGNITION	abstain	abstain	4
+P_CONSUME	abstain	abstain	33
+P_CONSUME	read	abstain	29
+P_CREATE	abstain	abstain	36
+P_CREATE	read	abstain	28
+P_EMOTION	abstain	abstain	39
+P_EMOTION	read	abstain	26
+P_EXIST	abstain	abstain	4
+P_GIVE	abstain	abstain	4
+P_PERCEIVE	abstain	abstain	4
+P_POSSESS	abstain	abstain	4
+P_STATE	abstain	abstain	3
+# narrowed rows (narrowed_rows.json) x pred_type x frozen entry_expect
+P_ACT	abstain	10
+P_ACT	read	22
+P_CREATE	abstain	10
+P_CREATE	read	28
+P_EMOTION	abstain	13
+P_EMOTION	read	26
+# path x observed entry among the rows that are read
+{'U': 4}

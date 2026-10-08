@@ -1,0 +1,1803 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0
+rootdir: /Users/motonisihikoudai/Projects/vera-impl/wt/W2-c-S
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collected 154 items
+
+tests/test_conduct_ask_traps3.py FFFFFFFFFFFFFFFFFF.FF.................. [ 25%]
+....FFF.......FFFFFFFFFFF..F.FFFFFF.F...........................FFFFFFFF [ 72%]
+FFFFFFF........FFFFFFF.FFFFFF........FFFFFF                              [100%]
+
+=================================== FAILURES ===================================
+_ test_n6_question_words_that_do_not_ask_for_a_choice_are_handed_up[\u4fdd\u5b58\u5f62\u5f0f\u306f\u4f55\u306b\u4f7f\u3044\u307e\u3059\u304b\uff1f-None] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/library.md')
+q = '保存形式は何に使いますか？', opts = None
+
+    @pytest.mark.parametrize("q,opts", N6_LIB)
+    def test_n6_question_words_that_do_not_ask_for_a_choice_are_handed_up(frames, q, opts):
+>       assert_escalates(ask(frames[1], q, opts))
+
+tests/test_conduct_ask_traps3.py:83: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'DESIGN_PREFERENCE', 'answer': 'SQLite', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('SQLite', None, [{'id': 'D1', 'section': 'decisions', 'line': 25, 'text': 'D1: 保存形式 => SQLite'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps3.py:40: AssertionError
+_ test_n6_question_words_that_do_not_ask_for_a_choice_are_handed_up[\u4fdd\u5b58\u5f62\u5f0f\u306f\u4f55\u306b\u4f7f\u3044\u307e\u3059\u304b\uff1f-opts1] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/library.md')
+q = '保存形式は何に使いますか？', opts = ['SQLite', 'CSV']
+
+    @pytest.mark.parametrize("q,opts", N6_LIB)
+    def test_n6_question_words_that_do_not_ask_for_a_choice_are_handed_up(frames, q, opts):
+>       assert_escalates(ask(frames[1], q, opts))
+
+tests/test_conduct_ask_traps3.py:83: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'CHOICE', 'answer': 'SQLite', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('SQLite', 0, [{'id': 'D1', 'section': 'decisions', 'line': 25, 'text': 'D1: 保存形式 => SQLite'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps3.py:40: AssertionError
+_ test_n6_question_words_that_do_not_ask_for_a_choice_are_handed_up[\u4fdd\u5b58\u5f62\u5f0f\u306f\u3044\u3064\u4f7f\u3044\u307e\u3059\u304b\uff1f-None] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/library.md')
+q = '保存形式はいつ使いますか？', opts = None
+
+    @pytest.mark.parametrize("q,opts", N6_LIB)
+    def test_n6_question_words_that_do_not_ask_for_a_choice_are_handed_up(frames, q, opts):
+>       assert_escalates(ask(frames[1], q, opts))
+
+tests/test_conduct_ask_traps3.py:83: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'DESIGN_PREFERENCE', 'answer': 'SQLite', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('SQLite', None, [{'id': 'D1', 'section': 'decisions', 'line': 25, 'text': 'D1: 保存形式 => SQLite'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps3.py:40: AssertionError
+_ test_n6_question_words_that_do_not_ask_for_a_choice_are_handed_up[\u4fdd\u5b58\u5f62\u5f0f\u306f\u3069\u3053\u306b\u4f7f\u3044\u307e\u3059\u304b\uff1f-None] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/library.md')
+q = '保存形式はどこに使いますか？', opts = None
+
+    @pytest.mark.parametrize("q,opts", N6_LIB)
+    def test_n6_question_words_that_do_not_ask_for_a_choice_are_handed_up(frames, q, opts):
+>       assert_escalates(ask(frames[1], q, opts))
+
+tests/test_conduct_ask_traps3.py:83: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'DESIGN_PREFERENCE', 'answer': 'SQLite', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('SQLite', None, [{'id': 'D1', 'section': 'decisions', 'line': 25, 'text': 'D1: 保存形式 => SQLite'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps3.py:40: AssertionError
+_ test_n6_question_words_that_do_not_ask_for_a_choice_are_handed_up[\u4fdd\u5b58\u5f62\u5f0f\u306f\u3044\u304f\u3064\u4f7f\u3044\u307e\u3059\u304b\uff1f-None] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/library.md')
+q = '保存形式はいくつ使いますか？', opts = None
+
+    @pytest.mark.parametrize("q,opts", N6_LIB)
+    def test_n6_question_words_that_do_not_ask_for_a_choice_are_handed_up(frames, q, opts):
+>       assert_escalates(ask(frames[1], q, opts))
+
+tests/test_conduct_ask_traps3.py:83: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'DESIGN_PREFERENCE', 'answer': 'SQLite', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('SQLite', None, [{'id': 'D1', 'section': 'decisions', 'line': 25, 'text': 'D1: 保存形式 => SQLite'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps3.py:40: AssertionError
+_ test_n6_question_words_that_do_not_ask_for_a_choice_are_handed_up[\u4fdd\u5b58\u5f62\u5f0f\u306f\u3069\u3046\u4f7f\u3044\u307e\u3059\u304b\uff1f-None] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/library.md')
+q = '保存形式はどう使いますか？', opts = None
+
+    @pytest.mark.parametrize("q,opts", N6_LIB)
+    def test_n6_question_words_that_do_not_ask_for_a_choice_are_handed_up(frames, q, opts):
+>       assert_escalates(ask(frames[1], q, opts))
+
+tests/test_conduct_ask_traps3.py:83: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'DESIGN_PREFERENCE', 'answer': 'SQLite', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('SQLite', None, [{'id': 'D1', 'section': 'decisions', 'line': 25, 'text': 'D1: 保存形式 => SQLite'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps3.py:40: AssertionError
+_ test_n6_question_words_that_do_not_ask_for_a_choice_are_handed_up[\u4fdd\u5b58\u5f62\u5f0f\u306f\u3044\u3064\u3067\u3059\u304b\uff1f-None] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/library.md')
+q = '保存形式はいつですか？', opts = None
+
+    @pytest.mark.parametrize("q,opts", N6_LIB)
+    def test_n6_question_words_that_do_not_ask_for_a_choice_are_handed_up(frames, q, opts):
+>       assert_escalates(ask(frames[1], q, opts))
+
+tests/test_conduct_ask_traps3.py:83: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'DESIGN_PREFERENCE', 'answer': 'SQLite', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('SQLite', None, [{'id': 'D1', 'section': 'decisions', 'line': 25, 'text': 'D1: 保存形式 => SQLite'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps3.py:40: AssertionError
+_ test_n6_question_words_that_do_not_ask_for_a_choice_are_handed_up[\u4fdd\u5b58\u5f62\u5f0f\u306f\u3044\u304f\u3064\u3067\u3059\u304b\uff1f-None] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/library.md')
+q = '保存形式はいくつですか？', opts = None
+
+    @pytest.mark.parametrize("q,opts", N6_LIB)
+    def test_n6_question_words_that_do_not_ask_for_a_choice_are_handed_up(frames, q, opts):
+>       assert_escalates(ask(frames[1], q, opts))
+
+tests/test_conduct_ask_traps3.py:83: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'DESIGN_PREFERENCE', 'answer': 'SQLite', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('SQLite', None, [{'id': 'D1', 'section': 'decisions', 'line': 25, 'text': 'D1: 保存形式 => SQLite'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps3.py:40: AssertionError
+_ test_n6_question_words_that_do_not_ask_for_a_choice_are_handed_up[\u4fdd\u5b58\u5f62\u5f0f\u306f\u3044\u3064\u63a1\u7528\u3057\u307e\u3059\u304b\uff1f-None] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/library.md')
+q = '保存形式はいつ採用しますか？', opts = None
+
+    @pytest.mark.parametrize("q,opts", N6_LIB)
+    def test_n6_question_words_that_do_not_ask_for_a_choice_are_handed_up(frames, q, opts):
+>       assert_escalates(ask(frames[1], q, opts))
+
+tests/test_conduct_ask_traps3.py:83: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'DESIGN_PREFERENCE', 'answer': 'SQLite', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('SQLite', None, [{'id': 'D1', 'section': 'decisions', 'line': 25, 'text': 'D1: 保存形式 => SQLite'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps3.py:40: AssertionError
+_ test_n6_question_words_that_do_not_ask_for_a_choice_are_handed_up[\u65e5\u4ed8\u306e\u8868\u8a18\u306f\u3069\u3053\u306b\u4f7f\u3044\u307e\u3059\u304b\uff1f-opts9] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/library.md')
+q = '日付の表記はどこに使いますか？', opts = ['西暦', '和暦']
+
+    @pytest.mark.parametrize("q,opts", N6_LIB)
+    def test_n6_question_words_that_do_not_ask_for_a_choice_are_handed_up(frames, q, opts):
+>       assert_escalates(ask(frames[1], q, opts))
+
+tests/test_conduct_ask_traps3.py:83: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'CHOICE', 'answer': '西暦', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('西暦', 0, [{'id': 'D5', 'section': 'decisions', 'line': 29, 'text': 'D5: CHOICE | 日付の表記 | 西暦'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps3.py:40: AssertionError
+_ test_n6_question_words_that_do_not_ask_for_a_choice_are_handed_up[\u65e5\u4ed8\u306e\u8868\u8a18\u306f\u3044\u3064\u4f7f\u3044\u307e\u3059\u304b\uff1f-opts10] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/library.md')
+q = '日付の表記はいつ使いますか？', opts = ['西暦', '和暦']
+
+    @pytest.mark.parametrize("q,opts", N6_LIB)
+    def test_n6_question_words_that_do_not_ask_for_a_choice_are_handed_up(frames, q, opts):
+>       assert_escalates(ask(frames[1], q, opts))
+
+tests/test_conduct_ask_traps3.py:83: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'CHOICE', 'answer': '西暦', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('西暦', 0, [{'id': 'D5', 'section': 'decisions', 'line': 29, 'text': 'D5: CHOICE | 日付の表記 | 西暦'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps3.py:40: AssertionError
+_ test_n6_question_words_that_do_not_ask_for_a_choice_are_handed_up[\u3069\u306e\u4fdd\u5b58\u5f62\u5f0f\u306b\u4f7f\u3044\u307e\u3059\u304b\uff1f-None] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/library.md')
+q = 'どの保存形式に使いますか？', opts = None
+
+    @pytest.mark.parametrize("q,opts", N6_LIB)
+    def test_n6_question_words_that_do_not_ask_for_a_choice_are_handed_up(frames, q, opts):
+>       assert_escalates(ask(frames[1], q, opts))
+
+tests/test_conduct_ask_traps3.py:83: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'DESIGN_PREFERENCE', 'answer': 'SQLite', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('SQLite', None, [{'id': 'D1', 'section': 'decisions', 'line': 25, 'text': 'D1: 保存形式 => SQLite'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps3.py:40: AssertionError
+_ test_n6_question_words_that_do_not_ask_for_a_choice_are_handed_up[\u4fdd\u5b58\u5f62\u5f0f\u306f\u3001SQLite\u3068CSV\u306e\u3069\u3061\u3089\u306b\u4f7f\u3044\u307e\u3059\u304b\uff1f-opts12] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/library.md')
+q = '保存形式は、SQLiteとCSVのどちらに使いますか？', opts = ['SQLite', 'CSV']
+
+    @pytest.mark.parametrize("q,opts", N6_LIB)
+    def test_n6_question_words_that_do_not_ask_for_a_choice_are_handed_up(frames, q, opts):
+>       assert_escalates(ask(frames[1], q, opts))
+
+tests/test_conduct_ask_traps3.py:83: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'CHOICE', 'answer': 'SQLite', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('SQLite', 0, [{'id': 'D1', 'section': 'decisions', 'line': 25, 'text': 'D1: 保存形式 => SQLite'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps3.py:40: AssertionError
+_ test_n6_question_words_that_do_not_ask_for_a_choice_are_handed_up[\u4fdd\u5b58\u5f62\u5f0f\u306f\u3069\u308c\u306b\u4f7f\u3044\u307e\u3059\u304b\uff1f-opts13] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/library.md')
+q = '保存形式はどれに使いますか？', opts = ['SQLite', 'CSV']
+
+    @pytest.mark.parametrize("q,opts", N6_LIB)
+    def test_n6_question_words_that_do_not_ask_for_a_choice_are_handed_up(frames, q, opts):
+>       assert_escalates(ask(frames[1], q, opts))
+
+tests/test_conduct_ask_traps3.py:83: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'CHOICE', 'answer': 'SQLite', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('SQLite', 0, [{'id': 'D1', 'section': 'decisions', 'line': 25, 'text': 'D1: 保存形式 => SQLite'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps3.py:40: AssertionError
+_ test_n6_question_words_that_do_not_ask_for_a_choice_are_handed_up[\u4fdd\u5b58\u5f62\u5f0f\u306f\u3069\u3053\u306b\u3057\u307e\u3059\u304b\uff1f-None] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/library.md')
+q = '保存形式はどこにしますか？', opts = None
+
+    @pytest.mark.parametrize("q,opts", N6_LIB)
+    def test_n6_question_words_that_do_not_ask_for_a_choice_are_handed_up(frames, q, opts):
+>       assert_escalates(ask(frames[1], q, opts))
+
+tests/test_conduct_ask_traps3.py:83: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'DESIGN_PREFERENCE', 'answer': 'SQLite', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('SQLite', None, [{'id': 'D1', 'section': 'decisions', 'line': 25, 'text': 'D1: 保存形式 => SQLite'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps3.py:40: AssertionError
+_ test_n6_question_words_that_do_not_ask_for_a_choice_are_handed_up[\u4fdd\u5b58\u5f62\u5f0f\u306f\u3044\u3064\u306b\u3057\u307e\u3059\u304b\uff1f-None] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/library.md')
+q = '保存形式はいつにしますか？', opts = None
+
+    @pytest.mark.parametrize("q,opts", N6_LIB)
+    def test_n6_question_words_that_do_not_ask_for_a_choice_are_handed_up(frames, q, opts):
+>       assert_escalates(ask(frames[1], q, opts))
+
+tests/test_conduct_ask_traps3.py:83: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'DESIGN_PREFERENCE', 'answer': 'SQLite', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('SQLite', None, [{'id': 'D1', 'section': 'decisions', 'line': 25, 'text': 'D1: 保存形式 => SQLite'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps3.py:40: AssertionError
+_ test_n6_question_words_that_do_not_ask_for_a_choice_are_handed_up[\u4fdd\u5b58\u5f62\u5f0f\u306f\u3044\u304f\u3064\u306b\u3057\u307e\u3059\u304b\uff1f-None] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/library.md')
+q = '保存形式はいくつにしますか？', opts = None
+
+    @pytest.mark.parametrize("q,opts", N6_LIB)
+    def test_n6_question_words_that_do_not_ask_for_a_choice_are_handed_up(frames, q, opts):
+>       assert_escalates(ask(frames[1], q, opts))
+
+tests/test_conduct_ask_traps3.py:83: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'DESIGN_PREFERENCE', 'answer': 'SQLite', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('SQLite', None, [{'id': 'D1', 'section': 'decisions', 'line': 25, 'text': 'D1: 保存形式 => SQLite'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps3.py:40: AssertionError
+_ test_n6_question_words_that_do_not_ask_for_a_choice_are_handed_up[\u3069\u306e\u4fdd\u5b58\u5f62\u5f0f\u306b\u4f7f\u3044\u307e\u3059\u304b\uff1f-opts17] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/library.md')
+q = 'どの保存形式に使いますか？', opts = ['SQLite', 'CSV']
+
+    @pytest.mark.parametrize("q,opts", N6_LIB)
+    def test_n6_question_words_that_do_not_ask_for_a_choice_are_handed_up(frames, q, opts):
+>       assert_escalates(ask(frames[1], q, opts))
+
+tests/test_conduct_ask_traps3.py:83: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'CHOICE', 'answer': 'SQLite', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('SQLite', 0, [{'id': 'D1', 'section': 'decisions', 'line': 25, 'text': 'D1: 保存形式 => SQLite'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps3.py:40: AssertionError
+_ test_n6_question_words_that_do_not_ask_for_a_choice_are_handed_up[\u4fdd\u5b58\u5f62\u5f0f\u306f\u3044\u304f\u3089\u3067\u3059\u304b\uff1f-None] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/library.md')
+q = '保存形式はいくらですか？', opts = None
+
+    @pytest.mark.parametrize("q,opts", N6_LIB)
+    def test_n6_question_words_that_do_not_ask_for_a_choice_are_handed_up(frames, q, opts):
+>       assert_escalates(ask(frames[1], q, opts))
+
+tests/test_conduct_ask_traps3.py:83: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'DESIGN_PREFERENCE', 'answer': 'SQLite', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('SQLite', None, [{'id': 'D1', 'section': 'decisions', 'line': 25, 'text': 'D1: 保存形式 => SQLite'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps3.py:40: AssertionError
+________ test_n6_a_place_word_is_read_only_when_the_subject_is_a_place _________
+
+    def test_n6_a_place_word_is_read_only_when_the_subject_is_a_place():
+>       assert_escalates(H.ask("f03_handout", "用語集の置き場所はいつにしますか？"))
+
+tests/test_conduct_ask_traps3.py:87: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'DESIGN_PREFERENCE', 'answer': '巻末', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('巻末', None, [{'id': 'D3', 'section': 'decisions', 'line': 32, 'text': 'D3: 用語集の置き場所 => 巻末'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps3.py:40: AssertionError
+_ test_n7_english_confirm_for_another_operation_subject_or_time_is_handed_up[May we remove running the dockside simulator?] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/library.md')
+q = 'May we remove running the dockside simulator?'
+
+    @pytest.mark.parametrize("q", N7_EN)
+    def test_n7_english_confirm_for_another_operation_subject_or_time_is_handed_up(frames, q):
+>       assert_escalates(ask(frames[0], q, YN))
+
+tests/test_conduct_ask_traps3.py:153: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'CONFIRM', 'answer': 'Yes', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('Yes', 0, [{'id': 'D4', 'section': 'decisions', 'line': 28, 'text': 'D4: CONFIRM | running the dockside simulator | permitted'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps3.py:40: AssertionError
+_ test_n7_english_confirm_for_another_operation_subject_or_time_is_handed_up[Can we remove flashing a field unit?] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/library.md')
+q = 'Can we remove flashing a field unit?'
+
+    @pytest.mark.parametrize("q", N7_EN)
+    def test_n7_english_confirm_for_another_operation_subject_or_time_is_handed_up(frames, q):
+>       assert_escalates(ask(frames[0], q, YN))
+
+tests/test_conduct_ask_traps3.py:153: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'CONFIRM', 'answer': 'No', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('No', 1, [{'id': 'D5', 'section': 'decisions', 'line': 29, 'text': 'D5: CONFIRM | flashing a field unit | not permitted'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps3.py:40: AssertionError
+_ test_n7_english_confirm_for_another_operation_subject_or_time_is_handed_up[Can we document flashing a field unit?] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/library.md')
+q = 'Can we document flashing a field unit?'
+
+    @pytest.mark.parametrize("q", N7_EN)
+    def test_n7_english_confirm_for_another_operation_subject_or_time_is_handed_up(frames, q):
+>       assert_escalates(ask(frames[0], q, YN))
+
+tests/test_conduct_ask_traps3.py:153: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'CONFIRM', 'answer': 'No', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('No', 1, [{'id': 'D5', 'section': 'decisions', 'line': 29, 'text': 'D5: CONFIRM | flashing a field unit | not permitted'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps3.py:40: AssertionError
+_ test_n7_japanese_confirm_for_another_operation_subject_or_time_is_handed_up[\u9928\u5185\u3067\u306e\u8a66\u9a13\u904b\u7528\u3092\u4e2d\u6b62\u3057\u3066\u3082\u3088\u3044\u3067\u3059\u304b\uff1f] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/library.md')
+q = '館内での試験運用を中止してもよいですか？'
+
+    @pytest.mark.parametrize("q", N7_JA)
+    def test_n7_japanese_confirm_for_another_operation_subject_or_time_is_handed_up(frames, q):
+>       assert_escalates(ask(frames[1], q, HI))
+
+tests/test_conduct_ask_traps3.py:175: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'CONFIRM', 'answer': 'はい', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('はい', 0, [{'id': 'D3', 'section': 'decisions', 'line': 27, 'text': 'D3: CONFIRM | 館内での試験運用 | permitted'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps3.py:40: AssertionError
+_ test_n7_japanese_confirm_for_another_operation_subject_or_time_is_handed_up[\u9928\u5185\u3067\u306e\u8a66\u9a13\u904b\u7528\u3092\u5ef6\u671f\u3057\u3066\u3082\u3088\u3044\u3067\u3059\u304b\uff1f] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/library.md')
+q = '館内での試験運用を延期してもよいですか？'
+
+    @pytest.mark.parametrize("q", N7_JA)
+    def test_n7_japanese_confirm_for_another_operation_subject_or_time_is_handed_up(frames, q):
+>       assert_escalates(ask(frames[1], q, HI))
+
+tests/test_conduct_ask_traps3.py:175: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'CONFIRM', 'answer': 'はい', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('はい', 0, [{'id': 'D3', 'section': 'decisions', 'line': 27, 'text': 'D3: CONFIRM | 館内での試験運用 | permitted'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps3.py:40: AssertionError
+_ test_n7_japanese_confirm_for_another_operation_subject_or_time_is_handed_up[\u9928\u5185\u3067\u306e\u8a66\u9a13\u904b\u7528\u3092\u898b\u76f4\u3057\u3066\u3082\u3088\u3044\u3067\u3059\u304b\uff1f] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/library.md')
+q = '館内での試験運用を見直してもよいですか？'
+
+    @pytest.mark.parametrize("q", N7_JA)
+    def test_n7_japanese_confirm_for_another_operation_subject_or_time_is_handed_up(frames, q):
+>       assert_escalates(ask(frames[1], q, HI))
+
+tests/test_conduct_ask_traps3.py:175: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'CONFIRM', 'answer': 'はい', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('はい', 0, [{'id': 'D3', 'section': 'decisions', 'line': 27, 'text': 'D3: CONFIRM | 館内での試験運用 | permitted'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps3.py:40: AssertionError
+_ test_n7_japanese_confirm_for_another_operation_subject_or_time_is_handed_up[\u9928\u5185\u3067\u306e\u8a66\u9a13\u904b\u7528\u3092\u6765\u5e74\u306b\u56de\u3057\u3066\u3082\u3088\u3044\u3067\u3059\u304b\uff1f] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/library.md')
+q = '館内での試験運用を来年に回してもよいですか？'
+
+    @pytest.mark.parametrize("q", N7_JA)
+    def test_n7_japanese_confirm_for_another_operation_subject_or_time_is_handed_up(frames, q):
+>       assert_escalates(ask(frames[1], q, HI))
+
+tests/test_conduct_ask_traps3.py:175: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'CONFIRM', 'answer': 'はい', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('はい', 0, [{'id': 'D3', 'section': 'decisions', 'line': 27, 'text': 'D3: CONFIRM | 館内での試験運用 | permitted'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps3.py:40: AssertionError
+_ test_n7_japanese_confirm_for_another_operation_subject_or_time_is_handed_up[\u9928\u5185\u3067\u306e\u8a66\u9a13\u904b\u7528\u3092\u5916\u6ce8\u3057\u3066\u3082\u3088\u3044\u3067\u3059\u304b\uff1f] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/library.md')
+q = '館内での試験運用を外注してもよいですか？'
+
+    @pytest.mark.parametrize("q", N7_JA)
+    def test_n7_japanese_confirm_for_another_operation_subject_or_time_is_handed_up(frames, q):
+>       assert_escalates(ask(frames[1], q, HI))
+
+tests/test_conduct_ask_traps3.py:175: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'CONFIRM', 'answer': 'はい', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('はい', 0, [{'id': 'D3', 'section': 'decisions', 'line': 27, 'text': 'D3: CONFIRM | 館内での試験運用 | permitted'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps3.py:40: AssertionError
+_ test_n7_japanese_confirm_for_another_operation_subject_or_time_is_handed_up[\u9928\u5185\u3067\u306e\u8a66\u9a13\u904b\u7528\u3092\u7701\u7565\u3057\u3066\u3082\u3088\u3044\u3067\u3059\u304b\uff1f] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/library.md')
+q = '館内での試験運用を省略してもよいですか？'
+
+    @pytest.mark.parametrize("q", N7_JA)
+    def test_n7_japanese_confirm_for_another_operation_subject_or_time_is_handed_up(frames, q):
+>       assert_escalates(ask(frames[1], q, HI))
+
+tests/test_conduct_ask_traps3.py:175: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'CONFIRM', 'answer': 'はい', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('はい', 0, [{'id': 'D3', 'section': 'decisions', 'line': 27, 'text': 'D3: CONFIRM | 館内での試験運用 | permitted'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps3.py:40: AssertionError
+_ test_n7_japanese_confirm_for_another_operation_subject_or_time_is_handed_up[\u672c\u756a\u306e\u8cb8\u51fa\u30c7\u30fc\u30bf\u3092\u4f7f\u3063\u305f\u8a66\u9a13\u3092\u4e2d\u6b62\u3057\u3066\u3082\u3088\u3044\u3067\u3059\u304b\uff1f] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/library.md')
+q = '本番の貸出データを使った試験を中止してもよいですか？'
+
+    @pytest.mark.parametrize("q", N7_JA)
+    def test_n7_japanese_confirm_for_another_operation_subject_or_time_is_handed_up(frames, q):
+>       assert_escalates(ask(frames[1], q, HI))
+
+tests/test_conduct_ask_traps3.py:175: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'CONFIRM', 'answer': 'いいえ', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('いいえ', 1, [{'id': 'D4', 'section': 'decisions', 'line': 28, 'text': 'D4: CONFIRM | 本番の貸出データを使った試験 | not permitted'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps3.py:40: AssertionError
+_ test_n7_japanese_confirm_for_another_operation_subject_or_time_is_handed_up[\u9928\u5185\u3067\u306e\u8a66\u9a13\u904b\u7528\u3092\u696d\u8005\u304c\u3057\u3066\u3082\u3088\u3044\u3067\u3059\u304b\uff1f] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/library.md')
+q = '館内での試験運用を業者がしてもよいですか？'
+
+    @pytest.mark.parametrize("q", N7_JA)
+    def test_n7_japanese_confirm_for_another_operation_subject_or_time_is_handed_up(frames, q):
+>       assert_escalates(ask(frames[1], q, HI))
+
+tests/test_conduct_ask_traps3.py:175: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'CONFIRM', 'answer': 'はい', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('はい', 0, [{'id': 'D3', 'section': 'decisions', 'line': 27, 'text': 'D3: CONFIRM | 館内での試験運用 | permitted'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps3.py:40: AssertionError
+_ test_n7_japanese_confirm_for_another_operation_subject_or_time_is_handed_up[\u672c\u756a\u306e\u8cb8\u51fa\u30c7\u30fc\u30bf\u3092\u4f7f\u3063\u305f\u8a66\u9a13\u3092\u696d\u8005\u304c\u3057\u3066\u3082\u3088\u3044\u3067\u3059\u304b\uff1f] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/library.md')
+q = '本番の貸出データを使った試験を業者がしてもよいですか？'
+
+    @pytest.mark.parametrize("q", N7_JA)
+    def test_n7_japanese_confirm_for_another_operation_subject_or_time_is_handed_up(frames, q):
+>       assert_escalates(ask(frames[1], q, HI))
+
+tests/test_conduct_ask_traps3.py:175: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'CONFIRM', 'answer': 'いいえ', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('いいえ', 1, [{'id': 'D4', 'section': 'decisions', 'line': 28, 'text': 'D4: CONFIRM | 本番の貸出データを使った試験 | not permitted'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps3.py:40: AssertionError
+_ test_n7_japanese_confirm_for_another_operation_subject_or_time_is_handed_up[\u9928\u5185\u3067\u306e\u8a66\u9a13\u904b\u7528\u3092\u6765\u9031\u3057\u3066\u3082\u3088\u3044\u3067\u3059\u304b\uff1f] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/library.md')
+q = '館内での試験運用を来週してもよいですか？'
+
+    @pytest.mark.parametrize("q", N7_JA)
+    def test_n7_japanese_confirm_for_another_operation_subject_or_time_is_handed_up(frames, q):
+>       assert_escalates(ask(frames[1], q, HI))
+
+tests/test_conduct_ask_traps3.py:175: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'CONFIRM', 'answer': 'はい', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('はい', 0, [{'id': 'D3', 'section': 'decisions', 'line': 27, 'text': 'D3: CONFIRM | 館内での試験運用 | permitted'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps3.py:40: AssertionError
+_ test_n7_japanese_confirm_for_another_operation_subject_or_time_is_handed_up[\u9928\u5185\u3067\u306e\u8a66\u9a13\u904b\u7528\u306f\u696d\u8005\u306b\u4efb\u305b\u3066\u3082\u3088\u3044\u3067\u3059\u304b\uff1f] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/library.md')
+q = '館内での試験運用は業者に任せてもよいですか？'
+
+    @pytest.mark.parametrize("q", N7_JA)
+    def test_n7_japanese_confirm_for_another_operation_subject_or_time_is_handed_up(frames, q):
+>       assert_escalates(ask(frames[1], q, HI))
+
+tests/test_conduct_ask_traps3.py:175: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'CONFIRM', 'answer': 'はい', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('はい', 0, [{'id': 'D3', 'section': 'decisions', 'line': 27, 'text': 'D3: CONFIRM | 館内での試験運用 | permitted'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps3.py:40: AssertionError
+_ test_n7_forbidden_operation_asked_as_something_else_is_not_answered_not_permitted[f01_loan-\u4e88\u7d04\u8a18\u9332\u3092\u524a\u9664\u3059\u308b\u306e\u3092\u4e2d\u6b62\u3057\u3066\u3082\u3088\u3044\u3067\u3059\u304b\uff1f-opts0] _
+
+fr = 'f01_loan', q = '予約記録を削除するのを中止してもよいですか？', opts = ['はい', 'いいえ']
+
+    @pytest.mark.parametrize("fr,q,opts", N7_FORBIDDEN)
+    def test_n7_forbidden_operation_asked_as_something_else_is_not_answered_not_permitted(fr, q, opts):
+>       assert_escalates(H.ask(fr, q, opts))
+
+tests/test_conduct_ask_traps3.py:194: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'PERMISSION', 'answer': 'いいえ', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('いいえ', 1, [{'id': 'forbidden_actions:L46', 'section': 'forbidden_actions', 'line': 46, 'text': '予約記録を削除する => 記録は追記だけと決めている'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps3.py:40: AssertionError
+_ test_n7_forbidden_operation_asked_as_something_else_is_not_answered_not_permitted[f01_loan-\u4e88\u7d04\u8a18\u9332\u3092\u524a\u9664\u3059\u308b\u624b\u9806\u3092\u66f8\u3044\u3066\u3082\u3088\u3044\u3067\u3059\u304b\uff1f-opts2] _
+
+fr = 'f01_loan', q = '予約記録を削除する手順を書いてもよいですか？', opts = ['はい', 'いいえ']
+
+    @pytest.mark.parametrize("fr,q,opts", N7_FORBIDDEN)
+    def test_n7_forbidden_operation_asked_as_something_else_is_not_answered_not_permitted(fr, q, opts):
+>       assert_escalates(H.ask(fr, q, opts))
+
+tests/test_conduct_ask_traps3.py:194: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'PERMISSION', 'answer': 'いいえ', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('いいえ', 1, [{'id': 'forbidden_actions:L46', 'section': 'forbidden_actions', 'line': 46, 'text': '予約記録を削除する => 記録は追記だけと決めている'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps3.py:40: AssertionError
+_ test_n7_forbidden_operation_asked_as_something_else_is_not_answered_not_permitted[f01_loan-\u696d\u8005\u304c\u4e88\u7d04\u8a18\u9332\u3092\u524a\u9664\u3057\u3066\u3088\u3044\u3067\u3059\u304b\uff1f-opts3] _
+
+fr = 'f01_loan', q = '業者が予約記録を削除してよいですか？', opts = ['はい', 'いいえ']
+
+    @pytest.mark.parametrize("fr,q,opts", N7_FORBIDDEN)
+    def test_n7_forbidden_operation_asked_as_something_else_is_not_answered_not_permitted(fr, q, opts):
+>       assert_escalates(H.ask(fr, q, opts))
+
+tests/test_conduct_ask_traps3.py:194: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'PERMISSION', 'answer': 'いいえ', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('いいえ', 1, [{'id': 'forbidden_actions:L46', 'section': 'forbidden_actions', 'line': 46, 'text': '予約記録を削除する => 記録は追記だけと決めている'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps3.py:40: AssertionError
+_ test_n7_forbidden_operation_asked_as_something_else_is_not_answered_not_permitted[f01_loan-\u6765\u5e74\u306b\u4e88\u7d04\u8a18\u9332\u3092\u524a\u9664\u3057\u3066\u3088\u3044\u3067\u3059\u304b\uff1f-opts4] _
+
+fr = 'f01_loan', q = '来年に予約記録を削除してよいですか？', opts = ['はい', 'いいえ']
+
+    @pytest.mark.parametrize("fr,q,opts", N7_FORBIDDEN)
+    def test_n7_forbidden_operation_asked_as_something_else_is_not_answered_not_permitted(fr, q, opts):
+>       assert_escalates(H.ask(fr, q, opts))
+
+tests/test_conduct_ask_traps3.py:194: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'PERMISSION', 'answer': 'いいえ', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('いいえ', 1, [{'id': 'forbidden_actions:L46', 'section': 'forbidden_actions', 'line': 46, 'text': '予約記録を削除する => 記録は追記だけと決めている'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps3.py:40: AssertionError
+_ test_n7_forbidden_operation_asked_as_something_else_is_not_answered_not_permitted[f05_retry-May we stop retrying a non-idempotent call?-opts5] _
+
+fr = 'f05_retry', q = 'May we stop retrying a non-idempotent call?'
+opts = ['Yes', 'No']
+
+    @pytest.mark.parametrize("fr,q,opts", N7_FORBIDDEN)
+    def test_n7_forbidden_operation_asked_as_something_else_is_not_answered_not_permitted(fr, q, opts):
+>       assert_escalates(H.ask(fr, q, opts))
+
+tests/test_conduct_ask_traps3.py:194: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'PERMISSION', 'answer': 'No', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('No', 1, [{'id': 'forbidden_actions:L44', 'section': 'forbidden_actions', 'line': 44, 'text': 'retry a non-idempotent...ine': 47, 'text': 'R1: forbidden_actions > completion_criteria: A passing run never justifies a forbidden operation'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps3.py:40: AssertionError
+_ test_n7_forbidden_operation_asked_as_something_else_is_not_answered_not_permitted[f05_retry-Can we document how to retry a non-idempotent call?-opts6] _
+
+fr = 'f05_retry', q = 'Can we document how to retry a non-idempotent call?'
+opts = ['Yes', 'No']
+
+    @pytest.mark.parametrize("fr,q,opts", N7_FORBIDDEN)
+    def test_n7_forbidden_operation_asked_as_something_else_is_not_answered_not_permitted(fr, q, opts):
+>       assert_escalates(H.ask(fr, q, opts))
+
+tests/test_conduct_ask_traps3.py:194: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'PERMISSION', 'answer': 'No', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('No', 1, [{'id': 'forbidden_actions:L44', 'section': 'forbidden_actions', 'line': 44, 'text': 'retry a non-idempotent...ine': 47, 'text': 'R1: forbidden_actions > completion_criteria: A passing run never justifies a forbidden operation'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps3.py:40: AssertionError
+_ test_n7_forbidden_operation_asked_as_something_else_is_not_answered_not_permitted[f05_retry-Can the vendor retry a non-idempotent call?-opts7] _
+
+fr = 'f05_retry', q = 'Can the vendor retry a non-idempotent call?'
+opts = ['Yes', 'No']
+
+    @pytest.mark.parametrize("fr,q,opts", N7_FORBIDDEN)
+    def test_n7_forbidden_operation_asked_as_something_else_is_not_answered_not_permitted(fr, q, opts):
+>       assert_escalates(H.ask(fr, q, opts))
+
+tests/test_conduct_ask_traps3.py:194: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'PERMISSION', 'answer': 'No', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('No', 1, [{'id': 'forbidden_actions:L44', 'section': 'forbidden_actions', 'line': 44, 'text': 'retry a non-idempotent...ine': 47, 'text': 'R1: forbidden_actions > completion_criteria: A passing run never justifies a forbidden operation'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps3.py:40: AssertionError
+_ test_n7_forbidden_operation_asked_as_something_else_is_not_answered_not_permitted[f05_retry-May we retry a non-idempotent call next year?-opts9] _
+
+fr = 'f05_retry', q = 'May we retry a non-idempotent call next year?'
+opts = ['Yes', 'No']
+
+    @pytest.mark.parametrize("fr,q,opts", N7_FORBIDDEN)
+    def test_n7_forbidden_operation_asked_as_something_else_is_not_answered_not_permitted(fr, q, opts):
+>       assert_escalates(H.ask(fr, q, opts))
+
+tests/test_conduct_ask_traps3.py:194: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'PERMISSION', 'answer': 'No', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('No', 1, [{'id': 'forbidden_actions:L44', 'section': 'forbidden_actions', 'line': 44, 'text': 'retry a non-idempotent...ine': 47, 'text': 'R1: forbidden_actions > completion_criteria: A passing run never justifies a forbidden operation'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps3.py:40: AssertionError
+_ test_n7_a_question_that_only_resembles_the_restated_record_is_handed_up[Can the vendor retry a non-idempotent call to measure the delay?] _
+
+q = 'Can the vendor retry a non-idempotent call to measure the delay?'
+
+    @pytest.mark.parametrize("q", N7_RESTATED_BUT_NOT_THE_RECORD)
+    def test_n7_a_question_that_only_resembles_the_restated_record_is_handed_up(q):
+>       assert_escalates(H.ask("f05_retry", q, YN))
+
+tests/test_conduct_ask_traps3.py:259: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'PERMISSION', 'answer': 'No', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('No', 1, [{'id': 'forbidden_actions:L44', 'section': 'forbidden_actions', 'line': 44, 'text': 'retry a non-idempotent...ine': 47, 'text': 'R1: forbidden_actions > completion_criteria: A passing run never justifies a forbidden operation'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps3.py:40: AssertionError
+_ test_n7_a_question_that_only_resembles_the_restated_record_is_handed_up[Can the stress run retry a non-idempotent call to save money?] _
+
+q = 'Can the stress run retry a non-idempotent call to save money?'
+
+    @pytest.mark.parametrize("q", N7_RESTATED_BUT_NOT_THE_RECORD)
+    def test_n7_a_question_that_only_resembles_the_restated_record_is_handed_up(q):
+>       assert_escalates(H.ask("f05_retry", q, YN))
+
+tests/test_conduct_ask_traps3.py:259: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'PERMISSION', 'answer': 'No', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('No', 1, [{'id': 'forbidden_actions:L44', 'section': 'forbidden_actions', 'line': 44, 'text': 'retry a non-idempotent...ine': 47, 'text': 'R1: forbidden_actions > completion_criteria: A passing run never justifies a forbidden operation'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps3.py:40: AssertionError
+_ test_n7_a_question_that_only_resembles_the_restated_record_is_handed_up[Can the stress run retry a non-idempotent call to measure the delay next year?] _
+
+q = 'Can the stress run retry a non-idempotent call to measure the delay next year?'
+
+    @pytest.mark.parametrize("q", N7_RESTATED_BUT_NOT_THE_RECORD)
+    def test_n7_a_question_that_only_resembles_the_restated_record_is_handed_up(q):
+>       assert_escalates(H.ask("f05_retry", q, YN))
+
+tests/test_conduct_ask_traps3.py:259: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'PERMISSION', 'answer': 'No', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('No', 1, [{'id': 'forbidden_actions:L44', 'section': 'forbidden_actions', 'line': 44, 'text': 'retry a non-idempotent...ine': 47, 'text': 'R1: forbidden_actions > completion_criteria: A passing run never justifies a forbidden operation'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps3.py:40: AssertionError
+_ test_n8_path_permission_for_another_operation_subject_or_time_is_handed_up[f08_audioguide-Can the vendor edit player/menu.py?-opts0] _
+
+fr = 'f08_audioguide', q = 'Can the vendor edit player/menu.py?'
+opts = ['Yes', 'No']
+
+    @pytest.mark.parametrize("fr,q,opts", N8)
+    def test_n8_path_permission_for_another_operation_subject_or_time_is_handed_up(fr, q, opts):
+>       assert_escalates(H.ask(fr, q, opts))
+
+tests/test_conduct_ask_traps3.py:282: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'PERMISSION', 'answer': 'Yes', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('Yes', 0, [{'id': 'W1', 'section': 'write_allowlist', 'line': 44, 'text': 'W1: player'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps3.py:40: AssertionError
+_ test_n8_path_permission_for_another_operation_subject_or_time_is_handed_up[f08_audioguide-Can the vendor edit content/clips/intro.txt?-opts1] _
+
+fr = 'f08_audioguide', q = 'Can the vendor edit content/clips/intro.txt?'
+opts = ['Yes', 'No']
+
+    @pytest.mark.parametrize("fr,q,opts", N8)
+    def test_n8_path_permission_for_another_operation_subject_or_time_is_handed_up(fr, q, opts):
+>       assert_escalates(H.ask(fr, q, opts))
+
+tests/test_conduct_ask_traps3.py:282: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'PERMISSION', 'answer': 'Yes', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('Yes', 0, [{'id': 'W2', 'section': 'write_allowlist', 'line': 45, 'text': 'W2: content/clips'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps3.py:40: AssertionError
+_ test_n8_path_permission_for_another_operation_subject_or_time_is_handed_up[f08_audioguide-Can I edit player/menu.py on the old prototype?-opts2] _
+
+fr = 'f08_audioguide', q = 'Can I edit player/menu.py on the old prototype?'
+opts = ['Yes', 'No']
+
+    @pytest.mark.parametrize("fr,q,opts", N8)
+    def test_n8_path_permission_for_another_operation_subject_or_time_is_handed_up(fr, q, opts):
+>       assert_escalates(H.ask(fr, q, opts))
+
+tests/test_conduct_ask_traps3.py:282: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'PERMISSION', 'answer': 'Yes', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('Yes', 0, [{'id': 'W1', 'section': 'write_allowlist', 'line': 44, 'text': 'W1: player'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps3.py:40: AssertionError
+_ test_n8_path_permission_for_another_operation_subject_or_time_is_handed_up[f08_audioguide-Can I read player/menu.py?-opts3] _
+
+fr = 'f08_audioguide', q = 'Can I read player/menu.py?', opts = ['Yes', 'No']
+
+    @pytest.mark.parametrize("fr,q,opts", N8)
+    def test_n8_path_permission_for_another_operation_subject_or_time_is_handed_up(fr, q, opts):
+>       assert_escalates(H.ask(fr, q, opts))
+
+tests/test_conduct_ask_traps3.py:282: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'PERMISSION', 'answer': 'Yes', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('Yes', 0, [{'id': 'W1', 'section': 'write_allowlist', 'line': 44, 'text': 'W1: player'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps3.py:40: AssertionError
+_ test_n8_path_permission_for_another_operation_subject_or_time_is_handed_up[f08_audioguide-Can I copy player/menu.py to my laptop?-opts4] _
+
+fr = 'f08_audioguide', q = 'Can I copy player/menu.py to my laptop?'
+opts = ['Yes', 'No']
+
+    @pytest.mark.parametrize("fr,q,opts", N8)
+    def test_n8_path_permission_for_another_operation_subject_or_time_is_handed_up(fr, q, opts):
+>       assert_escalates(H.ask(fr, q, opts))
+
+tests/test_conduct_ask_traps3.py:282: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'PERMISSION', 'answer': 'Yes', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('Yes', 0, [{'id': 'W1', 'section': 'write_allowlist', 'line': 44, 'text': 'W1: player'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps3.py:40: AssertionError
+_ test_n8_path_permission_for_another_operation_subject_or_time_is_handed_up[f08_audioguide-May we rewrite player/menu.py from scratch next year?-opts5] _
+
+fr = 'f08_audioguide'
+q = 'May we rewrite player/menu.py from scratch next year?'
+opts = ['Yes', 'No']
+
+    @pytest.mark.parametrize("fr,q,opts", N8)
+    def test_n8_path_permission_for_another_operation_subject_or_time_is_handed_up(fr, q, opts):
+>       assert_escalates(H.ask(fr, q, opts))
+
+tests/test_conduct_ask_traps3.py:282: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'PERMISSION', 'answer': 'Yes', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('Yes', 0, [{'id': 'W1', 'section': 'write_allowlist', 'line': 44, 'text': 'W1: player'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps3.py:40: AssertionError
+_ test_n8_path_permission_for_another_operation_subject_or_time_is_handed_up[f01_loan-\u696d\u8005\u304c app/booking.py \u3092\u66f8\u304d\u63db\u3048\u3066\u3088\u3044\u3067\u3059\u304b\uff1f-opts6] _
+
+fr = 'f01_loan', q = '業者が app/booking.py を書き換えてよいですか？', opts = ['はい', 'いいえ']
+
+    @pytest.mark.parametrize("fr,q,opts", N8)
+    def test_n8_path_permission_for_another_operation_subject_or_time_is_handed_up(fr, q, opts):
+>       assert_escalates(H.ask(fr, q, opts))
+
+tests/test_conduct_ask_traps3.py:282: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'PERMISSION', 'answer': 'はい', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('はい', 0, [{'id': 'W1', 'section': 'write_allowlist', 'line': 42, 'text': 'W1: app'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps3.py:40: AssertionError
+_ test_n8_path_permission_for_another_operation_subject_or_time_is_handed_up[f01_loan-app/booking.py \u3092\u6765\u6708\u66f8\u304d\u63db\u3048\u3066\u3082\u3088\u3044\u3067\u3059\u304b\uff1f-opts7] _
+
+fr = 'f01_loan', q = 'app/booking.py を来月書き換えてもよいですか？', opts = ['はい', 'いいえ']
+
+    @pytest.mark.parametrize("fr,q,opts", N8)
+    def test_n8_path_permission_for_another_operation_subject_or_time_is_handed_up(fr, q, opts):
+>       assert_escalates(H.ask(fr, q, opts))
+
+tests/test_conduct_ask_traps3.py:282: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'PERMISSION', 'answer': 'はい', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('はい', 0, [{'id': 'W1', 'section': 'write_allowlist', 'line': 42, 'text': 'W1: app'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps3.py:40: AssertionError
+_ test_n8_path_permission_for_another_operation_subject_or_time_is_handed_up[f01_loan-app/booking.py \u3092\u8aad\u3093\u3067\u3082\u3088\u3044\u3067\u3059\u304b\uff1f-opts8] _
+
+fr = 'f01_loan', q = 'app/booking.py を読んでもよいですか？', opts = ['はい', 'いいえ']
+
+    @pytest.mark.parametrize("fr,q,opts", N8)
+    def test_n8_path_permission_for_another_operation_subject_or_time_is_handed_up(fr, q, opts):
+>       assert_escalates(H.ask(fr, q, opts))
+
+tests/test_conduct_ask_traps3.py:282: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'PERMISSION', 'answer': 'はい', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('はい', 0, [{'id': 'W1', 'section': 'write_allowlist', 'line': 42, 'text': 'W1: app'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps3.py:40: AssertionError
+_ test_n8_path_permission_for_another_operation_subject_or_time_is_handed_up[f01_loan-app/booking.py \u306e\u66f8\u304d\u63db\u3048\u3092\u696d\u8005\u306b\u983c\u3093\u3067\u3088\u3044\u3067\u3059\u304b\uff1f-opts9] _
+
+fr = 'f01_loan', q = 'app/booking.py の書き換えを業者に頼んでよいですか？', opts = ['はい', 'いいえ']
+
+    @pytest.mark.parametrize("fr,q,opts", N8)
+    def test_n8_path_permission_for_another_operation_subject_or_time_is_handed_up(fr, q, opts):
+>       assert_escalates(H.ask(fr, q, opts))
+
+tests/test_conduct_ask_traps3.py:282: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'PERMISSION', 'answer': 'はい', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('はい', 0, [{'id': 'W1', 'section': 'write_allowlist', 'line': 42, 'text': 'W1: app'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps3.py:40: AssertionError
+_ test_n8_path_permission_for_another_operation_subject_or_time_is_handed_up[f04_stall-\u5916\u90e8\u306e\u4eba\u304c docs/stall/guide.md \u3092\u66f4\u65b0\u3057\u3066\u3088\u3044\u3067\u3059\u304b\uff1f-opts10] _
+
+fr = 'f04_stall', q = '外部の人が docs/stall/guide.md を更新してよいですか？'
+opts = ['はい', 'いいえ']
+
+    @pytest.mark.parametrize("fr,q,opts", N8)
+    def test_n8_path_permission_for_another_operation_subject_or_time_is_handed_up(fr, q, opts):
+>       assert_escalates(H.ask(fr, q, opts))
+
+tests/test_conduct_ask_traps3.py:282: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'PERMISSION', 'answer': 'はい', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('はい', 0, [{'id': 'W2', 'section': 'write_allowlist', 'line': 43, 'text': 'W2: docs/stall'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps3.py:40: AssertionError
+_ test_n8_path_permission_for_another_operation_subject_or_time_is_handed_up[f04_stall-docs/stall/guide.md \u3092\u6d88\u3057\u3066\u3082\u3088\u3044\u3067\u3059\u304b\uff1f-opts11] _
+
+fr = 'f04_stall', q = 'docs/stall/guide.md を消してもよいですか？', opts = ['はい', 'いいえ']
+
+    @pytest.mark.parametrize("fr,q,opts", N8)
+    def test_n8_path_permission_for_another_operation_subject_or_time_is_handed_up(fr, q, opts):
+>       assert_escalates(H.ask(fr, q, opts))
+
+tests/test_conduct_ask_traps3.py:282: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'PERMISSION', 'answer': 'はい', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('はい', 0, [{'id': 'W2', 'section': 'write_allowlist', 'line': 43, 'text': 'W2: docs/stall'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps3.py:40: AssertionError
+_ test_n9_options_that_cannot_be_read_are_unmapped_not_none_allowed[1-\u4fdd\u5b58\u5f62\u5f0f\u306f\u3069\u308c\u306b\u3057\u307e\u3059\u304b\uff1f-opts0] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/library.md')
+fr = 1, q = '保存形式はどれにしますか？', opts = ['西暦', 'SQLiteのファイル']
+
+    @pytest.mark.parametrize("fr,q,opts", N9)
+    def test_n9_options_that_cannot_be_read_are_unmapped_not_none_allowed(frames, fr, q, opts):
+        frame = frames[fr] if isinstance(fr, int) else H.frame(fr)
+        res = ask(frame, q, opts)
+        assert_escalates(res)
+>       assert res["escalate_reason"] != "NO_OPTION_ALLOWED", (res["escalate_reason"], res["escalate_detail"])
+E       AssertionError: ('NO_OPTION_ALLOWED', 'VALUE_NOT_OFFERED')
+E       assert 'NO_OPTION_ALLOWED' != 'NO_OPTION_ALLOWED'
+
+tests/test_conduct_ask_traps3.py:324: AssertionError
+_ test_n9_options_that_cannot_be_read_are_unmapped_not_none_allowed[0-Which radio band do we use?-opts1] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/library.md')
+fr = 0, q = 'Which radio band do we use?'
+opts = ['binary frames', 'the 868 band']
+
+    @pytest.mark.parametrize("fr,q,opts", N9)
+    def test_n9_options_that_cannot_be_read_are_unmapped_not_none_allowed(frames, fr, q, opts):
+        frame = frames[fr] if isinstance(fr, int) else H.frame(fr)
+        res = ask(frame, q, opts)
+        assert_escalates(res)
+>       assert res["escalate_reason"] != "NO_OPTION_ALLOWED", (res["escalate_reason"], res["escalate_detail"])
+E       AssertionError: ('NO_OPTION_ALLOWED', 'VALUE_NOT_OFFERED')
+E       assert 'NO_OPTION_ALLOWED' != 'NO_OPTION_ALLOWED'
+
+tests/test_conduct_ask_traps3.py:324: AssertionError
+_ test_n9_options_that_cannot_be_read_are_unmapped_not_none_allowed[0-Which comes first, the sensor driver or the salt spray test?-opts2] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/library.md')
+fr = 0, q = 'Which comes first, the sensor driver or the salt spray test?'
+opts = ['Yes', 'No']
+
+    @pytest.mark.parametrize("fr,q,opts", N9)
+    def test_n9_options_that_cannot_be_read_are_unmapped_not_none_allowed(frames, fr, q, opts):
+        frame = frames[fr] if isinstance(fr, int) else H.frame(fr)
+        res = ask(frame, q, opts)
+        assert_escalates(res)
+>       assert res["escalate_reason"] != "NO_OPTION_ALLOWED", (res["escalate_reason"], res["escalate_detail"])
+E       AssertionError: ('NO_OPTION_ALLOWED', 'NO_OPTION_NAMES_THE_FIRST_PHASE')
+E       assert 'NO_OPTION_ALLOWED' != 'NO_OPTION_ALLOWED'
+
+tests/test_conduct_ask_traps3.py:324: AssertionError
+_ test_n9_options_that_cannot_be_read_are_unmapped_not_none_allowed[0-Which comes first, the sensor driver or the salt spray test?-opts3] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/library.md')
+fr = 0, q = 'Which comes first, the sensor driver or the salt spray test?'
+opts = ['Write the sensor driver', 'Run the salt spray test']
+
+    @pytest.mark.parametrize("fr,q,opts", N9)
+    def test_n9_options_that_cannot_be_read_are_unmapped_not_none_allowed(frames, fr, q, opts):
+        frame = frames[fr] if isinstance(fr, int) else H.frame(fr)
+        res = ask(frame, q, opts)
+        assert_escalates(res)
+>       assert res["escalate_reason"] != "NO_OPTION_ALLOWED", (res["escalate_reason"], res["escalate_detail"])
+E       AssertionError: ('NO_OPTION_ALLOWED', 'NO_OPTION_NAMES_THE_FIRST_PHASE')
+E       assert 'NO_OPTION_ALLOWED' != 'NO_OPTION_ALLOWED'
+
+tests/test_conduct_ask_traps3.py:324: AssertionError
+_ test_n9_options_that_cannot_be_read_are_unmapped_not_none_allowed[f08_audioguide-Which comes first, the narration clips or the field test?-opts4] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/library.md')
+fr = 'f08_audioguide'
+q = 'Which comes first, the narration clips or the field test?'
+opts = ['Record the narration clips', 'Run the field test']
+
+    @pytest.mark.parametrize("fr,q,opts", N9)
+    def test_n9_options_that_cannot_be_read_are_unmapped_not_none_allowed(frames, fr, q, opts):
+        frame = frames[fr] if isinstance(fr, int) else H.frame(fr)
+        res = ask(frame, q, opts)
+        assert_escalates(res)
+>       assert res["escalate_reason"] != "NO_OPTION_ALLOWED", (res["escalate_reason"], res["escalate_detail"])
+E       AssertionError: ('NO_OPTION_ALLOWED', 'NO_OPTION_NAMES_THE_FIRST_PHASE')
+E       assert 'NO_OPTION_ALLOWED' != 'NO_OPTION_ALLOWED'
+
+tests/test_conduct_ask_traps3.py:324: AssertionError
+_ test_n9_options_that_cannot_be_read_are_unmapped_not_none_allowed[f08_audioguide-Which do we start first, recording the narration clips or running the field test?-opts5] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/library.md')
+fr = 'f08_audioguide'
+q = 'Which do we start first, recording the narration clips or running the field test?'
+opts = ['Record the narration clips', 'Run the field test']
+
+    @pytest.mark.parametrize("fr,q,opts", N9)
+    def test_n9_options_that_cannot_be_read_are_unmapped_not_none_allowed(frames, fr, q, opts):
+        frame = frames[fr] if isinstance(fr, int) else H.frame(fr)
+        res = ask(frame, q, opts)
+        assert_escalates(res)
+>       assert res["escalate_reason"] != "NO_OPTION_ALLOWED", (res["escalate_reason"], res["escalate_detail"])
+E       AssertionError: ('NO_OPTION_ALLOWED', 'NO_OPTION_NAMES_THE_FIRST_PHASE')
+E       assert 'NO_OPTION_ALLOWED' != 'NO_OPTION_ALLOWED'
+
+tests/test_conduct_ask_traps3.py:324: AssertionError
+_ test_n9_options_that_cannot_be_read_are_unmapped_not_none_allowed[0-Which comes first, the sensor driver or the salt spray test?-opts6] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/library.md')
+fr = 0, q = 'Which comes first, the sensor driver or the salt spray test?'
+opts = ['the sensor driver', 'Run the salt spray test']
+
+    @pytest.mark.parametrize("fr,q,opts", N9)
+    def test_n9_options_that_cannot_be_read_are_unmapped_not_none_allowed(frames, fr, q, opts):
+        frame = frames[fr] if isinstance(fr, int) else H.frame(fr)
+        res = ask(frame, q, opts)
+>       assert_escalates(res)
+
+tests/test_conduct_ask_traps3.py:323: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'ORDER', 'answer': 'the sensor driver', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('the sensor driver', 0, [{'id': 'phase_order:P1->P4', 'section': 'phase_order', 'line': 22, 'text': 'P1 -> P4: The test needs a working driver'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps3.py:40: AssertionError
+_ test_n7_a_context_sentence_that_is_not_an_approval_is_handed_up[0-Can we run the dockside simulator? Only the vendor will do it.-opts0] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/library.md')
+fr = 0, q = 'Can we run the dockside simulator? Only the vendor will do it.'
+opts = ['Yes', 'No']
+
+    @pytest.mark.parametrize("fr,q,opts", N7_CONTEXT)
+    def test_n7_a_context_sentence_that_is_not_an_approval_is_handed_up(frames, fr, q, opts):
+        frame = frames[fr] if isinstance(fr, int) else H.frame(fr)
+>       assert_escalates(ask(frame, q, opts))
+
+tests/test_conduct_ask_traps3.py:349: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'CONFIRM', 'answer': 'Yes', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('Yes', 0, [{'id': 'D4', 'section': 'decisions', 'line': 28, 'text': 'D4: CONFIRM | running the dockside simulator | permitted'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps3.py:40: AssertionError
+_ test_n7_a_context_sentence_that_is_not_an_approval_is_handed_up[0-Can we flash a field unit? That would be next year.-opts1] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/library.md')
+fr = 0, q = 'Can we flash a field unit? That would be next year.'
+opts = ['Yes', 'No']
+
+    @pytest.mark.parametrize("fr,q,opts", N7_CONTEXT)
+    def test_n7_a_context_sentence_that_is_not_an_approval_is_handed_up(frames, fr, q, opts):
+        frame = frames[fr] if isinstance(fr, int) else H.frame(fr)
+>       assert_escalates(ask(frame, q, opts))
+
+tests/test_conduct_ask_traps3.py:349: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'CONFIRM', 'answer': 'No', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('No', 1, [{'id': 'D5', 'section': 'decisions', 'line': 29, 'text': 'D5: CONFIRM | flashing a field unit | not permitted'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps3.py:40: AssertionError
+_ test_n7_a_context_sentence_that_is_not_an_approval_is_handed_up[1-\u9928\u5185\u3067\u306e\u8a66\u9a13\u904b\u7528\u3092\u3057\u3066\u3082\u3088\u3044\u3067\u3059\u304b\uff1f \u5b9f\u969b\u306b\u306f\u6765\u5e74\u306e\u8a71\u3067\u3059\u3002-opts2] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/library.md')
+fr = 1, q = '館内での試験運用をしてもよいですか？ 実際には来年の話です。', opts = ['はい', 'いいえ']
+
+    @pytest.mark.parametrize("fr,q,opts", N7_CONTEXT)
+    def test_n7_a_context_sentence_that_is_not_an_approval_is_handed_up(frames, fr, q, opts):
+        frame = frames[fr] if isinstance(fr, int) else H.frame(fr)
+>       assert_escalates(ask(frame, q, opts))
+
+tests/test_conduct_ask_traps3.py:349: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'CONFIRM', 'answer': 'はい', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('はい', 0, [{'id': 'D3', 'section': 'decisions', 'line': 27, 'text': 'D3: CONFIRM | 館内での試験運用 | permitted'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps3.py:40: AssertionError
+_ test_n7_a_context_sentence_that_is_not_an_approval_is_handed_up[1-\u9928\u5185\u3067\u306e\u8a66\u9a13\u904b\u7528\u3092\u3057\u3066\u3082\u3088\u3044\u3067\u3059\u304b\uff1f \u5b9f\u65bd\u3059\u308b\u306e\u306f\u696d\u8005\u3067\u3059\u3002-opts3] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/library.md')
+fr = 1, q = '館内での試験運用をしてもよいですか？ 実施するのは業者です。', opts = ['はい', 'いいえ']
+
+    @pytest.mark.parametrize("fr,q,opts", N7_CONTEXT)
+    def test_n7_a_context_sentence_that_is_not_an_approval_is_handed_up(frames, fr, q, opts):
+        frame = frames[fr] if isinstance(fr, int) else H.frame(fr)
+>       assert_escalates(ask(frame, q, opts))
+
+tests/test_conduct_ask_traps3.py:349: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'CONFIRM', 'answer': 'はい', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('はい', 0, [{'id': 'D3', 'section': 'decisions', 'line': 27, 'text': 'D3: CONFIRM | 館内での試験運用 | permitted'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps3.py:40: AssertionError
+_ test_n7_a_context_sentence_that_is_not_an_approval_is_handed_up[f01_loan-\u4e88\u7d04\u8a18\u9332\u3092\u524a\u9664\u3057\u3066\u3088\u3044\u3067\u3059\u304b\uff1f \u696d\u8005\u304c\u6765\u5e74\u306b\u884c\u3044\u307e\u3059\u3002-opts4] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/library.md')
+fr = 'f01_loan', q = '予約記録を削除してよいですか？ 業者が来年に行います。', opts = ['はい', 'いいえ']
+
+    @pytest.mark.parametrize("fr,q,opts", N7_CONTEXT)
+    def test_n7_a_context_sentence_that_is_not_an_approval_is_handed_up(frames, fr, q, opts):
+        frame = frames[fr] if isinstance(fr, int) else H.frame(fr)
+>       assert_escalates(ask(frame, q, opts))
+
+tests/test_conduct_ask_traps3.py:349: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'PERMISSION', 'answer': 'いいえ', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('いいえ', 1, [{'id': 'forbidden_actions:L46', 'section': 'forbidden_actions', 'line': 46, 'text': '予約記録を削除する => 記録は追記だけと決めている'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps3.py:40: AssertionError
+_ test_n7_a_context_sentence_that_is_not_an_approval_is_handed_up[f05_retry-May we retry a non-idempotent call? Only the vendor would.-opts5] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps30/library.md')
+fr = 'f05_retry'
+q = 'May we retry a non-idempotent call? Only the vendor would.'
+opts = ['Yes', 'No']
+
+    @pytest.mark.parametrize("fr,q,opts", N7_CONTEXT)
+    def test_n7_a_context_sentence_that_is_not_an_approval_is_handed_up(frames, fr, q, opts):
+        frame = frames[fr] if isinstance(fr, int) else H.frame(fr)
+>       assert_escalates(ask(frame, q, opts))
+
+tests/test_conduct_ask_traps3.py:349: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'PERMISSION', 'answer': 'No', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('No', 1, [{'id': 'forbidden_actions:L44', 'section': 'forbidden_actions', 'line': 44, 'text': 'retry a non-idempotent...ine': 47, 'text': 'R1: forbidden_actions > completion_criteria: A passing run never justifies a forbidden operation'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps3.py:40: AssertionError
+_ test_noun_written_forbidden_operation_asked_as_something_else_is_handed_up[\u500b\u4eba\u60c5\u5831\u306e\u5916\u90e8\u9001\u4fe1\u3092\u4e2d\u6b62\u3057\u3066\u3088\u3044\u3067\u3059\u304b\uff1f] _
+
+noun_frame = '/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps3n0/desk.md'
+q = '個人情報の外部送信を中止してよいですか？'
+
+    @pytest.mark.parametrize("q", ["個人情報の外部送信を中止してよいですか？", "個人情報の外部送信を業者がしてよいですか？",
+                                   "外部への持ち出しを中止してよいですか？", "個人情報の外部送信の手順を書いてよいですか？",
+                                   "個人情報の外部送信を来月してよいですか？"])
+    def test_noun_written_forbidden_operation_asked_as_something_else_is_handed_up(noun_frame, q):
+>       assert_escalates(ask(noun_frame, q, HI))
+
+tests/test_conduct_ask_traps3.py:421: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'PERMISSION', 'answer': 'いいえ', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('いいえ', 1, [{'id': 'forbidden_actions:L32', 'section': 'forbidden_actions', 'line': 32, 'text': '個人情報の外部送信 => 目的外の送信は認めていない'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps3.py:40: AssertionError
+_ test_noun_written_forbidden_operation_asked_as_something_else_is_handed_up[\u500b\u4eba\u60c5\u5831\u306e\u5916\u90e8\u9001\u4fe1\u3092\u696d\u8005\u304c\u3057\u3066\u3088\u3044\u3067\u3059\u304b\uff1f] _
+
+noun_frame = '/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps3n0/desk.md'
+q = '個人情報の外部送信を業者がしてよいですか？'
+
+    @pytest.mark.parametrize("q", ["個人情報の外部送信を中止してよいですか？", "個人情報の外部送信を業者がしてよいですか？",
+                                   "外部への持ち出しを中止してよいですか？", "個人情報の外部送信の手順を書いてよいですか？",
+                                   "個人情報の外部送信を来月してよいですか？"])
+    def test_noun_written_forbidden_operation_asked_as_something_else_is_handed_up(noun_frame, q):
+>       assert_escalates(ask(noun_frame, q, HI))
+
+tests/test_conduct_ask_traps3.py:421: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'PERMISSION', 'answer': 'いいえ', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('いいえ', 1, [{'id': 'forbidden_actions:L32', 'section': 'forbidden_actions', 'line': 32, 'text': '個人情報の外部送信 => 目的外の送信は認めていない'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps3.py:40: AssertionError
+_ test_noun_written_forbidden_operation_asked_as_something_else_is_handed_up[\u5916\u90e8\u3078\u306e\u6301\u3061\u51fa\u3057\u3092\u4e2d\u6b62\u3057\u3066\u3088\u3044\u3067\u3059\u304b\uff1f] _
+
+noun_frame = '/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps3n0/desk.md'
+q = '外部への持ち出しを中止してよいですか？'
+
+    @pytest.mark.parametrize("q", ["個人情報の外部送信を中止してよいですか？", "個人情報の外部送信を業者がしてよいですか？",
+                                   "外部への持ち出しを中止してよいですか？", "個人情報の外部送信の手順を書いてよいですか？",
+                                   "個人情報の外部送信を来月してよいですか？"])
+    def test_noun_written_forbidden_operation_asked_as_something_else_is_handed_up(noun_frame, q):
+>       assert_escalates(ask(noun_frame, q, HI))
+
+tests/test_conduct_ask_traps3.py:421: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'PERMISSION', 'answer': 'いいえ', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('いいえ', 1, [{'id': 'forbidden_actions:L32', 'section': 'forbidden_actions', 'line': 32, 'text': '個人情報の外部送信 => 目的外の送信は認めていない'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps3.py:40: AssertionError
+_ test_noun_written_forbidden_operation_asked_as_something_else_is_handed_up[\u500b\u4eba\u60c5\u5831\u306e\u5916\u90e8\u9001\u4fe1\u306e\u624b\u9806\u3092\u66f8\u3044\u3066\u3088\u3044\u3067\u3059\u304b\uff1f] _
+
+noun_frame = '/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps3n0/desk.md'
+q = '個人情報の外部送信の手順を書いてよいですか？'
+
+    @pytest.mark.parametrize("q", ["個人情報の外部送信を中止してよいですか？", "個人情報の外部送信を業者がしてよいですか？",
+                                   "外部への持ち出しを中止してよいですか？", "個人情報の外部送信の手順を書いてよいですか？",
+                                   "個人情報の外部送信を来月してよいですか？"])
+    def test_noun_written_forbidden_operation_asked_as_something_else_is_handed_up(noun_frame, q):
+>       assert_escalates(ask(noun_frame, q, HI))
+
+tests/test_conduct_ask_traps3.py:421: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'PERMISSION', 'answer': 'いいえ', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('いいえ', 1, [{'id': 'forbidden_actions:L32', 'section': 'forbidden_actions', 'line': 32, 'text': '個人情報の外部送信 => 目的外の送信は認めていない'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps3.py:40: AssertionError
+_ test_noun_written_forbidden_operation_asked_as_something_else_is_handed_up[\u500b\u4eba\u60c5\u5831\u306e\u5916\u90e8\u9001\u4fe1\u3092\u6765\u6708\u3057\u3066\u3088\u3044\u3067\u3059\u304b\uff1f] _
+
+noun_frame = '/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps3n0/desk.md'
+q = '個人情報の外部送信を来月してよいですか？'
+
+    @pytest.mark.parametrize("q", ["個人情報の外部送信を中止してよいですか？", "個人情報の外部送信を業者がしてよいですか？",
+                                   "外部への持ち出しを中止してよいですか？", "個人情報の外部送信の手順を書いてよいですか？",
+                                   "個人情報の外部送信を来月してよいですか？"])
+    def test_noun_written_forbidden_operation_asked_as_something_else_is_handed_up(noun_frame, q):
+>       assert_escalates(ask(noun_frame, q, HI))
+
+tests/test_conduct_ask_traps3.py:421: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'PERMISSION', 'answer': 'いいえ', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('いいえ', 1, [{'id': 'forbidden_actions:L32', 'section': 'forbidden_actions', 'line': 32, 'text': '個人情報の外部送信 => 目的外の送信は認めていない'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps3.py:40: AssertionError
+_______________ test_place_noun_subject_reads_where_do_we_put_it _______________
+
+noun_frame = '/private/tmp/pytest-of-motonisihikoudai/pytest-210/traps3n0/desk.md'
+
+    def test_place_noun_subject_reads_where_do_we_put_it(noun_frame):
+        assert_answers(ask(noun_frame, "保存先の場所はどこにしますか？"), answer="社内の共有サーバー")
+>       assert_escalates(ask(noun_frame, "保存先の場所はいつにしますか？"))
+
+tests/test_conduct_ask_traps3.py:426: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'DESIGN_PREFERENCE', 'answer': '社内の共有サーバー', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('社内の共有サーバー', None, [{'id': 'D1', 'section': 'decisions', 'line': 20, 'text': 'D1: 保存先の場所 => 社内の共有サーバー'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps3.py:40: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_conduct_ask_traps3.py::test_n6_question_words_that_do_not_ask_for_a_choice_are_handed_up[\u4fdd\u5b58\u5f62\u5f0f\u306f\u4f55\u306b\u4f7f\u3044\u307e\u3059\u304b\uff1f-None]
+FAILED tests/test_conduct_ask_traps3.py::test_n6_question_words_that_do_not_ask_for_a_choice_are_handed_up[\u4fdd\u5b58\u5f62\u5f0f\u306f\u4f55\u306b\u4f7f\u3044\u307e\u3059\u304b\uff1f-opts1]
+FAILED tests/test_conduct_ask_traps3.py::test_n6_question_words_that_do_not_ask_for_a_choice_are_handed_up[\u4fdd\u5b58\u5f62\u5f0f\u306f\u3044\u3064\u4f7f\u3044\u307e\u3059\u304b\uff1f-None]
+FAILED tests/test_conduct_ask_traps3.py::test_n6_question_words_that_do_not_ask_for_a_choice_are_handed_up[\u4fdd\u5b58\u5f62\u5f0f\u306f\u3069\u3053\u306b\u4f7f\u3044\u307e\u3059\u304b\uff1f-None]
+FAILED tests/test_conduct_ask_traps3.py::test_n6_question_words_that_do_not_ask_for_a_choice_are_handed_up[\u4fdd\u5b58\u5f62\u5f0f\u306f\u3044\u304f\u3064\u4f7f\u3044\u307e\u3059\u304b\uff1f-None]
+FAILED tests/test_conduct_ask_traps3.py::test_n6_question_words_that_do_not_ask_for_a_choice_are_handed_up[\u4fdd\u5b58\u5f62\u5f0f\u306f\u3069\u3046\u4f7f\u3044\u307e\u3059\u304b\uff1f-None]
+FAILED tests/test_conduct_ask_traps3.py::test_n6_question_words_that_do_not_ask_for_a_choice_are_handed_up[\u4fdd\u5b58\u5f62\u5f0f\u306f\u3044\u3064\u3067\u3059\u304b\uff1f-None]
+FAILED tests/test_conduct_ask_traps3.py::test_n6_question_words_that_do_not_ask_for_a_choice_are_handed_up[\u4fdd\u5b58\u5f62\u5f0f\u306f\u3044\u304f\u3064\u3067\u3059\u304b\uff1f-None]
+FAILED tests/test_conduct_ask_traps3.py::test_n6_question_words_that_do_not_ask_for_a_choice_are_handed_up[\u4fdd\u5b58\u5f62\u5f0f\u306f\u3044\u3064\u63a1\u7528\u3057\u307e\u3059\u304b\uff1f-None]
+FAILED tests/test_conduct_ask_traps3.py::test_n6_question_words_that_do_not_ask_for_a_choice_are_handed_up[\u65e5\u4ed8\u306e\u8868\u8a18\u306f\u3069\u3053\u306b\u4f7f\u3044\u307e\u3059\u304b\uff1f-opts9]
+FAILED tests/test_conduct_ask_traps3.py::test_n6_question_words_that_do_not_ask_for_a_choice_are_handed_up[\u65e5\u4ed8\u306e\u8868\u8a18\u306f\u3044\u3064\u4f7f\u3044\u307e\u3059\u304b\uff1f-opts10]
+FAILED tests/test_conduct_ask_traps3.py::test_n6_question_words_that_do_not_ask_for_a_choice_are_handed_up[\u3069\u306e\u4fdd\u5b58\u5f62\u5f0f\u306b\u4f7f\u3044\u307e\u3059\u304b\uff1f-None]
+FAILED tests/test_conduct_ask_traps3.py::test_n6_question_words_that_do_not_ask_for_a_choice_are_handed_up[\u4fdd\u5b58\u5f62\u5f0f\u306f\u3001SQLite\u3068CSV\u306e\u3069\u3061\u3089\u306b\u4f7f\u3044\u307e\u3059\u304b\uff1f-opts12]
+FAILED tests/test_conduct_ask_traps3.py::test_n6_question_words_that_do_not_ask_for_a_choice_are_handed_up[\u4fdd\u5b58\u5f62\u5f0f\u306f\u3069\u308c\u306b\u4f7f\u3044\u307e\u3059\u304b\uff1f-opts13]
+FAILED tests/test_conduct_ask_traps3.py::test_n6_question_words_that_do_not_ask_for_a_choice_are_handed_up[\u4fdd\u5b58\u5f62\u5f0f\u306f\u3069\u3053\u306b\u3057\u307e\u3059\u304b\uff1f-None]
+FAILED tests/test_conduct_ask_traps3.py::test_n6_question_words_that_do_not_ask_for_a_choice_are_handed_up[\u4fdd\u5b58\u5f62\u5f0f\u306f\u3044\u3064\u306b\u3057\u307e\u3059\u304b\uff1f-None]
+FAILED tests/test_conduct_ask_traps3.py::test_n6_question_words_that_do_not_ask_for_a_choice_are_handed_up[\u4fdd\u5b58\u5f62\u5f0f\u306f\u3044\u304f\u3064\u306b\u3057\u307e\u3059\u304b\uff1f-None]
+FAILED tests/test_conduct_ask_traps3.py::test_n6_question_words_that_do_not_ask_for_a_choice_are_handed_up[\u3069\u306e\u4fdd\u5b58\u5f62\u5f0f\u306b\u4f7f\u3044\u307e\u3059\u304b\uff1f-opts17]
+FAILED tests/test_conduct_ask_traps3.py::test_n6_question_words_that_do_not_ask_for_a_choice_are_handed_up[\u4fdd\u5b58\u5f62\u5f0f\u306f\u3044\u304f\u3089\u3067\u3059\u304b\uff1f-None]
+FAILED tests/test_conduct_ask_traps3.py::test_n6_a_place_word_is_read_only_when_the_subject_is_a_place
+FAILED tests/test_conduct_ask_traps3.py::test_n7_english_confirm_for_another_operation_subject_or_time_is_handed_up[May we remove running the dockside simulator?]
+FAILED tests/test_conduct_ask_traps3.py::test_n7_english_confirm_for_another_operation_subject_or_time_is_handed_up[Can we remove flashing a field unit?]
+FAILED tests/test_conduct_ask_traps3.py::test_n7_english_confirm_for_another_operation_subject_or_time_is_handed_up[Can we document flashing a field unit?]
+FAILED tests/test_conduct_ask_traps3.py::test_n7_japanese_confirm_for_another_operation_subject_or_time_is_handed_up[\u9928\u5185\u3067\u306e\u8a66\u9a13\u904b\u7528\u3092\u4e2d\u6b62\u3057\u3066\u3082\u3088\u3044\u3067\u3059\u304b\uff1f]
+FAILED tests/test_conduct_ask_traps3.py::test_n7_japanese_confirm_for_another_operation_subject_or_time_is_handed_up[\u9928\u5185\u3067\u306e\u8a66\u9a13\u904b\u7528\u3092\u5ef6\u671f\u3057\u3066\u3082\u3088\u3044\u3067\u3059\u304b\uff1f]
+FAILED tests/test_conduct_ask_traps3.py::test_n7_japanese_confirm_for_another_operation_subject_or_time_is_handed_up[\u9928\u5185\u3067\u306e\u8a66\u9a13\u904b\u7528\u3092\u898b\u76f4\u3057\u3066\u3082\u3088\u3044\u3067\u3059\u304b\uff1f]
+FAILED tests/test_conduct_ask_traps3.py::test_n7_japanese_confirm_for_another_operation_subject_or_time_is_handed_up[\u9928\u5185\u3067\u306e\u8a66\u9a13\u904b\u7528\u3092\u6765\u5e74\u306b\u56de\u3057\u3066\u3082\u3088\u3044\u3067\u3059\u304b\uff1f]
+FAILED tests/test_conduct_ask_traps3.py::test_n7_japanese_confirm_for_another_operation_subject_or_time_is_handed_up[\u9928\u5185\u3067\u306e\u8a66\u9a13\u904b\u7528\u3092\u5916\u6ce8\u3057\u3066\u3082\u3088\u3044\u3067\u3059\u304b\uff1f]
+FAILED tests/test_conduct_ask_traps3.py::test_n7_japanese_confirm_for_another_operation_subject_or_time_is_handed_up[\u9928\u5185\u3067\u306e\u8a66\u9a13\u904b\u7528\u3092\u7701\u7565\u3057\u3066\u3082\u3088\u3044\u3067\u3059\u304b\uff1f]
+FAILED tests/test_conduct_ask_traps3.py::test_n7_japanese_confirm_for_another_operation_subject_or_time_is_handed_up[\u672c\u756a\u306e\u8cb8\u51fa\u30c7\u30fc\u30bf\u3092\u4f7f\u3063\u305f\u8a66\u9a13\u3092\u4e2d\u6b62\u3057\u3066\u3082\u3088\u3044\u3067\u3059\u304b\uff1f]
+FAILED tests/test_conduct_ask_traps3.py::test_n7_japanese_confirm_for_another_operation_subject_or_time_is_handed_up[\u9928\u5185\u3067\u306e\u8a66\u9a13\u904b\u7528\u3092\u696d\u8005\u304c\u3057\u3066\u3082\u3088\u3044\u3067\u3059\u304b\uff1f]
+FAILED tests/test_conduct_ask_traps3.py::test_n7_japanese_confirm_for_another_operation_subject_or_time_is_handed_up[\u672c\u756a\u306e\u8cb8\u51fa\u30c7\u30fc\u30bf\u3092\u4f7f\u3063\u305f\u8a66\u9a13\u3092\u696d\u8005\u304c\u3057\u3066\u3082\u3088\u3044\u3067\u3059\u304b\uff1f]
+FAILED tests/test_conduct_ask_traps3.py::test_n7_japanese_confirm_for_another_operation_subject_or_time_is_handed_up[\u9928\u5185\u3067\u306e\u8a66\u9a13\u904b\u7528\u3092\u6765\u9031\u3057\u3066\u3082\u3088\u3044\u3067\u3059\u304b\uff1f]
+FAILED tests/test_conduct_ask_traps3.py::test_n7_japanese_confirm_for_another_operation_subject_or_time_is_handed_up[\u9928\u5185\u3067\u306e\u8a66\u9a13\u904b\u7528\u306f\u696d\u8005\u306b\u4efb\u305b\u3066\u3082\u3088\u3044\u3067\u3059\u304b\uff1f]
+FAILED tests/test_conduct_ask_traps3.py::test_n7_forbidden_operation_asked_as_something_else_is_not_answered_not_permitted[f01_loan-\u4e88\u7d04\u8a18\u9332\u3092\u524a\u9664\u3059\u308b\u306e\u3092\u4e2d\u6b62\u3057\u3066\u3082\u3088\u3044\u3067\u3059\u304b\uff1f-opts0]
+FAILED tests/test_conduct_ask_traps3.py::test_n7_forbidden_operation_asked_as_something_else_is_not_answered_not_permitted[f01_loan-\u4e88\u7d04\u8a18\u9332\u3092\u524a\u9664\u3059\u308b\u624b\u9806\u3092\u66f8\u3044\u3066\u3082\u3088\u3044\u3067\u3059\u304b\uff1f-opts2]
+FAILED tests/test_conduct_ask_traps3.py::test_n7_forbidden_operation_asked_as_something_else_is_not_answered_not_permitted[f01_loan-\u696d\u8005\u304c\u4e88\u7d04\u8a18\u9332\u3092\u524a\u9664\u3057\u3066\u3088\u3044\u3067\u3059\u304b\uff1f-opts3]
+FAILED tests/test_conduct_ask_traps3.py::test_n7_forbidden_operation_asked_as_something_else_is_not_answered_not_permitted[f01_loan-\u6765\u5e74\u306b\u4e88\u7d04\u8a18\u9332\u3092\u524a\u9664\u3057\u3066\u3088\u3044\u3067\u3059\u304b\uff1f-opts4]
+FAILED tests/test_conduct_ask_traps3.py::test_n7_forbidden_operation_asked_as_something_else_is_not_answered_not_permitted[f05_retry-May we stop retrying a non-idempotent call?-opts5]
+FAILED tests/test_conduct_ask_traps3.py::test_n7_forbidden_operation_asked_as_something_else_is_not_answered_not_permitted[f05_retry-Can we document how to retry a non-idempotent call?-opts6]
+FAILED tests/test_conduct_ask_traps3.py::test_n7_forbidden_operation_asked_as_something_else_is_not_answered_not_permitted[f05_retry-Can the vendor retry a non-idempotent call?-opts7]
+FAILED tests/test_conduct_ask_traps3.py::test_n7_forbidden_operation_asked_as_something_else_is_not_answered_not_permitted[f05_retry-May we retry a non-idempotent call next year?-opts9]
+FAILED tests/test_conduct_ask_traps3.py::test_n7_a_question_that_only_resembles_the_restated_record_is_handed_up[Can the vendor retry a non-idempotent call to measure the delay?]
+FAILED tests/test_conduct_ask_traps3.py::test_n7_a_question_that_only_resembles_the_restated_record_is_handed_up[Can the stress run retry a non-idempotent call to save money?]
+FAILED tests/test_conduct_ask_traps3.py::test_n7_a_question_that_only_resembles_the_restated_record_is_handed_up[Can the stress run retry a non-idempotent call to measure the delay next year?]
+FAILED tests/test_conduct_ask_traps3.py::test_n8_path_permission_for_another_operation_subject_or_time_is_handed_up[f08_audioguide-Can the vendor edit player/menu.py?-opts0]
+FAILED tests/test_conduct_ask_traps3.py::test_n8_path_permission_for_another_operation_subject_or_time_is_handed_up[f08_audioguide-Can the vendor edit content/clips/intro.txt?-opts1]
+FAILED tests/test_conduct_ask_traps3.py::test_n8_path_permission_for_another_operation_subject_or_time_is_handed_up[f08_audioguide-Can I edit player/menu.py on the old prototype?-opts2]
+FAILED tests/test_conduct_ask_traps3.py::test_n8_path_permission_for_another_operation_subject_or_time_is_handed_up[f08_audioguide-Can I read player/menu.py?-opts3]
+FAILED tests/test_conduct_ask_traps3.py::test_n8_path_permission_for_another_operation_subject_or_time_is_handed_up[f08_audioguide-Can I copy player/menu.py to my laptop?-opts4]
+FAILED tests/test_conduct_ask_traps3.py::test_n8_path_permission_for_another_operation_subject_or_time_is_handed_up[f08_audioguide-May we rewrite player/menu.py from scratch next year?-opts5]
+FAILED tests/test_conduct_ask_traps3.py::test_n8_path_permission_for_another_operation_subject_or_time_is_handed_up[f01_loan-\u696d\u8005\u304c app/booking.py \u3092\u66f8\u304d\u63db\u3048\u3066\u3088\u3044\u3067\u3059\u304b\uff1f-opts6]
+FAILED tests/test_conduct_ask_traps3.py::test_n8_path_permission_for_another_operation_subject_or_time_is_handed_up[f01_loan-app/booking.py \u3092\u6765\u6708\u66f8\u304d\u63db\u3048\u3066\u3082\u3088\u3044\u3067\u3059\u304b\uff1f-opts7]
+FAILED tests/test_conduct_ask_traps3.py::test_n8_path_permission_for_another_operation_subject_or_time_is_handed_up[f01_loan-app/booking.py \u3092\u8aad\u3093\u3067\u3082\u3088\u3044\u3067\u3059\u304b\uff1f-opts8]
+FAILED tests/test_conduct_ask_traps3.py::test_n8_path_permission_for_another_operation_subject_or_time_is_handed_up[f01_loan-app/booking.py \u306e\u66f8\u304d\u63db\u3048\u3092\u696d\u8005\u306b\u983c\u3093\u3067\u3088\u3044\u3067\u3059\u304b\uff1f-opts9]
+FAILED tests/test_conduct_ask_traps3.py::test_n8_path_permission_for_another_operation_subject_or_time_is_handed_up[f04_stall-\u5916\u90e8\u306e\u4eba\u304c docs/stall/guide.md \u3092\u66f4\u65b0\u3057\u3066\u3088\u3044\u3067\u3059\u304b\uff1f-opts10]
+FAILED tests/test_conduct_ask_traps3.py::test_n8_path_permission_for_another_operation_subject_or_time_is_handed_up[f04_stall-docs/stall/guide.md \u3092\u6d88\u3057\u3066\u3082\u3088\u3044\u3067\u3059\u304b\uff1f-opts11]
+FAILED tests/test_conduct_ask_traps3.py::test_n9_options_that_cannot_be_read_are_unmapped_not_none_allowed[1-\u4fdd\u5b58\u5f62\u5f0f\u306f\u3069\u308c\u306b\u3057\u307e\u3059\u304b\uff1f-opts0]
+FAILED tests/test_conduct_ask_traps3.py::test_n9_options_that_cannot_be_read_are_unmapped_not_none_allowed[0-Which radio band do we use?-opts1]
+FAILED tests/test_conduct_ask_traps3.py::test_n9_options_that_cannot_be_read_are_unmapped_not_none_allowed[0-Which comes first, the sensor driver or the salt spray test?-opts2]
+FAILED tests/test_conduct_ask_traps3.py::test_n9_options_that_cannot_be_read_are_unmapped_not_none_allowed[0-Which comes first, the sensor driver or the salt spray test?-opts3]
+FAILED tests/test_conduct_ask_traps3.py::test_n9_options_that_cannot_be_read_are_unmapped_not_none_allowed[f08_audioguide-Which comes first, the narration clips or the field test?-opts4]
+FAILED tests/test_conduct_ask_traps3.py::test_n9_options_that_cannot_be_read_are_unmapped_not_none_allowed[f08_audioguide-Which do we start first, recording the narration clips or running the field test?-opts5]
+FAILED tests/test_conduct_ask_traps3.py::test_n9_options_that_cannot_be_read_are_unmapped_not_none_allowed[0-Which comes first, the sensor driver or the salt spray test?-opts6]
+FAILED tests/test_conduct_ask_traps3.py::test_n7_a_context_sentence_that_is_not_an_approval_is_handed_up[0-Can we run the dockside simulator? Only the vendor will do it.-opts0]
+FAILED tests/test_conduct_ask_traps3.py::test_n7_a_context_sentence_that_is_not_an_approval_is_handed_up[0-Can we flash a field unit? That would be next year.-opts1]
+FAILED tests/test_conduct_ask_traps3.py::test_n7_a_context_sentence_that_is_not_an_approval_is_handed_up[1-\u9928\u5185\u3067\u306e\u8a66\u9a13\u904b\u7528\u3092\u3057\u3066\u3082\u3088\u3044\u3067\u3059\u304b\uff1f \u5b9f\u969b\u306b\u306f\u6765\u5e74\u306e\u8a71\u3067\u3059\u3002-opts2]
+FAILED tests/test_conduct_ask_traps3.py::test_n7_a_context_sentence_that_is_not_an_approval_is_handed_up[1-\u9928\u5185\u3067\u306e\u8a66\u9a13\u904b\u7528\u3092\u3057\u3066\u3082\u3088\u3044\u3067\u3059\u304b\uff1f \u5b9f\u65bd\u3059\u308b\u306e\u306f\u696d\u8005\u3067\u3059\u3002-opts3]
+FAILED tests/test_conduct_ask_traps3.py::test_n7_a_context_sentence_that_is_not_an_approval_is_handed_up[f01_loan-\u4e88\u7d04\u8a18\u9332\u3092\u524a\u9664\u3057\u3066\u3088\u3044\u3067\u3059\u304b\uff1f \u696d\u8005\u304c\u6765\u5e74\u306b\u884c\u3044\u307e\u3059\u3002-opts4]
+FAILED tests/test_conduct_ask_traps3.py::test_n7_a_context_sentence_that_is_not_an_approval_is_handed_up[f05_retry-May we retry a non-idempotent call? Only the vendor would.-opts5]
+FAILED tests/test_conduct_ask_traps3.py::test_noun_written_forbidden_operation_asked_as_something_else_is_handed_up[\u500b\u4eba\u60c5\u5831\u306e\u5916\u90e8\u9001\u4fe1\u3092\u4e2d\u6b62\u3057\u3066\u3088\u3044\u3067\u3059\u304b\uff1f]
+FAILED tests/test_conduct_ask_traps3.py::test_noun_written_forbidden_operation_asked_as_something_else_is_handed_up[\u500b\u4eba\u60c5\u5831\u306e\u5916\u90e8\u9001\u4fe1\u3092\u696d\u8005\u304c\u3057\u3066\u3088\u3044\u3067\u3059\u304b\uff1f]
+FAILED tests/test_conduct_ask_traps3.py::test_noun_written_forbidden_operation_asked_as_something_else_is_handed_up[\u5916\u90e8\u3078\u306e\u6301\u3061\u51fa\u3057\u3092\u4e2d\u6b62\u3057\u3066\u3088\u3044\u3067\u3059\u304b\uff1f]
+FAILED tests/test_conduct_ask_traps3.py::test_noun_written_forbidden_operation_asked_as_something_else_is_handed_up[\u500b\u4eba\u60c5\u5831\u306e\u5916\u90e8\u9001\u4fe1\u306e\u624b\u9806\u3092\u66f8\u3044\u3066\u3088\u3044\u3067\u3059\u304b\uff1f]
+FAILED tests/test_conduct_ask_traps3.py::test_noun_written_forbidden_operation_asked_as_something_else_is_handed_up[\u500b\u4eba\u60c5\u5831\u306e\u5916\u90e8\u9001\u4fe1\u3092\u6765\u6708\u3057\u3066\u3088\u3044\u3067\u3059\u304b\uff1f]
+FAILED tests/test_conduct_ask_traps3.py::test_place_noun_subject_reads_where_do_we_put_it
+======================== 76 failed, 78 passed in 0.54s =========================

@@ -1,0 +1,3002 @@
+{
+ "note": "rows whose result changed when the rows of table change records 1 and 2 were taken out (docs 10F K206); the frozen expectations are not rewritten",
+ "rows": {
+  "W3B5-DEPLACE-R-001": {
+   "input": "兄が校庭であそんだ。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-R-002": {
+   "input": "弟が校庭でおどった。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-R-003": {
+   "input": "姉が校庭で騒いだ。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-R-004": {
+   "input": "妹が校庭で昼寝した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-R-005": {
+   "input": "先生が校庭で活躍した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-R-006": {
+   "input": "店員がホテルで勤務した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-R-007": {
+   "input": "係員がホテルで仕事した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-R-008": {
+   "input": "社員がホテルで生活した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-R-009": {
+   "input": "学生がホテルで休憩した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-R-010": {
+   "input": "職員がホテルで過ごした。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-R-011": {
+   "input": "選手がホテルで待ち合わせした。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-R-012": {
+   "input": "監督が神社で修行した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-R-013": {
+   "input": "兄が神社で踊った。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-R-014": {
+   "input": "弟が神社で待ち合わせした。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-R-015": {
+   "input": "姉が神社で会合した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-R-016": {
+   "input": "妹が交差点で待ち合わせした。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-R-017": {
+   "input": "先生が交差点で騒いだ。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-R-018": {
+   "input": "店員が国道でドライブした。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-R-019": {
+   "input": "係員が国道で営業した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-R-020": {
+   "input": "社員が歩道で寝転がった。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-R-021": {
+   "input": "学生が歩道で休憩した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-R-022": {
+   "input": "職員が山頂で乾杯した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-R-023": {
+   "input": "選手が山頂でキャンプした。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-R-024": {
+   "input": "監督が山頂で昼寝した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-R-025": {
+   "input": "兄が校舎で勤務した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-R-026": {
+   "input": "弟が校舎で修行した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-R-027": {
+   "input": "姉が民宿で過ごした。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-R-028": {
+   "input": "妹が民宿で仕事した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-R-029": {
+   "input": "先生が教会で会合した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-R-030": {
+   "input": "店員が教会で乾杯した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-R-031": {
+   "input": "係員がテニスコートで活躍した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-R-032": {
+   "input": "社員がテニスコートで休憩した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-R-033": {
+   "input": "学生が銭湯で休憩した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-R-034": {
+   "input": "職員が銭湯で勤務した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-R-035": {
+   "input": "選手が銭湯で昼寝した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-R-036": {
+   "input": "監督が老人ホームで勤務した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-R-037": {
+   "input": "兄が老人ホームで生活した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-R-038": {
+   "input": "弟が農道でドライブした。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-R-039": {
+   "input": "姉が釣り堀で過ごした。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-R-040": {
+   "input": "妹が教会で曲を演奏した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-R-041": {
+   "input": "先生が老人ホームで楽器を演奏した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-R-042": {
+   "input": "店員が神社で音楽を演奏した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-R-043": {
+   "input": "係員が校庭でトラックを運転した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-R-044": {
+   "input": "社員が農道でトラックを運転した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-R-045": {
+   "input": "学生が山頂で牛を放牧した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-R-046": {
+   "input": "職員が校庭で羊を放牧した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-R-047": {
+   "input": "選手が農道で馬を放牧した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-R-048": {
+   "input": "監督が校庭で映像を撮影した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_CREATE:で"
+  },
+  "W3B5-DEPLACE-R-049": {
+   "input": "兄が神社で写真を撮影した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_CREATE:で"
+  },
+  "W3B5-DEPLACE-R-050": {
+   "input": "弟が教会で動画を撮影した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_CREATE:で"
+  },
+  "W3B5-DEPLACE-R-051": {
+   "input": "姉が山頂で写真を撮影した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_CREATE:で"
+  },
+  "W3B5-DEPLACE-R-052": {
+   "input": "妹が銭湯で映像を撮影した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_CREATE:で"
+  },
+  "W3B5-DEPLACE-R-053": {
+   "input": "先生が民宿で野菜を栽培した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_CREATE:で"
+  },
+  "W3B5-DEPLACE-R-054": {
+   "input": "店員が校庭で花を栽培した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_CREATE:で"
+  },
+  "W3B5-DEPLACE-R-055": {
+   "input": "係員が農道で苗を栽培した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_CREATE:で"
+  },
+  "W3B5-DEPLACE-R-056": {
+   "input": "社員が老人ホームで野菜を栽培した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_CREATE:で"
+  },
+  "W3B5-DEPLACE-R-057": {
+   "input": "教会で係員が楽団の曲を演奏した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-R-058": {
+   "input": "神社で店員が町の写真を撮影した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_CREATE:で"
+  },
+  "W3B5-DEPLACE-R-059": {
+   "input": "ホテルで先生が旅券の写真を撮影した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_CREATE:で"
+  },
+  "W3B5-DEPLACE-R-060": {
+   "input": "国道で係員が会社のトラックを運転した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-R-061": {
+   "input": "校庭で職員が町の楽器を演奏した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-R-062": {
+   "input": "山頂で学生が町の動画を撮影した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_CREATE:で"
+  },
+  "W3B5-DEPLACE-R-063": {
+   "input": "老人ホームで係員が学校の曲を演奏した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-R-064": {
+   "input": "民宿で社員が工場の野菜を栽培した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_CREATE:で"
+  },
+  "W3B5-DEPLACE-A-021": {
+   "input": "先生が歩道でかみついた。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "FRAME_GENERATED_DOES_NOT_LICENSE:で",
+   "entry_before": "abstain",
+   "w3b2_before": "FRAME_GENERATED_DOES_NOT_LICENSE:で",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-A-022": {
+   "input": "係員が校舎でいどんだ。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "FRAME_GENERATED_DOES_NOT_LICENSE:で",
+   "entry_before": "abstain",
+   "w3b2_before": "FRAME_GENERATED_DOES_NOT_LICENSE:で",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-A-023": {
+   "input": "社員が民宿でさわった。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "FRAME_GENERATED_DOES_NOT_LICENSE:で",
+   "entry_before": "abstain",
+   "w3b2_before": "FRAME_GENERATED_DOES_NOT_LICENSE:で",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-A-024": {
+   "input": "学生が教会ですがった。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "FRAME_GENERATED_DOES_NOT_LICENSE:で",
+   "entry_before": "abstain",
+   "w3b2_before": "FRAME_GENERATED_DOES_NOT_LICENSE:で",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-A-025": {
+   "input": "職員が校庭で書き込んだ。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "FRAME_GENERATED_DOES_NOT_LICENSE:で",
+   "entry_before": "abstain",
+   "w3b2_before": "FRAME_GENERATED_DOES_NOT_LICENSE:で",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_CREATE:で"
+  },
+  "W3B5-DEPLACE-A-026": {
+   "input": "選手がホテルで記載した。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "FRAME_GENERATED_DOES_NOT_LICENSE:で",
+   "entry_before": "abstain",
+   "w3b2_before": "FRAME_GENERATED_DOES_NOT_LICENSE:で",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_CREATE:で"
+  },
+  "W3B5-DEPLACE-A-027": {
+   "input": "兄が交差点で敷設した。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "FRAME_GENERATED_DOES_NOT_LICENSE:で",
+   "entry_before": "abstain",
+   "w3b2_before": "FRAME_GENERATED_DOES_NOT_LICENSE:で",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_CREATE:で"
+  },
+  "W3B5-DEPLACE-A-028": {
+   "input": "弟が国道で併設した。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "FRAME_GENERATED_DOES_NOT_LICENSE:で",
+   "entry_before": "abstain",
+   "w3b2_before": "FRAME_GENERATED_DOES_NOT_LICENSE:で",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_CREATE:で"
+  },
+  "W3B5-DEPLACE-A-029": {
+   "input": "店員が民宿でなやんだ。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "FRAME_GENERATED_DOES_NOT_LICENSE:で",
+   "entry_before": "abstain",
+   "w3b2_before": "FRAME_GENERATED_DOES_NOT_LICENSE:で",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_EMOTION:で"
+  },
+  "W3B5-DEPLACE-A-030": {
+   "input": "係員が教会で戸惑った。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "FRAME_GENERATED_DOES_NOT_LICENSE:で",
+   "entry_before": "abstain",
+   "w3b2_before": "FRAME_GENERATED_DOES_NOT_LICENSE:で",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_EMOTION:で"
+  },
+  "W3B5-DEPLACE-A-031": {
+   "input": "社員が校庭で感心した。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "FRAME_GENERATED_DOES_NOT_LICENSE:で",
+   "entry_before": "abstain",
+   "w3b2_before": "FRAME_GENERATED_DOES_NOT_LICENSE:で",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_EMOTION:で"
+  },
+  "W3B5-DEPLACE-A-032": {
+   "input": "職員が神社で恐縮した。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "FRAME_GENERATED_DOES_NOT_LICENSE:で",
+   "entry_before": "abstain",
+   "w3b2_before": "FRAME_GENERATED_DOES_NOT_LICENSE:で",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_EMOTION:で"
+  },
+  "W3B5-DEPLACE-A-033": {
+   "input": "選手が交差点で退屈した。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "FRAME_GENERATED_DOES_NOT_LICENSE:で",
+   "entry_before": "abstain",
+   "w3b2_before": "FRAME_GENERATED_DOES_NOT_LICENSE:で",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_EMOTION:で"
+  },
+  "W3B5-DEPLACE-A-034": {
+   "input": "監督が国道でおどろいた。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "FRAME_GENERATED_DOES_NOT_LICENSE:で",
+   "entry_before": "abstain",
+   "w3b2_before": "FRAME_GENERATED_DOES_NOT_LICENSE:で",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_EMOTION:で"
+  },
+  "W3B5-DEPLACE-A-035": {
+   "input": "弟が搭乗口であそんだ。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_SLOT_EVIDENCE_ONLY:で:搭乗口",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_SLOT_EVIDENCE_ONLY:で:搭乗口",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-A-036": {
+   "input": "姉が宿で勤務した。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_SLOT_EVIDENCE_ONLY:で:宿",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_SLOT_EVIDENCE_ONLY:で:宿",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-A-037": {
+   "input": "妹が林で休憩した。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_SLOT_EVIDENCE_ONLY:で:林",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_SLOT_EVIDENCE_ONLY:で:林",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-A-038": {
+   "input": "先生が森で過ごした。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_SLOT_EVIDENCE_ONLY:で:森",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_SLOT_EVIDENCE_ONLY:で:森",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-A-039": {
+   "input": "店員が橋で仕事した。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_SLOT_EVIDENCE_ONLY:で:橋",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_SLOT_EVIDENCE_ONLY:で:橋",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-A-040": {
+   "input": "係員が池で生活した。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_SLOT_EVIDENCE_ONLY:で:池",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_SLOT_EVIDENCE_ONLY:で:池",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-A-041": {
+   "input": "社員が畑で待ち合わせした。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_SLOT_EVIDENCE_ONLY:で:畑",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_SLOT_EVIDENCE_ONLY:で:畑",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-A-042": {
+   "input": "学生が屋上で会合した。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_SLOT_EVIDENCE_ONLY:で:屋上",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_SLOT_EVIDENCE_ONLY:で:屋上",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-A-043": {
+   "input": "職員が廊下で乾杯した。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_SLOT_EVIDENCE_ONLY:で:廊下",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_SLOT_EVIDENCE_ONLY:で:廊下",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-A-044": {
+   "input": "選手が玄関で活躍した。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_SLOT_EVIDENCE_ONLY:で:玄関",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_SLOT_EVIDENCE_ONLY:で:玄関",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-A-045": {
+   "input": "監督が左であそんだ。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_SLOT_EVIDENCE_ONLY:で:左",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_SLOT_EVIDENCE_ONLY:で:左",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-A-046": {
+   "input": "弟が本社で休憩した。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_SLOT_EVIDENCE_ONLY:で:本社",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_SLOT_EVIDENCE_ONLY:で:本社",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-A-047": {
+   "input": "姉が石畳で過ごした。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_SLOT_EVIDENCE_ONLY:で:石畳",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_SLOT_EVIDENCE_ONLY:で:石畳",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-A-048": {
+   "input": "先生が多数決で生活した。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_TYPE_MISMATCH:P_ACT:で:ABSTRACT",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_TYPE_MISMATCH:P_ACT:で:ABSTRACT",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-A-049": {
+   "input": "店員が望遠レンズで待ち合わせした。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_UNPLACED:で:望遠レンズ",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_UNPLACED:で:望遠レンズ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-A-050": {
+   "input": "係員が搬出口で会合した。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_UNKNOWN:で:搬出口",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_UNKNOWN:で:搬出口",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-A-051": {
+   "input": "社員が電話口で乾杯した。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_ESTIMATED_GENERATED:で:電話口",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_ESTIMATED_GENERATED:で:電話口",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-R-065": {
+   "input": "係員が校庭で活躍する。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-R-066": {
+   "input": "社員がホテルで活躍しなかった。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-R-067": {
+   "input": "学生が神社で活躍しない。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-R-068": {
+   "input": "職員が山頂で休憩する。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-R-069": {
+   "input": "選手が銭湯で休憩しなかった。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-R-070": {
+   "input": "監督が老人ホームで休憩しない。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-R-071": {
+   "input": "兄が校舎で勤務する。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-R-072": {
+   "input": "弟が民宿で勤務しなかった。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-R-073": {
+   "input": "姉が教会で生活しない。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-R-074": {
+   "input": "妹が国道で踊らなかった。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-R-075": {
+   "input": "先生がテニスコートで騒がない。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-R-076": {
+   "input": "店員が交差点で過ごさなかった。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-A-063": {
+   "input": "姉が校庭でも活躍した。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_FOCUS_PARTICLE_AFTER_CASE",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_FOCUS_PARTICLE_AFTER_CASE:で:も",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-A-064": {
+   "input": "姉がホテルでも休憩した。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_FOCUS_PARTICLE_AFTER_CASE",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_FOCUS_PARTICLE_AFTER_CASE:で:も",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-A-065": {
+   "input": "姉が神社でもあそんだ。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_FOCUS_PARTICLE_AFTER_CASE",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_FOCUS_PARTICLE_AFTER_CASE:で:も",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-A-066": {
+   "input": "妹が校庭でさえ活躍した。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_FOCUS_PARTICLE_AFTER_CASE",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_FOCUS_PARTICLE_AFTER_CASE:で:さえ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-A-067": {
+   "input": "妹がホテルでさえ休憩した。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_FOCUS_PARTICLE_AFTER_CASE",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_FOCUS_PARTICLE_AFTER_CASE:で:さえ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-A-068": {
+   "input": "妹が神社でさえあそんだ。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_FOCUS_PARTICLE_AFTER_CASE",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_FOCUS_PARTICLE_AFTER_CASE:で:さえ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-A-069": {
+   "input": "先生が校庭でばかり活躍した。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_FOCUS_PARTICLE_AFTER_CASE",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_FOCUS_PARTICLE_AFTER_CASE:で:ばかり",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-A-070": {
+   "input": "先生がホテルでばかり休憩した。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_FOCUS_PARTICLE_AFTER_CASE",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_FOCUS_PARTICLE_AFTER_CASE:で:ばかり",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-A-071": {
+   "input": "先生が神社でばかりあそんだ。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_FOCUS_PARTICLE_AFTER_CASE",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_FOCUS_PARTICLE_AFTER_CASE:で:ばかり",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-A-072": {
+   "input": "妹が校庭で活躍している。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_PREDICATE_TAIL_UNINTERPRETED",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_PREDICATE_TAIL_UNINTERPRETED:連用形-一般:助詞",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-A-073": {
+   "input": "先生がホテルで活躍したい。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_PREDICATE_TAIL_UNINTERPRETED",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_REREAD_ABSTAINS:UNDETERMINED_MODALITY:たい",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-A-074": {
+   "input": "店員が神社で活躍します。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_PREDICATE_TAIL_UNINTERPRETED",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_PREDICATE_TAIL_UNINTERPRETED:連用形-一般:助動詞",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-A-075": {
+   "input": "係員が山頂で休憩している。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_PREDICATE_TAIL_UNINTERPRETED",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_PREDICATE_TAIL_UNINTERPRETED:連用形-一般:助詞",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-A-076": {
+   "input": "社員が校舎で勤務したい。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_PREDICATE_TAIL_UNINTERPRETED",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_REREAD_ABSTAINS:UNDETERMINED_MODALITY:たい",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-A-077": {
+   "input": "学生が民宿で生活している。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_PREDICATE_TAIL_UNINTERPRETED",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_PREDICATE_TAIL_UNINTERPRETED:連用形-一般:助詞",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-A-078": {
+   "input": "職員が校庭でこけた。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_PREDICATE_POSSIBLY_DERIVED",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-カ行",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-A-079": {
+   "input": "選手がホテルでくらした。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_PREDICATE_POSSIBLY_DERIVED",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_PREDICATE_POSSIBLY_DERIVED:五段-サ行",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-A-080": {
+   "input": "監督が神社でふかした。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_PREDICATE_POSSIBLY_DERIVED",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_PREDICATE_POSSIBLY_DERIVED:五段-サ行",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-A-081": {
+   "input": "兄が山頂で待ち合わせた。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_PREDICATE_POSSIBLY_DERIVED",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_REREAD_ABSTAINS:UNDETERMINED_MODALITY:possible potential form",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEPLACE-A-082": {
+   "input": "弟が校舎で涼めた。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_PREDICATE_POSSIBLY_DERIVED",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_REREAD_ABSTAINS:UNDETERMINED_MODALITY:possible potential form",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEINSTR-A-030": {
+   "input": "職員が右で投球した。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_SLOT_EVIDENCE_ONLY:で:右",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_SLOT_EVIDENCE_ONLY:で:右",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEINSTR-A-031": {
+   "input": "選手が口で曲を演奏した。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_SLOT_EVIDENCE_ONLY:で:口",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_SLOT_EVIDENCE_ONLY:で:口",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEINSTR-A-032": {
+   "input": "監督が右でトラックを運転した。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_SLOT_EVIDENCE_ONLY:で:右",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_SLOT_EVIDENCE_ONLY:で:右",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DEINSTR-A-033": {
+   "input": "兄が口で写真を撮影した。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_SLOT_EVIDENCE_ONLY:で:口",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_SLOT_EVIDENCE_ONLY:で:口",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_CREATE:で"
+  },
+  "W3B5-DECAUSE-A-020": {
+   "input": "妹が雨でやすんだ。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_TYPE_MISMATCH:P_ACT:で:NATURAL_PHENOMENON",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_TYPE_MISMATCH:P_ACT:で:NATURAL_PHENOMENON",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DECAUSE-A-021": {
+   "input": "先生が雪で休憩した。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_TYPE_MISMATCH:P_ACT:で:NATURAL_PHENOMENON",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_TYPE_MISMATCH:P_ACT:で:NATURAL_PHENOMENON",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DECAUSE-A-022": {
+   "input": "店員が風でもたついた。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_TYPE_MISMATCH:P_ACT:で:NATURAL_PHENOMENON",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_TYPE_MISMATCH:P_ACT:で:NATURAL_PHENOMENON",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DECAUSE-A-023": {
+   "input": "係員が台風でやすんだ。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_TYPE_MISMATCH:P_ACT:で:NATURAL_PHENOMENON",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_TYPE_MISMATCH:P_ACT:で:NATURAL_PHENOMENON",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DECAUSE-A-024": {
+   "input": "社員が地震で騒いだ。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_TYPE_MISMATCH:P_ACT:で:NATURAL_PHENOMENON",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_TYPE_MISMATCH:P_ACT:で:NATURAL_PHENOMENON",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DECAUSE-A-025": {
+   "input": "学生が雷で休憩した。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_TYPE_MISMATCH:P_ACT:で:NATURAL_PHENOMENON",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_TYPE_MISMATCH:P_ACT:で:NATURAL_PHENOMENON",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DECAUSE-A-026": {
+   "input": "職員が雨でもたついた。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_TYPE_MISMATCH:P_ACT:で:NATURAL_PHENOMENON",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_TYPE_MISMATCH:P_ACT:で:NATURAL_PHENOMENON",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DECAUSE-A-027": {
+   "input": "選手が風で騒いだ。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_TYPE_MISMATCH:P_ACT:で:NATURAL_PHENOMENON",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_TYPE_MISMATCH:P_ACT:で:NATURAL_PHENOMENON",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DECAUSE-A-028": {
+   "input": "店員が段差でやすんだ。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_SLOT_EVIDENCE_ONLY:で:段差",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_SLOT_EVIDENCE_ONLY:で:段差",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DECAUSE-A-029": {
+   "input": "係員が坂で休憩した。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_SLOT_EVIDENCE_ONLY:で:坂",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_SLOT_EVIDENCE_ONLY:で:坂",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-DECAUSE-A-030": {
+   "input": "社員が溝でもたついた。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_SLOT_EVIDENCE_ONLY:で:溝",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_SLOT_EVIDENCE_ONLY:で:溝",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-MECH-A-001": {
+   "input": "妹が右で打った。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "FRAME_GENERATED_DOES_NOT_LICENSE:で",
+   "entry_before": "abstain",
+   "w3b2_before": "FRAME_GENERATED_DOES_NOT_LICENSE:で",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-MECH-A-002": {
+   "input": "妹が右で皿を洗った。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "FRAME_GENERATED_DOES_NOT_LICENSE:で",
+   "entry_before": "abstain",
+   "w3b2_before": "FRAME_GENERATED_DOES_NOT_LICENSE:で",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-MECH-A-003": {
+   "input": "妹が右で皿を拭いた。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "FRAME_GENERATED_DOES_NOT_LICENSE:で",
+   "entry_before": "abstain",
+   "w3b2_before": "FRAME_GENERATED_DOES_NOT_LICENSE:で",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-MECH-A-004": {
+   "input": "妹が右で絵を描いた。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "FRAME_GENERATED_DOES_NOT_LICENSE:で",
+   "entry_before": "abstain",
+   "w3b2_before": "FRAME_GENERATED_DOES_NOT_LICENSE:で",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_CREATE:で"
+  },
+  "W3B5-MECH-A-005": {
+   "input": "姉が右で記事を書いた。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "FRAME_GENERATED_DOES_NOT_LICENSE:で",
+   "entry_before": "abstain",
+   "w3b2_before": "FRAME_GENERATED_DOES_NOT_LICENSE:で",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_CREATE:で"
+  },
+  "W3B5-MECH-A-006": {
+   "input": "妹が段差で驚いた。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "FRAME_GENERATED_DOES_NOT_LICENSE:で",
+   "entry_before": "abstain",
+   "w3b2_before": "FRAME_GENERATED_DOES_NOT_LICENSE:で",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_EMOTION:で"
+  },
+  "W3B5-MECH-A-007": {
+   "input": "妹が口で戦った。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "FRAME_GENERATED_DOES_NOT_LICENSE:で",
+   "entry_before": "abstain",
+   "w3b2_before": "FRAME_GENERATED_DOES_NOT_LICENSE:で",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-MECH-A-008": {
+   "input": "妹が口で絵を描いた。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "FRAME_GENERATED_DOES_NOT_LICENSE:で",
+   "entry_before": "abstain",
+   "w3b2_before": "FRAME_GENERATED_DOES_NOT_LICENSE:で",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_CREATE:で"
+  },
+  "W3B5-MECH-A-009": {
+   "input": "妹が口で手紙を書いた。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "FRAME_GENERATED_DOES_NOT_LICENSE:で",
+   "entry_before": "abstain",
+   "w3b2_before": "FRAME_GENERATED_DOES_NOT_LICENSE:で",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_CREATE:で"
+  },
+  "W3B5-MECH-A-010": {
+   "input": "妹が口で笑った。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "FRAME_GENERATED_DOES_NOT_LICENSE:で",
+   "entry_before": "abstain",
+   "w3b2_before": "FRAME_GENERATED_DOES_NOT_LICENSE:で",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_EMOTION:で"
+  },
+  "W3B5-MECH-A-011": {
+   "input": "兄が校庭で活躍した。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "FRAME_GENERATED_DOES_NOT_LICENSE:で",
+   "entry_before": "abstain",
+   "w3b2_before": "FRAME_GENERATED_DOES_NOT_LICENSE:で",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-MECH-A-012": {
+   "input": "弟が校庭で活躍した。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "FRAME_GENERATED_DOES_NOT_LICENSE:で",
+   "entry_before": "abstain",
+   "w3b2_before": "FRAME_GENERATED_DOES_NOT_LICENSE:で",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-MECH-A-013": {
+   "input": "姉が校庭で活躍した。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "FRAME_GENERATED_DOES_NOT_LICENSE:で",
+   "entry_before": "abstain",
+   "w3b2_before": "FRAME_GENERATED_DOES_NOT_LICENSE:で",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-MECH-A-014": {
+   "input": "妹が校庭で活躍した。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "FRAME_GENERATED_DOES_NOT_LICENSE:で",
+   "entry_before": "abstain",
+   "w3b2_before": "FRAME_GENERATED_DOES_NOT_LICENSE:で",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-MECH-A-015": {
+   "input": "姉が神社で活躍した。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_FRAME_GENERATED_INVALID:ORIGIN_NOT_GENERATED",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_FRAME_GENERATED_INVALID:ORIGIN_NOT_GENERATED",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-MECH-A-016": {
+   "input": "妹が神社で活躍した。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_FRAME_GENERATED_INVALID:FRAME_NOT_A_MAPPING",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_FRAME_GENERATED_INVALID:FRAME_NOT_A_MAPPING",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-MECH-A-017": {
+   "input": "先生が神社で活躍した。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_FRAME_GENERATED_INVALID:PARTICLE_NOT_CASE:の",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_FRAME_GENERATED_INVALID:PARTICLE_NOT_CASE:の",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-MECH-A-018": {
+   "input": "店員が神社で活躍した。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_FRAME_GENERATED_INVALID:TYPES_NOT_A_LIST:で",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_FRAME_GENERATED_INVALID:TYPES_NOT_A_LIST:で",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-MECH-A-019": {
+   "input": "係員が神社で活躍した。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_FRAME_GENERATED_INVALID:TYPES_NOT_A_LIST:で",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_FRAME_GENERATED_INVALID:TYPES_NOT_A_LIST:で",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-MECH-A-020": {
+   "input": "社員が神社で活躍した。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_FRAME_GENERATED_INVALID:TYPE_NOT_NOUN:で:SPACE",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_FRAME_GENERATED_INVALID:TYPE_NOT_NOUN:で:SPACE",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-MECH-A-021": {
+   "input": "学生が神社で活躍した。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_FRAME_GENERATED_INVALID:NOT_A_MAPPING",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_FRAME_GENERATED_INVALID:NOT_A_MAPPING",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で"
+  },
+  "W3B5-NIRECIP-R-001": {
+   "input": "兄が部長に返事を催促した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_SLOT_EVIDENCE_ONLY:に:部長"
+  },
+  "W3B5-NIRECIP-R-002": {
+   "input": "弟が課長に申告した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_SLOT_EVIDENCE_ONLY:に:課長"
+  },
+  "W3B5-NIRECIP-R-003": {
+   "input": "姉が先輩に曲を披露した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_SLOT_EVIDENCE_ONLY:に:先輩"
+  },
+  "W3B5-NIRECIP-R-004": {
+   "input": "妹が後輩に請求書を請求した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_SLOT_EVIDENCE_ONLY:に:後輩"
+  },
+  "W3B5-NIRECIP-R-005": {
+   "input": "先生が上司に告白した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_TYPE_MISMATCH:P_COMMUNICATE:に:PERSON"
+  },
+  "W3B5-NIRECIP-R-006": {
+   "input": "店員が同僚に告知した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_SLOT_EVIDENCE_ONLY:に:同僚"
+  },
+  "W3B5-NIRECIP-R-007": {
+   "input": "係員が社長に助言した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_SLOT_EVIDENCE_ONLY:に:社長"
+  },
+  "W3B5-NIRECIP-R-008": {
+   "input": "社員が店長に謝罪した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_SLOT_EVIDENCE_ONLY:に:店長"
+  },
+  "W3B5-NIRECIP-R-009": {
+   "input": "学生が隣人に抗議した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_TYPE_MISMATCH:P_COMMUNICATE:に:PERSON"
+  },
+  "W3B5-NIRECIP-R-010": {
+   "input": "職員が弁護士に懇願した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_TYPE_MISMATCH:P_COMMUNICATE:に:PERSON"
+  },
+  "W3B5-NIRECIP-R-011": {
+   "input": "選手が管理人に要望した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_SLOT_EVIDENCE_ONLY:に:管理人"
+  },
+  "W3B5-NIRECIP-R-012": {
+   "input": "監督が看護師に電話した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_SLOT_EVIDENCE_ONLY:に:看護師"
+  },
+  "W3B5-NIRECIP-R-013": {
+   "input": "兄が母に返答した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_SLOT_EVIDENCE_ONLY:に:母"
+  },
+  "W3B5-NIRECIP-R-014": {
+   "input": "弟が父に宣伝した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_TYPE_MISMATCH:P_COMMUNICATE:に:PERSON"
+  },
+  "W3B5-NIRECIP-R-015": {
+   "input": "姉が祖母に伝授した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_SLOT_EVIDENCE_ONLY:に:祖母"
+  },
+  "W3B5-NIRECIP-R-016": {
+   "input": "妹が先生に書類を書き送った。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_SLOT_EVIDENCE_ONLY:に:先生"
+  },
+  "W3B5-NIRECIP-R-017": {
+   "input": "先生が部長に反論した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_SLOT_EVIDENCE_ONLY:に:部長"
+  },
+  "W3B5-NIRECIP-R-018": {
+   "input": "店員が課長に応答した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_SLOT_EVIDENCE_ONLY:に:課長"
+  },
+  "W3B5-NIRECIP-R-019": {
+   "input": "係員が先輩に怒鳴った。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_SLOT_EVIDENCE_ONLY:に:先輩"
+  },
+  "W3B5-NIRECIP-R-020": {
+   "input": "社員が後輩にあやまった。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_SLOT_EVIDENCE_ONLY:に:後輩"
+  },
+  "W3B5-NIRECIP-R-021": {
+   "input": "学生が上司にたのんだ。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_TYPE_MISMATCH:P_COMMUNICATE:に:PERSON"
+  },
+  "W3B5-NIRECIP-R-022": {
+   "input": "職員が同僚にせがんだ。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_SLOT_EVIDENCE_ONLY:に:同僚"
+  },
+  "W3B5-NIRECIP-R-023": {
+   "input": "選手が社長に部品を発注した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_SLOT_EVIDENCE_ONLY:に:社長"
+  },
+  "W3B5-NIRECIP-R-024": {
+   "input": "監督が店長に声かけした。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_SLOT_EVIDENCE_ONLY:に:店長"
+  },
+  "W3B5-NIRECIP-R-025": {
+   "input": "兄が隣人に書類をメールした。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_TYPE_MISMATCH:P_COMMUNICATE:に:PERSON"
+  },
+  "W3B5-NIRECIP-R-026": {
+   "input": "弟が弁護士に書類を申し送った。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_TYPE_MISMATCH:P_COMMUNICATE:に:PERSON"
+  },
+  "W3B5-NIRECIP-R-027": {
+   "input": "姉が管理人に言い返した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_SLOT_EVIDENCE_ONLY:に:管理人"
+  },
+  "W3B5-NIRECIP-R-028": {
+   "input": "妹が看護師に布教した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_SLOT_EVIDENCE_ONLY:に:看護師"
+  },
+  "W3B5-NIRECIP-R-029": {
+   "input": "先生が母に確約した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_SLOT_EVIDENCE_ONLY:に:母"
+  },
+  "W3B5-NIRECIP-R-030": {
+   "input": "店員が父に奏上した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_TYPE_MISMATCH:P_COMMUNICATE:に:PERSON"
+  },
+  "W3B5-NIRECIP-R-031": {
+   "input": "係員が政府に抗議した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_TYPE_MISMATCH:P_COMMUNICATE:に:GROUP_ORG"
+  },
+  "W3B5-NIRECIP-R-032": {
+   "input": "社員が会社に請求した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_TYPE_MISMATCH:P_COMMUNICATE:に:GROUP_ORG"
+  },
+  "W3B5-NIRECIP-R-033": {
+   "input": "学生が議会に要望した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_TYPE_MISMATCH:P_COMMUNICATE:に:GROUP_ORG"
+  },
+  "W3B5-NIRECIP-R-034": {
+   "input": "職員が組合に返答した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_TYPE_MISMATCH:P_COMMUNICATE:に:GROUP_ORG"
+  },
+  "W3B5-NIRECIP-R-035": {
+   "input": "選手が協会に発注した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_TYPE_MISMATCH:P_COMMUNICATE:に:GROUP_ORG"
+  },
+  "W3B5-NIRECIP-R-036": {
+   "input": "監督が財団に催促した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_TYPE_MISMATCH:P_COMMUNICATE:に:GROUP_ORG"
+  },
+  "W3B5-NIRECIP-R-037": {
+   "input": "兄が裁判所に申告した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_TYPE_MISMATCH:P_COMMUNICATE:に:GROUP_ORG"
+  },
+  "W3B5-NIRECIP-R-038": {
+   "input": "弟が検察に宣伝した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_TYPE_MISMATCH:P_COMMUNICATE:に:GROUP_ORG"
+  },
+  "W3B5-NIRECIP-R-039": {
+   "input": "姉が大学に反論した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_TYPE_MISMATCH:P_COMMUNICATE:に:GROUP_ORG"
+  },
+  "W3B5-NIGOAL-R-001": {
+   "input": "弟が駅にむかった。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_TYPE_MISMATCH:P_MOVE:に:PLACE"
+  },
+  "W3B5-NIGOAL-R-002": {
+   "input": "姉が空港にもどった。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_TYPE_MISMATCH:P_MOVE:に:PLACE"
+  },
+  "W3B5-NIGOAL-R-003": {
+   "input": "妹が駅にかけこんだ。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_TYPE_MISMATCH:P_MOVE:に:PLACE"
+  },
+  "W3B5-NIGOAL-R-004": {
+   "input": "先生が海にとびこんだ。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_SLOT_EVIDENCE_ONLY:に:海"
+  },
+  "W3B5-NIGOAL-R-005": {
+   "input": "店員が山頂にたどり着いた。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_TYPE_MISMATCH:P_MOVE:に:PLACE"
+  },
+  "W3B5-NIGOAL-R-006": {
+   "input": "係員が港にいたった。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_TYPE_MISMATCH:P_MOVE:に:PLACE"
+  },
+  "W3B5-NIGOAL-R-007": {
+   "input": "社員が病院に入院した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_TYPE_MISMATCH:P_MOVE:に:PLACE"
+  },
+  "W3B5-NIGOAL-R-008": {
+   "input": "選手が倉庫に出向いた。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_SLOT_EVIDENCE_ONLY:に:倉庫"
+  },
+  "W3B5-NIGOAL-R-009": {
+   "input": "監督が山頂に到達した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_TYPE_MISMATCH:P_MOVE:に:PLACE"
+  },
+  "W3B5-NIGOAL-R-010": {
+   "input": "兄が駅に停車した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_TYPE_MISMATCH:P_MOVE:に:PLACE"
+  },
+  "W3B5-NIGOAL-R-011": {
+   "input": "弟が港に停泊した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_TYPE_MISMATCH:P_MOVE:に:PLACE"
+  },
+  "W3B5-NIGOAL-R-012": {
+   "input": "姉が現場に出動した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_SLOT_EVIDENCE_ONLY:に:現場"
+  },
+  "W3B5-NIGOAL-R-013": {
+   "input": "妹が倉庫に侵入した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_SLOT_EVIDENCE_ONLY:に:倉庫"
+  },
+  "W3B5-NIGOAL-R-014": {
+   "input": "先生が球場に入場した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_TYPE_MISMATCH:P_MOVE:に:PLACE"
+  },
+  "W3B5-NIGOAL-R-015": {
+   "input": "店員が北海道に遠征した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_TYPE_MISMATCH:P_MOVE:に:PLACE"
+  },
+  "W3B5-NIGOAL-R-016": {
+   "input": "係員が沖縄に赴いた。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_SLOT_EVIDENCE_ONLY:に:沖縄"
+  },
+  "W3B5-NIGOAL-R-017": {
+   "input": "社員が京都に赴任した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_TYPE_MISMATCH:P_MOVE:に:PLACE"
+  },
+  "W3B5-NIGOAL-R-018": {
+   "input": "学生が町に転入した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_TYPE_MISMATCH:P_MOVE:に:PLACE"
+  },
+  "W3B5-NIGOAL-R-019": {
+   "input": "職員が村に転校した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_TYPE_MISMATCH:P_MOVE:に:PLACE"
+  },
+  "W3B5-NIGOAL-R-020": {
+   "input": "選手が公園に合流した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_TYPE_MISMATCH:P_MOVE:に:PLACE"
+  },
+  "W3B5-NIGOAL-R-021": {
+   "input": "姉が港に乗り込んだ。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_TYPE_MISMATCH:P_MOVE:に:PLACE"
+  },
+  "W3B5-NIGOAL-R-022": {
+   "input": "妹が駅に先回りした。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_TYPE_MISMATCH:P_MOVE:に:PLACE"
+  },
+  "W3B5-NIGOAL-R-023": {
+   "input": "先生が北海道に旅行した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_TYPE_MISMATCH:P_MOVE:に:PLACE"
+  },
+  "W3B5-NIGOAL-R-024": {
+   "input": "店員が沖縄に旅行した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_SLOT_EVIDENCE_ONLY:に:沖縄"
+  },
+  "W3B5-NIGOAL-R-025": {
+   "input": "係員が京都に旅行した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_TYPE_MISMATCH:P_MOVE:に:PLACE"
+  },
+  "W3B5-NIGOAL-R-026": {
+   "input": "社員が山に昇った。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_TYPE_MISMATCH:P_MOVE:に:PLACE"
+  },
+  "W3B5-NIGOAL-R-027": {
+   "input": "学生が山頂に昇った。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_TYPE_MISMATCH:P_MOVE:に:PLACE"
+  },
+  "W3B5-NIGOAL-R-028": {
+   "input": "選手が現場に入室した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_SLOT_EVIDENCE_ONLY:に:現場"
+  },
+  "W3B5-NIGOAL-R-029": {
+   "input": "監督が港に到達した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_TYPE_MISMATCH:P_MOVE:に:PLACE"
+  },
+  "W3B5-NIGOAL-R-030": {
+   "input": "兄が町に入院した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_TYPE_MISMATCH:P_MOVE:に:PLACE"
+  },
+  "W3B5-NIGOAL-R-031": {
+   "input": "弟が島に停泊した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_TYPE_MISMATCH:P_MOVE:に:PLACE"
+  },
+  "W3B5-NIGOAL-R-032": {
+   "input": "妹が町にもどった。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_TYPE_MISMATCH:P_MOVE:に:PLACE"
+  },
+  "W3B5-NIGOAL-R-033": {
+   "input": "先生が川にとびこんだ。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_TYPE_MISMATCH:P_MOVE:に:PLACE"
+  },
+  "W3B5-NITIME-R-001": {
+   "input": "先生が命日に遅刻した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:に"
+  },
+  "W3B5-NITIME-R-002": {
+   "input": "店員が祭日に遅刻した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:に"
+  },
+  "W3B5-NITIME-R-003": {
+   "input": "係員が朔日に遅刻した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:に"
+  },
+  "W3B5-NITIME-R-004": {
+   "input": "社員が満月に遅刻した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:に"
+  },
+  "W3B5-NITIME-R-005": {
+   "input": "学生が新月に遅刻した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:に"
+  },
+  "W3B5-NITIME-R-006": {
+   "input": "職員が乾季に遅刻した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:に"
+  },
+  "W3B5-NITIME-R-007": {
+   "input": "選手が昭和に遅刻した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:に"
+  },
+  "W3B5-NITIME-R-008": {
+   "input": "監督が大正に遅刻した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:に"
+  },
+  "W3B5-NITIME-R-009": {
+   "input": "兄が平成に遅刻した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:に"
+  },
+  "W3B5-NITIME-R-010": {
+   "input": "弟が令和に遅刻した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:に"
+  },
+  "W3B5-NITIME-R-011": {
+   "input": "姉が戦間期に遅刻した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:に"
+  },
+  "W3B5-NITIME-R-012": {
+   "input": "妹が氷河期に遅刻した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:に"
+  },
+  "W3B5-NITIME-R-013": {
+   "input": "先生が満月に起きた。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:に"
+  },
+  "W3B5-NITIME-R-014": {
+   "input": "店員が新月に起きた。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:に"
+  },
+  "W3B5-NITIME-R-015": {
+   "input": "係員が朔日に起きた。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:に"
+  },
+  "W3B5-NITIME-R-016": {
+   "input": "社員が命日に起きた。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:に"
+  },
+  "W3B5-NITIME-R-017": {
+   "input": "学生が祭日に起きた。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:に"
+  },
+  "W3B5-NITIME-R-018": {
+   "input": "職員が乾季に起きた。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:に"
+  },
+  "W3B5-NITIME-R-019": {
+   "input": "選手が氷河期に起きた。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:に"
+  },
+  "W3B5-NITIME-R-020": {
+   "input": "監督が戦間期に起きた。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:に"
+  },
+  "W3B5-NITIME-R-021": {
+   "input": "兄が明治時代に起きた。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:に"
+  },
+  "W3B5-NITIME-R-022": {
+   "input": "弟が奈良時代に起きた。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:に"
+  },
+  "W3B5-NIRECIP-A-028": {
+   "input": "兄が先生に旅行した。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "FRAME_GENERATED_DOES_NOT_LICENSE:に",
+   "entry_before": "abstain",
+   "w3b2_before": "FRAME_GENERATED_DOES_NOT_LICENSE:に",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_SLOT_EVIDENCE_ONLY:に:先生"
+  },
+  "W3B5-NIRECIP-A-029": {
+   "input": "弟が会社に旅行した。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "FRAME_GENERATED_DOES_NOT_LICENSE:に",
+   "entry_before": "abstain",
+   "w3b2_before": "FRAME_GENERATED_DOES_NOT_LICENSE:に",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_TYPE_MISMATCH:P_MOVE:に:GROUP_ORG"
+  },
+  "W3B5-NIRECIP-A-030": {
+   "input": "姉が部長に昇った。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "FRAME_GENERATED_DOES_NOT_LICENSE:に",
+   "entry_before": "abstain",
+   "w3b2_before": "FRAME_GENERATED_DOES_NOT_LICENSE:に",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_SLOT_EVIDENCE_ONLY:に:部長"
+  },
+  "W3B5-NIRECIP-A-031": {
+   "input": "妹が政府に昇った。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "FRAME_GENERATED_DOES_NOT_LICENSE:に",
+   "entry_before": "abstain",
+   "w3b2_before": "FRAME_GENERATED_DOES_NOT_LICENSE:に",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_TYPE_MISMATCH:P_MOVE:に:GROUP_ORG"
+  },
+  "W3B5-NIRECIP-A-032": {
+   "input": "先生が母に旅行した。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "FRAME_GENERATED_DOES_NOT_LICENSE:に",
+   "entry_before": "abstain",
+   "w3b2_before": "FRAME_GENERATED_DOES_NOT_LICENSE:に",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_SLOT_EVIDENCE_ONLY:に:母"
+  },
+  "W3B5-NIRECIP-A-033": {
+   "input": "店員が協会に昇った。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "FRAME_GENERATED_DOES_NOT_LICENSE:に",
+   "entry_before": "abstain",
+   "w3b2_before": "FRAME_GENERATED_DOES_NOT_LICENSE:に",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_TYPE_MISMATCH:P_MOVE:に:GROUP_ORG"
+  },
+  "W3B5-NIRECIP-A-039": {
+   "input": "兄が山田に催促した。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_MULTIPLE:に:山田",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_MULTIPLE:に:山田",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_SLOT_EVIDENCE_ONLY:に:山田"
+  },
+  "W3B5-NIRECIP-A-040": {
+   "input": "弟が本社に抗議した。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_MULTIPLE:に:本社",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_MULTIPLE:に:本社",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_SLOT_EVIDENCE_ONLY:に:本社"
+  },
+  "W3B5-NIRECIP-A-041": {
+   "input": "姉が本社に請求した。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_MULTIPLE:に:本社",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_MULTIPLE:に:本社",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_SLOT_EVIDENCE_ONLY:に:本社"
+  },
+  "W3B5-NIRECIP-A-042": {
+   "input": "妹が山田に申告した。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_MULTIPLE:に:山田",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_MULTIPLE:に:山田",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_SLOT_EVIDENCE_ONLY:に:山田"
+  },
+  "W3B5-NIGOAL-A-020": {
+   "input": "先生が本社に旅行した。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_MULTIPLE:に:本社",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_MULTIPLE:に:本社",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_SLOT_EVIDENCE_ONLY:に:本社"
+  },
+  "W3B5-NIGOAL-A-021": {
+   "input": "店員が左に昇った。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_MULTIPLE:に:左",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_MULTIPLE:に:左",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_SLOT_EVIDENCE_ONLY:に:左"
+  },
+  "W3B5-NIGOAL-A-022": {
+   "input": "係員が山田に旅行した。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_MULTIPLE:に:山田",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_MULTIPLE:に:山田",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_SLOT_EVIDENCE_ONLY:に:山田"
+  },
+  "W3B5-NIGOAL-A-029": {
+   "input": "弟が本社に赴いた。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_MULTIPLE:に:本社",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_MULTIPLE:に:本社",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_SLOT_EVIDENCE_ONLY:に:本社"
+  },
+  "W3B5-NIGOAL-A-035": {
+   "input": "兄が駅に催促した。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "FRAME_GENERATED_DOES_NOT_LICENSE:に",
+   "entry_before": "abstain",
+   "w3b2_before": "FRAME_GENERATED_DOES_NOT_LICENSE:に",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_TYPE_MISMATCH:P_COMMUNICATE:に:PLACE"
+  },
+  "W3B5-NIGOAL-A-036": {
+   "input": "弟が空港に申告した。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "FRAME_GENERATED_DOES_NOT_LICENSE:に",
+   "entry_before": "abstain",
+   "w3b2_before": "FRAME_GENERATED_DOES_NOT_LICENSE:に",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_TYPE_MISMATCH:P_COMMUNICATE:に:PLACE"
+  },
+  "W3B5-NIGOAL-A-037": {
+   "input": "姉が港に請求した。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "FRAME_GENERATED_DOES_NOT_LICENSE:に",
+   "entry_before": "abstain",
+   "w3b2_before": "FRAME_GENERATED_DOES_NOT_LICENSE:に",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_TYPE_MISMATCH:P_COMMUNICATE:に:PLACE"
+  },
+  "W3B5-NIGOAL-A-038": {
+   "input": "妹が町に披露した。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "FRAME_GENERATED_DOES_NOT_LICENSE:に",
+   "entry_before": "abstain",
+   "w3b2_before": "FRAME_GENERATED_DOES_NOT_LICENSE:に",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_TYPE_MISMATCH:P_COMMUNICATE:に:PLACE"
+  },
+  "W3B5-NIGOAL-A-039": {
+   "input": "先生が村に抗議した。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "FRAME_GENERATED_DOES_NOT_LICENSE:に",
+   "entry_before": "abstain",
+   "w3b2_before": "FRAME_GENERATED_DOES_NOT_LICENSE:に",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_TYPE_MISMATCH:P_COMMUNICATE:に:PLACE"
+  },
+  "W3B5-NIGOAL-A-040": {
+   "input": "店員が島に要望した。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "FRAME_GENERATED_DOES_NOT_LICENSE:に",
+   "entry_before": "abstain",
+   "w3b2_before": "FRAME_GENERATED_DOES_NOT_LICENSE:に",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_TYPE_MISMATCH:P_COMMUNICATE:に:PLACE"
+  },
+  "W3B5-NITIME-A-001": {
+   "input": "兄が七夕に遅刻した。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_SLOT_EVIDENCE_ONLY:に:七夕",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_SLOT_EVIDENCE_ONLY:に:七夕",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:に"
+  },
+  "W3B5-NITIME-A-002": {
+   "input": "弟が節分に起きた。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_SLOT_EVIDENCE_ONLY:に:節分",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_SLOT_EVIDENCE_ONLY:に:節分",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:に"
+  },
+  "W3B5-NITIME-A-003": {
+   "input": "姉が日没に遅刻した。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_SLOT_EVIDENCE_ONLY:に:日没",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_SLOT_EVIDENCE_ONLY:に:日没",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:に"
+  },
+  "W3B5-NITIME-A-004": {
+   "input": "妹が室町時代に起きた。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_SLOT_EVIDENCE_ONLY:に:室町時代",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_SLOT_EVIDENCE_ONLY:に:室町時代",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:に"
+  },
+  "W3B5-NITIME-A-005": {
+   "input": "先生が幕末に遅刻した。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_SLOT_EVIDENCE_ONLY:に:幕末",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_SLOT_EVIDENCE_ONLY:に:幕末",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:に"
+  },
+  "W3B5-NITIME-A-006": {
+   "input": "店員が平安時代に起きた。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_SLOT_EVIDENCE_ONLY:に:平安時代",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_SLOT_EVIDENCE_ONLY:に:平安時代",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:に"
+  },
+  "W3B5-NITIME-A-007": {
+   "input": "係員が弥生時代に遅刻した。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_SLOT_EVIDENCE_ONLY:に:弥生時代",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_SLOT_EVIDENCE_ONLY:に:弥生時代",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:に"
+  },
+  "W3B5-NITIME-A-008": {
+   "input": "社員が鎌倉時代に起きた。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_SLOT_EVIDENCE_ONLY:に:鎌倉時代",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_SLOT_EVIDENCE_ONLY:に:鎌倉時代",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:に"
+  },
+  "W3B5-NITIME-A-009": {
+   "input": "姉が全盛期に起きた。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_DIRECT_VIA_GENERATED:に:全盛期",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_DIRECT_VIA_GENERATED:に:全盛期",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:に"
+  },
+  "W3B5-NITIME-A-010": {
+   "input": "妹が収穫期に遅刻した。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_DIRECT_VIA_GENERATED:に:収穫期",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_DIRECT_VIA_GENERATED:に:収穫期",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:に"
+  },
+  "W3B5-NITIME-A-011": {
+   "input": "先生が旧暦に起きた。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_DIRECT_VIA_GENERATED:に:旧暦",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_DIRECT_VIA_GENERATED:に:旧暦",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:に"
+  },
+  "W3B5-NITIME-A-012": {
+   "input": "店員が昭和初期に遅刻した。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_DIRECT_VIA_GENERATED:に:昭和初期",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_DIRECT_VIA_GENERATED:に:昭和初期",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:に"
+  },
+  "W3B5-NITIME-A-013": {
+   "input": "係員が立春に起きた。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_DIRECT_VIA_GENERATED:に:立春",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_DIRECT_VIA_GENERATED:に:立春",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:に"
+  },
+  "W3B5-NITIME-A-014": {
+   "input": "社員が繁忙期に遅刻した。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_DIRECT_VIA_GENERATED:に:繁忙期",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_DIRECT_VIA_GENERATED:に:繁忙期",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:に"
+  },
+  "W3B5-NITIME-A-015": {
+   "input": "学生が飛鳥時代に起きた。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_DIRECT_VIA_GENERATED:に:飛鳥時代",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_DIRECT_VIA_GENERATED:に:飛鳥時代",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:に"
+  },
+  "W3B5-NITIME-A-028": {
+   "input": "弟が満月に参拝した。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "FRAME_GENERATED_DOES_NOT_LICENSE:に",
+   "entry_before": "abstain",
+   "w3b2_before": "FRAME_GENERATED_DOES_NOT_LICENSE:に",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:に"
+  },
+  "W3B5-NITIME-A-029": {
+   "input": "姉が命日に会った。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "FRAME_GENERATED_DOES_NOT_LICENSE:に",
+   "entry_before": "abstain",
+   "w3b2_before": "FRAME_GENERATED_DOES_NOT_LICENSE:に",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:に"
+  },
+  "W3B5-NITIME-A-030": {
+   "input": "妹が祭日に勝った。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "FRAME_GENERATED_DOES_NOT_LICENSE:に",
+   "entry_before": "abstain",
+   "w3b2_before": "FRAME_GENERATED_DOES_NOT_LICENSE:に",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:に"
+  },
+  "W3B5-NITIME-A-031": {
+   "input": "先生が乾季に逆らった。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "FRAME_GENERATED_DOES_NOT_LICENSE:に",
+   "entry_before": "abstain",
+   "w3b2_before": "FRAME_GENERATED_DOES_NOT_LICENSE:に",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:に"
+  },
+  "W3B5-NITIME-A-032": {
+   "input": "店員が朔日に挑んだ。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "FRAME_GENERATED_DOES_NOT_LICENSE:に",
+   "entry_before": "abstain",
+   "w3b2_before": "FRAME_GENERATED_DOES_NOT_LICENSE:に",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:に"
+  },
+  "W3B5-NITIME-A-033": {
+   "input": "社員が大正に反抗した。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "FRAME_GENERATED_DOES_NOT_LICENSE:に",
+   "entry_before": "abstain",
+   "w3b2_before": "FRAME_GENERATED_DOES_NOT_LICENSE:に",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:に"
+  },
+  "W3B5-NITIME-A-034": {
+   "input": "学生が命日に感心した。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "FRAME_GENERATED_DOES_NOT_LICENSE:に",
+   "entry_before": "abstain",
+   "w3b2_before": "FRAME_GENERATED_DOES_NOT_LICENSE:に",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_EMOTION:に"
+  },
+  "W3B5-NITIME-A-035": {
+   "input": "職員が祭日に共感した。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "FRAME_GENERATED_DOES_NOT_LICENSE:に",
+   "entry_before": "abstain",
+   "w3b2_before": "FRAME_GENERATED_DOES_NOT_LICENSE:に",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_EMOTION:に"
+  },
+  "W3B5-NITIME-A-036": {
+   "input": "選手が満月に戸惑った。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "FRAME_GENERATED_DOES_NOT_LICENSE:に",
+   "entry_before": "abstain",
+   "w3b2_before": "FRAME_GENERATED_DOES_NOT_LICENSE:に",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_EMOTION:に"
+  },
+  "W3B5-NITIME-A-037": {
+   "input": "監督が朔日に書き込んだ。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "FRAME_GENERATED_DOES_NOT_LICENSE:に",
+   "entry_before": "abstain",
+   "w3b2_before": "FRAME_GENERATED_DOES_NOT_LICENSE:に",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_CREATE:に"
+  },
+  "W3B5-NITIME-A-038": {
+   "input": "兄が命日に記載した。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "FRAME_GENERATED_DOES_NOT_LICENSE:に",
+   "entry_before": "abstain",
+   "w3b2_before": "FRAME_GENERATED_DOES_NOT_LICENSE:に",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_CREATE:に"
+  },
+  "W3B5-NITIME-A-049": {
+   "input": "兄が東京に遅刻した。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_MULTIPLE:に:東京",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_MULTIPLE:に:東京",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:に"
+  },
+  "W3B5-NITIME-A-050": {
+   "input": "弟が左に起きた。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_SLOT_EVIDENCE_ONLY:に:左",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_SLOT_EVIDENCE_ONLY:に:左",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:に"
+  },
+  "W3B5-NITIME-A-051": {
+   "input": "姉が石畳に遅刻した。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_SLOT_EVIDENCE_ONLY:に:石畳",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_SLOT_EVIDENCE_ONLY:に:石畳",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:に"
+  },
+  "W3B5-NIRECIP-R-040": {
+   "input": "先生が警察に抗議した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_MULTIPLE:に:警察"
+  },
+  "W3B5-NIRECIP-R-042": {
+   "input": "係員が警察に要望した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_MULTIPLE:に:警察"
+  },
+  "W3B5-NIRECIP-R-043": {
+   "input": "社員が警察に申告した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_MULTIPLE:に:警察"
+  },
+  "W3B5-NIRECIP-R-044": {
+   "input": "学生が顧客に請求した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_MULTIPLE:に:顧客"
+  },
+  "W3B5-NIRECIP-R-045": {
+   "input": "職員が顧客に宣伝した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_MULTIPLE:に:顧客"
+  },
+  "W3B5-NIRECIP-R-046": {
+   "input": "選手が家族に伝授した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_MULTIPLE:に:家族"
+  },
+  "W3B5-NIRECIP-A-057": {
+   "input": "監督が相手に申告した。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_MULTIPLE:に:相手",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_MULTIPLE:に:相手",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_SLOT_EVIDENCE_ONLY:に:相手"
+  },
+  "W3B5-NIGOAL-R-034": {
+   "input": "姉が神社に参拝した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:に"
+  },
+  "W3B5-NIGOAL-R-035": {
+   "input": "先生が船を港に係留した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:に"
+  },
+  "W3B5-NIGOAL-R-036": {
+   "input": "店員が教会に参列した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:に"
+  },
+  "W3B5-NIGOAL-R-037": {
+   "input": "係員が苗を畑に植え込んだ。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:に"
+  },
+  "W3B5-NIGOAL-R-038": {
+   "input": "学生が機械を倉庫に格納した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:に"
+  },
+  "W3B5-NIGOAL-R-039": {
+   "input": "選手が船を港に配備した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:に"
+  },
+  "W3B5-NIGOAL-R-040": {
+   "input": "監督が書類を倉庫に保存した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:に"
+  },
+  "W3B5-NIGOAL-R-041": {
+   "input": "兄が部品を港に積み込んだ。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:に"
+  },
+  "W3B5-NIGOAL-A-049": {
+   "input": "兄が北海道にも旅行した。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_FOCUS_PARTICLE_AFTER_CASE",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_FOCUS_PARTICLE_AFTER_CASE:に:も",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_TYPE_MISMATCH:P_MOVE:に:PLACE"
+  },
+  "W3B5-NIGOAL-A-050": {
+   "input": "弟が沖縄にさえ旅行した。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_FOCUS_PARTICLE_AFTER_CASE",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_FOCUS_PARTICLE_AFTER_CASE:に:さえ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_SLOT_EVIDENCE_ONLY:に:沖縄"
+  },
+  "W3B5-NIRECIP-A-058": {
+   "input": "姉が部長にも催促した。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_FOCUS_PARTICLE_AFTER_CASE",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_FOCUS_PARTICLE_AFTER_CASE:に:も",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_SLOT_EVIDENCE_ONLY:に:部長"
+  },
+  "W3B5-NIRECIP-A-059": {
+   "input": "妹が課長にばかり申告した。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_FOCUS_PARTICLE_AFTER_CASE",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_FOCUS_PARTICLE_AFTER_CASE:に:ばかり",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_SLOT_EVIDENCE_ONLY:に:課長"
+  },
+  "W3B5-NITIME-A-052": {
+   "input": "先生が満月にも遅刻した。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_FOCUS_PARTICLE_AFTER_CASE",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_FOCUS_PARTICLE_AFTER_CASE:に:も",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:に"
+  },
+  "W3B5-NIRECIP-A-060": {
+   "input": "先生が課長に申告したい。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_PREDICATE_TAIL_UNINTERPRETED",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_REREAD_ABSTAINS:UNDETERMINED_MODALITY:たい",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_SLOT_EVIDENCE_ONLY:に:課長"
+  },
+  "W3B5-NIRECIP-A-061": {
+   "input": "店員が部長につたえた。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_PREDICATE_POSSIBLY_DERIVED",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-ア行",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_SLOT_EVIDENCE_ONLY:に:部長"
+  },
+  "W3B5-NIRECIP-A-062": {
+   "input": "係員が先輩におしえた。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_PREDICATE_POSSIBLY_DERIVED",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-ア行",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_SLOT_EVIDENCE_ONLY:に:先輩"
+  },
+  "W3B5-NIRECIP-A-063": {
+   "input": "社員が課長にひろめた。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_PREDICATE_POSSIBLY_DERIVED",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-マ行",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_SLOT_EVIDENCE_ONLY:に:課長"
+  },
+  "W3B5-NIRECIP-A-064": {
+   "input": "学生が後輩に例えた。",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_PREDICATE_POSSIBLY_DERIVED",
+   "entry_before": "abstain",
+   "w3b2_before": "PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-ア行",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_SLOT_EVIDENCE_ONLY:に:後輩"
+  },
+  "W3B5-NIGOAL-R-904": {
+   "input": "先生が舞台に登壇した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_SLOT_EVIDENCE_ONLY:に:舞台"
+  },
+  "W3B5-NIGOAL-R-905": {
+   "input": "店員が校舎に掲示した。",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "entry_before": "read",
+   "w3b2_before": "READ",
+   "observed_entry": "abstain",
+   "observed_w3b2": "PLACEMENT_TYPE_MISMATCH:P_COMMUNICATE:に:PLACE"
+  }
+ }
+}

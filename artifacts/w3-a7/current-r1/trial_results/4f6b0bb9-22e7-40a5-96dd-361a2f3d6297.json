@@ -1,0 +1,312 @@
+{
+  "claim_rates_by_particle": {
+    "から": {
+      "denominator": 40,
+      "pass": true,
+      "v2_claimed": 5,
+      "v2_rate": 0.125,
+      "v3_claimed": 6,
+      "v3_rate": 0.15
+    },
+    "が": {
+      "denominator": 40,
+      "pass": true,
+      "v2_claimed": 18,
+      "v2_rate": 0.45,
+      "v3_claimed": 39,
+      "v3_rate": 0.975
+    },
+    "で": {
+      "denominator": 40,
+      "pass": true,
+      "v2_claimed": 13,
+      "v2_rate": 0.325,
+      "v3_claimed": 22,
+      "v3_rate": 0.55
+    },
+    "と": {
+      "denominator": 40,
+      "pass": true,
+      "v2_claimed": 5,
+      "v2_rate": 0.125,
+      "v3_claimed": 8,
+      "v3_rate": 0.2
+    },
+    "に": {
+      "denominator": 40,
+      "pass": true,
+      "v2_claimed": 26,
+      "v2_rate": 0.65,
+      "v3_claimed": 34,
+      "v3_rate": 0.85
+    },
+    "へ": {
+      "denominator": 40,
+      "pass": true,
+      "v2_claimed": 4,
+      "v2_rate": 0.1,
+      "v3_claimed": 10,
+      "v3_rate": 0.25
+    },
+    "まで": {
+      "denominator": 40,
+      "pass": true,
+      "v2_claimed": 0,
+      "v2_rate": 0.0,
+      "v3_claimed": 1,
+      "v3_rate": 0.025
+    },
+    "より": {
+      "denominator": 40,
+      "pass": true,
+      "v2_claimed": 0,
+      "v2_rate": 0.0,
+      "v3_claimed": 0,
+      "v3_rate": 0.0
+    },
+    "を": {
+      "denominator": 40,
+      "pass": false,
+      "v2_claimed": 30,
+      "v2_rate": 0.75,
+      "v3_claimed": 28,
+      "v3_rate": 0.7
+    }
+  },
+  "evidence_types": {
+    "trial_response": "generated",
+    "v2_claims": "generated",
+    "visual_labels": "testimony"
+  },
+  "global_integrity_errors": {
+    "collected_foreign_rows": 0,
+    "raw_foreign_items": 0
+  },
+  "invalid_reasons": {},
+  "labels_complete": false,
+  "parser_counts": {
+    "abstained": 1,
+    "answered": 40,
+    "dup_dropped": 0,
+    "foreign": 0,
+    "frame_dup_particle": 0,
+    "invalid": 0,
+    "missing": 0,
+    "role_dup": 0
+  },
+  "reason": "particle_claim_rate_below_v2",
+  "state_counts": {
+    "abstain_null": 1,
+    "invalid_or_duplicate": 0,
+    "missing": 0,
+    "response": 39
+  },
+  "status": "FAIL",
+  "trial_words": 40,
+  "v2_obvious_errors": 4,
+  "v2_unclassified_claims": 0,
+  "v3_obvious_errors": 1,
+  "v3_unclassified_claims": 93,
+  "word_statuses": [
+    {
+      "reason": null,
+      "state": "response",
+      "word": "印字する"
+    },
+    {
+      "reason": null,
+      "state": "response",
+      "word": "つぼむ"
+    },
+    {
+      "reason": null,
+      "state": "response",
+      "word": "新設する"
+    },
+    {
+      "reason": null,
+      "state": "response",
+      "word": "総括する"
+    },
+    {
+      "reason": null,
+      "state": "response",
+      "word": "持ち回る"
+    },
+    {
+      "reason": null,
+      "state": "response",
+      "word": "吸引する"
+    },
+    {
+      "reason": null,
+      "state": "response",
+      "word": "任せる"
+    },
+    {
+      "reason": null,
+      "state": "response",
+      "word": "遣う"
+    },
+    {
+      "reason": null,
+      "state": "response",
+      "word": "入店する"
+    },
+    {
+      "reason": null,
+      "state": "response",
+      "word": "締結する"
+    },
+    {
+      "reason": null,
+      "state": "response",
+      "word": "申し伝える"
+    },
+    {
+      "reason": null,
+      "state": "response",
+      "word": "売れる"
+    },
+    {
+      "reason": null,
+      "state": "response",
+      "word": "始末する"
+    },
+    {
+      "reason": null,
+      "state": "response",
+      "word": "アップロードする"
+    },
+    {
+      "reason": null,
+      "state": "response",
+      "word": "怒る"
+    },
+    {
+      "reason": null,
+      "state": "response",
+      "word": "取り合わせる"
+    },
+    {
+      "reason": null,
+      "state": "response",
+      "word": "抜け替わる"
+    },
+    {
+      "reason": null,
+      "state": "response",
+      "word": "繰り上がる"
+    },
+    {
+      "reason": null,
+      "state": "response",
+      "word": "打ち寄せる"
+    },
+    {
+      "reason": null,
+      "state": "response",
+      "word": "否決する"
+    },
+    {
+      "reason": null,
+      "state": "response",
+      "word": "出版する"
+    },
+    {
+      "reason": null,
+      "state": "response",
+      "word": "忍び込む"
+    },
+    {
+      "reason": null,
+      "state": "abstain_null",
+      "word": "ふくす"
+    },
+    {
+      "reason": null,
+      "state": "response",
+      "word": "内線する"
+    },
+    {
+      "reason": null,
+      "state": "response",
+      "word": "見くらべる"
+    },
+    {
+      "reason": null,
+      "state": "response",
+      "word": "解任する"
+    },
+    {
+      "reason": null,
+      "state": "response",
+      "word": "寄進する"
+    },
+    {
+      "reason": null,
+      "state": "response",
+      "word": "看る"
+    },
+    {
+      "reason": null,
+      "state": "response",
+      "word": "なめす"
+    },
+    {
+      "reason": null,
+      "state": "response",
+      "word": "差し出せる"
+    },
+    {
+      "reason": null,
+      "state": "response",
+      "word": "挽く"
+    },
+    {
+      "reason": null,
+      "state": "response",
+      "word": "細分する"
+    },
+    {
+      "reason": null,
+      "state": "response",
+      "word": "相殺する"
+    },
+    {
+      "reason": null,
+      "state": "response",
+      "word": "感じ取れる"
+    },
+    {
+      "reason": null,
+      "state": "response",
+      "word": "捻る"
+    },
+    {
+      "reason": null,
+      "state": "response",
+      "word": "沿う"
+    },
+    {
+      "reason": null,
+      "state": "response",
+      "word": "きざむ"
+    },
+    {
+      "reason": null,
+      "state": "response",
+      "word": "かざす"
+    },
+    {
+      "reason": null,
+      "state": "response",
+      "word": "浸かる"
+    },
+    {
+      "reason": null,
+      "state": "response",
+      "word": "同封する"
+    }
+  ]
+}

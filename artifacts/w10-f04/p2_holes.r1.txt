@@ -1,0 +1,2 @@
+rows=138 hole_expected=62 hole_got=62 wrong_hole=0 missed=0 types_outside_table=0 empty_types=0 status_mismatch=0 expected_types_differ_from_oracle=0
+status_counts {'HOLES_FOUND': 62, 'NOT_A_FILLER_CAUSE': 52, 'HOLE_NOT_PROBE_READABLE': 14, 'LANG_NOT_SUPPORTED': 4, 'READ': 3, 'NO_PLACEMENT': 3}

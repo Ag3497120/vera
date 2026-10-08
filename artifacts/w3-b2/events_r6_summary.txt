@@ -1,0 +1,38 @@
+event_cross_sentences: sentences_read=69 typed=0 arms=171 AGREE=35 AGREE_ALL_CANDIDATES=0 DISAGREE=0 NOT_CHECKED=136 fillers_with_a_determiner=0 {"ESTIMATED_GENERATED": 4, "ESTIMATED_NEAR": 7, "MULTIPLE": 9, "ROLE_NOT_IN_TABLE": 78, "UNKNOWN": 3, "UNPLACED": 35}
+new_data: sentences_read=68 typed=56 arms=177 AGREE=103 AGREE_ALL_CANDIDATES=0 DISAGREE=0 NOT_CHECKED=74 fillers_with_a_determiner=1 {"ESTIMATED_NEAR": 1, "ROLE_NOT_IN_TABLE": 73}
+rest: sentences_read=198 typed=0 arms=479 AGREE=155 AGREE_ALL_CANDIDATES=2 DISAGREE=4 NOT_CHECKED=318 fillers_with_a_determiner=0 {"ESTIMATED_GENERATED": 15, "ESTIMATED_NEAR": 7, "MULTIPLE": 10, "ROLE_NOT_IN_TABLE": 256, "UNKNOWN": 4, "UNPLACED": 26}
+w3b2_data: sentences_read=113 typed=112 arms=264 AGREE=168 AGREE_ALL_CANDIDATES=26 DISAGREE=0 NOT_CHECKED=70 fillers_with_a_determiner=34 {"ESTIMATED_NEAR": 2, "ROLE_NOT_IN_TABLE": 59, "UNKNOWN": 9}
+AGREE_ALL_CANDIDATES total=28
+AGREE_ALL_CANDIDATES	rest	10月5日、市長が広場で式典を開いた。	agent	['市長']	expected=['ANIMAL', 'GROUP_ORG', 'PERSON']	observed=['GROUP_ORG', 'PERSON']
+AGREE_ALL_CANDIDATES	rest	市長が弁護士を顧問に任命した。	agent	['市長']	expected=['ANIMAL', 'GROUP_ORG', 'PERSON']	observed=['GROUP_ORG', 'PERSON']
+AGREE_ALL_CANDIDATES	w3b2_data	家族が庭へ走った。	agent	['家族']	expected=['ANIMAL', 'GROUP_ORG', 'PERSON']	observed=['GROUP_ORG', 'PERSON']
+AGREE_ALL_CANDIDATES	w3b2_data	家族が森へ歩いた。	agent	['家族']	expected=['ANIMAL', 'GROUP_ORG', 'PERSON']	observed=['GROUP_ORG', 'PERSON']
+AGREE_ALL_CANDIDATES	w3b2_data	家族が島へ飛んだ。	agent	['家族']	expected=['ANIMAL', 'GROUP_ORG', 'PERSON']	observed=['GROUP_ORG', 'PERSON']
+AGREE_ALL_CANDIDATES	w3b2_data	家族が村へ歩いた。	agent	['家族']	expected=['ANIMAL', 'GROUP_ORG', 'PERSON']	observed=['GROUP_ORG', 'PERSON']
+AGREE_ALL_CANDIDATES	w3b2_data	家族が港へ走った。	agent	['家族']	expected=['ANIMAL', 'GROUP_ORG', 'PERSON']	observed=['GROUP_ORG', 'PERSON']
+AGREE_ALL_CANDIDATES	w3b2_data	家族が橋へ歩いた。	agent	['家族']	expected=['ANIMAL', 'GROUP_ORG', 'PERSON']	observed=['GROUP_ORG', 'PERSON']
+AGREE_ALL_CANDIDATES	w3b2_data	家族が寺へ歩いた。	agent	['家族']	expected=['ANIMAL', 'GROUP_ORG', 'PERSON']	observed=['GROUP_ORG', 'PERSON']
+AGREE_ALL_CANDIDATES	w3b2_data	家族が玄関へ走った。	agent	['家族']	expected=['ANIMAL', 'GROUP_ORG', 'PERSON']	observed=['GROUP_ORG', 'PERSON']
+AGREE_ALL_CANDIDATES	w3b2_data	家族が山へ歩いた。	agent	['家族']	expected=['ANIMAL', 'GROUP_ORG', 'PERSON']	observed=['GROUP_ORG', 'PERSON']
+AGREE_ALL_CANDIDATES	w3b2_data	家族が湖へ歩いた。	agent	['家族']	expected=['ANIMAL', 'GROUP_ORG', 'PERSON']	observed=['GROUP_ORG', 'PERSON']
+AGREE_ALL_CANDIDATES	w3b2_data	警察が屋上へ走った。	agent	['警察']	expected=['ANIMAL', 'GROUP_ORG', 'PERSON']	observed=['GROUP_ORG', 'PERSON']
+AGREE_ALL_CANDIDATES	w3b2_data	警察が倉庫へ走った。	agent	['警察']	expected=['ANIMAL', 'GROUP_ORG', 'PERSON']	observed=['GROUP_ORG', 'PERSON']
+AGREE_ALL_CANDIDATES	w3b2_data	警察が港へ歩いた。	agent	['警察']	expected=['ANIMAL', 'GROUP_ORG', 'PERSON']	observed=['GROUP_ORG', 'PERSON']
+AGREE_ALL_CANDIDATES	w3b2_data	警察が畑へ走った。	agent	['警察']	expected=['ANIMAL', 'GROUP_ORG', 'PERSON']	observed=['GROUP_ORG', 'PERSON']
+AGREE_ALL_CANDIDATES	w3b2_data	警察が森へ歩いた。	agent	['警察']	expected=['ANIMAL', 'GROUP_ORG', 'PERSON']	observed=['GROUP_ORG', 'PERSON']
+AGREE_ALL_CANDIDATES	w3b2_data	警察が湖へ歩いた。	agent	['警察']	expected=['ANIMAL', 'GROUP_ORG', 'PERSON']	observed=['GROUP_ORG', 'PERSON']
+AGREE_ALL_CANDIDATES	w3b2_data	警察が山へ歩いた。	agent	['警察']	expected=['ANIMAL', 'GROUP_ORG', 'PERSON']	observed=['GROUP_ORG', 'PERSON']
+AGREE_ALL_CANDIDATES	w3b2_data	警察が病院へ走った。	agent	['警察']	expected=['ANIMAL', 'GROUP_ORG', 'PERSON']	observed=['GROUP_ORG', 'PERSON']
+AGREE_ALL_CANDIDATES	w3b2_data	家族が校庭で走った。	agent	['家族']	expected=['ANIMAL', 'GROUP_ORG', 'PERSON']	observed=['GROUP_ORG', 'PERSON']
+AGREE_ALL_CANDIDATES	w3b2_data	家族が神社で歩いた。	agent	['家族']	expected=['ANIMAL', 'GROUP_ORG', 'PERSON']	observed=['GROUP_ORG', 'PERSON']
+AGREE_ALL_CANDIDATES	w3b2_data	警察が国道で走った。	agent	['警察']	expected=['ANIMAL', 'GROUP_ORG', 'PERSON']	observed=['GROUP_ORG', 'PERSON']
+AGREE_ALL_CANDIDATES	w3b2_data	警察が歩道で歩いた。	agent	['警察']	expected=['ANIMAL', 'GROUP_ORG', 'PERSON']	observed=['GROUP_ORG', 'PERSON']
+AGREE_ALL_CANDIDATES	w3b2_data	家族がホテルで名乗った。	agent	['家族']	expected=['ANIMAL', 'GROUP_ORG', 'PERSON']	observed=['GROUP_ORG', 'PERSON']
+AGREE_ALL_CANDIDATES	w3b2_data	警察がアパートで断った。	agent	['警察']	expected=['ANIMAL', 'GROUP_ORG', 'PERSON']	observed=['GROUP_ORG', 'PERSON']
+AGREE_ALL_CANDIDATES	w3b2_data	家族が川で歩いた。	agent	['家族']	expected=['ANIMAL', 'GROUP_ORG', 'PERSON']	observed=['GROUP_ORG', 'PERSON']
+AGREE_ALL_CANDIDATES	w3b2_data	警察が湖で走った。	agent	['警察']	expected=['ANIMAL', 'GROUP_ORG', 'PERSON']	observed=['GROUP_ORG', 'PERSON']
+DISAGREE total=4
+DISAGREE	rest	先月、兄が会社で書類を作った。	place	['会社']	expected=['PLACE']	observed=['GROUP_ORG']	typed_by_the_entry=False
+DISAGREE	rest	国が研究者を委員に任命した。	agent	['国']	expected=['ANIMAL', 'GROUP_ORG', 'PERSON']	observed=['PLACE']	typed_by_the_entry=False
+DISAGREE	rest	翻訳者が原稿を英語に訳した。	agent	['翻訳者']	expected=['ANIMAL', 'GROUP_ORG', 'PERSON']	observed=['EVENT_ACT']	typed_by_the_entry=False
+DISAGREE	rest	店が看板を赤に塗り替えた。	agent	['店']	expected=['ANIMAL', 'GROUP_ORG', 'PERSON']	observed=['PLACE']	typed_by_the_entry=False

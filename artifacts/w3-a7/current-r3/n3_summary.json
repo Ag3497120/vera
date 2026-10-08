@@ -1,0 +1,165 @@
+{
+  "required_terms": 15,
+  "lone_direct_place": 0,
+  "not_lone_direct_place": 15,
+  "rows": [
+    {
+      "word": "右",
+      "state": "MULTIPLE",
+      "origin": "direct",
+      "top": [
+        "PLACE",
+        "RELATIVE_POSITION"
+      ],
+      "lone_direct_place": false
+    },
+    {
+      "word": "左",
+      "state": "MULTIPLE",
+      "origin": "direct",
+      "top": [
+        "PLACE",
+        "RELATIVE_POSITION",
+        "TIME"
+      ],
+      "lone_direct_place": false
+    },
+    {
+      "word": "前",
+      "state": "MULTIPLE",
+      "origin": "direct",
+      "top": [
+        "PLACE",
+        "RELATIVE_POSITION",
+        "TIME"
+      ],
+      "lone_direct_place": false
+    },
+    {
+      "word": "後ろ",
+      "state": "MULTIPLE",
+      "origin": "direct",
+      "top": [
+        "PLACE",
+        "RELATIVE_POSITION"
+      ],
+      "lone_direct_place": false
+    },
+    {
+      "word": "上",
+      "state": "MULTIPLE",
+      "origin": "direct",
+      "top": [
+        "PLACE",
+        "RELATIVE_POSITION"
+      ],
+      "lone_direct_place": false
+    },
+    {
+      "word": "下",
+      "state": "MULTIPLE",
+      "origin": "direct",
+      "top": [
+        "PLACE",
+        "RELATIVE_POSITION",
+        "TIME"
+      ],
+      "lone_direct_place": false
+    },
+    {
+      "word": "中",
+      "state": "MULTIPLE",
+      "origin": "direct",
+      "top": [
+        "PLACE",
+        "RELATIVE_POSITION"
+      ],
+      "lone_direct_place": false
+    },
+    {
+      "word": "外",
+      "state": "MULTIPLE",
+      "origin": "direct",
+      "top": [
+        "PLACE",
+        "RELATIVE_POSITION",
+        "TIME"
+      ],
+      "lone_direct_place": false
+    },
+    {
+      "word": "隣",
+      "state": "MULTIPLE",
+      "origin": "direct",
+      "top": [
+        "PLACE",
+        "RELATIVE_POSITION"
+      ],
+      "lone_direct_place": false
+    },
+    {
+      "word": "向こう",
+      "state": "MULTIPLE",
+      "origin": "direct",
+      "top": [
+        "PLACE",
+        "RELATIVE_POSITION"
+      ],
+      "lone_direct_place": false
+    },
+    {
+      "word": "手前",
+      "state": "MULTIPLE",
+      "origin": "direct",
+      "top": [
+        "PLACE",
+        "RELATIVE_POSITION",
+        "TIME"
+      ],
+      "lone_direct_place": false
+    },
+    {
+      "word": "奥",
+      "state": "MULTIPLE",
+      "origin": "direct",
+      "top": [
+        "PLACE",
+        "QUANTITY",
+        "RELATIVE_POSITION"
+      ],
+      "lone_direct_place": false
+    },
+    {
+      "word": "横",
+      "state": "MULTIPLE",
+      "origin": "direct",
+      "top": [
+        "PLACE",
+        "RELATIVE_POSITION"
+      ],
+      "lone_direct_place": false
+    },
+    {
+      "word": "側",
+      "state": "MULTIPLE",
+      "origin": "direct",
+      "top": [
+        "PERSON",
+        "PLACE",
+        "RELATIVE_POSITION"
+      ],
+      "lone_direct_place": false
+    },
+    {
+      "word": "先",
+      "state": "MULTIPLE",
+      "origin": "direct",
+      "top": [
+        "PLACE",
+        "RELATIVE_POSITION",
+        "TIME"
+      ],
+      "lone_direct_place": false
+    }
+  ]
+}

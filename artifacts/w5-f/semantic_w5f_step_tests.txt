@@ -1,0 +1,150 @@
+.F.FFFFFFFF                                                              [100%]
+=================================== FAILURES ===================================
+E   AssertionError: Traceback (most recent call last):
+        File "/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/verantyx/semantic_read.py", line 262, in _read_ja
+          clauses, relations, meta = _map_ja(text, toks, view, R)
+                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File "/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/verantyx/semantic_read.py", line 711, in _map_ja
+          out.append(_clause_ja(c, text, toks, R, typed=typed)); meta.append({'rule': c.rule, 'span': [c.predicate_span.start, c.predicate_span.end]})
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File "/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/verantyx/semantic_read.py", line 855, in _clause_ja
+          mapped = _recipient_ja(c, r, R)
+                   ^^^^^^^^^^^^^^^^^^^^^^
+        File "/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/verantyx/semantic_read.py", line 941, in _recipient_ja
+          _no('RECIPIENT_TYPE_UNDETERMINED:' + pred)
+        File "/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/verantyx/semantic_read.py", line 147, in _no
+          raise _Abstain(kind, reason)
+      verantyx.semantic_read._Abstain: RECIPIENT_TYPE_UNDETERMINED:押す
+      
+      During handling of the above exception, another exception occurred:
+      
+      Traceback (most recent call last):
+        File "/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/tests/reading_soundness/w5f_gates_check.py", line 104, in <module>
+          raise SystemExit(main())
+                           ^^^^^^
+        File "/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/tests/reading_soundness/w5f_gates_check.py", line 92, in main
+          summary = evaluate(args.mode, rows)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^
+        File "/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/tests/reading_soundness/w5f_gates_check.py", line 51, in evaluate
+          out = SR.read(row["text"], "ja", placement=fakes.MapQuery(mapping))
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File "/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/verantyx/semantic_read.py", line 1268, in read
+          return _read_ja(text, query) if chosen == 'ja' else _read_en(text, query)
+                 ^^^^^^^^^^^^^^^^^^^^^
+        File "/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/verantyx/semantic_reader.py", line 3290, in wrapped
+          out = base(text, placement)
+                ^^^^^^^^^^^^^^^^^^^^^
+        File "/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/verantyx/semantic_read.py", line 265, in _read_ja
+          out = _typed_reread_ja(text, toks, view, R, placement, stop, unsupported_report)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File "/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/verantyx/semantic_read.py", line 364, in _typed_reread_ja
+          typed2, why2 = R.typed_plan_u_w3b2_ja(clause, toks, query, voice=voice, written=written, strip=strip, role_map=_ROLE_TABLE)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File "/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/verantyx/semantic_reader.py", line 2921, in gated
+          focus = typed_quoted_focus_after_case_ja(toks, clause) or typed_relational_filler_ja(toks, typed)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File "/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/verantyx/semantic_reader.py", line 2890, in typed_quoted_focus_after_case_ja
+          if inside[opening][1][0].feature.pos1 != '補助記号' or inside[opening][1][0].feature.pos2 != '括弧開':
+             ~~~~~~^^^^^^^^^
+      IndexError: list index out of range
+      
+    assert 1 == 0
+     +  where 1 = CompletedProcess(args=['/Users/motonisihikoudai/vera-wiring/env/bin/python', '/Users/motonisihikoudai/Projects/vera-im...記号\' or inside[opening][1][0].feature.pos2 != \'括弧開\':\n       ~~~~~~^^^^^^^^^\nIndexError: list index out of range\n').returncode
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/tests/test_semantic_read_w5f.py:60: AssertionError: Traceback (most recent call last):
+E   AssertionError: Traceback (most recent call last):
+        File "/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/verantyx/semantic_read.py", line 262, in _read_ja
+          clauses, relations, meta = _map_ja(text, toks, view, R)
+                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File "/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/verantyx/semantic_read.py", line 711, in _map_ja
+          out.append(_clause_ja(c, text, toks, R, typed=typed)); meta.append({'rule': c.rule, 'span': [c.predicate_span.start, c.predicate_span.end]})
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File "/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/verantyx/semantic_read.py", line 855, in _clause_ja
+          mapped = _recipient_ja(c, r, R)
+                   ^^^^^^^^^^^^^^^^^^^^^^
+        File "/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/verantyx/semantic_read.py", line 941, in _recipient_ja
+          _no('RECIPIENT_TYPE_UNDETERMINED:' + pred)
+        File "/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/verantyx/semantic_read.py", line 147, in _no
+          raise _Abstain(kind, reason)
+      verantyx.semantic_read._Abstain: RECIPIENT_TYPE_UNDETERMINED:押す
+      
+      During handling of the above exception, another exception occurred:
+      
+      Traceback (most recent call last):
+        File "/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/tests/reading_soundness/w5f_gates_check.py", line 104, in <module>
+          raise SystemExit(main())
+                           ^^^^^^
+        File "/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/tests/reading_soundness/w5f_gates_check.py", line 92, in main
+          summary = evaluate(args.mode, rows)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^
+        File "/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/tests/reading_soundness/w5f_gates_check.py", line 57, in evaluate
+          out = SR.read(row["text"], "ja")
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File "/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/verantyx/semantic_read.py", line 1268, in read
+          return _read_ja(text, query) if chosen == 'ja' else _read_en(text, query)
+                 ^^^^^^^^^^^^^^^^^^^^^
+        File "/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/verantyx/semantic_reader.py", line 3290, in wrapped
+          out = base(text, placement)
+                ^^^^^^^^^^^^^^^^^^^^^
+        File "/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/verantyx/semantic_read.py", line 265, in _read_ja
+          out = _typed_reread_ja(text, toks, view, R, placement, stop, unsupported_report)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File "/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/verantyx/semantic_read.py", line 364, in _typed_reread_ja
+          typed2, why2 = R.typed_plan_u_w3b2_ja(clause, toks, query, voice=voice, written=written, strip=strip, role_map=_ROLE_TABLE)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File "/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/verantyx/semantic_reader.py", line 2921, in gated
+          focus = typed_quoted_focus_after_case_ja(toks, clause) or typed_relational_filler_ja(toks, typed)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File "/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/verantyx/semantic_reader.py", line 2890, in typed_quoted_focus_after_case_ja
+          if inside[opening][1][0].feature.pos1 != '補助記号' or inside[opening][1][0].feature.pos2 != '括弧開':
+             ~~~~~~^^^^^^^^^
+      IndexError: list index out of range
+      
+    assert 1 == 0
+     +  where 1 = CompletedProcess(args=['/Users/motonisihikoudai/vera-wiring/env/bin/python', '/Users/motonisihikoudai/Projects/vera-im...記号\' or inside[opening][1][0].feature.pos2 != \'括弧開\':\n       ~~~~~~^^^^^^^^^\nIndexError: list index out of range\n').returncode
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/tests/test_semantic_read_w5f.py:60: AssertionError: Traceback (most recent call last):
+E   verantyx.semantic_read._Abstain: RECIPIENT_TYPE_UNDETERMINED:押す
+
+During handling of the above exception, another exception occurred:
+E   IndexError: list index out of range
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/verantyx/semantic_reader.py:2890: IndexError: list index out of range
+E   verantyx.semantic_read._Abstain: RECIPIENT_TYPE_UNDETERMINED:押す
+
+During handling of the above exception, another exception occurred:
+E   IndexError: list index out of range
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/verantyx/semantic_reader.py:2890: IndexError: list index out of range
+E   verantyx.semantic_read._Abstain: RECIPIENT_TYPE_UNDETERMINED:押す
+
+During handling of the above exception, another exception occurred:
+E   IndexError: list index out of range
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/verantyx/semantic_reader.py:2890: IndexError: list index out of range
+E   verantyx.semantic_read._Abstain: RECIPIENT_TYPE_UNDETERMINED:押す
+
+During handling of the above exception, another exception occurred:
+E   IndexError: list index out of range
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/verantyx/semantic_reader.py:2890: IndexError: list index out of range
+E   verantyx.semantic_read._Abstain: NO_SUPPORTED_CLAUSE
+
+During handling of the above exception, another exception occurred:
+E   IndexError: list index out of range
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/verantyx/semantic_reader.py:2890: IndexError: list index out of range
+E   IndexError: list index out of range
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/verantyx/semantic_reader.py:2890: IndexError: list index out of range
+E   AssertionError: ('typed_quoted_focus_after_case_ja', {'PLACEMENT_FOCUS_PARTICLE_AFTER_CASE:%s:%s', 'PLACEMENT_QUOTED_PARTICLE_AFTER_CASE:%s'})
+    assert {'PLACEMENT_F...', '括弧閉', ...} <= {'COORDINATIO...'entity', ...}
+      
+      Extra items in the left set:
+      'PLACEMENT_FOCUS_PARTICLE_AFTER_CASE:%s:%s'
+      'PLACEMENT_QUOTED_PARTICLE_AFTER_CASE:%s'
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/tests/test_semantic_read_w5f.py:155: AssertionError: ('typed_quoted_focus_after_case_ja', {'PLACEMENT_FOCUS_PARTICLE_AFTER_CASE:%s:%s', 'PLACEMENT_QUOTED_PARTICLE_AFTER_CASE:%s'})
+=========================== short test summary info ============================
+FAILED tests/test_semantic_read_w5f.py::test_registered_reading_data_has_no_misread[fake]
+FAILED tests/test_semantic_read_w5f.py::test_registered_reading_data_has_no_misread_with_r8
+FAILED tests/test_semantic_read_w5f.py::test_quoted_focus_cases_abstain_with_the_registered_reason[fake-A054]
+FAILED tests/test_semantic_read_w5f.py::test_quoted_focus_cases_abstain_with_the_registered_reason[fake-A059]
+FAILED tests/test_semantic_read_w5f.py::test_quoted_focus_cases_abstain_with_the_registered_reason[r8-A054]
+FAILED tests/test_semantic_read_w5f.py::test_quoted_focus_cases_abstain_with_the_registered_reason[r8-A059]
+FAILED tests/test_semantic_read_w5f.py::test_relational_filler_boundary_with_the_place_de_rows_temporarily_restored
+FAILED tests/test_semantic_read_w5f.py::test_the_new_focus_gate_leaves_only_the_registered_morphological_misses
+FAILED tests/test_semantic_read_w5f.py::test_new_gate_functions_use_only_registered_pos_particle_and_reason_literals
+9 failed, 2 passed in 1.28s
+exit=1

@@ -1,0 +1,39 @@
+{
+ "4242": {
+  "baseline": {
+   "reachable": 291,
+   "correct": 17,
+   "wrong": 248,
+   "refusal": 35,
+   "asked": 300,
+   "junk_top1": 57
+  },
+  "gated": {
+   "reachable": 288,
+   "correct": 18,
+   "wrong": 239,
+   "refusal": 43,
+   "asked": 300,
+   "junk_top1": 29
+  }
+ },
+ "42": {
+  "baseline": {
+   "reachable": 293,
+   "correct": 13,
+   "wrong": 231,
+   "refusal": 56,
+   "asked": 300,
+   "junk_top1": 50
+  },
+  "gated": {
+   "reachable": 290,
+   "correct": 14,
+   "wrong": 219,
+   "refusal": 67,
+   "asked": 300,
+   "junk_top1": 24
+  }
+ },
+ "elapsed_s": 38.6
+}

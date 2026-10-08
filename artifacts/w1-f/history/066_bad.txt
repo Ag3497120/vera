@@ -1,0 +1,38 @@
+# commit e48187093addb770477daf25b61d6686b840fe21
+# status FAIL
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 13 items / 12 deselected / 1 selected
+
+tests/attack/test_semantic_names_long_documents.py::test_covering_selects_exact_span_from_a_long_sentence FAILED [100%]
+
+=== FAILURES ===
+____________ test_covering_selects_exact_span_from_a_long_sentence _____________
+
+    def test_covering_selects_exact_span_from_a_long_sentence():
+        prefix = "前置文" * 4000
+        value = "主任研究員ユン"
+        start = len(prefix)
+        tagged = [
+            tok(prefix, "名詞", "一般", 0, start),
+            tok("主任", "名詞", "一般", start, start + 2),
+            tok("研究員", "名詞", "一般", start + 2, start + 5),
+            tok("ユン", "名詞", "固有名詞", start + 5, start + len(value)),
+            tok("後置文", "名詞", "一般", start + len(value), start + len(value) + 3),
+        ]
+    
+        cover = tokens_covering(tagged, start, start + len(value))
+    
+        assert cover == tagged[1:4]
+>       assert name_split_in(cover, value) == ("主任研究員", "ユン")
+E       AssertionError: assert None == ('\u4e3b\u4efb\u7814\u7a76\u54e1', '\u30e6\u30f3')
+E        +  where None = name_split_in([('\u4e3b\u4efb', '\u540d\u8a5e', '\u4e00\u822c', 12000, 12002), ('\u7814\u7a76\u54e1', '\u540d\u8a5e', '\u4e00\u822c', 12002, 12005), ('\u30e6\u30f3', '\u540d\u8a5e', '\u56fa\u6709\u540d\u8a5e', 12005, 12007)], '\u4e3b\u4efb\u7814\u7a76\u54e1\u30e6\u30f3')
+
+tests/attack/test_semantic_names_long_documents.py:31: AssertionError
+=== short test summary info ===
+FAILED tests/attack/test_semantic_names_long_documents.py::test_covering_selects_exact_span_from_a_long_sentence - AssertionError: assert None == ('\u4e3b\u4efb\u7814\u7a76\u54e1', '\u30e6\u30f3')
+ +  where None = name_split_in([('\u4e3b\u4efb', '\u540d\u8a5e', '\u4e00\u822c', 12000, 12002), ('\u7814\u7a76\u54e1', '\u540d\u8a5e', '\u4e00\u822c', 12002, 12005), ('\u30e6\u30f3', '\u540d\u8a5e', '\u56fa\u6709\u540d\u8a5e', 12005, 12007)], '\u4e3b\u4efb\u7814\u7a76\u54e1\u30e6\u30f3')
+=== 1 failed, 12 deselected ===

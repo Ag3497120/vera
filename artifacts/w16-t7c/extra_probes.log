@@ -1,0 +1,59 @@
+/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t7c-S/verantyx/ledger_events.py
+markers ok
+fw quoted + %20: n=0 漏れ 冪等
+b64 after colon: n=1 漏れ無し 冪等
+b64 after colon nospace: n=1 漏れ無し 冪等
+Bearer %20 fw: n=0 漏れ 冪等
+fw Bearer U+3000 + pct body: n=0 漏れ 冪等
+marker adjacent fw: n=1 漏れ無し 冪等
+split in two tokens (K721): n=0 漏れ 冪等
+U+2010 dash (known limit): n=0 漏れ 冪等
+U+200B zero width (known limit): n=0 漏れ 冪等
+hex (known limit): n=0 漏れ 冪等
+b64 of fullwidth (compose, limit): n=0 漏れ 冪等
+pct of b64 (compose): n=1 漏れ無し 冪等
+R4 k=5 seps=5 prefix=id_: n=1 漏れ無し 冪等
+R4 k=5 seps=5 prefix=https://h.example/f/: n=1 漏れ無し 冪等
+R4 k=5 seps=5 prefix=x-: n=1 漏れ無し 冪等
+R4 k=20 seps=20 prefix=id_: n=1 漏れ無し 冪等
+R4 k=20 seps=20 prefix=https://h.example/f/: n=1 漏れ無し 冪等
+R4 k=20 seps=20 prefix=x-: n=1 漏れ無し 冪等
+R4 k=40 seps=40 prefix=id_: n=1 漏れ無し 冪等
+R4 k=40 seps=40 prefix=https://h.example/f/: n=1 漏れ無し 冪等
+R4 k=40 seps=40 prefix=x-: n=1 漏れ無し 冪等
+R5 prefix=a: n=1 漏れ無し 冪等
+R5 prefix=ab: n=1 漏れ無し 冪等
+R5 prefix=abc: n=1 漏れ無し 冪等
+R5 prefix=abcd: n=1 漏れ無し 冪等
+R5 prefix=abcde: n=1 漏れ無し 冪等
+R5 suffix=xyz (no =): n=1 漏れ無し 冪等
+R5 suffix=x (no =): n=1 漏れ無し 冪等
+R5 both Q..zz: n=1 漏れ無し 冪等
+id_abc + b64: n=1 漏れ無し 冪等
+x-ab + b64: n=1 漏れ無し 冪等
+a_ x20 + JSON b64: n=1 漏れ無し 冪等
+a/ x20 + JSON b64: n=1 漏れ無し 冪等
+id_ + JSON b64 + xyz: n=1 漏れ無し 冪等
+URL path 17 segments + JSON b64: n=1 漏れ無し 冪等
+b64 + _tail: n=1 漏れ無し 冪等
+R7 seps 20 20
+R7 D + -v2: n=1 漏れ無し 冪等
+R7 D + _tail: n=1 漏れ無し 冪等
+R7 D + _x: n=1 漏れ無し 冪等
+R7 D + -: n=1 漏れ無し 冪等
+R7 DU + /tail: n=1 漏れ無し 冪等
+R7 DU + +v2: n=1 漏れ無し 冪等
+R7 DU + /x: n=1 漏れ無し 冪等
+R7 DU + +: n=1 漏れ無し 冪等
+R7 id_ + D + _v2: n=1 漏れ無し 冪等
+R7 x- + D + -y: n=1 漏れ無し 冪等
+R7 name- + D + -backup: n=1 漏れ無し 冪等
+R7 control: key at end, D + -v2: n=1 漏れ無し 冪等
+R7 b64(SK) + -v2 (no +/ in body): n=1 漏れ無し 冪等
+optional prefix=abcde: n=1 漏れ無し 冪等
+optional prefix=abcdefgh: n=1 漏れ無し 冪等
+optional prefix=ab-cd: n=1 漏れ無し 冪等
+optional prefix=ab_cdef: n=1 漏れ無し 冪等
+two b64 runs in 1 token (key in 2nd): n=1 漏れ無し 冪等
+two b64 runs in 1 token (. sep, key in 2nd): n=1 漏れ無し 冪等
+b64 folded every 8 chars (known limit): n=0 漏れ 冪等

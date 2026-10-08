@@ -1,0 +1,53 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 10 items / 9 deselected / 1 selected
+
+tests/attack/test_semantic_unknown_differential.py::test_source_word_counts_toward_projection_budget FAILED [100%]
+
+=== FAILURES ===
+_______________ test_source_word_counts_toward_projection_budget _______________
+
+    def test_source_word_counts_toward_projection_budget() -> None:
+        view = _view({"s": "alpha beta"})
+        # Two distinct source words exceed a budget of one.
+>       _assert_matches_reference(view, "unseen", 1)
+
+tests/attack/test_semantic_unknown_differential.py:141: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+view = _View(sources={'s': 'alpha beta'}, clauses=()), term = 'unseen'
+budget = 1
+
+    def _assert_matches_reference(view: _View, term: object, budget: object) -> None:
+        expected_status, expected_reason = _naive_early_result(view, term, budget)
+        if expected_status == "TYPE_ERROR":
+            with pytest.raises(TypeError, match="term must be a string"):
+                unknown_candidates(view, term, budget)  # type: ignore[arg-type]
+            return
+        report = unknown_candidates(view, term, budget)  # type: ignore[arg-type]
+        assert report.term == term
+        if expected_status == "BEYOND_REFERENCE":
+            assert report.status in {
+                "CANDIDATES", "ABSTAIN_BARE_SUFFIX_SPLIT", "ABSTAIN_SPLIT_TIED",
+                "ABSTAIN_UNIT_NOT_A_WORD",
+            }
+            for candidate in report.candidates:
+                assert candidate.constructed is True
+                assert candidate.evidence is False
+            return
+>       assert report.status == expected_status
+E       AssertionError: assert 'CANDIDATES' == 'BUDGET_REFUSAL'
+E         
+E         - BUDGET_REFUSAL
+E         + CANDIDATES
+
+tests/attack/test_semantic_unknown_differential.py:108: AssertionError
+=== short test summary info ===
+FAILED tests/attack/test_semantic_unknown_differential.py::test_source_word_counts_toward_projection_budget - AssertionError: assert 'CANDIDATES' == 'BUDGET_REFUSAL'
+  
+  - BUDGET_REFUSAL
+  + CANDIDATES
+=== 1 failed, 9 deselected ===

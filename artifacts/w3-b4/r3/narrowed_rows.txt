@@ -1,0 +1,1 @@
+rows_changed=109 {"P_ACT": {"frozen_read": 22, "frozen_abstain": 10}, "P_CREATE": {"frozen_read": 28, "frozen_abstain": 10}, "P_EMOTION": {"frozen_read": 26, "frozen_abstain": 13}} declared_exceptions=3 appended=10

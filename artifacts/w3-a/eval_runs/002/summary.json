@@ -1,0 +1,1938 @@
+{
+ "builder_sha256": "35eefb2f1363467131aba4d370cf0d29483d8be7a6f1cf46f3f708d1a5cc7b45",
+ "by_decisive_stage": {
+  "-": {
+   "unknown": 89
+  },
+  "est:context": {
+   "correct": 26,
+   "wrong": 3
+  },
+  "est:context+morphology:head": {
+   "correct": 8
+  },
+  "est:context+morphology:head+morphology:kin": {
+   "correct": 2
+  },
+  "est:context+morphology:kin": {
+   "correct": 6
+  },
+  "est:morphology:head": {
+   "correct": 13,
+   "wrong": 4
+  },
+  "est:morphology:head+morphology:kin": {
+   "correct": 11
+  },
+  "est:morphology:kin": {
+   "correct": 7
+  },
+  "notation": {
+   "correct": 5
+  }
+ },
+ "by_gold_type": {
+  "ABSTRACT": {
+   "correct": 2,
+   "unknown": 8
+  },
+  "ANIMAL": {
+   "correct": 3,
+   "unknown": 7
+  },
+  "ARTIFACT": {
+   "correct": 3,
+   "unknown": 4,
+   "wrong": 3
+  },
+  "BODY_PART": {
+   "correct": 9,
+   "unknown": 1
+  },
+  "EVENT_ACT": {
+   "correct": 4,
+   "unknown": 4,
+   "wrong": 1
+  },
+  "EVENT_ACT,GROUP_ORG": {
+   "correct": 1
+  },
+  "GROUP_ORG": {
+   "correct": 4,
+   "unknown": 5,
+   "wrong": 1
+  },
+  "IDENTIFIER": {
+   "correct": 5
+  },
+  "INFO_LANGUAGE": {
+   "correct": 1,
+   "unknown": 7,
+   "wrong": 1
+  },
+  "INFO_LANGUAGE,WORK": {
+   "correct": 1
+  },
+  "NATURAL_PHENOMENON": {
+   "unknown": 10
+  },
+  "PERSON": {
+   "correct": 6,
+   "unknown": 9,
+   "wrong": 1
+  },
+  "PLACE": {
+   "correct": 5,
+   "unknown": 7
+  },
+  "PLACE,GROUP_ORG": {
+   "unknown": 1
+  },
+  "PLANT": {
+   "correct": 7,
+   "unknown": 3
+  },
+  "QUANTITY": {
+   "correct": 6,
+   "unknown": 4
+  },
+  "STATE_PROPERTY": {
+   "correct": 3,
+   "unknown": 7
+  },
+  "SUBSTANCE_FOOD": {
+   "correct": 9,
+   "unknown": 1
+  },
+  "TIME": {
+   "correct": 3,
+   "unknown": 7
+  },
+  "WORK": {
+   "correct": 6,
+   "unknown": 4
+  }
+ },
+ "by_kind": {
+  "coinage": {
+   "correct": 9,
+   "unknown": 9
+  },
+  "compound": {
+   "correct": 58,
+   "unknown": 71,
+   "wrong": 6
+  },
+  "neologism": {
+   "unknown": 3
+  },
+  "proper": {
+   "correct": 11,
+   "unknown": 6,
+   "wrong": 1
+  }
+ },
+ "coarse_types_sha256": "c55c27c64af0e2b97dcfb3d32c15117d946d4f5075344b47c9abcf66aa01af72",
+ "command": [
+  "l3",
+  "--placement",
+  "/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/run1"
+ ],
+ "config_sha256": "2b77e9157b8bfbb11265dc44926a3755030d26d3cc8df34ef534cdeb0d028145",
+ "content_sha256": "317b1949dac365e26c741d504ac02c32fb88d0e8073d0d6463d972fd898c38ba",
+ "correct": 78,
+ "correct_rate": 0.4483,
+ "data": "frozen",
+ "errors": [
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "PERSON"
+   ],
+   "id": "U001",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "夜勤専従看護助手",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "PERSON"
+   ],
+   "id": "U002",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "臨時雇い清掃員",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "PERSON"
+   ],
+   "id": "U005",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "路上弾き語り歌手",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "PERSON"
+   ],
+   "id": "U006",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "元消防団副団長",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "PERSON"
+   ],
+   "id": "U007",
+   "kind": "neologism",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "ぼっち飯愛好家",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "PERSON"
+   ],
+   "id": "U008",
+   "kind": "neologism",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "推し活ガチ勢",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "PERSON"
+   ],
+   "id": "U009",
+   "kind": "neologism",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "深夜帰宅組",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "GROUP_ORG"
+   ],
+   "id": "U012",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "地域防災ボランティア団",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "GROUP_ORG"
+   ],
+   "id": "U013",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "個人投資家クラブ",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "wrong",
+   "decided_by": "est:morphology:head",
+   "gold": [
+    "GROUP_ORG"
+   ],
+   "id": "U015",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [
+    "head:愛好会@R"
+   ],
+   "origin": "estimated",
+   "state": "DECIDED",
+   "term": "草野球愛好会",
+   "top": [
+    "EVENT_ACT"
+   ],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "GROUP_ORG"
+   ],
+   "id": "U016",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "県立高校同窓会",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "GROUP_ORG"
+   ],
+   "id": "U017",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "新興学習塾チェーン",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "GROUP_ORG"
+   ],
+   "id": "U019",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "学生自治会連盟",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "ANIMAL"
+   ],
+   "id": "U022",
+   "kind": "coinage",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "ミドリヒメトカゲ",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "ANIMAL"
+   ],
+   "id": "U023",
+   "kind": "coinage",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "ヤマトオオカワウソ",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "ANIMAL"
+   ],
+   "id": "U024",
+   "kind": "coinage",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "シロハラコウモリ",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "ANIMAL"
+   ],
+   "id": "U025",
+   "kind": "coinage",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "黒胸ヒヨドリ",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "ANIMAL"
+   ],
+   "id": "U026",
+   "kind": "coinage",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "縞尾大蜥蜴",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "ANIMAL"
+   ],
+   "id": "U029",
+   "kind": "coinage",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "ポチコロ",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "ANIMAL"
+   ],
+   "id": "U031",
+   "kind": "coinage",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "大耳フクロネズミ",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "PLANT"
+   ],
+   "id": "U035",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "青葉楓の新品種",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "PLANT"
+   ],
+   "id": "U039",
+   "kind": "coinage",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "シロツルレンゲ",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "PLANT"
+   ],
+   "id": "U041",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "赤実のニワトコ",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "wrong",
+   "decided_by": "est:context",
+   "gold": [
+    "ARTIFACT"
+   ],
+   "id": "U042",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [
+    "context:codex:narrative,codex:pro"
+   ],
+   "origin": "estimated",
+   "state": "DECIDED",
+   "term": "電動式爪切り",
+   "top": [
+    "SUBSTANCE_FOOD"
+   ],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "ARTIFACT"
+   ],
+   "id": "U044",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "全自動卵焼き機",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "ARTIFACT"
+   ],
+   "id": "U045",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "小型除雪車",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "ARTIFACT"
+   ],
+   "id": "U047",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "夜行バス",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "wrong",
+   "decided_by": "est:context",
+   "gold": [
+    "ARTIFACT"
+   ],
+   "id": "U048",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [
+    "context:codex:conversation,codex:figurative_commonsense,codex:pro"
+   ],
+   "origin": "estimated",
+   "state": "DECIDED",
+   "term": "高圧洗浄機",
+   "top": [
+    "SUBSTANCE_FOOD"
+   ],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "ARTIFACT"
+   ],
+   "id": "U049",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "無人配送ロボット",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "wrong",
+   "decided_by": "est:context",
+   "gold": [
+    "ARTIFACT"
+   ],
+   "id": "U051",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [
+    "context:codex:narrative,codex:pro"
+   ],
+   "origin": "estimated",
+   "state": "DECIDED",
+   "term": "木製折り畳みベンチ",
+   "top": [
+    "SUBSTANCE_FOOD"
+   ],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "SUBSTANCE_FOOD"
+   ],
+   "id": "U060",
+   "kind": "coinage",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "ヌルポ",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "PLACE"
+   ],
+   "id": "U064",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "地下駐輪場",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "PLACE"
+   ],
+   "id": "U066",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "山間の無人駅",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "PLACE"
+   ],
+   "id": "U067",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "高台の展望台",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "PLACE"
+   ],
+   "id": "U068",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "臨海工業団地",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "PLACE",
+    "GROUP_ORG"
+   ],
+   "id": "U070",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "古民家カフェ",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "PLACE"
+   ],
+   "id": "U072",
+   "kind": "proper",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "鷹ノ巣山",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "PLACE"
+   ],
+   "id": "U073",
+   "kind": "proper",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "夕霧川",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "PLACE"
+   ],
+   "id": "U074",
+   "kind": "proper",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "ヴァルドリア王国",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "TIME"
+   ],
+   "id": "U075",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "満月の翌朝",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "TIME"
+   ],
+   "id": "U076",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "年度末の繁忙期",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "TIME"
+   ],
+   "id": "U079",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "三連休最終日",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "TIME"
+   ],
+   "id": "U080",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "文化祭前夜",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "TIME"
+   ],
+   "id": "U082",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "週明けの午後",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "TIME"
+   ],
+   "id": "U083",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "夏至前後",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "TIME"
+   ],
+   "id": "U084",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "十年後の春",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "QUANTITY"
+   ],
+   "id": "U087",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "一人当たり消費額",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "QUANTITY"
+   ],
+   "id": "U088",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "合計走行距離",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "QUANTITY"
+   ],
+   "id": "U089",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "最大積載量",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "QUANTITY"
+   ],
+   "id": "U093",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "累計販売台数",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "EVENT_ACT"
+   ],
+   "id": "U096",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "夜間緊急点検",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "EVENT_ACT"
+   ],
+   "id": "U097",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "花火大会中止騒動",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "EVENT_ACT"
+   ],
+   "id": "U100",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "路上ライブ",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "EVENT_ACT"
+   ],
+   "id": "U101",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "深夜清掃作業",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "wrong",
+   "decided_by": "est:morphology:head",
+   "gold": [
+    "EVENT_ACT"
+   ],
+   "id": "U103",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [
+    "head:歓迎会@R"
+   ],
+   "origin": "estimated",
+   "state": "DECIDED",
+   "term": "新入生歓迎会",
+   "top": [
+    "PLACE"
+   ],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "STATE_PROPERTY"
+   ],
+   "id": "U105",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "季節性うつ",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "STATE_PROPERTY"
+   ],
+   "id": "U106",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "睡眠不足気味",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "STATE_PROPERTY"
+   ],
+   "id": "U107",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "重度の肩こり",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "STATE_PROPERTY"
+   ],
+   "id": "U108",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "軽度の貧血状態",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "STATE_PROPERTY"
+   ],
+   "id": "U110",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "極度の緊張",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "STATE_PROPERTY"
+   ],
+   "id": "U111",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "食欲不振",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "STATE_PROPERTY"
+   ],
+   "id": "U112",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "倦怠感",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "ABSTRACT"
+   ],
+   "id": "U115",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "相互扶助の精神",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "ABSTRACT"
+   ],
+   "id": "U116",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "自己責任論",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "ABSTRACT"
+   ],
+   "id": "U117",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "新自由主義的改革",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "ABSTRACT"
+   ],
+   "id": "U118",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "生存戦略論",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "ABSTRACT"
+   ],
+   "id": "U119",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "循環型経済",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "ABSTRACT"
+   ],
+   "id": "U120",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "脱成長主義",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "ABSTRACT"
+   ],
+   "id": "U121",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "地域包括ケア構想",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "ABSTRACT"
+   ],
+   "id": "U123",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "比較文化論",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "INFO_LANGUAGE"
+   ],
+   "id": "U125",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "取扱説明書の付録",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "INFO_LANGUAGE"
+   ],
+   "id": "U126",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "注意喚起メール",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "INFO_LANGUAGE"
+   ],
+   "id": "U127",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "社内通達文",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "INFO_LANGUAGE"
+   ],
+   "id": "U128",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "利用規約改定案",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "INFO_LANGUAGE"
+   ],
+   "id": "U129",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "英文契約書草案",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "INFO_LANGUAGE"
+   ],
+   "id": "U130",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "古代文字解読表",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "wrong",
+   "decided_by": "est:morphology:head",
+   "gold": [
+    "INFO_LANGUAGE"
+   ],
+   "id": "U132",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [
+    "head:規約@R"
+   ],
+   "origin": "estimated",
+   "state": "DECIDED",
+   "term": "暗号化通信規約",
+   "top": [
+    "ABSTRACT"
+   ],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "INFO_LANGUAGE"
+   ],
+   "id": "U134",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "校正用の用語集",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "BODY_PART"
+   ],
+   "id": "U136",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "前頭葉皮質",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "NATURAL_PHENOMENON"
+   ],
+   "id": "U145",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "線状降水帯",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "NATURAL_PHENOMENON"
+   ],
+   "id": "U146",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "局地的豪雨",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "NATURAL_PHENOMENON"
+   ],
+   "id": "U147",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "冬型の気圧配置",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "NATURAL_PHENOMENON"
+   ],
+   "id": "U148",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "突発的な落雷",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "NATURAL_PHENOMENON"
+   ],
+   "id": "U149",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "海霧",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "NATURAL_PHENOMENON"
+   ],
+   "id": "U150",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "黄砂の飛来",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "NATURAL_PHENOMENON"
+   ],
+   "id": "U151",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "太陽フレア",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "NATURAL_PHENOMENON"
+   ],
+   "id": "U152",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "皆既月食の再来",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "NATURAL_PHENOMENON"
+   ],
+   "id": "U153",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "磁気嵐",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "NATURAL_PHENOMENON"
+   ],
+   "id": "U154",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "局所的な竜巻",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "WORK"
+   ],
+   "id": "U156",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "幻の鳥居殺人事件",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "WORK"
+   ],
+   "id": "U158",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "続・海辺の手紙",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "WORK"
+   ],
+   "id": "U160",
+   "kind": "compound",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "風の谷の記録",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "WORK"
+   ],
+   "id": "U162",
+   "kind": "proper",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "ドラゴンファング英雄伝",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "wrong",
+   "decided_by": "est:morphology:head",
+   "gold": [
+    "PERSON"
+   ],
+   "id": "U165",
+   "kind": "proper",
+   "leak_direct": false,
+   "neighbors": [
+    "head:ミサキ@R"
+   ],
+   "origin": "estimated",
+   "state": "DECIDED",
+   "term": "霧島ミサキ",
+   "top": [
+    "ABSTRACT"
+   ],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "PERSON"
+   ],
+   "id": "U167",
+   "kind": "proper",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "柊木ゆうな",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "unknown",
+   "decided_by": "-",
+   "gold": [
+    "PERSON"
+   ],
+   "id": "U169",
+   "kind": "proper",
+   "leak_direct": false,
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "久世雫",
+   "top": [],
+   "unmarked": false
+  },
+  {
+   "cls": "returned_type",
+   "decided_by": "est:morphology:kin",
+   "gold": [],
+   "id": "U180",
+   "kind": "coinage",
+   "leak_direct": false,
+   "neighbors": [
+    "kin:ペリ@R",
+    "kin:ペリ@R",
+    "kin:ペリ@R",
+    "kin:ペリ@R"
+   ],
+   "origin": "estimated",
+   "state": "DECIDED",
+   "term": "ソペリ",
+   "top": [
+    "PERSON"
+   ],
+   "unmarked": false
+  },
+  {
+   "cls": "returned_type",
+   "decided_by": "est:morphology:head",
+   "gold": [],
+   "id": "U188",
+   "kind": "coinage",
+   "leak_direct": false,
+   "neighbors": [
+    "head:ヴォル@R"
+   ],
+   "origin": "estimated",
+   "state": "DECIDED",
+   "term": "ベヴォル",
+   "top": [
+    "PLACE"
+   ],
+   "unmarked": false
+  },
+  {
+   "cls": "returned_type",
+   "decided_by": "est:morphology:head",
+   "gold": [],
+   "id": "U191",
+   "kind": "coinage",
+   "leak_direct": false,
+   "neighbors": [
+    "head:ヴァ@R"
+   ],
+   "origin": "estimated",
+   "state": "DECIDED",
+   "term": "ムルヴァ",
+   "top": [
+    "INFO_LANGUAGE"
+   ],
+   "unmarked": false
+  },
+  {
+   "cls": "returned_type",
+   "decided_by": "est:morphology:head",
+   "gold": [],
+   "id": "U192",
+   "kind": "coinage",
+   "leak_direct": false,
+   "neighbors": [
+    "head:ペカ@R"
+   ],
+   "origin": "estimated",
+   "state": "DECIDED",
+   "term": "トゥペカ",
+   "top": [
+    "PERSON"
+   ],
+   "unmarked": false
+  },
+  {
+   "cls": "returned_type",
+   "decided_by": "est:morphology:head",
+   "gold": [],
+   "id": "U197",
+   "kind": "coinage",
+   "leak_direct": false,
+   "neighbors": [
+    "head:ヌポ@R"
+   ],
+   "origin": "estimated",
+   "state": "DECIDED",
+   "term": "ガルヌポ",
+   "top": [
+    "PLACE"
+   ],
+   "unmarked": false
+  },
+  {
+   "cls": "returned_type",
+   "decided_by": "est:morphology:kin",
+   "gold": [],
+   "id": "U201",
+   "kind": "coinage",
+   "leak_direct": false,
+   "neighbors": [
+    "kin:ヴィナ@R",
+    "kin:ヴィナ@R",
+    "kin:ヴィナ@R",
+    "kin:ヴィナ@R"
+   ],
+   "origin": "estimated",
+   "state": "DECIDED",
+   "term": "ロヴィナ",
+   "top": [
+    "PERSON"
+   ],
+   "unmarked": false
+  },
+  {
+   "cls": "returned_type",
+   "decided_by": "est:morphology:head",
+   "gold": [],
+   "id": "U202",
+   "kind": "coinage",
+   "leak_direct": false,
+   "neighbors": [
+    "head:ルゼ@R"
+   ],
+   "origin": "estimated",
+   "state": "DECIDED",
+   "term": "フォルゼ",
+   "top": [
+    "QUANTITY"
+   ],
+   "unmarked": false
+  },
+  {
+   "cls": "returned_type",
+   "decided_by": "est:morphology:head",
+   "gold": [],
+   "id": "U225",
+   "kind": "coinage",
+   "leak_direct": false,
+   "neighbors": [
+    "head:ポン@R"
+   ],
+   "origin": "estimated",
+   "state": "DECIDED",
+   "term": "ドゥルポン",
+   "top": [
+    "ANIMAL"
+   ],
+   "unmarked": false
+  },
+  {
+   "cls": "returned_type",
+   "decided_by": "est:morphology:head",
+   "gold": [],
+   "id": "U228",
+   "kind": "coinage",
+   "leak_direct": false,
+   "neighbors": [
+    "head:ピュラ@R"
+   ],
+   "origin": "estimated",
+   "state": "DECIDED",
+   "term": "ゾピュラ",
+   "top": [
+    "PERSON"
+   ],
+   "unmarked": false
+  },
+  {
+   "cls": "returned_type",
+   "decided_by": "est:morphology:head",
+   "gold": [],
+   "id": "U230",
+   "kind": "coinage",
+   "leak_direct": false,
+   "neighbors": [
+    "head:ジェラ@R"
+   ],
+   "origin": "estimated",
+   "state": "DECIDED",
+   "term": "ミュジェラ",
+   "top": [
+    "GROUP_ORG"
+   ],
+   "unmarked": false
+  },
+  {
+   "cls": "returned_type",
+   "decided_by": "est:morphology:kin",
+   "gold": [],
+   "id": "U231",
+   "kind": "coinage",
+   "leak_direct": false,
+   "neighbors": [
+    "kin:ルポ@R",
+    "kin:ルポ@R",
+    "kin:ルポ@R",
+    "kin:ルポ@R"
+   ],
+   "origin": "estimated",
+   "state": "DECIDED",
+   "term": "ギョルポ",
+   "top": [
+    "PERSON"
+   ],
+   "unmarked": false
+  }
+ ],
+ "leaks_direct_not_notation": [],
+ "pass": {
+  "correct>=0.65": false,
+  "no_leaks": true,
+  "no_unmarked": true,
+  "returned_type<=0.20": true,
+  "wrong<=0.15": true
+ },
+ "placement": "/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/run1",
+ "returned_type_among_unknown": 11,
+ "returned_type_rate": 0.1833,
+ "time_utc": "2026-10-02T21:36:28Z",
+ "typed_n": 174,
+ "unknown_among_typed": 89,
+ "unknown_n": 60,
+ "unmarked_estimates": [],
+ "wrong": 7,
+ "wrong_rate": 0.0402
+}

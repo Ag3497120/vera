@@ -1,0 +1,45 @@
+=== 節の分割 関係節 接続助詞
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "節の分割 関係節 接続助詞",
+  "searched": 676,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 54,
+    "module": 289,
+    "prereg": 68,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}
+=== embedded cross clause relation edge
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "embedded cross clause relation edge",
+  "searched": 676,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 54,
+    "module": 289,
+    "prereg": 68,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}
+=== 連体修飾節 主辞 空いている腕
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "連体修飾節 主辞 空いている腕",
+  "searched": 676,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 54,
+    "module": 289,
+    "prereg": 68,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}

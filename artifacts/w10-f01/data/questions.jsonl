@@ -1,0 +1,120 @@
+{"id": "Q001", "request_kind": "factual", "human_present": false, "question": "誰が地図を渡した？", "truth": {"kind": "ONE", "filler": "太郎", "sentence_ids": ["F01.txt#1:1"]}}
+{"id": "Q002", "request_kind": "factual", "human_present": false, "question": "太郎は何を渡した？", "truth": {"kind": "ONE", "filler": "地図", "sentence_ids": ["F01.txt#1:1"]}}
+{"id": "Q003", "request_kind": "factual", "human_present": false, "question": "花子は何を書いた？", "truth": {"kind": "ONE", "filler": "手紙", "sentence_ids": ["F01.txt#2:1"]}}
+{"id": "Q004", "request_kind": "factual", "human_present": false, "question": "誰が手紙を書いた？", "truth": {"kind": "ONE", "filler": "花子", "sentence_ids": ["F01.txt#2:1"]}}
+{"id": "Q005", "request_kind": "factual", "human_present": false, "question": "誰が新しい家を建てた？", "truth": {"kind": "ONE", "filler": "次郎", "sentence_ids": ["F01.txt#3:1"]}}
+{"id": "Q006", "request_kind": "factual", "human_present": false, "question": "次郎は何を建てた？", "truth": {"kind": "ONE", "filler": "新しい家", "sentence_ids": ["F01.txt#3:1"]}}
+{"id": "Q007", "request_kind": "factual", "human_present": false, "question": "誰が大きな絵を描いた？", "truth": {"kind": "ONE", "filler": "花子", "sentence_ids": ["F01.txt#6:1"]}}
+{"id": "Q008", "request_kind": "factual", "human_present": false, "question": "花子は何を描いた？", "truth": {"kind": "ONE", "filler": "大きな絵", "sentence_ids": ["F01.txt#6:1"]}}
+{"id": "Q009", "request_kind": "factual", "human_present": false, "question": "誰が毎朝パンを食べた？", "truth": {"kind": "ONE", "filler": "次郎", "sentence_ids": ["F01.txt#7:1"]}}
+{"id": "Q010", "request_kind": "factual", "human_present": false, "question": "誰が生徒に本を貸した？", "truth": {"kind": "ONE", "filler": "先生", "sentence_ids": ["F01.txt#4:1"]}}
+{"id": "Q011", "request_kind": "factual", "human_present": false, "question": "誰が電話を取った？", "truth": {"kind": "ONE", "filler": "山田さん", "sentence_ids": ["F02.txt#1:1"]}}
+{"id": "Q012", "request_kind": "factual", "human_present": false, "question": "山田さんは何を取った？", "truth": {"kind": "ONE", "filler": "電話", "sentence_ids": ["F02.txt#1:1"]}}
+{"id": "Q013", "request_kind": "factual", "human_present": false, "question": "誰が鍵を落とした？", "truth": {"kind": "ONE", "filler": "佐藤さん", "sentence_ids": ["F02.txt#2:1"]}}
+{"id": "Q014", "request_kind": "factual", "human_present": false, "question": "佐藤さんは何を落とした？", "truth": {"kind": "ONE", "filler": "鍵", "sentence_ids": ["F02.txt#2:1"]}}
+{"id": "Q015", "request_kind": "factual", "human_present": false, "question": "誰が窓を開けた？", "truth": {"kind": "ONE", "filler": "鈴木さん", "sentence_ids": ["F02.txt#3:1"]}}
+{"id": "Q016", "request_kind": "factual", "human_present": false, "question": "鈴木さんは何を開けた？", "truth": {"kind": "ONE", "filler": "窓", "sentence_ids": ["F02.txt#3:1"]}}
+{"id": "Q017", "request_kind": "factual", "human_present": false, "question": "誰が駅で切符を買った？", "truth": {"kind": "ONE", "filler": "佐藤さん", "sentence_ids": ["F02.txt#5:1"]}}
+{"id": "Q018", "request_kind": "factual", "human_present": false, "question": "佐藤さんは駅で何を買った？", "truth": {"kind": "ONE", "filler": "切符", "sentence_ids": ["F02.txt#5:1"]}}
+{"id": "Q019", "request_kind": "factual", "human_present": false, "question": "誰が果物を洗った？", "truth": {"kind": "ONE", "filler": "鈴木さん", "sentence_ids": ["F02.txt#6:1"]}}
+{"id": "Q020", "request_kind": "factual", "human_present": false, "question": "鈴木さんは何を洗った？", "truth": {"kind": "ONE", "filler": "果物", "sentence_ids": ["F02.txt#6:1"]}}
+{"id": "Q021", "request_kind": "factual", "human_present": false, "question": "誰が庭で骨を掘った？", "truth": {"kind": "ONE", "filler": "犬", "sentence_ids": ["F03.txt#1:1"]}}
+{"id": "Q022", "request_kind": "factual", "human_present": false, "question": "犬は庭で何を掘った？", "truth": {"kind": "ONE", "filler": "骨", "sentence_ids": ["F03.txt#1:1"]}}
+{"id": "Q023", "request_kind": "factual", "human_present": false, "question": "誰が魚を盗んだ？", "truth": {"kind": "ONE", "filler": "猫", "sentence_ids": ["F03.txt#2:1"]}}
+{"id": "Q024", "request_kind": "factual", "human_present": false, "question": "猫は何を盗んだ？", "truth": {"kind": "ONE", "filler": "魚", "sentence_ids": ["F03.txt#2:1"]}}
+{"id": "Q025", "request_kind": "factual", "human_present": false, "question": "誰が空を飛んだ？", "truth": {"kind": "ONE", "filler": "鳥", "sentence_ids": ["F03.txt#3:1"]}}
+{"id": "Q026", "request_kind": "factual", "human_present": false, "question": "誰が草を食べた？", "truth": {"kind": "ONE", "filler": "馬", "sentence_ids": ["F03.txt#4:1"]}}
+{"id": "Q027", "request_kind": "factual", "human_present": false, "question": "馬は何を食べた？", "truth": {"kind": "ONE", "filler": "草", "sentence_ids": ["F03.txt#4:1"]}}
+{"id": "Q028", "request_kind": "factual", "human_present": false, "question": "誰が犬を呼んだ？", "truth": {"kind": "ONE", "filler": "弟", "sentence_ids": ["F03.txt#5:1"]}}
+{"id": "Q029", "request_kind": "factual", "human_present": false, "question": "弟は誰を呼んだ？", "truth": {"kind": "ONE", "filler": "犬", "sentence_ids": ["F03.txt#5:1"]}}
+{"id": "Q030", "request_kind": "factual", "human_present": false, "question": "姉は何を撫でた？", "truth": {"kind": "ONE", "filler": "猫", "sentence_ids": ["F03.txt#6:1"]}}
+{"id": "Q031", "request_kind": "factual", "human_present": false, "question": "誰が患者を診た？", "truth": {"kind": "ONE", "filler": "医者", "sentence_ids": ["F04.txt#1:1"]}}
+{"id": "Q032", "request_kind": "factual", "human_present": false, "question": "医者は誰を診た？", "truth": {"kind": "ONE", "filler": "患者", "sentence_ids": ["F04.txt#1:1"]}}
+{"id": "Q033", "request_kind": "factual", "human_present": false, "question": "誰が荷物を運んだ？", "truth": {"kind": "ONE", "filler": "運転手", "sentence_ids": ["F04.txt#2:1"]}}
+{"id": "Q034", "request_kind": "factual", "human_present": false, "question": "運転手は何を運んだ？", "truth": {"kind": "ONE", "filler": "荷物", "sentence_ids": ["F04.txt#2:1"]}}
+{"id": "Q035", "request_kind": "factual", "human_present": false, "question": "誰が屋根を直した？", "truth": {"kind": "ONE", "filler": "大工", "sentence_ids": ["F04.txt#5:1"]}}
+{"id": "Q036", "request_kind": "factual", "human_present": false, "question": "大工は何を直した？", "truth": {"kind": "ONE", "filler": "屋根", "sentence_ids": ["F04.txt#5:1"]}}
+{"id": "Q037", "request_kind": "factual", "human_present": false, "question": "誰が魚を焼いた？", "truth": {"kind": "ONE", "filler": "料理人", "sentence_ids": ["F04.txt#6:1"]}}
+{"id": "Q038", "request_kind": "factual", "human_present": false, "question": "料理人は何を焼いた？", "truth": {"kind": "ONE", "filler": "魚", "sentence_ids": ["F04.txt#6:1"]}}
+{"id": "Q039", "request_kind": "factual", "human_present": false, "question": "誰が新しい歌を歌った？", "truth": {"kind": "ONE", "filler": "歌手", "sentence_ids": ["F04.txt#7:1"]}}
+{"id": "Q040", "request_kind": "factual", "human_present": false, "question": "歌手は何を歌った？", "truth": {"kind": "ONE", "filler": "新しい歌", "sentence_ids": ["F04.txt#7:1"]}}
+{"id": "Q041", "request_kind": "factual", "human_present": false, "question": "誰が城を作った？", "truth": {"kind": "ONE", "filler": "王様", "sentence_ids": ["F05.txt#1:1"]}}
+{"id": "Q042", "request_kind": "factual", "human_present": false, "question": "王様は何を作った？", "truth": {"kind": "ONE", "filler": "城", "sentence_ids": ["F05.txt#1:1"]}}
+{"id": "Q043", "request_kind": "factual", "human_present": false, "question": "誰が剣を持った？", "truth": {"kind": "ONE", "filler": "兵士", "sentence_ids": ["F05.txt#2:1"]}}
+{"id": "Q044", "request_kind": "factual", "human_present": false, "question": "兵士は何を持った？", "truth": {"kind": "ONE", "filler": "剣", "sentence_ids": ["F05.txt#2:1"]}}
+{"id": "Q045", "request_kind": "factual", "human_present": false, "question": "誰が薬を混ぜた？", "truth": {"kind": "ONE", "filler": "魔女", "sentence_ids": ["F05.txt#3:1"]}}
+{"id": "Q046", "request_kind": "factual", "human_present": false, "question": "魔女は何を混ぜた？", "truth": {"kind": "ONE", "filler": "薬", "sentence_ids": ["F05.txt#3:1"]}}
+{"id": "Q047", "request_kind": "factual", "human_present": false, "question": "誰が畑を耕した？", "truth": {"kind": "ONE", "filler": "村人", "sentence_ids": ["F05.txt#5:1"]}}
+{"id": "Q048", "request_kind": "factual", "human_present": false, "question": "村人は何を耕した？", "truth": {"kind": "ONE", "filler": "畑", "sentence_ids": ["F05.txt#5:1"]}}
+{"id": "Q049", "request_kind": "factual", "human_present": false, "question": "誰が山を越えた？", "truth": {"kind": "ONE", "filler": "旅人", "sentence_ids": ["F05.txt#6:1"]}}
+{"id": "Q050", "request_kind": "factual", "human_present": false, "question": "旅人は何を越えた？", "truth": {"kind": "ONE", "filler": "山", "sentence_ids": ["F05.txt#6:1"]}}
+{"id": "Q051", "request_kind": "factual", "human_present": false, "question": "太郎は何を買った？", "truth": {"kind": "NONE", "filler": null, "sentence_ids": []}, "subtype": "別の述語・文書に無い物"}
+{"id": "Q052", "request_kind": "factual", "human_present": false, "question": "花子は何を壊した？", "truth": {"kind": "NONE", "filler": null, "sentence_ids": []}, "subtype": "別の述語・文書に無い物"}
+{"id": "Q053", "request_kind": "factual", "human_present": false, "question": "山田さんは何を食べた？", "truth": {"kind": "NONE", "filler": null, "sentence_ids": []}, "subtype": "別の述語・文書に無い物"}
+{"id": "Q054", "request_kind": "factual", "human_present": false, "question": "鈴木さんは何を閉めた？", "truth": {"kind": "NONE", "filler": null, "sentence_ids": []}, "subtype": "別の述語・文書に無い物"}
+{"id": "Q055", "request_kind": "factual", "human_present": false, "question": "犬は何を拾った？", "truth": {"kind": "NONE", "filler": null, "sentence_ids": []}, "subtype": "別の述語・文書に無い物"}
+{"id": "Q056", "request_kind": "factual", "human_present": false, "question": "猫は何を落とした？", "truth": {"kind": "NONE", "filler": null, "sentence_ids": []}, "subtype": "別の述語・文書に無い物"}
+{"id": "Q057", "request_kind": "factual", "human_present": false, "question": "医者は何を作った？", "truth": {"kind": "NONE", "filler": null, "sentence_ids": []}, "subtype": "別の述語・文書に無い物"}
+{"id": "Q058", "request_kind": "factual", "human_present": false, "question": "大工は何を描いた？", "truth": {"kind": "NONE", "filler": null, "sentence_ids": []}, "subtype": "別の述語・文書に無い物"}
+{"id": "Q059", "request_kind": "factual", "human_present": false, "question": "王様は何を壊した？", "truth": {"kind": "NONE", "filler": null, "sentence_ids": []}, "subtype": "別の述語・文書に無い物"}
+{"id": "Q060", "request_kind": "factual", "human_present": false, "question": "兵士は何を捨てた？", "truth": {"kind": "NONE", "filler": null, "sentence_ids": []}, "subtype": "別の述語・文書に無い物"}
+{"id": "Q061", "request_kind": "factual", "human_present": false, "question": "誰が地図を壊した？", "truth": {"kind": "NONE", "filler": null, "sentence_ids": []}, "subtype": "別の述語・文書に無い物"}
+{"id": "Q062", "request_kind": "factual", "human_present": false, "question": "誰が手紙を破った？", "truth": {"kind": "NONE", "filler": null, "sentence_ids": []}, "subtype": "別の述語・文書に無い物"}
+{"id": "Q063", "request_kind": "factual", "human_present": false, "question": "誰が地図を渡さなかった？", "truth": {"kind": "NONE", "filler": null, "sentence_ids": []}, "subtype": "極性の反転"}
+{"id": "Q064", "request_kind": "factual", "human_present": false, "question": "誰が鍵を落とさなかった？", "truth": {"kind": "NONE", "filler": null, "sentence_ids": []}, "subtype": "極性の反転"}
+{"id": "Q065", "request_kind": "factual", "human_present": false, "question": "誰が魚を盗まなかった？", "truth": {"kind": "NONE", "filler": null, "sentence_ids": []}, "subtype": "極性の反転"}
+{"id": "Q066", "request_kind": "factual", "human_present": false, "question": "誰が患者を診なかった？", "truth": {"kind": "NONE", "filler": null, "sentence_ids": []}, "subtype": "極性の反転"}
+{"id": "Q067", "request_kind": "factual", "human_present": false, "question": "誰が城を作らなかった？", "truth": {"kind": "NONE", "filler": null, "sentence_ids": []}, "subtype": "極性の反転"}
+{"id": "Q068", "request_kind": "factual", "human_present": false, "question": "誰が手紙を書かなかった？", "truth": {"kind": "NONE", "filler": null, "sentence_ids": []}, "subtype": "極性の反転"}
+{"id": "Q069", "request_kind": "factual", "human_present": false, "question": "誰が地図を渡す？", "truth": {"kind": "NONE", "filler": null, "sentence_ids": []}, "subtype": "時制の反転"}
+{"id": "Q070", "request_kind": "factual", "human_present": false, "question": "誰が窓を開ける？", "truth": {"kind": "NONE", "filler": null, "sentence_ids": []}, "subtype": "時制の反転"}
+{"id": "Q071", "request_kind": "factual", "human_present": false, "question": "誰が草を食べる？", "truth": {"kind": "NONE", "filler": null, "sentence_ids": []}, "subtype": "時制の反転"}
+{"id": "Q072", "request_kind": "factual", "human_present": false, "question": "誰が荷物を運ぶ？", "truth": {"kind": "NONE", "filler": null, "sentence_ids": []}, "subtype": "時制の反転"}
+{"id": "Q073", "request_kind": "factual", "human_present": false, "question": "誰が剣を持つ？", "truth": {"kind": "NONE", "filler": null, "sentence_ids": []}, "subtype": "時制の反転"}
+{"id": "Q074", "request_kind": "factual", "human_present": false, "question": "誰が大きな絵を描く？", "truth": {"kind": "NONE", "filler": null, "sentence_ids": []}, "subtype": "時制の反転"}
+{"id": "Q075", "request_kind": "factual", "human_present": false, "question": "誰が昨日地図を渡した？", "truth": {"kind": "NONE", "filler": null, "sentence_ids": []}, "subtype": "腕が多い"}
+{"id": "Q076", "request_kind": "factual", "human_present": false, "question": "誰が駅で手紙を書いた？", "truth": {"kind": "NONE", "filler": null, "sentence_ids": []}, "subtype": "腕が多い"}
+{"id": "Q077", "request_kind": "factual", "human_present": false, "question": "誰が庭で魚を盗んだ？", "truth": {"kind": "NONE", "filler": null, "sentence_ids": []}, "subtype": "腕が多い"}
+{"id": "Q078", "request_kind": "factual", "human_present": false, "question": "誰が毎朝窓を開けた？", "truth": {"kind": "NONE", "filler": null, "sentence_ids": []}, "subtype": "腕が多い"}
+{"id": "Q079", "request_kind": "factual", "human_present": false, "question": "誰が学校で患者を診た？", "truth": {"kind": "NONE", "filler": null, "sentence_ids": []}, "subtype": "腕が多い"}
+{"id": "Q080", "request_kind": "factual", "human_present": false, "question": "誰が夜に剣を持った？", "truth": {"kind": "NONE", "filler": null, "sentence_ids": []}, "subtype": "腕が多い"}
+{"id": "Q081", "request_kind": "factual", "human_present": false, "question": "三郎は何を渡した？", "truth": {"kind": "NONE", "filler": null, "sentence_ids": []}, "subtype": "文書に無い人物"}
+{"id": "Q082", "request_kind": "factual", "human_present": false, "question": "田中さんは何を落とした？", "truth": {"kind": "NONE", "filler": null, "sentence_ids": []}, "subtype": "文書に無い人物"}
+{"id": "Q083", "request_kind": "factual", "human_present": false, "question": "象は何を盗んだ？", "truth": {"kind": "NONE", "filler": null, "sentence_ids": []}, "subtype": "文書に無い人物"}
+{"id": "Q084", "request_kind": "factual", "human_present": false, "question": "看護師は何を診た？", "truth": {"kind": "NONE", "filler": null, "sentence_ids": []}, "subtype": "文書に無い人物"}
+{"id": "Q085", "request_kind": "factual", "human_present": false, "question": "騎士は何を持った？", "truth": {"kind": "NONE", "filler": null, "sentence_ids": []}, "subtype": "文書に無い人物"}
+{"id": "Q086", "request_kind": "factual", "human_present": false, "question": "母は何を書いた？", "truth": {"kind": "NONE", "filler": null, "sentence_ids": []}, "subtype": "文書に無い人物"}
+{"id": "Q087", "request_kind": "factual", "human_present": false, "question": "なぜ太郎は地図を渡した？", "truth": {"kind": "NONE", "filler": null, "sentence_ids": []}, "subtype": "なぜ・どうやって"}
+{"id": "Q088", "request_kind": "factual", "human_present": false, "question": "山田さんはどうやって電話を取った？", "truth": {"kind": "NONE", "filler": null, "sentence_ids": []}, "subtype": "なぜ・どうやって"}
+{"id": "Q089", "request_kind": "factual", "human_present": false, "question": "なぜ猫は魚を盗んだ？", "truth": {"kind": "NONE", "filler": null, "sentence_ids": []}, "subtype": "なぜ・どうやって"}
+{"id": "Q090", "request_kind": "factual", "human_present": false, "question": "医者はなぜ患者を診た？", "truth": {"kind": "NONE", "filler": null, "sentence_ids": []}, "subtype": "なぜ・どうやって"}
+{"id": "Q091", "request_kind": "factual", "human_present": false, "question": "王様はどうやって城を作った？", "truth": {"kind": "NONE", "filler": null, "sentence_ids": []}, "subtype": "なぜ・どうやって"}
+{"id": "Q092", "request_kind": "factual", "human_present": false, "question": "太郎は地図を渡しましたか？", "truth": {"kind": "NONE", "filler": null, "sentence_ids": []}, "subtype": "はい・いいえ"}
+{"id": "Q093", "request_kind": "factual", "human_present": false, "question": "佐藤さんは鍵を落としましたか？", "truth": {"kind": "NONE", "filler": null, "sentence_ids": []}, "subtype": "はい・いいえ"}
+{"id": "Q094", "request_kind": "factual", "human_present": false, "question": "犬は骨を掘りましたか？", "truth": {"kind": "NONE", "filler": null, "sentence_ids": []}, "subtype": "はい・いいえ"}
+{"id": "Q095", "request_kind": "factual", "human_present": false, "question": "医者は患者を診たか？", "truth": {"kind": "NONE", "filler": null, "sentence_ids": []}, "subtype": "はい・いいえ"}
+{"id": "Q096", "request_kind": "factual", "human_present": false, "question": "王様は城を壊しましたか？", "truth": {"kind": "NONE", "filler": null, "sentence_ids": []}, "subtype": "はい・いいえ"}
+{"id": "Q097", "request_kind": "factual", "human_present": false, "question": "Who handed over the map?", "truth": {"kind": "NONE", "filler": null, "sentence_ids": []}, "subtype": "英語"}
+{"id": "Q098", "request_kind": "factual", "human_present": false, "question": "What did Hanako write?", "truth": {"kind": "NONE", "filler": null, "sentence_ids": []}, "subtype": "英語"}
+{"id": "Q099", "request_kind": "factual", "human_present": false, "question": "Who stole the fish?", "truth": {"kind": "NONE", "filler": null, "sentence_ids": []}, "subtype": "英語"}
+{"id": "Q100", "request_kind": "factual", "human_present": false, "question": "Who built the castle?", "truth": {"kind": "NONE", "filler": null, "sentence_ids": []}, "subtype": "英語"}
+{"id": "Q101", "request_kind": "creative", "human_present": false, "question": "太郎と花子の短い話を書いて。", "truth": {"kind": "CREATIVE", "filler": null, "sentence_ids": []}}
+{"id": "Q102", "request_kind": "creative", "human_present": false, "question": "地図を渡す場面の物語を作って。", "truth": {"kind": "CREATIVE", "filler": null, "sentence_ids": []}}
+{"id": "Q103", "request_kind": "creative", "human_present": false, "question": "次郎の一日を短い話にして。", "truth": {"kind": "CREATIVE", "filler": null, "sentence_ids": []}}
+{"id": "Q104", "request_kind": "creative", "human_present": false, "question": "山田さんたちの会話を考えて。", "truth": {"kind": "CREATIVE", "filler": null, "sentence_ids": []}}
+{"id": "Q105", "request_kind": "creative", "human_present": false, "question": "犬と猫の小さな物語を書いて。", "truth": {"kind": "CREATIVE", "filler": null, "sentence_ids": []}}
+{"id": "Q106", "request_kind": "creative", "human_present": false, "question": "医者の一日の話を作って。", "truth": {"kind": "CREATIVE", "filler": null, "sentence_ids": []}}
+{"id": "Q107", "request_kind": "creative", "human_present": false, "question": "王様と魔女の話を書いて。", "truth": {"kind": "CREATIVE", "filler": null, "sentence_ids": []}}
+{"id": "Q108", "request_kind": "creative", "human_present": false, "question": "少年が橋を渡る話を作って。", "truth": {"kind": "CREATIVE", "filler": null, "sentence_ids": []}}
+{"id": "Q109", "request_kind": "creative", "human_present": false, "question": "鈴木さんの朝の話を書いて。", "truth": {"kind": "CREATIVE", "filler": null, "sentence_ids": []}}
+{"id": "Q110", "request_kind": "creative", "human_present": false, "question": "歌手の物語を書いて。", "truth": {"kind": "CREATIVE", "filler": null, "sentence_ids": []}}
+{"id": "Q111", "request_kind": "paraphrase", "human_present": false, "question": "「太郎が地図を渡した。」を言い換えて。", "truth": {"kind": "CREATIVE", "filler": null, "sentence_ids": []}}
+{"id": "Q112", "request_kind": "paraphrase", "human_present": false, "question": "「花子は手紙を書いた。」を別の言い方で。", "truth": {"kind": "CREATIVE", "filler": null, "sentence_ids": []}}
+{"id": "Q113", "request_kind": "paraphrase", "human_present": false, "question": "「猫は魚を盗んだ。」を言い換えて。", "truth": {"kind": "CREATIVE", "filler": null, "sentence_ids": []}}
+{"id": "Q114", "request_kind": "paraphrase", "human_present": false, "question": "「医者が患者を診た。」を別の言い方にして。", "truth": {"kind": "CREATIVE", "filler": null, "sentence_ids": []}}
+{"id": "Q115", "request_kind": "paraphrase", "human_present": false, "question": "「王様が城を作った。」を言い換えて。", "truth": {"kind": "CREATIVE", "filler": null, "sentence_ids": []}}
+{"id": "Q116", "request_kind": "paraphrase", "human_present": false, "question": "「鈴木さんが窓を開けた。」を言い換えて。", "truth": {"kind": "CREATIVE", "filler": null, "sentence_ids": []}}
+{"id": "Q117", "request_kind": "paraphrase", "human_present": false, "question": "「弟が犬を呼んだ。」を別の言い方で。", "truth": {"kind": "CREATIVE", "filler": null, "sentence_ids": []}}
+{"id": "Q118", "request_kind": "paraphrase", "human_present": false, "question": "「大工が屋根を直した。」を言い換えて。", "truth": {"kind": "CREATIVE", "filler": null, "sentence_ids": []}}
+{"id": "Q119", "request_kind": "paraphrase", "human_present": false, "question": "「旅人は山を越えた。」を言い換えて。", "truth": {"kind": "CREATIVE", "filler": null, "sentence_ids": []}}
+{"id": "Q120", "request_kind": "paraphrase", "human_present": false, "question": "「歌手が新しい歌を歌った。」を別の言い方で。", "truth": {"kind": "CREATIVE", "filler": null, "sentence_ids": []}}

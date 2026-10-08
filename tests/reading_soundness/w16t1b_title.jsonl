@@ -1,0 +1,59 @@
+{"id": "ttl-00", "kind": "title", "role": "agent", "title": "課長", "document": "森田課長が書類を運んだ。", "question": "誰が書類を運んだ？", "expect_values": ["森田課長"]}
+{"id": "ttl-01", "kind": "title", "role": "recipient", "title": "課長", "document": "店員が山本課長に本を渡した。", "question": "店員は誰に本を渡した？", "expect_values": ["山本課長"]}
+{"id": "ttl-02", "kind": "title", "role": "patient", "title": "課長", "document": "記者が中村課長を取材した。", "question": "記者が誰を取材した？", "expect_values": ["中村課長"]}
+{"id": "ttl-03", "kind": "title", "role": "agent", "title": "部長", "document": "木村部長が書類を運んだ。", "question": "誰が書類を運んだ？", "expect_values": ["木村部長"]}
+{"id": "ttl-04", "kind": "title", "role": "recipient", "title": "部長", "document": "店員が小林部長に本を渡した。", "question": "店員は誰に本を渡した？", "expect_values": ["小林部長"]}
+{"id": "ttl-05", "kind": "title", "role": "patient", "title": "部長", "document": "記者が加藤部長を取材した。", "question": "記者が誰を取材した？", "expect_values": ["加藤部長"]}
+{"id": "ttl-06", "kind": "title", "role": "agent", "title": "社長", "document": "吉田社長が書類を運んだ。", "question": "誰が書類を運んだ？", "expect_values": ["吉田社長"]}
+{"id": "ttl-07", "kind": "title", "role": "recipient", "title": "社長", "document": "店員が斎藤社長に本を渡した。", "question": "店員は誰に本を渡した？", "expect_values": ["斎藤社長"]}
+{"id": "ttl-08", "kind": "title", "role": "patient", "title": "社長", "document": "記者が森田社長を取材した。", "question": "記者が誰を取材した？", "expect_values": ["森田社長"]}
+{"id": "ttl-09", "kind": "title", "role": "agent", "title": "係長", "document": "山本係長が書類を運んだ。", "question": "誰が書類を運んだ？", "expect_values": ["山本係長"]}
+{"id": "ttl-10", "kind": "title", "role": "recipient", "title": "係長", "document": "店員が中村係長に本を渡した。", "question": "店員は誰に本を渡した？", "expect_values": ["中村係長"]}
+{"id": "ttl-11", "kind": "title", "role": "patient", "title": "係長", "document": "記者が木村係長を取材した。", "question": "記者が誰を取材した？", "expect_values": ["木村係長"]}
+{"id": "ttl-12", "kind": "title", "role": "agent", "title": "教授", "document": "小林教授が書類を運んだ。", "question": "誰が書類を運んだ？", "expect_values": ["小林教授"]}
+{"id": "ttl-13", "kind": "title", "role": "recipient", "title": "教授", "document": "店員が加藤教授に本を渡した。", "question": "店員は誰に本を渡した？", "expect_values": ["加藤教授"]}
+{"id": "ttl-14", "kind": "title", "role": "patient", "title": "教授", "document": "記者が吉田教授を取材した。", "question": "記者が誰を取材した？", "expect_values": ["吉田教授"]}
+{"id": "ttl-15", "kind": "title", "role": "agent", "title": "先生", "document": "斎藤先生が書類を運んだ。", "question": "誰が書類を運んだ？", "expect_values": ["斎藤先生"]}
+{"id": "ttl-16", "kind": "title", "role": "recipient", "title": "先生", "document": "店員が森田先生に本を渡した。", "question": "店員は誰に本を渡した？", "expect_values": ["森田先生"]}
+{"id": "ttl-17", "kind": "title", "role": "patient", "title": "先生", "document": "記者が山本先生を取材した。", "question": "記者が誰を取材した？", "expect_values": ["山本先生"]}
+{"id": "ttl-18", "kind": "title", "role": "agent", "title": "監督", "document": "中村監督が書類を運んだ。", "question": "誰が書類を運んだ？", "expect_values": ["中村監督"]}
+{"id": "ttl-19", "kind": "title", "role": "recipient", "title": "監督", "document": "店員が木村監督に本を渡した。", "question": "店員は誰に本を渡した？", "expect_values": ["木村監督"]}
+{"id": "ttl-20", "kind": "title", "role": "patient", "title": "監督", "document": "記者が小林監督を取材した。", "question": "記者が誰を取材した？", "expect_values": ["小林監督"]}
+{"id": "ttl-21", "kind": "title", "role": "agent", "title": "選手", "document": "加藤選手が書類を運んだ。", "question": "誰が書類を運んだ？", "expect_values": ["加藤選手"]}
+{"id": "ttl-22", "kind": "title", "role": "recipient", "title": "選手", "document": "店員が吉田選手に本を渡した。", "question": "店員は誰に本を渡した？", "expect_values": ["吉田選手"]}
+{"id": "ttl-23", "kind": "title", "role": "patient", "title": "選手", "document": "記者が斎藤選手を取材した。", "question": "記者が誰を取材した？", "expect_values": ["斎藤選手"]}
+{"id": "ttl-24", "kind": "title", "role": "agent", "title": "店長", "document": "森田店長が書類を運んだ。", "question": "誰が書類を運んだ？", "expect_values": ["森田店長"]}
+{"id": "ttl-25", "kind": "title", "role": "recipient", "title": "店長", "document": "店員が山本店長に本を渡した。", "question": "店員は誰に本を渡した？", "expect_values": ["山本店長"]}
+{"id": "ttl-26", "kind": "title", "role": "patient", "title": "店長", "document": "記者が中村店長を取材した。", "question": "記者が誰を取材した？", "expect_values": ["中村店長"]}
+{"id": "ttl-27", "kind": "title", "role": "agent", "title": "医師", "document": "木村医師が書類を運んだ。", "question": "誰が書類を運んだ？", "expect_values": ["木村医師"]}
+{"id": "ttl-28", "kind": "title", "role": "recipient", "title": "医師", "document": "店員が小林医師に本を渡した。", "question": "店員は誰に本を渡した？", "expect_values": ["小林医師"]}
+{"id": "ttl-29", "kind": "title", "role": "patient", "title": "医師", "document": "記者が加藤医師を取材した。", "question": "記者が誰を取材した？", "expect_values": ["加藤医師"]}
+{"id": "ttl-30", "kind": "title", "role": "agent", "title": "議員", "document": "吉田議員が書類を運んだ。", "question": "誰が書類を運んだ？", "expect_values": ["吉田議員"]}
+{"id": "ttl-31", "kind": "title", "role": "recipient", "title": "議員", "document": "店員が斎藤議員に本を渡した。", "question": "店員は誰に本を渡した？", "expect_values": ["斎藤議員"]}
+{"id": "ttl-32", "kind": "title", "role": "patient", "title": "議員", "document": "記者が森田議員を取材した。", "question": "記者が誰を取材した？", "expect_values": ["森田議員"]}
+{"id": "ttl-33", "kind": "title", "role": "agent", "title": "弁護士", "document": "山本弁護士が書類を運んだ。", "question": "誰が書類を運んだ？", "expect_values": ["山本弁護士"]}
+{"id": "ttl-34", "kind": "title", "role": "recipient", "title": "弁護士", "document": "店員が中村弁護士に本を渡した。", "question": "店員は誰に本を渡した？", "expect_values": ["中村弁護士"]}
+{"id": "ttl-35", "kind": "title", "role": "patient", "title": "弁護士", "document": "記者が木村弁護士を取材した。", "question": "記者が誰を取材した？", "expect_values": ["木村弁護士"]}
+{"id": "ttlc-00-plain-agent", "kind": "title_control", "document": "山本が書類を運んだ。", "question": "誰が書類を運んだ？", "expect_values": ["山本"]}
+{"id": "ttlc-01-plain-recipient", "kind": "title_control", "document": "店員が小林に本を渡した。", "question": "店員は誰に本を渡した？", "expect_values": ["小林"]}
+{"id": "ttlc-02-plain-patient", "kind": "title_control", "document": "記者が斎藤を取材した。", "question": "記者が誰を取材した？", "expect_values": ["斎藤"]}
+{"id": "ttlc-03-san-agent", "kind": "title_control", "document": "中村さんが書類を運んだ。", "question": "誰が書類を運んだ？", "expect_values": ["中村さん"]}
+{"id": "ttlc-04-san-recipient", "kind": "title_control", "document": "店員が加藤さんに本を渡した。", "question": "店員は誰に本を渡した？", "expect_values": ["加藤さん"]}
+{"id": "ttlc-05-san-patient", "kind": "title_control", "document": "記者が森田さんを取材した。", "question": "記者が誰を取材した？", "expect_values": ["森田さん"]}
+{"id": "ttlc-06-noof-agent", "kind": "title_control", "document": "課長の小林が書類を運んだ。", "question": "誰が書類を運んだ？", "expect_values": ["課長の小林"]}
+{"id": "ttlc-07-noof-agent", "kind": "title_control", "document": "医師の吉田が書類を運んだ。", "question": "誰が書類を運んだ？", "expect_values": ["医師の吉田"]}
+{"id": "ttlc-08-noof-patient", "kind": "title_control", "document": "記者が先生の森田を取材した。", "question": "記者が誰を取材した？", "expect_values": ["先生の森田"]}
+{"id": "ttlm-00", "kind": "title_mixed", "title": "課長", "document": "中村課長が書類を運んだ。中村が書類を運んだ。", "question": "誰が書類を運んだ？", "name_only": ["中村"]}
+{"id": "ttlm-01", "kind": "title_mixed", "title": "部長", "document": "加藤部長が書類を運んだ。加藤が書類を運んだ。", "question": "誰が書類を運んだ？", "name_only": ["加藤"]}
+{"id": "ttlm-02", "kind": "title_mixed", "title": "社長", "document": "森田社長が書類を運んだ。森田が書類を運んだ。", "question": "誰が書類を運んだ？", "name_only": ["森田"]}
+{"id": "ttlm-03", "kind": "title_mixed", "title": "教授", "document": "木村教授が書類を運んだ。木村が書類を運んだ。", "question": "誰が書類を運んだ？", "name_only": ["木村"]}
+{"id": "ttlm-04", "kind": "title_mixed", "title": "監督", "document": "吉田監督が書類を運んだ。吉田が書類を運んだ。", "question": "誰が書類を運んだ？", "name_only": ["吉田"]}
+{"id": "ttlm-05", "kind": "title_mixed", "title": "店長", "document": "山本店長が書類を運んだ。山本が書類を運んだ。", "question": "誰が書類を運んだ？", "name_only": ["山本"]}
+{"id": "ttlr-00", "kind": "range", "document": "技師ユンが書類を運んだ。", "question": "誰が書類を運んだ？"}
+{"id": "ttlr-01", "kind": "range", "document": "部長田中が書類を運んだ。", "question": "誰が書類を運んだ？"}
+{"id": "ttlr-02", "kind": "range", "document": "新人マキが書類を運んだ。", "question": "誰が書類を運んだ？"}
+{"id": "ttlr-03", "kind": "range", "document": "医師の小林が書類を運んだ。", "question": "誰が書類を運んだ？"}
+{"id": "ttlr-04", "kind": "range", "document": "課長の森田が書類を運んだ。部長の山本が書類を届けた。", "question": "誰が書類を運んだ？"}
+{"id": "ttlr-05", "kind": "range", "document": "森田課長は店員に本を渡した。", "question": "森田課長は誰に本を渡した？"}
+{"id": "ttlr-06", "kind": "range", "document": "森田課長は店員に本を渡した。", "question": "森田は誰に本を渡した？"}
+{"id": "ttlr-07", "kind": "range", "document": "加藤社長が山本さんに本を渡した。", "question": "誰が山本さんに本を渡した？"}

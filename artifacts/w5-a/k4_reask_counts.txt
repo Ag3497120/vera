@@ -1,0 +1,12 @@
+same table twice                   route 1                            asks_so_far=2 cached=False
+same table twice                   route 2 (same)                     asks_so_far=2 cached=True
+reasons flipped                    route 1                            asks_so_far=2 cached=False
+reasons flipped                    route 2 (reasons changed)          asks_so_far=4 cached=False
+model only                         route 1 (model-one)                asks_so_far=2 cached=False
+model only                         route 2 (model-two)                asks_so_far=4 cached=False
+model only                         route 3 (model-two again)          asks_so_far=4 cached=True
+chooser direct                     first                              asks_so_far=2 cached=False
+chooser direct                     order reversed, same context       asks_so_far=2 cached=True
+chooser direct                     A context changed                  asks_so_far=4 cached=False
+chooser direct                     B gets one more line               asks_so_far=6 cached=False
+chooser direct                     question changed only              asks_so_far=6 cached=True

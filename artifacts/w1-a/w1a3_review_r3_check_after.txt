@@ -1,0 +1,24 @@
+tree=/Users/motonisihikoudai/Projects/vera-impl/wt/W1-a-S entry=yes
+ok        entry     陛下が視察された。 ['UNDETERMINED_VOICE:passive or honorific']
+ok        entry     恩師が執筆された。 ['UNDETERMINED_VOICE:passive or honorific']
+ok        entry     皇后が訪問された。 ['UNDETERMINED_VOICE:passive or honorific']
+ok        entry     大臣が視察された。 ['UNDETERMINED_VOICE:passive or honorific']
+ok        entry     博士が研究された。 ['UNDETERMINED_VOICE:passive or honorific']
+ok        entry     総理が謝罪された。 ['UNDETERMINED_VOICE:passive or honorific']
+ok        entry     陛下が子供に話しかけられた。 ['UNDETERMINED_VOICE:passive or honorific']
+ok        entry     大臣が国民に謝罪された。 ['UNDETERMINED_VOICE:passive or honorific']
+ok        entry     先生が生徒に謝罪された。 ['UNDETERMINED_VOICE:passive or honorific']
+ok        entry     校長が生徒に注意された。 ['UNDETERMINED_VOICE:passive or honorific']
+ok        entry     賞状が優勝者に手渡された。 ['UNDETERMINED_VOICE:passive or honorific']
+ok        entry     設計が建築家に任された。 ['UNDETERMINED_VOICE:passive or honorific']
+ok        entry-ok  子どもが先生に叱られた。 
+ok        entry-ok  少年は犬に追いかけられた。 
+known     misread   子供たちが公園を回った。 [{'predicate': '回る', 'roles': {'agent': '子供たち', 'patient': '公園'}, 'polarity': '+', 'tense': 'past', 'modality': None, 'voice': 'active'}]
+known     misread   車がトンネルを抜けた。 [{'predicate': '抜ける', 'roles': {'agent': '車', 'patient': 'トンネル'}, 'polarity': '+', 'tense': 'past', 'modality': None, 'voice': 'active'}]
+known     misread   行列が大通りを練り歩いた。 [{'predicate': '練り歩く', 'roles': {'agent': '行列', 'patient': '大通り'}, 'polarity': '+', 'tense': 'past', 'modality': None, 'voice': 'active'}]
+known     misread   船が港を出航した。 [{'predicate': '出航する', 'roles': {'agent': '船', 'patient': '港'}, 'polarity': '+', 'tense': 'past', 'modality': None, 'voice': 'active'}]
+info      was-pass  窓が少年に割られた。 ['UNDETERMINED_VOICE:passive or honorific']
+info      was-pass  財布が泥棒に盗まれた。 ['UNDETERMINED_VOICE:passive or honorific']
+info      was-pass  書類が提出された。 ['UNDETERMINED_VOICE:passive or honorific']
+checks=14 violations=0
+exit=0

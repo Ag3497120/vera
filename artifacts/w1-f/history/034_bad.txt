@@ -1,0 +1,39 @@
+# commit a9cad0ab448b649dc6c71584f14d203a5200289d
+# status FAIL
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 17 items / 16 deselected / 1 selected
+
+tests/attack/test_memory_brief_limits.py::test_focus_uses_nfkc_casefold_matching_to_rank_first FAILED [100%]
+
+=== FAILURES ===
+_____________ test_focus_uses_nfkc_casefold_matching_to_rank_first _____________
+
+    def test_focus_uses_nfkc_casefold_matching_to_rank_first():
+        records = [
+            row("first-by-kind", "INVARIANT", subject="s"),
+            row("focused", "FACT", subject="s", attribute="name", sentence="The value is ABC."),
+        ]
+        expected = "\n".join(
+            [
+                "[id:focused] The value is ABC.",
+                "[id:first-by-kind] Sentence for first-by-kind.",
+            ]
+        )
+    
+>       assert compile_brief(MemoryStub(records), len(expected), focus="Ａｂｃ") == expected
+E       AssertionError: assert ContextBrief(text='Dropped record ids: focused, first-by-kind', records=(), dropped_ids=('focused', 'first-by-kind')) == '[id:focused] The value is ABC.\n[id:first-by-kind] Sentence for first-by-kind.'
+E        +  where ContextBrief(text='Dropped record ids: focused, first-by-kind', records=(), dropped_ids=('focused', 'first-by-kind')) = compile_brief(<test_memory_brief_limits.MemoryStub object at 0x<ADDR>>, 77, focus='\uff21\uff42\uff43')
+E        +    where <test_memory_brief_limits.MemoryStub object at 0x<ADDR>> = MemoryStub([{'id': 'first-by-kind', 'kind': 'INVARIANT', 'sentence': 'Sentence for first-by-kind.', 'slots': {'subject': 's'}, 'ts': '2026-01-01'}, {'id': 'focused', 'kind': 'FACT', 'sentence': 'The value is ABC.', 'slots': {'attribute': 'name', 'subject': 's'}, 'ts': '2026-01-01'}])
+E        +    and   77 = len('[id:focused] The value is ABC.\n[id:first-by-kind] Sentence for first-by-kind.')
+
+tests/attack/test_memory_brief_limits.py:105: AssertionError
+=== short test summary info ===
+FAILED tests/attack/test_memory_brief_limits.py::test_focus_uses_nfkc_casefold_matching_to_rank_first - AssertionError: assert ContextBrief(text='Dropped record ids: focused, first-by-kind', records=(), dropped_ids=('focused', 'first-by-kind')) == '[id:focused] The value is ABC.\n[id:first-by-kind] Sentence for first-by-kind.'
+ +  where ContextBrief(text='Dropped record ids: focused, first-by-kind', records=(), dropped_ids=('focused', 'first-by-kind')) = compile_brief(<test_memory_brief_limits.MemoryStub object at 0x<ADDR>>, 77, focus='\uff21\uff42\uff43')
+ +    where <test_memory_brief_limits.MemoryStub object at 0x<ADDR>> = MemoryStub([{'id': 'first-by-kind', 'kind': 'INVARIANT', 'sentence': 'Sentence for first-by-kind.', 'slots': {'subject': 's'}, 'ts': '2026-01-01'}, {'id': 'focused', 'kind': 'FACT', 'sentence': 'The value is ABC.', 'slots': {'attribute': 'name', 'subject': 's'}, 'ts': '2026-01-01'}])
+ +    and   77 = len('[id:focused] The value is ABC.\n[id:first-by-kind] Sentence for first-by-kind.')
+=== 1 failed, 16 deselected ===

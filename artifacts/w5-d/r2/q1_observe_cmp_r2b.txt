@@ -1,0 +1,8 @@
+q1 re-run 2026-10-04 01:11:24 +0900 (scripts/run_o1_four.sh; tests/observe/o1_bytes.py --child --cases tests/observe/data/viewpoints.jsonl, PYTHONHASHSEED=0, env -i; base = git archive c875ed3 copy)
+same: base vs now (no VERA_PLACEMENT)
+same: base vs now (VERA_PLACEMENT=r7)
+same: this run vs the earlier r2 run (both)
+3f67e7bad3e59968c0e36a613d9e794a90828f6a56957cc3e4caf25098e80d33  base_seed0.jsonl
+3f67e7bad3e59968c0e36a613d9e794a90828f6a56957cc3e4caf25098e80d33  now_seed0.jsonl
+be2be15fcc6cc9a2b3714e273a8d7a331ae4d31780df1ad3fa1fd29cc0873b93  baser7_seed0.jsonl
+be2be15fcc6cc9a2b3714e273a8d7a331ae4d31780df1ad3fa1fd29cc0873b93  nowr7_seed0.jsonl

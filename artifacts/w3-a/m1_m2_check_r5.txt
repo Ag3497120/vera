@@ -1,0 +1,22 @@
+M1a unit_sample rows 295893; rows listing a word decided with gen_definition: 0 (words decided with gen_definition: 18254, of which upgraded to direct: 2557)
+M1b head-stage leaks through a generated word: 0 []
+M1b control: of 3000 plain direct words, the compound used the head stage on 2907
+M2 queries:
+  4xx          DECIDED   IDENTIFIER     alnum_code       ok
+  5xx          DECIDED   IDENTIFIER     alnum_code       ok
+  1of          DECIDED   IDENTIFIER     alnum_code       ok
+  3AND         DECIDED   IDENTIFIER     alnum_code       ok
+  2in          DECIDED   IDENTIFIER     alnum_code       ok
+  2km          DECIDED   QUANTITY       number+counter   ok
+  3kg          DECIDED   QUANTITY       number+counter   ok
+  5GHz         DECIDED   QUANTITY       number+counter   ok
+  10ms         DECIDED   QUANTITY       number+counter   ok
+  128MiB       DECIDED   QUANTITY       number+counter   ok
+  40キロメートル     DECIDED   QUANTITY       number+counter   ok
+  30パーセント      DECIDED   QUANTITY       number+counter   ok
+  10メートル       DECIDED   QUANTITY       number+counter   ok
+  A1-23        DECIDED   IDENTIFIER     alnum_code       ok
+  ABC-123      DECIDED   IDENTIFIER     alnum_code       ok
+M2 Latin units in counters table (5): ['GHz', 'MiB', 'kg', 'km', 'ms']; all units: 140
+L3 words (n=234) whose answer differs from /Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r3c/run1: 0
+BAD []

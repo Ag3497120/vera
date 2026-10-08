@@ -1,0 +1,24 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 17 items / 16 deselected / 1 selected
+
+tests/attack/test_memory_brief_limits.py::test_empty_memory_returns_empty_brief_at_zero_budget FAILED [100%]
+
+=== FAILURES ===
+_____________ test_empty_memory_returns_empty_brief_at_zero_budget _____________
+
+    def test_empty_memory_returns_empty_brief_at_zero_budget():
+>       assert compile_brief(MemoryStub([]), 0) == ""
+E       AssertionError: assert ContextBrief(text='', records=(), dropped_ids=()) == ''
+E        +  where ContextBrief(text='', records=(), dropped_ids=()) = compile_brief(<test_memory_brief_limits.MemoryStub object at 0x<ADDR>>, 0)
+E        +    where <test_memory_brief_limits.MemoryStub object at 0x<ADDR>> = MemoryStub([])
+
+tests/attack/test_memory_brief_limits.py:50: AssertionError
+=== short test summary info ===
+FAILED tests/attack/test_memory_brief_limits.py::test_empty_memory_returns_empty_brief_at_zero_budget - AssertionError: assert ContextBrief(text='', records=(), dropped_ids=()) == ''
+ +  where ContextBrief(text='', records=(), dropped_ids=()) = compile_brief(<test_memory_brief_limits.MemoryStub object at 0x<ADDR>>, 0)
+ +    where <test_memory_brief_limits.MemoryStub object at 0x<ADDR>> = MemoryStub([])
+=== 1 failed, 16 deselected ===

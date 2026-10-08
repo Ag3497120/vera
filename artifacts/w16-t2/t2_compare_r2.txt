@@ -1,0 +1,496 @@
+== u4 (old=old_u4_r2.jsonl new=new_u4_r2.jsonl, n=11)
+  new_ask_abstain: 4
+  new_ask_correct: 7
+  new_chat_abstain: 4
+  new_chat_correct: 7
+  new_serve_abstain: 4
+  new_serve_correct: 7
+  old_ask_abstain: 4
+  old_ask_correct: 7
+  old_serve_abstain: 9
+  old_serve_correct: 2
+  -- changed rows (any entrance differs from old ask/serve, or entrances differ) 5 --
+  U01 誰が花子に本を渡したか | gold=ANSWER['太郎'] | old ask=correct ['太郎'], old serve=abstain None | new ask=correct ['太郎'], new serve=correct ['太郎'], new chat=correct ['太郎']
+  U02 誰が花子に本を渡しましたか | gold=ANSWER['太郎'] | old ask=correct ['太郎'], old serve=abstain None | new ask=correct ['太郎'], new serve=correct ['太郎'], new chat=correct ['太郎']
+  U05 太郎は誰に本を渡したか | gold=ANSWER['花子'] | old ask=correct ['花子'], old serve=abstain None | new ask=correct ['花子'], new serve=correct ['花子'], new chat=correct ['花子']
+  U09 誰が花子に本を渡した | gold=ANSWER['太郎'] | old ask=correct ['太郎'], old serve=abstain None | new ask=correct ['太郎'], new serve=correct ['太郎'], new chat=correct ['太郎']
+  U11 太郎は誰に本を渡した？ | gold=ANSWER['花子'] | old ask=correct ['花子'], old serve=abstain None | new ask=correct ['花子'], new serve=correct ['花子'], new chat=correct ['花子']
+== own60 (old=old_own60_r2.jsonl new=new_own60_r2.jsonl, n=60)
+  new_ask_abstain: 35
+  new_ask_correct: 24
+  new_ask_wrong: 1
+  new_chat_abstain: 35
+  new_chat_correct: 24
+  new_chat_wrong: 1
+  new_serve_abstain: 35
+  new_serve_correct: 24
+  new_serve_wrong: 1
+  old_ask_abstain: 35
+  old_ask_correct: 24
+  old_ask_wrong: 1
+  old_serve_abstain: 53
+  old_serve_correct: 7
+  -- changed rows (any entrance differs from old ask/serve, or entrances differ) 18 --
+  O01 誰が生徒にノートを配ったか | gold=ANSWER['先生'] | old ask=correct ['先生'], old serve=abstain None | new ask=correct ['先生'], new serve=correct ['先生'], new chat=correct ['先生']
+  O02 誰が生徒にノートを配りましたか | gold=ANSWER['先生'] | old ask=correct ['先生'], old serve=abstain None | new ask=correct ['先生'], new serve=correct ['先生'], new chat=correct ['先生']
+  O04 誰が生徒にノートを配った | gold=ANSWER['先生'] | old ask=correct ['先生'], old serve=abstain None | new ask=correct ['先生'], new serve=correct ['先生'], new chat=correct ['先生']
+  O08 先生は誰にノートを配ったか | gold=ANSWER['生徒'] | old ask=correct ['生徒'], old serve=abstain None | new ask=correct ['生徒'], new serve=correct ['生徒'], new chat=correct ['生徒']
+  O09 先生は誰にノートを配った？ | gold=ANSWER['生徒'] | old ask=correct ['生徒'], old serve=abstain None | new ask=correct ['生徒'], new serve=correct ['生徒'], new chat=correct ['生徒']
+  O11 生徒はどこで手紙を書いたか | gold=ANSWER['教室'] | old ask=correct ['教室'], old serve=abstain None | new ask=correct ['教室'], new serve=correct ['教室'], new chat=correct ['教室']
+  O12 誰が教室で手紙を書いた？ | gold=ANSWER['生徒'] | old ask=correct ['生徒'], old serve=abstain None | new ask=correct ['生徒'], new serve=correct ['生徒'], new chat=correct ['生徒']
+  O13 誰が教室で手紙を書きましたか | gold=ANSWER['生徒'] | old ask=correct ['生徒'], old serve=abstain None | new ask=correct ['生徒'], new serve=correct ['生徒'], new chat=correct ['生徒']
+  O19 誰が図書館へ行った？ | gold=ANSWER['弟'] | old ask=correct ['弟'], old serve=abstain None | new ask=correct ['弟'], new serve=correct ['弟'], new chat=correct ['弟']
+  O23 客はどこで野菜を買ったか | gold=ANSWER['市場'] | old ask=correct ['市場'], old serve=abstain None | new ask=correct ['市場'], new serve=correct ['市場'], new chat=correct ['市場']
+  O29 誰が店で魚を買わなかったか | gold=ANSWER['母'] | old ask=correct ['母'], old serve=abstain None | new ask=correct ['母'], new serve=correct ['母'], new chat=correct ['母']
+  O38 誰が小説を読んだ？ | gold=ABSTAIN[] | old ask=wrong ['次郎'], old serve=abstain None | new ask=wrong ['次郎'], new serve=wrong ['次郎'], new chat=wrong ['次郎']
+  O42 誰が庭で木を植えたか | gold=ANSWER['父'] | old ask=correct ['父'], old serve=abstain None | new ask=correct ['父'], new serve=correct ['父'], new chat=correct ['父']
+  O44 父はどこで木を植えましたか | gold=ANSWER['庭'] | old ask=correct ['庭'], old serve=abstain None | new ask=correct ['庭'], new serve=correct ['庭'], new chat=correct ['庭']
+  O47 校長はどこで挨拶をしたか | gold=ANSWER['体育館'] | old ask=correct ['体育館'], old serve=abstain None | new ask=correct ['体育館'], new serve=correct ['体育館'], new chat=correct ['体育館']
+  O49 医者はどこで患者に薬を渡したか | gold=ANSWER['病院'] | old ask=correct ['病院'], old serve=abstain None | new ask=correct ['病院'], new serve=correct ['病院'], new chat=correct ['病院']
+  O54 漁師はどこで魚を捕ったか | gold=ANSWER['海'] | old ask=correct ['海'], old serve=abstain None | new ask=correct ['海'], new serve=correct ['海'], new chat=correct ['海']
+  O58 誰が妹に人形を贈ったか | gold=ANSWER['姉'] | old ask=correct ['姉'], old serve=abstain None | new ask=correct ['姉'], new serve=correct ['姉'], new chat=correct ['姉']
+== w3c4 (old=old_w3c4_r2.jsonl new=new_w3c4_r2.jsonl, n=111)
+  correct_to_abstain_ask: 2
+  correct_to_abstain_chat: 2
+  correct_to_abstain_serve: 2
+  correct_to_nonCorrect_ask: 2
+  correct_to_nonCorrect_chat: 2
+  correct_to_nonCorrect_serve: 2
+  new_ask_abstain: 57
+  new_ask_correct: 51
+  new_ask_notjudged: 3
+  new_chat_abstain: 57
+  new_chat_correct: 51
+  new_chat_notjudged: 3
+  new_serve_abstain: 60
+  new_serve_correct: 51
+  old_ask_abstain: 57
+  old_ask_correct: 51
+  old_ask_notjudged: 3
+  old_serve_abstain: 61
+  old_serve_correct: 50
+  -- changed rows (any entrance differs from old ask/serve, or entrances differ) 8 --
+  AQ003 誰が橋を建てた？ | gold=ANSWER['技師'] | old ask=correct ['技師'], old serve=abstain None | new ask=correct ['技師'], new serve=correct ['技師'], new chat=correct ['技師']
+  AQ014 医者は患者に薬を渡したか？ | gold=NOT_JUDGED[] | old ask=notjudged ['はい'], old serve=abstain None | new ask=notjudged ['はい'], new serve=abstain None, new chat=notjudged ['はい']
+  AQ015 誰が誰に書類を渡した？ | gold=NOT_JUDGED[] | old ask=notjudged ['看護師', '医者'], old serve=abstain None | new ask=notjudged ['看護師', '医者'], new serve=abstain None, new chat=notjudged ['看護師', '医者']
+  AQ019 医者が患者に薬を渡した。 | gold=NOT_JUDGED[] | old ask=notjudged ['はい'], old serve=abstain None | new ask=notjudged ['はい'], new serve=abstain None, new chat=notjudged ['はい']
+  AQ021 誰が市場で馬を売った？ | gold=ANSWER['農夫'] | old ask=abstain None, old serve=correct ['農夫'] | new ask=abstain None, new serve=abstain None, new chat=abstain None
+  AQ022 誰が港から魚を送った？ | gold=ANSWER['漁師'] | old ask=abstain None, old serve=correct ['漁師'] | new ask=abstain None, new serve=abstain None, new chat=abstain None
+  AQ047 誰が民に金貨を配った？ | gold=ANSWER['王'] | old ask=correct ['王'], old serve=abstain None | new ask=correct ['王'], new serve=correct ['王'], new chat=correct ['王']
+  AQ069 誰が店で服を買った？ | gold=ANSWER['父'] | old ask=correct ['父'], old serve=abstain None | new ask=correct ['父'], new serve=correct ['父'], new chat=correct ['父']
+== w3c4_b2like (old=old_w3c4_b2like_r2.jsonl new=new_w3c4_b2like_r2.jsonl, n=47)
+  new_ask_abstain: 20
+  new_ask_correct: 25
+  new_ask_notjudged: 1
+  new_ask_wrong: 1
+  new_chat_abstain: 20
+  new_chat_correct: 25
+  new_chat_notjudged: 1
+  new_chat_wrong: 1
+  new_serve_abstain: 21
+  new_serve_correct: 25
+  new_serve_wrong: 1
+  old_ask_abstain: 20
+  old_ask_correct: 25
+  old_ask_notjudged: 1
+  old_ask_wrong: 1
+  old_serve_abstain: 28
+  old_serve_correct: 19
+  -- changed rows (any entrance differs from old ask/serve, or entrances differ) 8 --
+  BQ002 誰が佐藤さんに報告書を渡しましたか？ | gold=ANSWER['森田課長'] | old ask=wrong ['森田'], old serve=abstain None | new ask=wrong ['森田'], new serve=wrong ['森田'], new chat=wrong ['森田']
+  BQ005 田中部長はどこへ行った？ | gold=ANSWER['会議'] | old ask=correct ['会議'], old serve=abstain None | new ask=correct ['会議'], new serve=correct ['会議'], new chat=correct ['会議']
+  BQ006 誰が顧客に見積書を送った？ | gold=ANSWER['鈴木さん'] | old ask=correct ['鈴木さん'], old serve=abstain None | new ask=correct ['鈴木さん'], new serve=correct ['鈴木さん'], new chat=correct ['鈴木さん']
+  BQ009 田中部長は資料を読んだ？ | gold=NOT_JUDGED[] | old ask=notjudged ['いいえ'], old serve=abstain None | new ask=notjudged ['いいえ'], new serve=abstain None, new chat=notjudged ['いいえ']
+  BQ017 誰がお客に傘を売った？ | gold=ANSWER['店長'] | old ask=correct ['店長'], old serve=abstain None | new ask=correct ['店長'], new serve=correct ['店長'], new chat=correct ['店長']
+  BQ021 誰が店長に手紙を書いた？ | gold=ANSWER['お客'] | old ask=correct ['お客'], old serve=abstain None | new ask=correct ['お客'], new serve=correct ['お客'], new chat=correct ['お客']
+  BQ023 店員は何を受け取らなかった？ | gold=ANSWER['荷物'] | old ask=correct ['荷物'], old serve=abstain None | new ask=correct ['荷物'], new serve=correct ['荷物'], new chat=correct ['荷物']
+  BQ031 生徒は図書館で何を借りた？ | gold=ANSWER['本'] | old ask=correct ['本'], old serve=abstain None | new ask=correct ['本'], new serve=correct ['本'], new chat=correct ['本']
+== w3f1 (old=old_w3f1_r2.jsonl new=new_w3f1_r2.jsonl, n=324)
+  correct_to_abstain_serve: 15
+  correct_to_nonCorrect_serve: 15
+  new_ask_abstain: 205
+  new_ask_correct: 116
+  new_ask_notjudged: 3
+  new_chat_abstain: 205
+  new_chat_correct: 116
+  new_chat_notjudged: 3
+  new_serve_abstain: 222
+  new_serve_correct: 101
+  new_serve_notjudged: 1
+  old_ask_abstain: 205
+  old_ask_correct: 116
+  old_ask_notjudged: 3
+  old_serve_abstain: 280
+  old_serve_correct: 44
+  -- changed rows (any entrance differs from old ask/serve, or entrances differ) 75 --
+  ext_range:multi-0 田中は本を読む？ | gold=NOT_JUDGED[] | old ask=notjudged ['いいえ'], old serve=abstain None | new ask=notjudged ['いいえ'], new serve=abstain None, new chat=notjudged ['いいえ']
+  ext_range:multi-1 田中はどこで働く？ | gold=NOT_JUDGED[] | old ask=notjudged ['大阪'], old serve=abstain None | new ask=notjudged ['大阪'], new serve=notjudged ['大阪'], new chat=notjudged ['大阪']
+  ext_range:multi-3 田中は本を読まない？ | gold=NOT_JUDGED[] | old ask=notjudged ['はい'], old serve=abstain None | new ask=notjudged ['はい'], new serve=abstain None, new chat=notjudged ['はい']
+  kinship:recipient-父 店員は誰に本を渡した？ | gold=ANSWER['父'] | old ask=correct ['父'], old serve=abstain None | new ask=correct ['父'], new serve=correct ['父'], new chat=correct ['父']
+  kinship:recipient-母 店員は誰に本を渡した？ | gold=ANSWER['母'] | old ask=correct ['母'], old serve=abstain None | new ask=correct ['母'], new serve=correct ['母'], new chat=correct ['母']
+  kinship:recipient-祖父 店員は誰に本を渡した？ | gold=ANSWER['祖父'] | old ask=correct ['祖父'], old serve=abstain None | new ask=correct ['祖父'], new serve=correct ['祖父'], new chat=correct ['祖父']
+  kinship:recipient-祖母 店員は誰に本を渡した？ | gold=ANSWER['祖母'] | old ask=correct ['祖母'], old serve=abstain None | new ask=correct ['祖母'], new serve=correct ['祖母'], new chat=correct ['祖母']
+  kinship:recipient-叔父 店員は誰に本を渡した？ | gold=ANSWER['叔父'] | old ask=correct ['叔父'], old serve=abstain None | new ask=correct ['叔父'], new serve=correct ['叔父'], new chat=correct ['叔父']
+  kinship:recipient-叔母 店員は誰に本を渡した？ | gold=ANSWER['叔母'] | old ask=correct ['叔母'], old serve=abstain None | new ask=correct ['叔母'], new serve=correct ['叔母'], new chat=correct ['叔母']
+  kinship:agent-伯父 誰が肥料を運んだ？ | gold=ANSWER['伯父'] | old ask=correct ['伯父'], old serve=abstain None | new ask=correct ['伯父'], new serve=correct ['伯父'], new chat=correct ['伯父']
+  kinship:recipient-伯父 店員は誰に本を渡した？ | gold=ANSWER['伯父'] | old ask=correct ['伯父'], old serve=abstain None | new ask=correct ['伯父'], new serve=correct ['伯父'], new chat=correct ['伯父']
+  kinship:patient-伯父 医師が誰を診察した？ | gold=ANSWER['伯父'] | old ask=correct ['伯父'], old serve=abstain None | new ask=correct ['伯父'], new serve=correct ['伯父'], new chat=correct ['伯父']
+  kinship:agent-伯母 誰が肥料を運んだ？ | gold=ANSWER['伯母'] | old ask=correct ['伯母'], old serve=abstain None | new ask=correct ['伯母'], new serve=correct ['伯母'], new chat=correct ['伯母']
+  kinship:recipient-伯母 店員は誰に本を渡した？ | gold=ANSWER['伯母'] | old ask=correct ['伯母'], old serve=abstain None | new ask=correct ['伯母'], new serve=correct ['伯母'], new chat=correct ['伯母']
+  kinship:patient-伯母 医師が誰を診察した？ | gold=ANSWER['伯母'] | old ask=correct ['伯母'], old serve=abstain None | new ask=correct ['伯母'], new serve=correct ['伯母'], new chat=correct ['伯母']
+  kinship:recipient-兄 店員は誰に本を渡した？ | gold=ANSWER['兄'] | old ask=correct ['兄'], old serve=abstain None | new ask=correct ['兄'], new serve=correct ['兄'], new chat=correct ['兄']
+  kinship:recipient-姉 店員は誰に本を渡した？ | gold=ANSWER['姉'] | old ask=correct ['姉'], old serve=abstain None | new ask=correct ['姉'], new serve=correct ['姉'], new chat=correct ['姉']
+  kinship:recipient-弟 店員は誰に本を渡した？ | gold=ANSWER['弟'] | old ask=correct ['弟'], old serve=abstain None | new ask=correct ['弟'], new serve=correct ['弟'], new chat=correct ['弟']
+  kinship:recipient-妹 店員は誰に本を渡した？ | gold=ANSWER['妹'] | old ask=correct ['妹'], old serve=abstain None | new ask=correct ['妹'], new serve=correct ['妹'], new chat=correct ['妹']
+  kinship:recipient-息子 店員は誰に本を渡した？ | gold=ANSWER['息子'] | old ask=correct ['息子'], old serve=abstain None | new ask=correct ['息子'], new serve=correct ['息子'], new chat=correct ['息子']
+  kinship:recipient-娘 店員は誰に本を渡した？ | gold=ANSWER['娘'] | old ask=correct ['娘'], old serve=abstain None | new ask=correct ['娘'], new serve=correct ['娘'], new chat=correct ['娘']
+  kinship:recipient-夫 店員は誰に本を渡した？ | gold=ANSWER['夫'] | old ask=correct ['夫'], old serve=abstain None | new ask=correct ['夫'], new serve=correct ['夫'], new chat=correct ['夫']
+  kinship:recipient-妻 店員は誰に本を渡した？ | gold=ANSWER['妻'] | old ask=correct ['妻'], old serve=abstain None | new ask=correct ['妻'], new serve=correct ['妻'], new chat=correct ['妻']
+  kinship:recipient-孫 店員は誰に本を渡した？ | gold=ANSWER['孫'] | old ask=correct ['孫'], old serve=abstain None | new ask=correct ['孫'], new serve=correct ['孫'], new chat=correct ['孫']
+  kinship:agent-友人 誰が肥料を運んだ？ | gold=ANSWER['友人'] | old ask=correct ['友人'], old serve=abstain None | new ask=correct ['友人'], new serve=correct ['友人'], new chat=correct ['友人']
+  kinship:recipient-友人 店員は誰に本を渡した？ | gold=ANSWER['友人'] | old ask=correct ['友人'], old serve=abstain None | new ask=correct ['友人'], new serve=correct ['友人'], new chat=correct ['友人']
+  kinship:patient-友人 医師が誰を診察した？ | gold=ANSWER['友人'] | old ask=correct ['友人'], old serve=abstain None | new ask=correct ['友人'], new serve=correct ['友人'], new chat=correct ['友人']
+  kinship:recipient-同僚 店員は誰に本を渡した？ | gold=ANSWER['同僚'] | old ask=correct ['同僚'], old serve=abstain None | new ask=correct ['同僚'], new serve=correct ['同僚'], new chat=correct ['同僚']
+  kinship:recipient-上司 店員は誰に本を渡した？ | gold=ANSWER['上司'] | old ask=correct ['上司'], old serve=abstain None | new ask=correct ['上司'], new serve=correct ['上司'], new chat=correct ['上司']
+  kinship:recipient-部下 店員は誰に本を渡した？ | gold=ANSWER['部下'] | old ask=correct ['部下'], old serve=abstain None | new ask=correct ['部下'], new serve=correct ['部下'], new chat=correct ['部下']
+  kinship:recipient-先輩 店員は誰に本を渡した？ | gold=ANSWER['先輩'] | old ask=correct ['先輩'], old serve=abstain None | new ask=correct ['先輩'], new serve=correct ['先輩'], new chat=correct ['先輩']
+  kinship:recipient-後輩 店員は誰に本を渡した？ | gold=ANSWER['後輩'] | old ask=correct ['後輩'], old serve=abstain None | new ask=correct ['後輩'], new serve=correct ['後輩'], new chat=correct ['後輩']
+  kinship:recipient-店主 店員は誰に本を渡した？ | gold=ANSWER['店主'] | old ask=correct ['店主'], old serve=abstain None | new ask=correct ['店主'], new serve=correct ['店主'], new chat=correct ['店主']
+  kinship:recipient-教師 店員は誰に本を渡した？ | gold=ANSWER['教師'] | old ask=correct ['教師'], old serve=abstain None | new ask=correct ['教師'], new serve=correct ['教師'], new chat=correct ['教師']
+  prohibition:ctl-neg-田中 田中は本を読む？ | gold=ANSWER['いいえ'] | old ask=correct ['いいえ'], old serve=abstain None | new ask=correct ['いいえ'], new serve=abstain None, new chat=correct ['いいえ']
+  prohibition:ctl-negq-田中 田中は本を読まない？ | gold=ANSWER['はい'] | old ask=correct ['はい'], old serve=abstain None | new ask=correct ['はい'], new serve=abstain None, new chat=correct ['はい']
+  prohibition:ctl-neg-佐藤 佐藤は鍵を持ち出す？ | gold=ANSWER['いいえ'] | old ask=correct ['いいえ'], old serve=abstain None | new ask=correct ['いいえ'], new serve=abstain None, new chat=correct ['いいえ']
+  prohibition:ctl-negq-佐藤 佐藤は鍵を持ち出さない？ | gold=ANSWER['はい'] | old ask=correct ['はい'], old serve=abstain None | new ask=correct ['はい'], new serve=abstain None, new chat=correct ['はい']
+  prohibition:ctl-neg-鈴木 鈴木は答えを見る？ | gold=ANSWER['いいえ'] | old ask=correct ['いいえ'], old serve=abstain None | new ask=correct ['いいえ'], new serve=abstain None, new chat=correct ['いいえ']
+  prohibition:ctl-negq-鈴木 鈴木は答えを見ない？ | gold=ANSWER['はい'] | old ask=correct ['はい'], old serve=abstain None | new ask=correct ['はい'], new serve=abstain None, new chat=correct ['はい']
+  prohibition:ctl-neg-高橋 高橋は書類を捨てる？ | gold=ANSWER['いいえ'] | old ask=correct ['いいえ'], old serve=abstain None | new ask=correct ['いいえ'], new serve=abstain None, new chat=correct ['いいえ']
+  prohibition:ctl-negq-高橋 高橋は書類を捨てない？ | gold=ANSWER['はい'] | old ask=correct ['はい'], old serve=abstain None | new ask=correct ['はい'], new serve=abstain None, new chat=correct ['はい']
+  prohibition_nde:nde-ctl-0 運転手は酒を飲む？ | gold=ANSWER['いいえ'] | old ask=correct ['いいえ'], old serve=abstain None | new ask=correct ['いいえ'], new serve=abstain None, new chat=correct ['いいえ']
+  prohibition_nde:nde-ctl-1 作業員は荷物を運ぶ？ | gold=ANSWER['いいえ'] | old ask=correct ['いいえ'], old serve=abstain None | new ask=correct ['いいえ'], new serve=abstain None, new chat=correct ['いいえ']
+  prohibition_nde:nde-ctl-2 生徒は手紙を読む？ | gold=ANSWER['いいえ'] | old ask=correct ['いいえ'], old serve=abstain None | new ask=correct ['いいえ'], new serve=abstain None, new chat=correct ['いいえ']
+  prohibition_nde:nde-ctl-3 受付は友人を呼ぶ？ | gold=ANSWER['いいえ'] | old ask=correct ['いいえ'], old serve=abstain None | new ask=correct ['いいえ'], new serve=abstain None, new chat=correct ['いいえ']
+  prohibition_nde:nde-ctl-4 委員は候補者を選ぶ？ | gold=ANSWER['いいえ'] | old ask=correct ['いいえ'], old serve=abstain None | new ask=correct ['いいえ'], new serve=abstain None, new chat=correct ['いいえ']
+  prohibition_nde:nde-ctl-5 店員は財布を盗む？ | gold=ANSWER['いいえ'] | old ask=correct ['いいえ'], old serve=abstain None | new ask=correct ['いいえ'], new serve=abstain None, new chat=correct ['いいえ']
+  prohibition_nde:nde-ctl-6 医者は薬を頼む？ | gold=ANSWER['いいえ'] | old ask=correct ['いいえ'], old serve=abstain None | new ask=correct ['いいえ'], new serve=abstain None, new chat=correct ['いいえ']
+  time_place:ctl-plain-0 どこで働く？ | gold=ANSWER['東京'] | old ask=correct ['東京'], old serve=abstain None | new ask=correct ['東京'], new serve=correct ['東京'], new chat=correct ['東京']
+  time_place:ctl-comma-0 どこで働く？ | gold=ANSWER['東京'] | old ask=correct ['東京'], old serve=abstain None | new ask=correct ['東京'], new serve=correct ['東京'], new chat=correct ['東京']
+  time_place:ctl-plain-1 田中はどこで新聞を買う？ | gold=ANSWER['駅前'] | old ask=correct ['駅前'], old serve=abstain None | new ask=correct ['駅前'], new serve=correct ['駅前'], new chat=correct ['駅前']
+  time_place:ctl-comma-1 田中はどこで新聞を買う？ | gold=ANSWER['駅前'] | old ask=correct ['駅前'], old serve=abstain None | new ask=correct ['駅前'], new serve=correct ['駅前'], new chat=correct ['駅前']
+  time_place:ctl-plain-2 佐藤さんはどこで昼食を食べる？ | gold=ANSWER['図書館'] | old ask=correct ['図書館'], old serve=abstain None | new ask=correct ['図書館'], new serve=correct ['図書館'], new chat=correct ['図書館']
+  time_place:ctl-comma-2 佐藤さんはどこで昼食を食べる？ | gold=ANSWER['図書館'] | old ask=correct ['図書館'], old serve=abstain None | new ask=correct ['図書館'], new serve=correct ['図書館'], new chat=correct ['図書館']
+  time_place:ctl-plain-3 鈴木はどこで本を読む？ | gold=ANSWER['食堂'] | old ask=correct ['食堂'], old serve=abstain None | new ask=correct ['食堂'], new serve=correct ['食堂'], new chat=correct ['食堂']
+  time_place:ctl-comma-3 鈴木はどこで本を読む？ | gold=ANSWER['食堂'] | old ask=correct ['食堂'], old serve=abstain None | new ask=correct ['食堂'], new serve=correct ['食堂'], new chat=correct ['食堂']
+  time_place:ctl-plain-4 高橋さんはどこで写真を撮る？ | gold=ANSWER['会議室'] | old ask=correct ['会議室'], old serve=abstain None | new ask=correct ['会議室'], new serve=correct ['会議室'], new chat=correct ['会議室']
+  time_place:ctl-comma-4 高橋さんはどこで写真を撮る？ | gold=ANSWER['会議室'] | old ask=correct ['会議室'], old serve=abstain None | new ask=correct ['会議室'], new serve=correct ['会議室'], new chat=correct ['会議室']
+  time_place:ctl-plain-5 中村はどこで資料を作る？ | gold=ANSWER['公園'] | old ask=correct ['公園'], old serve=abstain None | new ask=correct ['公園'], new serve=correct ['公園'], new chat=correct ['公園']
+  time_place:ctl-comma-5 中村はどこで資料を作る？ | gold=ANSWER['公園'] | old ask=correct ['公園'], old serve=abstain None | new ask=correct ['公園'], new serve=correct ['公園'], new chat=correct ['公園']
+  time_place_suffix:sfx-ctl-plain-0 どこで働く？ | gold=ANSWER['港'] | old ask=correct ['港'], old serve=abstain None | new ask=correct ['港'], new serve=correct ['港'], new chat=correct ['港']
+  time_place_suffix:sfx-ctl-plain-1 田中はどこで新聞を買う？ | gold=ANSWER['店'] | old ask=correct ['店'], old serve=abstain None | new ask=correct ['店'], new serve=correct ['店'], new chat=correct ['店']
+  time_place_suffix:sfx-ctl-plain-2 佐藤さんはどこで昼食を食べる？ | gold=ANSWER['館'] | old ask=correct ['館'], old serve=abstain None | new ask=correct ['館'], new serve=correct ['館'], new chat=correct ['館']
+  time_place_suffix:sfx-ctl-plain-3 鈴木はどこで本を読む？ | gold=ANSWER['庁'] | old ask=correct ['庁'], old serve=abstain None | new ask=correct ['庁'], new serve=correct ['庁'], new chat=correct ['庁']
+  time_place_suffix:sfx-ctl-plain-4 高橋さんはどこで写真を撮る？ | gold=ANSWER['室'] | old ask=correct ['室'], old serve=abstain None | new ask=correct ['室'], new serve=correct ['室'], new chat=correct ['室']
+  time_place_suffix:sfx-ctl-plain-5 中村はどこで資料を作る？ | gold=ANSWER['園'] | old ask=correct ['園'], old serve=abstain None | new ask=correct ['園'], new serve=correct ['園'], new chat=correct ['園']
+  time_place_suffix:sfx-ctl-plain-6 どこで働く？ | gold=ANSWER['院'] | old ask=correct ['院'], old serve=abstain None | new ask=correct ['院'], new serve=correct ['院'], new chat=correct ['院']
+  time_place_suffix:sfx-ctl-plain-7 田中はどこで新聞を買う？ | gold=ANSWER['城'] | old ask=correct ['城'], old serve=abstain None | new ask=correct ['城'], new serve=correct ['城'], new chat=correct ['城']
+  time_place_suffix:sfx-ctl-comma-0 どこで働く？ | gold=ANSWER['港'] | old ask=correct ['港'], old serve=abstain None | new ask=correct ['港'], new serve=correct ['港'], new chat=correct ['港']
+  time_place_suffix:sfx-ctl-comma-1 田中はどこで新聞を買う？ | gold=ANSWER['館'] | old ask=correct ['館'], old serve=abstain None | new ask=correct ['館'], new serve=correct ['館'], new chat=correct ['館']
+  time_place_suffix:sfx-ctl-comma-2 佐藤さんはどこで昼食を食べる？ | gold=ANSWER['室'] | old ask=correct ['室'], old serve=abstain None | new ask=correct ['室'], new serve=correct ['室'], new chat=correct ['室']
+  time_place_suffix:sfx-ctl-comma-3 鈴木はどこで本を読む？ | gold=ANSWER['院'] | old ask=correct ['院'], old serve=abstain None | new ask=correct ['院'], new serve=correct ['院'], new chat=correct ['院']
+  time_place_suffix:sfx-ctl-comma-4 高橋さんはどこで写真を撮る？ | gold=ANSWER['港'] | old ask=correct ['港'], old serve=abstain None | new ask=correct ['港'], new serve=correct ['港'], new chat=correct ['港']
+  time_place_suffix:sfx-ctl-comma-5 中村はどこで資料を作る？ | gold=ANSWER['館'] | old ask=correct ['館'], old serve=abstain None | new ask=correct ['館'], new serve=correct ['館'], new chat=correct ['館']
+== TOTAL ==
+  correct_to_abstain_ask: 2
+  correct_to_abstain_chat: 2
+  correct_to_abstain_serve: 17
+  correct_to_nonCorrect_ask: 2
+  correct_to_nonCorrect_chat: 2
+  correct_to_nonCorrect_serve: 17
+  new_ask_abstain: 321
+  new_ask_correct: 223
+  new_ask_notjudged: 7
+  new_ask_wrong: 2
+  new_chat_abstain: 321
+  new_chat_correct: 223
+  new_chat_notjudged: 7
+  new_chat_wrong: 2
+  new_serve_abstain: 342
+  new_serve_correct: 208
+  new_serve_notjudged: 1
+  new_serve_wrong: 2
+  old_ask_abstain: 321
+  old_ask_correct: 223
+  old_ask_notjudged: 7
+  old_ask_wrong: 2
+  old_serve_abstain: 431
+  old_serve_correct: 122
+wrong (new, all entrances): ask=2 serve=2 chat=2
+wrong that is NOT in old (new regressions into wrong): ask=0 serve=0 chat=0
+  (old = old ask OR old serve; per-entrance transitions and the T2-2 (a)-(d) judgement are below)
+AnswerResult mismatch count: 0
+
+######## round 2: per-entrance transitions and T2-2 (a)-(d) ########
+== [u4] n=11
+  transitions ask (own old -> new): abstain->abstain: 4, correct->correct: 7
+  transitions serve (own old -> new): abstain->abstain: 4, abstain->correct: 5, correct->correct: 2
+  transitions chat (own old -> new): abstain->abstain: 4, correct->correct: 7
+  calls: 11 x rows with documents: ask, serve and chat each called doc_answer.answer once
+  ask abstain->wrong: 0
+  ask correct->abstain: 0
+  ask correct->wrong: 0
+  ask wrong->*: 0
+  serve abstain->wrong: 0
+  serve correct->abstain: 0
+  serve correct->wrong: 0
+  serve wrong->*: 0
+  chat abstain->wrong: 0
+  chat correct->abstain: 0
+  chat correct->wrong: 0
+  chat wrong->*: 0
+  -- no-placement style listing (rows an entrance answered in old only / answered first in new) --
+  (none: no row that old answered and new abstains on)
+  NEW-FIRST-ANSWERED serve U01 (abstain->correct) 誰が花子に本を渡したか | new ['太郎']
+  NEW-FIRST-ANSWERED serve U02 (abstain->correct) 誰が花子に本を渡しましたか | new ['太郎']
+  NEW-FIRST-ANSWERED serve U05 (abstain->correct) 太郎は誰に本を渡したか | new ['花子']
+  NEW-FIRST-ANSWERED serve U09 (abstain->correct) 誰が花子に本を渡した | new ['太郎']
+  NEW-FIRST-ANSWERED serve U11 (abstain->correct) 太郎は誰に本を渡した？ | new ['花子']
+T2-2a [u4] ask: new wrong ids subset of old ask wrong ids: PASS (new wrong = []; old ask wrong = [])
+T2-2a [u4] serve: new wrong ids subset of old ask wrong ids: PASS (new wrong = []; old ask wrong = [])
+T2-2a [u4] chat: new wrong ids subset of old ask wrong ids: PASS (new wrong = []; old ask wrong = [])
+T2-2b [u4] ask: new correct 7 >= max(old ask, old serve, old chat) 7 (old: ask=7, serve=2, chat=7): PASS
+T2-2b [u4] serve: new correct 7 >= max(old ask, old serve, old chat) 7 (old: ask=7, serve=2, chat=7): PASS
+T2-2b [u4] chat: new correct 7 >= max(old ask, old serve, old chat) 7 (old: ask=7, serve=2, chat=7): PASS
+T2-2b-info [u4] serve by AnswerResult (withheld rows counted as the function answered them): correct 7 (shown by serve: 7)
+T2-2c [u4] transitions enumerated above (abstain->wrong, correct->abstain, correct->wrong, wrong->*): PASS (correct->wrong = 0)
+T2-2d [u4] n/a (only the w3f1 set has NOT_JUDGED rows by construction of its gold)
+== [own60] n=60
+  transitions ask (own old -> new): abstain->abstain: 35, correct->correct: 24, wrong->wrong: 1
+  transitions serve (own old -> new): abstain->abstain: 35, abstain->correct: 17, abstain->wrong: 1, correct->correct: 7
+  transitions chat (own old -> new): abstain->abstain: 35, correct->correct: 24, wrong->wrong: 1
+  calls: 60 x rows with documents: ask, serve and chat each called doc_answer.answer once
+  ask abstain->wrong: 0
+  ask correct->abstain: 0
+  ask correct->wrong: 0
+  ask wrong->*: 1
+  serve abstain->wrong: 1
+  serve correct->abstain: 0
+  serve correct->wrong: 0
+  serve wrong->*: 0
+  chat abstain->wrong: 0
+  chat correct->abstain: 0
+  chat correct->wrong: 0
+  chat wrong->*: 1
+  ROW ask wrong->wrong | O38 誰が小説を読んだ？ | gold=ABSTAIN[] | old ['次郎'] new ['次郎']
+  ROW chat wrong->wrong | O38 誰が小説を読んだ？ | gold=ABSTAIN[] | old ['次郎'] new ['次郎']
+  ROW serve abstain->wrong | O38 誰が小説を読んだ？ | gold=ABSTAIN[] | old None new ['次郎']
+  -- no-placement style listing (rows an entrance answered in old only / answered first in new) --
+  (none: no row that old answered and new abstains on)
+  NEW-FIRST-ANSWERED serve O01 (abstain->correct) 誰が生徒にノートを配ったか | new ['先生']
+  NEW-FIRST-ANSWERED serve O02 (abstain->correct) 誰が生徒にノートを配りましたか | new ['先生']
+  NEW-FIRST-ANSWERED serve O04 (abstain->correct) 誰が生徒にノートを配った | new ['先生']
+  NEW-FIRST-ANSWERED serve O08 (abstain->correct) 先生は誰にノートを配ったか | new ['生徒']
+  NEW-FIRST-ANSWERED serve O09 (abstain->correct) 先生は誰にノートを配った？ | new ['生徒']
+  NEW-FIRST-ANSWERED serve O11 (abstain->correct) 生徒はどこで手紙を書いたか | new ['教室']
+  NEW-FIRST-ANSWERED serve O12 (abstain->correct) 誰が教室で手紙を書いた？ | new ['生徒']
+  NEW-FIRST-ANSWERED serve O13 (abstain->correct) 誰が教室で手紙を書きましたか | new ['生徒']
+  NEW-FIRST-ANSWERED serve O19 (abstain->correct) 誰が図書館へ行った？ | new ['弟']
+  NEW-FIRST-ANSWERED serve O23 (abstain->correct) 客はどこで野菜を買ったか | new ['市場']
+  NEW-FIRST-ANSWERED serve O29 (abstain->correct) 誰が店で魚を買わなかったか | new ['母']
+  NEW-FIRST-ANSWERED serve O38 (abstain->wrong) 誰が小説を読んだ？ | new ['次郎']
+  NEW-FIRST-ANSWERED serve O42 (abstain->correct) 誰が庭で木を植えたか | new ['父']
+  NEW-FIRST-ANSWERED serve O44 (abstain->correct) 父はどこで木を植えましたか | new ['庭']
+  NEW-FIRST-ANSWERED serve O47 (abstain->correct) 校長はどこで挨拶をしたか | new ['体育館']
+  NEW-FIRST-ANSWERED serve O49 (abstain->correct) 医者はどこで患者に薬を渡したか | new ['病院']
+  NEW-FIRST-ANSWERED serve O54 (abstain->correct) 漁師はどこで魚を捕ったか | new ['海']
+  NEW-FIRST-ANSWERED serve O58 (abstain->correct) 誰が妹に人形を贈ったか | new ['姉']
+T2-2a [own60] ask: new wrong ids subset of old ask wrong ids: PASS (new wrong = ['O38']; old ask wrong = ['O38'])
+T2-2a [own60] serve: new wrong ids subset of old ask wrong ids: PASS (new wrong = ['O38']; old ask wrong = ['O38'])
+T2-2a [own60] chat: new wrong ids subset of old ask wrong ids: PASS (new wrong = ['O38']; old ask wrong = ['O38'])
+T2-2b [own60] ask: new correct 24 >= max(old ask, old serve, old chat) 24 (old: ask=24, serve=7, chat=24): PASS
+T2-2b [own60] serve: new correct 24 >= max(old ask, old serve, old chat) 24 (old: ask=24, serve=7, chat=24): PASS
+T2-2b [own60] chat: new correct 24 >= max(old ask, old serve, old chat) 24 (old: ask=24, serve=7, chat=24): PASS
+T2-2b-info [own60] serve by AnswerResult (withheld rows counted as the function answered them): correct 24 (shown by serve: 24)
+T2-2c [own60] transitions enumerated above (abstain->wrong, correct->abstain, correct->wrong, wrong->*): PASS (correct->wrong = 0)
+T2-2d [own60] n/a (only the w3f1 set has NOT_JUDGED rows by construction of its gold)
+== [w3c4] n=111
+  transitions ask (own old -> new): abstain->abstain: 57, correct->correct: 51, notjudged->notjudged: 3
+  transitions serve (own old -> new): abstain->abstain: 58, abstain->correct: 3, correct->abstain: 2, correct->correct: 48
+  transitions chat (own old -> new): abstain->abstain: 57, correct->correct: 51, notjudged->notjudged: 3
+  calls: 109 x rows with documents: ask, serve and chat each called doc_answer.answer once
+  calls: 2 x rows without documents: ask and chat once, serve 0 (NO_RECORD/DOCUMENTS_NOT_LOADED, the function is not called; same as the base)
+  ask abstain->wrong: 0
+  ask correct->abstain: 0
+  ask correct->wrong: 0
+  ask wrong->*: 0
+  serve abstain->wrong: 0
+  serve correct->abstain: 2
+  serve correct->wrong: 0
+  serve wrong->*: 0
+  chat abstain->wrong: 0
+  chat correct->abstain: 0
+  chat correct->wrong: 0
+  chat wrong->*: 0
+  ROW serve correct->abstain | AQ021 誰が市場で馬を売った？ | gold=ANSWER['農夫'] | old ['農夫'] new None
+  ROW serve correct->abstain | AQ022 誰が港から魚を送った？ | gold=ANSWER['漁師'] | old ['漁師'] new None
+  -- no-placement style listing (rows an entrance answered in old only / answered first in new) --
+  ONLY-OLD-ANSWERED serve AQ021 (correct->abstain) 誰が市場で馬を売った？ | old ['農夫']
+  ONLY-OLD-ANSWERED serve AQ022 (correct->abstain) 誰が港から魚を送った？ | old ['漁師']
+  NEW-FIRST-ANSWERED serve AQ003 (abstain->correct) 誰が橋を建てた？ | new ['技師']
+  NEW-FIRST-ANSWERED serve AQ047 (abstain->correct) 誰が民に金貨を配った？ | new ['王']
+  NEW-FIRST-ANSWERED serve AQ069 (abstain->correct) 誰が店で服を買った？ | new ['父']
+T2-2a [w3c4] ask: new wrong ids subset of old ask wrong ids: PASS (new wrong = []; old ask wrong = [])
+T2-2a [w3c4] serve: new wrong ids subset of old ask wrong ids: PASS (new wrong = []; old ask wrong = [])
+T2-2a [w3c4] chat: new wrong ids subset of old ask wrong ids: PASS (new wrong = []; old ask wrong = [])
+T2-2b [w3c4] ask: new correct 51 >= max(old ask, old serve, old chat) 51 (old: ask=51, serve=50, chat=51): PASS
+T2-2b [w3c4] serve: new correct 51 >= max(old ask, old serve, old chat) 51 (old: ask=51, serve=50, chat=51): PASS
+T2-2b [w3c4] chat: new correct 51 >= max(old ask, old serve, old chat) 51 (old: ask=51, serve=50, chat=51): PASS
+T2-2b-info [w3c4] serve by AnswerResult (withheld rows counted as the function answered them): correct 51 (shown by serve: 51)
+T2-2c [w3c4] transitions enumerated above (abstain->wrong, correct->abstain, correct->wrong, wrong->*): PASS (correct->wrong = 0)
+T2-2d [w3c4] n/a (only the w3f1 set has NOT_JUDGED rows by construction of its gold)
+== [w3c4_b2like] n=47
+  transitions ask (own old -> new): abstain->abstain: 20, correct->correct: 25, notjudged->notjudged: 1, wrong->wrong: 1
+  transitions serve (own old -> new): abstain->abstain: 21, abstain->correct: 6, abstain->wrong: 1, correct->correct: 19
+  transitions chat (own old -> new): abstain->abstain: 20, correct->correct: 25, notjudged->notjudged: 1, wrong->wrong: 1
+  calls: 47 x rows with documents: ask, serve and chat each called doc_answer.answer once
+  ask abstain->wrong: 0
+  ask correct->abstain: 0
+  ask correct->wrong: 0
+  ask wrong->*: 1
+  serve abstain->wrong: 1
+  serve correct->abstain: 0
+  serve correct->wrong: 0
+  serve wrong->*: 0
+  chat abstain->wrong: 0
+  chat correct->abstain: 0
+  chat correct->wrong: 0
+  chat wrong->*: 1
+  ROW ask wrong->wrong | BQ002 誰が佐藤さんに報告書を渡しましたか？ | gold=ANSWER['森田課長'] | old ['森田'] new ['森田']
+  ROW chat wrong->wrong | BQ002 誰が佐藤さんに報告書を渡しましたか？ | gold=ANSWER['森田課長'] | old ['森田'] new ['森田']
+  ROW serve abstain->wrong | BQ002 誰が佐藤さんに報告書を渡しましたか？ | gold=ANSWER['森田課長'] | old None new ['森田']
+  -- no-placement style listing (rows an entrance answered in old only / answered first in new) --
+  (none: no row that old answered and new abstains on)
+  NEW-FIRST-ANSWERED serve BQ002 (abstain->wrong) 誰が佐藤さんに報告書を渡しましたか？ | new ['森田']
+  NEW-FIRST-ANSWERED serve BQ005 (abstain->correct) 田中部長はどこへ行った？ | new ['会議']
+  NEW-FIRST-ANSWERED serve BQ006 (abstain->correct) 誰が顧客に見積書を送った？ | new ['鈴木さん']
+  NEW-FIRST-ANSWERED serve BQ017 (abstain->correct) 誰がお客に傘を売った？ | new ['店長']
+  NEW-FIRST-ANSWERED serve BQ021 (abstain->correct) 誰が店長に手紙を書いた？ | new ['お客']
+  NEW-FIRST-ANSWERED serve BQ023 (abstain->correct) 店員は何を受け取らなかった？ | new ['荷物']
+  NEW-FIRST-ANSWERED serve BQ031 (abstain->correct) 生徒は図書館で何を借りた？ | new ['本']
+T2-2a [w3c4_b2like] ask: new wrong ids subset of old ask wrong ids: PASS (new wrong = ['BQ002']; old ask wrong = ['BQ002'])
+T2-2a [w3c4_b2like] serve: new wrong ids subset of old ask wrong ids: PASS (new wrong = ['BQ002']; old ask wrong = ['BQ002'])
+T2-2a [w3c4_b2like] chat: new wrong ids subset of old ask wrong ids: PASS (new wrong = ['BQ002']; old ask wrong = ['BQ002'])
+T2-2b [w3c4_b2like] ask: new correct 25 >= max(old ask, old serve, old chat) 25 (old: ask=25, serve=19, chat=25): PASS
+T2-2b [w3c4_b2like] serve: new correct 25 >= max(old ask, old serve, old chat) 25 (old: ask=25, serve=19, chat=25): PASS
+T2-2b [w3c4_b2like] chat: new correct 25 >= max(old ask, old serve, old chat) 25 (old: ask=25, serve=19, chat=25): PASS
+T2-2b-info [w3c4_b2like] serve by AnswerResult (withheld rows counted as the function answered them): correct 25 (shown by serve: 25)
+T2-2c [w3c4_b2like] transitions enumerated above (abstain->wrong, correct->abstain, correct->wrong, wrong->*): PASS (correct->wrong = 0)
+T2-2d [w3c4_b2like] n/a (only the w3f1 set has NOT_JUDGED rows by construction of its gold)
+== [w3f1] n=324
+  transitions ask (own old -> new): abstain->abstain: 205, correct->correct: 116, notjudged->notjudged: 3
+  transitions serve (own old -> new): abstain->abstain: 222, abstain->correct: 57, abstain->notjudged: 1, correct->correct: 44
+  transitions chat (own old -> new): abstain->abstain: 205, correct->correct: 116, notjudged->notjudged: 3
+  calls: 324 x rows with documents: ask, serve and chat each called doc_answer.answer once
+  ask abstain->wrong: 0
+  ask correct->abstain: 0
+  ask correct->wrong: 0
+  ask wrong->*: 0
+  serve abstain->wrong: 0
+  serve correct->abstain: 0
+  serve correct->wrong: 0
+  serve wrong->*: 0
+  chat abstain->wrong: 0
+  chat correct->abstain: 0
+  chat correct->wrong: 0
+  chat wrong->*: 0
+  -- no-placement style listing (rows an entrance answered in old only / answered first in new) --
+  (none: no row that old answered and new abstains on)
+  NEW-FIRST-ANSWERED serve ext_range:multi-1 (abstain->notjudged) 田中はどこで働く？ | new ['大阪']
+  NEW-FIRST-ANSWERED serve kinship:recipient-父 (abstain->correct) 店員は誰に本を渡した？ | new ['父']
+  NEW-FIRST-ANSWERED serve kinship:recipient-母 (abstain->correct) 店員は誰に本を渡した？ | new ['母']
+  NEW-FIRST-ANSWERED serve kinship:recipient-祖父 (abstain->correct) 店員は誰に本を渡した？ | new ['祖父']
+  NEW-FIRST-ANSWERED serve kinship:recipient-祖母 (abstain->correct) 店員は誰に本を渡した？ | new ['祖母']
+  NEW-FIRST-ANSWERED serve kinship:recipient-叔父 (abstain->correct) 店員は誰に本を渡した？ | new ['叔父']
+  NEW-FIRST-ANSWERED serve kinship:recipient-叔母 (abstain->correct) 店員は誰に本を渡した？ | new ['叔母']
+  NEW-FIRST-ANSWERED serve kinship:agent-伯父 (abstain->correct) 誰が肥料を運んだ？ | new ['伯父']
+  NEW-FIRST-ANSWERED serve kinship:recipient-伯父 (abstain->correct) 店員は誰に本を渡した？ | new ['伯父']
+  NEW-FIRST-ANSWERED serve kinship:patient-伯父 (abstain->correct) 医師が誰を診察した？ | new ['伯父']
+  NEW-FIRST-ANSWERED serve kinship:agent-伯母 (abstain->correct) 誰が肥料を運んだ？ | new ['伯母']
+  NEW-FIRST-ANSWERED serve kinship:recipient-伯母 (abstain->correct) 店員は誰に本を渡した？ | new ['伯母']
+  NEW-FIRST-ANSWERED serve kinship:patient-伯母 (abstain->correct) 医師が誰を診察した？ | new ['伯母']
+  NEW-FIRST-ANSWERED serve kinship:recipient-兄 (abstain->correct) 店員は誰に本を渡した？ | new ['兄']
+  NEW-FIRST-ANSWERED serve kinship:recipient-姉 (abstain->correct) 店員は誰に本を渡した？ | new ['姉']
+  NEW-FIRST-ANSWERED serve kinship:recipient-弟 (abstain->correct) 店員は誰に本を渡した？ | new ['弟']
+  NEW-FIRST-ANSWERED serve kinship:recipient-妹 (abstain->correct) 店員は誰に本を渡した？ | new ['妹']
+  NEW-FIRST-ANSWERED serve kinship:recipient-息子 (abstain->correct) 店員は誰に本を渡した？ | new ['息子']
+  NEW-FIRST-ANSWERED serve kinship:recipient-娘 (abstain->correct) 店員は誰に本を渡した？ | new ['娘']
+  NEW-FIRST-ANSWERED serve kinship:recipient-夫 (abstain->correct) 店員は誰に本を渡した？ | new ['夫']
+  NEW-FIRST-ANSWERED serve kinship:recipient-妻 (abstain->correct) 店員は誰に本を渡した？ | new ['妻']
+  NEW-FIRST-ANSWERED serve kinship:recipient-孫 (abstain->correct) 店員は誰に本を渡した？ | new ['孫']
+  NEW-FIRST-ANSWERED serve kinship:agent-友人 (abstain->correct) 誰が肥料を運んだ？ | new ['友人']
+  NEW-FIRST-ANSWERED serve kinship:recipient-友人 (abstain->correct) 店員は誰に本を渡した？ | new ['友人']
+  NEW-FIRST-ANSWERED serve kinship:patient-友人 (abstain->correct) 医師が誰を診察した？ | new ['友人']
+  NEW-FIRST-ANSWERED serve kinship:recipient-同僚 (abstain->correct) 店員は誰に本を渡した？ | new ['同僚']
+  NEW-FIRST-ANSWERED serve kinship:recipient-上司 (abstain->correct) 店員は誰に本を渡した？ | new ['上司']
+  NEW-FIRST-ANSWERED serve kinship:recipient-部下 (abstain->correct) 店員は誰に本を渡した？ | new ['部下']
+  NEW-FIRST-ANSWERED serve kinship:recipient-先輩 (abstain->correct) 店員は誰に本を渡した？ | new ['先輩']
+  NEW-FIRST-ANSWERED serve kinship:recipient-後輩 (abstain->correct) 店員は誰に本を渡した？ | new ['後輩']
+  NEW-FIRST-ANSWERED serve kinship:recipient-店主 (abstain->correct) 店員は誰に本を渡した？ | new ['店主']
+  NEW-FIRST-ANSWERED serve kinship:recipient-教師 (abstain->correct) 店員は誰に本を渡した？ | new ['教師']
+  NEW-FIRST-ANSWERED serve time_place:ctl-plain-0 (abstain->correct) どこで働く？ | new ['東京']
+  NEW-FIRST-ANSWERED serve time_place:ctl-comma-0 (abstain->correct) どこで働く？ | new ['東京']
+  NEW-FIRST-ANSWERED serve time_place:ctl-plain-1 (abstain->correct) 田中はどこで新聞を買う？ | new ['駅前']
+  NEW-FIRST-ANSWERED serve time_place:ctl-comma-1 (abstain->correct) 田中はどこで新聞を買う？ | new ['駅前']
+  NEW-FIRST-ANSWERED serve time_place:ctl-plain-2 (abstain->correct) 佐藤さんはどこで昼食を食べる？ | new ['図書館']
+  NEW-FIRST-ANSWERED serve time_place:ctl-comma-2 (abstain->correct) 佐藤さんはどこで昼食を食べる？ | new ['図書館']
+  NEW-FIRST-ANSWERED serve time_place:ctl-plain-3 (abstain->correct) 鈴木はどこで本を読む？ | new ['食堂']
+  NEW-FIRST-ANSWERED serve time_place:ctl-comma-3 (abstain->correct) 鈴木はどこで本を読む？ | new ['食堂']
+  NEW-FIRST-ANSWERED serve time_place:ctl-plain-4 (abstain->correct) 高橋さんはどこで写真を撮る？ | new ['会議室']
+  NEW-FIRST-ANSWERED serve time_place:ctl-comma-4 (abstain->correct) 高橋さんはどこで写真を撮る？ | new ['会議室']
+  NEW-FIRST-ANSWERED serve time_place:ctl-plain-5 (abstain->correct) 中村はどこで資料を作る？ | new ['公園']
+  NEW-FIRST-ANSWERED serve time_place:ctl-comma-5 (abstain->correct) 中村はどこで資料を作る？ | new ['公園']
+  NEW-FIRST-ANSWERED serve time_place_suffix:sfx-ctl-plain-0 (abstain->correct) どこで働く？ | new ['港']
+  NEW-FIRST-ANSWERED serve time_place_suffix:sfx-ctl-plain-1 (abstain->correct) 田中はどこで新聞を買う？ | new ['店']
+  NEW-FIRST-ANSWERED serve time_place_suffix:sfx-ctl-plain-2 (abstain->correct) 佐藤さんはどこで昼食を食べる？ | new ['館']
+  NEW-FIRST-ANSWERED serve time_place_suffix:sfx-ctl-plain-3 (abstain->correct) 鈴木はどこで本を読む？ | new ['庁']
+  NEW-FIRST-ANSWERED serve time_place_suffix:sfx-ctl-plain-4 (abstain->correct) 高橋さんはどこで写真を撮る？ | new ['室']
+  NEW-FIRST-ANSWERED serve time_place_suffix:sfx-ctl-plain-5 (abstain->correct) 中村はどこで資料を作る？ | new ['園']
+  NEW-FIRST-ANSWERED serve time_place_suffix:sfx-ctl-plain-6 (abstain->correct) どこで働く？ | new ['院']
+  NEW-FIRST-ANSWERED serve time_place_suffix:sfx-ctl-plain-7 (abstain->correct) 田中はどこで新聞を買う？ | new ['城']
+  NEW-FIRST-ANSWERED serve time_place_suffix:sfx-ctl-comma-0 (abstain->correct) どこで働く？ | new ['港']
+  NEW-FIRST-ANSWERED serve time_place_suffix:sfx-ctl-comma-1 (abstain->correct) 田中はどこで新聞を買う？ | new ['館']
+  NEW-FIRST-ANSWERED serve time_place_suffix:sfx-ctl-comma-2 (abstain->correct) 佐藤さんはどこで昼食を食べる？ | new ['室']
+  NEW-FIRST-ANSWERED serve time_place_suffix:sfx-ctl-comma-3 (abstain->correct) 鈴木はどこで本を読む？ | new ['院']
+  NEW-FIRST-ANSWERED serve time_place_suffix:sfx-ctl-comma-4 (abstain->correct) 高橋さんはどこで写真を撮る？ | new ['港']
+  NEW-FIRST-ANSWERED serve time_place_suffix:sfx-ctl-comma-5 (abstain->correct) 中村はどこで資料を作る？ | new ['館']
+T2-2a [w3f1] ask: new wrong ids subset of old ask wrong ids: PASS (new wrong = []; old ask wrong = [])
+T2-2a [w3f1] serve: new wrong ids subset of old ask wrong ids: PASS (new wrong = []; old ask wrong = [])
+T2-2a [w3f1] chat: new wrong ids subset of old ask wrong ids: PASS (new wrong = []; old ask wrong = [])
+T2-2b [w3f1] ask: new correct 116 >= max(old ask, old serve, old chat) 116 (old: ask=116, serve=44, chat=116): PASS
+T2-2b [w3f1] serve: new correct 101 >= max(old ask, old serve, old chat) 116 (old: ask=116, serve=44, chat=116): FAIL
+T2-2b [w3f1] chat: new correct 116 >= max(old ask, old serve, old chat) 116 (old: ask=116, serve=44, chat=116): PASS
+T2-2b-info [w3f1] serve by AnswerResult (withheld rows counted as the function answered them): correct 116 (shown by serve: 101)
+T2-2c [w3f1] transitions enumerated above (abstain->wrong, correct->abstain, correct->wrong, wrong->*): PASS (correct->wrong = 0)
+T2-2d [w3f1] NOT_JUDGED rows: new ask (verdict, values, evidence) == old ask: PASS (208 of 208 equal)
+== [TOTAL over the sets above]
+  transitions ask: abstain->abstain: 321, correct->correct: 223, notjudged->notjudged: 7, wrong->wrong: 2
+  ask abstain->wrong: 0
+  ask correct->abstain: 0
+  ask correct->wrong: 0
+  transitions serve: abstain->abstain: 340, abstain->correct: 88, abstain->notjudged: 1, abstain->wrong: 2, correct->abstain: 2, correct->correct: 120
+  serve abstain->wrong: 2
+  serve correct->abstain: 2
+  serve correct->wrong: 0
+  transitions chat: abstain->abstain: 321, correct->correct: 223, notjudged->notjudged: 7, wrong->wrong: 2
+  chat abstain->wrong: 0
+  chat correct->abstain: 0
+  chat correct->wrong: 0
+  calls: 551 x rows with documents: ask, serve and chat each called doc_answer.answer once
+  calls: 2 x rows without documents: ask and chat once, serve 0 (NO_RECORD/DOCUMENTS_NOT_LOADED, the function is not called; same as the base)
+T2-2a [TOTAL] ask: new wrong ids subset of old ask wrong ids: PASS (new wrong = ['own60:O38', 'w3c4_b2like:BQ002']; old ask wrong = ['own60:O38', 'w3c4_b2like:BQ002'])
+T2-2a [TOTAL] serve: new wrong ids subset of old ask wrong ids: PASS (new wrong = ['own60:O38', 'w3c4_b2like:BQ002']; old ask wrong = ['own60:O38', 'w3c4_b2like:BQ002'])
+T2-2a [TOTAL] chat: new wrong ids subset of old ask wrong ids: PASS (new wrong = ['own60:O38', 'w3c4_b2like:BQ002']; old ask wrong = ['own60:O38', 'w3c4_b2like:BQ002'])
+T2-2b [TOTAL] ask: new correct 223 >= max(old ask, old serve, old chat) summed over the sets 223 (old totals: ask=223, serve=122, chat=223): PASS
+T2-2b [TOTAL] serve: new correct 208 >= max(old ask, old serve, old chat) summed over the sets 223 (old totals: ask=223, serve=122, chat=223): FAIL
+T2-2b [TOTAL] chat: new correct 223 >= max(old ask, old serve, old chat) summed over the sets 223 (old totals: ask=223, serve=122, chat=223): PASS
+T2-2b-info [TOTAL] serve by AnswerResult: correct 223 (shown by serve: 208)
+T2-2c [TOTAL] see the per-set lines
+T2-2d [TOTAL] w3f1 NOT_JUDGED rows equal: PASS (208 of 208)

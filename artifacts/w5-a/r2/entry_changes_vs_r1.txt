@@ -1,0 +1,25 @@
+R→F 先生が生徒に作文を書かせた。 UNSUPPORTED_CLAUSE
+R→F この犬が庭で穴を掘った。 UNSUPPORTED_CLAUSE
+R→F その子供が公園で石を拾った。 UNSUPPORTED_CLAUSE
+R→F この先生は学校で数学を教えた。 UNSUPPORTED_CLAUSE
+R→F 店長が店員に商品を並べさせた。 UNSUPPORTED_CLAUSE
+R→F 先生が学生に論文を読ませた。 UNSUPPORTED_CLAUSE
+R→F 社長が部下に資料を作らせた。 UNSUPPORTED_CLAUSE
+R→F 兄が弟に荷物を運ばせた。 UNSUPPORTED_CLAUSE
+R→F 母が娘に皿を洗わせた。 UNSUPPORTED_CLAUSE
+R→F 隊長が兵士に水を汲ませた。 UNSUPPORTED_CLAUSE
+R→F 親が子供に手紙を書かせた。 UNSUPPORTED_CLAUSE
+R→F 母が子供に野菜を食べさせた。 UNSUPPORTED_CLAUSE
+R→F 親が子供に薬を飲ませた。 UNSUPPORTED_CLAUSE
+R→F 彼は市長になった。 UNSUPPORTED_CLAUSE
+R→F 彼女は髪を茶色に染めた。 UNSUPPORTED_CLAUSE
+R→F 父がこの本を読んだ。 UNSUPPORTED_CLAUSE
+R→F 先生が生徒に本を読ませた。 UNSUPPORTED_CLAUSE
+R→F 彼女は看板を黒に塗り替えた。 UNSUPPORTED_CLAUSE
+R→F 彼女は医者になった。 UNSUPPORTED_CLAUSE
+R→F 彼はエンジニアになった。 UNSUPPORTED_CLAUSE
+R→F 彼は学校に通った。 UNSUPPORTED_CLAUSE
+R→F 僕は工事現場に向かった。 UNSUPPORTED_CLAUSE
+R→F 彼は医者になった。 UNSUPPORTED_CLAUSE
+{'readable→false': 23, 'reason_changed': 21}
+{'UNSUPPORTED_CLAUSE': 23}

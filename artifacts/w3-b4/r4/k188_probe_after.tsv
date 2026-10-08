@@ -1,0 +1,19 @@
+兄が倉庫へさえ行った。	readable=True	roles={"agent": "兄", "goal": "倉庫"}	typed={"w3b1_trigger": null, "w3b1": null, "w3b2_trigger": null, "w3b2": null, "frame": null}
+兄が駅からさえ走った。	readable=True	roles={"agent": "兄", "source": "駅"}	typed={"w3b1_trigger": null, "w3b1": null, "w3b2_trigger": null, "w3b2": null, "frame": null}
+兄が弟にさえ話した。	readable=True	roles={"agent": "兄", "recipient": "弟"}	typed={"w3b1_trigger": null, "w3b1": null, "w3b2_trigger": null, "w3b2": null, "frame": null}
+兄が絵をさえ描いた。	readable=True	roles={"agent": "兄", "patient": "絵"}	typed={"w3b1_trigger": null, "w3b1": null, "w3b2_trigger": null, "w3b2": null, "frame": null}
+去年、兄が東京にさえ行った。	readable=True	roles={"agent": "兄", "goal": "東京", "time": "去年"}	typed={"w3b1_trigger": null, "w3b1": null, "w3b2_trigger": null, "w3b2": null, "frame": null}
+兄が倉庫へすら行った。	readable=True	roles={"agent": "兄", "goal": "倉庫"}	typed={"w3b1_trigger": null, "w3b1": null, "w3b2_trigger": null, "w3b2": null, "frame": null}
+兄が駅からすら走った。	readable=True	roles={"agent": "兄", "source": "駅"}	typed={"w3b1_trigger": null, "w3b1": null, "w3b2_trigger": null, "w3b2": null, "frame": null}
+兄が弟にすら話した。	readable=True	roles={"agent": "兄", "recipient": "弟"}	typed={"w3b1_trigger": null, "w3b1": null, "w3b2_trigger": null, "w3b2": null, "frame": null}
+兄が絵をすら描いた。	readable=True	roles={"agent": "兄", "patient": "絵"}	typed={"w3b1_trigger": null, "w3b1": null, "w3b2_trigger": null, "w3b2": null, "frame": null}
+兄が倉庫へこそ行った。	readable=True	roles={"agent": "兄", "goal": "倉庫"}	typed={"w3b1_trigger": null, "w3b1": null, "w3b2_trigger": null, "w3b2": null, "frame": null}
+兄が駅からこそ走った。	readable=True	roles={"agent": "兄", "source": "駅"}	typed={"w3b1_trigger": null, "w3b1": null, "w3b2_trigger": null, "w3b2": null, "frame": null}
+兄が弟にこそ話した。	readable=True	roles={"agent": "兄", "recipient": "弟"}	typed={"w3b1_trigger": null, "w3b1": null, "w3b2_trigger": null, "w3b2": null, "frame": null}
+兄が絵をこそ描いた。	readable=True	roles={"agent": "兄", "patient": "絵"}	typed={"w3b1_trigger": null, "w3b1": null, "w3b2_trigger": null, "w3b2": null, "frame": null}
+兄が倉庫へまで行った。	readable=True	roles={"agent": "兄", "goal": "倉庫"}	typed={"w3b1_trigger": null, "w3b1": null, "w3b2_trigger": null, "w3b2": null, "frame": null}
+兄が弟にまで話した。	readable=True	roles={"agent": "兄", "recipient": "弟"}	typed={"w3b1_trigger": null, "w3b1": null, "w3b2_trigger": null, "w3b2": null, "frame": null}
+兄が倉庫へも行った。	readable=False	roles=null	typed={"w3b1_trigger": "U", "w3b1": "PLACEMENT_FRAME_NOT_READ:P_ACT", "w3b2_trigger": "U", "w3b2": "PLACEMENT_FOCUS_PARTICLE_AFTER_CASE:へ:も", "frame": null}
+兄が駅からも走った。	readable=True	roles={"agent": "兄", "source": "駅"}	typed={"w3b1_trigger": null, "w3b1": null, "w3b2_trigger": null, "w3b2": null, "frame": null}
+兄が弟にも話した。	readable=True	roles={"agent": "兄", "recipient": "弟"}	typed={"w3b1_trigger": null, "w3b1": null, "w3b2_trigger": null, "w3b2": null, "frame": null}
+兄が絵をも描いた。	readable=True	roles={"agent": "兄", "patient": "絵"}	typed={"w3b1_trigger": null, "w3b1": null, "w3b2_trigger": null, "w3b2": null, "frame": null}

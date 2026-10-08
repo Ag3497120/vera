@@ -1,0 +1,2 @@
+3:Everything here is a hole we know about and have **not** closed, except the notes marked "Fixed", which record what th
+75:- 最初の攻撃の波の結果は README の「攻撃の結果」にある。破れた数は attest 群 [N-60]、�

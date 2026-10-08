@@ -1,0 +1,490 @@
+
+==================================== ERRORS ====================================
+__ ERROR collecting artifacts/w3-b5/tests_r1_copy/test_semantic_read_w3b5.py ___
+artifacts/w3-b5/tests_r1_copy/test_semantic_read_w3b5.py:43: in <module>
+    F = _load_by_path('w3b2_fakes_in_test_w3b5', RS / 'w3b2_fakes.py')
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+artifacts/w3-b5/tests_r1_copy/test_semantic_read_w3b5.py:39: in _load_by_path
+    spec.loader.exec_module(mod)
+<frozen importlib._bootstrap_external>:936: in exec_module
+    ???
+<frozen importlib._bootstrap_external>:1073: in get_code
+    ???
+<frozen importlib._bootstrap_external>:1130: in get_data
+    ???
+E   FileNotFoundError: [Errno 2] No such file or directory: '/Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/artifacts/w3-b5/tests/reading_soundness/w3b2_fakes.py'
+____ ERROR collecting artifacts/w3-b6/test_semantic_read_w3b6.frozen_r1.py _____
+ImportError while importing test module '/Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/artifacts/w3-b6/test_semantic_read_w3b6.frozen_r1.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'test_semantic_read_w3b6.frozen_r1'; 'test_semantic_read_w3b6' is not a package
+____ ERROR collecting artifacts/w3-b6/test_semantic_read_w3b6.frozen_r4.py _____
+ImportError while importing test module '/Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/artifacts/w3-b6/test_semantic_read_w3b6.frozen_r4.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'test_semantic_read_w3b6.frozen_r4'; 'test_semantic_read_w3b6' is not a package
+_____ ERROR collecting artifacts/w5-e/r2/test_routing_from_text_w5e.r1.py ______
+ImportError while importing test module '/Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/artifacts/w5-e/r2/test_routing_from_text_w5e.r1.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'test_routing_from_text_w5e.r1'; 'test_routing_from_text_w5e' is not a package
+__________ ERROR collecting tests/attack/test_attack_basis_policy.py ___________
+import file mismatch:
+imported module 'test_attack_basis_policy' has this __file__ attribute:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/attacks/W6-a/test_attack_basis_policy.py
+which is not the same as the test file we want to collect:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/tests/attack/test_attack_basis_policy.py
+HINT: remove __pycache__ / .pyc files and/or use a unique basename for your test file modules
+____________ ERROR collecting tests/attack/test_attack_w5b_wave2.py ____________
+import file mismatch:
+imported module 'test_attack_w5b_wave2' has this __file__ attribute:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/attacks/W5-b/test_attack_w5b_wave2.py
+which is not the same as the test file we want to collect:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/tests/attack/test_attack_w5b_wave2.py
+HINT: remove __pycache__ / .pyc files and/or use a unique basename for your test file modules
+_________________ ERROR collecting tests/test_agent_adapter.py _________________
+import file mismatch:
+imported module 'test_agent_adapter' has this __file__ attribute:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/public_overlay/tests/test_agent_adapter.py
+which is not the same as the test file we want to collect:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/tests/test_agent_adapter.py
+HINT: remove __pycache__ / .pyc files and/or use a unique basename for your test file modules
+____________________ ERROR collecting tests/test_answer.py _____________________
+import file mismatch:
+imported module 'test_answer' has this __file__ attribute:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/public_overlay/tests/test_answer.py
+which is not the same as the test file we want to collect:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/tests/test_answer.py
+HINT: remove __pycache__ / .pyc files and/or use a unique basename for your test file modules
+______________ ERROR collecting tests/test_compositional_goal.py _______________
+import file mismatch:
+imported module 'test_compositional_goal' has this __file__ attribute:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/public_overlay/tests/test_compositional_goal.py
+which is not the same as the test file we want to collect:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/tests/test_compositional_goal.py
+HINT: remove __pycache__ / .pyc files and/or use a unique basename for your test file modules
+___________________ ERROR collecting tests/test_conductor.py ___________________
+import file mismatch:
+imported module 'test_conductor' has this __file__ attribute:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/public_overlay/tests/test_conductor.py
+which is not the same as the test file we want to collect:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/tests/test_conductor.py
+HINT: remove __pycache__ / .pyc files and/or use a unique basename for your test file modules
+______________ ERROR collecting tests/test_conductor_escalate.py _______________
+import file mismatch:
+imported module 'test_conductor_escalate' has this __file__ attribute:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/public_overlay/tests/test_conductor_escalate.py
+which is not the same as the test file we want to collect:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/tests/test_conductor_escalate.py
+HINT: remove __pycache__ / .pyc files and/or use a unique basename for your test file modules
+__________________ ERROR collecting tests/test_content_api.py __________________
+import file mismatch:
+imported module 'test_content_api' has this __file__ attribute:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/public_overlay/tests/test_content_api.py
+which is not the same as the test file we want to collect:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/tests/test_content_api.py
+HINT: remove __pycache__ / .pyc files and/or use a unique basename for your test file modules
+_________________ ERROR collecting tests/test_content_codec.py _________________
+import file mismatch:
+imported module 'test_content_codec' has this __file__ attribute:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/public_overlay/tests/test_content_codec.py
+which is not the same as the test file we want to collect:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/tests/test_content_codec.py
+HINT: remove __pycache__ / .pyc files and/or use a unique basename for your test file modules
+_________ ERROR collecting tests/test_content_event_set_integration.py _________
+import file mismatch:
+imported module 'test_content_event_set_integration' has this __file__ attribute:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/public_overlay/tests/test_content_event_set_integration.py
+which is not the same as the test file we want to collect:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/tests/test_content_event_set_integration.py
+HINT: remove __pycache__ / .pyc files and/or use a unique basename for your test file modules
+________________ ERROR collecting tests/test_content_planner.py ________________
+import file mismatch:
+imported module 'test_content_planner' has this __file__ attribute:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/public_overlay/tests/test_content_planner.py
+which is not the same as the test file we want to collect:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/tests/test_content_planner.py
+HINT: remove __pycache__ / .pyc files and/or use a unique basename for your test file modules
+__________ ERROR collecting tests/test_content_source_composition.py ___________
+import file mismatch:
+imported module 'test_content_source_composition' has this __file__ attribute:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/public_overlay/tests/test_content_source_composition.py
+which is not the same as the test file we want to collect:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/tests/test_content_source_composition.py
+HINT: remove __pycache__ / .pyc files and/or use a unique basename for your test file modules
+________________ ERROR collecting tests/test_content_verify.py _________________
+import file mismatch:
+imported module 'test_content_verify' has this __file__ attribute:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/public_overlay/tests/test_content_verify.py
+which is not the same as the test file we want to collect:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/tests/test_content_verify.py
+HINT: remove __pycache__ / .pyc files and/or use a unique basename for your test file modules
+________________ ERROR collecting tests/test_contract_batch.py _________________
+import file mismatch:
+imported module 'test_contract_batch' has this __file__ attribute:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/public_overlay/tests/test_contract_batch.py
+which is not the same as the test file we want to collect:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/tests/test_contract_batch.py
+HINT: remove __pycache__ / .pyc files and/or use a unique basename for your test file modules
+_______________ ERROR collecting tests/test_contract_cleanup.py ________________
+import file mismatch:
+imported module 'test_contract_cleanup' has this __file__ attribute:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/public_overlay/tests/test_contract_cleanup.py
+which is not the same as the test file we want to collect:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/tests/test_contract_cleanup.py
+HINT: remove __pycache__ / .pyc files and/or use a unique basename for your test file modules
+_________________ ERROR collecting tests/test_contract_core.py _________________
+import file mismatch:
+imported module 'test_contract_core' has this __file__ attribute:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/public_overlay/tests/test_contract_core.py
+which is not the same as the test file we want to collect:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/tests/test_contract_core.py
+HINT: remove __pycache__ / .pyc files and/or use a unique basename for your test file modules
+________________ ERROR collecting tests/test_contract_lower.py _________________
+import file mismatch:
+imported module 'test_contract_lower' has this __file__ attribute:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/public_overlay/tests/test_contract_lower.py
+which is not the same as the test file we want to collect:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/tests/test_contract_lower.py
+HINT: remove __pycache__ / .pyc files and/or use a unique basename for your test file modules
+______________ ERROR collecting tests/test_contract_r3_review.py _______________
+import file mismatch:
+imported module 'test_contract_r3_review' has this __file__ attribute:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/public_overlay/tests/test_contract_r3_review.py
+which is not the same as the test file we want to collect:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/tests/test_contract_r3_review.py
+HINT: remove __pycache__ / .pyc files and/or use a unique basename for your test file modules
+________________ ERROR collecting tests/test_contract_review.py ________________
+import file mismatch:
+imported module 'test_contract_review' has this __file__ attribute:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/public_overlay/tests/test_contract_review.py
+which is not the same as the test file we want to collect:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/tests/test_contract_review.py
+HINT: remove __pycache__ / .pyc files and/or use a unique basename for your test file modules
+_______________ ERROR collecting tests/test_contract_revision.py _______________
+import file mismatch:
+imported module 'test_contract_revision' has this __file__ attribute:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/public_overlay/tests/test_contract_revision.py
+which is not the same as the test file we want to collect:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/tests/test_contract_revision.py
+HINT: remove __pycache__ / .pyc files and/or use a unique basename for your test file modules
+_______________ ERROR collecting tests/test_contract_sandbox.py ________________
+import file mismatch:
+imported module 'test_contract_sandbox' has this __file__ attribute:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/public_overlay/tests/test_contract_sandbox.py
+which is not the same as the test file we want to collect:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/tests/test_contract_sandbox.py
+HINT: remove __pycache__ / .pyc files and/or use a unique basename for your test file modules
+______________ ERROR collecting tests/test_contract_witness_r3.py ______________
+import file mismatch:
+imported module 'test_contract_witness_r3' has this __file__ attribute:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/public_overlay/tests/test_contract_witness_r3.py
+which is not the same as the test file we want to collect:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/tests/test_contract_witness_r3.py
+HINT: remove __pycache__ / .pyc files and/or use a unique basename for your test file modules
+______________ ERROR collecting tests/test_family_scene_scope.py _______________
+import file mismatch:
+imported module 'test_family_scene_scope' has this __file__ attribute:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/public_overlay/tests/test_family_scene_scope.py
+which is not the same as the test file we want to collect:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/tests/test_family_scene_scope.py
+HINT: remove __pycache__ / .pyc files and/or use a unique basename for your test file modules
+________________ ERROR collecting tests/test_frame_evidence.py _________________
+import file mismatch:
+imported module 'test_frame_evidence' has this __file__ attribute:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/public_overlay/tests/test_frame_evidence.py
+which is not the same as the test file we want to collect:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/tests/test_frame_evidence.py
+HINT: remove __pycache__ / .pyc files and/or use a unique basename for your test file modules
+____________________ ERROR collecting tests/test_library.py ____________________
+import file mismatch:
+imported module 'test_library' has this __file__ attribute:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/public_overlay/tests/test_library.py
+which is not the same as the test file we want to collect:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/tests/test_library.py
+HINT: remove __pycache__ / .pyc files and/or use a unique basename for your test file modules
+________________ ERROR collecting tests/test_material_source.py ________________
+import file mismatch:
+imported module 'test_material_source' has this __file__ attribute:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/public_overlay/tests/test_material_source.py
+which is not the same as the test file we want to collect:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/tests/test_material_source.py
+HINT: remove __pycache__ / .pyc files and/or use a unique basename for your test file modules
+___________ ERROR collecting tests/test_material_source_immutable.py ___________
+import file mismatch:
+imported module 'test_material_source_immutable' has this __file__ attribute:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/public_overlay/tests/test_material_source_immutable.py
+which is not the same as the test file we want to collect:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/tests/test_material_source_immutable.py
+HINT: remove __pycache__ / .pyc files and/or use a unique basename for your test file modules
+________________ ERROR collecting tests/test_meaning_bridge.py _________________
+import file mismatch:
+imported module 'test_meaning_bridge' has this __file__ attribute:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/public_overlay/tests/test_meaning_bridge.py
+which is not the same as the test file we want to collect:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/tests/test_meaning_bridge.py
+HINT: remove __pycache__ / .pyc files and/or use a unique basename for your test file modules
+______________ ERROR collecting tests/test_meaning_goal_bridge.py ______________
+import file mismatch:
+imported module 'test_meaning_goal_bridge' has this __file__ attribute:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/public_overlay/tests/test_meaning_goal_bridge.py
+which is not the same as the test file we want to collect:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/tests/test_meaning_goal_bridge.py
+HINT: remove __pycache__ / .pyc files and/or use a unique basename for your test file modules
+_________________ ERROR collecting tests/test_memory_brief.py __________________
+import file mismatch:
+imported module 'test_memory_brief' has this __file__ attribute:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/public_overlay/tests/test_memory_brief.py
+which is not the same as the test file we want to collect:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/tests/test_memory_brief.py
+HINT: remove __pycache__ / .pyc files and/or use a unique basename for your test file modules
+_________________ ERROR collecting tests/test_memory_frame.py __________________
+import file mismatch:
+imported module 'test_memory_frame' has this __file__ attribute:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/public_overlay/tests/test_memory_frame.py
+which is not the same as the test file we want to collect:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/tests/test_memory_frame.py
+HINT: remove __pycache__ / .pyc files and/or use a unique basename for your test file modules
+________________ ERROR collecting tests/test_memory_lessons.py _________________
+import file mismatch:
+imported module 'test_memory_lessons' has this __file__ attribute:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/public_overlay/tests/test_memory_lessons.py
+which is not the same as the test file we want to collect:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/tests/test_memory_lessons.py
+HINT: remove __pycache__ / .pyc files and/or use a unique basename for your test file modules
+_________________ ERROR collecting tests/test_memory_merge.py __________________
+import file mismatch:
+imported module 'test_memory_merge' has this __file__ attribute:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/public_overlay/tests/test_memory_merge.py
+which is not the same as the test file we want to collect:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/tests/test_memory_merge.py
+HINT: remove __pycache__ / .pyc files and/or use a unique basename for your test file modules
+_______________ ERROR collecting tests/test_memory_revalidate.py _______________
+import file mismatch:
+imported module 'test_memory_revalidate' has this __file__ attribute:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/public_overlay/tests/test_memory_revalidate.py
+which is not the same as the test file we want to collect:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/tests/test_memory_revalidate.py
+HINT: remove __pycache__ / .pyc files and/or use a unique basename for your test file modules
+______________ ERROR collecting tests/test_multigrain_adapter.py _______________
+import file mismatch:
+imported module 'test_multigrain_adapter' has this __file__ attribute:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/public_overlay/tests/test_multigrain_adapter.py
+which is not the same as the test file we want to collect:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/tests/test_multigrain_adapter.py
+HINT: remove __pycache__ / .pyc files and/or use a unique basename for your test file modules
+_________ ERROR collecting tests/test_multigrain_event_set_binding.py __________
+import file mismatch:
+imported module 'test_multigrain_event_set_binding' has this __file__ attribute:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/public_overlay/tests/test_multigrain_event_set_binding.py
+which is not the same as the test file we want to collect:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/tests/test_multigrain_event_set_binding.py
+HINT: remove __pycache__ / .pyc files and/or use a unique basename for your test file modules
+________________ ERROR collecting tests/test_one_chat_round5.py ________________
+import file mismatch:
+imported module 'test_one_chat_round5' has this __file__ attribute:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/public_overlay/tests/test_one_chat_round5.py
+which is not the same as the test file we want to collect:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/tests/test_one_chat_round5.py
+HINT: remove __pycache__ / .pyc files and/or use a unique basename for your test file modules
+_____________ ERROR collecting tests/test_one_contract_revision.py _____________
+import file mismatch:
+imported module 'test_one_contract_revision' has this __file__ attribute:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/public_overlay/tests/test_one_contract_revision.py
+which is not the same as the test file we want to collect:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/tests/test_one_contract_revision.py
+HINT: remove __pycache__ / .pyc files and/or use a unique basename for your test file modules
+____________ ERROR collecting tests/test_one_request_goal_route.py _____________
+import file mismatch:
+imported module 'test_one_request_goal_route' has this __file__ attribute:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/public_overlay/tests/test_one_request_goal_route.py
+which is not the same as the test file we want to collect:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/tests/test_one_request_goal_route.py
+HINT: remove __pycache__ / .pyc files and/or use a unique basename for your test file modules
+_______________ ERROR collecting tests/test_one_round5_router.py _______________
+import file mismatch:
+imported module 'test_one_round5_router' has this __file__ attribute:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/public_overlay/tests/test_one_round5_router.py
+which is not the same as the test file we want to collect:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/tests/test_one_round5_router.py
+HINT: remove __pycache__ / .pyc files and/or use a unique basename for your test file modules
+___________________ ERROR collecting tests/test_one_trace.py ___________________
+import file mismatch:
+imported module 'test_one_trace' has this __file__ attribute:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/public_overlay/tests/test_one_trace.py
+which is not the same as the test file we want to collect:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/tests/test_one_trace.py
+HINT: remove __pycache__ / .pyc files and/or use a unique basename for your test file modules
+___________________ ERROR collecting tests/test_question.py ____________________
+import file mismatch:
+imported module 'test_question' has this __file__ attribute:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/public_overlay/tests/test_question.py
+which is not the same as the test file we want to collect:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/tests/test_question.py
+HINT: remove __pycache__ / .pyc files and/or use a unique basename for your test file modules
+_________ ERROR collecting tests/test_request_event_set_projection.py __________
+import file mismatch:
+imported module 'test_request_event_set_projection' has this __file__ attribute:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/public_overlay/tests/test_request_event_set_projection.py
+which is not the same as the test file we want to collect:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/tests/test_request_event_set_projection.py
+HINT: remove __pycache__ / .pyc files and/or use a unique basename for your test file modules
+_____________ ERROR collecting tests/test_request_goal_binding.py ______________
+import file mismatch:
+imported module 'test_request_goal_binding' has this __file__ attribute:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/public_overlay/tests/test_request_goal_binding.py
+which is not the same as the test file we want to collect:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/tests/test_request_goal_binding.py
+HINT: remove __pycache__ / .pyc files and/or use a unique basename for your test file modules
+______________ ERROR collecting tests/test_request_goal_route.py _______________
+import file mismatch:
+imported module 'test_request_goal_route' has this __file__ attribute:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/public_overlay/tests/test_request_goal_route.py
+which is not the same as the test file we want to collect:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/tests/test_request_goal_route.py
+HINT: remove __pycache__ / .pyc files and/or use a unique basename for your test file modules
+____________ ERROR collecting tests/test_request_goal_selection.py _____________
+import file mismatch:
+imported module 'test_request_goal_selection' has this __file__ attribute:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/public_overlay/tests/test_request_goal_selection.py
+which is not the same as the test file we want to collect:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/tests/test_request_goal_selection.py
+HINT: remove __pycache__ / .pyc files and/or use a unique basename for your test file modules
+____________________ ERROR collecting tests/test_round3.py _____________________
+import file mismatch:
+imported module 'test_round3' has this __file__ attribute:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/public_overlay/tests/test_round3.py
+which is not the same as the test file we want to collect:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/tests/test_round3.py
+HINT: remove __pycache__ / .pyc files and/or use a unique basename for your test file modules
+__________ ERROR collecting tests/test_semantic_coordination_codex.py __________
+import file mismatch:
+imported module 'test_semantic_coordination_codex' has this __file__ attribute:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/public_overlay/tests/test_semantic_coordination_codex.py
+which is not the same as the test file we want to collect:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/tests/test_semantic_coordination_codex.py
+HINT: remove __pycache__ / .pyc files and/or use a unique basename for your test file modules
+________________ ERROR collecting tests/test_semantic_kernel.py ________________
+import file mismatch:
+imported module 'test_semantic_kernel' has this __file__ attribute:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/public_overlay/tests/test_semantic_kernel.py
+which is not the same as the test file we want to collect:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/tests/test_semantic_kernel.py
+HINT: remove __pycache__ / .pyc files and/or use a unique basename for your test file modules
+_______________ ERROR collecting tests/test_semantic_measure.py ________________
+import file mismatch:
+imported module 'test_semantic_measure' has this __file__ attribute:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/public_overlay/tests/test_semantic_measure.py
+which is not the same as the test file we want to collect:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/tests/test_semantic_measure.py
+HINT: remove __pycache__ / .pyc files and/or use a unique basename for your test file modules
+____________ ERROR collecting tests/test_semantic_measure_codex.py _____________
+import file mismatch:
+imported module 'test_semantic_measure_codex' has this __file__ attribute:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/public_overlay/tests/test_semantic_measure_codex.py
+which is not the same as the test file we want to collect:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/tests/test_semantic_measure_codex.py
+HINT: remove __pycache__ / .pyc files and/or use a unique basename for your test file modules
+________________ ERROR collecting tests/test_semantic_public.py ________________
+import file mismatch:
+imported module 'test_semantic_public' has this __file__ attribute:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/public_overlay/tests/test_semantic_public.py
+which is not the same as the test file we want to collect:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/tests/test_semantic_public.py
+HINT: remove __pycache__ / .pyc files and/or use a unique basename for your test file modules
+______________ ERROR collecting tests/test_semantic_read_w3b5.py _______________
+tests/test_semantic_read_w3b5.py:380: in <module>
+    PLACE_OK = {'兄': noun('PERSON'), '校庭': noun('PLACE', ('definition',))}
+                     ^^^^^^^^^^^^^^
+tests/test_semantic_read_w3b5.py:308: in noun
+    return F.answer(top, decided_by=list(by))
+           ^^^^^^^^
+E   AttributeError: module 'w3b2_fakes_in_test_w3b5' has no attribute 'answer'
+________________ ERROR collecting tests/test_semantic_reader.py ________________
+import file mismatch:
+imported module 'test_semantic_reader' has this __file__ attribute:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/public_overlay/tests/test_semantic_reader.py
+which is not the same as the test file we want to collect:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/tests/test_semantic_reader.py
+HINT: remove __pycache__ / .pyc files and/or use a unique basename for your test file modules
+_______________ ERROR collecting tests/test_semantic_realize.py ________________
+import file mismatch:
+imported module 'test_semantic_realize' has this __file__ attribute:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/public_overlay/tests/test_semantic_realize.py
+which is not the same as the test file we want to collect:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/tests/test_semantic_realize.py
+HINT: remove __pycache__ / .pyc files and/or use a unique basename for your test file modules
+_______________ ERROR collecting tests/test_semantic_retrieve.py _______________
+import file mismatch:
+imported module 'test_semantic_retrieve' has this __file__ attribute:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/public_overlay/tests/test_semantic_retrieve.py
+which is not the same as the test file we want to collect:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/tests/test_semantic_retrieve.py
+HINT: remove __pycache__ / .pyc files and/or use a unique basename for your test file modules
+________________ ERROR collecting tests/test_semantic_route.py _________________
+import file mismatch:
+imported module 'test_semantic_route' has this __file__ attribute:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/public_overlay/tests/test_semantic_route.py
+which is not the same as the test file we want to collect:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/tests/test_semantic_route.py
+HINT: remove __pycache__ / .pyc files and/or use a unique basename for your test file modules
+_____________ ERROR collecting tests/test_semantic_route_codex.py ______________
+import file mismatch:
+imported module 'test_semantic_route_codex' has this __file__ attribute:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/public_overlay/tests/test_semantic_route_codex.py
+which is not the same as the test file we want to collect:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/tests/test_semantic_route_codex.py
+HINT: remove __pycache__ / .pyc files and/or use a unique basename for your test file modules
+_____________ ERROR collecting tests/test_semantic_route_follow.py _____________
+import file mismatch:
+imported module 'test_semantic_route_follow' has this __file__ attribute:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/public_overlay/tests/test_semantic_route_follow.py
+which is not the same as the test file we want to collect:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/tests/test_semantic_route_follow.py
+HINT: remove __pycache__ / .pyc files and/or use a unique basename for your test file modules
+_____________ ERROR collecting tests/test_semantic_scope_safety.py _____________
+import file mismatch:
+imported module 'test_semantic_scope_safety' has this __file__ attribute:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/public_overlay/tests/test_semantic_scope_safety.py
+which is not the same as the test file we want to collect:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/tests/test_semantic_scope_safety.py
+HINT: remove __pycache__ / .pyc files and/or use a unique basename for your test file modules
+____________ ERROR collecting tests/test_semantic_source_prefix.py _____________
+import file mismatch:
+imported module 'test_semantic_source_prefix' has this __file__ attribute:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/public_overlay/tests/test_semantic_source_prefix.py
+which is not the same as the test file we want to collect:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/tests/test_semantic_source_prefix.py
+HINT: remove __pycache__ / .pyc files and/or use a unique basename for your test file modules
+_______________ ERROR collecting tests/test_semantic_unknown.py ________________
+import file mismatch:
+imported module 'test_semantic_unknown' has this __file__ attribute:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/public_overlay/tests/test_semantic_unknown.py
+which is not the same as the test file we want to collect:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/tests/test_semantic_unknown.py
+HINT: remove __pycache__ / .pyc files and/or use a unique basename for your test file modules
+____________ ERROR collecting tests/test_semantic_unknown_choice.py ____________
+import file mismatch:
+imported module 'test_semantic_unknown_choice' has this __file__ attribute:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/public_overlay/tests/test_semantic_unknown_choice.py
+which is not the same as the test file we want to collect:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/tests/test_semantic_unknown_choice.py
+HINT: remove __pycache__ / .pyc files and/or use a unique basename for your test file modules
+________________ ERROR collecting tests/test_verifier_agents.py ________________
+import file mismatch:
+imported module 'test_verifier_agents' has this __file__ attribute:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/public_overlay/tests/test_verifier_agents.py
+which is not the same as the test file we want to collect:
+  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/tests/test_verifier_agents.py
+HINT: remove __pycache__ / .pyc files and/or use a unique basename for your test file modules
+!!!!!!!!!!!!!!!!!!! Interrupted: 68 errors during collection !!!!!!!!!!!!!!!!!!!
+68 errors in 12.10s

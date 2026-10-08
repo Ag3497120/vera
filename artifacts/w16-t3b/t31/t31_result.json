@@ -1,0 +1,1971 @@
+{
+ "n_items": 60,
+ "n_wrong": 30,
+ "a_detect": 0,
+ "b_detect": 25,
+ "by_type": {
+  "W1": {
+   "n": 10,
+   "a": 0,
+   "b": 10,
+   "verdicts": {
+    "conflict": 4,
+    "unanchored": 6
+   }
+  },
+  "W2": {
+   "n": 10,
+   "a": 0,
+   "b": 10,
+   "verdicts": {
+    "unanchored": 10
+   }
+  },
+  "N1": {
+   "n": 5,
+   "a": 0,
+   "b": 0,
+   "verdicts": {
+    "anchored": 5
+   }
+  },
+  "N2": {
+   "n": 5,
+   "a": 0,
+   "b": 5,
+   "verdicts": {
+    "unanchored": 5
+   }
+  }
+ },
+ "false_alarm": 0,
+ "n_ok_ans": 20,
+ "none_ok_verdicts": {
+  "unanchored": 10
+ },
+ "n_ok_none": 10,
+ "anchored_with_zero_elements": 6,
+ "anchored_with_zero_elements_among_wrong": 1,
+ "skipped_total": 0,
+ "rows": [
+  {
+   "id": "S1-ANS-01",
+   "cat": "ANS",
+   "type": "W1",
+   "wrong": true,
+   "n_quotes": 1,
+   "verdict": "conflict",
+   "reason": null,
+   "uncovered": [
+    "澄子"
+   ],
+   "found": [
+    "exact"
+   ],
+   "n_elements": 1,
+   "skipped": 0,
+   "qc": {
+    "verdict": "conflict",
+    "quotes": [
+     {
+      "source": "D1_bihin_kitei.txt",
+      "line": 4,
+      "text": "備品管理責任者は、総務課長の久保田澄江が務める。",
+      "found": "exact"
+     }
+    ],
+    "elements": [
+     {
+      "kind": "name",
+      "value": "久保田澄子",
+      "found_in": null
+     }
+    ],
+    "conflicts": [
+     {
+      "kind": "name",
+      "answer_value": "久保田澄子",
+      "values": [
+       {
+        "value": "久保田澄江",
+        "source": "D1_bihin_kitei.txt",
+        "line": 4
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "S1-ANS-02",
+   "cat": "ANS",
+   "type": "OK",
+   "wrong": false,
+   "n_quotes": 1,
+   "verdict": "anchored",
+   "reason": null,
+   "uncovered": [],
+   "found": [
+    "exact"
+   ],
+   "n_elements": 1,
+   "skipped": 0,
+   "qc": {
+    "verdict": "anchored",
+    "quotes": [
+     {
+      "source": "D1_bihin_kitei.txt",
+      "line": 14,
+      "text": "棚卸しは、棚卸し担当の岩渕聡が現物と台帳を照合して行う。",
+      "found": "exact"
+     }
+    ],
+    "elements": [
+     {
+      "kind": "name",
+      "value": "岩渕聡",
+      "found_in": [
+       "D1_bihin_kitei.txt:14"
+      ]
+     }
+    ],
+    "conflicts": []
+   }
+  },
+  {
+   "id": "S1-ANS-03",
+   "cat": "ANS",
+   "type": "W2",
+   "wrong": true,
+   "n_quotes": 1,
+   "verdict": "unanchored",
+   "reason": null,
+   "uncovered": [],
+   "found": [
+    "fabricated"
+   ],
+   "n_elements": 1,
+   "skipped": 0,
+   "qc": {
+    "verdict": "unanchored",
+    "quotes": [
+     {
+      "source": "D1_bihin_kitei.txt",
+      "line": 35,
+      "text": "リース台帳の管理は、会計課長の長谷部和美が行う。",
+      "found": "fabricated"
+     }
+    ],
+    "elements": [
+     {
+      "kind": "name",
+      "value": "長谷部和美",
+      "found_in": null
+     }
+    ],
+    "conflicts": []
+   }
+  },
+  {
+   "id": "S1-ANS-04",
+   "cat": "ANS",
+   "type": "OK",
+   "wrong": false,
+   "n_quotes": 1,
+   "verdict": "anchored",
+   "reason": null,
+   "uncovered": [],
+   "found": [
+    "exact"
+   ],
+   "n_elements": 1,
+   "skipped": 0,
+   "qc": {
+    "verdict": "anchored",
+    "quotes": [
+     {
+      "source": "D1_bihin_kitei.txt",
+      "line": 39,
+      "text": "保険の窓口は、会計課の長谷部和美が務める。",
+      "found": "exact"
+     }
+    ],
+    "elements": [
+     {
+      "kind": "name",
+      "value": "長谷部和美",
+      "found_in": [
+       "D1_bihin_kitei.txt:39"
+      ]
+     }
+    ],
+    "conflicts": []
+   }
+  },
+  {
+   "id": "S1-ANS-05",
+   "cat": "ANS",
+   "type": "W1",
+   "wrong": true,
+   "n_quotes": 1,
+   "verdict": "unanchored",
+   "reason": "POLARITY_DIFFERS",
+   "uncovered": [],
+   "found": [
+    "exact"
+   ],
+   "n_elements": 0,
+   "skipped": 0,
+   "qc": {
+    "verdict": "unanchored",
+    "quotes": [
+     {
+      "source": "D1_bihin_kitei.txt",
+      "line": 22,
+      "text": "通常の使用による摩耗や破損について、使用者に弁償を求めない。",
+      "found": "exact"
+     }
+    ],
+    "elements": [],
+    "conflicts": [],
+    "reason": "POLARITY_DIFFERS"
+   }
+  },
+  {
+   "id": "S1-ANS-06",
+   "cat": "ANS",
+   "type": "OK",
+   "wrong": false,
+   "n_quotes": 1,
+   "verdict": "anchored",
+   "reason": null,
+   "uncovered": [],
+   "found": [
+    "exact"
+   ],
+   "n_elements": 0,
+   "skipped": 0,
+   "qc": {
+    "verdict": "anchored",
+    "quotes": [
+     {
+      "source": "D1_bihin_kitei.txt",
+      "line": 29,
+      "text": "組合員でない者には、備品を貸し出さない。",
+      "found": "exact"
+     }
+    ],
+    "elements": [],
+    "conflicts": []
+   }
+  },
+  {
+   "id": "S1-ANS-07",
+   "cat": "ANS",
+   "type": "W2",
+   "wrong": true,
+   "n_quotes": 1,
+   "verdict": "unanchored",
+   "reason": null,
+   "uncovered": [],
+   "found": [
+    "fabricated"
+   ],
+   "n_elements": 0,
+   "skipped": 0,
+   "qc": {
+    "verdict": "unanchored",
+    "quotes": [
+     {
+      "source": "D1_bihin_kitei.txt",
+      "line": 19,
+      "text": "貸出の期間は、原則として70日以内とし、延長は認める。",
+      "found": "fabricated"
+     }
+    ],
+    "elements": [],
+    "conflicts": []
+   }
+  },
+  {
+   "id": "S1-ANS-08",
+   "cat": "ANS",
+   "type": "OK",
+   "wrong": false,
+   "n_quotes": 1,
+   "verdict": "anchored",
+   "reason": null,
+   "uncovered": [],
+   "found": [
+    "exact"
+   ],
+   "n_elements": 1,
+   "skipped": 0,
+   "qc": {
+    "verdict": "anchored",
+    "quotes": [
+     {
+      "source": "D1_bihin_kitei.txt",
+      "line": 38,
+      "text": "保険の更新月は、毎年11月である。",
+      "found": "exact"
+     }
+    ],
+    "elements": [
+     {
+      "kind": "date",
+      "value": "11月",
+      "found_in": [
+       "D1_bihin_kitei.txt:38"
+      ]
+     }
+    ],
+    "conflicts": []
+   }
+  },
+  {
+   "id": "S1-ANS-09",
+   "cat": "ANS",
+   "type": "W1",
+   "wrong": true,
+   "n_quotes": 1,
+   "verdict": "unanchored",
+   "reason": "ANSWER_CONTENT_NOT_IN_QUOTE:裏、別棟",
+   "uncovered": [
+    "裏",
+    "別棟"
+   ],
+   "found": [
+    "exact"
+   ],
+   "n_elements": 0,
+   "skipped": 0,
+   "qc": {
+    "verdict": "unanchored",
+    "quotes": [
+     {
+      "source": "D1_bihin_kitei.txt",
+      "line": 7,
+      "text": "備品台帳の保管場所は、本部棟2階の書庫である。",
+      "found": "exact"
+     }
+    ],
+    "elements": [],
+    "conflicts": [],
+    "reason": "ANSWER_CONTENT_NOT_IN_QUOTE:裏、別棟"
+   }
+  },
+  {
+   "id": "S1-ANS-10",
+   "cat": "ANS",
+   "type": "OK",
+   "wrong": false,
+   "n_quotes": 1,
+   "verdict": "anchored",
+   "reason": null,
+   "uncovered": [],
+   "found": [
+    "exact"
+   ],
+   "n_elements": 0,
+   "skipped": 0,
+   "qc": {
+    "verdict": "anchored",
+    "quotes": [
+     {
+      "source": "D1_bihin_kitei.txt",
+      "line": 48,
+      "text": "倉庫の鍵の予備は、守衛室の金庫に1本だけ保管する。",
+      "found": "exact"
+     }
+    ],
+    "elements": [],
+    "conflicts": []
+   }
+  },
+  {
+   "id": "S1-NONE-01",
+   "cat": "NONE",
+   "type": "N1",
+   "wrong": true,
+   "n_quotes": 1,
+   "verdict": "anchored",
+   "reason": null,
+   "uncovered": [],
+   "found": [
+    "exact"
+   ],
+   "n_elements": 1,
+   "skipped": 0,
+   "qc": {
+    "verdict": "anchored",
+    "quotes": [
+     {
+      "source": "D1_bihin_kitei.txt",
+      "line": 5,
+      "text": "備品管理責任者の代理は、総務課の久保田澄子が務める。",
+      "found": "exact"
+     }
+    ],
+    "elements": [
+     {
+      "kind": "name",
+      "value": "久保田澄子",
+      "found_in": [
+       "D1_bihin_kitei.txt:5"
+      ]
+     }
+    ],
+    "conflicts": []
+   }
+  },
+  {
+   "id": "S1-NONE-02",
+   "cat": "NONE",
+   "type": "OK",
+   "wrong": false,
+   "n_quotes": 0,
+   "verdict": "unanchored",
+   "reason": null,
+   "uncovered": [],
+   "found": [],
+   "n_elements": 0,
+   "skipped": 0,
+   "qc": {
+    "verdict": "unanchored",
+    "quotes": [],
+    "elements": [],
+    "conflicts": []
+   }
+  },
+  {
+   "id": "S1-NONE-03",
+   "cat": "NONE",
+   "type": "N2",
+   "wrong": true,
+   "n_quotes": 1,
+   "verdict": "unanchored",
+   "reason": null,
+   "uncovered": [],
+   "found": [
+    "fabricated"
+   ],
+   "n_elements": 1,
+   "skipped": 0,
+   "qc": {
+    "verdict": "unanchored",
+    "quotes": [
+     {
+      "source": "D1_bihin_kitei.txt",
+      "line": 39,
+      "text": "持出簿は、何年間保存しますか長谷部和美。",
+      "found": "fabricated"
+     }
+    ],
+    "elements": [
+     {
+      "kind": "name",
+      "value": "長谷部和美",
+      "found_in": null
+     }
+    ],
+    "conflicts": []
+   }
+  },
+  {
+   "id": "S1-NONE-04",
+   "cat": "NONE",
+   "type": "OK",
+   "wrong": false,
+   "n_quotes": 0,
+   "verdict": "unanchored",
+   "reason": null,
+   "uncovered": [],
+   "found": [],
+   "n_elements": 0,
+   "skipped": 0,
+   "qc": {
+    "verdict": "unanchored",
+    "quotes": [],
+    "elements": [],
+    "conflicts": []
+   }
+  },
+  {
+   "id": "S1-NONE-05",
+   "cat": "NONE",
+   "type": "N1",
+   "wrong": true,
+   "n_quotes": 1,
+   "verdict": "anchored",
+   "reason": null,
+   "uncovered": [],
+   "found": [
+    "exact"
+   ],
+   "n_elements": 0,
+   "skipped": 0,
+   "qc": {
+    "verdict": "anchored",
+    "quotes": [
+     {
+      "source": "D1_bihin_kitei.txt",
+      "line": 21,
+      "text": "紛失した備品の弁償は、故意または重大な過失があるときに限り求める。",
+      "found": "exact"
+     }
+    ],
+    "elements": [],
+    "conflicts": []
+   }
+  },
+  {
+   "id": "S2-ANS-01",
+   "cat": "ANS",
+   "type": "W2",
+   "wrong": true,
+   "n_quotes": 1,
+   "verdict": "unanchored",
+   "reason": null,
+   "uncovered": [],
+   "found": [
+    "fabricated"
+   ],
+   "n_elements": 1,
+   "skipped": 0,
+   "qc": {
+    "verdict": "unanchored",
+    "quotes": [
+     {
+      "source": "D2_shiryo_tejun.txt",
+      "line": 4,
+      "text": "受入責任者は、検査課長の堀内玲奈が務める。",
+      "found": "fabricated"
+     }
+    ],
+    "elements": [
+     {
+      "kind": "name",
+      "value": "堀内玲奈",
+      "found_in": null
+     }
+    ],
+    "conflicts": []
+   }
+  },
+  {
+   "id": "S2-ANS-02",
+   "cat": "ANS",
+   "type": "OK",
+   "wrong": false,
+   "n_quotes": 1,
+   "verdict": "anchored",
+   "reason": null,
+   "uncovered": [],
+   "found": [
+    "exact"
+   ],
+   "n_elements": 1,
+   "skipped": 0,
+   "qc": {
+    "verdict": "anchored",
+    "quotes": [
+     {
+      "source": "D2_shiryo_tejun.txt",
+      "line": 22,
+      "text": "検査の結果は、検査員の吉田雅人が確認してから依頼者へ送る。",
+      "found": "exact"
+     }
+    ],
+    "elements": [
+     {
+      "kind": "name",
+      "value": "吉田雅人",
+      "found_in": [
+       "D2_shiryo_tejun.txt:22"
+      ]
+     }
+    ],
+    "conflicts": []
+   }
+  },
+  {
+   "id": "S2-ANS-03",
+   "cat": "ANS",
+   "type": "W1",
+   "wrong": true,
+   "n_quotes": 1,
+   "verdict": "conflict",
+   "reason": null,
+   "uncovered": [
+    "拓馬"
+   ],
+   "found": [
+    "exact"
+   ],
+   "n_elements": 1,
+   "skipped": 0,
+   "qc": {
+    "verdict": "conflict",
+    "quotes": [
+     {
+      "source": "D2_shiryo_tejun.txt",
+      "line": 12,
+      "text": "受入票の記入は、受入係の三浦拓真が行う。",
+      "found": "exact"
+     }
+    ],
+    "elements": [
+     {
+      "kind": "name",
+      "value": "三浦拓馬",
+      "found_in": null
+     }
+    ],
+    "conflicts": [
+     {
+      "kind": "name",
+      "answer_value": "三浦拓馬",
+      "values": [
+       {
+        "value": "三浦拓",
+        "source": "D2_shiryo_tejun.txt",
+        "line": 12
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "S2-ANS-04",
+   "cat": "ANS",
+   "type": "OK",
+   "wrong": false,
+   "n_quotes": 1,
+   "verdict": "anchored",
+   "reason": null,
+   "uncovered": [],
+   "found": [
+    "exact"
+   ],
+   "n_elements": 1,
+   "skipped": 0,
+   "qc": {
+    "verdict": "anchored",
+    "quotes": [
+     {
+      "source": "D2_shiryo_tejun.txt",
+      "line": 48,
+      "text": "共有フォルダの管理者は、検査課の山根卓也が務める。",
+      "found": "exact"
+     }
+    ],
+    "elements": [
+     {
+      "kind": "name",
+      "value": "山根卓也",
+      "found_in": [
+       "D2_shiryo_tejun.txt:48"
+      ]
+     }
+    ],
+    "conflicts": []
+   }
+  },
+  {
+   "id": "S2-ANS-05",
+   "cat": "ANS",
+   "type": "W2",
+   "wrong": true,
+   "n_quotes": 1,
+   "verdict": "unanchored",
+   "reason": null,
+   "uncovered": [],
+   "found": [
+    "fabricated"
+   ],
+   "n_elements": 0,
+   "skipped": 0,
+   "qc": {
+    "verdict": "unanchored",
+    "quotes": [
+     {
+      "source": "D2_shiryo_tejun.txt",
+      "line": 7,
+      "text": "容器が破損している試料は、受け取る。",
+      "found": "fabricated"
+     }
+    ],
+    "elements": [],
+    "conflicts": []
+   }
+  },
+  {
+   "id": "S2-ANS-06",
+   "cat": "ANS",
+   "type": "OK",
+   "wrong": false,
+   "n_quotes": 1,
+   "verdict": "anchored",
+   "reason": null,
+   "uncovered": [],
+   "found": [
+    "exact"
+   ],
+   "n_elements": 0,
+   "skipped": 0,
+   "qc": {
+    "verdict": "anchored",
+    "quotes": [
+     {
+      "source": "D2_shiryo_tejun.txt",
+      "line": 25,
+      "text": "1人だけで確認した結果は、依頼者へ送らない。",
+      "found": "exact"
+     }
+    ],
+    "elements": [],
+    "conflicts": []
+   }
+  },
+  {
+   "id": "S2-ANS-07",
+   "cat": "ANS",
+   "type": "W1",
+   "wrong": true,
+   "n_quotes": 1,
+   "verdict": "unanchored",
+   "reason": "POLARITY_DIFFERS",
+   "uncovered": [],
+   "found": [
+    "exact"
+   ],
+   "n_elements": 0,
+   "skipped": 0,
+   "qc": {
+    "verdict": "unanchored",
+    "quotes": [
+     {
+      "source": "D2_shiryo_tejun.txt",
+      "line": 44,
+      "text": "返却を求めない依頼者には、試料を返さない。",
+      "found": "exact"
+     }
+    ],
+    "elements": [],
+    "conflicts": [],
+    "reason": "POLARITY_DIFFERS"
+   }
+  },
+  {
+   "id": "S2-ANS-08",
+   "cat": "ANS",
+   "type": "OK",
+   "wrong": false,
+   "n_quotes": 1,
+   "verdict": "anchored",
+   "reason": null,
+   "uncovered": [],
+   "found": [
+    "exact"
+   ],
+   "n_elements": 1,
+   "skipped": 0,
+   "qc": {
+    "verdict": "anchored",
+    "quotes": [
+     {
+      "source": "D2_shiryo_tejun.txt",
+      "line": 35,
+      "text": "冷蔵庫室の温度は、毎朝9時に記録する。",
+      "found": "exact"
+     }
+    ],
+    "elements": [
+     {
+      "kind": "date",
+      "value": "9時",
+      "found_in": [
+       "D2_shiryo_tejun.txt:35"
+      ]
+     }
+    ],
+    "conflicts": []
+   }
+  },
+  {
+   "id": "S2-ANS-09",
+   "cat": "ANS",
+   "type": "W2",
+   "wrong": true,
+   "n_quotes": 1,
+   "verdict": "unanchored",
+   "reason": null,
+   "uncovered": [],
+   "found": [
+    "fabricated"
+   ],
+   "n_elements": 0,
+   "skipped": 0,
+   "qc": {
+    "verdict": "unanchored",
+    "quotes": [
+     {
+      "source": "D2_shiryo_tejun.txt",
+      "line": 34,
+      "text": "試料の保管は、守衛室で行う。",
+      "found": "fabricated"
+     }
+    ],
+    "elements": [],
+    "conflicts": []
+   }
+  },
+  {
+   "id": "S2-ANS-10",
+   "cat": "ANS",
+   "type": "OK",
+   "wrong": false,
+   "n_quotes": 1,
+   "verdict": "anchored",
+   "reason": null,
+   "uncovered": [],
+   "found": [
+    "exact"
+   ],
+   "n_elements": 1,
+   "skipped": 0,
+   "qc": {
+    "verdict": "anchored",
+    "quotes": [
+     {
+      "source": "D2_shiryo_tejun.txt",
+      "line": 47,
+      "text": "写真の保存は、検査課の共有フォルダに限る。",
+      "found": "exact"
+     }
+    ],
+    "elements": [
+     {
+      "kind": "name",
+      "value": "フォルダ",
+      "found_in": [
+       "D2_shiryo_tejun.txt:47"
+      ]
+     }
+    ],
+    "conflicts": []
+   }
+  },
+  {
+   "id": "S2-NONE-01",
+   "cat": "NONE",
+   "type": "OK",
+   "wrong": false,
+   "n_quotes": 0,
+   "verdict": "unanchored",
+   "reason": null,
+   "uncovered": [],
+   "found": [],
+   "n_elements": 0,
+   "skipped": 0,
+   "qc": {
+    "verdict": "unanchored",
+    "quotes": [],
+    "elements": [],
+    "conflicts": []
+   }
+  },
+  {
+   "id": "S2-NONE-02",
+   "cat": "NONE",
+   "type": "N2",
+   "wrong": true,
+   "n_quotes": 1,
+   "verdict": "unanchored",
+   "reason": null,
+   "uncovered": [],
+   "found": [
+    "fabricated"
+   ],
+   "n_elements": 1,
+   "skipped": 0,
+   "qc": {
+    "verdict": "unanchored",
+    "quotes": [
+     {
+      "source": "D2_shiryo_tejun.txt",
+      "line": 23,
+      "text": "冷蔵庫室の広さは何平方メートルですか吉田雅仁。",
+      "found": "fabricated"
+     }
+    ],
+    "elements": [
+     {
+      "kind": "name",
+      "value": "吉田雅仁",
+      "found_in": null
+     }
+    ],
+    "conflicts": []
+   }
+  },
+  {
+   "id": "S2-NONE-03",
+   "cat": "NONE",
+   "type": "OK",
+   "wrong": false,
+   "n_quotes": 0,
+   "verdict": "unanchored",
+   "reason": null,
+   "uncovered": [],
+   "found": [],
+   "n_elements": 0,
+   "skipped": 0,
+   "qc": {
+    "verdict": "unanchored",
+    "quotes": [],
+    "elements": [],
+    "conflicts": []
+   }
+  },
+  {
+   "id": "S2-NONE-04",
+   "cat": "NONE",
+   "type": "N1",
+   "wrong": true,
+   "n_quotes": 1,
+   "verdict": "anchored",
+   "reason": null,
+   "uncovered": [],
+   "found": [
+    "exact"
+   ],
+   "n_elements": 1,
+   "skipped": 0,
+   "qc": {
+    "verdict": "anchored",
+    "quotes": [
+     {
+      "source": "D2_shiryo_tejun.txt",
+      "line": 45,
+      "text": "試料の返却の発送は、検査課の山根卓哉が担当する。",
+      "found": "exact"
+     }
+    ],
+    "elements": [
+     {
+      "kind": "name",
+      "value": "山根卓哉",
+      "found_in": [
+       "D2_shiryo_tejun.txt:45"
+      ]
+     }
+    ],
+    "conflicts": []
+   }
+  },
+  {
+   "id": "S2-NONE-05",
+   "cat": "NONE",
+   "type": "OK",
+   "wrong": false,
+   "n_quotes": 0,
+   "verdict": "unanchored",
+   "reason": null,
+   "uncovered": [],
+   "found": [],
+   "n_elements": 0,
+   "skipped": 0,
+   "qc": {
+    "verdict": "unanchored",
+    "quotes": [],
+    "elements": [],
+    "conflicts": []
+   }
+  },
+  {
+   "id": "S3-ANS-01",
+   "cat": "ANS",
+   "type": "W1",
+   "wrong": true,
+   "n_quotes": 1,
+   "verdict": "conflict",
+   "reason": null,
+   "uncovered": [
+    "啓太"
+   ],
+   "found": [
+    "exact"
+   ],
+   "n_elements": 1,
+   "skipped": 0,
+   "qc": {
+    "verdict": "conflict",
+    "quotes": [
+     {
+      "source": "D3_gijiroku.txt",
+      "line": 4,
+      "text": "会長の宇都宮啓介が議長を務めた。",
+      "found": "exact"
+     }
+    ],
+    "elements": [
+     {
+      "kind": "name",
+      "value": "宇都宮啓太",
+      "found_in": null
+     }
+    ],
+    "conflicts": [
+     {
+      "kind": "name",
+      "answer_value": "宇都宮啓太",
+      "values": [
+       {
+        "value": "宇都宮啓介",
+        "source": "D3_gijiroku.txt",
+        "line": 4
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "S3-ANS-02",
+   "cat": "ANS",
+   "type": "OK",
+   "wrong": false,
+   "n_quotes": 1,
+   "verdict": "anchored",
+   "reason": null,
+   "uncovered": [],
+   "found": [
+    "exact"
+   ],
+   "n_elements": 1,
+   "skipped": 0,
+   "qc": {
+    "verdict": "anchored",
+    "quotes": [
+     {
+      "source": "D3_gijiroku.txt",
+      "line": 5,
+      "text": "副会長の宇都宮啓太が副議長を務めた。",
+      "found": "exact"
+     }
+    ],
+    "elements": [
+     {
+      "kind": "name",
+      "value": "宇都宮啓太",
+      "found_in": [
+       "D3_gijiroku.txt:5"
+      ]
+     }
+    ],
+    "conflicts": []
+   }
+  },
+  {
+   "id": "S3-ANS-03",
+   "cat": "ANS",
+   "type": "W2",
+   "wrong": true,
+   "n_quotes": 1,
+   "verdict": "unanchored",
+   "reason": null,
+   "uncovered": [],
+   "found": [
+    "fabricated"
+   ],
+   "n_elements": 1,
+   "skipped": 0,
+   "qc": {
+    "verdict": "unanchored",
+    "quotes": [
+     {
+      "source": "D3_gijiroku.txt",
+      "line": 7,
+      "text": "会計の森下裕美が決算の報告を行った。",
+      "found": "fabricated"
+     }
+    ],
+    "elements": [
+     {
+      "kind": "name",
+      "value": "森下裕美",
+      "found_in": null
+     }
+    ],
+    "conflicts": []
+   }
+  },
+  {
+   "id": "S3-ANS-04",
+   "cat": "ANS",
+   "type": "OK",
+   "wrong": false,
+   "n_quotes": 1,
+   "verdict": "anchored",
+   "reason": null,
+   "uncovered": [],
+   "found": [
+    "exact"
+   ],
+   "n_elements": 1,
+   "skipped": 0,
+   "qc": {
+    "verdict": "anchored",
+    "quotes": [
+     {
+      "source": "D3_gijiroku.txt",
+      "line": 6,
+      "text": "書記の森下裕美が議事録を作成した。",
+      "found": "exact"
+     }
+    ],
+    "elements": [
+     {
+      "kind": "name",
+      "value": "森下裕美",
+      "found_in": [
+       "D3_gijiroku.txt:6"
+      ]
+     }
+    ],
+    "conflicts": []
+   }
+  },
+  {
+   "id": "S3-ANS-05",
+   "cat": "ANS",
+   "type": "W1",
+   "wrong": true,
+   "n_quotes": 1,
+   "verdict": "unanchored",
+   "reason": "POLARITY_DIFFERS",
+   "uncovered": [],
+   "found": [
+    "exact"
+   ],
+   "n_elements": 0,
+   "skipped": 0,
+   "qc": {
+    "verdict": "unanchored",
+    "quotes": [
+     {
+      "source": "D3_gijiroku.txt",
+      "line": 30,
+      "text": "小雨のときは、防災訓練を中止しない。",
+      "found": "exact"
+     }
+    ],
+    "elements": [],
+    "conflicts": [],
+    "reason": "POLARITY_DIFFERS"
+   }
+  },
+  {
+   "id": "S3-ANS-06",
+   "cat": "ANS",
+   "type": "OK",
+   "wrong": false,
+   "n_quotes": 1,
+   "verdict": "anchored",
+   "reason": null,
+   "uncovered": [],
+   "found": [
+    "exact"
+   ],
+   "n_elements": 0,
+   "skipped": 0,
+   "qc": {
+    "verdict": "anchored",
+    "quotes": [
+     {
+      "source": "D3_gijiroku.txt",
+      "line": 23,
+      "text": "夏祭りの屋台では、火気の使用を認めない。",
+      "found": "exact"
+     }
+    ],
+    "elements": [],
+    "conflicts": []
+   }
+  },
+  {
+   "id": "S3-ANS-07",
+   "cat": "ANS",
+   "type": "W2",
+   "wrong": true,
+   "n_quotes": 1,
+   "verdict": "unanchored",
+   "reason": null,
+   "uncovered": [],
+   "found": [
+    "fabricated"
+   ],
+   "n_elements": 0,
+   "skipped": 0,
+   "qc": {
+    "verdict": "unanchored",
+    "quotes": [
+     {
+      "source": "D3_gijiroku.txt",
+      "line": 10,
+      "text": "役員でない会員には、議事録を配る。",
+      "found": "fabricated"
+     }
+    ],
+    "elements": [],
+    "conflicts": []
+   }
+  },
+  {
+   "id": "S3-ANS-08",
+   "cat": "ANS",
+   "type": "OK",
+   "wrong": false,
+   "n_quotes": 1,
+   "verdict": "anchored",
+   "reason": null,
+   "uncovered": [],
+   "found": [
+    "exact"
+   ],
+   "n_elements": 2,
+   "skipped": 0,
+   "qc": {
+    "verdict": "anchored",
+    "quotes": [
+     {
+      "source": "D3_gijiroku.txt",
+      "line": 25,
+      "text": "防災訓練は、10月11日の午前9時に始めることが決まった。",
+      "found": "exact"
+     }
+    ],
+    "elements": [
+     {
+      "kind": "date",
+      "value": "10月",
+      "found_in": [
+       "D3_gijiroku.txt:25"
+      ]
+     },
+     {
+      "kind": "date",
+      "value": "11日",
+      "found_in": [
+       "D3_gijiroku.txt:25"
+      ]
+     }
+    ],
+    "conflicts": []
+   }
+  },
+  {
+   "id": "S3-ANS-09",
+   "cat": "ANS",
+   "type": "W1",
+   "wrong": true,
+   "n_quotes": 1,
+   "verdict": "unanchored",
+   "reason": "ANSWER_CONTENT_NOT_IN_QUOTE:工務",
+   "uncovered": [
+    "工務"
+   ],
+   "found": [
+    "exact"
+   ],
+   "n_elements": 1,
+   "skipped": 0,
+   "qc": {
+    "verdict": "unanchored",
+    "quotes": [
+     {
+      "source": "D3_gijiroku.txt",
+      "line": 46,
+      "text": "集会所の窓の修繕の見積りを出した業者は、緑川建具店である。",
+      "found": "exact"
+     }
+    ],
+    "elements": [
+     {
+      "kind": "name",
+      "value": "緑川",
+      "found_in": [
+       "D3_gijiroku.txt:46"
+      ]
+     }
+    ],
+    "conflicts": [],
+    "reason": "ANSWER_CONTENT_NOT_IN_QUOTE:工務"
+   }
+  },
+  {
+   "id": "S3-ANS-10",
+   "cat": "ANS",
+   "type": "OK",
+   "wrong": false,
+   "n_quotes": 1,
+   "verdict": "anchored",
+   "reason": null,
+   "uncovered": [],
+   "found": [
+    "exact"
+   ],
+   "n_elements": 1,
+   "skipped": 0,
+   "qc": {
+    "verdict": "anchored",
+    "quotes": [
+     {
+      "source": "D3_gijiroku.txt",
+      "line": 35,
+      "text": "備蓄品の保管場所は、集会所の1階の倉庫とされた。",
+      "found": "exact"
+     }
+    ],
+    "elements": [
+     {
+      "kind": "number",
+      "value": "1",
+      "found_in": [
+       "D3_gijiroku.txt:35"
+      ]
+     }
+    ],
+    "conflicts": []
+   }
+  },
+  {
+   "id": "S3-NONE-01",
+   "cat": "NONE",
+   "type": "N2",
+   "wrong": true,
+   "n_quotes": 1,
+   "verdict": "unanchored",
+   "reason": null,
+   "uncovered": [],
+   "found": [
+    "fabricated"
+   ],
+   "n_elements": 1,
+   "skipped": 0,
+   "qc": {
+    "verdict": "unanchored",
+    "quotes": [
+     {
+      "source": "D3_gijiroku.txt",
+      "line": 5,
+      "text": "宇都宮啓介が自治会の会長に就任したのはいつですか宇都宮啓太。",
+      "found": "fabricated"
+     }
+    ],
+    "elements": [
+     {
+      "kind": "name",
+      "value": "宇都宮啓太",
+      "found_in": null
+     }
+    ],
+    "conflicts": []
+   }
+  },
+  {
+   "id": "S3-NONE-02",
+   "cat": "NONE",
+   "type": "OK",
+   "wrong": false,
+   "n_quotes": 0,
+   "verdict": "unanchored",
+   "reason": null,
+   "uncovered": [],
+   "found": [],
+   "n_elements": 0,
+   "skipped": 0,
+   "qc": {
+    "verdict": "unanchored",
+    "quotes": [],
+    "elements": [],
+    "conflicts": []
+   }
+  },
+  {
+   "id": "S3-NONE-03",
+   "cat": "NONE",
+   "type": "N1",
+   "wrong": true,
+   "n_quotes": 1,
+   "verdict": "anchored",
+   "reason": null,
+   "uncovered": [],
+   "found": [
+    "exact"
+   ],
+   "n_elements": 1,
+   "skipped": 0,
+   "qc": {
+    "verdict": "anchored",
+    "quotes": [
+     {
+      "source": "D3_gijiroku.txt",
+      "line": 6,
+      "text": "書記の森下裕美が議事録を作成した。",
+      "found": "exact"
+     }
+    ],
+    "elements": [
+     {
+      "kind": "name",
+      "value": "森下裕美",
+      "found_in": [
+       "D3_gijiroku.txt:6"
+      ]
+     }
+    ],
+    "conflicts": []
+   }
+  },
+  {
+   "id": "S3-NONE-04",
+   "cat": "NONE",
+   "type": "OK",
+   "wrong": false,
+   "n_quotes": 0,
+   "verdict": "unanchored",
+   "reason": null,
+   "uncovered": [],
+   "found": [],
+   "n_elements": 0,
+   "skipped": 0,
+   "qc": {
+    "verdict": "unanchored",
+    "quotes": [],
+    "elements": [],
+    "conflicts": []
+   }
+  },
+  {
+   "id": "S3-NONE-05",
+   "cat": "NONE",
+   "type": "N2",
+   "wrong": true,
+   "n_quotes": 1,
+   "verdict": "unanchored",
+   "reason": null,
+   "uncovered": [],
+   "found": [
+    "fabricated"
+   ],
+   "n_elements": 0,
+   "skipped": 0,
+   "qc": {
+    "verdict": "unanchored",
+    "quotes": [
+     {
+      "source": "D3_gijiroku.txt",
+      "line": 31,
+      "text": "防災訓練で使う放送機材の機種は何ですか中止する。",
+      "found": "fabricated"
+     }
+    ],
+    "elements": [],
+    "conflicts": []
+   }
+  },
+  {
+   "id": "S4-ANS-01",
+   "cat": "ANS",
+   "type": "W2",
+   "wrong": true,
+   "n_quotes": 1,
+   "verdict": "unanchored",
+   "reason": null,
+   "uncovered": [],
+   "found": [
+    "fabricated"
+   ],
+   "n_elements": 1,
+   "skipped": 0,
+   "qc": {
+    "verdict": "unanchored",
+    "quotes": [
+     {
+      "source": "D4_shiyou_v2.txt",
+      "line": 25,
+      "text": "システムの開発責任者は、情報課の戸田健二が務める。",
+      "found": "fabricated"
+     }
+    ],
+    "elements": [
+     {
+      "kind": "name",
+      "value": "戸田健二",
+      "found_in": null
+     }
+    ],
+    "conflicts": []
+   }
+  },
+  {
+   "id": "S4-ANS-02",
+   "cat": "ANS",
+   "type": "OK",
+   "wrong": false,
+   "n_quotes": 1,
+   "verdict": "anchored",
+   "reason": null,
+   "uncovered": [],
+   "found": [
+    "exact"
+   ],
+   "n_elements": 1,
+   "skipped": 0,
+   "qc": {
+    "verdict": "anchored",
+    "quotes": [
+     {
+      "source": "D4_shiyou_v2.txt",
+      "line": 26,
+      "text": "開発責任者の補佐は、情報課の戸田健二が務める。",
+      "found": "exact"
+     }
+    ],
+    "elements": [
+     {
+      "kind": "name",
+      "value": "戸田健二",
+      "found_in": [
+       "D4_shiyou_v2.txt:26"
+      ]
+     }
+    ],
+    "conflicts": []
+   }
+  },
+  {
+   "id": "S4-ANS-03",
+   "cat": "ANS",
+   "type": "W1",
+   "wrong": true,
+   "n_quotes": 1,
+   "verdict": "conflict",
+   "reason": null,
+   "uncovered": [
+    "優香"
+   ],
+   "found": [
+    "exact"
+   ],
+   "n_elements": 1,
+   "skipped": 0,
+   "qc": {
+    "verdict": "conflict",
+    "quotes": [
+     {
+      "source": "D4_shiyou_v2.txt",
+      "line": 27,
+      "text": "システムの保守担当は、情報課の長瀬優花が務める。",
+      "found": "exact"
+     }
+    ],
+    "elements": [
+     {
+      "kind": "name",
+      "value": "長瀬優香",
+      "found_in": null
+     }
+    ],
+    "conflicts": [
+     {
+      "kind": "name",
+      "answer_value": "長瀬優香",
+      "values": [
+       {
+        "value": "システム",
+        "source": "D4_shiyou_v2.txt",
+        "line": 27
+       },
+       {
+        "value": "長瀬優花",
+        "source": "D4_shiyou_v2.txt",
+        "line": 27
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "S4-ANS-04",
+   "cat": "ANS",
+   "type": "OK",
+   "wrong": false,
+   "n_quotes": 1,
+   "verdict": "anchored",
+   "reason": null,
+   "uncovered": [],
+   "found": [
+    "exact"
+   ],
+   "n_elements": 1,
+   "skipped": 0,
+   "qc": {
+    "verdict": "anchored",
+    "quotes": [
+     {
+      "source": "D4_shiyou_v2.txt",
+      "line": 28,
+      "text": "保守担当の補佐は、情報課の長瀬優香が務める。",
+      "found": "exact"
+     }
+    ],
+    "elements": [
+     {
+      "kind": "name",
+      "value": "長瀬優香",
+      "found_in": [
+       "D4_shiyou_v2.txt:28"
+      ]
+     }
+    ],
+    "conflicts": []
+   }
+  },
+  {
+   "id": "S4-ANS-05",
+   "cat": "ANS",
+   "type": "W2",
+   "wrong": true,
+   "n_quotes": 1,
+   "verdict": "unanchored",
+   "reason": null,
+   "uncovered": [],
+   "found": [
+    "fabricated"
+   ],
+   "n_elements": 0,
+   "skipped": 0,
+   "qc": {
+    "verdict": "unanchored",
+    "quotes": [
+     {
+      "source": "D4_shiyou_v2.txt",
+      "line": 17,
+      "text": "予約の取り消しについて、利用者への罰則は設ける。",
+      "found": "fabricated"
+     }
+    ],
+    "elements": [],
+    "conflicts": []
+   }
+  },
+  {
+   "id": "S4-ANS-06",
+   "cat": "ANS",
+   "type": "OK",
+   "wrong": false,
+   "n_quotes": 1,
+   "verdict": "anchored",
+   "reason": null,
+   "uncovered": [],
+   "found": [
+    "exact"
+   ],
+   "n_elements": 0,
+   "skipped": 0,
+   "qc": {
+    "verdict": "anchored",
+    "quotes": [
+     {
+      "source": "D4_shiyou_v2.txt",
+      "line": 19,
+      "text": "利用者カードを持たない者は、予約できない。",
+      "found": "exact"
+     }
+    ],
+    "elements": [],
+    "conflicts": []
+   }
+  },
+  {
+   "id": "S4-ANS-07",
+   "cat": "ANS",
+   "type": "W1",
+   "wrong": true,
+   "n_quotes": 1,
+   "verdict": "unanchored",
+   "reason": "POLARITY_DIFFERS",
+   "uncovered": [],
+   "found": [
+    "exact"
+   ],
+   "n_elements": 0,
+   "skipped": 0,
+   "qc": {
+    "verdict": "unanchored",
+    "quotes": [
+     {
+      "source": "D4_shiyou_v2.txt",
+      "line": 16,
+      "text": "2回目の延長は、認めない。",
+      "found": "exact"
+     }
+    ],
+    "elements": [],
+    "conflicts": [],
+    "reason": "POLARITY_DIFFERS"
+   }
+  },
+  {
+   "id": "S4-ANS-08",
+   "cat": "ANS",
+   "type": "OK",
+   "wrong": false,
+   "n_quotes": 1,
+   "verdict": "anchored",
+   "reason": null,
+   "uncovered": [],
+   "found": [
+    "exact"
+   ],
+   "n_elements": 1,
+   "skipped": 0,
+   "qc": {
+    "verdict": "anchored",
+    "quotes": [
+     {
+      "source": "D4_shiyou_v2.txt",
+      "line": 22,
+      "text": "データのバックアップは、毎日午前3時に行う。",
+      "found": "exact"
+     }
+    ],
+    "elements": [
+     {
+      "kind": "date",
+      "value": "午前3時",
+      "found_in": [
+       "D4_shiyou_v2.txt:22"
+      ]
+     }
+    ],
+    "conflicts": []
+   }
+  },
+  {
+   "id": "S4-ANS-09",
+   "cat": "ANS",
+   "type": "W2",
+   "wrong": true,
+   "n_quotes": 1,
+   "verdict": "unanchored",
+   "reason": null,
+   "uncovered": [],
+   "found": [
+    "fabricated"
+   ],
+   "n_elements": 2,
+   "skipped": 0,
+   "qc": {
+    "verdict": "unanchored",
+    "quotes": [
+     {
+      "source": "D4_shiyou_v2.txt",
+      "line": 23,
+      "text": "バックアップの保存先は、第3データ室のサーバである。",
+      "found": "fabricated"
+     }
+    ],
+    "elements": [
+     {
+      "kind": "number",
+      "value": "3",
+      "found_in": null
+     },
+     {
+      "kind": "name",
+      "value": "データ",
+      "found_in": null
+     }
+    ],
+    "conflicts": []
+   }
+  },
+  {
+   "id": "S4-ANS-10",
+   "cat": "ANS",
+   "type": "OK",
+   "wrong": false,
+   "n_quotes": 1,
+   "verdict": "anchored",
+   "reason": null,
+   "uncovered": [],
+   "found": [
+    "exact"
+   ],
+   "n_elements": 2,
+   "skipped": 0,
+   "qc": {
+    "verdict": "anchored",
+    "quotes": [
+     {
+      "source": "D4_shiyou_v2.txt",
+      "line": 24,
+      "text": "本番のデータの保存先は、第3データ室のサーバである。",
+      "found": "exact"
+     }
+    ],
+    "elements": [
+     {
+      "kind": "number",
+      "value": "3",
+      "found_in": [
+       "D4_shiyou_v2.txt:24"
+      ]
+     },
+     {
+      "kind": "name",
+      "value": "データ",
+      "found_in": [
+       "D4_shiyou_v2.txt:24"
+      ]
+     }
+    ],
+    "conflicts": []
+   }
+  },
+  {
+   "id": "S4-NONE-01",
+   "cat": "NONE",
+   "type": "OK",
+   "wrong": false,
+   "n_quotes": 0,
+   "verdict": "unanchored",
+   "reason": null,
+   "uncovered": [],
+   "found": [],
+   "n_elements": 0,
+   "skipped": 0,
+   "qc": {
+    "verdict": "unanchored",
+    "quotes": [],
+    "elements": [],
+    "conflicts": []
+   }
+  },
+  {
+   "id": "S4-NONE-02",
+   "cat": "NONE",
+   "type": "N1",
+   "wrong": true,
+   "n_quotes": 1,
+   "verdict": "anchored",
+   "reason": null,
+   "uncovered": [],
+   "found": [
+    "exact"
+   ],
+   "n_elements": 1,
+   "skipped": 0,
+   "qc": {
+    "verdict": "anchored",
+    "quotes": [
+     {
+      "source": "D4_shiyou_v2.txt",
+      "line": 25,
+      "text": "システムの開発責任者は、情報課の戸田健司が務める。",
+      "found": "exact"
+     }
+    ],
+    "elements": [
+     {
+      "kind": "name",
+      "value": "戸田健司",
+      "found_in": [
+       "D4_shiyou_v2.txt:25"
+      ]
+     }
+    ],
+    "conflicts": []
+   }
+  },
+  {
+   "id": "S4-NONE-03",
+   "cat": "NONE",
+   "type": "OK",
+   "wrong": false,
+   "n_quotes": 0,
+   "verdict": "unanchored",
+   "reason": null,
+   "uncovered": [],
+   "found": [],
+   "n_elements": 0,
+   "skipped": 0,
+   "qc": {
+    "verdict": "unanchored",
+    "quotes": [],
+    "elements": [],
+    "conflicts": []
+   }
+  },
+  {
+   "id": "S4-NONE-04",
+   "cat": "NONE",
+   "type": "N2",
+   "wrong": true,
+   "n_quotes": 1,
+   "verdict": "unanchored",
+   "reason": null,
+   "uncovered": [],
+   "found": [
+    "fabricated"
+   ],
+   "n_elements": 1,
+   "skipped": 0,
+   "qc": {
+    "verdict": "unanchored",
+    "quotes": [
+     {
+      "source": "D4_shiyou_v2.txt",
+      "line": 27,
+      "text": "システムの開発を委託した会社はどこですか長瀬優花。",
+      "found": "fabricated"
+     }
+    ],
+    "elements": [
+     {
+      "kind": "name",
+      "value": "長瀬優花",
+      "found_in": null
+     }
+    ],
+    "conflicts": []
+   }
+  },
+  {
+   "id": "S4-NONE-05",
+   "cat": "NONE",
+   "type": "OK",
+   "wrong": false,
+   "n_quotes": 0,
+   "verdict": "unanchored",
+   "reason": null,
+   "uncovered": [],
+   "found": [],
+   "n_elements": 0,
+   "skipped": 0,
+   "qc": {
+    "verdict": "unanchored",
+    "quotes": [],
+    "elements": [],
+    "conflicts": []
+   }
+  }
+ ]
+}

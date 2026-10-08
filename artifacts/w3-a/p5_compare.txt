@@ -1,0 +1,7 @@
+L1 coverage (tokens)                       target at least 0.90 | 15498/21774=0.7118 | 15445/21774=0.7093 (-53 worse) | 17223/21774=0.7910 (+1725 better) | 17217/21774=0.7907 (+1719 better)
+L2 correct (direct)                        target at least 0.85 | 537/1072=0.5009 | 540/1072=0.5037 (+3 better) | 567/1072=0.5289 (+30 better) | 567/1072=0.5289 (+30 better)
+L2 wrong (direct)                          target at most 0.08 | 59/1072=0.0550 | 47/1072=0.0438 (-12 better) | 47/1072=0.0438 (-12 better) | 47/1072=0.0438 (-12 better)
+L2 trap wrong (direct)                     target at most 0.05 | 9/154=0.0584 | 7/154=0.0455 (-2 better) | 7/154=0.0455 (-2 better) | 7/154=0.0455 (-2 better)
+L3 correct                                 target at least 0.65 | 89/174=0.5115 | 86/174=0.4943 (-3 worse) | 88/174=0.5057 (-1 worse) | 86/174=0.4943 (-3 worse)
+L3 wrong                                   target at most 0.15 | 9/174=0.0517 | 9/174=0.0517 (+0 same) | 8/174=0.0460 (-1 better) | 9/174=0.0517 (+0 same)
+L3 returns a type for an unknown word      target at most 0.20 | 11/60=0.1833 | 9/60=0.1500 (-2 better) | 9/60=0.1500 (-2 better) | 9/60=0.1500 (-2 better)

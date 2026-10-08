@@ -1,0 +1,62 @@
+{
+  "thresholds": {
+    "1": {
+      "role_frame_min_sources": 1,
+      "sample_words": 60,
+      "sample_word_status": {
+        "CONFIRMED": 16,
+        "ESTIMATED": 42,
+        "NO_ROLE_FRAME": 2
+      },
+      "confirmed_role_rows": 21,
+      "confirmed_visual_labels": {
+        "正しい": 20,
+        "疑わしい": 1
+      },
+      "confirmed_obvious_errors": 0,
+      "obvious_error_rate": 0.0,
+      "rate_is_unmeasured": false
+    },
+    "2": {
+      "role_frame_min_sources": 2,
+      "sample_words": 60,
+      "sample_word_status": {
+        "CONFIRMED": 5,
+        "ESTIMATED": 53,
+        "NO_ROLE_FRAME": 2
+      },
+      "confirmed_role_rows": 6,
+      "confirmed_visual_labels": {
+        "正しい": 5,
+        "疑わしい": 1
+      },
+      "confirmed_obvious_errors": 0,
+      "obvious_error_rate": 0.0,
+      "rate_is_unmeasured": false
+    },
+    "3": {
+      "role_frame_min_sources": 3,
+      "sample_words": 60,
+      "sample_word_status": {
+        "CONFIRMED": 5,
+        "ESTIMATED": 53,
+        "NO_ROLE_FRAME": 2
+      },
+      "confirmed_role_rows": 6,
+      "confirmed_visual_labels": {
+        "正しい": 5,
+        "疑わしい": 1
+      },
+      "confirmed_obvious_errors": 0,
+      "obvious_error_rate": 0.0,
+      "rate_is_unmeasured": false
+    }
+  },
+  "selected_role_frame_min_sources": 1,
+  "n4_meets_threshold": true,
+  "sample_sha256": "bc4cf24c64c420ead8bcbc7f62c3b5ee4ea44da4a5bcca71130d40e0e17969e8",
+  "visual_labels_sha256": "69e961749a54a2313e4fbda9e90fbdbbe5077b2fc3190f75954161bc9edcd714",
+  "candidate_content_sha256": "e58908eb4eba8820fed9eafcd1ff42a5a70cdfdf4c35a9646b5dd49aaa002a21",
+  "thresholds_sha256": "7cfdccd885a439fca70765ebd26aa1e059be304162198ddc90b696c88fd9d619",
+  "confirmed_roles_sha256": "60a83821766b3ba57b542f58f3eef24b14e904070649b23eb2f75f90aa0197b2"
+}

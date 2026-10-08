@@ -1,0 +1,10 @@
+{"verdict": "RECORDED", "entries": 3, "task_status": "OK", "log": "/Users/motonisihikoudai/Projects/vera-impl/wt/W8-shad
+{"verdict": "RECORDED", "entries": 3, "task_status": "OK", "log": "/Users/motonisihikoudai/Projects/vera-impl/wt/W8-shad
+{"verdict": "RECORDED", "entries": 3, "task_status": "OK", "log": "/Users/motonisihikoudai/Projects/vera-impl/wt/W8-shad
+{"verdict": "RECORDED", "entries": 3, "task_status": "OK", "log": "/Users/motonisihikoudai/Projects/vera-impl/wt/W8-shad
+{"verdict": "RECORDED", "entries": 3, "task_status": "OK", "log": "/Users/motonisihikoudai/Projects/vera-impl/wt/W8-shad
+{"verdict": "RECORDED", "entries": 3, "task_status": "OK", "log": "/Users/motonisihikoudai/Projects/vera-impl/wt/W8-shad
+{"verdict": "RECORDED", "entries": 3, "task_status": "OK", "log": "/Users/motonisihikoudai/Projects/vera-impl/wt/W8-shad
+{"verdict": "RECORDED", "entries": 3, "task_status": "OK", "log": "/Users/motonisihikoudai/Projects/vera-impl/wt/W8-shad
+{"verdict": "RECORDED", "entries": 3, "task_status": "OK", "log": "/Users/motonisihikoudai/Projects/vera-impl/wt/W8-shad
+{"verdict": "RECORDED", "entries": 3, "task_status": "OK", "log": "/Users/motonisihikoudai/Projects/vera-impl/wt/W8-shad

@@ -1,0 +1,2 @@
+4ceead41e1fa904e8e0e224ccb206069898a03291817e0818d134f1fdcb7750a  tests/test_w16t7c_redact_variants.py
+b7335fb7f759c132c30f2c3fe0986de97ca55924f9350b6288a83cc0b9fb2426  docs/RECORDER.md

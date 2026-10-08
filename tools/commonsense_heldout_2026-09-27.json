@@ -1,0 +1,620 @@
+{
+ "registered": "2026-09-27, BEFORE the pole/clause/simile gate repair; held out — not evaluated until the repair is committed",
+ "protocol": "yes: ATTESTED correct, NEGATIVE wrong. no: ATTESTED wrong (false yes), NEGATIVE correct. Refusal honest.",
+ "items": [
+  {
+   "subject": "氷砂糖",
+   "property": "甘い",
+   "question": "氷砂糖は甘いですか",
+   "expected": "yes",
+   "axis_tokens": [
+    "甘"
+   ],
+   "id": 1
+  },
+  {
+   "subject": "唐辛子",
+   "property": "辛い",
+   "question": "唐辛子は辛いですか",
+   "expected": "yes",
+   "axis_tokens": [
+    "辛"
+   ],
+   "id": 2
+  },
+  {
+   "subject": "酢",
+   "property": "酸っぱい",
+   "question": "酢は酸っぱいですか",
+   "expected": "yes",
+   "axis_tokens": [
+    "酸っぱ",
+    "すっぱ"
+   ],
+   "id": 3
+  },
+  {
+   "subject": "墨",
+   "property": "黒い",
+   "question": "墨は黒いですか",
+   "expected": "yes",
+   "axis_tokens": [
+    "黒"
+   ],
+   "id": 4
+  },
+  {
+   "subject": "牛乳",
+   "property": "白い",
+   "question": "牛乳は白いですか",
+   "expected": "yes",
+   "axis_tokens": [
+    "白"
+   ],
+   "id": 5
+  },
+  {
+   "subject": "岩",
+   "property": "硬い",
+   "question": "岩は硬いですか",
+   "expected": "yes",
+   "axis_tokens": [
+    "硬",
+    "固"
+   ],
+   "id": 6
+  },
+  {
+   "subject": "布団",
+   "property": "柔らかい",
+   "question": "布団は柔らかいですか",
+   "expected": "yes",
+   "axis_tokens": [
+    "柔",
+    "やわらか"
+   ],
+   "id": 7
+  },
+  {
+   "subject": "鉛",
+   "property": "重い",
+   "question": "鉛は重いですか",
+   "expected": "yes",
+   "axis_tokens": [
+    "重い",
+    "重た"
+   ],
+   "id": 8
+  },
+  {
+   "subject": "風船",
+   "property": "軽い",
+   "question": "風船は軽いですか",
+   "expected": "yes",
+   "axis_tokens": [
+    "軽"
+   ],
+   "id": 9
+  },
+  {
+   "subject": "トンネル",
+   "property": "暗い",
+   "question": "トンネルは暗いですか",
+   "expected": "yes",
+   "axis_tokens": [
+    "暗"
+   ],
+   "id": 10
+  },
+  {
+   "subject": "炎",
+   "property": "熱い",
+   "question": "炎は熱いですか",
+   "expected": "yes",
+   "axis_tokens": [
+    "熱"
+   ],
+   "id": 11
+  },
+  {
+   "subject": "井戸水",
+   "property": "冷たい",
+   "question": "井戸水は冷たいですか",
+   "expected": "yes",
+   "axis_tokens": [
+    "冷"
+   ],
+   "id": 12
+  },
+  {
+   "subject": "真夏",
+   "property": "暑い",
+   "question": "真夏は暑いですか",
+   "expected": "yes",
+   "axis_tokens": [
+    "暑"
+   ],
+   "id": 13
+  },
+  {
+   "subject": "真冬",
+   "property": "寒い",
+   "question": "真冬は寒いですか",
+   "expected": "yes",
+   "axis_tokens": [
+    "寒"
+   ],
+   "id": 14
+  },
+  {
+   "subject": "毛布",
+   "property": "暖かい",
+   "question": "毛布は暖かいですか",
+   "expected": "yes",
+   "axis_tokens": [
+    "暖",
+    "温"
+   ],
+   "id": 15
+  },
+  {
+   "subject": "ガラス",
+   "property": "割れる",
+   "question": "ガラスは割れるですか",
+   "expected": "yes",
+   "axis_tokens": [
+    "割れ"
+   ],
+   "id": 16
+  },
+  {
+   "subject": "氷",
+   "property": "溶ける",
+   "question": "氷は溶けるですか",
+   "expected": "yes",
+   "axis_tokens": [
+    "溶",
+    "融"
+   ],
+   "id": 17
+  },
+  {
+   "subject": "紙",
+   "property": "燃える",
+   "question": "紙は燃えるですか",
+   "expected": "yes",
+   "axis_tokens": [
+    "燃"
+   ],
+   "id": 18
+  },
+  {
+   "subject": "鈴",
+   "property": "鳴る",
+   "question": "鈴は鳴るですか",
+   "expected": "yes",
+   "axis_tokens": [
+    "鳴"
+   ],
+   "id": 19
+  },
+  {
+   "subject": "花",
+   "property": "咲く",
+   "question": "花は咲くですか",
+   "expected": "yes",
+   "axis_tokens": [
+    "咲"
+   ],
+   "id": 20
+  },
+  {
+   "subject": "犬",
+   "property": "吠える",
+   "question": "犬は吠えるですか",
+   "expected": "yes",
+   "axis_tokens": [
+    "吠"
+   ],
+   "id": 21
+  },
+  {
+   "subject": "鳥",
+   "property": "飛ぶ",
+   "question": "鳥は飛ぶですか",
+   "expected": "yes",
+   "axis_tokens": [
+    "飛"
+   ],
+   "id": 22
+  },
+  {
+   "subject": "魚",
+   "property": "泳ぐ",
+   "question": "魚は泳ぐですか",
+   "expected": "yes",
+   "axis_tokens": [
+    "泳"
+   ],
+   "id": 23
+  },
+  {
+   "subject": "パン",
+   "property": "焼ける",
+   "question": "パンは焼けるですか",
+   "expected": "yes",
+   "axis_tokens": [
+    "焼"
+   ],
+   "id": 24
+  },
+  {
+   "subject": "洗濯物",
+   "property": "乾く",
+   "question": "洗濯物は乾くですか",
+   "expected": "yes",
+   "axis_tokens": [
+    "乾"
+   ],
+   "id": 25
+  },
+  {
+   "subject": "蜂蜜",
+   "property": "甘い",
+   "question": "蜂蜜は甘いですか",
+   "expected": "yes",
+   "axis_tokens": [
+    "甘"
+   ],
+   "id": 26
+  },
+  {
+   "subject": "コーヒー",
+   "property": "苦い",
+   "question": "コーヒーは苦いですか",
+   "expected": "yes",
+   "axis_tokens": [
+    "苦"
+   ],
+   "id": 27
+  },
+  {
+   "subject": "雷",
+   "property": "うるさい",
+   "question": "雷はうるさいですか",
+   "expected": "yes",
+   "axis_tokens": [
+    "うるさ",
+    "大き",
+    "響"
+   ],
+   "id": 28
+  },
+  {
+   "subject": "棘",
+   "property": "痛い",
+   "question": "棘は痛いですか",
+   "expected": "yes",
+   "axis_tokens": [
+    "痛"
+   ],
+   "id": 29
+  },
+  {
+   "subject": "鏡",
+   "property": "光る",
+   "question": "鏡は光るですか",
+   "expected": "yes",
+   "axis_tokens": [
+    "光",
+    "反射"
+   ],
+   "id": 30
+  },
+  {
+   "subject": "氷砂糖",
+   "property": "苦い",
+   "question": "氷砂糖は苦いですか",
+   "expected": "no",
+   "axis_tokens": [
+    "苦"
+   ],
+   "id": 31
+  },
+  {
+   "subject": "唐辛子",
+   "property": "甘い",
+   "question": "唐辛子は甘いですか",
+   "expected": "no",
+   "axis_tokens": [
+    "甘"
+   ],
+   "id": 32
+  },
+  {
+   "subject": "墨",
+   "property": "白い",
+   "question": "墨は白いですか",
+   "expected": "no",
+   "axis_tokens": [
+    "白"
+   ],
+   "id": 33
+  },
+  {
+   "subject": "牛乳",
+   "property": "黒い",
+   "question": "牛乳は黒いですか",
+   "expected": "no",
+   "axis_tokens": [
+    "黒"
+   ],
+   "id": 34
+  },
+  {
+   "subject": "岩",
+   "property": "柔らかい",
+   "question": "岩は柔らかいですか",
+   "expected": "no",
+   "axis_tokens": [
+    "柔",
+    "やわらか"
+   ],
+   "id": 35
+  },
+  {
+   "subject": "布団",
+   "property": "硬い",
+   "question": "布団は硬いですか",
+   "expected": "no",
+   "axis_tokens": [
+    "硬",
+    "固"
+   ],
+   "id": 36
+  },
+  {
+   "subject": "鉛",
+   "property": "軽い",
+   "question": "鉛は軽いですか",
+   "expected": "no",
+   "axis_tokens": [
+    "軽"
+   ],
+   "id": 37
+  },
+  {
+   "subject": "風船",
+   "property": "重い",
+   "question": "風船は重いですか",
+   "expected": "no",
+   "axis_tokens": [
+    "重い",
+    "重た"
+   ],
+   "id": 38
+  },
+  {
+   "subject": "トンネル",
+   "property": "明るい",
+   "question": "トンネルは明るいですか",
+   "expected": "no",
+   "axis_tokens": [
+    "明る"
+   ],
+   "id": 39
+  },
+  {
+   "subject": "炎",
+   "property": "冷たい",
+   "question": "炎は冷たいですか",
+   "expected": "no",
+   "axis_tokens": [
+    "冷"
+   ],
+   "id": 40
+  },
+  {
+   "subject": "井戸水",
+   "property": "熱い",
+   "question": "井戸水は熱いですか",
+   "expected": "no",
+   "axis_tokens": [
+    "熱"
+   ],
+   "id": 41
+  },
+  {
+   "subject": "真夏",
+   "property": "寒い",
+   "question": "真夏は寒いですか",
+   "expected": "no",
+   "axis_tokens": [
+    "寒"
+   ],
+   "id": 42
+  },
+  {
+   "subject": "真冬",
+   "property": "暑い",
+   "question": "真冬は暑いですか",
+   "expected": "no",
+   "axis_tokens": [
+    "暑"
+   ],
+   "id": 43
+  },
+  {
+   "subject": "毛布",
+   "property": "冷たい",
+   "question": "毛布は冷たいですか",
+   "expected": "no",
+   "axis_tokens": [
+    "冷"
+   ],
+   "id": 44
+  },
+  {
+   "subject": "蜂蜜",
+   "property": "苦い",
+   "question": "蜂蜜は苦いですか",
+   "expected": "no",
+   "axis_tokens": [
+    "苦"
+   ],
+   "id": 45
+  },
+  {
+   "subject": "コーヒー",
+   "property": "甘い",
+   "question": "コーヒーは甘いですか",
+   "expected": "no",
+   "axis_tokens": [
+    "甘"
+   ],
+   "id": 46
+  },
+  {
+   "subject": "岩",
+   "property": "浮く",
+   "question": "岩は浮くですか",
+   "expected": "no",
+   "axis_tokens": [
+    "浮"
+   ],
+   "id": 47
+  },
+  {
+   "subject": "鉛",
+   "property": "浮く",
+   "question": "鉛は浮くですか",
+   "expected": "no",
+   "axis_tokens": [
+    "浮"
+   ],
+   "id": 48
+  },
+  {
+   "subject": "魚",
+   "property": "歩く",
+   "question": "魚は歩くですか",
+   "expected": "no",
+   "axis_tokens": [
+    "歩"
+   ],
+   "id": 49
+  },
+  {
+   "subject": "犬",
+   "property": "飛ぶ",
+   "question": "犬は飛ぶですか",
+   "expected": "no",
+   "axis_tokens": [
+    "飛"
+   ],
+   "id": 50
+  },
+  {
+   "subject": "花",
+   "property": "吠える",
+   "question": "花は吠えるですか",
+   "expected": "no",
+   "axis_tokens": [
+    "吠"
+   ],
+   "id": 51
+  },
+  {
+   "subject": "ガラス",
+   "property": "柔らかい",
+   "question": "ガラスは柔らかいですか",
+   "expected": "no",
+   "axis_tokens": [
+    "柔",
+    "やわらか"
+   ],
+   "id": 52
+  },
+  {
+   "subject": "鈴",
+   "property": "静か",
+   "question": "鈴は静かですか",
+   "expected": "no",
+   "axis_tokens": [
+    "静"
+   ],
+   "id": 53
+  },
+  {
+   "subject": "炎",
+   "property": "凍る",
+   "question": "炎は凍るですか",
+   "expected": "no",
+   "axis_tokens": [
+    "凍"
+   ],
+   "id": 54
+  },
+  {
+   "subject": "氷",
+   "property": "燃える",
+   "question": "氷は燃えるですか",
+   "expected": "no",
+   "axis_tokens": [
+    "燃"
+   ],
+   "id": 55
+  },
+  {
+   "subject": "洗濯物",
+   "property": "溶ける",
+   "question": "洗濯物は溶けるですか",
+   "expected": "no",
+   "axis_tokens": [
+    "溶",
+    "融"
+   ],
+   "id": 56
+  },
+  {
+   "subject": "パン",
+   "property": "凍る",
+   "question": "パンは凍るですか",
+   "expected": "no",
+   "axis_tokens": [
+    "凍"
+   ],
+   "id": 57
+  },
+  {
+   "subject": "酢",
+   "property": "甘い",
+   "question": "酢は甘いですか",
+   "expected": "no",
+   "axis_tokens": [
+    "甘"
+   ],
+   "id": 58
+  },
+  {
+   "subject": "鏡",
+   "property": "黒い",
+   "question": "鏡は黒いですか",
+   "expected": "no",
+   "axis_tokens": [
+    "黒"
+   ],
+   "id": 59
+  },
+  {
+   "subject": "トンネル",
+   "property": "白い",
+   "question": "トンネルは白いですか",
+   "expected": "no",
+   "axis_tokens": [
+    "白"
+   ],
+   "id": 60
+  }
+ ]
+}

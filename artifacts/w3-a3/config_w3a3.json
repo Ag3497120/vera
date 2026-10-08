@@ -1,0 +1,20 @@
+{
+ "counter_latin_numerals_min": 6,
+ "counter_latin_share_pct": 10,
+ "counter_max_chars": 3,
+ "counter_max_chars_single": 6,
+ "donor_contra_min": 5,
+ "donor_stage_b": true,
+ "frame_decides": false,
+ "gen_upgrade_on_agreement": true,
+ "rd_min_sources": 1,
+ "rd_min_total": 20,
+ "rd_particle_min": 10,
+ "rd_particle_share_pct": 30,
+ "rd_store_min": 20,
+ "rd_type_share_pct": 50,
+ "recovered_decides": true,
+ "slot_lift_pct": 300,
+ "slot_min": 20,
+ "slot_share_pct": 30
+}

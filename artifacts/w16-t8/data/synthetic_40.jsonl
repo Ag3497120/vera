@@ -1,0 +1,40 @@
+{"id": "t01", "text": "田中が整備室へ移動した。", "expect": [{"predicate": "移動する", "roles": {"agent": "田中", "goal": "整備室"}, "polarity": "+", "tense": "past", "voice": "active"}], "group": "target"}
+{"id": "t02", "text": "鈴木が実験棟へ移動した。", "expect": [{"predicate": "移動する", "roles": {"agent": "鈴木", "goal": "実験棟"}, "polarity": "+", "tense": "past", "voice": "active"}], "group": "target"}
+{"id": "t03", "text": "太郎が図書館へ移動した。", "expect": [{"predicate": "移動する", "roles": {"agent": "太郎", "goal": "図書館"}, "polarity": "+", "tense": "past", "voice": "active"}], "group": "target"}
+{"id": "t04", "text": "整備士が学校へ移動した。", "expect": [{"predicate": "移動する", "roles": {"agent": "整備士", "goal": "学校"}, "polarity": "+", "tense": "past", "voice": "active"}], "group": "target"}
+{"id": "t05", "text": "田中が工房へ移動した。", "expect": [{"predicate": "移動する", "roles": {"agent": "田中", "goal": "工房"}, "polarity": "+", "tense": "past", "voice": "active"}], "group": "target"}
+{"id": "t06", "text": "鈴木が倉庫へ移動した。", "expect": [{"predicate": "移動する", "roles": {"agent": "鈴木", "goal": "倉庫"}, "polarity": "+", "tense": "past", "voice": "active"}], "group": "target"}
+{"id": "t07", "text": "太郎が駅へ移動した。", "expect": [{"predicate": "移動する", "roles": {"agent": "太郎", "goal": "駅"}, "polarity": "+", "tense": "past", "voice": "active"}], "group": "target"}
+{"id": "t08", "text": "整備士が書庫へ移動した。", "expect": [{"predicate": "移動する", "roles": {"agent": "整備士", "goal": "書庫"}, "polarity": "+", "tense": "past", "voice": "active"}], "group": "target"}
+{"id": "t09", "text": "鈴木が会社へ移動した。", "expect": [{"predicate": "移動する", "roles": {"agent": "鈴木", "goal": "会社"}, "polarity": "+", "tense": "past", "voice": "active"}], "group": "target"}
+{"id": "t10", "text": "田中が整備室へ移住した。", "expect": [{"predicate": "移住する", "roles": {"agent": "田中", "goal": "整備室"}, "polarity": "+", "tense": "past", "voice": "active"}], "group": "target"}
+{"id": "t11", "text": "鈴木が実験棟へ移住した。", "expect": [{"predicate": "移住する", "roles": {"agent": "鈴木", "goal": "実験棟"}, "polarity": "+", "tense": "past", "voice": "active"}], "group": "target"}
+{"id": "t12", "text": "太郎が図書館へ移住した。", "expect": [{"predicate": "移住する", "roles": {"agent": "太郎", "goal": "図書館"}, "polarity": "+", "tense": "past", "voice": "active"}], "group": "target"}
+{"id": "t13", "text": "整備士が学校へ移住した。", "expect": [{"predicate": "移住する", "roles": {"agent": "整備士", "goal": "学校"}, "polarity": "+", "tense": "past", "voice": "active"}], "group": "target"}
+{"id": "t14", "text": "田中が工房へ移住した。", "expect": [{"predicate": "移住する", "roles": {"agent": "田中", "goal": "工房"}, "polarity": "+", "tense": "past", "voice": "active"}], "group": "target"}
+{"id": "t15", "text": "太郎が会社へ移住した。", "expect": [{"predicate": "移住する", "roles": {"agent": "太郎", "goal": "会社"}, "polarity": "+", "tense": "past", "voice": "active"}], "group": "target"}
+{"id": "t16", "text": "鈴木が整備室へ出向いた。", "expect": [{"predicate": "出向く", "roles": {"agent": "鈴木", "goal": "整備室"}, "polarity": "+", "tense": "past", "voice": "active"}], "group": "target"}
+{"id": "t17", "text": "太郎が学校へ出向いた。", "expect": [{"predicate": "出向く", "roles": {"agent": "太郎", "goal": "学校"}, "polarity": "+", "tense": "past", "voice": "active"}], "group": "target"}
+{"id": "t18", "text": "整備士が工房へ出向いた。", "expect": [{"predicate": "出向く", "roles": {"agent": "整備士", "goal": "工房"}, "polarity": "+", "tense": "past", "voice": "active"}], "group": "target"}
+{"id": "t19", "text": "田中が図書館へ出向いた。", "expect": [{"predicate": "出向く", "roles": {"agent": "田中", "goal": "図書館"}, "polarity": "+", "tense": "past", "voice": "active"}], "group": "target"}
+{"id": "t20", "text": "鈴木が実験棟へ赴いた。", "expect": [{"predicate": "赴く", "roles": {"agent": "鈴木", "goal": "実験棟"}, "polarity": "+", "tense": "past", "voice": "active"}], "group": "target"}
+{"id": "t21", "text": "太郎が学校へ赴いた。", "expect": [{"predicate": "赴く", "roles": {"agent": "太郎", "goal": "学校"}, "polarity": "+", "tense": "past", "voice": "active"}], "group": "target"}
+{"id": "t22", "text": "整備士が工房へ赴いた。", "expect": [{"predicate": "赴く", "roles": {"agent": "整備士", "goal": "工房"}, "polarity": "+", "tense": "past", "voice": "active"}], "group": "target"}
+{"id": "t23", "text": "田中が会社へ赴いた。", "expect": [{"predicate": "赴く", "roles": {"agent": "田中", "goal": "会社"}, "polarity": "+", "tense": "past", "voice": "active"}], "group": "target"}
+{"id": "t24", "text": "田中が整備室へ参上した。", "expect": [{"predicate": "参上する", "roles": {"agent": "田中", "goal": "整備室"}, "polarity": "+", "tense": "past", "voice": "active"}], "group": "target"}
+{"id": "t25", "text": "鈴木が工房へ参上した。", "expect": [{"predicate": "参上する", "roles": {"agent": "鈴木", "goal": "工房"}, "polarity": "+", "tense": "past", "voice": "active"}], "group": "target"}
+{"id": "t26", "text": "太郎が学校へ歩いた。", "expect": [{"predicate": "歩く", "roles": {"agent": "太郎", "goal": "学校"}, "polarity": "+", "tense": "past", "voice": "active"}], "group": "target"}
+{"id": "c01", "text": "田中が本を読んだ。", "expect": null, "group": "control"}
+{"id": "c02", "text": "鈴木が倉庫へ向かった。", "expect": null, "group": "control"}
+{"id": "c03", "text": "太郎が駅から出発した。", "expect": null, "group": "control"}
+{"id": "c04", "text": "田中が荷物を倉庫へ運んだ。", "expect": null, "group": "control"}
+{"id": "c05", "text": "鈴木が工房で本を読んだ。", "expect": null, "group": "control"}
+{"id": "c06", "text": "ソラが駅へ行った。", "expect": null, "group": "control"}
+{"id": "c07", "text": "鈴木が荷物を工房へ運んだ。", "expect": null, "group": "control"}
+{"id": "c08", "text": "ハルがミナに話した。", "expect": null, "group": "control"}
+{"id": "c09", "text": "技師が駅から帰った。", "expect": null, "group": "control"}
+{"id": "c10", "text": "整備士が倉庫で点検した。", "expect": null, "group": "control"}
+{"id": "c11", "text": "山田が駅へ向かった。", "expect": null, "group": "control"}
+{"id": "c12", "text": "太郎が温室で働いた。", "expect": null, "group": "control"}
+{"id": "c13", "text": "鈴木が書庫で本を書いた。", "expect": null, "group": "control"}
+{"id": "c14", "text": "太郎が工房へ転勤した。", "expect": null, "group": "control"}

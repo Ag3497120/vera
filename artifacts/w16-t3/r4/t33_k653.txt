@@ -1,0 +1,8 @@
+     310 /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w16t3/r4work/serve_base_a7507b3.jsonl
+     310 /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w16t3/r4work/serve_new.r4.jsonl
+     620 total
+rows base 310 new 310
+rows where change is allowed (layer 0, FACTUAL, LLM called, not QUESTION_CROSS): 87
+  of which actually changed: 71 ; of which carry vera.quote_check: 71
+rows outside that set: 223
+rows outside that set that changed (pass = 0): 0

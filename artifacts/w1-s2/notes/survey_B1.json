@@ -1,0 +1,299 @@
+{
+ "bad_json_lines": 0,
+ "closed_values": {
+  "difficulty": {
+   "1": 90,
+   "2": 119,
+   "3": 91
+  },
+  "expect.clauses[].comparison": {
+   "\"comparative\"": 12,
+   "\"equative\"": 5,
+   "\"superlative\"": 3
+  },
+  "expect.clauses[].modality": {
+   "\"ability\"": 5,
+   "\"hearsay\"": 3,
+   "\"obligation\"": 3,
+   "\"question\"": 2,
+   "\"request\"": 2,
+   "null": 371
+  },
+  "expect.clauses[].polarity": {
+   "\"+\"": 352,
+   "\"-\"": 34
+  },
+  "expect.clauses[].quantifiers(keys)": {
+   "agent": 15,
+   "entity": 1,
+   "event": 2,
+   "patient": 10,
+   "place": 1,
+   "recipient": 2,
+   "time": 1
+  },
+  "expect.clauses[].roles(keys)": {
+   "agent": 279,
+   "attribute": 4,
+   "beneficiary": 4,
+   "cause": 6,
+   "causee": 8,
+   "causer": 7,
+   "companion": 5,
+   "entity": 82,
+   "experiencer": 2,
+   "goal": 33,
+   "instrument": 12,
+   "patient": 257,
+   "place": 25,
+   "quotation": 20,
+   "recipient": 29,
+   "result": 12,
+   "source": 13,
+   "standard": 20,
+   "time": 80,
+   "value": 6
+  },
+  "expect.clauses[].tense": {
+   "\"nonpast\"": 68,
+   "\"past\"": 285,
+   "null": 33
+  },
+  "expect.clauses[].voice": {
+   "\"active\"": 355,
+   "\"causative\"": 5,
+   "\"causative_passive\"": 3,
+   "\"passive\"": 23
+  },
+  "expect.must_not[].field": {
+   "\"comparison\"": 8,
+   "\"modality\"": 9,
+   "\"polarity\"": 53,
+   "\"predicate\"": 78,
+   "\"voice\"": 9
+  },
+  "expect.must_not[].quantifier": {
+   "\"agent\"": 24,
+   "\"entity\"": 1,
+   "\"event\"": 2,
+   "\"goal\"": 1,
+   "\"instrument\"": 1,
+   "\"patient\"": 18,
+   "\"place\"": 2,
+   "\"recipient\"": 1
+  },
+  "expect.must_not[].readable": {
+   "true": 46
+  },
+  "expect.readable": {
+   "false": 46,
+   "true": 254
+  },
+  "expect.relations[].type": {
+   "\"cause\"": 17,
+   "\"concession\"": 9,
+   "\"condition\"": 7,
+   "\"content\"": 1,
+   "\"contrast\"": 6,
+   "\"manner\"": 1,
+   "\"purpose\"": 1,
+   "\"quote\"": 20,
+   "\"relative\"": 27,
+   "\"sequence\"": 22,
+   "\"simultaneous\"": 2
+  },
+  "lang": {
+   "\"en\"": 100,
+   "\"ja\"": 200
+  }
+ },
+ "must_not_shapes": {
+  "clause,field,value": 157,
+  "clause,quantifier,value": 50,
+  "clause,role,value": 547,
+  "clause,scope": 8,
+  "readable": 46,
+  "relation": 80
+ },
+ "n_items": 300,
+ "paths": {
+  "behavior": {
+   "str": 300
+  },
+  "category": {
+   "str": 300
+  },
+  "difficulty": {
+   "int": 300
+  },
+  "domain": {
+   "str": 300
+  },
+  "expect": {
+   "dict": 300
+  },
+  "expect.clauses": {
+   "list": 300
+  },
+  "expect.clauses[]": {
+   "dict": 386
+  },
+  "expect.clauses[].comparison": {
+   "str": 20
+  },
+  "expect.clauses[].modality": {
+   "null": 371,
+   "str": 15
+  },
+  "expect.clauses[].polarity": {
+   "str": 386
+  },
+  "expect.clauses[].predicate": {
+   "list": 10,
+   "str": 376
+  },
+  "expect.clauses[].predicate[]": {
+   "str": 21
+  },
+  "expect.clauses[].quantifiers": {
+   "dict": 29
+  },
+  "expect.clauses[].quantifiers.<role>": {
+   "str": 32
+  },
+  "expect.clauses[].roles": {
+   "dict": 386
+  },
+  "expect.clauses[].roles.<role>": {
+   "list": 241,
+   "str": 663
+  },
+  "expect.clauses[].roles.<role>[]": {
+   "str": 498
+  },
+  "expect.clauses[].scope": {
+   "list": 8
+  },
+  "expect.clauses[].scope[]": {
+   "str": 16
+  },
+  "expect.clauses[].tense": {
+   "null": 33,
+   "str": 353
+  },
+  "expect.clauses[].voice": {
+   "str": 386
+  },
+  "expect.must_not": {
+   "list": 300
+  },
+  "expect.must_not[]": {
+   "dict": 888
+  },
+  "expect.must_not[].clause": {
+   "int": 595,
+   "str": 167
+  },
+  "expect.must_not[].field": {
+   "str": 157
+  },
+  "expect.must_not[].quantifier": {
+   "str": 50
+  },
+  "expect.must_not[].readable": {
+   "bool": 46
+  },
+  "expect.must_not[].relation": {
+   "dict": 80
+  },
+  "expect.must_not[].relation.from": {
+   "int": 80
+  },
+  "expect.must_not[].relation.to": {
+   "int": 80
+  },
+  "expect.must_not[].relation.type": {
+   "str": 80
+  },
+  "expect.must_not[].role": {
+   "list": 3,
+   "str": 544
+  },
+  "expect.must_not[].role[]": {
+   "str": 6
+  },
+  "expect.must_not[].scope": {
+   "list": 8
+  },
+  "expect.must_not[].scope[]": {
+   "str": 16
+  },
+  "expect.must_not[].value": {
+   "list": 308,
+   "null": 6,
+   "str": 440
+  },
+  "expect.must_not[].value[]": {
+   "str": 766
+  },
+  "expect.readable": {
+   "bool": 300
+  },
+  "expect.relations": {
+   "list": 300
+  },
+  "expect.relations[]": {
+   "dict": 113
+  },
+  "expect.relations[].from": {
+   "int": 113
+  },
+  "expect.relations[].to": {
+   "int": 113
+  },
+  "expect.relations[].type": {
+   "str": 113
+  },
+  "id": {
+   "str": 300
+  },
+  "input": {
+   "str": 300
+  },
+  "lang": {
+   "str": 300
+  },
+  "phenomenon": {
+   "str": 300
+  },
+  "rationale": {
+   "str": 300
+  },
+  "skeleton": {
+   "str": 300
+  },
+  "traps": {
+   "list": 300
+  },
+  "traps[]": {
+   "str": 294
+  },
+  "unit": {
+   "str": 300
+  }
+ },
+ "quarantine": {
+  "keys": {
+   "bank": "str",
+   "not_quarantined_but_conditional": "list",
+   "quarantined": "list",
+   "review": "str",
+   "rule": "str"
+  },
+  "quarantined_entry_types": {
+   "dict": 4
+  },
+  "quarantined_n": 4,
+  "shape": "dict"
+ }
+}

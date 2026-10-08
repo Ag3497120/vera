@@ -1,0 +1,54 @@
+artifacts/w3-a6/current-r2/freeze.inputs: OK
+artifacts/w3-a6/current-r2/prereg_time.txt: OK
+artifacts/w3-a6/current-r2/docs_prereg.sha256: OK
+artifacts/w3-a6/current-r2/auditor_run1_rates.txt: OK
+artifacts/w3-a6/current-r2/needs_role_v2.jsonl: OK
+artifacts/w3-a6/current-r2/needs_role_v2.meta.json: OK
+artifacts/w3-a6/current-r2/trial_needs_role_v2.jsonl: OK
+artifacts/w3-a6/current-r2/prompt_role_v2.txt: OK
+artifacts/w3-a6/current-r2/generate_and_collect.sh: OK
+artifacts/w3-a6/current-r2/trial_batch.sh: OK
+tools/gen_coarse_evidence.py: OK
+verantyx/coarse_types.py: OK
+tests/coarse_place/test_coarse_place_types.py: OK
+tests/test_gen_coarse_evidence_pred.py: OK
+tests/coarse_place/test_coarse_place_w3a6_gen.py: OK
+tests/coarse_place/data/w3a6_expect.json: OK
+{"state": "DONE", "calls_total": 208, "calls_this_run": 208, "batches": 208, "batches_ok": 208, "capped": false, "deadline_hit": false, "wall_sec": 3109.9}
+{"state": "COLLECTED", "rows": 8255, "bad": [], "out_sha256": "16454e075ecc296ca4e84b2d1531d7824a9b800283cc8762bd37c282ec437ee2"}
+{
+ "batch_size": 40,
+ "batches_failed": 0,
+ "batches_ok": 208,
+ "batches_total": 208,
+ "calls": 208,
+ "calls_per_word_answered": 0.0252,
+ "calls_per_word_requested": 0.02503,
+ "effort": "low",
+ "end_status": {
+  "ok": 208
+ },
+ "failure_reasons": {},
+ "kind": "role",
+ "ledger_sha256": "39bddc2616c051fafb47052b7ae19cc8b13bf283544aa177ab08d6ee1f2bc84d",
+ "max_calls": 624,
+ "max_retries": 2,
+ "model": "gpt-6-luna",
+ "not_run_cap": 0,
+ "not_run_other": 0,
+ "ok_rate": 1.0,
+ "prompt_template_sha256": "3a94675837b5f5550ecf98687506a7d70169fd0dd19c5040b9bd536500bca70f",
+ "schema_sha256": "2d5a9ed449bfdd4899e13048c4e40ddce895ffaa72b2b77f0702773159ddf5f1",
+ "slots": 4,
+ "sum_call_sec": 12327.2,
+ "wall_sec": 3109.9,
+ "words_abstained": 160,
+ "words_answered": 8255,
+ "words_dup_dropped": 0,
+ "words_foreign_dropped": 0,
+ "words_frame_dup_particle": 42,
+ "words_invalid": 13,
+ "words_missing": 1,
+ "words_requested": 8311,
+ "words_role_dup": 0
+}

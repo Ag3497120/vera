@@ -1,0 +1,186 @@
+{
+ "n": 10,
+ "tree": "base",
+ "loaded_from": "/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/W3-c4-impl/base/verantyx/cli.py",
+ "mode": "cli",
+ "placement": null,
+ "vp": false,
+ "counts": {
+  "CORRECT": 0,
+  "WRONG": 0,
+  "FALSE_NONE": 0,
+  "ABSTAINED": 0,
+  "NOT_RUN": 10
+ },
+ "wrong": [],
+ "wrong_details": {},
+ "notation_tie": [],
+ "false_none": [],
+ "error_ids": [],
+ "error_count": 0,
+ "question_cross_states": {},
+ "mapped_to": {},
+ "base_answer": {
+  "NO_ANSWER": 10
+ },
+ "by_category": {
+  "existing": {
+   "CORRECT": 0,
+   "WRONG": 0,
+   "FALSE_NONE": 0,
+   "ABSTAINED": 0,
+   "NOT_RUN": 1
+  },
+  "one": {
+   "CORRECT": 0,
+   "WRONG": 0,
+   "FALSE_NONE": 0,
+   "ABSTAINED": 0,
+   "NOT_RUN": 9
+  }
+ },
+ "by_truth_kind": {
+  "ONE": {
+   "CORRECT": 0,
+   "WRONG": 0,
+   "FALSE_NONE": 0,
+   "ABSTAINED": 0,
+   "NOT_RUN": 10
+  }
+ },
+ "unparsable": [],
+ "nonzero_exit": [],
+ "policy_outcomes": {},
+ "rows": [
+  {
+   "id": "AQ001",
+   "class": "NOT_RUN",
+   "base_answer": "NO_ANSWER",
+   "verdict": "UNKNOWN_SOURCE_ASSET",
+   "door": "semantic_qa",
+   "state": null,
+   "mapped_to": null,
+   "category": "existing",
+   "kind": "ONE",
+   "ran": false,
+   "outcome": "ABSTAIN"
+  },
+  {
+   "id": "AQ002",
+   "class": "NOT_RUN",
+   "base_answer": "NO_ANSWER",
+   "verdict": "UNKNOWN_UNREAD",
+   "door": "semantic_qa",
+   "state": null,
+   "mapped_to": null,
+   "category": "one",
+   "kind": "ONE",
+   "ran": false,
+   "outcome": "ABSTAIN"
+  },
+  {
+   "id": "AQ003",
+   "class": "NOT_RUN",
+   "base_answer": "NO_ANSWER",
+   "verdict": "UNKNOWN_SOURCE_ASSET",
+   "door": "semantic_qa",
+   "state": null,
+   "mapped_to": null,
+   "category": "one",
+   "kind": "ONE",
+   "ran": false,
+   "outcome": "ABSTAIN"
+  },
+  {
+   "id": "AQ004",
+   "class": "NOT_RUN",
+   "base_answer": "NO_ANSWER",
+   "verdict": "UNKNOWN_UNREAD",
+   "door": "semantic_qa",
+   "state": null,
+   "mapped_to": null,
+   "category": "one",
+   "kind": "ONE",
+   "ran": false,
+   "outcome": "ABSTAIN"
+  },
+  {
+   "id": "AQ005",
+   "class": "NOT_RUN",
+   "base_answer": "NO_ANSWER",
+   "verdict": "UNKNOWN_SOURCE_ASSET",
+   "door": "semantic_qa",
+   "state": null,
+   "mapped_to": null,
+   "category": "one",
+   "kind": "ONE",
+   "ran": false,
+   "outcome": "ABSTAIN"
+  },
+  {
+   "id": "AQ006",
+   "class": "NOT_RUN",
+   "base_answer": "NO_ANSWER",
+   "verdict": "UNKNOWN_SOURCE_ASSET",
+   "door": "semantic_qa",
+   "state": null,
+   "mapped_to": null,
+   "category": "one",
+   "kind": "ONE",
+   "ran": false,
+   "outcome": "ABSTAIN"
+  },
+  {
+   "id": "AQ007",
+   "class": "NOT_RUN",
+   "base_answer": "NO_ANSWER",
+   "verdict": "UNKNOWN_UNREAD",
+   "door": "semantic_qa",
+   "state": null,
+   "mapped_to": null,
+   "category": "one",
+   "kind": "ONE",
+   "ran": false,
+   "outcome": "ABSTAIN"
+  },
+  {
+   "id": "AQ008",
+   "class": "NOT_RUN",
+   "base_answer": "NO_ANSWER",
+   "verdict": "UNKNOWN_UNREAD",
+   "door": "semantic_qa",
+   "state": null,
+   "mapped_to": null,
+   "category": "one",
+   "kind": "ONE",
+   "ran": false,
+   "outcome": "ABSTAIN"
+  },
+  {
+   "id": "AQ009",
+   "class": "NOT_RUN",
+   "base_answer": "NO_ANSWER",
+   "verdict": "UNKNOWN_UNREAD",
+   "door": "semantic_qa",
+   "state": null,
+   "mapped_to": null,
+   "category": "one",
+   "kind": "ONE",
+   "ran": false,
+   "outcome": "ABSTAIN"
+  },
+  {
+   "id": "AQ010",
+   "class": "NOT_RUN",
+   "base_answer": "NO_ANSWER",
+   "verdict": "UNKNOWN_SOURCE_ASSET",
+   "door": "semantic_qa",
+   "state": null,
+   "mapped_to": null,
+   "category": "one",
+   "kind": "ONE",
+   "ran": false,
+   "outcome": "ABSTAIN"
+  }
+ ]
+}
