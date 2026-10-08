@@ -28,6 +28,10 @@ MS = re.compile(r'("\w*_ms": )[0-9.eE+-]+')
 def env():
     e = {k: v for k, v in os.environ.items() if not k.startswith("VERA_")}
     e.update(PYTHONHASHSEED="0", PYTHONDONTWRITEBYTECODE="1", PYTHONPATH=ROOT)
+    # Pin the corpus root to a directory that does not exist: cli_baseline.json was recorded without
+    # ~/Projects/vera-corpus, and a machine that has it (the Air) would otherwise run the legacy typo /
+    # lattice steps instead of abstaining with LACK_OF_ASSET (experiments/line3/t9/audit/AIR_LEGACY_DIFF.md).
+    e["VERA_CORPUS_ROOT"] = os.path.join(HERE, "_work", "no_corpus")
     return e
 
 
