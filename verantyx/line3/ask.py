@@ -574,7 +574,7 @@ def ask_tier_outcome(index: Index, tier: str, question: str, budget: cy.QueryBud
     return TierOutcome(tier, res, ans, (time.monotonic_ns() - t0) // 1000000, skipped, po)
 
 
-STRUCTURES = ("flat", "slide")                        # G3-e (L-654): the structure the question is asked over; flat = everything above
+STRUCTURES = ("flat", "slide", "combined")           # G3-e (L-654): the structure the question is asked over; flat = everything above; G3-g (L-726): combined = one labelled list of flat + layers + windows
 
 
 def ask(index: Index, question: str, tiers: Optional[Sequence[str]] = None,
@@ -587,9 +587,17 @@ def ask(index: Index, question: str, tiers: Optional[Sequence[str]] = None,
 
     `structure="slide"` (G3-e, opt-in; default "flat" = this function as it was, byte for byte): the question is asked over the sliding
     windows of the corpus (verantyx.line3.slide_query, tier RUN) and a slide_query.SlideAnswer is returned (its own entries, labelled by
-    axis and window; `**kw` are slide_query.ask_slide's options).  `effort` / `nodes` then count windows."""
+    axis and window; `**kw` are slide_query.ask_slide's options).  `effort` / `nodes` then count windows.
+
+    `structure="combined"` (G3-g, opt-in): the flat cross, the layers (stable-seats-path) and the windows read flat, ONE list in which every candidate
+    is labelled by its origin (verantyx.line3.combined; `**kw` are combined.ask_combined's options, e.g. window_evidence="plain"|"window"|"both")."""
     if structure not in STRUCTURES:
         raise ValueError("structure: %s" % " | ".join(STRUCTURES))
+    if structure == "combined":
+        if granularity:
+            raise ValueError("structure='combined' has no granularity option (G3-g, L-726)")
+        from verantyx.line3 import combined as CB
+        return CB.ask_combined(index, question, tiers, budget, view=view, effort=effort, nodes=nodes, **kw)
     if structure == "slide":
         if (tiers is not None and parse_tiers(tiers) != ("RUN",)) or granularity:
             raise ValueError("structure='slide' reads the RUN tier only and has no granularity option (G3-e, L-654)")

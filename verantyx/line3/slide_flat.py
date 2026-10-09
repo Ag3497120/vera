@@ -342,12 +342,14 @@ def _kind_of_count(key: str) -> Optional[str]:
 
 def read_window_flat(index: SQ.WindowIndex, w: SQ.WindowRec, it: SQ.Intake, *, members: str = "all", strict: str = "abstain",
                      budget: cy.QueryBudget = DEFAULT_BUDGET, two_seat: str = "both", labels: bool = True,
-                     label_agreement: str = "three", member_cap: Optional[int] = None, evidence: str = "plain") -> WindowFlatRead:
+                     label_agreement: str = "three", member_cap: Optional[int] = None, evidence: str = "plain",
+                     word_sources: bool = False) -> WindowFlatRead:
     """One window read flat.  (1) the members to read: the strictly stable members of the class (`strict` "abstain", the owner's rule, L-648) or all
     ("mark"), or the first member of each growth ("representative"; the count of members it stands for is in the entry, L-702); (2) their starts
     (`starts_of`); (3) `cycle._ask_tier_once` over one FlatCross per arm length (the window is one cross; the V3 adoption pools the end states of all
     its starts, both growths together); (4) `readout.read_out_result`; (5) T7b-shaped entries with the window labels; (6) the trace of every word.
-    Nothing is selected between windows."""
+    Nothing is selected between windows.  `word_sources` (G3-g, L-722; default False = the entries and the bytes are exactly what they were):
+    each entry also carries `word_sources` = per word the sentences of the steps into / out of it (readout.entry_word_sources)."""
     if members not in MEMBERS or strict not in STRICT_POLICIES or two_seat not in TWO_SEATS or evidence not in EVIDENCES:
         raise ValueError("members: %s; strict: %s; two_seat: %s; evidence: %s" % (MEMBERS, STRICT_POLICIES, TWO_SEATS, EVIDENCES))
     t0 = time.monotonic_ns()
@@ -433,6 +435,8 @@ def read_window_flat(index: SQ.WindowIndex, w: SQ.WindowRec, it: SQ.Intake, *, m
                         "axis_labels": _axis_labels(index, w, it, om, cache, label_agreement) if labels else None,
                         "trace": {"ok": ok, "words_checked": rep.words_checked, "words_traced": rep.words_traced,
                                   "edge_words": edge_words, "constructed_edge_words": constructed}})
+                    if word_sources:                               # G3-g (L-722): opt-in, the default entry is unchanged
+                        entries[-1]["word_sources"] = {x: list(ro.entry_word_sources(e, x)) for x in e.words}
             else:
                 tally[NO_PATH_KIND] = 1
     if not entries:
@@ -553,7 +557,8 @@ class FlatAnswer:
 def ask_flat(index, question: str, *, effort: Optional[str] = None, nodes: Optional[int] = None, windows: Optional[SQ.WindowIndex] = None,
              members: str = "all", strict: str = "abstain", budget: cy.QueryBudget = DEFAULT_BUDGET, two_seat: str = "both",
              read_order: str = "qcount_first", labels: bool = True, label_agreement: str = "three", member_cap: Optional[int] = None,
-             evidence: str = "plain", cache_dir: Optional[str] = None, workers: int = 1, place_kw: Optional[Mapping] = None, z_deep: Optional[str] = None) -> FlatAnswer:
+             evidence: str = "plain", cache_dir: Optional[str] = None, workers: int = 1, place_kw: Optional[Mapping] = None, z_deep: Optional[str] = None,
+             word_sources: bool = False) -> FlatAnswer:
     """The flat read of the windows that hold a question unit (V1), in the read order and under the cap (windows) of slide_query / T7b.
     `index` is an ask.Index (its window index is built / loaded like slide_query.ask_slide's) or a slide_query.WindowIndex.  Defaults: members
     "all" (every strictly stable member: slow, see L-715; "representative" = the first member of each growth), search budget cycle's QueryBudget() (512, 64),
@@ -575,7 +580,7 @@ def ask_flat(index, question: str, *, effort: Optional[str] = None, nodes: Optio
     it = SQ.intake(wi, question)
     plan = SQ.plan_windows(wi, it, hold="seats", standins="off", within="qcount", cap=cap, read_order=read_order)
     kw = dict(members=members, strict=strict, budget=budget, two_seat=two_seat, labels=labels, label_agreement=label_agreement,
-              member_cap=member_cap, evidence=evidence)
+              member_cap=member_cap, evidence=evidence, word_sources=word_sources)
     reads = tuple(read_window_flat(wi, wi.by_n[n], it, **kw) for n in plan.read)
     entries = tuple(e for r in reads for e in r.entries)
     abst = tuple(a for r in reads for a in r.abstentions)
@@ -584,6 +589,8 @@ def ask_flat(index, question: str, *, effort: Optional[str] = None, nodes: Optio
            "node_budget": cap, "budget": {"max_states": budget.max_states, "max_ends": budget.max_ends}, "member_cap": member_cap,
            "label_agreement": label_agreement, "labels": labels, "z_deep": wi.z_deep, "evidence": evidence,
            "state_rule": "query_share", "member_rule": "stable_any"}
+    if word_sources:                                                   # G3-g (L-722): named only when on, so the default bytes are unchanged
+        cfg["word_sources"] = True
     spec = {"corpus_sha256": wi.space.sha256(), "slide_spec_sha256": wi.slide.spec.sha256(), "place_spec_sha256": wi.spec.sha256(),
             "grammar_foundation_sha256": gr.foundation_sha()}
     return FlatAnswer(question, it, plan, reads, entries, abst, verdict_of(len(entries), plan, abst), cfg, spec,

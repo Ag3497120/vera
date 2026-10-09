@@ -83,3 +83,4 @@ experiments/line3/g3/s1flat/results_pre/*
 !experiments/line3/g3/s1flat/results_pre/flat_fast_zslide_all_partial6.jsonl*
 experiments/line3/g3/s1flat/results/*.jsonl
 experiments/line3/g3/s1flat/results/*.meta.json
+experiments/line3/g3/combined/results/*.jsonl*
