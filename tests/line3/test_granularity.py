@@ -227,6 +227,22 @@ def test_assemble_combined_on_a_stub_lists_parts_and_tiers(space):
     assert any("ハッシュ表" in line for line in G.format_lines(obj))
 
 
+def test_g3j_the_flat_assembled_block_is_this_assembly_over_the_flat_entries(space):
+    """G3-j (L-780..): the block flat/assembled of the combined list is `assemble(scope "all", no bridging)` over the flat entries (layer 0), nothing else; the
+    strings and their spans equal those of the ask.py F2 hook on the same entries, and a unit of another tier joins (RUN ハッシュ + WORD 表)."""
+    from verantyx.line3 import combined as CB
+    stub = [("RUN", ("ハッシュ",), (0,)), ("WORD", ("表",), (0,)), ("RUN", ("カール", "マルクス"), (1,)), ("CHAR", tuple("東京"), (4,))]
+    flat = CB.Source(CB.FLAT, CB.CHOICE, tuple(CB.Cand("flat/" + t, w, source_sids=s) for t, w, s in stub))
+    src = CB.assembled_source(flat, space)
+    want = G.assemble(space, stub, "all")
+    assert [(c.words[0], c.detail["sid"], tuple(c.detail["span"])) for c in src.cands] == [(a.text, a.sid, (a.start, a.end)) for a in want]
+    assert [c.words[0] for c in src.cands] == ["ハッシュ表", "カール・マルクス", "東京"]
+    assert src.cands[0].detail["part_tiers"] == ["RUN", "WORD"]
+    # the ask.py hook (c.entries as (tier, entry)) gives the same strings
+    hook = G.assemble_combined(SimpleNamespace(entries=tuple((t, SimpleNamespace(words=w, source_sids=s)) for t, w, s in stub)), space)
+    assert [(x["text"], x["sid"], tuple(x["span"])) for x in hook["strings"]] == [(c.words[0], c.detail["sid"], tuple(c.detail["span"])) for c in src.cands]
+
+
 # ---- determinism, no float ---------------------------------------------------------------------------------------
 SCRIPT = r"""
 import json, sys

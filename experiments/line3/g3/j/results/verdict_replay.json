@@ -1,0 +1,22 @@
+{
+ "fast": {
+  "answer_changed": 0,
+  "answer_off": 0,
+  "answer_on": 0,
+  "flat_single_with_block": 3,
+  "questions": 94,
+  "strings": 2246,
+  "verdict_changed": 0,
+  "with_block": 91
+ },
+ "standard": {
+  "answer_changed": 0,
+  "answer_off": 0,
+  "answer_on": 0,
+  "flat_single_with_block": 1,
+  "questions": 94,
+  "strings": 5595,
+  "verdict_changed": 0,
+  "with_block": 94
+ }
+}

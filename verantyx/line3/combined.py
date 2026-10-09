@@ -28,6 +28,9 @@ word sets from different origins stay separate entries, L-220 / L-700 / L-740) a
 set; never summed, never used to choose, L-741); the list is shown in per-origin BLOCKS (flat RUN, WORD, CHAR, layers, window/plain, window/window-evidence),
 each block most stable first (exact Fractions; ties in the source's order, L-749), no ranking across blocks (L-743); the per-source typed abstentions are the FIRST thing shown (`header`, L-742); the
 verdict rule is unchanged (L-724, applied to the entries as listed, L-744).  `merge="word_set"` is the G3-g form (one entry per word set), kept for comparison.
+G3-j (L-780..): the F2 granularity assembly over the FLAT block (layer 0 only, scope "all", no bridging) adds the block `flat/assembled`: the strings that units of different
+tiers of the flat entries make in one source sentence, each with its parts, tiers, per-character provenance and the F2 trace check; never merged with another block, never
+an ANSWER on its own (a single assembled entry is a CHOICE); switch `assembly` (default on for this structure; off = the G3-i bytes).
 All numbers are int / Fraction (written "n/d"); there is no floating-point number and no random number; the canonical bytes are slide.canonical's.
 """
 from __future__ import annotations
@@ -40,6 +43,7 @@ from typing import Dict, List, Mapping, Optional, Sequence, Tuple
 
 from verantyx.line3 import ask as A
 from verantyx.line3 import cycle as cy
+from verantyx.line3 import granularity as GR
 from verantyx.line3 import matryoshka as M
 from verantyx.line3 import readout as ro
 from verantyx.line3 import slide as SL
@@ -59,6 +63,11 @@ LAYERS = "layers"
 WINDOW = "window"
 WINDOW_EVIDENCES: Tuple[str, ...] = ("plain", "window", "both")      # `window_evidence` of ask_combined
 EVIDENCE_LABEL = {"plain": "plain", "window": "window-evidence"}      # slide_flat's evidence -> the origin label (the second is the marked variant)
+ASSEMBLED = "flat/assembled"                                          # G3-j (L-780): the block of the strings assembled from the flat entries
+ASSEMBLED_TIER = ASSEMBLED.split("/", 1)[1]
+NO_ASSEMBLY = "NO_ASSEMBLY"                                           # the assembled source's verdict when it lists nothing (a report, not an UNKNOWN, L-785)
+ASSEMBLY_LISTED = "ASSEMBLED"
+ASSEMBLY_SCOPE = GR.DEFAULT_SCOPE                                     # "all" (F2's choice, OP-F2-1)
 WINDOW_PLAIN = "window/plain"
 WINDOW_EVID = "window/window-evidence"
 MERGES: Tuple[str, ...] = ("none", "word_set")                        # G3-g2 (L-740): none = every candidate its own entry (default); word_set = G3-g's one entry per word set
@@ -96,7 +105,7 @@ def origin_key(origin: str) -> tuple:
     """The fixed order of origins: flat (RUN, WORD, CHAR), layers (tier, layer, variant), window/plain, window/window-evidence."""
     p = origin.split("/")
     if p[0] == FLAT:
-        return (0, TIERS.index(p[1]), 0, "")
+        return (0, len(TIERS) if p[1] == ASSEMBLED_TIER else TIERS.index(p[1]), 0, "")
     if p[0] == LAYERS:
         i = 0
         while i < len(p[2]) and p[2][i].isdigit():
@@ -153,6 +162,8 @@ class Source:
 def _source_rank(name: str) -> tuple:
     if name == FLAT:
         return (0, 0)
+    if name == ASSEMBLED:
+        return (0, 1)
     if name == LAYERS:
         return (1, 0)
     if name == WINDOW_PLAIN:
@@ -187,6 +198,11 @@ class Entry:
     @property
     def window_only(self) -> bool:
         return all(family(m.origin) == WINDOW for m in self.members)
+
+    @property
+    def assembled_only(self) -> bool:
+        """G3-j: the entry is an assembled string (origin flat/assembled); such an entry never stands as a single ANSWER."""
+        return all(m.origin == ASSEMBLED for m in self.members)
 
     @property
     def marks(self) -> Tuple[str, ...]:
@@ -275,17 +291,18 @@ def build_entries(sources: Sequence[Source], how: str = "none") -> Tuple[Entry, 
         ordered = order_blocks(ordered)
         by_key: Dict[tuple, set] = {}
         for c in ordered:
-            by_key.setdefault(c.key, set()).add(c.origin)
-        return tuple(Entry(c.key, (c,), tuple(sorted(by_key[c.key] - {c.origin}, key=origin_key))) for c in ordered)
+            if c.origin != ASSEMBLED:                                 # L-782: an assembled string is not a word set of units; nothing marks it, it marks nothing
+                by_key.setdefault(c.key, set()).add(c.origin)
+        return tuple(Entry(c.key, (c,), () if c.origin == ASSEMBLED else tuple(sorted(by_key[c.key] - {c.origin}, key=origin_key))) for c in ordered)
     order: List[tuple] = []
     groups: Dict[tuple, List[Cand]] = {}
     for c in ordered:
-        k = c.key
+        k = c.key if c.origin != ASSEMBLED else (ASSEMBLED, c.detail["sid"], c.detail["span"][0], c.detail["span"][1])      # L-782: never merged with another block
         if k not in groups:
             groups[k] = []
             order.append(k)
         groups[k].append(c)
-    return tuple(Entry(k, tuple(groups[k])) for k in order)
+    return tuple(Entry(groups[k][0].key, tuple(groups[k])) for k in order)
 
 
 merge = build_entries                                                  # the name G3-g used (its second argument is new)
@@ -293,13 +310,18 @@ merge = build_entries                                                  # the nam
 
 def verdict_of(entries: Sequence[Entry], sources: Sequence[Source]) -> str:
     """L-724.  One entry some non-window origin gives = ANSWER; one entry that only windows give = CHOICE (the owner: window candidates are always a
-    list); several = CHOICE; none: the first UNKNOWN a source reports, in the source order (a reporting precedence, nothing is selected by it)."""
-    if len(entries) > 1:
+    list); several = CHOICE; none: the first UNKNOWN a source reports, in the source order (a reporting precedence, nothing is selected by it).
+    G3-j (L-784, the owner's reading B): the assembled strings are display only and do not count here; they count only when nothing else is listed, and then the
+    list is a CHOICE, never an ANSWER."""
+    real = [e for e in entries if not e.assembled_only]
+    if len(real) > 1:
         return CHOICE
-    if len(entries) == 1:
-        return CHOICE if entries[0].window_only else ANSWER
+    if len(real) == 1:
+        return CHOICE if real[0].window_only else ANSWER
+    if entries:
+        return CHOICE
     for s in sorted(sources, key=lambda s: _source_rank(s.name)):
-        if s.verdict not in (ANSWER, CHOICE):
+        if s.name != ASSEMBLED and s.verdict not in (ANSWER, CHOICE):
             return s.verdict
     return UNKNOWN_NO_STATE
 
@@ -361,6 +383,9 @@ class CombinedAnswer:
                     n = sum(1 for c in s.cands if c.origin == o)
                     ab = [a for a in s.abstentions if a.get("tier") == t]
                     rows.append({"source": o, "listed": n, "kind": None if n else (ab[0]["kind"] if ab else s.verdict), "kinds": counts(ab)})
+            elif s.name == ASSEMBLED:                                            # G3-j (L-785): listed N, or NO_ASSEMBLY
+                n = len(s.cands)
+                rows.append({"source": ASSEMBLED, "listed": n, "kind": None if n else NO_ASSEMBLY, "kinds": {}})
             else:
                 n = len(s.cands)
                 rows.append({"source": s.name, "listed": n, "kind": None if n else s.verdict, "kinds": counts(s.abstentions)})
@@ -384,6 +409,10 @@ class CombinedAnswer:
         return out
 
     @property
+    def has_assembly(self) -> bool:
+        return any(s.name == ASSEMBLED for s in self.sources)
+
+    @property
     def partial(self) -> bool:
         return any(bool(s.read.get("partial")) for s in self.sources)
 
@@ -400,20 +429,48 @@ class CombinedAnswer:
             for d, e in zip(ents, self.entries):
                 d["block"] = e.block
                 d["also_in"] = list(e.also_in)
+        if self.has_assembly:                                                    # L-783: the parts name the entries of THIS list that hold the unit
+            flat = next(s for s in self.sources if s.name == FLAT)
+            pos = {id(c): i for i, c in enumerate(flat.cands)}
+            at: Dict[int, List[int]] = {}
+            for i, e in enumerate(self.entries):
+                for m in e.members:
+                    if id(m) in pos:
+                        at.setdefault(pos[id(m)], []).append(i)
+            for d, e in zip(ents, self.entries):
+                if e.assembled_only:
+                    for m in (m for m in d["members"] if "parts" in m):
+                        m["parts"] = [dict({k: v for k, v in p.items() if k != "flat_pos"},
+                                           entries=sorted({i for fp in p["flat_pos"] for i in at.get(fp, ())})) for p in m["parts"]]
         one = self.verdict == ANSWER
+        real = [d for d, e in zip(ents, self.entries) if not e.assembled_only]
         sids = sorted({s for e in self.entries for s in e.source_sids})
-        return {"verdict": self.verdict, "structure": "combined", "merge": self.merge, "header": self.header(), "blocks": self.blocks(),
+        extra = ({"assembly": self.assembly_obj(), "assembled_only_single": bool(self.entries) and all(e.assembled_only for e in self.entries)}
+                 if self.has_assembly else {})
+        return {**extra, "verdict": self.verdict, "structure": "combined", "merge": self.merge, "header": self.header(), "blocks": self.blocks(),
                 "listed": len(ents), "listed_before_merge": self.listed_before_merge,
                 "per_source_listed": self.per_source_listed(),
                 "window_only_single": len(self.entries) == 1 and self.entries[0].window_only,
-                "answer": ({"origins": ents[0]["origins"], "path_words": ents[0]["words"], "source_sids": ents[0]["source_sids"],
-                            "reference_centres": ents[0]["centres"]} if one else None),
+                "answer": ({"origins": real[0]["origins"], "path_words": real[0]["words"], "source_sids": real[0]["source_sids"],
+                            "reference_centres": real[0]["centres"]} if one else None),
                 "sources": [{"name": s.name, "verdict": s.verdict, "listed": len(s.cands), "read": dict(s.read), "trace": dict(s.trace)}
                             for s in self.sources],
                 "partial": self.partial, "entries": ents, "abstentions": self.abstentions(), "abstention_counts": self.abstention_counts(),
                 "cited": [{"sid": s, "text": self.sentences[s][0], "source": self.sentences[s][1]} for s in sids if s in self.sentences]}
 
+    def assembly_obj(self) -> dict:
+        s = next(s for s in self.sources if s.name == ASSEMBLED)
+        return {"on": True, "origin": ASSEMBLED, "listed": len(s.cands), **{k: s.read.get(k) for k in ("scope", "bridge", "layer", "from", "flat_entries", "sentences")}}
+
     def rule_text(self) -> str:
+        r = self._rule_text()
+        if self.has_assembly:
+            r += ("; plus the block flat/assembled (G3-j): the strings that units of different tiers of the flat entries (layer 0) make where they overlap or touch "
+                  "in one source sentence (F2, scope all, no bridging over function words), each with its parts, tiers, per-character provenance and trace check; "
+                  "never merged with another block, never an ANSWER on its own (a single assembled string is a CHOICE)")
+        return r
+
+    def _rule_text(self) -> str:
         if self.merge == "none":
             return ("one list of the candidates of the flat cross (T10), the layers (stable-seats-path) and the sliding windows read flat, every one "
                     "labelled by its origin and shown in per-origin blocks (flat RUN, WORD, CHAR, layers, window/plain, window/window-evidence), each block ordered by "
@@ -439,6 +496,8 @@ class CombinedAnswer:
         numbers are the same in both merge modes (every candidate is in some entry in both, so `also_in` is not read here, L-741)."""
         by_key: Dict[tuple, set] = {}
         for e in self.entries:
+            if e.assembled_only:                                                 # L-782: a string is not a word set of units; not reported as agreement
+                continue
             by_key.setdefault(e.words, set()).update(e.families)
         fam: Dict[str, int] = {}
         for fs in by_key.values():
@@ -463,7 +522,7 @@ def combine(question: str, sources: Sequence[Source], sentences: Optional[Mappin
     srcs = tuple(sorted(sources, key=lambda s: _source_rank(s.name)))
     for s in srcs:
         for c in s.cands:
-            if family(c.origin) != family(s.name) or (family(s.name) == WINDOW and c.origin != s.name):
+            if family(c.origin) != family(s.name) or (family(s.name) == WINDOW and c.origin != s.name) or ((s.name == ASSEMBLED) != (c.origin == ASSEMBLED)):
                 raise ValueError("candidate origin %r does not belong to source %r" % (c.origin, s.name))
     ents = build_entries(srcs, merge)
     cited = {sid for e in ents for sid in e.source_sids}
@@ -533,6 +592,37 @@ def layers_source(lc: M.LayeredCombined) -> Source:
                   lc.thought_obj()["layers"])
 
 
+def assembled_source(flat: Source, space, scope: str = ASSEMBLY_SCOPE, index: Optional[GR.SpanIndex] = None) -> Source:
+    """G3-j (L-780..L-785): the F2 granularity assembly (granularity.assemble) over the entries of the FLAT source (layer 0; the layers' entries are not read until the
+    layers' provenance is narrowed), scope "all" (the occurrences of all the entries of all three tiers that point into one source sentence are pooled), strict touch
+    (no bridging over function words).  The input is each flat candidate's own `source_sids` (what the owner's F2 measurement used), not the per-word sentences.
+    One candidate per assembled string, origin flat/assembled, in the order of (sentence, start, end); no stability, no rank, no cap.  Each carries, in `detail`:
+    the sentence and span, the parts (tier, unit, index in the tier's unit list of the sentence, span, `flat_pos` = positions in the flat source of the entries that
+    hold the unit; the answer object turns them into indices of the shown list), the tiers of the parts, the tiers that tile the string (`aligned_tiers`) and the coarsest
+    (`lifted_tier`), the provenance of every character (`chars`: the parts that cover it, or none when every tier drops it) and the F2 trace check
+    (granularity.trace_check: the string is the sentence's span, every part is the unit at its place, every letter is in a part, the parts join through dropped
+    characters only).  `index` = a SpanIndex of the space to reuse."""
+    ix = index or GR.SpanIndex(space)
+    ents = [(c.origin.split("/")[1], c.words, c.source_sids) for c in flat.cands]
+    res = GR.assemble(space, ents, scope, ix, bridge=False)
+    cands: List[Cand] = []
+    ok: List[bool] = []
+    for a in res:
+        problems = GR.trace_check(space, a, bridge=False)
+        ok.append(not problems)
+        parts = [{"tier": p.tier, "unit": p.unit, "idx": p.idx, "span": [p.start, p.end], "flat_pos": list(p.entries)} for p in a.parts]
+        chars = [{"i": i, "ch": a.text[i - a.start], "parts": [k for k, p in enumerate(a.parts) if p.start <= i < p.end]} for i in range(a.start, a.end)]
+        cands.append(Cand(ASSEMBLED, (a.text,), (), None, None, (a.sid,), ((a.text, (a.sid,)),), not problems,
+                          {"sid": a.sid, "span": [a.start, a.end], "parts": parts, "part_tiers": list(a.part_tiers), "aligned_tiers": list(a.aligned_tiers),
+                           "lifted_tier": a.lifted_tier, "chars": chars, "trace_check": {"ok": not problems, "problems": problems}}))
+    sids = {sid for c in flat.cands for sid in c.source_sids}
+    read = {"scope": scope, "bridge": False, "layer": 0, "from": FLAT, "flat_entries": len(flat.cands), "sentences": len(sids)}
+    return Source(ASSEMBLED, ASSEMBLY_LISTED if cands else NO_ASSEMBLY, tuple(cands), (), read,
+                  {"ok": (all(ok) if ok else None), "strings_checked": len(ok)},
+                  {"rule": "F2 (granularity.assemble): units of the tiers RUN / WORD / CHAR that the flat entries point to in one source sentence and whose spans overlap or "
+                           "touch (only characters every tier drops between them) are joined into one surface string; the parts stay listed in their own blocks"})
+
+
 def window_source(fa: SF.FlatAnswer, evidence: str) -> Source:
     """The sliding windows read as flat crosses (slide_flat), one evidence variant: one candidate per entry of every window read, origin
     window/plain | window/window-evidence.  The per-word sentences are there when ask_flat was asked with word_sources=True."""
@@ -575,13 +665,16 @@ def ask_combined(index, question: str, tiers: Optional[Sequence[str]] = None, bu
                  view: str = "all", effort: Optional[str] = None, nodes: Optional[int] = None, window_evidence: str = "both",
                  windows: Optional[SQ.WindowIndex] = None, slide_members: str = SLIDE_MEMBERS, read_order: str = "qcount_first",
                  layer_variants: Sequence[str] = LAYER_VARIANTS, layer_granularity: str = LAYER_GRANULARITY, z_deep: Optional[str] = None,
-                 cache_dir: Optional[str] = None, workers: int = 1, place_kw: Optional[Mapping] = None, trace: bool = True, merge: str = "none") -> CombinedAnswer:
+                 cache_dir: Optional[str] = None, workers: int = 1, place_kw: Optional[Mapping] = None, trace: bool = True, merge: str = "none",
+                 assembly: bool = True) -> CombinedAnswer:
     """`structure="combined"` (G3-g, opt-in): the flat cross (ask.ask, `tiers` and `budget` as there), the layers (stable-seats-path, variants
     `layer_variants`, T10's measured configuration) on that same layer 0, and the sliding windows read flat (RUN; evidence plain, window or both),
     ONE list.  `effort` / `nodes` are each source's own amount (crosses per tier for the flat cross, the layers' bounds, WINDOWS for the windows);
     neither = the whole read.  Each source keeps its own search budget (the flat cross T7b's 64 / 8, the windows cycle's 512 / 64, L-705).
     `windows` = a slide_query.WindowIndex made beforehand, else the index's (built / loaded as ask_slide does).
-    `merge` "none" (default, G3-g2: every candidate its own entry, in per-origin blocks, `also_in` marks) | "word_set" (G3-g: one entry per word set)."""
+    `merge` "none" (default, G3-g2: every candidate its own entry, in per-origin blocks, `also_in` marks) | "word_set" (G3-g: one entry per word set).
+    `assembly` (G3-j, default True; this structure is new, so the default changes no committed bytes): add the block flat/assembled, the F2 assembly of the flat
+    entries (assembled_source); False = the list, header and bytes of G3-i."""
     if merge not in MERGES:
         raise ValueError("merge: %s" % " | ".join(MERGES))
     if view != "all":
@@ -600,7 +693,10 @@ def ask_combined(index, question: str, tiers: Optional[Sequence[str]] = None, bu
     evs = ("plain", "window") if window_evidence == "both" else (window_evidence,)
     fas = [(ev, SF.ask_flat(wi, question, effort=effort, nodes=nodes, members=slide_members, read_order=read_order, evidence=ev,
                             word_sources=True)) for ev in evs]
-    srcs = [flat_source(c0, index if trace else None), layers_source(lc)] + [window_source(fa, ev) for ev, fa in fas]
+    fsrc = flat_source(c0, index if trace else None)
+    srcs = [fsrc, layers_source(lc)] + [window_source(fa, ev) for ev, fa in fas]
+    if assembly:
+        srcs.append(assembled_source(fsrc, index.space))
     name, cap, _lv = A.resolve_effort(effort, nodes)
     cfg = {"effort": name, "node_budget": cap, "flat": {"tiers": [o.tier for o in c0.outcomes], "level": index.level},
            "layers": {"variants": list(opts.variants), "granularity": opts.granularity, "feedback": opts.feedback, "candidate": opts.candidate},
@@ -608,6 +704,8 @@ def ask_combined(index, question: str, tiers: Optional[Sequence[str]] = None, bu
                       "corpus_sha256": wi.space.sha256(), "slide_spec_sha256": wi.slide.spec.sha256(), "place_spec_sha256": wi.spec.sha256()}}
     if c0.placement is not None:
         cfg["flat"]["placement"] = dict(c0.placement)
+    if assembly:
+        cfg["assembly"] = {"on": True, "scope": ASSEMBLY_SCOPE, "bridge": False, "layer": 0}
     sent = _sentence_map(index, srcs)
     return combine(question, srcs, sent, config=cfg, effort=name, ms=(time.monotonic_ns() - t0) // 1000000, merge=merge)
 
@@ -628,6 +726,9 @@ def format_text(c: CombinedAnswer, show_thought: bool = False) -> str:
     a = c.answer_obj()
     L: List[str] = ["出所ごとの状況（候補の件数、または答えなしの種類）:"]
     for h in a["header"]:
+        if h["source"] == ASSEMBLED:
+            L.append("  %s: %s" % (h["source"], "つなげた文字列 %d 件（平らな十字の候補の単位を同じ文でつなげたもの）" % h["listed"] if h["listed"] else "つなげた文字列なし (%s)" % h["kind"]))
+            continue
         extra = ""
         if h["kinds"] and h["listed"]:
             extra = "（ほかに答えなしの部分（走り・窓）: %s）" % ", ".join("%s=%d" % kv for kv in h["kinds"].items())
@@ -637,6 +738,12 @@ def format_text(c: CombinedAnswer, show_thought: bool = False) -> str:
     if a["verdict"] == ANSWER:
         L.append("答え (%s): %s" % (", ".join(a["answer"]["origins"]), " / ".join(a["answer"]["path_words"])))
         L.append("  参考の中心: %s" % ", ".join(a["answer"]["reference_centres"]))
+        for i, e in enumerate(a["entries"]):                                   # G3-j addendum (L-789): display only, they do not change the verdict
+            if e["origins"] == [ASSEMBLED]:
+                m = e["members"][0]
+                L.append("  [%d]【つなげた文字列（表示のみ）】 %s  (文 #%d %d-%d, 揃う段 %s)  部品: %s" % (
+                    i, e["words"][0], m["sid"], m["span"][0], m["span"][1], ",".join(m["aligned_tiers"]) or "なし",
+                    " ".join("%s:%s" % (p["tier"], p["unit"]) for p in m["parts"])))
     elif a["verdict"] == CHOICE:
         if a["merge"] == "none":
             L.append("候補 %d 件（平らな十字・層・窓の候補を出所ごとの区切りで並べています。各区切りは安定の高い順（同じ安定はその出所が出した順）です。安定の記録がない区切りは出所の順です。出所をまたいで束ねたり、足したり、順位をつけたりしていません。選んでください）:" % a["listed"])
@@ -644,11 +751,18 @@ def format_text(c: CombinedAnswer, show_thought: bool = False) -> str:
             L.append("候補 %d 件（平らな十字・層・窓の候補を出所の印つきで 1 つの一覧に並べています。同じ語の集合は 1 件にまとめています。足したり順位をつけたりしていません。選んでください）:" % a["listed"])
         if a["window_only_single"]:
             L.append("  窓だけが出した候補が 1 件です。窓の候補は 1 件でも「答え」にしません。")
+        if a.get("assembled_only_single"):
+            L.append("  つなげた文字列だけが 1 件です。つなげた文字列は 1 件でも「答え」にしません。")
         bl = {b["first"]: b for b in a["blocks"]}
         for i, e in enumerate(a["entries"]):
             if i in bl:
                 L.append(" == %s (%d 件) ==" % (bl[i]["block"], bl[i]["listed"]))
-            if a["merge"] == "none":
+            if e["origins"] == [ASSEMBLED]:                                    # G3-j: the string, its sentence and its parts with their tiers
+                m = e["members"][0]
+                L.append("  [%d]【つなげた文字列】 %s  (文 #%d %d-%d, 揃う段 %s)  部品: %s" % (
+                    i, e["words"][0], m["sid"], m["span"][0], m["span"][1], ",".join(m["aligned_tiers"]) or "なし",
+                    " ".join("%s:%s" % (p["tier"], p["unit"]) for p in m["parts"])))
+            elif a["merge"] == "none":
                 head = "  [%d]%s" % (i, "【窓の証拠の変種】" if e["marks"] else "")
                 tail = "  中心: %s%s" % (", ".join(e["centres"]), "  ほかの出所にも同じ語の集合: %s" % ", ".join(e["also_in"]) if e["also_in"] else "")
                 L.append("%s %s%s" % (head, " / ".join(e["words"]), tail))
