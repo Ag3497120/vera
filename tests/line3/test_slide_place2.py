@@ -39,6 +39,12 @@ TOY = [
 ]
 
 
+def mk2(slide, **kw):
+    """G3-c3 (L-628): this file tests the G3-c2 behaviour; the G3-c3 switches are pinned to what G3-c2 did (SP.C2_EQUIV: centre in N,
+    arms grow until the budget stops, Pareto judgement), exactly as test_slide_place.py pins G3-c with SP.LEGACY."""
+    return SP.make_spec(slide, **dict(SP.C2_EQUIV, **kw))
+
+
 def toy_rows():
     seen = {}
     out = []
@@ -173,7 +179,7 @@ def test_per_axis_search_ends_in_stable_classes_on_the_toy_windows(slide):
     for growth in SP.GROWTHS:
         for seat_key in SP.SEAT_KEYS:
             for empty in SP.SEAT_EMPTY:
-                spec = SP.make_spec(slide, stability="per_axis", seat_key=seat_key, seat_empty_axis=empty, growth=growth)
+                spec = mk2(slide, stability="per_axis", seat_key=seat_key, seat_empty_axis=empty, growth=growth)
                 for pw in SP.place_windows(slide, "none"):
                     p = SP.place_window(slide, pw, spec)
                     wfn = SP.counts_weight_fn(slide.counts(pw.window, "corpus"), "RUN")
@@ -186,8 +192,8 @@ def test_per_axis_search_ends_in_stable_classes_on_the_toy_windows(slide):
 # ==== part 2: two seats for a unit of both sentences ===============================================================
 def test_toy_window_has_two_seats_for_the_unit_of_both_sentences(slide):
     pw = pw_of(slide, 2)                                           # 犬 猫 | 猫 魚 食
-    one = SP.place_window(slide, pw, SP.make_spec(slide, seat_key="unit"))
-    two = SP.place_window(slide, pw, SP.make_spec(slide, seat_key="unit_sid", growth="n_then_n1"))
+    one = SP.place_window(slide, pw, mk2(slide, seat_key="unit"))
+    two = SP.place_window(slide, pw, mk2(slide, seat_key="unit_sid", growth="n_then_n1"))
     assert [i.unit for i in one.items] == ["犬", "猫", "魚", "食"] and [i.side for i in one.items] == ["this", "both", "next", "next"]
     assert [(i.unit, i.sid, i.side) for i in two.items] == [("犬", 2, "this"), ("猫", 2, "this"), ("猫", 3, "next"), ("魚", 3, "next"), ("食", 3, "next")]
     assert len({i.token for i in two.items}) == 5 and two.items[1].token != two.items[2].token
@@ -222,7 +228,7 @@ def test_the_z_self_edge_is_a_real_z_edge_between_the_two_seats():
 
 def test_every_seat_carries_its_provenance(slide):
     pw = pw_of(slide, 0)
-    p = SP.place_window(slide, pw, SP.make_spec(slide, growth="n_then_n1"))
+    p = SP.place_window(slide, pw, mk2(slide, growth="n_then_n1"))
     counts = slide.counts(pw.window, "corpus")
     assert [r["arm"] for r in p.seats][0] == "centre" and p.seats[0]["position"] == 0
     for r in p.seats:
@@ -253,12 +259,12 @@ def test_min_L_with_fewer_arms():
 
 def test_deny_leaves_the_z_arms_of_a_one_sentence_window_empty(slide):
     pw = pw_of(slide, 4)                                            # 京都 古い 都, no next sentence
-    deny = SP.place_window(slide, pw, SP.make_spec(slide, seat_empty_axis="deny", growth="n_then_n1"))
+    deny = SP.place_window(slide, pw, mk2(slide, seat_empty_axis="deny", growth="n_then_n1"))
     assert dict(deny.axis_evidence) == {"x": True, "y": False, "z": False}
     assert {"+z", "-z"} <= set(deny.seatless_arms)
     for m in deny.members:
         assert all(c is None for c in m[1 + 4 * deny.L:])                    # arms +z and -z hold nothing
-    allow = SP.place_window(slide, pw, SP.make_spec(slide, seat_empty_axis="allow", growth="n_then_n1"))
+    allow = SP.place_window(slide, pw, mk2(slide, seat_empty_axis="allow", growth="n_then_n1"))
     assert "+z" not in allow.seatless_arms
     assert allow.size == deny.size == 3
     # more units than 2 L + 1: the arm length grows (the z arms never take the rest)
@@ -267,10 +273,10 @@ def test_deny_leaves_the_z_arms_of_a_one_sentence_window_empty(slide):
     assert SP.grow(SP.ArmWeights.from_table({}), four, mid, (0, 1), stability="per_axis").L == 2
     assert SP.grow(SP.ArmWeights.from_table({}), four, mid, (0, 1, 4, 5), stability="per_axis").L == 1
     # a pair window keeps its z arms (evidence exists)
-    pair = SP.place_window(slide, pw_of(slide, 2), SP.make_spec(slide, seat_empty_axis="deny"))
+    pair = SP.place_window(slide, pw_of(slide, 2), mk2(slide, seat_empty_axis="deny"))
     assert dict(pair.axis_evidence)["z"] and "+z" not in pair.seatless_arms
     # the deny spec differs from the allow spec
-    assert SP.make_spec(slide, seat_empty_axis="deny").sha256() != SP.make_spec(slide, seat_empty_axis="allow").sha256()
+    assert mk2(slide, seat_empty_axis="deny").sha256() != mk2(slide, seat_empty_axis="allow").sha256()
 
 
 def test_a_window_with_no_seatable_arm_holds_only_its_centre():
@@ -308,12 +314,12 @@ def slide_d_cache():
 
 
 def test_interleave_changes_the_order_log_and_seats_n_plus_1_first_words(slide_d):
-    base = SP.make_spec(slide_d, growth="n_then_n1")
-    il = SP.make_spec(slide_d, growth="interleave")
+    base = mk2(slide_d, growth="n_then_n1")
+    il = mk2(slide_d, growth="interleave")
     pw = SP.place_windows(slide_d)[0]
     a, b = SP.place_window(slide_d, pw, base), SP.place_window(slide_d, pw, il)
     assert [s.unit for s in b.steps][:4] == ["山", "星", "川", "月"] and [s.unit for s in a.steps][:4] == ["山", "川", "海", "空"]
-    tight = SP.make_spec(slide_d, growth="interleave", level="low")
+    tight = mk2(slide_d, growth="interleave", level="low")
     assert SP.place_window(slide_d, pw, tight).size >= 1
 
 
@@ -342,7 +348,7 @@ def test_z_reserved_binds_insertion_and_swaps_and_grows_the_arms():
 def test_z_reserved_on_the_toy_windows_puts_n_on_x_and_n_plus_1_on_z(slide_d, slide):
     for sl, n in ((slide_d, 0), (slide, 2), (slide, 0)):
         for seat_key in SP.SEAT_KEYS:
-            spec = SP.make_spec(sl, seat_key=seat_key, growth="z_reserved")
+            spec = mk2(sl, seat_key=seat_key, growth="z_reserved")
             p = SP.place_window(sl, pw_of(sl, n), spec)
             side = {i.token: i.side for i in p.items}
             for m in p.members:
@@ -354,7 +360,7 @@ def test_z_reserved_on_the_toy_windows_puts_n_on_x_and_n_plus_1_on_z(slide_d, sl
                             assert side[c] in ("this", "both")
                         if SP.ARM_NAMES[a][1] == "z":
                             assert side[c] in ("next", "both")
-    lone = SP.place_window(slide, pw_of(slide, 4), SP.make_spec(slide, growth="z_reserved"))
+    lone = SP.place_window(slide, pw_of(slide, 4), mk2(slide, growth="z_reserved"))
     assert all(c is None for m in lone.members for c in m[1 + 4 * lone.L:])      # a one-sentence window: no z seat at all
     assert lone.stop == "exhausted" and lone.size == 3
 
@@ -377,7 +383,7 @@ def test_legacy_configuration_equals_the_committed_g3c_module_on_the_toy_corpus(
         for scope in ("corpus", "window"):
             for mode in ("search", "line"):
                 o_spec = old.make_spec(slide, scope=scope, padding=pad, mode=mode)
-                n_spec = SP.make_spec(slide, scope=scope, padding=pad, mode=mode, **SP.LEGACY)
+                n_spec = mk2(slide, scope=scope, padding=pad, mode=mode, **SP.LEGACY)
                 assert o_spec.to_bytes() == n_spec.to_bytes() and o_spec.sha256() == n_spec.sha256()
                 assert [p.doc() for p in old.place_windows(slide, pad)] == [p.doc() for p in SP.place_windows(slide, pad)]
                 for opw, npw in zip(old.place_windows(slide, pad), SP.place_windows(slide, pad)):
@@ -393,7 +399,7 @@ def test_legacy_configuration_equals_the_committed_records_of_the_first_40_fulll
         pytest.skip("no fulllead data / committed records")
     rows = sp.load_jsonl(FL)
     full = SL.Slide(sp.build_space(rows), rows=rows)
-    spec = SP.make_spec(full, **SP.LEGACY)
+    spec = mk2(full, **SP.LEGACY)
     recs = [json.loads(line) for line in open(path, encoding="utf-8")]
     assert len(recs) == 40
     timing_and_runner = {"wall_s", "verify", "line", "z_arm_units", "z_arm_fillers", "z_arm_no_evidence"}
@@ -411,8 +417,8 @@ def test_per_axis_equals_sum_on_windows_without_z(slide):
         for pw in SP.place_windows(slide, pad):
             if len(pw.window.sids) != 1:
                 continue
-            a = SP.place_window(slide, pw, SP.make_spec(slide, **dict(SP.LEGACY, stability="sum")))
-            b = SP.place_window(slide, pw, SP.make_spec(slide, **dict(SP.LEGACY, stability="per_axis")))
+            a = SP.place_window(slide, pw, mk2(slide, **dict(SP.LEGACY, stability="sum")))
+            b = SP.place_window(slide, pw, mk2(slide, **dict(SP.LEGACY, stability="per_axis")))
             assert a.members == b.members and a.steps == b.steps and a.key == b.key and a.stop == b.stop
 
 
@@ -423,25 +429,25 @@ def test_per_axis_equals_sum_on_fulllead_one_sentence_windows():
     full = SL.Slide(sp.build_space(rows), rows=rows)
     lone = [p for p in SP.place_windows(full, "none") if len(p.window.sids) == 1][:12]
     for pw in lone:
-        a = SP.place_window(full, pw, SP.make_spec(full, **dict(SP.LEGACY, stability="sum")))
-        b = SP.place_window(full, pw, SP.make_spec(full, **dict(SP.LEGACY, stability="per_axis")))
+        a = SP.place_window(full, pw, mk2(full, **dict(SP.LEGACY, stability="sum")))
+        b = SP.place_window(full, pw, mk2(full, **dict(SP.LEGACY, stability="per_axis")))
         assert a.members == b.members and a.steps == b.steps and a.stop == b.stop
 
 
 # ==== part 6: spec, seeds, no float ================================================================================
 def test_spec_switches(slide):
-    legacy = SP.make_spec(slide, **SP.LEGACY)
+    legacy = mk2(slide, **SP.LEGACY)
     assert legacy.is_legacy and "switches" not in legacy.doc()
-    dflt = SP.make_spec(slide)
+    dflt = mk2(slide)
     assert dflt.switches() == SP.DEFAULTS == {"stability": "per_axis", "seat_key": "unit_sid", "seat_empty_axis": "allow", "growth": "z_reserved"}
     assert dflt.doc()["switches"] == SP.DEFAULTS and set(dflt.doc()["rules"]) == set(SP.DEFAULTS)
     shas = {legacy.sha256(), dflt.sha256()}
     for k, v in (("stability", "per_axis"), ("seat_key", "unit_sid"), ("seat_empty_axis", "deny"), ("growth", "interleave"), ("growth", "z_reserved")):
-        shas.add(SP.make_spec(slide, **dict(SP.LEGACY, **{k: v})).sha256())
+        shas.add(mk2(slide, **dict(SP.LEGACY, **{k: v})).sha256())
     assert len(shas) == 7
     for bad in ({"stability": "lex"}, {"seat_key": "x"}, {"seat_empty_axis": "no"}, {"growth": "z"}):
         with pytest.raises(ValueError):
-            SP.make_spec(slide, **bad)
+            mk2(slide, **bad)
     p = SP.place_window(slide, pw_of(slide, 0), dflt)
     assert dict(p.switches) == SP.DEFAULTS and p.spec_sha == dflt.sha256()
 
@@ -455,7 +461,7 @@ def test_bytes_are_identical_under_three_hash_seeds_for_every_switch_combination
         "for t,s in T:\n i=seen.get(t,0);seen[t]=i+1;rows.append({'title':t,'sent':s,'source':'%s#%d'%(t,i)})\n"
         "S=sp.build_space(rows);sl=SL.Slide(S,rows=rows);h=hashlib.sha256()\n"
         "for st,sk,se,gr in itertools.product(SP.STABILITIES,SP.SEAT_KEYS,SP.SEAT_EMPTY,SP.GROWTHS):\n"
-        " spec=SP.make_spec(sl,stability=st,seat_key=sk,seat_empty_axis=se,growth=gr);h.update(spec.to_bytes())\n"
+        " spec=SP.make_spec(sl,**SP.C2_EQUIV,stability=st,seat_key=sk,seat_empty_axis=se,growth=gr);h.update(spec.to_bytes())\n"
         " for pw in SP.place_windows(sl,'one'):h.update(SP.place_window(sl,pw,spec).to_bytes())\n"
         "print(h.hexdigest())")
     outs = set()
@@ -470,14 +476,14 @@ def test_no_float_in_new_records(slide):
     def hook(s):
         raise AssertionError("a float in the record: %s" % s)
     for growth in SP.GROWTHS:
-        spec = SP.make_spec(slide, growth=growth, seat_empty_axis="deny")
+        spec = mk2(slide, growth=growth, seat_empty_axis="deny")
         json.loads(spec.to_bytes().decode("utf-8"), parse_float=hook)
         for pw in SP.place_windows(slide, "one"):
             json.loads(SP.place_window(slide, pw, spec).to_bytes().decode("utf-8"), parse_float=hook)
 
 
 def test_next_seat_on_seat_tokens(slide):
-    p = SP.place_window(slide, pw_of(slide, 2), SP.make_spec(slide, seat_key="unit_sid", growth="n_then_n1"))
+    p = SP.place_window(slide, pw_of(slide, 2), mk2(slide, seat_key="unit_sid", growth="n_then_n1"))
     ns = p.next_seat
     assert ns.exclusive_units == 2 and ns.loose_units == 3                  # 魚 食 only in N+1; the N+1 seat of 猫 is a loose seat
     assert ns.loose_seated >= ns.exclusive_seated
@@ -494,7 +500,7 @@ def test_owner_configuration_on_the_first_fulllead_windows_with_the_full_verifie
         pytest.skip("no fulllead data")
     rows = sp.load_jsonl(FL)
     full = SL.Slide(sp.build_space(rows), rows=rows)
-    spec = SP.make_spec(full)
+    spec = mk2(full)
     assert spec.switches() == SP.DEFAULTS
     got = []
     for pw in SP.place_windows(full, "none")[:6]:

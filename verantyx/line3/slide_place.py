@@ -40,6 +40,17 @@ named configuration (`LEGACY`) and stays byte-identical:
   growth           "n_then_n1" (G3-c) | "interleave" | "z_reserved" (x arms take sentence-N seats, z arms sentence-N+1 seats)
 The module defaults are the owner's configuration (per_axis, unit_sid, allow, z_reserved); the low-level functions (`grow`,
 `verify_*`) default to the G3-c behaviour so that the G3-c hand tables read unchanged.
+
+G3-c3 (L-620..; docs/LINE3_LOCAL_DECISIONS.md "G3-c3"): the owner's decisions after G3-c2 and after the G3-c2 audit, three more switches
+(`DEFAULTS3` = the owner's configuration, `C2_EQUIV` = what G3-c2 did; `LEGACY` now names all seven switches):
+  centre_scope         "n" (G3-c2) | "both": the centre is searched over the units of BOTH sentences: with growth z_reserved, two
+                       growths per window (centre in N: x arms = N, z arms = N+1; centre in N+1: x arms = N+1 in its word order,
+                       z arms = N), the classes compared by the per-axis key, every class no other dominates kept
+  arm_cap              "budget" (G3-c2) | "x": the z arms may not exceed the x arms' length; units of the other sentence that do not
+                       fit are recorded as unseated
+  stability_judgement  "strict" | "pareto" (G3-c2): the search is Pareto either way; "strict" marks a window whose representative has
+                       a legal single move improving ANY axis as UNSTABLE_AXIS_IMPROVABLE; the counts are always recorded
+The record only gains fields (`NEW_RECORD_FIELDS_C3`); record.seats / axis_keys / items / self_links / tradeoffs keep their meaning.
 """
 from __future__ import annotations
 
@@ -63,8 +74,14 @@ STABILITIES: Tuple[str, ...] = ("sum", "per_axis")
 SEAT_KEYS: Tuple[str, ...] = ("unit", "unit_sid")
 SEAT_EMPTY: Tuple[str, ...] = ("allow", "deny")
 GROWTHS: Tuple[str, ...] = ("n_then_n1", "interleave", "z_reserved")
-LEGACY: Dict[str, str] = {"stability": "sum", "seat_key": "unit", "seat_empty_axis": "allow", "growth": "n_then_n1"}
+CENTRE_SCOPES: Tuple[str, ...] = ("n", "both")             # G3-c3 (L-620): the centre is searched over sentence N only | over both sentences
+ARM_CAPS: Tuple[str, ...] = ("budget", "x")                 # G3-c3 (L-624): the arms grow until the budget stops | the z arms stop at the x arms' length
+JUDGEMENTS: Tuple[str, ...] = ("strict", "pareto")          # G3-c3 (L-626): no move improves ANY axis | no move improves one axis and worsens none
+LEGACY4: Dict[str, str] = {"stability": "sum", "seat_key": "unit", "seat_empty_axis": "allow", "growth": "n_then_n1"}
 DEFAULTS: Dict[str, str] = {"stability": "per_axis", "seat_key": "unit_sid", "seat_empty_axis": "allow", "growth": "z_reserved"}
+C2_EQUIV: Dict[str, str] = {"centre_scope": "n", "arm_cap": "budget", "stability_judgement": "pareto"}   # what G3-c2 did
+DEFAULTS3: Dict[str, str] = {"centre_scope": "both", "arm_cap": "budget", "stability_judgement": "strict"}  # the owner's configuration after G3-c3
+LEGACY: Dict[str, str] = dict(LEGACY4, **C2_EQUIV)         # G3-c: all seven switches; byte-identical to the committed G3-c records
 SEP = "\x00"                                               # a seat token of a unit in both sentences: unit + SEP + sid
 Score = Tuple[int, int]
 Vec = Tuple[int, int, int, int, int, int]                  # (n_x, omega_x, n_y, omega_y, n_z, omega_z): the key split by axis
@@ -93,6 +110,23 @@ SEAT_KEY_TEXT = {
 SEAT_EMPTY_TEXT = {
     "allow": "an arm whose axis has no evidence in the window may hold seats (G3-c)",
     "deny": "an arm whose axis has no evidence in the window (no x / y / z count for the tier) has no seats"}
+CENTRE_TEXT = {
+    "n": "the centre is a unit of sentence N (G3-c2: the first unit of N, then by search among the seats the reservation allows)",
+    "both": "the centre is searched over the units of BOTH sentences (L-620): two growths per window, one with the centre in N "
+            "(x arms = N, z arms = N+1, order N then N+1) and one with the centre in N+1 (x arms = N+1 in its word order, z arms "
+            "= N, order N+1 then N); the centre takes only a unit of the sentence its x arms are reserved for; the final classes "
+            "are compared by the per-axis key and every class whose key no other class's dominates is kept (equal and "
+            "incomparable keys both kept); only with growth z_reserved"}
+ARM_CAP_TEXT = {
+    "budget": "the arm length grows until the reserved arms hold their sentence or the budget stops (G3-c2)",
+    "x": "the arm length is the x arms' length: it grows while the centre's sentence is read and is frozen when the first unit "
+         "of the other sentence comes; a unit of the other sentence that finds no empty allowed seat at that length is not seated "
+         "(recorded as unseated, not a stop); only with growth z_reserved"}
+JUDGEMENT_TEXT = {
+    "strict": "a state is stable only when no single legal move improves ANY axis ((n_a, omega_a) rises lexicographically), "
+              "whatever happens to the others; a window whose representative is not is marked UNSTABLE_AXIS_IMPROVABLE (with the "
+              "axes); the search is Pareto either way",
+    "pareto": "a state is stable when no single legal move improves an axis and worsens none (G3-c2); the same counts are recorded"}
 GROWTH_TEXTS = {
     "n_then_n1": GROWTH_TEXT,
     "interleave": "first unit of sentence N at the centre; then N's first, N+1's first, N's second, N+1's second, ... "
@@ -253,21 +287,38 @@ def _axis_arms(arms: Sequence[int], axis: str) -> int:
     return sum(1 for a in arms if ARM_NAMES[a][1] == axis)
 
 
+def other_side(side: str) -> str:
+    """The other sentence of a window: "this" (N) <-> "next" (N+1)."""
+    return "next" if side == "this" else "this"
+
+
 class Policy:
     """Which arms hold seats (`arms`: the y arms without y_seats, the arms of a denied axis removed) and, under growth
-    "z_reserved", which token may sit where: a token of sentence N (side "this") on the centre and the x / y arms, a token of
-    sentence N+1 (side "next") on the centre and the z / y arms, a token of both (side "both", seats="unit") anywhere.
-    `sides` = {token: side}.  Without z_reserved every token may sit on every seatable seat (the G3-c rule)."""
+    "z_reserved", which token may sit where: a token of the centre's sentence on the x / y arms, a token of the other sentence
+    on the z / y arms, a token of both (side "both", seats="unit") anywhere.  `x_side` = the sentence the x arms are reserved for
+    ("this" = sentence N: G3-c2; "next" = sentence N+1: the centre in N+1, G3-c3 L-621), `sides` = {token: side}.  The centre takes
+    any token (G3-c2) or, with `centre_only` (centre_scope "both"), a token of the x arms' sentence (or "both").  Without z_reserved
+    every token may sit on every seatable seat (the G3-c rule)."""
 
-    def __init__(self, arms: Tuple[int, ...], z_reserved: bool = False, sides: Optional[Mapping[str, str]] = None) -> None:
+    def __init__(self, arms: Tuple[int, ...], z_reserved: bool = False, sides: Optional[Mapping[str, str]] = None,
+                 x_side: str = "this", centre_only: bool = False) -> None:
+        if x_side not in ("this", "next"):
+            raise ValueError("x_side must be 'this' or 'next'")
         self.arms = tuple(arms)
         self.z_reserved = z_reserved
         self.sides = dict(sides or {})
+        self.x_side = x_side
+        self.centre_only = centre_only
         self._ok: Dict[Tuple[str, int], frozenset] = {}
 
     @property
     def free(self) -> bool:
         return not self.z_reserved
+
+    def centre_ok(self, token: str) -> bool:
+        if not (self.z_reserved and self.centre_only):
+            return True
+        return self.sides.get(token, "both") in (self.x_side, "both")
 
     def arm_ok(self, token: str, arm: int) -> bool:
         if arm not in self.arms:
@@ -275,23 +326,25 @@ class Policy:
         if not self.z_reserved:
             return True
         ax, side = ARM_NAMES[arm][1], self.sides.get(token, "both")
-        return ax == "y" or (ax == "x" and side in ("this", "both")) or (ax == "z" and side in ("next", "both"))
+        return ax == "y" or (ax == "x" and side in (self.x_side, "both")) or (ax == "z" and side in (other_side(self.x_side), "both"))
 
     def allowed(self, token: str, L: int) -> frozenset:
-        """Flat indices where `token` may sit (the centre included)."""
+        """Flat indices where `token` may sit (the centre included when the token may be the centre)."""
         k = (token, L)
         r = self._ok.get(k)
         if r is None:
-            r = self._ok[k] = frozenset((0,) + tuple(1 + a * L + j for a in self.arms if self.arm_ok(token, a) for j in range(L)))
+            r = self._ok[k] = frozenset(((0,) if self.centre_ok(token) else ()) +
+                                        tuple(1 + a * L + j for a in self.arms if self.arm_ok(token, a) for j in range(L)))
         return r
 
     def capacity_ok(self, L: int, na: int, nb: int, nc: int) -> bool:
         """Is there an assignment of na tokens of side "this", nb of "next", nc of "both" to the seats of arm length L?
-        (Hall's conditions; the centre takes any token.)"""
+        (Hall's conditions; with x_side "next" the roles of na and nb are exchanged: the centre's sentence is "next".)"""
         C, X, Y, Z = 1, L * _axis_arms(self.arms, "x"), L * _axis_arms(self.arms, "y"), L * _axis_arms(self.arms, "z")
         if not self.z_reserved:
             return na + nb + nc <= C + X + Y + Z
-        return na <= C + X + Y and nb <= C + Z + Y and na + nb + nc <= C + X + Y + Z
+        c, o = (na, nb) if self.x_side == "this" else (nb, na)          # tokens of the centre's sentence / of the other one
+        return c <= C + X + Y and o <= (0 if self.centre_only else C) + Z + Y and na + nb + nc <= C + X + Y + Z
 
     def need_L(self, L: int, counts: Tuple[int, int, int], bound: int) -> Optional[int]:
         """The smallest L' >= L whose capacity holds the counts, or None (no L' <= bound does)."""
@@ -652,15 +705,45 @@ def tradeoff_counts(w: ArmWeights, flat: Flat, L: int, arms: Tuple[int, ...], po
     return {"moves_tested": tested, "improve_one_worsen_another": both, "improved_axis": per, "pareto_improving": pareto}
 
 
+def judge_state(w: ArmWeights, flat: Flat, L: int, arms: Tuple[int, ...], pol: Optional[Policy] = None) -> dict:
+    """The strict reading of stability for ONE arrangement (L-626): over every legal single move (the swaps of the search: two
+    seatable seats, a token may not go where the policy denies it, the centre is never emptied), count per axis the moves that
+    improve THAT axis ((n_a, omega_a) rises lexicographically) whatever happens to the other axes.  The state is strictly stable
+    when all three counts are 0.  A trade-off move (one axis up, another down) is counted for the axis it raises; a Pareto
+    improving move (none falls) is counted too (0 for a Pareto fixed point)."""
+    lay, earm = _lay(L), _earm(L)
+    idx = seat_idx(L, arms)
+    per = [0, 0, 0]
+    pareto = tested = 0
+    for a in range(len(idx)):
+        i = idx[a]
+        for b in range(a + 1, len(idx)):
+            j = idx[b]
+            if flat[i] == flat[j] or (i == 0 and flat[j] is None):
+                continue
+            if pol is not None and not pol.free and not _swap_legal(pol, flat, L, i, j):
+                continue
+            tested += 1
+            d = _swap_dvec(w, flat, lay, earm, i, j)
+            for k in range(3):
+                if (d[2 * k], d[2 * k + 1]) > ZERO2:
+                    per[k] += 1
+            pos, neg = _vflags(d)
+            if pos and not neg:
+                pareto += 1
+    return {"moves_tested": tested, "improving_moves_left": {ax: per[k] for k, ax in enumerate(AXES)}, "pareto_improving": pareto,
+            "stable_strict": per == [0, 0, 0], "stable_pareto": pareto == 0}
+
+
 @dataclass(frozen=True)
 class SStep:
     unit: str
     side: str                           # "this" | "next" | "both": the sentence(s) of the window that hold the unit
-    status: str                         # "stable" | "budget"
+    status: str                         # "stable" | "budget" | "unseated" (arm_cap "x": the token did not fit, skipped; G3-c3)
     explored: int                       # distinct states handled
     size_after: Optional[int]
     class_size: Optional[int]
-    reason: Optional[str] = None        # max_class | max_states | max_moves | no_seat
+    reason: Optional[str] = None        # max_class | max_states | max_moves | no_seat | arm_cap
     sid: Optional[int] = None           # seats="unit_sid": the sentence of the seat (None under seats="unit": the unit's)
 
     def doc(self) -> dict:
@@ -676,17 +759,30 @@ class Grown:
     L: int
     members: Tuple[Flat, ...]
     steps: Tuple[SStep, ...]
-    stop: str                           # "exhausted" | "budget" | "empty"
+    stop: str                           # "exhausted" | "budget" | "empty" | "cap" (arm_cap "x": units of the other sentence did not fit)
     broke_on: Optional[SStep]
-    left: Tuple[str, ...]               # units not inserted (the breaking one included)
+    left: Tuple[str, ...]               # units not inserted (the breaking one included; "cap": the unseated ones)
     size: int
+    unseated: Tuple[str, ...] = ()      # G3-c3 (L-624): tokens of the other sentence that did not fit under arm_cap "x" (skipped, not a stop)
+    L_cap: Optional[int] = None         # the arm length the cap froze (arm_cap "x"), None otherwise
+
+
+class _Cap(Exception):
+    """A token of the other sentence does not fit under arm_cap "x" (not a budget break)."""
 
 
 def grow(w: ArmWeights, order: Sequence[Tuple[str, str]], budget: Budget, arms: Tuple[int, ...], *,
-         stability: str = "sum", z_reserved: bool = False, info: Optional[Mapping[str, Tuple[str, int]]] = None) -> Grown:
+         stability: str = "sum", z_reserved: bool = False, info: Optional[Mapping[str, Tuple[str, int]]] = None,
+         x_side: str = "this", centre_only: bool = False, cap_x: bool = False) -> Grown:
     """The F1 stop growth of one window cross.  `order` = ((token, side), ...) in insertion order (distinct tokens); a token is
     a unit (seats="unit") or unit + SEP + sid (a unit of both sentences under seats="unit_sid"); `info` = {token: (unit, sid)}
-    labels the steps and `left`.  Defaults = the G3-c behaviour (stability "sum", no reservation)."""
+    labels the steps and `left`.  Defaults = the G3-c behaviour (stability "sum", no reservation).
+    G3-c3: `x_side` = the sentence the x arms are reserved for ("next": the centre is a unit of N+1, L-621; the first token of
+    `order` is then the centre and must be of that sentence); `centre_only` = the centre takes only a token of the x arms'
+    sentence (centre_scope "both"); `cap_x` = arm_cap "x" (L-624): once the first token of the other sentence comes, the arm
+    length is frozen at its present value (the x arms' length: the centre's sentence has been read) and a token of the other
+    sentence that finds no empty allowed seat at that length is SKIPPED and recorded (status "unseated", reason "arm_cap"), not a
+    stop; only meaningful with z_reserved."""
     if stability not in STABILITIES:
         raise ValueError("stability must be one of %r" % (STABILITIES,))
     if len({u for u, _ in order}) != len(order):
@@ -697,7 +793,8 @@ def grow(w: ArmWeights, order: Sequence[Tuple[str, str]], budget: Budget, arms: 
     def lab(tok: str) -> Tuple[str, Optional[int]]:
         return info[tok] if info is not None else (tok, None)
 
-    pol = Policy(arms, z_reserved, {t: sd for t, sd in order})
+    pol = Policy(arms, z_reserved, {t: sd for t, sd in order}, x_side, centre_only)
+    other = other_side(x_side)
     insert, settle = (_insert_one_pa, _settle_pa) if stability == "per_axis" else (_insert_one, _settle)
     L = 1
     t0, s0 = order[0]
@@ -707,9 +804,15 @@ def grow(w: ArmWeights, order: Sequence[Tuple[str, str]], budget: Budget, arms: 
     typ[s0] += 1
     steps: List[SStep] = [SStep(lab(t0)[0], s0, "stable", 0, 1, 1, None, lab(t0)[1])]
     stop, broke, left = "exhausted", None, ()
-    bound = len(order) + 2
+    unseated: List[str] = []
+    first_unseated: Optional[SStep] = None
+    L_cap: Optional[int] = None
+    bound = len(order) + 2                                              # L-625: an unnumbered cap of G3-c2, numbered in G3-c3
     for pos in range(1, len(order)):
         u, side = order[pos]
+        capped = cap_x and z_reserved and side == other
+        if capped and L_cap is None:
+            L_cap = L
         typ2 = dict(typ)
         typ2[side] += 1
         work = _Work(budget)
@@ -721,6 +824,8 @@ def grow(w: ArmWeights, order: Sequence[Tuple[str, str]], budget: Budget, arms: 
                 L2 = max(L2, L)
             else:
                 L2 = pol.need_L(L, (typ2["this"], typ2["next"], typ2["both"]), bound)
+                if capped and (L2 is None or L2 > L_cap):
+                    raise _Cap()
                 if L2 is None:
                     raise _Over("no_seat")
             while True:
@@ -731,19 +836,30 @@ def grow(w: ArmWeights, order: Sequence[Tuple[str, str]], budget: Budget, arms: 
                 if all(any(st[e] is None for e in ok) for st in bases):
                     break
                 L2 += 1
+                if capped and L2 > L_cap:
+                    raise _Cap()
                 if L2 > bound:
                     raise _Over("no_seat")
             idx = seat_idx(L2, arms)
             starts = insert(w, bases, L2, u, idx, work, budget, pol)
             new = settle(w, starts, L2, idx, work, budget, pol)
+        except _Cap:
+            st = SStep(lab(u)[0], side, "unseated", work.n, size, len(state), "arm_cap", lab(u)[1])
+            steps.append(st)
+            unseated.append(u)
+            if first_unseated is None:
+                first_unseated = st
+            continue
         except _Over as e:
             broke = SStep(lab(u)[0], side, "budget", work.n, None, None, str(e), lab(u)[1])
             steps.append(broke)
-            stop, left = "budget", tuple(lab(x)[0] for x, _ in order[pos:])
+            stop, left = "budget", tuple(lab(x)[0] for x in unseated) + tuple(lab(x)[0] for x, _ in order[pos:])
             break
         state, L, size, typ = new, L2, size + 1, typ2
         steps.append(SStep(lab(u)[0], side, "stable", work.n, size, len(new), None, lab(u)[1]))
-    return Grown(L, state, tuple(steps), stop, broke, left, size)
+    if unseated and stop == "exhausted":
+        stop, broke, left = "cap", first_unseated, tuple(lab(x)[0] for x in unseated)
+    return Grown(L, state, tuple(steps), stop, broke, left, size, tuple(unseated), L_cap)
 
 
 # --------------------------------------------------------------------------------------------------------------
@@ -811,6 +927,8 @@ class SlideFixedPointReport:
     is_fixed_point: bool
     stability: str = "sum"
     swaps_tradeoff: int = 0             # per_axis: swaps that improve one axis and worsen another (neither improving nor equal)
+    axis_improvable: Tuple[Tuple[str, int], ...] = (("x", 0), ("y", 0), ("z", 0))   # G3-c3 (L-626): swaps that raise THAT axis, whatever else happens
+    strictly_stable: bool = True        # no swap raises any axis (G3-c3, the strict reading of the owner's 「どの軸にも改善する手が無い」)
 
 
 def _seat_ok(seat: geo.Seat, y_seats: bool) -> bool:
@@ -818,10 +936,14 @@ def _seat_ok(seat: geo.Seat, y_seats: bool) -> bool:
 
 
 def _legal_seat(seat: geo.Seat, token: str, y_seats: bool, arm_names: Optional[Sequence[str]], sides: Optional[Mapping[str, str]],
-                z_reserved: bool) -> bool:
+                z_reserved: bool, x_side: str = "this", centre_only: bool = False) -> bool:
     """May `token` sit on `seat`?  Seatable arms = arm_names, or every arm but y (unless y_seats); under z_reserved a token of
-    side "this" may not sit on a z arm and a token of side "next" not on an x arm (written from the rule, not from Policy)."""
+    the sentence the x arms are NOT reserved for may not sit on an x arm, and a token of the x arms' sentence not on a z arm
+    (x_side "this": a token of "next" not on x, a token of "this" not on z; x_side "next": the other way round); with
+    `centre_only` the centre takes only a token of the x arms' sentence (written from the rule, not from Policy)."""
     if seat == geo.CENTER:
+        if z_reserved and centre_only and sides is not None:
+            return sides.get(token, "both") in (x_side, "both")
         return True
     if arm_names is not None:
         if seat.arm not in arm_names:
@@ -830,26 +952,35 @@ def _legal_seat(seat: geo.Seat, token: str, y_seats: bool, arm_names: Optional[S
         return False
     if z_reserved and sides is not None:
         side = sides.get(token, "both")
-        if seat.arm[1] == "x" and side == "next":
+        not_x = "next" if x_side == "this" else "this"                 # the sentence that may not sit on an x arm
+        if seat.arm[1] == "x" and side == not_x:
             return False
-        if seat.arm[1] == "z" and side == "this":
+        if seat.arm[1] == "z" and side == x_side:
             return False
     return True
 
 
-def _move_ok(cross: geo.Cross, p: geo.Seat, q: geo.Seat, y_seats, arm_names, sides, z_reserved) -> bool:
+def _move_ok(cross: geo.Cross, p: geo.Seat, q: geo.Seat, y_seats, arm_names, sides, z_reserved, x_side="this", centre_only=False,
+             own_L: Optional[int] = None) -> bool:
+    """A move may not put a token where the rule denies it; with `own_L` (G3-c3, L-623: a member grown at a shorter arm length is
+    padded with empty outer seats in the record) the seats of the padding, k < L - own_L, are not part of its cross."""
+    if own_L is not None and any(s != geo.CENTER and s.k < cross.L - own_L for s in (p, q)):
+        return False
     cp, cq = cross.get(p), cross.get(q)
-    return ((cp is None or _legal_seat(q, str(cp), y_seats, arm_names, sides, z_reserved))
-            and (cq is None or _legal_seat(p, str(cq), y_seats, arm_names, sides, z_reserved))
+    return ((cp is None or _legal_seat(q, str(cp), y_seats, arm_names, sides, z_reserved, x_side, centre_only))
+            and (cq is None or _legal_seat(p, str(cq), y_seats, arm_names, sides, z_reserved, x_side, centre_only))
             and _legal_seat(p, "", y_seats, arm_names, None, False) and _legal_seat(q, "", y_seats, arm_names, None, False))
 
 
 def verify_fixed_point_slide(wfn, cross: geo.Cross, y_seats: bool = False, *, stability: str = "sum",
                              arm_names: Optional[Sequence[str]] = None, sides: Optional[Mapping[str, str]] = None,
-                             z_reserved: bool = False) -> SlideFixedPointReport:
+                             z_reserved: bool = False, x_side: str = "this", centre_only: bool = False,
+                             own_L: Optional[int] = None) -> SlideFixedPointReport:
     """I-05 for the key: no rotation changes the key and no swap of two seatable seats improves it.  stability "sum": the
     summed key rises; "per_axis": the move is Pareto-improving (no axis worsens, one rises).  `arm_names` = the arms that have
-    seats (default: all but y), `sides`/`z_reserved` = the seating rule of growth z_reserved."""
+    seats (default: all but y), `sides`/`z_reserved`/`x_side`/`centre_only` = the seating rule of growth z_reserved (G3-c3: x_side
+    "next" = the centre in N+1).  Also counts, per axis, the swaps that raise that axis whatever else happens
+    (`axis_improvable`; `strictly_stable` = none does)."""
     base, base_ax = cross_key(wfn, cross)
     rot_changed = 0
     follow = True
@@ -864,11 +995,12 @@ def verify_fixed_point_slide(wfn, cross: geo.Cross, y_seats: bool = False, *, st
                 follow = False
     here = _flat_of(cross)
     total = noop = improving = trade = 0
+    axis_imp = {a: 0 for a in AXES}
     plateau = set()
     for p, q in geo.moves_swap(cross.L):
         if not (_seat_ok(p, True) and _seat_ok(q, True)):
             continue
-        if not _move_ok(cross, p, q, y_seats, arm_names, sides, z_reserved):
+        if not _move_ok(cross, p, q, y_seats, arm_names, sides, z_reserved, x_side, centre_only, own_L):
             continue
         total += 1
         if cross.get(p) == cross.get(q):
@@ -878,6 +1010,9 @@ def verify_fixed_point_slide(wfn, cross: geo.Cross, y_seats: bool = False, *, st
         if c2.center is None:
             continue                                       # L-77
         s2, ax2 = cross_key(wfn, c2)
+        for a in AXES:
+            if ax2[a] > base_ax[a]:
+                axis_imp[a] += 1
         if stability == "per_axis":
             if _pareto_better(ax2, base_ax):
                 improving += 1
@@ -891,7 +1026,8 @@ def verify_fixed_point_slide(wfn, cross: geo.Cross, y_seats: bool = False, *, st
         elif s2 == base and _flat_of(c2) != here:
             plateau.add(_flat_of(c2))
     return SlideFixedPointReport(len(geo.moves_rotate()), rot_changed, follow, total, noop, improving, len(plateau),
-                                 rot_changed == 0 and follow and improving == 0, stability, trade)
+                                 rot_changed == 0 and follow and improving == 0, stability, trade,
+                                 tuple((a, axis_imp[a]) for a in AXES), all(v == 0 for v in axis_imp.values()))
 
 
 @dataclass(frozen=True)
@@ -913,12 +1049,16 @@ class SlideClassReport:
 
 def verify_class_slide(wfn, members: Sequence[geo.Cross], y_seats: bool = False, *, stability: str = "sum",
                        arm_names: Optional[Sequence[str]] = None, sides: Optional[Mapping[str, str]] = None,
-                       z_reserved: bool = False, sample: Optional[int] = None) -> SlideClassReport:
+                       z_reserved: bool = False, sample: Optional[int] = None, x_side: str = "this", centre_only: bool = False,
+                       x_sides: Optional[Sequence[str]] = None, own_Ls: Optional[Sequence[int]] = None) -> SlideClassReport:
     """L-70/L-74 for the key, independent of the search.  per_axis: every member is a Pareto fixed point, the class is closed
     under the swaps that change no axis, and no member's per-axis key is dominated by another member's (the keys of a class
     may be incomparable, so `one_key` need not hold).  `sample=k`: test the swaps of only k members, evenly spread over the
     class; keys, antichain, non-empty centres and seat legality are still read for EVERY member, but the fixed-point and the
-    closure checks cover the checked members only (`members_checked` says how many)."""
+    closure checks cover the checked members only (`members_checked` says how many).  G3-c3: `x_side` / `centre_only` as in
+    `verify_fixed_point_slide`; `x_sides` = the x arms' sentence of each member (a class whose members have the centre in
+    different sentences, centre_scope "both"), overriding `x_side`; `own_Ls` = the arm length each member was grown at (a shorter one
+    is padded with empty outer seats in a record whose L is the longest; the moves into the padding are not moves of that member)."""
     here = {_flat_of(c) for c in members}
     kk = {_flat_of(c): cross_key(wfn, c) for c in members}
     keys = {k[0] for k in kk.values()}
@@ -933,13 +1073,14 @@ def verify_class_slide(wfn, members: Sequence[geo.Cross], y_seats: bool = False,
     checked = 0
     for ci, c in enumerate(members):
         base, base_ax = kk[_flat_of(c)]
+        xs = x_side if x_sides is None else x_sides[ci]
         if ci not in pick:
             continue
         checked += 1
         for p, q in geo.moves_swap(c.L):
             if not (_seat_ok(p, True) and _seat_ok(q, True)):
                 continue
-            if not _move_ok(c, p, q, y_seats, arm_names, sides, z_reserved):
+            if not _move_ok(c, p, q, y_seats, arm_names, sides, z_reserved, xs, centre_only, None if own_Ls is None else own_Ls[ci]):
                 continue
             if c.get(p) == c.get(q):
                 continue
@@ -958,7 +1099,8 @@ def verify_class_slide(wfn, members: Sequence[geo.Cross], y_seats: bool = False,
             elif s2 == base and _flat_of(c2) not in here:
                 closed = False
         rep = verify_fixed_point_slide(wfn, c, y_seats, stability=stability, arm_names=arm_names, sides=sides,
-                                       z_reserved=z_reserved) if c is members[0] else None
+                                       z_reserved=z_reserved, x_side=xs, centre_only=centre_only,
+                                       own_L=None if own_Ls is None else own_Ls[ci]) if c is members[0] else None
         if rep is not None:
             follow = rep.labels_follow_rotation
             if rep.rotations_changing_key:
@@ -971,8 +1113,9 @@ def verify_class_slide(wfn, members: Sequence[geo.Cross], y_seats: bool = False,
     else:
         free = all(c.get(s) is None for c in members for s in geo.seats(c.L) if not _seat_ok(s, y_seats))
     if z_reserved and sides is not None:
-        free = free and all(_legal_seat(s, str(c.get(s)), y_seats, arm_names, sides, True)
-                            for c in members for s in geo.seats(c.L) if c.get(s) is not None)
+        free = free and all(_legal_seat(s, str(c.get(s)), y_seats, arm_names, sides, True, x_side if x_sides is None else x_sides[ci],
+                                        centre_only)
+                            for ci, c in enumerate(members) for s in geo.seats(c.L) if c.get(s) is not None)
     one = len(kset) == 1
     anti = True
     if stability == "per_axis":
@@ -1001,6 +1144,9 @@ class PlaceSpec:
     seat_key: str = DEFAULTS["seat_key"]
     seat_empty_axis: str = DEFAULTS["seat_empty_axis"]
     growth: str = DEFAULTS["growth"]
+    centre_scope: str = DEFAULTS3["centre_scope"]               # G3-c3 (L-620)
+    arm_cap: str = DEFAULTS3["arm_cap"]                         # G3-c3 (L-624)
+    stability_judgement: str = DEFAULTS3["stability_judgement"]  # G3-c3 (L-626)
 
     def __post_init__(self) -> None:
         if self.scope not in SL.SCOPES:
@@ -1014,14 +1160,21 @@ class PlaceSpec:
         for name, allowed in (("stability", STABILITIES), ("seat_key", SEAT_KEYS), ("seat_empty_axis", SEAT_EMPTY), ("growth", GROWTHS)):
             if getattr(self, name) not in allowed:
                 raise ValueError("%s must be one of %r" % (name, allowed))
+        for name, allowed in (("centre_scope", CENTRE_SCOPES), ("arm_cap", ARM_CAPS), ("stability_judgement", JUDGEMENTS)):
+            if getattr(self, name) not in allowed:
+                raise ValueError("%s must be one of %r" % (name, allowed))
 
     def switches(self) -> Dict[str, str]:
         return {"stability": self.stability, "seat_key": self.seat_key, "seat_empty_axis": self.seat_empty_axis,
                 "growth": self.growth}
 
+    def switches3(self) -> Dict[str, str]:
+        """The G3-c3 switches (the record and the spec doc list them only when they differ from G3-c2's, `C2_EQUIV`)."""
+        return {"centre_scope": self.centre_scope, "arm_cap": self.arm_cap, "stability_judgement": self.stability_judgement}
+
     @property
     def is_legacy(self) -> bool:
-        return self.switches() == LEGACY
+        return self.switches() == LEGACY4 and self.switches3() == C2_EQUIV
 
     def doc(self) -> dict:
         d = {"format": FORMAT, "kind": "place_spec", "slide_spec_sha256": self.slide_spec_sha, "corpus_sha256": self.corpus_sha,
@@ -1029,10 +1182,14 @@ class PlaceSpec:
              "y_arms": "seats" if self.y_seats else "no seats (one tier: no y edge exists)",
              "mode": self.mode, "key": KEY_TEXT, "growth": GROWTH_TEXT, "on_collapse": "stop",
              "budget": self.budget.to_json_obj(), "budget_level": level_name(self.budget)}
-        if not self.is_legacy:                                       # L-580: the G3-c spec keeps its bytes and its sha
+        if self.switches() != LEGACY4:                               # L-580: the G3-c spec keeps its bytes and its sha
             d["switches"] = self.switches()
             d["rules"] = {"stability": STABILITY_TEXT[self.stability], "seat_key": SEAT_KEY_TEXT[self.seat_key],
                           "seat_empty_axis": SEAT_EMPTY_TEXT[self.seat_empty_axis], "growth": GROWTH_TEXTS[self.growth]}
+        if self.switches3() != C2_EQUIV:                             # L-620: the G3-c2 spec keeps its bytes and its sha
+            d["switches3"] = self.switches3()
+            d["rules3"] = {"centre_scope": CENTRE_TEXT[self.centre_scope], "arm_cap": ARM_CAP_TEXT[self.arm_cap],
+                           "stability_judgement": JUDGEMENT_TEXT[self.stability_judgement]}
         return d
 
     def to_bytes(self) -> bytes:
@@ -1048,11 +1205,15 @@ class PlaceSpec:
 
 def make_spec(slide: SL.Slide, *, scope: str = "corpus", tier: str = "RUN", padding: str = "none", level: str = "mid",
               y_seats: bool = False, mode: str = "search", stability: Optional[str] = None, seat_key: Optional[str] = None,
-              seat_empty_axis: Optional[str] = None, growth: Optional[str] = None) -> PlaceSpec:
-    """A switch left at None takes the module default (DEFAULTS: the owner's configuration); `LEGACY` is the G3-c behaviour."""
+              seat_empty_axis: Optional[str] = None, growth: Optional[str] = None, centre_scope: Optional[str] = None,
+              arm_cap: Optional[str] = None, stability_judgement: Optional[str] = None) -> PlaceSpec:
+    """A switch left at None takes the module default (DEFAULTS + DEFAULTS3: the owner's configuration); `LEGACY` is the G3-c
+    behaviour, `dict(LEGACY, ...)` / `C2_EQUIV` pin the G3-c3 switches to what G3-c2 did."""
     sw = {"stability": stability, "seat_key": seat_key, "seat_empty_axis": seat_empty_axis, "growth": growth}
     sw = {k: (DEFAULTS[k] if v is None else v) for k, v in sw.items()}
-    return PlaceSpec(slide.spec.sha256(), slide.spec.corpus_sha, scope, tier, padding, y_seats, mode, budget_level(level), **sw)
+    sw3 = {"centre_scope": centre_scope, "arm_cap": arm_cap, "stability_judgement": stability_judgement}
+    sw3 = {k: (DEFAULTS3[k] if v is None else v) for k, v in sw3.items()}
+    return PlaceSpec(slide.spec.sha256(), slide.spec.corpus_sha, scope, tier, padding, y_seats, mode, budget_level(level), **sw, **sw3)
 
 
 # --------------------------------------------------------------------------------------------------------------
@@ -1133,13 +1294,17 @@ class Item:
     sid: int
 
 
-def seat_items(slide: SL.Slide, window: SL.Window, tier: str, seat_key: str = "unit_sid", growth: str = "n_then_n1") -> Tuple[Item, ...]:
+def seat_items(slide: SL.Slide, window: SL.Window, tier: str, seat_key: str = "unit_sid", growth: str = "n_then_n1",
+               centre: str = "this") -> Tuple[Item, ...]:
     """The seats of a window in insertion order (L-584, L-585).  Each sentence's distinct units in word order (first occurrence);
     growth "n_then_n1" / "z_reserved": all of N, then all of N+1; "interleave": N's first, N+1's first, N's second, ...
     seats "unit": a unit is seated once (at its first read, side "both" if it is in both sentences) -- with n_then_n1 this is
-    `insertion_order`; "unit_sid": a unit in both sentences gets one seat per sentence (side "this" and "next")."""
-    if seat_key not in SEAT_KEYS or growth not in GROWTHS:
-        raise ValueError("unknown seat_key / growth")
+    `insertion_order`; "unit_sid": a unit in both sentences gets one seat per sentence (side "this" and "next").
+    G3-c3 (L-621): `centre` = "next" reads sentence N+1 first (all of N+1 in word order, then all of N): the insertion order of the
+    growth whose centre is a unit of N+1; `side` stays the corpus fact (this = N, next = N+1); with seat_key "unit" a unit of both
+    sentences is seated when it is first read, so its `sid` is that of the sentence read first."""
+    if seat_key not in SEAT_KEYS or growth not in GROWTHS or centre not in ("this", "next"):
+        raise ValueError("unknown seat_key / growth / centre")
     lists = []
     for sid in window.sids:
         seen = set()
@@ -1151,6 +1316,10 @@ def seat_items(slide: SL.Slide, window: SL.Window, tier: str, seat_key: str = "u
         lists.append((sid, us))
     in_this = set(lists[0][1])
     in_next = set(lists[1][1]) if len(lists) == 2 else set()
+    if centre == "next":
+        if len(lists) != 2:
+            raise ValueError("a one-sentence window has no sentence N+1 to hold the centre")
+        lists = [lists[1], lists[0]]
     seq: List[Tuple[int, str]] = []
     if growth == "interleave" and len(lists) == 2:
         a, b = lists[0][1], lists[1][1]
@@ -1181,6 +1350,17 @@ def seat_items(slide: SL.Slide, window: SL.Window, tier: str, seat_key: str = "u
 def next_seat_items(items: Sequence[Item], seated: Iterable[str]) -> "NextSeat":
     """`next_seat` on seat tokens.  A shared unit's N+1 seat (token with SEP) is a loose, not an exclusive, N+1 seat."""
     pairs = [(it.token, "both" if (SEP in it.token and it.side == "next") else it.side) for it in items]
+    return next_seat(pairs, seated)
+
+
+def other_seat_items(items: Sequence[Item], seated: Iterable[str], x_side: str = "this") -> "NextSeat":
+    """`next_seat_items` for the OTHER sentence of a representative whose x arms hold the sentence `x_side`: sentence N+1 when
+    x_side is "this" (= `next_seat_items`), sentence N when it is "next" (the centre in N+1; G3-c3, L-621).  `exclusive` = units
+    only in the other sentence."""
+    if x_side == "this":
+        return next_seat_items(items, seated)
+    flip = {"this": "next", "next": "this", "both": "both"}
+    pairs = [(it.token, "both" if (SEP in it.token and it.side == "this") else flip[it.side]) for it in items]
     return next_seat(pairs, seated)
 
 
@@ -1255,6 +1435,15 @@ class SlidePlacement:
     seat_rows: Tuple[dict, ...] = ()                        # the representative's seats with provenance (property `seats`)
     self_links: Tuple[dict, ...] = ()                       # units with two seats: n_z(u, u), both seated, directly linked
     tradeoffs: Optional[dict] = None                        # moves of the representative that improve one axis and worsen another
+    # ---- G3-c3 (L-620..L-629); every field below is new ---------------------------------------------------------------------
+    switches3: Tuple[Tuple[str, str], ...] = ()             # (centre_scope, arm_cap, stability_judgement)
+    member_x_side: Tuple[str, ...] = ()                     # per member: the sentence its x arms hold ("this" = N: the centre in N; "next": in N+1)
+    other_seat: Optional[NextSeat] = None                   # did the OTHER sentence (the one the z arms hold) get a seat (next_seat for x_side "this")
+    unseated: Tuple[dict, ...] = ()                         # arm_cap "x": the units of the other sentence that did not fit ({unit, sid})
+    judgement: Optional[dict] = None                        # the strict / Pareto judgement of the representative and the class
+    member_judgement: Tuple[dict, ...] = ()                 # per member: {x_side, stable_strict, improving_moves_left}
+    centre_search: Optional[dict] = None                    # the growths of centre_scope "both" (per growth: seated, L, class, stop, keys) and the choice
+    member_L: Tuple[int, ...] = ()                          # per member: the arm length it was grown (and is stable) at; L is the longest, shorter ones are padded outside
 
     @property
     def class_size(self) -> int:
@@ -1272,6 +1461,25 @@ class SlidePlacement:
         """{x: [n, omega], y: [...], z: [...]}: the key of each axis of the representative member (a label; the members of a
         per_axis class may hold several incomparable keys, listed in `axis_split_set`)."""
         return {a: [n, o] for a, n, o in self.axis_key}
+
+    @property
+    def centre_sentence(self) -> str:
+        """The sentence of the representative's centre: "this" (N) or "next" (N+1); its x arms hold the same sentence."""
+        return self.member_x_side[0] if self.member_x_side else "this"
+
+    @property
+    def stable_strict(self) -> bool:
+        """The representative is strictly stable (no legal single move improves any axis)."""
+        return True if self.judgement is None else self.judgement["stable_strict"]
+
+    @property
+    def improving_moves_left(self) -> Dict[str, int]:
+        return {a: 0 for a in AXES} if self.judgement is None else dict(self.judgement["improving_moves_left"])
+
+    @property
+    def unstable(self) -> Optional[dict]:
+        """None, or the typed marker {"type": "UNSTABLE_AXIS_IMPROVABLE", "axes": [...]} (rule strict; G3-e abstains)."""
+        return None if self.judgement is None else self.judgement["unstable"]
 
     @property
     def seats(self) -> List[dict]:
@@ -1306,9 +1514,19 @@ class SlidePlacement:
              "seat_order": [[it.unit, it.sid] for it in self.items],
              "items": [{"token": it.token, "unit": it.unit, "side": it.side, "sid": it.sid} for it in self.items],
              "seats": self.seats, "self_links": list(self.self_links),
-             "tradeoffs": self.tradeoffs}
+             "tradeoffs": self.tradeoffs,
+             # G3-c3
+             "switches3": {k: v for k, v in self.switches3}, "centre_sentence": self.centre_sentence,
+             "other_seat": None if self.other_seat is None else self.other_seat.doc(),
+             "unseated": list(self.unseated), "stable_strict": self.stable_strict,
+             "improving_moves_left": self.improving_moves_left, "unstable": self.unstable,
+             "judgement": self.judgement, "centre_search": self.centre_search}
         if members:
             d["members"] = [list(m) for m in self.members]
+            if d["judgement"] is not None:                       # per member (aligned with `members`); in the members=True form only
+                d["judgement"] = dict(d["judgement"], member_judgement=[dict(j) for j in self.member_judgement])
+            if d["centre_search"] is not None:
+                d["centre_search"] = dict(d["centre_search"], member_x_side=list(self.member_x_side), member_L=list(self.member_L))
         return d
 
     def to_bytes(self) -> bytes:
@@ -1316,7 +1534,13 @@ class SlidePlacement:
 
 
 # the fields G3-c2 adds to the record (a record of the LEGACY configuration equals the G3-c record without them)
-NEW_RECORD_FIELDS: Tuple[str, ...] = ("switches", "axis_keys", "axis_evidence", "seat_order", "items", "seats", "self_links", "tradeoffs")
+NEW_RECORD_FIELDS_C2: Tuple[str, ...] = ("switches", "axis_keys", "axis_evidence", "seat_order", "items", "seats", "self_links", "tradeoffs")
+# the fields G3-c3 adds on top (a record of the G3-c2 configuration, centre_scope "n" / arm_cap "budget" / judgement "pareto", equals the
+# committed G3-c2 record without them); the per-member lists sit inside `judgement` (member_judgement) and `centre_search`
+# (member_x_side) and only in the members=True form
+NEW_RECORD_FIELDS_C3: Tuple[str, ...] = ("switches3", "centre_sentence", "other_seat", "unseated", "stable_strict", "improving_moves_left",
+                                         "unstable", "judgement", "centre_search")
+NEW_RECORD_FIELDS: Tuple[str, ...] = NEW_RECORD_FIELDS_C2 + NEW_RECORD_FIELDS_C3
 
 
 def _edge_evidence(counts: SL.WindowCounts, tier: str, arm: str, uo: str, ui: str) -> dict:
@@ -1380,20 +1604,64 @@ def _self_links(counts: SL.WindowCounts, tier: str, flat: Flat, L: int, items: S
     return tuple(out)
 
 
+@dataclass(frozen=True)
+class Branch:
+    """One growth of a window: the sentence its x arms hold (`x_side`: "this" = the centre in N, "next" = the centre in N+1), its
+    seats in insertion order, the grown class and the seating policy it was grown under (None: the diagnostic line)."""
+    x_side: str
+    items: Tuple[Item, ...]
+    g: Grown
+    pol: Optional[Policy]
+
+
+def _judgement(rule: str, rep_j: dict, member_js: Sequence[dict]) -> dict:
+    """The record's judgement (L-626): the counts of the representative and of the class, and the typed marker.  `rule` strict:
+    unstable when any axis can be improved by a single move; `pareto`: unstable only when a Pareto-improving move exists."""
+    axes = [a for a in AXES if rep_j["improving_moves_left"][a] > 0]
+    if rule == "strict":
+        stable = rep_j["stable_strict"]
+        unstable = None if stable else {"type": "UNSTABLE_AXIS_IMPROVABLE", "axes": axes}
+    else:
+        stable = rep_j["stable_pareto"]
+        unstable = None if stable else {"type": "UNSTABLE_PARETO_IMPROVABLE", "axes": axes}
+    ok = [i for i, j in enumerate(member_js) if j["stable_strict"]]
+    return {"rule": rule, "stable": stable, "stable_strict": rep_j["stable_strict"], "stable_pareto": rep_j["stable_pareto"],
+            "improving_moves_left": dict(rep_j["improving_moves_left"]), "moves_tested": rep_j["moves_tested"], "unstable": unstable,
+            "members_total": len(member_js), "members_stable_strict": len(ok), "first_stable_strict_member": ok[0] if ok else None}
+
+
 def _finish(spec: PlaceSpec, slide: SL.Slide, pw: PlaceWindow, counts: SL.WindowCounts, w: ArmWeights, arms: Tuple[int, ...],
-            items: Sequence[Item], g: Grown, pol: Optional[Policy]) -> SlidePlacement:
-    members = tuple(sorted(g.members, key=_fk))
+            branches: Sequence[Branch]) -> SlidePlacement:
+    per: List[List[Tuple[Flat, Vec]]] = []
+    for b in branches:
+        per.append([(m, score_vec(w, m, b.g.L)) for m in sorted(b.g.members, key=_fk)])
+    kept: List[Tuple[int, Flat, Vec]] = []                # L-622: the classes of the growths whose per-axis key no other growth's dominates
+    for bi, lst in enumerate(per):
+        others = [v for bj, l2 in enumerate(per) if bj != bi for _m, v in l2]
+        for m, v in lst:
+            if not any(_vdom(o, v) for o in others):
+                kept.append((bi, m, v))
+    Lm = max(branches[bi].g.L for bi in {k[0] for k in kept})          # L-623: one arm length per record; a shorter growth is padded
+    members = tuple(extend_flat(m, branches[bi].g.L, Lm) if branches[bi].g.L < Lm else m for bi, m, _v in kept)
+    mL = tuple(branches[bi].g.L for bi, _m, _v in kept)                # ... and each member stays stable at the length it was grown at
+    xs = tuple(branches[bi].x_side for bi, _m, _v in kept)
+    rb = branches[kept[0][0]]
+    items = rb.items                                     # L-621/622 (review): order_log / items / seat_order are the representative's growth's, like its steps
+    g = rb.g
     rep = members[0]
     seated = sorted({unit_of(u) for u in rep if u is not None})
     cent = tuple(sorted({unit_of(m[0]) for m in members if m[0] is not None}))
-    akey = axis_key_flat(w, rep, g.L) if g.size else tuple((a, 0, 0) for a in AXES)
+    akey = axis_key_flat(w, rep, Lm) if g.size else tuple((a, 0, 0) for a in AXES)
     split_n: Dict[Tuple[int, ...], int] = {}
     for m in members:                                    # an empty window: one member, all zeros
-        t = tuple(v for _a, n, o in axis_key_flat(w, m, g.L) for v in (n, o))
+        t = tuple(v for _a, n, o in axis_key_flat(w, m, Lm) for v in (n, o))
         split_n[t] = split_n.get(t, 0) + 1
     split_set = tuple(sorted(t + (c,) for t, c in split_n.items()))
     splits = len(split_set)
-    ns = next_seat_items(items, [c for c in rep if c is not None]) if len(pw.window.sids) == 2 else None
+    two = len(pw.window.sids) == 2
+    toks = [c for c in rep if c is not None]
+    ns = next_seat_items(items, toks) if two else None
+    os_ = other_seat_items(items, toks, xs[0]) if two else None
     zself = tuple((u, counts.n_z(spec.tier, u, spec.tier, u)) for u in seated if counts.n_z(spec.tier, u, spec.tier, u) > 0)
     fnd = slide.spec.foundation
     ev = axes_with_evidence(counts, spec.tier)
@@ -1401,17 +1669,36 @@ def _finish(spec: PlaceSpec, slide: SL.Slide, pw: PlaceWindow, counts: SL.Window
     links: Tuple[dict, ...] = ()
     trade = None
     if g.size:
-        rows = _seat_rows(slide, pw, counts, spec.tier, rep, g.L, items)
-        links = _self_links(counts, spec.tier, rep, g.L, items)
+        rows = _seat_rows(slide, pw, counts, spec.tier, rep, Lm, items)
+        links = _self_links(counts, spec.tier, rep, Lm, items)
         if spec.mode == "search":
-            trade = tradeoff_counts(w, rep, g.L, arms, pol)
+            trade = tradeoff_counts(w, kept[0][1], g.L, arms, rb.pol)
+    mjs = tuple({"x_side": branches[bi].x_side, "stable_strict": j["stable_strict"], "improving_moves_left": j["improving_moves_left"]}
+                for bi, m, _v in kept for j in (judge_state(w, m, branches[bi].g.L, arms, branches[bi].pol),))
+    rep_j = judge_state(w, kept[0][1], g.L, arms, rb.pol)
+    judge = _judgement(spec.stability_judgement, rep_j, mjs)
+    by_tok = {it.token: it for it in items}
+    unseated = tuple({"unit": by_tok[t].unit, "sid": by_tok[t].sid} for t in g.unseated)
+    kept_n = [sum(1 for k in kept if k[0] == bi) for bi in range(len(branches))]
+    if len(branches) == 1:
+        choice = "single"
+    elif kept_n[0] and kept_n[1]:
+        choice = "both_equal" if {v for _m, v in per[0]} == {v for _m, v in per[1]} else "both_incomparable"
+    else:
+        choice = "this" if kept_n[0] else "next"
+    csearch = {"scope": spec.centre_scope, "choice": choice,
+               "growths": [{"centre_sentence": b.x_side, "seated": b.g.size, "L": b.g.L, "class_size": len(b.g.members), "kept_members": kept_n[bi],
+                            "stop": b.g.stop, "broke_on": None if b.g.broke_on is None else b.g.broke_on.reason,
+                            "unseated": len(b.g.unseated), "L_cap": b.g.L_cap, "padded_to_L": Lm if (kept_n[bi] and b.g.L < Lm) else None,
+                            "axis_keys": [list(v) for v in sorted({v for _m, v in per[bi]})]} for bi, b in enumerate(branches)]}
     return SlidePlacement(
         spec.sha256(), slide.spec.sha256(), spec.scope, spec.tier, spec.mode, pw,
         tuple(fnd.arms), tuple((a, fnd.arm_weight(a)) for a in ARM_NAMES),
-        tuple(ARM_NAMES[a] for a in range(geo.N_ARMS) if a not in arms), g.L, members, cent, g.size,
-        score_flat(w, rep, g.L) if g.size else ZERO2, akey, splits, split_set, tuple((it.unit, it.side) for it in items), g.steps,
+        tuple(ARM_NAMES[a] for a in range(geo.N_ARMS) if a not in arms), Lm, members, cent, g.size,
+        score_flat(w, rep, Lm) if g.size else ZERO2, akey, splits, split_set, tuple((it.unit, it.side) for it in items), g.steps,
         g.stop, g.broke_on, g.left, spec.budget, zself, ns,
-        tuple(sorted(spec.switches().items())), tuple(items), tuple((a, ev[a]) for a in AXES), rows, links, trade)
+        tuple(sorted(spec.switches().items())), tuple(items), tuple((a, ev[a]) for a in AXES), rows, links, trade,
+        tuple(sorted(spec.switches3().items())), xs, os_, unseated, judge, mjs, csearch, mL)
 
 
 def _line_arrangement(order: Sequence[Tuple[str, str]]) -> Optional[Tuple[int, Flat]]:
@@ -1438,7 +1725,8 @@ def _line_arrangement(order: Sequence[Tuple[str, str]]) -> Optional[Tuple[int, F
 
 def place_window(slide: SL.Slide, pw: PlaceWindow, spec: PlaceSpec) -> SlidePlacement:
     """Place the cross of one window (mode "search": the growth above; mode "line": the diagnostic line, no search; the line
-    is the G3-c line: it ignores the G3-c2 switches)."""
+    is the G3-c line: it ignores the G3-c2 / G3-c3 switches).  centre_scope "both" (growth z_reserved): one growth with the
+    centre in N and one with the centre in N+1, merged by the per-axis key (`_finish`)."""
     if spec.slide_spec_sha != slide.spec.sha256() or spec.corpus_sha != slide.spec.corpus_sha:
         raise ValueError("the place spec was made for another slide spec / corpus")
     counts = slide.counts(pw.window, spec.scope)
@@ -1452,13 +1740,24 @@ def place_window(slide: SL.Slide, pw: PlaceWindow, spec: PlaceSpec) -> SlidePlac
         else:
             L, flat = la
             g = Grown(L, (flat,), (), "line", None, (), sum(1 for c in flat if c is not None))
-        return _finish(spec, slide, pw, counts, w, arms, items, g, None)
+        return _finish(spec, slide, pw, counts, w, arms, [Branch("this", tuple(items), g, None)])
     if spec.seat_empty_axis == "deny":                                         # L-583
         ev = axes_with_evidence(counts, spec.tier)
         arms = tuple(a for a in arms if ev[ARM_NAMES[a][1]])
-    items = seat_items(slide, pw.window, spec.tier, spec.seat_key, spec.growth)
     zres = spec.growth == "z_reserved"
-    g = grow(w, [(it.token, it.side) for it in items], spec.budget, arms, stability=spec.stability, z_reserved=zres,
-             info={it.token: (it.unit, it.sid) for it in items} if spec.seat_key == "unit_sid" else None)
-    pol = Policy(arms, zres, {it.token: it.side for it in items})
-    return _finish(spec, slide, pw, counts, w, arms, items, g, pol)
+    both = zres and spec.centre_scope == "both"                                # L-620: meaningful with the reservation only
+
+    def run(items: Tuple[Item, ...], x_side: str) -> Branch:
+        pol = Policy(arms, zres, {it.token: it.side for it in items}, x_side, both)
+        g = grow(w, [(it.token, it.side) for it in items], spec.budget, arms, stability=spec.stability, z_reserved=zres,
+                 info={it.token: (it.unit, it.sid) for it in items} if spec.seat_key == "unit_sid" else None,
+                 x_side=x_side, centre_only=both, cap_x=zres and spec.arm_cap == "x")
+        return Branch(x_side, items, g, pol)
+
+    items = seat_items(slide, pw.window, spec.tier, spec.seat_key, spec.growth)
+    branches = [run(items, "this")]
+    if both and len(pw.window.sids) == 2:
+        items_b = seat_items(slide, pw.window, spec.tier, spec.seat_key, spec.growth, centre="next")
+        if items_b and items_b[0].sid == pw.window.sids[1]:                    # sentence N+1 holds a unit
+            branches.append(run(items_b, "next"))
+    return _finish(spec, slide, pw, counts, w, arms, branches)
