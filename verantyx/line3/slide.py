@@ -44,7 +44,7 @@ AXES: Tuple[str, ...] = ("x", "y", "z")
 ARMS: Tuple[str, ...] = ("+x", "-x", "+y", "-y", "+z", "-z")   # G3 3.1 / 3.3: the order of the arms (a ring)
 SCOPES: Tuple[str, ...] = ("window", "corpus")
 LONE_RULES: Tuple[str, ...] = ("none", "last", "singleton")
-Z_DEEPS: Tuple[str, ...] = ("slide", "order")          # G3-c4 (L-660): what a z-arm edge deeper than the innermost one counts
+Z_DEEPS: Tuple[str, ...] = ("slide", "order", "order_window")   # G3-c4 (L-660) / G3-h (L-760): what a z-arm edge deeper than the innermost one counts
 
 
 def canonical(doc) -> bytes:
@@ -274,6 +274,13 @@ Z_DEEP_TEXT = ("; z_deep=order (G3-c4): a z-arm edge deeper than the innermost o
                "z edge stays n_z")
 
 
+Z_DEEP_WINDOW_TEXT = ("; z_deep=order_window (G3-h): a z-arm edge deeper than the innermost one (the centre's neighbour) is not a slide edge "
+                      "but carries the word order of its two units inside the ONE sentence of the window that both of its ends lie in "
+                      "(the other sentence): n = 1 when that sentence holds both units, omega = 1 when it shows the arm's direction "
+                      "(+z: outer before inner; -z: outer after inner; first occurrences); the corpus is not counted; an edge whose ends "
+                      "lie in different sentences has no evidence; the innermost z edge stays n_z")
+
+
 def default_axes(y_pairs: Sequence[Sequence[str]] = DEFAULT_Y_PAIRS, z_tiers: str = "all",
                  z_deep: str = "slide") -> Tuple[AxisDef, AxisDef, AxisDef]:
     x = AxisDef("x", "word order: for two units of one tier in one sentence, the outer one before (+x) or after (-x) the inner one, "
@@ -286,7 +293,7 @@ def default_axes(y_pairs: Sequence[Sequence[str]] = DEFAULT_Y_PAIRS, z_tiers: st
         raise ValueError("z_deep must be one of %r" % (Z_DEEPS,))
     # the default spec keeps its bytes and its sha: the parameter and the sentence exist only under "order" (L-660)
     z = AxisDef("z", "slide: the outer unit lies in sentence N and the inner in sentence N+1 of one window (+z), or the reverse (-z); "
-                     "n_z = the windows that hold both; z reaches no further than N+1" + (Z_DEEP_TEXT if z_deep == "order" else ""), (
+                     "n_z = the windows that hold both; z reaches no further than N+1" + {"slide": "", "order": Z_DEEP_TEXT, "order_window": Z_DEEP_WINDOW_TEXT}[z_deep], (
         ("occurrence", "first"), ("tiers", z_tiers)) + ((("deep", z_deep),) if z_deep != "slide" else ()))
     return x, y, z
 
@@ -340,7 +347,8 @@ class SlideSpec:
 
     @property
     def z_deep(self) -> str:
-        """"slide" (every z-arm edge is a slide edge, n_z) or "order" (the edges deeper than the innermost carry the word-order count; L-660)."""
+        """"slide" (every z-arm edge is a slide edge, n_z), "order" (the edges deeper than the innermost carry the word-order count of the pair over the
+        counts' scope; L-660) or "order_window" (they carry the word order inside the one window sentence both ends lie in, n 1 / omega 0 or 1; L-760)."""
         return dict(self.axis("z").params).get("deep", "slide")
 
     def doc(self) -> dict:
@@ -379,9 +387,9 @@ class WindowCounts:
       y[(tier_o, o, tier_i, i)]  = sources: o (the coarser tier) has a span that contains a span of i.  +y(o, i); -y(i, o).
       z[(tier_u, u, tier_v, v)]  = sources: u in sentence N, v in sentence N+1.  +z(o=u, i=v); -z(o=v, i=u).
       z_side[(tier, unit)]       = ("this",), ("next",) or ("this", "next"): the sentence(s) of the window the unit lies in.
-      z_deep                     = the spec's z_deep ("slide" | "order", L-660): the counts themselves do not change; the readers
+      z_deep                     = the spec's z_deep ("slide" | "order" | "order_window", L-660 / L-760): the counts themselves do not change; the readers
                                    (the placement and the ratio reader) take the evidence of a z-arm edge deeper than the innermost from
-                                   `deep_z` when it is "order".
+                                   `deep_z` when it is "order" and from `deep_z_window` (with the two seats' sids) when it is "order_window".
     A key with no source is absent (its count is 0)."""
     window: Window
     scope: str
@@ -400,6 +408,32 @@ class WindowCounts:
             raise ValueError("deep_z reads a z arm")
         b, a = self.x.get((tier, o, i), ((), ()))
         return len(b) + len(a), len(b) if arm == "+z" else len(a), tuple(b) + tuple(a)
+
+    def end_sid(self, tier: str, unit: str, sid: Optional[int] = None) -> Optional[int]:
+        """(L-761) The window sentence a seat's unit lies in: the seat's own `sid` when it has one (a unit of both sentences under
+        seat_key unit_sid has a seat per sentence), else the unit's only sentence of the window (`z_side`); None for a unit of both
+        sentences with no sid of its own."""
+        if sid is not None:
+            return sid if sid in self.window.sids else None
+        sides = self.z_side.get((tier, unit), ())
+        return self.window.sids[0 if sides[0] == "this" else 1] if len(sides) == 1 else None
+
+    def deep_z_window(self, tier: str, arm: str, o: str, i: str, sid_o: Optional[int] = None,
+                      sid_i: Optional[int] = None) -> Tuple[int, int, Tuple[XSrc, ...]]:
+        """(L-760) The evidence of a z-arm edge deeper than the innermost under z_deep "order_window": the word order of o and i INSIDE the
+        one window sentence both lie in (their seats' sentences must be the same; else no evidence): n = 1 when that sentence holds both,
+        omega = 1 when o precedes i (arm "+z") / follows i (arm "-z") by the first occurrences, and the one x row of that sentence."""
+        if arm != "+z" and arm != "-z":
+            raise ValueError("deep_z_window reads a z arm")
+        so, si = self.end_sid(tier, o, sid_o), self.end_sid(tier, i, sid_i)
+        if so is None or so != si or o == i:
+            return 0, 0, ()
+        b, a = self.x.get((tier, o, i), ((), ()))
+        fw = tuple(r for r in b if r[0] == so)
+        bw = tuple(r for r in a if r[0] == so)
+        if not fw and not bw:
+            return 0, 0, ()
+        return 1, 1 if (fw if arm == "+z" else bw) else 0, fw + bw
 
     def n_x(self, tier: str, o: str, i: str) -> int:
         b, a = self.x.get((tier, o, i), ((), ()))

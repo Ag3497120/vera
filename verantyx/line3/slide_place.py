@@ -58,6 +58,11 @@ G3-c4 (L-660..; docs/LINE3_LOCAL_DECISIONS.md "G3-c4"): the owner's decision aft
            a z-arm edge deeper than that joins two seats of the other sentence and carries their word-order count as an x edge does:
            +z (n_x(o,i), p(o,i)), -z (n_x(o,i), p(i,o)))
 The weight of an edge is looked up by the arm CODE of the edge: 0..5 the arms, 6 + 4 / 6 + 5 the deeper edges of +z / -z (`ArmWeights.earm`).
+
+G3-h (L-760..; docs/LINE3_LOCAL_DECISIONS.md "G3-h"): the owner's second reading of that evidence, one more value of the same switch:
+  z_deep   "order_window": a z-arm edge deeper than the innermost carries the word order of its two units INSIDE the one sentence of the
+           window both ends lie in (the other sentence): n = 1 (that sentence holds both), omega = 1 when it shows the arm's direction;
+           no count over the corpus.  The sentence of a seat is read from its token (unit + SEP + sid) or the unit's only sentence.
 """
 from __future__ import annotations
 
@@ -259,7 +264,11 @@ class ArmWeights:
         def deep_fn(arm: str, o: str, i: str) -> Score:        # L-661: a z-arm edge deeper than the innermost, read as x reads its pair
             n, om, _src = counts.deep_z(tier, arm, unit_of(o), unit_of(i))
             return (n, om)
-        return ArmWeights(fn, deep_fn if counts.z_deep == "order" else None)
+
+        def deep_win(arm: str, o: str, i: str) -> Score:       # L-760: the word order inside the one sentence both ends lie in
+            n, om, _src = counts.deep_z_window(tier, arm, unit_of(o), unit_of(i), sid_of(o), sid_of(i))
+            return (n, om)
+        return ArmWeights(fn, {"slide": None, "order": deep_fn, "order_window": deep_win}[counts.z_deep])
 
     @staticmethod
     def from_table(table: Mapping[Tuple[str, str, str], Score], deep_table: Optional[Mapping[Tuple[str, str, str], Score]] = None) -> "ArmWeights":
@@ -303,6 +312,11 @@ def axis_key_flat(w: ArmWeights, flat: Flat, L: int) -> Tuple[Tuple[str, int, in
 # --------------------------------------------------------------------------------------------------------------
 # seat tokens and the seating policy (L-580, L-583, L-584)
 # --------------------------------------------------------------------------------------------------------------
+def sid_of(token: str) -> Optional[int]:
+    """The sentence a seat token names (unit + SEP + sid: a unit of both sentences, one seat per sentence), else None (L-762)."""
+    return int(token.split(SEP, 1)[1]) if SEP in token else None
+
+
 def unit_of(token: str) -> str:
     """The unit of a seat token: the token itself, or the part before SEP (a unit in both sentences has two tokens)."""
     return token.split(SEP, 1)[0]
@@ -892,15 +906,40 @@ def grow(w: ArmWeights, order: Sequence[Tuple[str, str]], budget: Budget, arms: 
 # independent verification (I-05, L-74 for the per-axis key): geometry's edges / swap / rotate and the counts' accessors,
 # not the search's flat layout or ArmWeights (L-564)
 # --------------------------------------------------------------------------------------------------------------
+def window_order(counts: SL.WindowCounts, tier: str, arm: str, o: str, i: str, osid: Optional[int], isid: Optional[int]) -> Score:
+    """(L-764) The verifier's reading of a deeper z-arm edge under z_deep "order_window": the sentence of an end is its token's sid, else
+    the one window sentence the counts' `z_side` puts the unit in (a unit of both sentences with no sid of its own has none); the two
+    ends must lie in one sentence; n = 1 when the x rows of (o, i) name that sentence, omega = 1 when they put it on the side of the
+    arm (+z: o before i, -z: o after i).  Written on the x table's rows, not on `WindowCounts.deep_z_window`."""
+    ends = []
+    for u, sid in ((o, osid), (i, isid)):
+        if sid is None:
+            sd = counts.z_side.get((tier, u), ())
+            sid = counts.window.sids[1 if sd == ("next",) else 0] if len(sd) == 1 else None
+        ends.append(sid)
+    if ends[0] is None or ends[0] != ends[1] or ends[0] not in counts.window.sids or o == i:
+        return ZERO2
+    before, after = counts.x.get((tier, o, i), ((), ()))
+    in_before = any(r[0] == ends[0] for r in before)
+    in_after = any(r[0] == ends[0] for r in after)
+    if not (in_before or in_after):
+        return ZERO2
+    return (1, 1 if (in_before if arm == "+z" else in_after) else 0)
+
+
 def counts_weight_fn(counts: SL.WindowCounts, tier: str):
     """w(arm name, outer, inner) -> (n, omega) read through the WindowCounts accessors (the verifier's own route).  Seat tokens
     of seats="unit_sid" are read as their units.  Under z_deep "order" (L-661) the function has the attribute `z_deep` and `cross_key`
-    passes "+z:deep" / "-z:deep" for a z-arm edge whose inner seat is not the centre: read as the x pair is read."""
+    passes "+z:deep" / "-z:deep" for a z-arm edge whose inner seat is not the centre: read as the x pair is read.  Under "order_window" (L-764)
+    the same attribute is set and such an edge is read by `window_order` (the x rows of the one sentence both ends lie in)."""
     def fn(arm: str, o: str, i: str) -> Score:
+        osid, isid = sid_of(o), sid_of(i)
         o, i = unit_of(o), unit_of(i)
-        if arm == "+z:deep":
-            return (counts.n_x(tier, o, i), counts.before_x(tier, o, i))
-        if arm == "-z:deep":
+        if arm == "+z:deep" or arm == "-z:deep":
+            if counts.z_deep == "order_window":              # L-764: the verifier's own route, from the x rows and the window's sids
+                return window_order(counts, tier, arm[:2], o, i, osid, isid)
+            if arm == "+z:deep":
+                return (counts.n_x(tier, o, i), counts.before_x(tier, o, i))
             return (counts.n_x(tier, o, i), counts.after_x(tier, o, i))
         if arm == "+x":
             return (counts.n_x(tier, o, i), counts.before_x(tier, o, i))
@@ -913,7 +952,7 @@ def counts_weight_fn(counts: SL.WindowCounts, tier: str):
             n = counts.n_z(tier, i, tier, o)
             return (n, n)
         return ZERO2
-    fn.z_deep = counts.z_deep == "order"
+    fn.z_deep = counts.z_deep != "slide"
     return fn
 
 
@@ -1592,10 +1631,14 @@ NEW_RECORD_FIELDS: Tuple[str, ...] = NEW_RECORD_FIELDS_C2 + NEW_RECORD_FIELDS_C3
 NEW_RECORD_FIELDS_C4: Tuple[str, ...] = ("z_deep",)
 
 
-def _edge_evidence(counts: SL.WindowCounts, tier: str, arm: str, uo: str, ui: str, deep: bool = False) -> dict:
+def _edge_evidence(counts: SL.WindowCounts, tier: str, arm: str, uo: str, ui: str, deep: bool = False,
+                   so: Optional[int] = None, si: Optional[int] = None) -> dict:
     """The evidence (n, omega, source rows) of the edge (outer uo, inner ui) on `arm`, read through the counts' own tables.
     z_deep "order" (L-661): a z-arm edge also says which rule it used, "slide" (the innermost edge, n_z) or "order" (`deep`: an edge
     deeper than the innermost, the pair's word order as x reads it; its rows are x rows); the default record has no `rule`."""
+    if arm[1] == "z" and counts.z_deep == "order_window" and deep:        # G3-h (L-760): the one sentence both ends lie in
+        n, om, src = counts.deep_z_window(tier, arm, uo, ui, so, si)
+        return {"axis": "z", "arm": arm, "n": n, "omega": om, "sources": [list(t) for t in src], "rule": "order_window"}
     if arm[1] == "z" and counts.z_deep == "order" and deep:
         n, om, src = counts.deep_z(tier, arm, uo, ui)
         return {"axis": "z", "arm": arm, "n": n, "omega": om, "sources": [list(t) for t in src], "rule": "order"}
@@ -1606,7 +1649,7 @@ def _edge_evidence(counts: SL.WindowCounts, tier: str, arm: str, uo: str, ui: st
     if arm[1] == "z":
         z = counts.z.get((tier, uo, tier, ui) if arm == "+z" else (tier, ui, tier, uo), ())
         d = {"axis": "z", "arm": arm, "n": len(z), "omega": len(z), "sources": [list(t) for t in z]}
-        if counts.z_deep == "order":                         # the innermost z edge is the slide edge (L-661)
+        if counts.z_deep != "slide":                         # the innermost z edge is the slide edge (L-661)
             d["rule"] = "slide"
         return d
     return {"axis": "y", "arm": arm, "n": 0, "omega": 0, "sources": []}
@@ -1632,7 +1675,7 @@ def _seat_rows(slide: SL.Slide, pw: PlaceWindow, counts: SL.WindowCounts, tier: 
         edge = None
         if inner is not None and flat[inner] is not None:
             it2 = by_tok[flat[inner]]
-            edge = _edge_evidence(counts, tier, arm, it.unit, it2.unit, inner != 0)
+            edge = _edge_evidence(counts, tier, arm, it.unit, it2.unit, inner != 0, sid_of(tok), sid_of(flat[inner]))
             edge["with"] = {"unit": it2.unit, "sid": it2.sid}
         rows.append({"unit": it.unit, "sid": it.sid, "arm": arm, "position": pos, "depth": 0 if ix == 0 else L - pos,
                      "side": it.side, "token": tok, "sources": {"occ": None if occ is None else occ.row(), "edge": edge}})

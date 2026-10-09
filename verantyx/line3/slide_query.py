@@ -21,7 +21,7 @@ slide.canonical's.  Judgement points are numbered from L-640 (docs/LINE3_LOCAL_D
 
 G3-e2 (owner, after the S1 audit; docs section "G3-e2", L-680..): `answer_shape` "unit" | "path" (what an agreeing axis shows: the end unit
 of the section walk, or the units of the walked path, provenance per word); `read_order` "qcount_first" (default: windows holding more
-question units first, the grammar order only inside a tie) | "grammar_first" (L-645's); `z_deep` "slide" | "order" through
+question units first, the grammar order only inside a tie) | "grammar_first" (L-645's); `z_deep` "slide" | "order" | "order_window" through
 WindowIndex.from_space / window_index_for / ask_slide (a placement switch: part of the cache key).
 """
 from __future__ import annotations
@@ -834,7 +834,7 @@ def ask_slide(index, question: str, *, effort: Optional[str] = None, nodes: Opti
     switches are named in the module header.  Nothing is selected between axes, windows or members.
     G3-e2: answer_shape "unit" (default: the entry's words are the end unit of the walk) | "path" (the units of the walked section path,
     L-680); read_order "qcount_first" (default: windows holding more question units first, the grammar order only inside a tie) |
-    "grammar_first" (L-645's order), L-684; both are read-time.  z_deep "slide" | "order" (G3-c4) is a PLACEMENT switch (slide spec, hence
+    "grammar_first" (L-645's order), L-684; both are read-time.  z_deep "slide" | "order" | "order_window" (G3-c4, G3-h) is a PLACEMENT switch (slide spec, hence
     the cache key, L-686): None = the rule of the window index given (else "slide"); a window index made under the other rule is refused."""
     if skip not in SKIPS or members not in MEMBERS or strict not in STRICT_POLICIES:
         raise ValueError("skip: %s; members: %s; strict: %s" % (SKIPS, MEMBERS, STRICT_POLICIES))

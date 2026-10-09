@@ -1,0 +1,9 @@
+[budget_slide_deny] window index load 1.2s; 592 windows; corpus 725d5ac1a8d2 slide 3df141b12327 place 45402f30e7e3; 94 questions; workers 6; PYTHONHASHSEED=0
+[budget_slide_deny fast plain] 94 to do, 0 kept from an earlier run
+[budget_slide_deny fast plain] done 94 (0 errors) in 42s; load 8.5
+[budget_slide_deny fast window] 94 to do, 0 kept from an earlier run
+[budget_slide_deny fast window] done 94 (0 errors) in 39s; load 7.6
+[budget_slide_deny standard plain] 94 to do, 0 kept from an earlier run
+[budget_slide_deny standard plain] done 94 (0 errors) in 83s; load 7.2
+[budget_slide_deny standard window] 94 to do, 0 kept from an earlier run
+[budget_slide_deny standard window] done 94 (0 errors) in 72s; load 7.7

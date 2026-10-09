@@ -47,6 +47,8 @@ seat is not the centre) has the word-order count of its pair as evidence, n = n_
 count n_z; the innermost z edge keeps n_z.  The edge flow, the binding (F_z, B_z) and the section walk of a z arm (a step over a deeper
 edge needs n_x(o, i) > 0) all read this one evidence.  A reader takes it from `counts_evidence(counts, tier)`, which carries it as the
 attribute `.deep` when `counts.z_deep == "order"` (a plain 3-argument callable keeps working: every z edge reads it).
+G3-h (L-765): `z_deep` "order_window" (the word order inside the ONE window sentence both seats lie in: n 1 / 0): `counts_evidence` carries `.deep` with the two seats'
+sids (`.deep_sids` True; rows ("order_window", sid, ...), rule "order_window" on the edge terms and the walk steps).
 Seats are keyed by (unit, sid) from the start: the current record seats a unit once (a unit of both sentences gets sid of N);
 the two-seat format of G3-c2 (a unit of both sentences has one seat per sentence, linked by z) comes in through `record.seats` / `record.items`.
 """
@@ -262,6 +264,11 @@ def counts_evidence(counts: SL.WindowCounts, tier: str) -> Evidence:
         _n, _om, src = counts.deep_z(tier, arm, o, i)
         return len(src), tuple(("order",) + tuple(r) for r in src)
 
+    def deep_window(arm: str, o: str, i: str, so: Optional[int] = None, si: Optional[int] = None) -> Tuple[int, tuple]:
+        """(L-765) z_deep "order_window": n = 1 when the one sentence both seats lie in holds both units (the seats' sids), else 0."""
+        n, _om, src = counts.deep_z_window(tier, arm, o, i, so, si)
+        return n, tuple(("order_window",) + tuple(r) for r in src)
+
     def ev(arm: str, o: str, i: str) -> Tuple[int, tuple]:
         if arm == "+x" or arm == "-x":
             b, a = counts.x.get((tier, o, i), ((), ()))
@@ -277,6 +284,9 @@ def counts_evidence(counts: SL.WindowCounts, tier: str) -> Evidence:
         return len(s), s
     if counts.z_deep == "order":
         ev.deep = deep
+    elif counts.z_deep == "order_window":
+        ev.deep = deep_window
+        ev.deep_sids = True                                  # the reader passes the two seats' sids
     return ev
 
 
@@ -325,7 +335,7 @@ class EdgeTerm:
     n_this: int
     n_other: int
     e_other: Fraction                     # E_Q(other)
-    rule: str = "slide"                   # L-662: "order" = a z-arm edge deeper than the innermost, evidence = the pair's word-order count
+    rule: str = "slide"                   # L-662: "order" = a z-arm edge deeper than the innermost, evidence = the pair's word-order count; "order_window" (L-765): the one window sentence's order
 
     @property
     def flow_plain(self) -> Fraction:
@@ -502,8 +512,16 @@ class _Reader:
         self.wc, self.ev, self.t, self.q, self.att = wc, evidence, t, q, dict(attached)
         self.w, self.window, self.zself = weights, window, z_self_edges
         self.ev_deep = getattr(evidence, "deep", None)         # L-662: the evidence of a z-arm edge deeper than the innermost (z_deep "order")
+        self.rule = "order_window" if getattr(evidence, "deep_sids", False) else "order"      # L-765: the rule of a deeper z edge
         self.by = wc.by_seat()
         self._e: Dict[Tuple[str, Tuple[str, ...]], Fraction] = {}
+
+    def _deep(self, arm: str, o: SeatRec, i: SeatRec) -> Tuple[int, tuple]:
+        """The evidence of a deeper z-arm edge between two seats: the pair's (z_deep "order"), or, under "order_window", the one sentence
+        both seats lie in (their sids)."""
+        if self.rule == "order_window":
+            return self.ev_deep(arm, o.unit, i.unit, o.sid, i.sid)
+        return self.ev_deep(arm, o.unit, i.unit)
 
     def E(self, u: str, q: Tuple[str, ...]) -> Fraction:
         k = (u, q)
@@ -527,8 +545,8 @@ class _Reader:
             if so is None or si is None:
                 continue
             deep = self.ev_deep is not None and axis == "z" and i != geo.CENTER
-            n, src = (self.ev_deep if deep else self.ev)(o.arm, so.unit, si.unit)
-            out.append((so, si, o.arm, n, src, "order" if deep else "slide"))
+            n, src = self._deep(o.arm, so, si) if deep else self.ev(o.arm, so.unit, si.unit)
+            out.append((so, si, o.arm, n, src, self.rule if deep else "slide"))
         return out
 
     def _skip_pair(self, axis: str, a: SeatRec, b: SeatRec) -> bool:
@@ -572,7 +590,7 @@ class _Reader:
                 stop = "gap"
                 break
             deep = self.ev_deep is not None and arm[1] == "z" and j < self.wc.L        # the step does not end at the centre (L-662)
-            n, src = (self.ev_deep if deep else self.ev)(arm, cur.unit, nxt.unit)
+            n, src = self._deep(arm, cur, nxt) if deep else self.ev(arm, cur.unit, nxt.unit)
             if n <= 0:
                 stop = "unproven"
                 break
@@ -580,7 +598,7 @@ class _Reader:
                 stop = "drop"
                 break
             path.append(nxt)
-            steps.append(WalkStep(arm, cur.key, nxt.key, n, src, "order" if deep else "slide"))
+            steps.append(WalkStep(arm, cur.key, nxt.key, n, src, self.rule if deep else "slide"))
         else:
             stop = "centre"
         return AxisWalk(arm, tuple(p.key for p in path), path[-1].key, stop, tuple(steps))

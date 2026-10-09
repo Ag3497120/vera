@@ -1063,7 +1063,7 @@ def wi_order(space, rows):
 
 
 def test_z_deep_is_a_placement_switch_of_the_window_index(wi, wi_order, space, rows):
-    assert wi.z_deep == "slide" and wi_order.z_deep == "order" and Q.Z_DEEPS == ("slide", "order")
+    assert wi.z_deep == "slide" and wi_order.z_deep == "order" and Q.Z_DEEPS == ("slide", "order", "order_window")
     assert wi.slide.spec.sha256() != wi_order.slide.spec.sha256() and wi.spec.sha256() != wi_order.spec.sha256()
     assert wi_order.slide.spec.z_deep == "order" and wi.slide.spec.z_deep == "slide"
     same = Q.WindowIndex.from_space(space, None, rows=rows, level=LEVEL, z_deep="slide")           # the default spelled out = the default

@@ -1,0 +1,61 @@
+== budget slide allow: load 8.44 7.44 6.69
+[budget_slide_allow standard plain] 94 to do, 0 kept from an earlier run
+[budget_slide_allow standard plain] done 94 (0 errors) in 78s; load 7.8
+[budget_slide_allow standard window] 94 to do, 0 kept from an earlier run
+[budget_slide_allow standard window] done 94 (0 errors) in 69s; load 7.6
+== budget order allow: load 7.63 7.60 6.93
+[budget_order_allow standard plain] 94 to do, 0 kept from an earlier run
+[budget_order_allow standard plain] done 94 (0 errors) in 157s; load 8.1
+[budget_order_allow standard window] 94 to do, 0 kept from an earlier run
+[budget_order_allow standard window] done 94 (0 errors) in 112s; load 8.8
+== budget order_window allow: load 8.79 8.20 7.45
+[budget_order_window_allow standard plain] 94 to do, 0 kept from an earlier run
+[budget_order_window_allow standard plain] done 94 (0 errors) in 155s; load 7.9
+[budget_order_window_allow standard window] 94 to do, 0 kept from an earlier run
+[budget_order_window_allow standard window] done 94 (0 errors) in 109s; load 7.7
+== x slide allow: load 7.72 8.22 7.75
+[x_slide_allow standard plain] 94 to do, 0 kept from an earlier run
+[x_slide_allow standard plain] done 94 (0 errors) in 81s; load 7.9
+[x_slide_allow standard window] 94 to do, 0 kept from an earlier run
+[x_slide_allow standard window] done 94 (0 errors) in 72s; load 7.8
+== x order allow: load 7.80 8.12 7.82
+[x_order_allow standard plain] 94 to do, 0 kept from an earlier run
+[x_order_allow standard plain] done 94 (0 errors) in 111s; load 9.1
+[x_order_allow standard window] 94 to do, 0 kept from an earlier run
+[x_order_allow standard window] done 94 (0 errors) in 87s; load 8.6
+== x order_window allow: load 8.58 8.68 8.18
+[x_order_window_allow standard plain] 94 to do, 0 kept from an earlier run
+[x_order_window_allow standard plain] done 94 (0 errors) in 112s; load 7.7
+[x_order_window_allow standard window] 94 to do, 0 kept from an earlier run
+[x_order_window_allow standard window] done 94 (0 errors) in 88s; load 7.8
+== budget slide deny: load 7.80 8.24 8.13
+[budget_slide_deny standard plain] 94 to do, 0 kept from an earlier run
+[budget_slide_deny standard plain] done 94 (0 errors) in 83s; load 7.2
+[budget_slide_deny standard window] 94 to do, 0 kept from an earlier run
+[budget_slide_deny standard window] done 94 (0 errors) in 72s; load 7.7
+== budget order deny: load 7.67 7.97 8.03
+[budget_order_deny standard plain] 94 to do, 0 kept from an earlier run
+[budget_order_deny standard plain] done 94 (0 errors) in 154s; load 7.8
+[budget_order_deny standard window] 94 to do, 0 kept from an earlier run
+[budget_order_deny standard window] done 94 (0 errors) in 109s; load 8.0
+== budget order_window deny: load 7.48 8.01 8.05
+[budget_order_window_deny standard plain] 94 to do, 0 kept from an earlier run
+[budget_order_window_deny standard plain] done 94 (0 errors) in 153s; load 8.1
+[budget_order_window_deny standard window] 94 to do, 0 kept from an earlier run
+[budget_order_window_deny standard window] done 94 (0 errors) in 104s; load 8.1
+== x slide deny: load 8.13 8.14 8.07
+[x_slide_deny standard plain] 94 to do, 0 kept from an earlier run
+[x_slide_deny standard plain] done 94 (0 errors) in 79s; load 8.0
+[x_slide_deny standard window] 94 to do, 0 kept from an earlier run
+[x_slide_deny standard window] done 94 (0 errors) in 70s; load 7.9
+== x order deny: load 7.92 8.11 8.08
+[x_order_deny standard plain] 94 to do, 0 kept from an earlier run
+[x_order_deny standard plain] done 94 (0 errors) in 109s; load 7.4
+[x_order_deny standard window] 94 to do, 0 kept from an earlier run
+[x_order_deny standard window] done 94 (0 errors) in 78s; load 8.0
+== x order_window deny: load 7.99 8.14 8.09
+[x_order_window_deny standard plain] 94 to do, 0 kept from an earlier run
+[x_order_window_deny standard plain] done 94 (0 errors) in 105s; load 7.1
+[x_order_window_deny standard window] 94 to do, 0 kept from an earlier run
+[x_order_window_deny standard window] done 94 (0 errors) in 80s; load 6.9
+SWEEPDONE

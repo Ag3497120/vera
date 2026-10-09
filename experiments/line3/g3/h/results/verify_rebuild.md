@@ -1,0 +1,4 @@
+# G3-h: fresh builds against the G3-f window caches (fulllead RUN mid, padding one, G3-c3 defaults)
+
+- z_deep slide: old slidewin_725d5ac1a8d2_RUN_3df141b12327_07db87511ff1.pkl (slide 3df141b12327 place 07db87511ff1) vs fresh (slide 3df141b12327 place 07db87511ff1): 592 windows old, 592 new, 592 equal, 0 different
+- z_deep order: old slidewin_725d5ac1a8d2_RUN_6b36bcb7306d_9280bce0035a.pkl (slide 6b36bcb7306d place 9280bce0035a) vs fresh (slide 6b36bcb7306d place 9280bce0035a): 592 windows old, 592 new, 592 equal, 0 different
