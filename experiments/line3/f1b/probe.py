@@ -77,7 +77,7 @@ if __name__ == "__main__":
     idx = A.Index.from_jsonl(DATA, CACHE, A.DEFAULT_LEVEL, A.TIERS, group_insert=GI)
     assert all(len(idx.stores[t]._loaded) == len(idx.space.tiers[t].units()) for t in idx.tiers), "the cache is incomplete"
     print("index + cache load %.1fs" % (time.monotonic() - t0), flush=True)
-    out = open(os.path.join(HERE, "probe_%s.jsonl" % GI), "w", encoding="utf-8")
+    out = open(os.path.join(HERE, "probe_%s%s.jsonl" % (GI, os.environ.get("F1B_TAG", ""))), "w", encoding="utf-8")   # F1B_TAG: parallel runs of different questions
     for qid in IDS:
         _id, kind, _c, subj, question, gold = rows[qid][:6]
         for preset in ("fast", "standard"):
@@ -86,7 +86,7 @@ if __name__ == "__main__":
             built = {t: idx.stores[t].on_demand for t in idx.tiers}   # cumulative, 0 with a full cache
             layer_builds = {t: sum(l.builds for l in M.stack_of(idx, t)._layer1.values()) for t in idx.tiers}
             clean = not cold["off_timeout"] and not cold["on_timeout"]
-            warm = run(idx, question, preset, "warm") if clean else None
+            warm = run(idx, question, preset, "warm") if clean and not os.environ.get("F1B_NOWARM") else None   # layer 0 is re-read in full on every ask (no read cache), so warm only shows the upper-layer builds
             rec = {"id": qid, "preset": preset, "gi": GI, "question": question, "gold": gold, "cap_s": CAP,
                    "layer0_built_on_demand": built, "layer1_crosses_built": layer_builds, "load1": os.getloadavg()[0]}
             for nm, r in (("cold", cold), ("warm", warm)):

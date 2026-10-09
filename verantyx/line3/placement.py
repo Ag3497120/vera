@@ -666,6 +666,9 @@ class Placement:
     order_log: Tuple[Tuple[int, Tuple[str, ...]], ...] = ()   # F-1: (share, members in the recorded insertion order) per group reached
     left_in_group: int = 0           # F-1: members of the group that broke, NOT inserted (the breaking one included)
     left_after: int = 0              # F-1: members of the groups after it, NOT inserted
+    # F-1c (L-500..): on_collapse="skip".  Defaults = stop at the first collapse (L-463).
+    on_collapse: str = "stop"        # "stop" (L-463) | "skip" (L-501)
+    skipped: Tuple[Tuple[int, str, str], ...] = ()   # F-1c: (share, member, budget reason) of every member skipped, in the recorded order
 
     @property
     def centre(self) -> Optional[str]:
@@ -715,7 +718,10 @@ class Placement:
                 **({} if self.group_insert == "whole" else
                    {"group_insert": self.group_insert, "order": self.order,
                     "order_log": [[sh, list(us)] for sh, us in self.order_log],
-                    "left_in_group": self.left_in_group, "left_after": self.left_after})}
+                    "left_in_group": self.left_in_group, "left_after": self.left_after,
+                    **({} if self.on_collapse == "stop" else
+                       {"on_collapse": self.on_collapse,
+                        "skipped": [[sh, u, why] for sh, u, why in self.skipped]})})}
 
     def to_bytes(self) -> bytes:
         return json.dumps(self.to_json_obj(), sort_keys=True, separators=(",", ":"),
@@ -807,7 +813,8 @@ def _centres(members: Sequence[Flat]) -> Tuple[Optional[str], ...]:
 def build_cross(tier: TierSpace, seed: str, w: Optional[Weights] = None,
                 max_groups: Optional[int] = None, budget: Budget = Budget(),
                 quotient: bool = True, pool_groups: Optional[int] = None,
-                group_insert: str = "whole", order: str = "forward") -> Placement:
+                group_insert: str = "whole", order: str = "forward",
+                on_collapse: str = "stop") -> Placement:
     """Build the stable CLASS around `seed` by search, growing group by group (L-72).
     quotient=True (L-90): interchangeable units are held as one group (labels);
     quotient=False: the T4c search (every unit its own label).
@@ -817,9 +824,16 @@ def build_cross(tier: TierSpace, seed: str, w: Optional[Weights] = None,
     group_insert (F-1, L-460; default "whole" = L-72, byte-identical): "ordered" inserts the members of a
     tied share-group ONE AT A TIME in the recorded order of group_order() (order="reverse": the
     measurement probe), settling after each; a member that hits the budget is restored away and growth
-    stops there (the later members and groups are not inserted; the counts are recorded)."""
+    stops there (the later members and groups are not inserted; the counts are recorded).
+    on_collapse (F-1c, L-500..; default "stop" = L-463, byte-identical): "skip" (only with
+    group_insert="ordered", else ValueError) restores a collapsing member away, records it in
+    `skipped`, and goes on with the next member of the recorded order and then the next groups."""
     if group_insert not in ("whole", "ordered"):
         raise ValueError("group_insert must be 'whole' or 'ordered'")
+    if on_collapse not in ("stop", "skip"):
+        raise ValueError("on_collapse must be 'stop' or 'skip'")
+    if on_collapse == "skip" and group_insert != "ordered":
+        raise ValueError("on_collapse='skip' needs group_insert='ordered' (a whole group is one step: nothing to skip)")
     if order not in ("forward", "reverse"):
         raise ValueError("order must be 'forward' or 'reverse'")
     if seed not in tier.postings:
@@ -843,6 +857,9 @@ def build_cross(tier: TierSpace, seed: str, w: Optional[Weights] = None,
     ordered = group_insert == "ordered"
     order_log: List[Tuple[int, Tuple[str, ...]]] = []
     left_in_group = left_after = 0
+    skip = on_collapse == "skip"
+    skipped: List[Tuple[int, str, str]] = []
+    first_skip_group = -1
     for gi, (share, members) in enumerate(groups):
         if max_groups is not None and gi >= max_groups:
             stop = "max_groups"
@@ -862,8 +879,18 @@ def build_cross(tier: TierSpace, seed: str, w: Optional[Weights] = None,
                 starts = _insert_group(qw, bases, L2, [rep[u] for u in batch], work, budget)
                 new = _settle(qw, starts, L2, work, budget)
             except _Over as e:
-                broke = Step(share, batch, BUDGET, work.n, None, None, str(e))
-                steps.append(broke)
+                bk = Step(share, batch, BUDGET, work.n, None, None, str(e))
+                steps.append(bk)
+                if skip:                                     # L-501: restore `state`, go on
+                    if broke is None:
+                        broke, first_skip_group = bk, gi
+                    skipped.append((share, batch[0], str(e)))
+                    if gi == first_skip_group:
+                        left_in_group += 1
+                    else:
+                        left_after += 1
+                    continue
+                broke = bk
                 stop = BUDGET                                # N-05: restore `state`
                 if ordered:                                  # L-463
                     left_in_group = len(batches) - bi
@@ -900,19 +927,22 @@ def build_cross(tier: TierSpace, seed: str, w: Optional[Weights] = None,
     return Placement(seed, to_cross(rep_cross, L), state, L, tuple(cent), size, size,
                      score, stop, broke, tuple(steps),
                      total_candidates, budget, twin_sets, quotient,
-                     group_insert, order, tuple(order_log), left_in_group, left_after)
+                     group_insert, order, tuple(order_log), left_in_group, left_after,
+                     on_collapse, tuple(skipped))
 
 
 class Placer:
     """On-demand placement with a cache (L-07): results never depend on the cache."""
 
     def __init__(self, tier: TierSpace, budget: Budget = Budget(), quotient: bool = True,
-                 group_insert: str = "whole", order: str = "forward") -> None:
+                 group_insert: str = "whole", order: str = "forward",
+                 on_collapse: str = "stop") -> None:
         self.tier = tier
         self.budget = budget
         self.quotient = quotient
         self.group_insert = group_insert
         self.order = order
+        self.on_collapse = on_collapse
         self.w = Weights(tier)
         self._done: Dict[str, Placement] = {}
 
@@ -921,7 +951,8 @@ class Placer:
         if p is None:
             p = self._done[seed] = build_cross(self.tier, seed, self.w, budget=self.budget,
                                                quotient=self.quotient,
-                                               group_insert=self.group_insert, order=self.order)
+                                               group_insert=self.group_insert, order=self.order,
+                                               on_collapse=self.on_collapse)
         return p
 
     def precompute_all(self, seeds: Optional[Iterable[str]] = None) -> Dict[str, Placement]:

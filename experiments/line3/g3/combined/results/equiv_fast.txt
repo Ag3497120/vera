@@ -1,0 +1,14 @@
+equiv_check fast: index load 2s, 12 questions: I2-040 R2-I003 UF-006 I2-014 I2-003 I2-020 I2-023 UF-004 I2-044 I2-041 R2-I013 UF-002
+I2-040 SAME: 43 entries (43 candidates), verdict CHOICE, live 48s (T10 recorded 72s) 
+R2-I003 SAME: 17 entries (18 candidates), verdict CHOICE, live 46s (T10 recorded 78s) 
+UF-006 SAME: 21 entries (22 candidates), verdict CHOICE, live 62s (T10 recorded 99s) 
+I2-014 SAME: 6 entries (6 candidates), verdict CHOICE, live 71s (T10 recorded 110s) 
+I2-003 SAME: 12 entries (14 candidates), verdict CHOICE, live 83s (T10 recorded 114s) 
+I2-020 SAME: 41 entries (42 candidates), verdict CHOICE, live 90s (T10 recorded 128s) 
+I2-023 SAME: 6 entries (6 candidates), verdict CHOICE, live 87s (T10 recorded 130s) 
+UF-004 SAME: 8 entries (8 candidates), verdict CHOICE, live 84s (T10 recorded 134s) 
+I2-044 SAME: 60 entries (62 candidates), verdict CHOICE, live 95s (T10 recorded 141s) 
+I2-041 SAME: 41 entries (41 candidates), verdict CHOICE, live 99s (T10 recorded 143s) 
+R2-I013 SAME: 8 entries (9 candidates), verdict CHOICE, live 87s (T10 recorded 144s) 
+UF-002 SAME: 52 entries (52 candidates), verdict CHOICE, live 107s (T10 recorded 147s) 
+12 of 12 questions identical

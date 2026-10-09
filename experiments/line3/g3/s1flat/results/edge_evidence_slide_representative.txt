@@ -1,0 +1,6 @@
+edge evidence in the crosses of the windows read at fast (slide, members representative): 241 (window, member) crosses of 94 questions
+| axis of the arm | edges (both ends seated) | per-axis evidence n_a > 0 | flat evidence n_pair > 0 | per-axis only | edges at the centre | ... flat-evidenced |
+|---|---|---|---|---|---|---|
+| x | 1762 | 1762 | 1762 | 0 | 476 | 476 |
+| y | 0 | 0 | 0 | 0 | 0 | 0 |
+| z | 577 | 192 | 387 | 114 | 240 | 50 |

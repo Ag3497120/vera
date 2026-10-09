@@ -1,6 +1,6 @@
 """F1b: table of the probe (probe_ordered.jsonl) next to the T9 numbers (t9/results/ask_fulllead_{fast,standard}.jsonl, whole placements, complete cache, 4 workers + other jobs).
 T9 'off' = ms_layer0; T9 'on' = ms_layer0 + layers path ms (layer 0 reused as base, as here).  hit = Y if a candidate holds the gold (t9/scorer.py rule), else '-'; (n) = candidates flat/layers."""
-import json, os, sys
+import json, os, re, sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(HERE)))
 sys.path.insert(0, os.path.join(ROOT, "experiments/line3/t9"))
@@ -17,10 +17,12 @@ for p in ("fast", "standard"):
             t9[(r["id"], p)] = {"off": r["ms_layer0"] / 1000, "on": (r["ms_layer0"] + r["on"]["path"]["ms"]) / 1000,
                                 "hf": h(flat), "hl": h(flat + up), "nf": len(flat), "nl": len(flat + up)}
 pr = {}
-pth = os.path.join(HERE, "probe_ordered.jsonl")
-if os.path.exists(pth):
+import glob
+for pth in sorted(glob.glob(os.path.join(HERE, "logs", "probe_f1b*.log"))):      # the probe prints one JSON record per (question, preset): the logs are the record
     for l in open(pth, encoding="utf-8"):
-        r = json.loads(l); pr[(r["id"], r["preset"])] = r
+        m = re.match(r"^(I2-\d+|R2-I\d+) (fast|standard) (\{.*\})$", l.strip())
+        if m:
+            r = json.loads(m.group(3)); r["id"], r["preset"] = m.group(1), m.group(2); pr[(r["id"], r["preset"])] = r
 f = lambda x: "-" if not x else "Y"
 g = lambda x: "-" if x is None else "Y"
 tm = lambda d, k: "-" if d is None or d.get(k) is None else ("%.1f" % d[k])

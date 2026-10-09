@@ -184,9 +184,10 @@ class Layer:
 
     def __init__(self, k: int, base: TierSpace, lower_units: Mapping[str, Tuple[str, ...]],
                  words: Mapping[str, frozenset], pos_of, bounds: LayerBounds,
-                 group_insert: str = "whole", order: str = "forward") -> None:
+                 group_insert: str = "whole", order: str = "forward", on_collapse: str = "stop") -> None:
         self.k = k
         self.group_insert, self.order = group_insert, order      # F1b (L-475): the index's insertion order, also for upper crosses
+        self.on_collapse = on_collapse                           # F1c (L-506)
         self.lower_units = dict(lower_units)
         self.words = dict(words)
         self.space = build_bundle_tier(base, self.words, pos_of)
@@ -204,7 +205,8 @@ class Layer:
             self.builds += 1
             p = self._cross[seed] = pl.build_cross(self.space, seed, self.w, budget=self.budget,
                                                    pool_groups=self.bounds.pool_groups,
-                                                   group_insert=self.group_insert, order=self.order)
+                                                   group_insert=self.group_insert, order=self.order,
+                                                   on_collapse=self.on_collapse)
         return p
 
     def n_bundles(self) -> int:
@@ -215,9 +217,10 @@ class LayerStack:
     """Caches of one tier of one index: the base word positions and the all-states layer 1 ("same granularity")."""
 
     def __init__(self, base: TierSpace, store, facts: Optional[cy.TierFacts] = None,
-                 group_insert: str = "whole", order: str = "forward") -> None:
+                 group_insert: str = "whole", order: str = "forward", on_collapse: str = "stop") -> None:
         self.base, self.store = base, store
         self.group_insert, self.order = group_insert, order      # F1b (L-475)
+        self.on_collapse = on_collapse                           # F1c (L-506)
         self.facts = facts if facts is not None else cy.TierFacts(base)
         self._down: Dict[tuple, Tuple[Optional[ro.PathAnswer], tuple]] = {}      # L-251: reads of lower crosses (a pure cache)
         self._pos: Dict[str, Dict[int, int]] = {}
@@ -249,7 +252,7 @@ class LayerStack:
             us = placed_units(self.store.cross_for(s))
             lower[bundle_id(1, s)] = us
             words[bundle_id(1, s)] = frozenset(us)
-        return Layer(1, self.base, lower, words, self.pos_of, bounds, self.group_insert, self.order)
+        return Layer(1, self.base, lower, words, self.pos_of, bounds, self.group_insert, self.order, self.on_collapse)
 
     def layer_above(self, k: int, lower: Layer, read_seeds: Sequence[str], bounds: LayerBounds) -> Layer:
         """Layer k from the upper crosses of `lower` that were read (the stable states this question needed)."""
@@ -258,7 +261,7 @@ class LayerStack:
             us = placed_units(lower.cross_for(b))
             lu[bundle_id(k, b)] = us
             words[bundle_id(k, b)] = frozenset().union(*(lower.words[u] for u in us))
-        return Layer(k, self.base, lu, words, self.pos_of, bounds, self.group_insert, self.order)
+        return Layer(k, self.base, lu, words, self.pos_of, bounds, self.group_insert, self.order, self.on_collapse)
 
 
 def stack_of(index: "A.Index", tier: str) -> LayerStack:
@@ -268,7 +271,7 @@ def stack_of(index: "A.Index", tier: str) -> LayerStack:
     s = d.get(tier)
     if s is None:
         s = d[tier] = LayerStack(index.space.tiers[tier], index.stores[tier], index.facts[tier],
-                                 index.group_insert, index.order)
+                                 index.group_insert, index.order, index.on_collapse)
     return s
 
 

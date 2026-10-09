@@ -5,6 +5,12 @@
 # Everything is deterministic (PYTHONHASHSEED=0, exact Fractions), so sharding does not change any result.
 #
 # Start it from the Actions tab ("Run workflow") or:  gh workflow run line3-sweep.yml -f preset=fast -f shards=10
+#
+# structure=combined (G3-g, bank2 fulllead only): the same flat + layers sweep as above PLUS the windows. The cache stage gets a fourth matrix entry
+# WINDOWS (`line3 build --structure slide`: the window index only, uploaded as the artifact cache-WINDOWS); every shard reads its questions through
+# experiments/line3/g3/combined/measure_windows.py (evidence plain / window / both, before the flat part, ~2 s per question), and summarize replays
+# flat + layers + windows through the combiner (tools/gha_summarize_combined.py) into results/combined/. With structure=flat nothing of this runs.
+#   gh workflow run line3-sweep.yml -f structure=combined -f preset=fast -f shards=10
 name: line3-sweep
 
 on:
@@ -38,6 +44,21 @@ on:
         default: mid
         type: choice
         options: [low, mid-low, mid, high, max]
+      structure:
+        description: "flat (the sweep as before) or combined (flat + layers + windows, G3-g; needs corpus fulllead, level mid, layers with ssp)"
+        default: flat
+        type: choice
+        options: [flat, combined]
+      window_evidence:
+        description: "combined only: the pair count the windows read with: plain, window (label-blind sum of the slide counts) or both"
+        default: both
+        type: choice
+        options: [plain, window, both]
+      z_deep:
+        description: "combined only: window placement rule for the z-arm edges deeper than the innermost (order = the G3-i default; slide = the G3-c3 one)"
+        default: order
+        type: choice
+        options: [order, slide]
 
 env:
   PYTHONHASHSEED: "0"
@@ -52,6 +73,16 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: { python-version: "3.11" }
+      - name: combined structure needs fulllead, level mid and the ssp layers
+        if: inputs.structure == 'combined'
+        env:
+          CORPUS: ${{ inputs.corpus }}
+          LEVEL: ${{ inputs.level }}
+          LAYERS: ${{ inputs.layers }}
+        run: |
+          [ "$CORPUS" = "fulllead" ] || { echo "structure=combined reads the fulllead bank only (corpus is $CORPUS)"; exit 1; }
+          [ "$LEVEL" = "mid" ] || { echo "structure=combined: measure_windows.py loads the window cache at level mid (level is $LEVEL)"; exit 1; }
+          case ",$LAYERS," in *,ssp,*) ;; *) echo "structure=combined replays the stable-seats-path layers: layers must contain ssp (is $LAYERS)"; exit 1;; esac
       - run: python -m pip install --quiet fugashi unidic-lite
       - name: determinism probe (must equal the Pro/Air hashes)
         run: |
@@ -68,9 +99,15 @@ jobs:
           print("matrix=" + json.dumps(list(range(n))))
           print("n=%d" % n)
           EOF
+      - name: tier list (WINDOWS = the window index of structure=combined)
+        id: tiers
+        run: |
+          if [ "${{ inputs.structure }}" = "combined" ]; then echo 'tiers=["RUN","WORD","CHAR","WINDOWS"]' >> "$GITHUB_OUTPUT";
+          else echo 'tiers=["RUN","WORD","CHAR"]' >> "$GITHUB_OUTPUT"; fi
     outputs:
       matrix: ${{ steps.shards.outputs.matrix }}
       n: ${{ steps.shards.outputs.n }}
+      tiers: ${{ steps.tiers.outputs.tiers }}
 
   cache:
     needs: probe
@@ -79,7 +116,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        tier: [RUN, WORD, CHAR]
+        tier: ${{ fromJson(needs.probe.outputs.tiers) }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -92,23 +129,44 @@ jobs:
           else echo "path=experiments/line3/data/S3000.jsonl" >> "$GITHUB_OUTPUT"; fi
       - name: restore cache (same code, data, rule, tier)
         id: restore
+        if: matrix.tier != 'WINDOWS'
         uses: actions/cache/restore@v4
         with:
           path: cache
           key: placements-${{ inputs.corpus }}-${{ inputs.level }}-${{ inputs.group_insert }}-${{ matrix.tier }}-${{ hashFiles('verantyx/line3/placement.py', 'verantyx/line3/space.py', 'verantyx/line3/geometry.py', 'verantyx/line3/energy.py', 'verantyx/line3/funcwords.py', steps.data.outputs.path) }}
       - name: build the ${{ matrix.tier }} placements
-        if: steps.restore.outputs.cache-hit != 'true'
+        if: matrix.tier != 'WINDOWS' && steps.restore.outputs.cache-hit != 'true'
         run: |
           mkdir -p cache
           python -m verantyx.cli line3 build --data "${{ steps.data.outputs.path }}" --cache cache --level "${{ inputs.level }}" \
             --tiers "${{ matrix.tier }}" --group-insert "${{ inputs.group_insert }}" --workers 4
           ls -la cache
       - name: save cache
-        if: steps.restore.outputs.cache-hit != 'true'
+        if: matrix.tier != 'WINDOWS' && steps.restore.outputs.cache-hit != 'true'
         uses: actions/cache/save@v4
         with:
           path: cache
           key: placements-${{ inputs.corpus }}-${{ inputs.level }}-${{ inputs.group_insert }}-${{ matrix.tier }}-${{ hashFiles('verantyx/line3/placement.py', 'verantyx/line3/space.py', 'verantyx/line3/geometry.py', 'verantyx/line3/energy.py', 'verantyx/line3/funcwords.py', steps.data.outputs.path) }}
+      - name: restore the window index (same code, data, level, z_deep)
+        id: wrestore
+        if: matrix.tier == 'WINDOWS'
+        uses: actions/cache/restore@v4
+        with:
+          path: cache
+          key: windows-${{ inputs.corpus }}-${{ inputs.level }}-${{ inputs.z_deep }}-${{ hashFiles('verantyx/line3/*.py', steps.data.outputs.path) }}
+      - name: build the window index (line3 build --structure slide)
+        if: matrix.tier == 'WINDOWS' && steps.wrestore.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p cache
+          python -m verantyx.cli line3 build --structure slide --data "${{ steps.data.outputs.path }}" --cache cache --level "${{ inputs.level }}" \
+            --z-deep "${{ inputs.z_deep }}" --workers 4
+          ls -la cache
+      - name: save the window index
+        if: matrix.tier == 'WINDOWS' && steps.wrestore.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: cache
+          key: windows-${{ inputs.corpus }}-${{ inputs.level }}-${{ inputs.z_deep }}-${{ hashFiles('verantyx/line3/*.py', steps.data.outputs.path) }}
       - uses: actions/upload-artifact@v4
         with:
           name: cache-${{ matrix.tier }}
@@ -145,6 +203,21 @@ jobs:
           print("ids=" + ",".join(mine))
           print("count=%d" % len(mine))
           EOF
+      - name: windows of shard ${{ matrix.shard }} (structure=combined; before the long flat part)
+        if: inputs.structure == 'combined'
+        env:
+          PRESET: ${{ inputs.preset }}
+          WEV: ${{ inputs.window_evidence }}
+          ZDEEP: ${{ inputs.z_deep }}
+          SHARD: ${{ matrix.shard }}
+          IDS: ${{ steps.ids.outputs.ids }}
+        run: |
+          mkdir -p out
+          if [ "$WEV" = "both" ]; then EVS="plain window"; else EVS="$WEV"; fi
+          for ev in $EVS; do
+            python experiments/line3/g3/combined/measure_windows.py "$PRESET" "out/win_${PRESET}_${ev}.w${SHARD}.jsonl" \
+              --cache cache --evidence "$ev" --z-deep "$ZDEEP" --workers 4 --ids "$IDS"
+          done
       - name: sweep shard ${{ matrix.shard }} (${{ steps.ids.outputs.count }} questions)
         run: |
           mkdir -p out
@@ -186,6 +259,23 @@ jobs:
           recs = [json.loads(l) for l in open(sys.argv[1], encoding="utf-8")]
           print("questions:", len(recs), "errors:", sum(1 for r in recs if "error" in r))
           EOF
+      - name: merge the window shards and replay flat + layers + windows through the combiner (structure=combined)
+        if: inputs.structure == 'combined'
+        continue-on-error: true
+        env:
+          PRESET: ${{ inputs.preset }}
+          GI: ${{ inputs.group_insert }}
+          WEV: ${{ inputs.window_evidence }}
+        run: |
+          mkdir -p results/combined/meta
+          if [ "$WEV" = "both" ]; then EVS="plain window"; else EVS="$WEV"; fi
+          for ev in $EVS; do
+            cat shards/win_${PRESET}_${ev}.w*.jsonl > "results/combined/win_${PRESET}_${ev}.jsonl"
+            echo "window records ${ev}: $(wc -l < "results/combined/win_${PRESET}_${ev}.jsonl")"
+          done
+          cp shards/win_*.meta.json results/combined/meta/
+          python tools/gha_summarize_combined.py results "$PRESET" "$GI" --evidence "$(echo $EVS | tr ' ' ',')" | tee results/combined/summary.stdout
+          cat results/combined/summary.md >> "$GITHUB_STEP_SUMMARY"
       - name: "T10 tables (the t9 rows are absent on the runner; its raw records are not in git)"
         continue-on-error: true
         run: python experiments/line3/t10/summarize.py results experiments/line3/t9/results

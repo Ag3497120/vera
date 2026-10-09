@@ -156,6 +156,8 @@ out("Grading (as t9): `scorer.py` (NFKC, casefold, no spaces / thousands commas 
 out()
 out("Times: wall seconds per question inside a worker, several workers at once on one shared machine (the sweep's argv and cache are in results/*.meta.json; the 1-min load at each question's finish is in the time table), so times include heavy contention (load 20-40 with 10 workers on 10 cores). The t9 times come from another machine and load (4 workers, load 5-15). Times of the two sweeps are NOT comparable; they only show the order of magnitude. In T10 the layers configs run on top of ONE layer-0 read; the first config run (`ssp`) and the second (`path`) each build their own layer-1 crosses (measured: the second config is NOT warm, its extra is about 0.5-1x the first's), so `layers-X` seconds = layer 0 + that config's own layers time. Tower build time is not included.")
 out()
+out("Not run under T10: `layers-path-standard` (path is not cheap: it builds its own layer-1 crosses; at standard only `ssp` was run, so that t9 row has no T10 counterpart). The fast sweep ran flat + ssp + path.")
+out()
 if ERRORS:
     out("**Questions that raised an error (not in the tables):** " + "; ".join("%s %s: %s" % e for e in ERRORS))
     out()

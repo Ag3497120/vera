@@ -1283,11 +1283,12 @@ RAISE_LEVELS_DEFAULT = ("high", "max")
 
 def ask_tier(tier: TierSpace, question: str, placements, *, raise_budget: Optional[str] = "on_demand",
              raise_levels: Sequence[str] = RAISE_LEVELS_DEFAULT, weights=None,
-             group_insert: str = "whole", order: str = "forward", **kw) -> TierResult:
+             group_insert: str = "whole", order: str = "forward", on_collapse: str = "stop", **kw) -> TierResult:
     """`_ask_tier_once` (all its keywords) plus T6y option `raise_budget="on_demand"` (L-171, owner:
     "問いで必要になったときだけ上げる"): the placement budget of a cross is raised only when a query needs
     it.  "Needs" = the question has no adopted state and a cross it read stopped by budget (stop ==
-    "budget"; an "exhausted" cross cannot grow).  Those crosses are rebuilt (placement.build_cross) at
+    "budget"; an "exhausted" cross cannot grow -- except under on_collapse="skip", where a cross with skipped
+    members also reads "exhausted" and so is never raised, F1c L-502).  Those crosses are rebuilt (placement.build_cross) at
     each level of `raise_levels` above their own, in order, and the question is asked again with the
     rebuilt crosses in place of the stored ones, until a state is adopted or the levels run out.  What
     was raised is recorded in thought_obj()["variant"]["budget_raise"] (the stored placements are
@@ -1322,7 +1323,8 @@ def ask_tier(tier: TierSpace, question: str, placements, *, raise_budget: Option
         rec = []
         for sd in limited:
             before = repl.get(sd, placements.cross_for(sd))
-            nb = pl.build_cross(tier, sd, w, budget=pl.budget_level(lv), group_insert=group_insert, order=order)   # F1b (L-474)
+            nb = pl.build_cross(tier, sd, w, budget=pl.budget_level(lv), group_insert=group_insert, order=order,
+                                on_collapse=on_collapse)   # F1b (L-474), F1c (L-506)
             repl[sd] = nb
             rec.append({"seed": sd, "capacity_before": before.capacity, "capacity_after": nb.capacity,
                         "stop_after": nb.stop})
@@ -1333,6 +1335,8 @@ def ask_tier(tier: TierSpace, question: str, placements, *, raise_budget: Option
             "final_level": steps[-1]["level"] if steps else None}
     if group_insert != "whole":                          # F1b (L-474): recorded only when not the default
         info["group_insert"], info["order"] = group_insert, order
+        if on_collapse != "stop":                        # F1c (L-507)
+            info["on_collapse"] = on_collapse
     var = dict(cur.variant or {})
     var["budget_raise"] = info
     return replace(cur, variant=var)

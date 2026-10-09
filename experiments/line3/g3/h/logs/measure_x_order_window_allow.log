@@ -1,0 +1,9 @@
+[x_order_window_allow] window index load 0.6s; 592 windows; corpus 725d5ac1a8d2 slide 3a9ef919a0bb place a44cc22d6ed5; 94 questions; workers 6; PYTHONHASHSEED=0
+[x_order_window_allow fast plain] 94 to do, 0 kept from an earlier run
+[x_order_window_allow fast plain] done 94 (0 errors) in 55s; load 7.9
+[x_order_window_allow fast window] 94 to do, 0 kept from an earlier run
+[x_order_window_allow fast window] done 94 (0 errors) in 44s; load 7.9
+[x_order_window_allow standard plain] 94 to do, 0 kept from an earlier run
+[x_order_window_allow standard plain] done 94 (0 errors) in 112s; load 7.7
+[x_order_window_allow standard window] 94 to do, 0 kept from an earlier run
+[x_order_window_allow standard window] done 94 (0 errors) in 88s; load 7.8

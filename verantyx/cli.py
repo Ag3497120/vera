@@ -2325,10 +2325,43 @@ def cmd_line3(args) -> int:
 
     try:
         idx = l3.Index.from_jsonl(args.data, args.cache, args.level, args.tiers,
-                                  group_insert=getattr(args, "group_insert", "whole"), order=getattr(args, "order", "forward"))
+                                  group_insert=getattr(args, "group_insert", "whole"), order=getattr(args, "order", "forward"),
+                                  on_collapse=getattr(args, "on_collapse", "stop"))
     except (OSError, ValueError) as e:
         print(f"line3: {e}", file=sys.stderr)
         return 2
+    structure = getattr(args, "structure", "flat")
+    if args.l3_op == "build" and structure == "combined":
+        # G3-g: both caches of the combined list, the flat placements and the window index (different files in the same directory)
+        if not args.cache:
+            print("line3 build: --cache is required", file=sys.stderr)
+            return 2
+        from .line3 import slide_query as l3s
+        rep = idx.precompute(args.cache, args.workers, log=lambda m: print(m, file=sys.stderr))
+        try:
+            wi = l3s.WindowIndex.from_space(idx.space, args.cache, workers=args.workers, level=args.level,
+                                            log=lambda m: print(m, file=sys.stderr), z_deep=getattr(args, "z_deep", "order"))
+        except (OSError, ValueError) as e:
+            print(f"line3: {e}", file=sys.stderr)
+            return 2
+        rep["windows"] = {"windows": len(wi.windows), "place_spec_sha256": wi.spec.sha256(), "slide_spec_sha256": wi.slide.spec.sha256()}
+        print(json.dumps(rep, ensure_ascii=False, sort_keys=True))
+        return 0
+    if args.l3_op == "build" and structure == "slide":
+        # G3-e: the window index (verantyx.line3.slide_query); the flat caches are not touched
+        if not args.cache:
+            print("line3 build: --cache is required", file=sys.stderr)
+            return 2
+        from .line3 import slide_query as l3s
+        try:
+            wi = l3s.WindowIndex.from_space(idx.space, args.cache, workers=args.workers, level=args.level,
+                                            log=lambda m: print(m, file=sys.stderr), z_deep=getattr(args, "z_deep", "order"))
+        except (OSError, ValueError) as e:
+            print(f"line3: {e}", file=sys.stderr)
+            return 2
+        print(json.dumps({"windows": len(wi.windows), "place_spec_sha256": wi.spec.sha256(), "slide_spec_sha256": wi.slide.spec.sha256(),
+                          "corpus_sha256": idx.space.sha256()}, ensure_ascii=False, sort_keys=True))
+        return 0
     if args.l3_op == "build":
         if not args.cache:
             print("line3 build: --cache is required", file=sys.stderr)
@@ -2354,9 +2387,35 @@ def cmd_line3(args) -> int:
         else:
             print("line3 ask: choose the amount of inference: --effort fast|standard|full or --nodes N", file=sys.stderr)
             return 2
-    layered = getattr(args, "layers", "on") == "on"          # L-250: the owner's default is layers ON
+    layered = getattr(args, "layers", "on") == "on" and structure == "flat"      # L-250: the owner's default is layers ON (flat only)
+    if structure == "slide" and (args.choose is not None or args.record or getattr(args, "granularity", None)):
+        print("line3: --choose / --record / --granularity are not built for --structure slide (G3-e, L-654)", file=sys.stderr)
+        return 2
+    if structure == "combined" and (args.choose is not None or args.record or getattr(args, "granularity", None)
+                                    or getattr(args, "view", "all") != "all" or getattr(args, "layers", "on") != "on"
+                                    or getattr(args, "layer_candidate", "path") not in ("path", "stable-seats-path")
+                                    or getattr(args, "layer_feedback", "none") != "none"
+                                    or getattr(args, "layer_down_query", "question") != "question"):
+        print("line3: --structure combined lists every tier's flat candidates and the layers (stable-seats-path, variant A, no feedback) and the windows; "
+              "--choose / --record / --granularity / --view stable / --layers off / --layer-feedback down / --layer-down-query seed+question / another --layer-candidate are not built for it (G3-g, L-726)",
+              file=sys.stderr)
+        return 2
     try:
-        if layered:
+        if structure == "combined":
+            # G3-g (opt-in): one labelled list of the flat cross, the layers and the windows (verantyx.line3.combined)
+            res = l3.ask(idx, args.question, effort=effort, nodes=nodes, structure="combined",
+                         window_evidence=getattr(args, "window_evidence", "both"),
+                         slide_members=getattr(args, "slide_members", None) or "representative",
+                         read_order=getattr(args, "read_order", "qcount_first"), z_deep=getattr(args, "z_deep", "order"),
+                         layer_variants={"both": ("A", "B"), "A": ("A",), "B": ("B",)}[args.query_pass],
+                         layer_granularity=args.layer_granularity, merge=getattr(args, "merge", "none"))
+        elif structure == "slide":
+            # G3-e (opt-in): the question over the sliding windows (verantyx.line3.slide_query); effort / nodes count windows
+            res = l3.ask(idx, args.question, effort=effort, nodes=nodes, structure="slide",
+                         agreement=getattr(args, "agreement", "three"), members=getattr(args, "slide_members", None) or "all",
+                         answer_shape=getattr(args, "answer_shape", "unit"), read_order=getattr(args, "read_order", "qcount_first"),
+                         z_deep=getattr(args, "z_deep", "order"))
+        elif layered:
             # T8 (verantyx/line3/matryoshka.py): stack when the stability was lost at this question; layer 0 is unchanged
             from .line3 import matryoshka as l3m
             vs = {"both": l3m.VARIANTS, "A": ("A",), "B": ("B",)}[args.query_pass]
@@ -2388,6 +2447,12 @@ def cmd_line3(args) -> int:
         if not args.show_thought:
             obj = {"answer": obj["answer"]}
         print(json.dumps(obj, ensure_ascii=False, sort_keys=True, indent=2))
+    elif structure == "combined":
+        from .line3 import combined as l3c
+        print(l3c.format_text(res, args.show_thought))
+    elif structure == "slide":
+        from .line3 import slide_query as l3s
+        print(l3s.format_text(res, args.show_thought))
     elif layered:
         print(l3m.format_layers_text(res, args.show_thought))
     else:
@@ -3010,6 +3075,8 @@ def main(argv: Optional[list] = None) -> int:
                    help="F1b (L-470): how a tied share-group enters a cross. whole (default) = all members at once (L-72); ordered = one member at a time in the order of the sentences, settling after each; growth stops just before the member that breaks (owner 2026-10-06). The insertion order is part of the initial placement: it is in the cache key (a whole cache is never read as an ordered one) and is recorded in the answer and the thought")
     p.add_argument("--order", choices=["forward", "reverse"], default="forward",
                    help="F1b: with --group-insert ordered, forward = the sentence order (default); reverse = its exact reverse (a measurement probe)")
+    p.add_argument("--on-collapse", dest="on_collapse", choices=["stop", "skip"], default="stop",
+                   help="F1c (L-506): with --group-insert ordered, what a member that breaks the budget does. stop (default) = growth stops just before it (L-463); skip = only that member is left out (recorded) and the next member / group is tried (owner 2026-10-08). skip with --group-insert whole is refused. Part of the cache key and recorded in the answer and the thought")
     p.add_argument("--question", default=None, help="ask: the question")
     p.add_argument("--show-thought", dest="show_thought", action="store_true", help="ask: also show the thought (internal state; N-08, N-10)")
     p.add_argument("--format", choices=["text", "json"], default="text", help="ask: text (default) or json {answer, thought}")
@@ -3020,6 +3087,22 @@ def main(argv: Optional[list] = None) -> int:
                    help="ask: all = every tier's candidates labelled by tier (default); stable = only the most stable tier(s) (I-16)")
     p.add_argument("--granularity", choices=["entry", "all"], default=None,
                    help="ask: F2 (off by default) also show strings assembled from the connections between the tiers RUN/WORD/CHAR (units of the listed entries that touch in the same source sentence); entry = within each entry, all = across the entries of all tiers. The listed candidates are not changed")
+    p.add_argument("--structure", choices=["flat", "slide", "combined"], default="flat",
+                   help="G3-e (opt-in): flat (default) = the seed crosses of every tier, everything above; slide = the question over the sliding windows (two neighbouring sentences of one article, axes x / y / z; tier RUN; verantyx/line3/slide_query.py): each agreeing axis of each window read gives its own labelled candidate, never merged; --effort / --nodes count windows; build with `line3 build --structure slide --cache DIR` first (otherwise the windows are placed on the spot, minutes of one core); combined (G3-g) = ONE list of the flat cross (3 tiers), the layers (stable-seats-path) and the windows read flat, each candidate labelled by its origin (flat/<tier>, layers/<tier>/<layer><variant>, window/plain, window/window-evidence), equal word sets one entry with all its origins; a candidate that only windows give is never a single answer; --effort / --nodes count crosses per tier for the flat cross and windows for the windows; `line3 build --structure combined --cache DIR` builds both caches")
+    p.add_argument("--agreement", choices=["three", "two_if_single_edge"], default="three",
+                   help="ask --structure slide: the agreement rule of an axis (L-615): three = section walk, edge flow and binding all agree; two_if_single_edge = an axis with exactly one evidenced edge is judged on the edge flow and the binding only")
+    p.add_argument("--slide-members", dest="slide_members", choices=["all", "representative"], default=None,
+                   help="ask --structure slide: read every member of a window's class of equal-key arrangements (default) or only the representative (cheaper; the member count is still shown); --structure combined: representative by default (G3-g, L-726)")
+    p.add_argument("--window-evidence", dest="window_evidence", choices=["plain", "window", "both"], default="both",
+                   help="ask --structure combined (G3-g): the pair count the windows' flat reading takes on every edge. plain = the corpus count (the owner's 'like T10'); window = the window's label-blind sum of the slide counts (L-714, a variant, marked in the list); both (default) = the windows are read twice and both variants' candidates are listed, each with its origin")
+    p.add_argument("--merge", choices=["none", "word_set"], default="none",
+                   help="ask --structure combined (G3-g2): none (default) = every candidate is its own entry, shown in per-origin blocks (flat RUN, WORD, CHAR, layers, window/plain, window/window-evidence), each block in its source's own order; equal word sets from different origins are NOT merged, only marked (also_in); the per-source typed abstentions come first. word_set = the G3-g form (equal word sets are one entry with all its origins), for comparison")
+    p.add_argument("--answer-shape", dest="answer_shape", choices=["unit", "path"], default="unit",
+                   help="ask --structure slide (G3-e2): what an agreeing axis shows. unit (default) = the end unit of the section walk (one word); path = the units of the walked section path on that axis, outer end to centre, with the provenance of every word. Whether an axis answers is the agreement's in both")
+    p.add_argument("--read-order", dest="read_order", choices=["qcount_first", "grammar_first"], default="qcount_first",
+                   help="ask --structure slide (G3-e2): the order of the candidate windows. qcount_first (default) = windows that hold more question units first, the grammar order (kind match, ladder) only inside a tie; grammar_first = the grammar order first, then the number of question units held (the order before G3-e2)")
+    p.add_argument("--z-deep", dest="z_deep", choices=["slide", "order"], default="order",
+                   help="line3 build/ask --structure slide|combined (G3-c4, default changed by G3-i / L-770): the evidence of a z-arm edge deeper than the innermost. order (default since G3-i, the owner's choice after G3-h) = the pair's word order in its sentences over the whole corpus, counted as an x arm does; slide = a slide edge (n_z, almost no evidence; the default through G3-h). A PLACEMENT switch: another slide spec, another window cache file (a cache built with the other value is not read; `line3 build --structure slide --z-deep slide` builds the former one). The other window defaults of G3-i (not options of this command): arm_cap budget, seat_empty_axis deny, padding one per article, centre_scope both, growth z_reserved, strict per-axis stability")
     p.add_argument("--choose", type=int, default=None, help="ask: the index of the candidate you pick; its memory record (with the tier) goes to stderr and --record")
     p.add_argument("--record", default=None, help="ask: append the chosen candidate's memory record to this jsonl (with --choose, or alone for a single answer)")
     p.add_argument("--layers", choices=["off", "on"], default="on",

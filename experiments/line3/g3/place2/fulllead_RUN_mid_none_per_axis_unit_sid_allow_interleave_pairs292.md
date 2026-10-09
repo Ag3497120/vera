@@ -1,0 +1,36 @@
+# G3-c2 run: fulllead_RUN_mid_none_per_axis_unit_sid_allow_interleave_pairs292
+
+switches {"growth": "interleave", "seat_empty_axis": "allow", "seat_key": "unit_sid", "stability": "per_axis"}; spec sha256 ab35a2de1f7ccf71a2bd70864d89a48d271c944e8f40f8a34600d4e2da7ae80a (place), slide spec 3df141b123272f9c1ae9278a2e956d4ecd8a0e0eb6f1a8b2d95cd8251d66f7ff, scope corpus, tier RUN, padding none, level mid {"max_class": 1000, "max_states": 20000, "max_moves": 400000}
+
+windows 292 (two-sentence 292, one-sentence 0); wall 195.5 s in total, 0.67 s per window (median 0.28 s, max 3.97 s)
+
+## N+1 got a seat (two-sentence windows; seats of sentence N+1)
+- strict (a seated unit that is in N+1 and not in N): 290/292 = 99.3%
+- loose (a seated seat of sentence N+1, shared units' N+1 seats included): 292/292 = 100.0%
+- windows that have at least one unit only in N+1: 291/292 = 99.6%
+- seated N+1 seats / N+1 seats in the windows: 1269/2363 = 53.7%
+
+## stop reasons
+- 2-sentence budget (max_class, inside next): 62
+- 2-sentence budget (max_class, inside this): 153
+- 2-sentence budget (max_moves, inside next): 4
+- 2-sentence budget (max_moves, inside this): 1
+- 2-sentence exhausted: 72
+
+## sizes
+- windows that stopped inside sentence N: 154; inside N+1: 66; never stopped: 72
+- of the two-sentence windows: stopped inside N 154, inside N+1 66
+- stop reasons of the budget stops: max_class 215, max_states 0, max_moves 5, no_seat 0
+- units(seats) in the window (median): 16; seated (median): 9; L (median): 2, max 4
+- class size: median 192, max 1488; windows with class size 1: 4
+- classes larger than max_class: 10 windows
+- seated fraction of the seats: 2734 of 4785
+- windows whose final class holds more than one per-axis key: 86 (keys per window: median 1, max 5)
+- per-axis key of the representative (sum over windows): x n=1543, y n=0, z n=777; summed key n=2320
+- z-arm units (representative): 1103, without z evidence on their inner edge: 405, on neither edge: 99
+- windows with z evidence: 292; seatless arms (windows with at least one arm denied beyond y): 0
+- units with two seats (windows 102, units 164): both seated 67, the two seats directly linked by a cross edge 28
+- moves of the representative: tested 15880, improving one axis and worsening another (not taken) 405, Pareto-improving (must be 0) 0
+
+## verification (independent verifier; swaps of 12 evenly spread members per class, keys / closure / legality of all)
+- classes that are stable (every checked member a fixed point, closed, antichain of keys, centre non-empty, no seat on a seatless arm or against the reservation): 292/292 = 100.0%

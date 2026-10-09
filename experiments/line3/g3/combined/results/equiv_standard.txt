@@ -1,0 +1,6 @@
+equiv_check standard: index load 2s, 4 questions: UF-014 I2-036 I2-044 R2-I003
+UF-014 SAME: 66 entries (69 candidates), verdict CHOICE, live 301s (T10 recorded 411s) 
+I2-036 SAME: 21 entries (25 candidates), verdict CHOICE, live 295s (T10 recorded 426s) 
+I2-044 SAME: 69 entries (73 candidates), verdict CHOICE, live 326s (T10 recorded 449s) 
+R2-I003 SAME: 22 entries (25 candidates), verdict CHOICE, live 337s (T10 recorded 476s) 
+4 of 4 questions identical
