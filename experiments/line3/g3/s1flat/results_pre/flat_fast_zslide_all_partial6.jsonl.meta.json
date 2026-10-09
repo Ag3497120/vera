@@ -1,0 +1,74 @@
+{
+ "argv": [
+  "experiments/line3/g3/s1flat/measure_flat.py",
+  "fast",
+  "experiments/line3/g3/s1flat/results/flat_fast_zslide_all.jsonl",
+  "--cache",
+  "/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/d048f24d-ca77-4016-913c-c4bb95d83a8f/scratchpad/cache/slide",
+  "--z-deep",
+  "slide",
+  "--members",
+  "all",
+  "--budget",
+  "512,64",
+  "--workers",
+  "4",
+  "--resume",
+  "--build"
+ ],
+ "head": "fd75b222fcdf944ac0269966b55258f1b53d8706",
+ "cache": "/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/d048f24d-ca77-4016-913c-c4bb95d83a8f/scratchpad/cache/slide",
+ "cache_files": [
+  "slidewin_725d5ac1a8d2_RUN_3df141b12327_07db87511ff1.pkl"
+ ],
+ "data": "/Users/motonisihikoudai/Projects/vera-impl/wt/line3/experiments/line3/bank2/data/fulllead_sents.jsonl",
+ "config": {
+  "z_deep": "slide",
+  "members": "all",
+  "budget": [
+   512,
+   64
+  ],
+  "two_seat": "both",
+  "read_order": "qcount_first",
+  "strict": "abstain",
+  "labels": true,
+  "label_agreement": "three",
+  "evidence": "plain"
+ },
+ "corpus_sha256": "725d5ac1a8d2db1b515268ffeca79660eb874664cf83d1e6dda203a9d7a5ad69",
+ "slide_spec_sha256": "3df141b123272f9c1ae9278a2e956d4ecd8a0e0eb6f1a8b2d95cd8251d66f7ff",
+ "place_spec_sha256": "07db87511ff1c38d54def2fda09f9aad9573379579ea11c40c1be94a7db410c0",
+ "window_cache_header": {
+  "format": "line3.slide_windows.v1",
+  "corpus_sha256": "725d5ac1a8d2db1b515268ffeca79660eb874664cf83d1e6dda203a9d7a5ad69",
+  "slide_spec_sha256": "3df141b123272f9c1ae9278a2e956d4ecd8a0e0eb6f1a8b2d95cd8251d66f7ff",
+  "place_spec_sha256": "07db87511ff1c38d54def2fda09f9aad9573379579ea11c40c1be94a7db410c0",
+  "tier": "RUN",
+  "padding": "one",
+  "scope": "corpus",
+  "switches": {
+   "stability": "per_axis",
+   "seat_key": "unit_sid",
+   "seat_empty_axis": "allow",
+   "growth": "z_reserved"
+  },
+  "wall_ms": 80446,
+  "cpu_ms": 476587
+ },
+ "started": "2026-10-09 13:18:47",
+ "resumed_ids": 0,
+ "pyhashseed": "0",
+ "python": "3.11.14",
+ "code_sha256": {
+  "slide_flat.py": "49790f1cf5fbad7e565bfe57864f77ecf8605b25e4b182768b0990c8ccee5d4e",
+  "slide_query.py": "3b17519dc982ab92565d58464e1ea28787e4a053eedb1449dc5a6503258da843",
+  "cycle.py": "02f04d15b6e7eef7251c2aabe793e848977b9bb4ac6963d368f1e125dbd2e485",
+  "readout.py": "8f1b6c0b9e4486521857b5048daebf035bc6893c6bfe0d27c8818aafdd381063",
+  "trace_check.py": "44d0aa8ca354778a2db6a0ccfea7b4a6f0d028033d358b7188087a10e519d306",
+  "slide_place.py": "3641f8aef3de8d35d3eac5ffd971d5dbb3ad5e56b43ba0cc7144619a36b14e40",
+  "slide_ratios.py": "a437a90e62d5d4233cd5d045013de8b0fe0c71607692c9abd84ea9c2d254b8b2",
+  "slide.py": "4b2d468a7858dd2ecb6de08e3768aaf9a9b689b7fafb80fca31e9a2d241802d4",
+  "grammar.py": "c4700c0f08a798108762227ad39ac11120e24e3fb903282cac5bbcd35336b1f8"
+ }
+}

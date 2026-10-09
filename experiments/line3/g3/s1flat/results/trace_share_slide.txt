@@ -1,0 +1,2 @@
+evidence plain, z_deep slide: 49 (question, window) answers with an entry; path words that close an edge (over the paths of all adopted states) 10461; of those evidenced only by a constructed pair sentence 0
+evidence window, z_deep slide: 107 (question, window) answers with an entry; path words that close an edge (over the paths of all adopted states) 21650; of those evidenced only by a constructed pair sentence 3491
