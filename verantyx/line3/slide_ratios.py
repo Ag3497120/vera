@@ -42,6 +42,11 @@ cycle (G3-e).  All numbers are int / Fraction; no float, no randomness, nothing 
                       N-03 is NOT applied here, G3-e does it, L-607).
 G3-d addendum (owner decisions after G3-d): `agreement` "three" (default) | "two_if_single_edge" (L-615) and `z_self_edges`
 default ON (L-616); the weights stay per arm.
+G3-c4 (L-662, owner after G3-c3): `z_deep` "order" (the slide spec's, carried by the counts): a z-arm edge DEEPER than the innermost (its inner
+seat is not the centre) has the word-order count of its pair as evidence, n = n_x(o, i) (symmetric, as x reads it), instead of the slide
+count n_z; the innermost z edge keeps n_z.  The edge flow, the binding (F_z, B_z) and the section walk of a z arm (a step over a deeper
+edge needs n_x(o, i) > 0) all read this one evidence.  A reader takes it from `counts_evidence(counts, tier)`, which carries it as the
+attribute `.deep` when `counts.z_deep == "order"` (a plain 3-argument callable keeps working: every z edge reads it).
 Seats are keyed by (unit, sid) from the start: the current record seats a unit once (a unit of both sentences gets sid of N);
 the two-seat format of G3-c2 (a unit of both sentences has one seat per sentence, linked by z) comes in through `record.seats` / `record.items`.
 """
@@ -250,7 +255,13 @@ def window_crosses(record, *, orientation: geo.Rotation = geo.IDENTITY,
 # the evidence of an edge, per arm (L-602)
 # --------------------------------------------------------------------------------------------------------------
 def counts_evidence(counts: SL.WindowCounts, tier: str) -> Evidence:
-    """n_a(arm, outer, inner) read from slide.counts: the count and the counts' own source rows."""
+    """n_a(arm, outer, inner) read from slide.counts: the count and the counts' own source rows.  Under z_deep "order" (L-662) the
+    function also has `.deep(arm, outer, inner)`: the evidence of a z-arm edge deeper than the innermost, the x count of the pair
+    (n = n_x, rows ("order", sid, o_start, o_end, i_start, i_end): the tag keeps them apart from z rows)."""
+    def deep(arm: str, o: str, i: str) -> Tuple[int, tuple]:
+        _n, _om, src = counts.deep_z(tier, arm, o, i)
+        return len(src), tuple(("order",) + tuple(r) for r in src)
+
     def ev(arm: str, o: str, i: str) -> Tuple[int, tuple]:
         if arm == "+x" or arm == "-x":
             b, a = counts.x.get((tier, o, i), ((), ()))
@@ -264,15 +275,24 @@ def counts_evidence(counts: SL.WindowCounts, tier: str) -> Evidence:
         else:
             s = tuple(counts.z.get((tier, i, tier, o), ()))
         return len(s), s
+    if counts.z_deep == "order":
+        ev.deep = deep
     return ev
 
 
-def table_evidence(table: Mapping[Tuple[str, str, str], int]) -> Evidence:
+def table_evidence(table: Mapping[Tuple[str, str, str], int], deep_table: Optional[Mapping[Tuple[str, str, str], int]] = None) -> Evidence:
     """A hand table: table[(arm, outer, inner)] = n_a (a missing key is 0).  Its sources are synthetic rows
-    ("table", arm, outer, inner, k), so that the trace check (len(sources) == n) is the same."""
+    ("table", arm, outer, inner, k), so that the trace check (len(sources) == n) is the same.  `deep_table` (arm "+z" / "-z"): the evidence
+    of a z-arm edge deeper than the innermost (z_deep "order", L-662); its rows are ("table_deep", arm, outer, inner, k)."""
     def ev(arm: str, o: str, i: str) -> Tuple[int, tuple]:
         n = int(table.get((arm, o, i), 0))
         return n, tuple(("table", arm, o, i, k) for k in range(n))
+
+    if deep_table is not None:
+        def deep(arm: str, o: str, i: str) -> Tuple[int, tuple]:
+            n = int(deep_table.get((arm, o, i), 0))
+            return n, tuple(("table_deep", arm, o, i, k) for k in range(n))
+        ev.deep = deep
     return ev
 
 
@@ -305,6 +325,7 @@ class EdgeTerm:
     n_this: int
     n_other: int
     e_other: Fraction                     # E_Q(other)
+    rule: str = "slide"                   # L-662: "order" = a z-arm edge deeper than the innermost, evidence = the pair's word-order count
 
     @property
     def flow_plain(self) -> Fraction:
@@ -315,9 +336,12 @@ class EdgeTerm:
         return Fraction(self.n, self.n_this) if self.n_this else ZERO
 
     def doc(self) -> dict:
-        return {"axis": self.axis, "arm": self.arm, "this": list(self.this), "other": list(self.other), "n": self.n,
-                "sources": [list(s) for s in self.sources], "weight": self.weight, "n_this": self.n_this,
-                "n_other": self.n_other, "e_other": self.e_other}
+        d = {"axis": self.axis, "arm": self.arm, "this": list(self.this), "other": list(self.other), "n": self.n,
+             "sources": [list(s) for s in self.sources], "weight": self.weight, "n_this": self.n_this,
+             "n_other": self.n_other, "e_other": self.e_other}
+        if self.rule != "slide":
+            d["rule"] = self.rule
+        return d
 
 
 @dataclass(frozen=True)
@@ -327,10 +351,14 @@ class WalkStep:
     to: SeatKey
     n: int
     sources: Tuple[tuple, ...]
+    rule: str = "slide"                   # L-662, as EdgeTerm.rule
 
     def doc(self) -> dict:
-        return {"arm": self.arm, "from": list(self.frm), "to": list(self.to), "n": self.n,
-                "sources": [list(s) for s in self.sources]}
+        d = {"arm": self.arm, "from": list(self.frm), "to": list(self.to), "n": self.n,
+             "sources": [list(s) for s in self.sources]}
+        if self.rule != "slide":
+            d["rule"] = self.rule
+        return d
 
 
 @dataclass(frozen=True)
@@ -473,6 +501,7 @@ class _Reader:
         self.agreement = agreement
         self.wc, self.ev, self.t, self.q, self.att = wc, evidence, t, q, dict(attached)
         self.w, self.window, self.zself = weights, window, z_self_edges
+        self.ev_deep = getattr(evidence, "deep", None)         # L-662: the evidence of a z-arm edge deeper than the innermost (z_deep "order")
         self.by = wc.by_seat()
         self._e: Dict[Tuple[str, Tuple[str, ...]], Fraction] = {}
 
@@ -487,8 +516,9 @@ class _Reader:
         return en._n(self.t, u)
 
     # ---- edges -------------------------------------------------------------------------------------------------
-    def edges_of(self, axis: str) -> List[Tuple[SeatRec, SeatRec, str, int, tuple]]:
-        """The axis' edges with both ends seated, in geometry.edges order: (outer, inner, arm, n_a, sources)."""
+    def edges_of(self, axis: str) -> List[Tuple[SeatRec, SeatRec, str, int, tuple, str]]:
+        """The axis' edges with both ends seated, in geometry.edges order: (outer, inner, arm, n_a, sources, rule).  rule "order": a z-arm
+        edge whose inner seat is not the centre under z_deep "order" (L-662); otherwise "slide"."""
         out = []
         for o, i in geo.edges(self.wc.L):
             if axis_of_arm(o.arm) != axis:
@@ -496,8 +526,9 @@ class _Reader:
             so, si = self.by.get(o), self.by.get(i)
             if so is None or si is None:
                 continue
-            n, src = self.ev(o.arm, so.unit, si.unit)
-            out.append((so, si, o.arm, n, src))
+            deep = self.ev_deep is not None and axis == "z" and i != geo.CENTER
+            n, src = (self.ev_deep if deep else self.ev)(o.arm, so.unit, si.unit)
+            out.append((so, si, o.arm, n, src, "order" if deep else "slide"))
         return out
 
     def _skip_pair(self, axis: str, a: SeatRec, b: SeatRec) -> bool:
@@ -511,7 +542,7 @@ class _Reader:
         B = {u: ZERO for u in units}
         Fp = {u: ZERO for u in units}
         Bp = {u: ZERO for u in units}
-        for so, si, arm, n, _src in edges:
+        for so, si, arm, n, _src, _rule in edges:
             if n <= 0 or self._skip_pair(axis, so, si):
                 continue
             w = self.w[arm]
@@ -535,12 +566,13 @@ class _Reader:
         path = [cells[0]]
         steps: List[WalkStep] = []
         stop = "end"
-        for nxt in cells[1:]:
+        for j, nxt in enumerate(cells[1:], 1):
             cur = path[-1]
             if nxt is None:
                 stop = "gap"
                 break
-            n, src = self.ev(arm, cur.unit, nxt.unit)
+            deep = self.ev_deep is not None and arm[1] == "z" and j < self.wc.L        # the step does not end at the centre (L-662)
+            n, src = (self.ev_deep if deep else self.ev)(arm, cur.unit, nxt.unit)
             if n <= 0:
                 stop = "unproven"
                 break
@@ -548,7 +580,7 @@ class _Reader:
                 stop = "drop"
                 break
             path.append(nxt)
-            steps.append(WalkStep(arm, cur.key, nxt.key, n, src))
+            steps.append(WalkStep(arm, cur.key, nxt.key, n, src, "order" if deep else "slide"))
         else:
             stop = "centre"
         return AxisWalk(arm, tuple(p.key for p in path), path[-1].key, stop, tuple(steps))
@@ -569,7 +601,7 @@ class _Reader:
     def axis(self, axis: str) -> AxisRatios:
         edges = self.edges_of(axis)
         F, B, Fp, Bp = self.flows(axis, edges)
-        evidenced = sum(1 for so, si, _arm, n, _src in edges if n > 0 and not self._skip_pair(axis, so, si))
+        evidenced = sum(1 for so, si, _arm, n, _src, _rule in edges if n > 0 and not self._skip_pair(axis, so, si))
         applicable = not (self.agreement == "two_if_single_edge" and evidenced == 1)       # L-615
         secs = tuple(x for x in (self.section(axis, s) for s in range(geo.N_ARMS)) if x is not None) if applicable else ()
         working = [s for s in secs if s.unit is not None]
@@ -598,13 +630,13 @@ class _Reader:
         u = ar.unit
         edges = self.edges_of(ar.axis)
         terms: List[EdgeTerm] = []
-        for so, si, arm, n, src in edges:
+        for so, si, arm, n, src, rule in edges:
             if n <= 0 or self._skip_pair(ar.axis, so, si):
                 continue
             for v, o in ((so, si), (si, so)):
                 if v.unit == u:
                     terms.append(EdgeTerm(ar.axis, arm, v.key, o.key, n, src, self.w[arm], self.n(v.unit), self.n(o.unit),
-                                          self.E(o.unit, self.q)))
+                                          self.E(o.unit, self.q), rule))
         steps: List[WalkStep] = []
         sec_e: List[Fraction] = []
         for s in ar.sections:

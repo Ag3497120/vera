@@ -44,6 +44,7 @@ AXES: Tuple[str, ...] = ("x", "y", "z")
 ARMS: Tuple[str, ...] = ("+x", "-x", "+y", "-y", "+z", "-z")   # G3 3.1 / 3.3: the order of the arms (a ring)
 SCOPES: Tuple[str, ...] = ("window", "corpus")
 LONE_RULES: Tuple[str, ...] = ("none", "last", "singleton")
+Z_DEEPS: Tuple[str, ...] = ("slide", "order")          # G3-c4 (L-660): what a z-arm edge deeper than the innermost one counts
 
 
 def canonical(doc) -> bytes:
@@ -266,19 +267,27 @@ class AxisDef:
 DEFAULT_Y_PAIRS: Tuple[Tuple[str, str], ...] = (("RUN", "WORD"), ("RUN", "CHAR"), ("WORD", "CHAR"))
 _SUPPORTED = {("x", "occurrence"): ("first",), ("x", "tiers"): ("same",),
               ("y", "occurrence"): ("any",), ("y", "containment"): ("non-strict",),
-              ("z", "occurrence"): ("first",), ("z", "tiers"): ("all", "same")}
+              ("z", "occurrence"): ("first",), ("z", "tiers"): ("all", "same"), ("z", "deep"): Z_DEEPS}
+
+Z_DEEP_TEXT = ("; z_deep=order (G3-c4): a z-arm edge deeper than the innermost one (the centre's neighbour) is not a slide edge but "
+               "carries the word-order count of the pair as x does (n_x, before / after; +z forward, -z backward), the innermost "
+               "z edge stays n_z")
 
 
-def default_axes(y_pairs: Sequence[Sequence[str]] = DEFAULT_Y_PAIRS, z_tiers: str = "all") -> Tuple[AxisDef, AxisDef, AxisDef]:
+def default_axes(y_pairs: Sequence[Sequence[str]] = DEFAULT_Y_PAIRS, z_tiers: str = "all",
+                 z_deep: str = "slide") -> Tuple[AxisDef, AxisDef, AxisDef]:
     x = AxisDef("x", "word order: for two units of one tier in one sentence, the outer one before (+x) or after (-x) the inner one, "
                      "by the first occurrence of each (p_pair); n_x = the sentences that hold both", (
         ("occurrence", "first"), ("tiers", "same")))
     y = AxisDef("y", "granularity: the outer unit is of a coarser tier and its span contains a span of the inner unit (+y), or the reverse (-y); "
                      "a sentence counts once for any occurrence pair; equal spans count", (
         ("containment", "non-strict"), ("occurrence", "any"), ("pairs", _tup(y_pairs))))
+    if z_deep not in Z_DEEPS:
+        raise ValueError("z_deep must be one of %r" % (Z_DEEPS,))
+    # the default spec keeps its bytes and its sha: the parameter and the sentence exist only under "order" (L-660)
     z = AxisDef("z", "slide: the outer unit lies in sentence N and the inner in sentence N+1 of one window (+z), or the reverse (-z); "
-                     "n_z = the windows that hold both; z reaches no further than N+1", (
-        ("occurrence", "first"), ("tiers", z_tiers)))
+                     "n_z = the windows that hold both; z reaches no further than N+1" + (Z_DEEP_TEXT if z_deep == "order" else ""), (
+        ("occurrence", "first"), ("tiers", z_tiers)) + ((("deep", z_deep),) if z_deep != "slide" else ()))
     return x, y, z
 
 
@@ -329,6 +338,11 @@ class SlideSpec:
     def axis(self, name: str) -> AxisDef:
         return {a.axis: a for a in self.axes}[name]
 
+    @property
+    def z_deep(self) -> str:
+        """"slide" (every z-arm edge is a slide edge, n_z) or "order" (the edges deeper than the innermost carry the word-order count; L-660)."""
+        return dict(self.axis("z").params).get("deep", "slide")
+
     def doc(self) -> dict:
         return {"format": FORMAT, "kind": "spec", "corpus_sha256": self.corpus_sha, "tiers": list(self.tiers),
                 "window": self.window.doc(), "axes": [a.doc() for a in self.axes], "foundation": self.foundation.doc()}
@@ -345,8 +359,8 @@ class SlideSpec:
 
 
 def default_spec(space: sp.Space, *, lone: str = "last", y_pairs: Sequence[Sequence[str]] = DEFAULT_Y_PAIRS,
-                 z_tiers: str = "all", foundation: Optional[Foundation] = None) -> SlideSpec:
-    return SlideSpec(space.sha256(), WindowRule(lone=lone), default_axes(y_pairs, z_tiers), foundation or p7())
+                 z_tiers: str = "all", foundation: Optional[Foundation] = None, z_deep: str = "slide") -> SlideSpec:
+    return SlideSpec(space.sha256(), WindowRule(lone=lone), default_axes(y_pairs, z_tiers, z_deep), foundation or p7())
 
 
 # --------------------------------------------------------------------------------------------------------------
@@ -365,6 +379,9 @@ class WindowCounts:
       y[(tier_o, o, tier_i, i)]  = sources: o (the coarser tier) has a span that contains a span of i.  +y(o, i); -y(i, o).
       z[(tier_u, u, tier_v, v)]  = sources: u in sentence N, v in sentence N+1.  +z(o=u, i=v); -z(o=v, i=u).
       z_side[(tier, unit)]       = ("this",), ("next",) or ("this", "next"): the sentence(s) of the window the unit lies in.
+      z_deep                     = the spec's z_deep ("slide" | "order", L-660): the counts themselves do not change; the readers
+                                   (the placement and the ratio reader) take the evidence of a z-arm edge deeper than the innermost from
+                                   `deep_z` when it is "order".
     A key with no source is absent (its count is 0)."""
     window: Window
     scope: str
@@ -372,6 +389,17 @@ class WindowCounts:
     y: Mapping[Tuple[str, str, str, str], Tuple[YSrc, ...]]
     z: Mapping[Tuple[str, str, str, str], Tuple[ZSrc, ...]]
     z_side: Mapping[Tuple[str, str], Tuple[str, ...]]
+    z_deep: str = "slide"
+
+    def deep_z(self, tier: str, arm: str, o: str, i: str) -> Tuple[int, int, Tuple[XSrc, ...]]:
+        """(L-660) The evidence of a z-arm edge DEEPER than the innermost (outer unit o, inner unit i, both of `tier`) under z_deep
+        "order": the word-order count of the pair, read exactly as an x arm reads it: n = n_x(o, i), omega = before (arm "+z": o before i,
+        forward) or after (arm "-z": o after i, backward), and the sources are the x rows (before first, then after).  Over the
+        counts' scope (corpus: every sentence that holds both units; window: this window's sentences)."""
+        if arm != "+z" and arm != "-z":
+            raise ValueError("deep_z reads a z arm")
+        b, a = self.x.get((tier, o, i), ((), ()))
+        return len(b) + len(a), len(b) if arm == "+z" else len(a), tuple(b) + tuple(a)
 
     def n_x(self, tier: str, o: str, i: str) -> int:
         b, a = self.x.get((tier, o, i), ((), ()))
@@ -397,11 +425,14 @@ class WindowCounts:
 
         def ky(k):
             return (TIER_RANK[k[0]], k[1], TIER_RANK[k[2]], k[3])
-        return {"format": FORMAT, "kind": "counts", "scope": self.scope, "window": self.window.doc(),
+        d = {"format": FORMAT, "kind": "counts", "scope": self.scope, "window": self.window.doc(),
                 "x": [[k[0], k[1], k[2], [list(s) for s in v[0]], [list(s) for s in v[1]]] for k, v in sorted(self.x.items(), key=lambda kv: kx(kv[0]))],
                 "y": [[k[0], k[1], k[2], k[3], [list(s) for s in v]] for k, v in sorted(self.y.items(), key=lambda kv: ky(kv[0]))],
                 "z": [[k[0], k[1], k[2], k[3], [list(s) for s in v]] for k, v in sorted(self.z.items(), key=lambda kv: ky(kv[0]))],
                 "z_side": [[k[0], k[1], list(v)] for k, v in sorted(self.z_side.items(), key=lambda kv: (TIER_RANK[kv[0][0]], kv[0][1]))]}
+        if self.z_deep != "slide":                         # L-660: the default counts keep their bytes
+            d["z_deep"] = self.z_deep
+        return d
 
     def to_bytes(self) -> bytes:
         return canonical(self.doc())
@@ -515,7 +546,7 @@ class Slide:
         scope="corpus": the evidence over the whole corpus (L-G3-1: seats only from the window, counted everywhere)."""
         if scope not in SCOPES:
             raise ValueError("scope must be one of %r" % (SCOPES,))
-        return WindowCounts(w, scope, self._x(w, scope), self._y(w, scope), self._z(w, scope), self._z_side(w))
+        return WindowCounts(w, scope, self._x(w, scope), self._y(w, scope), self._z(w, scope), self._z_side(w), self.spec.z_deep)
 
     def _pack_units(self, w: Window) -> Dict[str, List[str]]:
         """tier -> the distinct units of the pack in code point order (an order for bytes, never to pick a winner)."""

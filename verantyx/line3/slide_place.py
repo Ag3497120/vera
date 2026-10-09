@@ -51,6 +51,13 @@ G3-c3 (L-620..; docs/LINE3_LOCAL_DECISIONS.md "G3-c3"): the owner's decisions af
   stability_judgement  "strict" | "pareto" (G3-c2): the search is Pareto either way; "strict" marks a window whose representative has
                        a legal single move improving ANY axis as UNSTABLE_AXIS_IMPROVABLE; the counts are always recorded
 The record only gains fields (`NEW_RECORD_FIELDS_C3`); record.seats / axis_keys / items / self_links / tradeoffs keep their meaning.
+
+G3-c4 (L-660..; docs/LINE3_LOCAL_DECISIONS.md "G3-c4"): the owner's decision after G3-c3, one more switch, carried by the SLIDE spec
+(`slide.SlideSpec.z_deep`, so the slide spec sha and with it the place spec sha change; the default keeps every byte):
+  z_deep   "slide" (every z-arm edge is a slide edge, n_z) | "order" (only the innermost z edge, the one at the centre, is a slide edge;
+           a z-arm edge deeper than that joins two seats of the other sentence and carries their word-order count as an x edge does:
+           +z (n_x(o,i), p(o,i)), -z (n_x(o,i), p(i,o)))
+The weight of an edge is looked up by the arm CODE of the edge: 0..5 the arms, 6 + 4 / 6 + 5 the deeper edges of +z / -z (`ArmWeights.earm`).
 """
 from __future__ import annotations
 
@@ -161,7 +168,8 @@ def min_L(count: int, n_arms: int) -> Optional[int]:
 
 
 _SEATS: Dict[Tuple[int, Tuple[int, ...]], Tuple[int, ...]] = {}
-_EARM: Dict[int, Tuple[int, ...]] = {}
+_EARM: Dict[Tuple[int, bool], Tuple[int, ...]] = {}
+DEEP_Z = 6                                                 # L-661: arm code of a z-arm edge deeper than the innermost = DEEP_Z + arm index
 
 
 def seat_idx(L: int, arms: Tuple[int, ...]) -> Tuple[int, ...]:
@@ -173,11 +181,13 @@ def seat_idx(L: int, arms: Tuple[int, ...]) -> Tuple[int, ...]:
     return r
 
 
-def _earm(L: int) -> Tuple[int, ...]:
-    """The arm each edge of the layout lies on (the edge's OUTER seat is always on an arm)."""
-    r = _EARM.get(L)
+def _earm(L: int, deep: bool = False) -> Tuple[int, ...]:
+    """The arm each edge of the layout lies on (the edge's OUTER seat is always on an arm).  `deep` (z_deep "order", L-661): the edges
+    of the z arms whose inner seat is not the centre carry the code DEEP_Z + arm instead (read `% 6` for the arm)."""
+    r = _EARM.get((L, deep))
     if r is None:
-        r = _EARM[L] = tuple((o - 1) // L for o, _i in _Layout(L).edges)
+        r = _EARM[(L, deep)] = tuple(
+            (o - 1) // L + (DEEP_Z if deep and ARM_NAMES[(o - 1) // L][1] == "z" and i != 0 else 0) for o, i in _Layout(L).edges)
     return r
 
 
@@ -207,9 +217,18 @@ class ArmWeights:
     """w(arm, outer, inner) -> (n, omega) of the key.  Built from the counts of ONE window at ONE tier (`from_counts`)
     or from a hand table (`from_table`, for toys).  Pure cache."""
 
-    def __init__(self, fn) -> None:
+    def __init__(self, fn, deep_fn=None) -> None:
         self._fn = fn
+        self._deep_fn = deep_fn                              # z_deep "order" (L-661): the weight of a z-arm edge deeper than the innermost
         self._c: Dict[Tuple[int, str, str], Score] = {}
+
+    @property
+    def deep(self) -> bool:
+        return self._deep_fn is not None
+
+    def earm(self, L: int) -> Tuple[int, ...]:
+        """The arm code of each edge of the layout: the arm index, or DEEP_Z + arm for a deeper z edge when this weighing has a rule for it."""
+        return _earm(L, self.deep)
 
     def __call__(self, arm: int, o: Optional[str], i: Optional[str]) -> Score:
         if o is None or i is None:
@@ -217,7 +236,7 @@ class ArmWeights:
         k = (arm, o, i)
         v = self._c.get(k)
         if v is None:
-            v = self._c[k] = self._fn(ARM_NAMES[arm], o, i)
+            v = self._c[k] = self._fn(ARM_NAMES[arm], o, i) if arm < DEEP_Z else self._deep_fn(ARM_NAMES[arm - DEEP_Z], o, i)
         return v
 
     @staticmethod
@@ -236,12 +255,18 @@ class ArmWeights:
                 n = len(z.get((tier, i, tier, o), ()))
                 return (n, n)
             return ZERO2                                   # y: the pair is of one tier (L-G3-5)
-        return ArmWeights(fn)
+
+        def deep_fn(arm: str, o: str, i: str) -> Score:        # L-661: a z-arm edge deeper than the innermost, read as x reads its pair
+            n, om, _src = counts.deep_z(tier, arm, unit_of(o), unit_of(i))
+            return (n, om)
+        return ArmWeights(fn, deep_fn if counts.z_deep == "order" else None)
 
     @staticmethod
-    def from_table(table: Mapping[Tuple[str, str, str], Score]) -> "ArmWeights":
-        """table[(arm name, outer, inner)] = (n, omega); a missing key weighs (0, 0)."""
-        return ArmWeights(lambda arm, o, i: table.get((arm, o, i), ZERO2))
+    def from_table(table: Mapping[Tuple[str, str, str], Score], deep_table: Optional[Mapping[Tuple[str, str, str], Score]] = None) -> "ArmWeights":
+        """table[(arm name, outer, inner)] = (n, omega); a missing key weighs (0, 0).  `deep_table` (same keys, arm "+z" / "-z"): the
+        weight of a z-arm edge deeper than the innermost (z_deep "order"); None = every z-arm edge reads `table`."""
+        return ArmWeights(lambda arm, o, i: table.get((arm, o, i), ZERO2),
+                          None if deep_table is None else (lambda arm, o, i: deep_table.get((arm, o, i), ZERO2)))
 
 
 def _add(a: Score, b: Score) -> Score:
@@ -262,15 +287,15 @@ def _edge_sum(w: ArmWeights, flat: Sequence[Optional[str]], lay: _Layout, earm: 
 
 def score_flat(w: ArmWeights, flat: Flat, L: int) -> Score:
     lay = _lay(L)
-    return _edge_sum(w, flat, lay, _earm(L), range(len(lay.edges)))
+    return _edge_sum(w, flat, lay, w.earm(L), range(len(lay.edges)))
 
 
 def axis_key_flat(w: ArmWeights, flat: Flat, L: int) -> Tuple[Tuple[str, int, int], ...]:
     """The key split by axis: ((axis, sum n_a, sum omega_a), ...) in x, y, z order; the totals are the key."""
-    lay, earm = _lay(L), _earm(L)
+    lay, earm = _lay(L), w.earm(L)
     acc = {a: ZERO2 for a in AXES}
     for ei, (o, i) in enumerate(lay.edges):
-        a = ARM_NAMES[earm[ei]][1]
+        a = ARM_NAMES[earm[ei] % DEEP_Z][1]
         acc[a] = _add(acc[a], w(earm[ei], flat[o], flat[i]))
     return tuple((a, acc[a][0], acc[a][1]) for a in AXES)
 
@@ -400,14 +425,15 @@ def _edge_vec(w: "ArmWeights", flat: Sequence[Optional[str]], lay: _Layout, earm
         o, i = lay.edges[ei]
         a = earm[ei]
         n, om = w(a, flat[o], flat[i])
-        acc[a // 2 * 2] += n
-        acc[a // 2 * 2 + 1] += om
+        k = a % DEEP_Z // 2 * 2
+        acc[k] += n
+        acc[k + 1] += om
     return (acc[0], acc[1], acc[2], acc[3], acc[4], acc[5])
 
 
 def score_vec(w: "ArmWeights", flat: Flat, L: int) -> Vec:
     lay = _lay(L)
-    return _edge_vec(w, flat, lay, _earm(L), range(len(lay.edges)))
+    return _edge_vec(w, flat, lay, w.earm(L), range(len(lay.edges)))
 
 
 # --------------------------------------------------------------------------------------------------------------
@@ -435,7 +461,7 @@ def _swap_legal(pol: Policy, s: Flat, L: int, i: int, j: int) -> bool:
 def _scan(w: ArmWeights, s: Flat, L: int, idx: Tuple[int, ...], pol: Optional[Policy] = None) -> Tuple[List[Flat], List[Flat], int]:
     """All single seat swaps of `s` over the seatable seats: (results of the best improving moves, results of the equal-key
     moves, moves tested).  A swap that would leave the centre empty is not a move (L-77)."""
-    lay, earm = _lay(L), _earm(L)
+    lay, earm = _lay(L), w.earm(L)
     best = ZERO2
     best_moves: List[Tuple[int, int]] = []
     equal: Dict[Flat, None] = {}
@@ -514,7 +540,7 @@ def _settle(w: ArmWeights, starts: Iterable[Flat], L: int, idx: Tuple[int, ...],
 def _insert_one(w: ArmWeights, bases: Sequence[Flat], L: int, unit: str, idx: Tuple[int, ...],
                 work: _Work, budget: Budget, pol: Optional[Policy] = None) -> List[Flat]:
     """L-64 for one unit: into EVERY base, at the empty seatable seats of best gain; ties branch (all kept)."""
-    lay, earm = _lay(L), _earm(L)
+    lay, earm = _lay(L), w.earm(L)
     starts: Dict[Flat, None] = {}
     for st in sorted(bases, key=_fk):
         work.tick()
@@ -558,7 +584,7 @@ def _scan_pa(w: ArmWeights, s: Flat, L: int, idx: Tuple[int, ...], pol: Optional
     """Per-axis `_scan`: (results of the improving moves whose axis-delta is not dominated by another improving move's, results
     of the moves that change no axis, moves tested).  Improving = some axis improves and none worsens; a move that improves one
     axis and worsens another is neither improving nor equal."""
-    lay, earm = _lay(L), _earm(L)
+    lay, earm = _lay(L), w.earm(L)
     imp: List[Tuple[Vec, int, int]] = []
     equal: Dict[Flat, None] = {}
     tested = 0
@@ -649,7 +675,7 @@ def _insert_one_pa(w: ArmWeights, bases: Sequence[Flat], L: int, unit: str, idx:
                    work: _Work, budget: Budget, pol: Optional[Policy] = None) -> List[Flat]:
     """Per-axis L-64 for one token: into EVERY base, at the empty allowed seats whose gain (a 6-vector) is not dominated by
     another seat's; ties branch (all kept)."""
-    lay, earm = _lay(L), _earm(L)
+    lay, earm = _lay(L), w.earm(L)
     starts: Dict[Flat, None] = {}
     for st in sorted(bases, key=_fk):
         work.tick()
@@ -680,7 +706,7 @@ def tradeoff_counts(w: ArmWeights, flat: Flat, L: int, arms: Tuple[int, ...], po
     """Diagnostic of one arrangement (L-582): the single moves that are NOT Pareto-improving but improve some axis while another
     worsens, counted per axis improved ("the strict reading would take these"), and the Pareto-improving moves (0 in a fixed
     point)."""
-    lay, earm = _lay(L), _earm(L)
+    lay, earm = _lay(L), w.earm(L)
     idx = seat_idx(L, arms)
     per = {a: 0 for a in AXES}
     both = pareto = tested = 0
@@ -711,7 +737,7 @@ def judge_state(w: ArmWeights, flat: Flat, L: int, arms: Tuple[int, ...], pol: O
     improve THAT axis ((n_a, omega_a) rises lexicographically) whatever happens to the other axes.  The state is strictly stable
     when all three counts are 0.  A trade-off move (one axis up, another down) is counted for the axis it raises; a Pareto
     improving move (none falls) is counted too (0 for a Pareto fixed point)."""
-    lay, earm = _lay(L), _earm(L)
+    lay, earm = _lay(L), w.earm(L)
     idx = seat_idx(L, arms)
     per = [0, 0, 0]
     pareto = tested = 0
@@ -868,9 +894,14 @@ def grow(w: ArmWeights, order: Sequence[Tuple[str, str]], budget: Budget, arms: 
 # --------------------------------------------------------------------------------------------------------------
 def counts_weight_fn(counts: SL.WindowCounts, tier: str):
     """w(arm name, outer, inner) -> (n, omega) read through the WindowCounts accessors (the verifier's own route).  Seat tokens
-    of seats="unit_sid" are read as their units."""
+    of seats="unit_sid" are read as their units.  Under z_deep "order" (L-661) the function has the attribute `z_deep` and `cross_key`
+    passes "+z:deep" / "-z:deep" for a z-arm edge whose inner seat is not the centre: read as the x pair is read."""
     def fn(arm: str, o: str, i: str) -> Score:
         o, i = unit_of(o), unit_of(i)
+        if arm == "+z:deep":
+            return (counts.n_x(tier, o, i), counts.before_x(tier, o, i))
+        if arm == "-z:deep":
+            return (counts.n_x(tier, o, i), counts.after_x(tier, o, i))
         if arm == "+x":
             return (counts.n_x(tier, o, i), counts.before_x(tier, o, i))
         if arm == "-x":
@@ -882,22 +913,33 @@ def counts_weight_fn(counts: SL.WindowCounts, tier: str):
             n = counts.n_z(tier, i, tier, o)
             return (n, n)
         return ZERO2
+    fn.z_deep = counts.z_deep == "order"
     return fn
 
 
-def table_weight_fn(table: Mapping[Tuple[str, str, str], Score]):
-    return lambda arm, o, i: table.get((arm, o, i), ZERO2)
+def table_weight_fn(table: Mapping[Tuple[str, str, str], Score], deep_table: Optional[Mapping[Tuple[str, str, str], Score]] = None):
+    """A hand table for the verifier.  `deep_table` (keys with arm "+z" / "-z"): the weight of a z-arm edge deeper than the innermost."""
+    if deep_table is None:
+        return lambda arm, o, i: table.get((arm, o, i), ZERO2)
+
+    def fn(arm: str, o: str, i: str) -> Score:
+        if arm.endswith(":deep"):
+            return deep_table.get((arm[:2], o, i), ZERO2)
+        return table.get((arm, o, i), ZERO2)
+    fn.z_deep = True
+    return fn
 
 
 def cross_key(wfn, cross: geo.Cross) -> Tuple[Score, Dict[str, Score]]:
     """Key of a Cross read from geometry.edges (outer, inner) and the seat's arm label: (total, {axis: part})."""
     tot = ZERO2
     per = {a: ZERO2 for a in AXES}
+    deep_z = getattr(wfn, "z_deep", False)                  # L-661: a weighing with a rule for the deeper z-arm edges
     for a, b in geo.edges(cross.L):
         o, i = cross.get(a), cross.get(b)
         if o is None or i is None:
             continue
-        s = wfn(a.arm, str(o), str(i))
+        s = wfn(a.arm + ":deep" if deep_z and a.arm[1] == "z" and b != geo.CENTER else a.arm, str(o), str(i))
         tot = _add(tot, s)
         per[a.arm[1]] = _add(per[a.arm[1]], s)
     return tot, per
@@ -1444,6 +1486,8 @@ class SlidePlacement:
     member_judgement: Tuple[dict, ...] = ()                 # per member: {x_side, stable_strict, improving_moves_left}
     centre_search: Optional[dict] = None                    # the growths of centre_scope "both" (per growth: seated, L, class, stop, keys) and the choice
     member_L: Tuple[int, ...] = ()                          # per member: the arm length it was grown (and is stable) at; L is the longest, shorter ones are padded outside
+    # ---- G3-c4 (L-660..): listed in the document only when it is not the default -----------------------------------------------
+    z_deep: str = "slide"                                   # the slide spec's rule for the z-arm edges deeper than the innermost ("order": their word-order count)
 
     @property
     def class_size(self) -> int:
@@ -1521,6 +1565,8 @@ class SlidePlacement:
              "unseated": list(self.unseated), "stable_strict": self.stable_strict,
              "improving_moves_left": self.improving_moves_left, "unstable": self.unstable,
              "judgement": self.judgement, "centre_search": self.centre_search}
+        if self.z_deep != "slide":                                 # G3-c4 (L-661): the default record keeps its bytes
+            d["z_deep"] = self.z_deep
         if members:
             d["members"] = [list(m) for m in self.members]
             if d["judgement"] is not None:                       # per member (aligned with `members`); in the members=True form only
@@ -1541,17 +1587,28 @@ NEW_RECORD_FIELDS_C2: Tuple[str, ...] = ("switches", "axis_keys", "axis_evidence
 NEW_RECORD_FIELDS_C3: Tuple[str, ...] = ("switches3", "centre_sentence", "other_seat", "unseated", "stable_strict", "improving_moves_left",
                                          "unstable", "judgement", "centre_search")
 NEW_RECORD_FIELDS: Tuple[str, ...] = NEW_RECORD_FIELDS_C2 + NEW_RECORD_FIELDS_C3
+# G3-c4 (L-661): present only under z_deep "order" (so NEW_RECORD_FIELDS, which tests pop from every record, is unchanged), and the key
+# `rule` of `seats[i].sources.edge` of a z-arm edge, present only under "order" as well
+NEW_RECORD_FIELDS_C4: Tuple[str, ...] = ("z_deep",)
 
 
-def _edge_evidence(counts: SL.WindowCounts, tier: str, arm: str, uo: str, ui: str) -> dict:
-    """The evidence (n, omega, source rows) of the edge (outer uo, inner ui) on `arm`, read through the counts' own tables."""
+def _edge_evidence(counts: SL.WindowCounts, tier: str, arm: str, uo: str, ui: str, deep: bool = False) -> dict:
+    """The evidence (n, omega, source rows) of the edge (outer uo, inner ui) on `arm`, read through the counts' own tables.
+    z_deep "order" (L-661): a z-arm edge also says which rule it used, "slide" (the innermost edge, n_z) or "order" (`deep`: an edge
+    deeper than the innermost, the pair's word order as x reads it; its rows are x rows); the default record has no `rule`."""
+    if arm[1] == "z" and counts.z_deep == "order" and deep:
+        n, om, src = counts.deep_z(tier, arm, uo, ui)
+        return {"axis": "z", "arm": arm, "n": n, "omega": om, "sources": [list(t) for t in src], "rule": "order"}
     if arm[1] == "x":
         b, a = counts.x.get((tier, uo, ui), ((), ()))
         return {"axis": "x", "arm": arm, "n": len(b) + len(a), "omega": len(b) if arm == "+x" else len(a),
                 "sources": [list(t) for t in b] + [list(t) for t in a]}
     if arm[1] == "z":
         z = counts.z.get((tier, uo, tier, ui) if arm == "+z" else (tier, ui, tier, uo), ())
-        return {"axis": "z", "arm": arm, "n": len(z), "omega": len(z), "sources": [list(t) for t in z]}
+        d = {"axis": "z", "arm": arm, "n": len(z), "omega": len(z), "sources": [list(t) for t in z]}
+        if counts.z_deep == "order":                         # the innermost z edge is the slide edge (L-661)
+            d["rule"] = "slide"
+        return d
     return {"axis": "y", "arm": arm, "n": 0, "omega": 0, "sources": []}
 
 
@@ -1575,7 +1632,7 @@ def _seat_rows(slide: SL.Slide, pw: PlaceWindow, counts: SL.WindowCounts, tier: 
         edge = None
         if inner is not None and flat[inner] is not None:
             it2 = by_tok[flat[inner]]
-            edge = _edge_evidence(counts, tier, arm, it.unit, it2.unit)
+            edge = _edge_evidence(counts, tier, arm, it.unit, it2.unit, inner != 0)
             edge["with"] = {"unit": it2.unit, "sid": it2.sid}
         rows.append({"unit": it.unit, "sid": it.sid, "arm": arm, "position": pos, "depth": 0 if ix == 0 else L - pos,
                      "side": it.side, "token": tok, "sources": {"occ": None if occ is None else occ.row(), "edge": edge}})
@@ -1698,7 +1755,7 @@ def _finish(spec: PlaceSpec, slide: SL.Slide, pw: PlaceWindow, counts: SL.Window
         score_flat(w, rep, Lm) if g.size else ZERO2, akey, splits, split_set, tuple((it.unit, it.side) for it in items), g.steps,
         g.stop, g.broke_on, g.left, spec.budget, zself, ns,
         tuple(sorted(spec.switches().items())), tuple(items), tuple((a, ev[a]) for a in AXES), rows, links, trade,
-        tuple(sorted(spec.switches3().items())), xs, os_, unseated, judge, mjs, csearch, mL)
+        tuple(sorted(spec.switches3().items())), xs, os_, unseated, judge, mjs, csearch, mL, counts.z_deep)
 
 
 def _line_arrangement(order: Sequence[Tuple[str, str]]) -> Optional[Tuple[int, Flat]]:
