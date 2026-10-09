@@ -29,6 +29,13 @@ from verantyx.line3 import space as sp
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 PY = sys.executable
+
+
+def mk_spec(slide, **kw):
+    """G3-c2 (L-580): this file tests the G3-c behaviour, which is the configuration SP.LEGACY (stability sum, seats per unit,
+    seats allowed on evidence-less arms, growth N then N+1); the module defaults are the owner's G3-c2 configuration and are
+    tested in test_slide_place2.py."""
+    return SP.make_spec(slide, **dict(SP.LEGACY, **kw))
 FL = os.path.join(ROOT, "experiments/line3/bank2/data/fulllead_sents.jsonl")
 
 TOY = [
@@ -67,7 +74,7 @@ def slide(space, rows):
 
 @pytest.fixture(scope="module")
 def spec(slide):
-    return SP.make_spec(slide)
+    return mk_spec(slide)
 
 
 def pw_of(slide, n, padding="none"):
@@ -393,7 +400,7 @@ def slide_d():
 
 
 def test_window_where_n_fills_the_budget_records_that_n_plus_1_got_no_seat(slide_d):
-    spec = SP.make_spec(slide_d)
+    spec = mk_spec(slide_d)
     pw = SP.place_windows(slide_d)[0]
     full = SP.place_window(slide_d, pw, spec)
     assert full.stop == "exhausted" and full.size == 8 and full.next_seat == SP.NextSeat(3, 3, 3, 3) and full.next_seat.strict
@@ -471,8 +478,8 @@ def test_foundation_labels_are_recorded_and_are_not_in_the_key(space, rows, slid
     assert d["arm_weights"]["+x"] == Fraction(144, 377) and d["weights_in_key"] is False
     # another ladder: another slide spec sha, the same arrangement and key (the weights enter neither)
     other = SL.Slide(space, SL.default_spec(space, foundation=SL.p7(("は", "が", "を", "と", "で", "に", "の"))), rows)
-    sp2 = SP.make_spec(other)
-    assert sp2.sha256() != SP.make_spec(slide).sha256()
+    sp2 = mk_spec(other)
+    assert sp2.sha256() != mk_spec(slide).sha256()
     q = SP.place_window(other, pw_of(other, 0), sp2)
     assert q.members == p.members and q.key == p.key and q.arm_labels != p.arm_labels
 
@@ -528,10 +535,10 @@ def test_spec_sha_carries_scope_tier_padding_budget_mode_and_the_slide_spec(spac
     for ch in (dict(scope="window"), dict(tier="WORD"), dict(padding="one"), dict(y_seats=True), dict(mode="line"),
                dict(budget=pl.budget_level("high")), dict(budget=pl.Budget(1, 2, 3))):
         assert dataclasses.replace(spec, **ch).sha256() != base, ch
-    assert SP.make_spec(slide).sha256() == base
-    assert SP.make_spec(slide, level="high").sha256() == dataclasses.replace(spec, budget=pl.budget_level("high")).sha256()
+    assert mk_spec(slide).sha256() == base
+    assert mk_spec(slide, level="high").sha256() == dataclasses.replace(spec, budget=pl.budget_level("high")).sha256()
     other = SL.Slide(space, SL.default_spec(space, lone="none"), rows)
-    assert SP.make_spec(other).sha256() != base
+    assert mk_spec(other).sha256() != base
     with pytest.raises(ValueError):
         SP.place_window(other, SP.place_windows(other)[0], spec)       # a spec of another slide spec is refused
     for bad in (dict(scope="x"), dict(tier="X"), dict(padding="two"), dict(mode="x")):
@@ -584,7 +591,7 @@ def test_bytes_are_identical_under_three_hash_seeds():
         "for pad in ('none','one'):\n"
         " for sc in ('corpus','window'):\n"
         "  for mode in ('search','line'):\n"
-        "   spec=SP.make_spec(sl,scope=sc,padding=pad,mode=mode);h.update(spec.to_bytes())\n"
+        "   spec=SP.make_spec(sl,scope=sc,padding=pad,mode=mode,**SP.LEGACY);h.update(spec.to_bytes())\n"
         "   for pw in SP.place_windows(sl,pad):h.update(SP.place_window(sl,pw,spec).to_bytes())\n"
         "h.update(repr(sorted(SP.padding_table(sl).items())).encode())\n"
         "print(h.hexdigest())")
@@ -627,7 +634,7 @@ def full():
 
 
 def test_fulllead_first_windows_are_stable_classes_and_the_numbers_are_the_measured_ones(full):
-    spec = SP.make_spec(full)
+    spec = mk_spec(full)
     pws = SP.place_windows(full)
     assert len(pws) == 592 and sum(len(p.window.sids) == 2 for p in pws) == 292
     got = []
