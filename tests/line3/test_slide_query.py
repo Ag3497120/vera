@@ -12,6 +12,9 @@ Part 5 (entries, abstentions, verdict): the shape (T7b keys + axis, window, stab
 abstentions, the verdict rule, stable_strict handling.
 Part 6 (defaults, bytes): structure="flat" is the default and changes nothing; the slide result under three hash seeds; no float; the
 command line.
+Part 7 (G3-e2, at the end of the file): the answer shape unit | path (the walked path, provenance per word), the read order qcount_first |
+grammar_first (more question units first, grammar only inside a tie; the old order reachable), z_deep through the window index / ask / the
+command line (cache key, mismatched cache refused).  The tests that assert the grammar-first block structure pin read_order="grammar_first".
 """
 import ast
 import copy
@@ -178,14 +181,14 @@ def test_form_slot_predicate_standin_plain(wi):
 
 def test_read_order_puts_the_slot_kind_first_then_the_ladder(wi):
     it = Q.intake(wi, "魚は何ですか")
-    plain = Q.plan_windows(wi, dataclasses.replace(it, slot=None), within="none")
+    plain = Q.plan_windows(wi, dataclasses.replace(it, slot=None), read_order="grammar_first", within="none")
     assert [b.reason for b in plain.blocks][0] != "match"
     ladder = [gr.WEIGHTS[b.kind.particles[0]] for b in plain.blocks if b.reason == "particle"]
     assert ladder == sorted(ladder, reverse=True)                  # single-particle kinds by the ladder weight, then tied, then none
     order = [b.reason for b in plain.blocks]
     assert order == sorted(order, key=["match", "particle", "tied", "none"].index)
     some = next(b for b in plain.blocks if b.reason == "particle" and b.kind.particles[0] != "の")
-    m = Q.plan_windows(wi, dataclasses.replace(it, slot=some.kind.particles[0]), within="none")
+    m = Q.plan_windows(wi, dataclasses.replace(it, slot=some.kind.particles[0]), read_order="grammar_first", within="none")
     assert m.blocks[0].reason == "match" and m.blocks[0].kind == some.kind
     assert sorted(w for b in m.blocks for w in b.windows) == sorted(w for b in plain.blocks for w in b.windows)     # only ordered
 
@@ -254,13 +257,13 @@ def test_standins_extend_the_candidates_only(wi):
 # ---------------------------------------------------------------------------------------------------------------------------------
 # Part 4: order and the cap
 # ---------------------------------------------------------------------------------------------------------------------------------
-@pytest.mark.parametrize("within", Q.WITHINS)
-def test_entries_do_not_depend_on_the_order_of_reading(wi, within):
+@pytest.mark.parametrize("ro, within", [("qcount_first", "qcount"), ("grammar_first", "qcount"), ("grammar_first", "none")])
+def test_entries_do_not_depend_on_the_order_of_reading(wi, ro, within):
     moved = False
     for q in QUESTIONS:
-        base = Q.ask_slide(wi, q, agreement="two_if_single_edge", within=within)
+        base = Q.ask_slide(wi, q, agreement="two_if_single_edge", read_order=ro, within=within)
         for seed in (1, 2, 3):
-            r = Q.ask_slide(wi, q, agreement="two_if_single_edge", within=within, shuffle=seed)
+            r = Q.ask_slide(wi, q, agreement="two_if_single_edge", read_order=ro, within=within, shuffle=seed)
             assert r.entry_keys() == base.entry_keys() and r.verdict == base.verdict and r.partial is False, (q, seed)
             assert sorted(r.plan.read) == sorted(base.plan.read)
             assert sorted(SL.canonical(e) for e in r.entries) == sorted(SL.canonical(e) for e in base.entries)
@@ -270,12 +273,12 @@ def test_entries_do_not_depend_on_the_order_of_reading(wi, within):
 
 def test_cap_reads_whole_blocks_and_reports_partial(wi):
     it = Q.intake(wi, "東京は何ですか")
-    full = Q.plan_windows(wi, it, within="none")
+    full = Q.plan_windows(wi, it, read_order="grammar_first", within="none")
     assert full.candidates >= 4 and not full.partial and full.boundary == 0
     sizes = [len(b.windows) for b in full.blocks]
     flat = [n for b in full.blocks for n in b.windows]
     for cap in range(0, full.candidates + 2):
-        p = Q.plan_windows(wi, it, within="none", cap=cap)
+        p = Q.plan_windows(wi, it, read_order="grammar_first", within="none", cap=cap)
         # the windows read are a prefix of the read order made of WHOLE blocks; the first block that does not fit stops the read
         acc, k = 0, 0
         while k < len(sizes) and acc + sizes[k] <= cap:
@@ -291,18 +294,18 @@ def test_cap_reads_whole_blocks_and_reports_partial(wi):
 def test_a_tied_block_larger_than_the_cap_is_not_split_and_nothing_is_read(wi):
     q = "日本の首都は何ですか"                                        # three windows of the same kind (の, で): one block
     it = Q.intake(wi, q)
-    full = Q.plan_windows(wi, it, within="none")
+    full = Q.plan_windows(wi, it, read_order="grammar_first", within="none")
     first = len(full.blocks[0].windows)
     assert first >= 2
-    p = Q.plan_windows(wi, it, within="none", cap=first - 1)
+    p = Q.plan_windows(wi, it, read_order="grammar_first", within="none", cap=first - 1)
     assert p.read == () and p.boundary == first and p.partial
-    r = Q.ask_slide(wi, q, nodes=first - 1, within="none")
+    r = Q.ask_slide(wi, q, nodes=first - 1, read_order="grammar_first", within="none")
     assert r.verdict == Q.UNKNOWN_NOT_READ and r.windows_read == 0 and r.partial and r.entries == ()
 
 
 def test_within_key_splits_a_grammar_group_by_the_question_units_held(wi):
     it = Q.intake(wi, "日本の首都は何ですか")
-    coarse = Q.plan_windows(wi, it, within="none")
+    coarse = Q.plan_windows(wi, it, read_order="grammar_first", within="none")
     fine = Q.plan_windows(wi, it, within="qcount")
     assert sorted(n for b in fine.blocks for n in b.windows) == sorted(n for b in coarse.blocks for n in b.windows)
     assert len(fine.blocks) >= len(coarse.blocks)
@@ -687,12 +690,17 @@ seen = {}; rows = []
 for t, s in TOY:
     i = seen.get(t, 0); seen[t] = i + 1
     rows.append({"title": t, "sent": s, "source": "%%s#%%d" %% (t, i)})
-wi = Q.WindowIndex.from_space(sp.build_space(rows), None, rows=rows, level="low")
+space = sp.build_space(rows)
 h = hashlib.sha256()
-for q in %(qs)r:
-    for ag in ("three", "two_if_single_edge"):
-        h.update(Q.ask_slide(wi, q, agreement=ag).to_bytes())
-        h.update(Q.ask_slide(wi, q, agreement=ag, effort="fast", shuffle=7).to_bytes())
+for zd in ("slide", "order"):
+    wi = Q.WindowIndex.from_space(space, None, rows=rows, level="low", z_deep=zd)
+    for q in %(qs)r:
+        for ag in ("three", "two_if_single_edge"):
+            h.update(Q.ask_slide(wi, q, agreement=ag).to_bytes())
+            h.update(Q.ask_slide(wi, q, agreement=ag, effort="fast", shuffle=7).to_bytes())
+            for sh in ("unit", "path"):
+                for ro in ("qcount_first", "grammar_first"):
+                    h.update(Q.ask_slide(wi, q, agreement=ag, answer_shape=sh, read_order=ro, effort="fast").to_bytes())
 print(h.hexdigest())
 """
 
@@ -786,3 +794,394 @@ def test_cli_structure_flag(tmp_path, data_file):
     assert "structure" not in fo and "grammar_form" not in fo and "windows_read" not in fo
     bad = cli(base + ["--structure", "cube"])
     assert bad.returncode != 0
+
+
+# =================================================================================================================================
+# G3-e2 (L-680..): the answer shape "unit" | "path", the read order "qcount_first" | "grammar_first", z_deep through the window index
+# =================================================================================================================================
+AGREEMENTS = ("three", "two_if_single_edge")
+
+
+def both_shapes(wi, q, **kw):
+    return Q.ask_slide(wi, q, answer_shape="unit", **kw), Q.ask_slide(wi, q, answer_shape="path", **kw)
+
+
+def triple(e):
+    return (e["window"]["n"], e["axis"], e["unit"])
+
+
+def test_shapes_and_orders_are_named_and_refused_when_wrong(wi):
+    assert Q.ANSWER_SHAPES == ("unit", "path") and Q.READ_ORDERS == ("qcount_first", "grammar_first")
+    r = Q.ask_slide(wi, "東京は何ですか")
+    assert r.config["answer_shape"] == "unit" and r.config["read_order"] == "qcount_first" and r.config["z_deep"] == "slide"
+    assert r.plan.order == "qcount_first" and r.read_obj()["order"] == "qcount_first"
+    with pytest.raises(ValueError, match="answer_shape"):
+        Q.ask_slide(wi, "東京は何ですか", answer_shape="all")
+    with pytest.raises(ValueError, match="read_order"):
+        Q.ask_slide(wi, "東京は何ですか", read_order="random")
+    with pytest.raises(ValueError, match="read_order"):
+        Q.plan_windows(wi, Q.intake(wi, "東京は何ですか"), read_order="random")
+
+
+# ---- the path shape (L-680, L-681, L-682) --------------------------------------------------------------------------------------
+@pytest.mark.parametrize("members", Q.MEMBERS)
+@pytest.mark.parametrize("agreement", AGREEMENTS)
+def test_path_shape_changes_what_is_shown_not_whether_an_axis_answers(wi, agreement, members):
+    n_multi = 0
+    for q in QUESTIONS:
+        u, p = both_shapes(wi, q, agreement=agreement, members=members)
+        assert {triple(e) for e in u.entries} == {triple(e) for e in p.entries}                    # the same (window, axis, unit)
+        assert u.abstentions == p.abstentions and u.plan == p.plan and u.windows_read == p.windows_read
+        for e in p.entries:
+            assert e["words"] and e["unit"] in e["words"] and len(set(e["words"])) == len(e["words"])
+            n_multi += len(e["words"]) > 1
+        for e in u.entries:
+            assert e["words"] == [e["unit"]]
+        # an entry is (window, axis, agreed unit) in both shapes: the same entries, the same members, the same verdict; only `words` differ
+        assert len(p.entries) == len(u.entries) and p.verdict == u.verdict and p.abstention_counts() == u.abstention_counts()
+        for a, b in zip(u.entries, p.entries):
+            assert triple(a) == triple(b) and a["arrangements"] == b["arrangements"] and a["centres"] == b["centres"]
+            assert a["path_variants"] == b["path_variants"] and a["walks"] == b["walks"] and a["ratios"] == b["ratios"]
+    assert n_multi > 0                                              # the toy does have walked paths of several units
+
+
+def test_path_words_are_the_walked_path_with_provenance_per_word(wi):
+    seen = multi = 0
+    for q in QUESTIONS:
+        for ag in AGREEMENTS:
+            for e in Q.ask_slide(wi, q, agreement=ag, answer_shape="path").entries:
+                seen += 1
+                prov, walks = e["word_provenance"], e["walks"]
+                assert [x["word"] for x in prov] == e["words"]
+                # the words are the units of the walks, walk after walk, each at its first occurrence
+                flat = list(dict.fromkeys(k[0] for w in walks for k in w["path"])) if walks else [e["unit"]]
+                assert e["words"] == flat
+                for w in walks:
+                    assert w["path"] and w["path"][-1][0] == e["unit"] and w["arm"] in SR.ARM_NAMES
+                    arm_seats = {}
+                    for x in prov:
+                        for st in x["seats"]:
+                            arm_seats[(st["unit"], st["sid"])] = st
+                    pos = [arm_seats[tuple(k)] for k in w["path"]]
+                    assert [s["arm"] for s in pos if s["arm"] != "center"] == [w["arm"]] * len([s for s in pos if s["arm"] != "center"])
+                    ps = [s["position"] for s in pos if s["arm"] != "center"]
+                    assert ps == sorted(ps) and len(set(ps)) == len(ps)                     # outer end first
+                    if w["stop"] == "centre":
+                        assert pos[-1]["arm"] == "center"
+                    for a, b in zip(w["path"], w["path"][1:]):                               # every step of the path is a recorded step
+                        tgt = next(x for x in prov if x["word"] == b[0])
+                        assert any(st["from"] == list(a) and st["to"] == list(b) and st["arm"] == w["arm"] and st["n"] > 0 and st["sources"]
+                                   for st in tgt["steps_in"]), (q, e["window"]["n"], a, b)
+                sids = set()
+                for x in prov:
+                    assert x["seats"] and all(s["unit"] == x["word"] for s in x["seats"]) and x["source_sids"]
+                    assert {s["sid"] for s in x["seats"]} <= set(x["source_sids"])
+                    assert x["basis"] == ("walk" if walks else "seat")
+                    sids.update(x["source_sids"])
+                assert sids <= set(e["source_sids"]) and e["source_sids"] == sorted(set(e["source_sids"]))
+                assert {s["sid"] for s in e["seats"]} <= set(e["source_sids"])
+                multi += len(e["words"]) > 1
+                assert e["trace"]["ok"]
+    assert seen > 0 and multi > 0
+
+
+def test_a_path_of_one_unit_is_the_unit_entry_byte_for_byte(wi):
+    same = other = 0
+    for q in QUESTIONS:
+        for ag in AGREEMENTS:
+            u, p = both_shapes(wi, q, agreement=ag)
+            for ue, e in zip(u.entries, p.entries):
+                if len(e["words"]) == 1:
+                    assert SL.canonical(e) == SL.canonical(ue)               # the entry is the same bytes, whole
+                    same += 1
+                else:
+                    assert e != ue and e["words"] != ue["words"] and ue["words"] == [ue["unit"]]
+                    other += 1
+    assert same > 0 and other > 0
+
+
+def test_path_variants_say_which_paths_the_agreeing_members_walked(wi):
+    n_var = 0
+    for q in QUESTIONS:
+        for ag in AGREEMENTS:
+            for e in Q.ask_slide(wi, q, agreement=ag, answer_shape="path").entries:
+                v = e["path_variants"]
+                assert sum(x["arrangements"] for x in v) == e["arrangements"] and len({tuple(x["words"]) for x in v}) == len(v)
+                assert e["words"] == v[0]["words"]                            # the shown path is that of the first agreeing member (like ratios / seats)
+                n_var += len(v) > 1
+    assert n_var > 0                                                  # on the toy members do walk different paths to one unit
+
+
+def test_no_section_walk_means_the_unit_alone_at_its_seats(wi):
+    n = 0
+    for q in QUESTIONS:
+        for e in Q.ask_slide(wi, q, agreement="two_if_single_edge", answer_shape="path").entries:
+            if e["ratios"]["section"] is None:                               # two_if_single_edge on an axis with one evidenced edge: no walk
+                n += 1
+                assert e["words"] == [e["unit"]] and e["walks"] == [] and [x["basis"] for x in e["word_provenance"]] == ["seat"]
+                assert e["word_provenance"][0]["seats"] == [s for s in e["seats"]]
+    assert n > 0
+
+
+def test_path_shape_is_exact_skip_and_order_independent(wi):
+    for q in QUESTIONS[:8]:
+        for ag in AGREEMENTS:
+            a = Q.ask_slide(wi, q, agreement=ag, answer_shape="path")
+            b = Q.ask_slide(wi, q, agreement=ag, answer_shape="path", skip="none")
+            assert a.entries == b.entries and a.abstentions == b.abstentions and a.verdict == b.verdict
+            for seed in (1, 2):
+                c = Q.ask_slide(wi, q, agreement=ag, answer_shape="path", shuffle=seed)
+                assert c.entry_keys() == a.entry_keys() and sorted(SL.canonical(e) for e in c.entries) == sorted(SL.canonical(e) for e in a.entries)
+
+
+def test_entry_keys_carry_the_shown_words(wi):
+    for q in QUESTIONS:
+        u, p = both_shapes(wi, q, agreement="two_if_single_edge")
+        assert len(set(p.entry_keys())) == len(p.entries) and len(set(u.entry_keys())) == len(u.entries)
+        assert all(k[3] == (k[2],) for k in u.entry_keys()) and all(k[2] in k[3] for k in p.entry_keys())
+
+
+# ---- the read order (L-683, L-684, L-685) ---------------------------------------------------------------------------------------
+TOY2 = [("P", "猫は魚を食べる。"), ("P", "猫は魚が好きだ。"), ("Q", "魚の骨は硬い。"), ("Q", "骨の形は丸い。"),
+        ("R", "猫と犬が魚を追う。"), ("R", "犬は肉を食べる。"), ("S", "猫の魚は海にいる。"), ("S", "海の魚は大きい。")]
+QUESTIONS2 = ["猫の魚は何ですか", "猫が魚を食べるのは何ですか", "猫が骨を食べるのは何ですか", "魚が骨を食べるのは何ですか", "猫の犬は何ですか",
+              "魚が海を食べるのは何ですか"]          # windows that hold 1, 2 or 3 of the question's units, of different grammar kinds
+
+
+@pytest.fixture(scope="module")
+def wi2():
+    seen = {}
+    rows2 = []
+    for t, x in TOY2:
+        i = seen.get(t, 0)
+        seen[t] = i + 1
+        rows2.append({"title": t, "sent": x, "source": "%s#%d" % (t, i)})
+    return Q.WindowIndex.from_space(sp.build_space(rows2), None, rows=rows2, level=LEVEL)
+
+
+def slots_of(it):
+    return [None, "の", "を", "で", "と", "に"]
+
+
+def indep_blocks(wi, it, qcount_first):
+    """The blocks of the order, by an independent route: held counts by hand, gr.read_order on the whole set (grammar_first) or on each tie."""
+    held = {w.n: (len(w.seated & it.qset), 0) for w in wi.windows}
+    cand = {n: k for n, k in held.items() if k[0] > 0}
+    kinds = {w.n: w.kind for w in wi.windows}
+    out = []
+    if qcount_first:
+        for k in sorted(set(cand.values()), reverse=True):
+            sub = [(n, kinds[n]) for n in cand if cand[n] == k]
+            for g in gr.read_order(it.slot, sub).groups:
+                out.append((k, g.reason, tuple(sorted(g.members))))
+    else:
+        for g in gr.read_order(it.slot, [(n, kinds[n]) for n in cand]).groups:
+            for k in sorted({cand[n] for n in g.members}, reverse=True):
+                out.append((k, g.reason, tuple(sorted(n for n in g.members if cand[n] == k))))
+    return out
+
+
+def test_qcount_first_puts_windows_with_more_question_units_first_grammar_only_inside_a_tie(wi, wi2):
+    differ = ties = steps = 0
+    for wi, q in [(wi, q) for q in QUESTIONS] + [(wi2, q) for q in QUESTIONS2]:
+        base = Q.intake(wi, q)
+        for slot in slots_of(base):
+            it = dataclasses.replace(base, slot=slot)
+            new = Q.plan_windows(wi, it)
+            old = Q.plan_windows(wi, it, read_order="grammar_first")
+            assert new.order == "qcount_first" and old.order == "grammar_first"
+            assert [(b.key, b.reason, b.windows) for b in new.blocks] == indep_blocks(wi, it, True), (q, slot)
+            assert [(b.key, b.reason, b.windows) for b in old.blocks] == indep_blocks(wi, it, False), (q, slot)
+            assert sorted(n for b in new.blocks for n in b.windows) == sorted(n for b in old.blocks for n in b.windows)
+            ks = [b.key for b in new.blocks]
+            assert ks == sorted(ks, reverse=True)                                  # more question units held first, across every group
+            ties += len(ks) != len(set(ks))                                        # a tie of the count: more than one block (kinds differ)
+            steps += len(set(ks)) > 1
+            differ += [b.windows for b in new.blocks] != [b.windows for b in old.blocks]
+    assert differ > 0 and ties > 0 and steps > 0                                   # the two orders do differ on the toy; ties and steps both occur
+
+
+def test_qcount_first_cap_reads_the_windows_with_most_question_units(wi, wi2):
+    for wi, q in [(wi, q) for q in QUESTIONS] + [(wi2, q) for q in QUESTIONS2]:
+        it = Q.intake(wi, q)
+        full = Q.plan_windows(wi, it)
+        held = {n: len(wi.by_n[n].seated & it.qset) for b in full.blocks for n in b.windows}
+        sizes = [len(b.windows) for b in full.blocks]
+        flat = [n for b in full.blocks for n in b.windows]
+        for cap in range(0, full.candidates + 2):
+            p = Q.plan_windows(wi, it, cap=cap)
+            acc, k = 0, 0
+            while k < len(sizes) and acc + sizes[k] <= cap:
+                acc += sizes[k]
+                k += 1
+            assert p.read == tuple(flat[:acc]) and p.boundary == (sizes[k] if k < len(sizes) else 0)       # whole blocks, never split
+            if p.read and p.unread:
+                assert min(held[n] for n in p.read) >= max(held[n] for n in p.unread)                      # the read ones hold at least as many
+            tie_blocks = [b for b in full.blocks if b.key == full.blocks[k].key] if k < len(sizes) else []
+            assert all(set(b.windows) <= set(p.read) or set(b.windows).isdisjoint(p.read) for b in tie_blocks)
+
+
+def test_qcount_first_spends_the_cap_on_the_windows_that_hold_the_question(wi2):
+    q = "猫の魚は何ですか"                                                          # two question units: 猫, 魚
+    it = Q.intake(wi2, q)
+    full = Q.plan_windows(wi2, it)
+    counts = [b.key[0] for b in full.blocks]
+    assert counts[0] == max(counts) == 2 and min(counts) == 1
+    held = lambda n: len(wi2.by_n[n].seated & it.qset)
+    cap = sum(len(b.windows) for b in full.blocks if b.key[0] == 2)
+    r = Q.ask_slide(wi2, q, nodes=cap)
+    assert all(held(n) == 2 for n in r.plan.read) and len(r.plan.read) == cap and r.partial
+    old = Q.ask_slide(wi2, q, nodes=cap, read_order="grammar_first")
+    assert old.plan.order == "grammar_first" and old.config["read_order"] == "grammar_first"
+    assert any(held(n) == 1 for n in Q.plan_windows(wi2, it, read_order="grammar_first").blocks[0].windows + (
+        Q.plan_windows(wi2, it, read_order="grammar_first").blocks[1].windows))             # the old order reads a 1-unit window among the first
+    fast = Q.ask_slide(wi2, q, effort="fast")
+    assert all(held(n) == 2 for n in fast.plan.read[:2])
+
+
+def test_within_none_belongs_to_the_old_order(wi):
+    it = Q.intake(wi, "日本の首都は何ですか")
+    with pytest.raises(ValueError, match="within"):
+        Q.plan_windows(wi, it, within="none")
+    with pytest.raises(ValueError, match="within"):
+        Q.ask_slide(wi, "日本の首都は何ですか", within="none")
+    assert Q.plan_windows(wi, it, read_order="grammar_first", within="none").order == "grammar_first"
+
+
+def test_the_old_order_gives_the_old_blocks_and_entries_are_the_same_when_everything_is_read(wi):
+    for q in QUESTIONS:
+        for ag in AGREEMENTS:
+            a = Q.ask_slide(wi, q, agreement=ag)
+            b = Q.ask_slide(wi, q, agreement=ag, read_order="grammar_first")
+            assert a.entry_keys() == b.entry_keys() and a.verdict == b.verdict and a.abstentions == b.abstentions
+
+
+# ---- z_deep through the window index, ask and the command line (L-686, L-687) ----------------------------------------------------
+@pytest.fixture(scope="module")
+def wi_order(space, rows):
+    return Q.WindowIndex.from_space(space, None, rows=rows, level=LEVEL, z_deep="order")
+
+
+def test_z_deep_is_a_placement_switch_of_the_window_index(wi, wi_order, space, rows):
+    assert wi.z_deep == "slide" and wi_order.z_deep == "order" and Q.Z_DEEPS == ("slide", "order")
+    assert wi.slide.spec.sha256() != wi_order.slide.spec.sha256() and wi.spec.sha256() != wi_order.spec.sha256()
+    assert wi_order.slide.spec.z_deep == "order" and wi.slide.spec.z_deep == "slide"
+    same = Q.WindowIndex.from_space(space, None, rows=rows, level=LEVEL, z_deep="slide")           # the default spelled out = the default
+    assert same.slide.spec.sha256() == wi.slide.spec.sha256() and [w.doc for w in same.windows] == [w.doc for w in wi.windows]
+    with pytest.raises(ValueError, match="z_deep"):
+        Q.WindowIndex.from_space(space, None, rows=rows, level=LEVEL, z_deep="deep")
+    for w in wi_order.windows:                                                                   # the placements carry the rule (G3-c4)
+        assert w.doc.get("z_deep", "order") == "order" and w.doc["spec_sha256"] == wi_order.spec.sha256()
+
+
+def test_z_deep_is_in_the_cache_key_and_a_mismatched_cache_is_refused(tmp_path, space, rows):
+    d = str(tmp_path)
+    a = Q.WindowIndex.from_space(space, d, rows=rows, level=LEVEL)
+    b = Q.WindowIndex.from_space(space, d, rows=rows, level=LEVEL, z_deep="order")
+    files = sorted(os.listdir(d))
+    assert len(files) == 2 and files[0] != files[1]                                               # two files: the rule is in the name
+    assert Q.cache_name(space.sha256(), "RUN", b.slide.spec.sha256(), b.spec.sha256()) in files
+    assert a.header.get("z_deep") == "slide" and b.header["z_deep"] == "order"
+    # each rule finds its own file (loaded, not placed) ...
+    a2 = Q.WindowIndex.from_space(space, d, rows=rows, level=LEVEL, build=False)
+    b2 = Q.WindowIndex.from_space(space, d, rows=rows, level=LEVEL, z_deep="order", build=False)
+    assert [w.doc for w in a2.windows] == [w.doc for w in a.windows] and [w.doc for w in b2.windows] == [w.doc for w in b.windows]
+    # ... and a directory that holds only the other rule's file has none for this one
+    only = tmp_path / "only"
+    only.mkdir()
+    Q.WindowIndex.from_space(space, str(only), rows=rows, level=LEVEL)
+    with pytest.raises(FileNotFoundError):
+        Q.WindowIndex.from_space(space, str(only), rows=rows, level=LEVEL, z_deep="order", build=False)
+    # the "slide" file copied under the "order" name is refused by its header, never read
+    name_o = Q.cache_name(space.sha256(), "RUN", b.slide.spec.sha256(), b.spec.sha256())
+    name_s = Q.cache_name(space.sha256(), "RUN", a.slide.spec.sha256(), a.spec.sha256())
+    with open(os.path.join(d, name_s), "rb") as f:
+        rec = pickle.load(f)
+    with open(os.path.join(d, name_o), "wb") as f:
+        pickle.dump(rec, f)
+    with pytest.raises(ValueError, match="not for this corpus"):
+        Q.WindowIndex.from_space(space, d, rows=rows, level=LEVEL, z_deep="order", build=False)
+    # a header that names the other rule is refused even when the shas were made to match
+    liar = dict(b.header, z_deep="slide", windows=[w.doc for w in b.windows])
+    with open(os.path.join(d, name_o), "wb") as f:
+        pickle.dump(liar, f)
+    with pytest.raises(ValueError, match="z_deep"):
+        Q.WindowIndex.from_space(space, d, rows=rows, level=LEVEL, z_deep="order", build=False)
+
+
+def test_ask_slide_takes_z_deep_and_refuses_another_rules_index(wi, wi_order):
+    q = "猫は何を食べますか"
+    a = Q.ask_slide(wi, q, agreement="two_if_single_edge")
+    assert a.config["z_deep"] == "slide" and a.spec["slide_spec_sha256"] == wi.slide.spec.sha256()
+    assert Q.ask_slide(wi, q, agreement="two_if_single_edge", z_deep="slide").to_bytes() == a.to_bytes()          # None = the index's; same
+    o = Q.ask_slide(wi_order, q, agreement="two_if_single_edge")
+    assert o.config["z_deep"] == "order" and o.spec["slide_spec_sha256"] == wi_order.slide.spec.sha256() != a.spec["slide_spec_sha256"]
+    assert o.spec["place_spec_sha256"] != a.spec["place_spec_sha256"] and o.to_bytes() != a.to_bytes()
+    assert Q.ask_slide(wi_order, q, agreement="two_if_single_edge", z_deep="order").to_bytes() == o.to_bytes()
+    with pytest.raises(ValueError, match="z_deep"):
+        Q.ask_slide(wi, q, z_deep="order")
+    with pytest.raises(ValueError, match="z_deep"):
+        Q.ask_slide(wi_order, q, z_deep="slide")
+    with pytest.raises(ValueError, match="z_deep"):
+        Q.ask_slide(wi, q, z_deep="deep")
+
+
+def test_the_new_switches_work_on_an_order_index_too(wi_order):
+    for q in QUESTIONS:
+        for ag in AGREEMENTS:
+            u, p = both_shapes(wi_order, q, agreement=ag)
+            assert {triple(e) for e in u.entries} == {triple(e) for e in p.entries} and u.abstentions == p.abstentions
+            for e in p.entries:
+                assert e["trace"]["ok"] and [x["word"] for x in e["word_provenance"]] == e["words"]
+            a = Q.ask_slide(wi_order, q, agreement=ag)
+            assert a.entry_keys() == Q.ask_slide(wi_order, q, agreement=ag, read_order="grammar_first").entry_keys()
+
+
+def test_ask_structure_slide_takes_the_new_switches_and_keeps_one_index_per_rule(tmp_path, data_file):
+    idx = A.Index.from_jsonl(data_file, str(tmp_path), "low", ("RUN",))
+    Q.WindowIndex.from_space(idx.space, str(tmp_path), level="low")
+    Q.WindowIndex.from_space(idx.space, str(tmp_path), level="low", z_deep="order")
+    q = "猫は何を食べますか"
+    base = A.ask(idx, q, effort="full", structure="slide", agreement="two_if_single_edge")
+    assert base.config["answer_shape"] == "unit" and base.config["read_order"] == "qcount_first" and base.config["z_deep"] == "slide"
+    p = A.ask(idx, q, effort="full", structure="slide", agreement="two_if_single_edge", answer_shape="path", read_order="grammar_first")
+    assert p.config["answer_shape"] == "path" and p.config["read_order"] == "grammar_first"
+    o = A.ask(idx, q, effort="full", structure="slide", agreement="two_if_single_edge", z_deep="order")
+    assert o.config["z_deep"] == "order" and o.spec["slide_spec_sha256"] != base.spec["slide_spec_sha256"]
+    assert len(idx._slide_windows) == 2                                                    # one index per placement rule, built once
+    assert o.to_bytes() == A.ask(idx, q, effort="full", structure="slide", agreement="two_if_single_edge", z_deep="order").to_bytes()
+    assert len([f for f in os.listdir(str(tmp_path)) if f.startswith("slidewin_")]) == 2        # nothing was re-placed
+    # the flat default does not know the switches
+    with pytest.raises(TypeError):
+        A.ask(idx, q, effort="full", answer_shape="path")
+
+
+def test_cli_new_switches(tmp_path, data_file):
+    cache = str(tmp_path / "cache")
+    b1 = cli(["build", "--structure", "slide", "--data", data_file, "--cache", cache, "--level", "low"])
+    b2 = cli(["build", "--structure", "slide", "--data", data_file, "--cache", cache, "--level", "low", "--z-deep", "order"])
+    assert b1.returncode == 0 and b2.returncode == 0, b1.stderr + b2.stderr
+    i1, i2 = json.loads(b1.stdout), json.loads(b2.stdout)
+    assert i1["slide_spec_sha256"] != i2["slide_spec_sha256"] and len(os.listdir(cache)) == 2
+    base = ["ask", "--data", data_file, "--cache", cache, "--level", "low", "--question", "猫は何を食べますか", "--format", "json", "--effort", "full",
+            "--show-thought", "--structure", "slide", "--agreement", "two_if_single_edge"]
+    default = cli(base)
+    explicit = cli(base + ["--answer-shape", "unit", "--read-order", "qcount_first", "--z-deep", "slide"])
+    assert default.returncode == 0 and default.stdout == explicit.stdout, default.stderr + explicit.stderr
+    th = json.loads(default.stdout)["thought"]
+    assert th["config"]["answer_shape"] == "unit" and th["config"]["read_order"] == "qcount_first" and th["config"]["z_deep"] == "slide"
+    assert th["spec"]["slide_spec_sha256"] == i1["slide_spec_sha256"]
+    outs = [cli(base + ["--answer-shape", "path", "--read-order", "grammar_first", "--z-deep", "order"], s) for s in ("0", "1", "12345")]
+    for r in outs:
+        assert r.returncode == 0, r.stderr
+    assert outs[0].stdout == outs[1].stdout == outs[2].stdout
+    obj = json.loads(outs[0].stdout)
+    assert obj["thought"]["config"]["answer_shape"] == "path" and obj["thought"]["config"]["read_order"] == "grammar_first"
+    assert obj["thought"]["config"]["z_deep"] == "order" and obj["thought"]["spec"]["slide_spec_sha256"] == i2["slide_spec_sha256"]
+    assert obj["answer"]["read"]["order"] == "grammar_first"
+    bad = cli(base + ["--z-deep", "deep"])
+    assert bad.returncode != 0
+    # the flat default is untouched by the new flags' existence
+    flat_base = ["ask", "--data", data_file, "--cache", cache, "--level", "low", "--question", "猫は何を食べますか", "--format", "json", "--effort", "full",
+                 "--layers", "off"]
+    assert cli(flat_base).stdout == cli(flat_base + ["--answer-shape", "path", "--read-order", "grammar_first", "--z-deep", "slide"]).stdout

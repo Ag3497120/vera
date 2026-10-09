@@ -2339,7 +2339,7 @@ def cmd_line3(args) -> int:
         from .line3 import slide_query as l3s
         try:
             wi = l3s.WindowIndex.from_space(idx.space, args.cache, workers=args.workers, level=args.level,
-                                            log=lambda m: print(m, file=sys.stderr))
+                                            log=lambda m: print(m, file=sys.stderr), z_deep=getattr(args, "z_deep", "slide"))
         except (OSError, ValueError) as e:
             print(f"line3: {e}", file=sys.stderr)
             return 2
@@ -2379,7 +2379,9 @@ def cmd_line3(args) -> int:
         if structure == "slide":
             # G3-e (opt-in): the question over the sliding windows (verantyx.line3.slide_query); effort / nodes count windows
             res = l3.ask(idx, args.question, effort=effort, nodes=nodes, structure="slide",
-                         agreement=getattr(args, "agreement", "three"), members=getattr(args, "slide_members", "all"))
+                         agreement=getattr(args, "agreement", "three"), members=getattr(args, "slide_members", "all"),
+                         answer_shape=getattr(args, "answer_shape", "unit"), read_order=getattr(args, "read_order", "qcount_first"),
+                         z_deep=getattr(args, "z_deep", "slide"))
         elif layered:
             # T8 (verantyx/line3/matryoshka.py): stack when the stability was lost at this question; layer 0 is unchanged
             from .line3 import matryoshka as l3m
@@ -3055,6 +3057,12 @@ def main(argv: Optional[list] = None) -> int:
                    help="ask --structure slide: the agreement rule of an axis (L-615): three = section walk, edge flow and binding all agree; two_if_single_edge = an axis with exactly one evidenced edge is judged on the edge flow and the binding only")
     p.add_argument("--slide-members", dest="slide_members", choices=["all", "representative"], default="all",
                    help="ask --structure slide: read every member of a window's class of equal-key arrangements (default) or only the representative (cheaper; the member count is still shown)")
+    p.add_argument("--answer-shape", dest="answer_shape", choices=["unit", "path"], default="unit",
+                   help="ask --structure slide (G3-e2): what an agreeing axis shows. unit (default) = the end unit of the section walk (one word); path = the units of the walked section path on that axis, outer end to centre, with the provenance of every word. Whether an axis answers is the agreement's in both")
+    p.add_argument("--read-order", dest="read_order", choices=["qcount_first", "grammar_first"], default="qcount_first",
+                   help="ask --structure slide (G3-e2): the order of the candidate windows. qcount_first (default) = windows that hold more question units first, the grammar order (kind match, ladder) only inside a tie; grammar_first = the grammar order first, then the number of question units held (the order before G3-e2)")
+    p.add_argument("--z-deep", dest="z_deep", choices=["slide", "order"], default="slide",
+                   help="line3 build/ask --structure slide (G3-c4): the evidence of a z-arm edge deeper than the innermost. slide (default) = a slide edge (n_z, almost no evidence); order = the pair's word order in its sentences, counted as an x arm does. A PLACEMENT switch: another slide spec, another window cache file (`line3 build --structure slide --z-deep order` builds it)")
     p.add_argument("--choose", type=int, default=None, help="ask: the index of the candidate you pick; its memory record (with the tier) goes to stderr and --record")
     p.add_argument("--record", default=None, help="ask: append the chosen candidate's memory record to this jsonl (with --choose, or alone for a single answer)")
     p.add_argument("--layers", choices=["off", "on"], default="on",

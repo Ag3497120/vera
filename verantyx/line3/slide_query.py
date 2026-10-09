@@ -18,6 +18,11 @@ the shape of a T7b entry plus the axis label, the window and the strict-stabilit
 Nothing here changes an existing output: ask.py gets an opt-in `structure` keyword, slide_place / slide_ratios / grammar are only read.
 All numbers are int / Fraction (a Fraction is written "n/d"); the module has no float and no division operator; the canonical bytes are
 slide.canonical's.  Judgement points are numbered from L-640 (docs/LINE3_LOCAL_DECISIONS.md, section "G3-e").
+
+G3-e2 (owner, after the S1 audit; docs section "G3-e2", L-680..): `answer_shape` "unit" | "path" (what an agreeing axis shows: the end unit
+of the section walk, or the units of the walked path, provenance per word); `read_order` "qcount_first" (default: windows holding more
+question units first, the grammar order only inside a tie) | "grammar_first" (L-645's); `z_deep` "slide" | "order" through
+WindowIndex.from_space / window_index_for / ask_slide (a placement switch: part of the cache key).
 """
 from __future__ import annotations
 
@@ -51,6 +56,9 @@ STRICT_POLICIES: Tuple[str, ...] = ("abstain", "mark")
 WITHINS: Tuple[str, ...] = ("qcount", "none")
 HOLDS: Tuple[str, ...] = ("seats", "sentences")
 STANDIN_MODES: Tuple[str, ...] = ("off", "on")
+ANSWER_SHAPES: Tuple[str, ...] = ("unit", "path")                 # G3-e2 (L-680): what an agreeing axis shows
+READ_ORDERS: Tuple[str, ...] = ("qcount_first", "grammar_first")   # G3-e2 (L-684): the order of the candidate windows
+Z_DEEPS: Tuple[str, ...] = getattr(SL, "Z_DEEPS", ("slide",))      # G3-c4 (L-660); a tree without it knows only "slide"
 TIER = "RUN"                                             # S1: the tier of the windows (L-640)
 
 ANSWER = cy.ANSWER
@@ -168,6 +176,7 @@ class WindowIndex:
         self.header = dict(header or {})
         self.records = grammar_records if grammar_records is not None else gr.records_of_space(space)
         self.foundation = slide.spec.foundation
+        self.z_deep: str = getattr(slide.spec, "z_deep", "slide")        # the slide spec's rule for the deeper z-arm edges (L-686)
         self._counts: Dict[int, SL.WindowCounts] = {}
         self._span: Optional[SpanIndex] = None
         pws = SP.place_windows(slide, spec.padding)
@@ -197,13 +206,17 @@ class WindowIndex:
     @classmethod
     def from_space(cls, space: sp.Space, cache_dir: Optional[str] = None, *, rows: Optional[Sequence[Mapping]] = None,
                    tier: str = TIER, padding: str = "one", level: str = "mid", place_kw: Optional[Mapping] = None,
-                   workers: int = 1, build: bool = True, log=None) -> "WindowIndex":
+                   workers: int = 1, build: bool = True, log=None, z_deep: str = "slide") -> "WindowIndex":
         """Load the windows of `space` from `cache_dir` (refusing any mismatch of the slide spec sha, the place spec sha, the corpus sha,
         the tier or the padding) or, when the cache file is absent and `build`, place them (fork pool, the result does not depend on the
-        worker count) and write it.  `place_kw` = slide_place.make_spec's switches (None = the module defaults)."""
+        worker count) and write it.  `place_kw` = slide_place.make_spec's switches (None = the module defaults).  `z_deep` (G3-c4,
+        L-660; G3-e2, L-686) is the SLIDE spec's rule for the z-arm edges deeper than the innermost: it changes the placements, hence the
+        slide spec sha, the place spec sha and the cache file name; the default "slide" is the spec as it was."""
         if tier != TIER:
             raise ValueError("S1 reads the %s tier only (L-640)" % TIER)
-        slide = SL.Slide(space, rows=rows)
+        if z_deep not in Z_DEEPS:
+            raise ValueError("z_deep must be one of %r" % (Z_DEEPS,))
+        slide = SL.Slide(space, rows=rows) if z_deep == "slide" else SL.Slide(space, SL.default_spec(space, z_deep=z_deep), rows=rows)
         spec = SP.make_spec(slide, tier=tier, padding=padding, level=level, **dict(place_kw or {}))
         path = None if not cache_dir else os.path.join(
             cache_dir, cache_name(space.sha256(), tier, slide.spec.sha256(), spec.sha256()))
@@ -217,7 +230,7 @@ class WindowIndex:
         docs, secs, wall = cls._place_all(slide, spec, workers, log)             # secs / wall in milliseconds
         header = {"format": CACHE_FORMAT, "corpus_sha256": space.sha256(), "slide_spec_sha256": slide.spec.sha256(),
                   "place_spec_sha256": spec.sha256(), "tier": tier, "padding": padding, "scope": spec.scope,
-                  "switches": spec.switches(), "windows": len(docs), "wall_ms": wall, "cpu_ms": sum(secs)}
+                  "switches": spec.switches(), "z_deep": z_deep, "windows": len(docs), "wall_ms": wall, "cpu_ms": sum(secs)}
         if path:
             os.makedirs(cache_dir, exist_ok=True)
             tmp = path + ".part"
@@ -243,6 +256,10 @@ class WindowIndex:
             if d.get(k) != v:
                 raise ValueError("window cache %s is not for this corpus / slide spec / place spec (%s: %r, wanted %r)"
                                  % (path, k, d.get(k), v))
+        zd = getattr(slide.spec, "z_deep", "slide")
+        if "z_deep" in d and d["z_deep"] != zd:                        # L-686: written by caches made after G3-e2; the shas already say it
+            raise ValueError("window cache %s is not for this corpus / slide spec / place spec (z_deep: %r, wanted %r)"
+                             % (path, d["z_deep"], zd))
 
     @staticmethod
     def _place_all(slide: SL.Slide, spec: "SP.PlaceSpec", workers: int, log=None):
@@ -378,7 +395,7 @@ class Plan:
     unread: Tuple[int, ...]
     cap: Optional[int]                    # the node budget in windows (None = the whole read)
     boundary: int                         # windows of the first block the cap did not fit (the tie not split)
-    order: str                            # "grammar" | "shuffle:<seed>"
+    order: str                            # "qcount_first" | "grammar_first" | "shuffle:<seed>" (L-684)
 
     @property
     def partial(self) -> bool:
@@ -391,14 +408,21 @@ class Plan:
 
 
 def plan_windows(index: WindowIndex, it: Intake, *, hold: str = "seats", standins: str = "off", within: str = "qcount",
-                 cap: Optional[int] = None, shuffle: Optional[int] = None) -> Plan:
-    """The windows that hold a question unit (V1: exact skip, L-644), ordered by grammar.read_order (kind = the slot first when the
-    question has a P7 slot, then the ladder weight of the kind; equal kinds are one group), then inside a group by the number of question
-    units held (more first; "none" = no second key), equal values one block (L-645, L-G3-7).  `cap` windows are read as T7b reads
+                 cap: Optional[int] = None, shuffle: Optional[int] = None, read_order: str = "qcount_first") -> Plan:
+    """The windows that hold a question unit (V1: exact skip, L-644), in the READ ORDER `read_order` (L-684):
+      "qcount_first" (default, owner after S1): the windows that hold MORE question units first (then more stand-ins, when switched
+          on); only INSIDE a tie of that count the grammar order (grammar.read_order: kind = the slot first when the question has a P7
+          slot, then the ladder weight of the kind; equal kinds are one group);
+      "grammar_first" (the order of L-645, kept for comparison): grammar.read_order first, then inside a group the number of question
+          units held (more first; within="none": no second key).
+    Equal (count, kind group) is ONE block in both orders (the same blocks, differently sequenced).  `cap` windows are read as T7b reads
     crosses: whole blocks in order, the first block that does not fit stops the read.  `shuffle` (a test hook) permutes the blocks and
     the windows inside a block with a seeded generator."""
-    if hold not in HOLDS or standins not in STANDIN_MODES or within not in WITHINS:
-        raise ValueError("hold: %s; standins: %s; within: %s" % (HOLDS, STANDIN_MODES, WITHINS))
+    if hold not in HOLDS or standins not in STANDIN_MODES or within not in WITHINS or read_order not in READ_ORDERS:
+        raise ValueError("hold: %s; standins: %s; within: %s; read_order: %s" % (HOLDS, STANDIN_MODES, WITHINS, READ_ORDERS))
+    if read_order == "qcount_first" and within != "qcount":
+        raise ValueError("read_order 'qcount_first' sorts by the question units held: within='none' (grammar groups only) is the "
+                         "'grammar_first' variant")
     if cap is not None and (isinstance(cap, bool) or not isinstance(cap, int) or cap < 0):
         raise ValueError("cap must be an integer >= 0")
     held = {w.n: holds(w, it, hold, standins) for w in index.windows}
@@ -414,7 +438,9 @@ def plan_windows(index: WindowIndex, it: Intake, *, hold: str = "seats", standin
                 blocks.append(Block(g.reason, g.kind, k, tuple(sorted(by[k]))))
         else:
             blocks.append(Block(g.reason, g.kind, None, tuple(sorted(g.members))))
-    order = "grammar"
+    if read_order == "qcount_first":
+        blocks.sort(key=lambda b: b.key, reverse=True)          # stable: equal counts keep the grammar order of their groups
+    order = read_order
     if shuffle is not None:
         rng = random.Random(shuffle)
         rng.shuffle(blocks)
@@ -450,6 +476,77 @@ def _sids_of(a: SR.AxisAnswer) -> Tuple[int, ...]:
 def _centre(wc: SR.WindowCross) -> Optional[str]:
     c = wc.by_seat().get(geo.CENTER)
     return None if c is None else c.unit
+
+
+def _row_sids(axis: str, raw: tuple) -> Tuple[int, ...]:
+    """The sentences of one source row of the counts, `raw` WITHOUT its axis prefix (x: (sid, ...); z: (sid N, sid N+1, ...))."""
+    if axis == "x" and len(raw) > 0 and isinstance(raw[0], int):
+        return (raw[0],)
+    if axis == "z" and len(raw) > 1 and isinstance(raw[0], int) and isinstance(raw[1], int):
+        return (raw[0], raw[1])
+    return ()
+
+
+@dataclass(frozen=True)
+class PathRead:
+    """What one member's agreeing axis shows under either answer shape (L-680, L-681): the section walks that ended on the agreed unit
+    (outer end first, ending at the centre or at the break), the words of those walks in order of first occurrence, and per word the
+    provenance.  An axis whose section walk was not applicable (agreement two_if_single_edge, one evidenced edge) has no walk: the
+    path is the unit alone (basis "seat")."""
+    unit: str
+    words: Tuple[str, ...]
+    walks: Tuple[SR.AxisWalk, ...]
+    provenance: Tuple[dict, ...]          # one per word, aligned with `words`
+    walk_sids: Tuple[int, ...]            # the sentences of all the provenance (seats and steps) of all words
+
+
+def path_read(ar: SR.AxisRatios, a: SR.AxisAnswer, wc: SR.WindowCross) -> PathRead:
+    """The walked section path of an agreeing axis (L-681).  The walks are those slide_ratios' `answer` takes its steps from (sections
+    whose unit is the agreed unit, walks whose terminus is that unit), each arm's path once; the words are the units of their paths,
+    outer end to centre, walk after walk (section order, then arm order), a word once at its first occurrence.  Provenance of a word:
+    its seats on the walks (unit, sid, arm, position, occurrence rows: the cross's own, as `seats`), the arms it was walked on, the
+    walk steps that arrive at it (arm, from, to, n, source rows) and the sentences of both."""
+    u = a.unit
+    walks: List[SR.AxisWalk] = []
+    seen = set()
+    for sec in ar.sections:
+        if sec.unit != u:
+            continue
+        for w in sec.walks:
+            if w.terminus is not None and w.terminus[0] == u and (w.arm, w.path) not in seen:
+                seen.add((w.arm, w.path))
+                walks.append(w)
+    seat_of = {x.key: x for x in wc.seats}
+    if not walks:                                              # no walk (section None): the unit alone, at its seats
+        sd = [x.doc() for x in a.seats]
+        sids = sorted({x.sid for x in a.seats})
+        return PathRead(u, (u,), (), ({"word": u, "basis": "seat", "arms": sorted({x.arm for x in a.seats}), "seats": sd,
+                                       "steps_in": [], "source_sids": sids},), tuple(sids))
+    words: Dict[str, None] = {}
+    for w in walks:
+        for key in w.path:
+            words.setdefault(key[0])
+    prov = []
+    allsids = set()
+    for word in words:
+        keys, arms, steps = {}, set(), {}
+        for w in walks:
+            if any(k[0] == word for k in w.path):
+                arms.add(w.arm)
+            for k in w.path:
+                if k[0] == word:
+                    keys.setdefault(k)
+            for st in w.steps:
+                if st.to[0] == word:
+                    steps.setdefault((st.arm, st.frm, st.to), st)
+        sids = {k[1] for k in keys}
+        for st in steps.values():
+            for row in st.sources:
+                sids.update(_row_sids(st.arm[1], tuple(row)))
+        allsids |= sids
+        prov.append({"word": word, "basis": "walk", "arms": sorted(arms), "seats": [seat_of[k].doc() for k in keys],
+                     "steps_in": [steps[k].doc() for k in steps], "source_sids": sorted(sids)})
+    return PathRead(u, tuple(words), tuple(walks), tuple(prov), tuple(sorted(allsids)))
 
 
 @dataclass(frozen=True)
@@ -502,15 +599,17 @@ def choose_members(w: WindowRec, members: str, strict: str) -> Tuple[List[int], 
 
 def read_window(index: WindowIndex, w: WindowRec, it: Intake, *, members: str = "all", agreement: str = "three",
                 hold: str = "seats", standins: str = "off", gate: bool = True, strict: str = "abstain",
-                axes: Optional[Sequence[str]] = None) -> WindowRead:
+                axes: Optional[Sequence[str]] = None, answer_shape: str = "unit") -> WindowRead:
     """slide_ratios.read_axes on the members of the window's class (`choose_members`); per axis, one entry per distinct agreed unit
     (arrangements = the members that agree on it, the L-180 pattern; members of both growths, centre in N and centre in N+1, are read
     and an answer that both give is ONE entry, a different answer another: `centre_sentences` says which), never merged across axes.
     A member's agreement is admitted only if (1) the member holds a question unit (the window-level N-03 gate, L-646: this is what
     makes the exact skip exact), (2) the answer is grounded (L-647), (3) the axis is strictly stable for it (L-648).  What is not
-    admitted is counted under its kind in the axis' typed abstention; members not read as unstable are counted there too."""
-    if members not in MEMBERS or strict not in STRICT_POLICIES:
-        raise ValueError("members: %s; strict: %s" % (MEMBERS, STRICT_POLICIES))
+    admitted is counted under its kind in the axis' typed abstention; members not read as unstable are counted there too.
+    answer_shape (L-680): "unit" = the entry's `words` is the end unit of the section walk (I-11); "path" = the units of the walked
+    section path on that axis (`path_read`); WHETHER an axis answers is the agreement's, unchanged, and so are the admission rules."""
+    if members not in MEMBERS or strict not in STRICT_POLICIES or answer_shape not in ANSWER_SHAPES:
+        raise ValueError("members: %s; strict: %s; answer_shape: %s" % (MEMBERS, STRICT_POLICIES, ANSWER_SHAPES))
     t0 = time.monotonic_ns()
     rec = w.doc
     sel, skipped = choose_members(w, members, strict)
@@ -540,6 +639,7 @@ def read_window(index: WindowIndex, w: WindowRec, it: Intake, *, members: str = 
     tally_out = []
     for ax in axes:
         by_unit: Dict[str, List[int]] = {}                 # unit -> positions in `sel` of the members that agree on it
+        pr: Dict[int, PathRead] = {}                       # per member position: the path it walked to the agreed unit
         kinds: Dict[str, int] = {UNSTABLE: skipped} if skipped else {}
         for k, r in enumerate(reads):
             a = r.answer(ax)
@@ -554,19 +654,32 @@ def read_window(index: WindowIndex, w: WindowRec, it: Intake, *, members: str = 
             elif strict == "abstain" and not w.stable_member(sel[k], ax):
                 kinds[UNSTABLE] = kinds.get(UNSTABLE, 0) + 1
             else:
+                pr[k] = path_read(reads[k].axis(ax), a, wcs[k])
                 by_unit.setdefault(a.unit, []).append(k)
         for u in sorted(by_unit):
             ks = by_unit[u]
             k0 = ks[0]
             a = reads[k0].answer(ax)
-            sids = sorted({s for k in ks for s in _sids_of(reads[k].answer(ax))})
+            p0 = pr[k0]
+            sids = {s for k in ks for s in _sids_of(reads[k].answer(ax))}
+            if answer_shape == "path":
+                sids.update(p0.walk_sids)                   # the candidate shows the path words: it cites their sentences too (L-682)
+            sids = sorted(sids)
+            shown = list(p0.words) if answer_shape == "path" else [u]
+            shown_prov = list(p0.provenance) if answer_shape == "path" else [next(x for x in p0.provenance if x["word"] == u)]
+            variants: Dict[Tuple[str, ...], int] = {}        # the paths the agreeing members walked to the unit, in order of first member
+            for k in ks:
+                variants[pr[k].words] = variants.get(pr[k].words, 0) + 1
             path = sorted({st.frm[0] for st in a.walk_steps} | {st.to[0] for st in a.walk_steps} | {t.other[0] for t in a.edges} | {u})
             sides: Dict[str, int] = {}
             for k in ks:
                 sd = w.centre_side(sel[k])
                 sides[sd] = sides.get(sd, 0) + 1
             entries.append({
-                "tier": index.tier, "structure": "slide", "axis": ax, "label": "slide:" + ax, "words": [u],
+                "tier": index.tier, "structure": "slide", "axis": ax, "label": "slide:" + ax, "words": shown,
+                "unit": u, "word_provenance": shown_prov,
+                "path_variants": [{"words": list(wv), "arrangements": variants[wv]} for wv in variants],
+                "walks": [{"arm": w.arm, "stop": w.stop, "path": [list(x) for x in w.path]} for w in p0.walks],
                 "arrangements": len(ks), "centres": sorted({c for c in (_centre(wcs[k]) for k in ks) if c is not None}),
                 "stability": None, "source_sids": sids,
                 "window": {"n": w.n, "title": w.window.title, "sids": list(w.window.sids), "idx": list(w.window.idx),
@@ -584,7 +697,7 @@ def read_window(index: WindowIndex, w: WindowRec, it: Intake, *, members: str = 
             kd = {k_: kinds[k_] for k_ in sorted(kinds)}
             abst.append({"window": w.n, "axis": ax, "label": "slide:" + ax, "kind": next(iter(kd)) if len(kd) == 1 else MIXED,
                          "kinds": kd, "members": len(sel) + skipped})     # read + not read as unstable (= the class under "all")
-        tally_out.append((ax, tuple(sorted([("answer:" + u, len(by_unit[u])) for u in by_unit] + list(kinds.items())))))
+        tally_out.append((ax, tuple(sorted([("answer:" + u_, len(by_unit[u_])) for u_ in by_unit] + list(kinds.items())))))
     return WindowRead(w.n, len(sel), w.class_size, tuple(entries), tuple(abst), tuple(tally_out), checks, tr_ok,
                       (time.monotonic_ns() - t0) // 1000000)
 
@@ -632,7 +745,7 @@ class SlideAnswer:
     # ---- reference helpers ----
     def entry_keys(self) -> Tuple[tuple, ...]:
         """The entries as a SET (window, axis, unit, arrangements, centres): what the order of reading must not change."""
-        return tuple(sorted((e["window"]["n"], e["axis"], e["words"][0], e["arrangements"], tuple(e["centres"]),
+        return tuple(sorted((e["window"]["n"], e["axis"], e["unit"], tuple(e["words"]), e["arrangements"], tuple(e["centres"]),
                              SL.canonical(e["ratios"]), e["stable_strict"]) for e in self.entries))
 
     @property
@@ -676,9 +789,11 @@ class SlideAnswer:
         return {"format": FORMAT, "question": self.question, "units_cut": list(it.all_units), "units": list(it.units),
                 "first_layer": list(it.ctx.qcross.units), "grammar": it.reading.to_obj(), "grammar_form": it.form_obj(),
                 "config": dict(self.config), "spec": dict(self.spec),
-                "rule": ("windows that hold a question unit are read in grammar order (kind = the slot, then the ladder weight, then the "
-                         "number of question units held); every member of a window's class is read; each agreeing axis gives its own "
-                         "labelled entry, never merged across axes or windows; what is not admitted is a typed abstention"),
+                "rule": ("windows that hold a question unit are read in the read order of the config (qcount_first: more question units "
+                         "held first, the grammar order [kind = the slot, then the ladder weight] only inside a tie; grammar_first: the "
+                         "grammar order, then the number held); every member of a window's class is read; each agreeing axis gives its "
+                         "own labelled entry (words: the end unit of the walk, or under answer_shape path the units of the walked "
+                         "path), never merged across axes or windows; what is not admitted is a typed abstention"),
                 "plan": {"read": self.plan.read_obj(), "blocks": [b.to_obj() for b in self.plan.blocks],
                          "read_windows": list(self.plan.read), "unread_windows": list(self.plan.unread)},
                 "windows": reads, "abstentions": list(self.abstentions)}
@@ -691,18 +806,18 @@ class SlideAnswer:
 
 
 def window_index_for(index, *, cache_dir: Optional[str] = None, workers: int = 1, place_kw: Optional[Mapping] = None,
-                     padding: str = "one", level: str = "mid") -> WindowIndex:
+                     padding: str = "one", level: str = "mid", z_deep: str = "slide") -> WindowIndex:
     """The WindowIndex of an ask.Index (kept on it): loaded from the index's cache directory when its window file is there, else placed
     in this process (slow: about 4 minutes of one core for fulllead; build it once with WindowIndex.from_jsonl(..., workers=N))."""
     if isinstance(index, WindowIndex):
         return index
     level = getattr(index, "level", level)                # the budget level of the flat index is the windows' too (cli --level)
-    key = (padding, level, json.dumps(dict(place_kw or {}), sort_keys=True))
+    key = (padding, level, json.dumps(dict(place_kw or {}), sort_keys=True), z_deep)
     store = index.__dict__.setdefault("_slide_windows", {})
     wi = store.get(key)
     if wi is None:
         wi = store[key] = WindowIndex.from_space(index.space, cache_dir or getattr(index, "cache_dir", None), padding=padding,
-                                                 level=level, place_kw=place_kw, workers=workers)
+                                                 level=level, place_kw=place_kw, workers=workers, z_deep=z_deep)
     return wi
 
 
@@ -710,23 +825,37 @@ def ask_slide(index, question: str, *, effort: Optional[str] = None, nodes: Opti
               windows: Optional[WindowIndex] = None, agreement: str = "three", members: str = "all", skip: str = "exact",
               hold: str = "seats", standins: str = "off", within: str = "qcount", strict: str = "abstain", gate: bool = True,
               shuffle: Optional[int] = None, cache_dir: Optional[str] = None, workers: int = 1,
-              place_kw: Optional[Mapping] = None) -> SlideAnswer:
+              place_kw: Optional[Mapping] = None, answer_shape: str = "unit", read_order: str = "qcount_first",
+              z_deep: Optional[str] = None) -> SlideAnswer:
     """`structure="slide"` (S1: tier RUN).  effort / nodes: the amount of inference as ask.resolve_effort (fast 4 / standard 10 / full
     unbounded windows; nodes N = N windows; neither = the whole read).  agreement: slide_ratios' rule ("three" | "two_if_single_edge").
     members: "all" (every member of the class) | "representative".  skip: "exact" (only the windows that hold a question unit are read)
     | "none" (every window is read; the admission gate drops what exact skip would not have read: the test of L-646).  The other
-    switches are named in the module header.  Nothing is selected between axes, windows or members."""
+    switches are named in the module header.  Nothing is selected between axes, windows or members.
+    G3-e2: answer_shape "unit" (default: the entry's words are the end unit of the walk) | "path" (the units of the walked section path,
+    L-680); read_order "qcount_first" (default: windows holding more question units first, the grammar order only inside a tie) |
+    "grammar_first" (L-645's order), L-684; both are read-time.  z_deep "slide" | "order" (G3-c4) is a PLACEMENT switch (slide spec, hence
+    the cache key, L-686): None = the rule of the window index given (else "slide"); a window index made under the other rule is refused."""
     if skip not in SKIPS or members not in MEMBERS or strict not in STRICT_POLICIES:
         raise ValueError("skip: %s; members: %s; strict: %s" % (SKIPS, MEMBERS, STRICT_POLICIES))
+    if answer_shape not in ANSWER_SHAPES or read_order not in READ_ORDERS:
+        raise ValueError("answer_shape: %s; read_order: %s" % (ANSWER_SHAPES, READ_ORDERS))
+    if z_deep is not None and z_deep not in Z_DEEPS:
+        raise ValueError("z_deep must be one of %r" % (Z_DEEPS,))
     if agreement not in SR.AGREEMENTS:
         raise ValueError("agreement must be one of %r" % (SR.AGREEMENTS,))
     t0 = time.monotonic_ns()
-    wi = windows if windows is not None else window_index_for(index, cache_dir=cache_dir, workers=workers, place_kw=place_kw)
+    wi = windows if windows is not None else window_index_for(index, cache_dir=cache_dir, workers=workers, place_kw=place_kw,
+                                                              z_deep=z_deep or "slide")
+    if z_deep is not None and wi.z_deep != z_deep:
+        raise ValueError("the window index was placed with z_deep %r, not %r (a different slide spec: build another index)"
+                         % (wi.z_deep, z_deep))
     name, cap, _lv = A.resolve_effort(effort, nodes)
     it = intake(wi, question)
-    plan = plan_windows(wi, it, hold=hold, standins=standins, within=within, cap=cap, shuffle=shuffle)
+    plan = plan_windows(wi, it, hold=hold, standins=standins, within=within, cap=cap, shuffle=shuffle, read_order=read_order)
     ax = axis_order(it.slot, wi.foundation)
-    kw = dict(members=members, agreement=agreement, hold=hold, standins=standins, gate=gate, strict=strict, axes=ax)
+    kw = dict(members=members, agreement=agreement, hold=hold, standins=standins, gate=gate, strict=strict, axes=ax,
+              answer_shape=answer_shape)
     reads = [read_window(wi, wi.by_n[n], it, **kw) for n in plan.read]
     if skip == "none":
         seen = {n for b in plan.blocks for n in b.windows}
@@ -736,7 +865,8 @@ def ask_slide(index, question: str, *, effort: Optional[str] = None, nodes: Opti
     abst = tuple(a for r in reads if r.window in planned for a in r.abstentions)
     cited = sorted({s for e in entries for s in e["source_sids"]})
     cfg = {"agreement": agreement, "members": members, "skip": skip, "hold": hold, "standins": standins, "within": within,
-           "strict": strict, "gate": gate, "z_self_edges": True, "tier": TIER, "effort": name, "node_budget": cap}
+           "strict": strict, "gate": gate, "z_self_edges": True, "tier": TIER, "effort": name, "node_budget": cap,
+           "answer_shape": answer_shape, "read_order": read_order, "z_deep": wi.z_deep}
     spec = {"corpus_sha256": wi.space.sha256(), "slide_spec_sha256": wi.slide.spec.sha256(), "place_spec_sha256": wi.spec.sha256(),
             "grammar_foundation_sha256": gr.foundation_sha()}
     return SlideAnswer(question, it, plan, tuple(reads), entries, abst, verdict_of(len(entries), plan, abst), cfg, spec,
