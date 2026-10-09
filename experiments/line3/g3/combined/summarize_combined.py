@@ -64,7 +64,7 @@ def code_sha():
 # ---------------------------------------------------------------------------------------------------------------------
 def row_from_sources(rec_meta, srcs, rule):
     q = rec_meta["question"]
-    c = CB.combine(q, srcs) if rule == "verdict" else None
+    c = CB.combine(q, srcs, merge="word_set") if rule == "verdict" else None      # G3-g2: the G3-g tables are the merged form
     if c is not None:
         ents = [(e.words, set(e.origins)) for e in c.entries]
         verdict, before = c.verdict, c.listed_before_merge

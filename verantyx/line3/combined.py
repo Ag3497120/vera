@@ -23,6 +23,11 @@ What this module is.  A pure COMBINER over finished source results plus a thin d
     UNKNOWN of the first source that reports one, in the order flat, layers, window/plain, window/window-evidence (reporting precedence, selects nothing).
   * `ask_combined` runs the sources (ask.ask, matryoshka.ask_layered, slide_flat.ask_flat once or twice) and combines them; ask.ask(structure="combined")
     and `vera line3 ask --structure combined` call it.  Opt-in: every default of the other structures is unchanged.
+G3-g2 (L-740..): the owner's decisions after G3-g.  `merge="none"` (DEFAULT) lists EVERY candidate as its own entry (I-16: no merging across sources; equal
+word sets from different origins stay separate entries, L-220 / L-700 / L-740) and marks the agreement only (`also_in`: the other origins with the same word
+set; never summed, never used to choose, L-741); the list is shown in per-origin BLOCKS (flat RUN, WORD, CHAR, layers, window/plain, window/window-evidence),
+each block most stable first (exact Fractions; ties in the source's order, L-749), no ranking across blocks (L-743); the per-source typed abstentions are the FIRST thing shown (`header`, L-742); the
+verdict rule is unchanged (L-724, applied to the entries as listed, L-744).  `merge="word_set"` is the G3-g form (one entry per word set), kept for comparison.
 All numbers are int / Fraction (written "n/d"); there is no floating-point number and no random number; the canonical bytes are slide.canonical's.
 """
 from __future__ import annotations
@@ -56,6 +61,7 @@ WINDOW_EVIDENCES: Tuple[str, ...] = ("plain", "window", "both")      # `window_e
 EVIDENCE_LABEL = {"plain": "plain", "window": "window-evidence"}      # slide_flat's evidence -> the origin label (the second is the marked variant)
 WINDOW_PLAIN = "window/plain"
 WINDOW_EVID = "window/window-evidence"
+MERGES: Tuple[str, ...] = ("none", "word_set")                        # G3-g2 (L-740): none = every candidate its own entry (default); word_set = G3-g's one entry per word set
 MARK_WINDOW_EVIDENCE = "window_evidence_variant"                     # L-723: the mark of an entry that the window-evidence variant (L-714) gives
 LAYER_VARIANTS: Tuple[str, ...] = ("A",)                              # T10's measured ssp: variant A, compress, no feedback
 LAYER_GRANULARITY = "compress"
@@ -99,6 +105,16 @@ def origin_key(origin: str) -> tuple:
     if p[0] == WINDOW:
         return (2, 0 if p[1] == "plain" else 1, 0, "")
     raise ValueError("unknown origin %r" % origin)
+
+
+def block_of(origin: str) -> str:
+    """L-743: the block an origin is shown in: flat/<tier> and the two window origins are a block each, ALL the layers origins are ONE block."""
+    f = family(origin)
+    return LAYERS if f == LAYERS else origin
+
+
+def block_key(block: str) -> tuple:
+    return (1, 0) if block == LAYERS else origin_key(block)[:2]
 
 
 # --------------------------------------------------------------------------------------------------------------
@@ -154,6 +170,11 @@ class Entry:
     """One word set, with every candidate that gives it."""
     words: Tuple[str, ...]
     members: Tuple[Cand, ...]                                          # in list order (the sources' own)
+    also_in: Tuple[str, ...] = ()                                      # G3-g2 (L-741), merge "none": the OTHER origins that give this word set (a mark only)
+
+    @property
+    def block(self) -> str:
+        return block_of(self.members[0].origin)
 
     @property
     def origins(self) -> Tuple[str, ...]:
@@ -215,19 +236,59 @@ class Entry:
                 "word_provenance": self.word_provenance()}
 
 
-def merge(sources: Sequence[Source]) -> Tuple[Entry, ...]:
-    """The combined list: the candidates of the sources taken in the fixed source order (flat, layers, window/plain, window/window-evidence), each
-    source in its own order; candidates with the same word set are one entry placed where its first candidate stands (L-720)."""
+def order_blocks(cands: Sequence[Cand]) -> List[Cand]:
+    """L-749: inside each block (the candidates arrive grouped by block) the entries stand in the block's own STABILITY order, most stable first (exact
+    Fractions), the source's order breaking ties (a stable sort: a tie is a group in the source's order, nothing is picked among equal stabilities by
+    position).  A block in which some candidate carries no stability (a replayed record that holds none) is not sorted: it stays in the source's order
+    and `answer.blocks` marks it order="source"."""
+    out: List[Cand] = []
+    i = 0
+    while i < len(cands):
+        j = i
+        b = block_of(cands[i].origin)
+        while j < len(cands) and block_of(cands[j].origin) == b:
+            j += 1
+        blk = list(cands[i:j])
+        if all(c.stability is not None for c in blk):
+            blk.sort(key=lambda c: -c.stability)
+        out.extend(blk)
+        i = j
+    return out
+
+
+def build_entries(sources: Sequence[Source], how: str = "none") -> Tuple[Entry, ...]:
+    """The list.  The candidates of the sources are taken in the fixed source order (flat, layers, window/plain, window/window-evidence), each source in its
+    own order.
+    how = "none" (G3-g2 default, L-740): every candidate is its own entry, in per-origin blocks (flat RUN, WORD, CHAR, layers, window/plain,
+        window/window-evidence), each block ordered by its stability, most stable first, ties in the source's order (L-749); an entry carries `also_in` = the other origins
+        with the same word set (a mark: nothing reads it).  Two windows of one origin with the same word set are two entries (L-700).
+    how = "word_set" (G3-g, L-721): candidates with the same word set are ONE entry placed where its first candidate stands."""
+    if how not in MERGES:
+        raise ValueError("merge: %s" % " | ".join(MERGES))
+    ordered: List[Cand] = []
+    for s in sorted(sources, key=lambda s: _source_rank(s.name)):
+        cs = list(s.cands)
+        if how == "none":
+            cs.sort(key=lambda c: block_key(block_of(c.origin)))      # stable: the source's own order survives inside a block
+        ordered.extend(cs)
+    if how == "none":
+        ordered = order_blocks(ordered)
+        by_key: Dict[tuple, set] = {}
+        for c in ordered:
+            by_key.setdefault(c.key, set()).add(c.origin)
+        return tuple(Entry(c.key, (c,), tuple(sorted(by_key[c.key] - {c.origin}, key=origin_key))) for c in ordered)
     order: List[tuple] = []
     groups: Dict[tuple, List[Cand]] = {}
-    for s in sorted(sources, key=lambda s: _source_rank(s.name)):
-        for c in s.cands:
-            k = c.key
-            if k not in groups:
-                groups[k] = []
-                order.append(k)
-            groups[k].append(c)
+    for c in ordered:
+        k = c.key
+        if k not in groups:
+            groups[k] = []
+            order.append(k)
+        groups[k].append(c)
     return tuple(Entry(k, tuple(groups[k])) for k in order)
+
+
+merge = build_entries                                                  # the name G3-g used (its second argument is new)
 
 
 def verdict_of(entries: Sequence[Entry], sources: Sequence[Source]) -> str:
@@ -253,6 +314,7 @@ class CombinedAnswer:
     sentences: Mapping[int, Tuple[str, str]]          # sid -> (text, source) of every sentence the list cites
     effort: Optional[str] = None
     ms: int = 0
+    merge: str = "none"                               # G3-g2 (L-740)
 
     @property
     def listed(self) -> int:
@@ -278,6 +340,49 @@ class CombinedAnswer:
                 out[s.name] = {k: c[k] for k in sorted(c)}
         return out
 
+    def header(self) -> List[dict]:
+        """L-742: the per-source typed abstentions, shown FIRST.  One row per flat tier read, the layers, and each window variant read, in the fixed source
+        order: {source, listed, kind, kinds}.  `listed` = the candidates of that source; `kind` = None when it listed something, else its typed abstention
+        (the tier's / the source's verdict); `kinds` = {kind: n} over the typed abstentions of its parts (flat: the tier's; layers: runs without an entry;
+        windows: windows without an entry), also where the source listed something.  Derived from the sources only; nothing is selected by it."""
+        def counts(abst: Sequence[Mapping]) -> Dict[str, int]:
+            c: Dict[str, int] = {}
+            for a in abst:
+                c[a["kind"]] = c.get(a["kind"], 0) + 1
+            return {k: c[k] for k in sorted(c)}
+        rows: List[dict] = []
+        for s in self.sources:
+            if s.name == FLAT:
+                tiers = sorted({c.origin.split("/")[1] for c in s.cands} | {a["tier"] for a in s.abstentions if "tier" in a}, key=TIERS.index)
+                if not tiers:
+                    rows.append({"source": FLAT, "listed": 0, "kind": s.verdict, "kinds": counts(s.abstentions)})
+                for t in tiers:
+                    o = flat_origin(t)
+                    n = sum(1 for c in s.cands if c.origin == o)
+                    ab = [a for a in s.abstentions if a.get("tier") == t]
+                    rows.append({"source": o, "listed": n, "kind": None if n else (ab[0]["kind"] if ab else s.verdict), "kinds": counts(ab)})
+            else:
+                n = len(s.cands)
+                rows.append({"source": s.name, "listed": n, "kind": None if n else s.verdict, "kinds": counts(s.abstentions)})
+        return rows
+
+    def blocks(self) -> List[dict]:
+        """L-743: the blocks of the list in the order shown: {block, listed, first, order} (`first` = the index of its first entry; an entry is in the
+        block of its first member).  `order` (L-749) = "stability" (merge "none" and every entry of the block carries a stability: the block is sorted by it,
+        most stable first, ties in the source's order) or "source" (the block stands in its source's order: merge "word_set", or a block whose candidates
+        hold no stability, e.g. layers replayed from a record)."""
+        out: List[dict] = []
+        for i, e in enumerate(self.entries):
+            if out and out[-1]["block"] == e.block:
+                out[-1]["listed"] += 1
+                out[-1]["_st"] = out[-1]["_st"] and e.members[0].stability is not None
+            else:
+                out.append({"block": e.block, "listed": 1, "first": i, "_st": e.members[0].stability is not None})
+        for b in out:
+            b["order"] = "stability" if self.merge == "none" and b.pop("_st") else "source"
+            b.pop("_st", None)
+        return out
+
     @property
     def partial(self) -> bool:
         return any(bool(s.read.get("partial")) for s in self.sources)
@@ -291,9 +396,14 @@ class CombinedAnswer:
 
     def answer_obj(self) -> dict:
         ents = [e.to_obj() for e in self.entries]
+        if self.merge == "none":                                                 # G3-g2: the block and the agreement mark of each entry
+            for d, e in zip(ents, self.entries):
+                d["block"] = e.block
+                d["also_in"] = list(e.also_in)
         one = self.verdict == ANSWER
         sids = sorted({s for e in self.entries for s in e.source_sids})
-        return {"verdict": self.verdict, "structure": "combined", "listed": len(ents), "listed_before_merge": self.listed_before_merge,
+        return {"verdict": self.verdict, "structure": "combined", "merge": self.merge, "header": self.header(), "blocks": self.blocks(),
+                "listed": len(ents), "listed_before_merge": self.listed_before_merge,
                 "per_source_listed": self.per_source_listed(),
                 "window_only_single": len(self.entries) == 1 and self.entries[0].window_only,
                 "answer": ({"origins": ents[0]["origins"], "path_words": ents[0]["words"], "source_sids": ents[0]["source_sids"],
@@ -303,22 +413,36 @@ class CombinedAnswer:
                 "partial": self.partial, "entries": ents, "abstentions": self.abstentions(), "abstention_counts": self.abstention_counts(),
                 "cited": [{"sid": s, "text": self.sentences[s][0], "source": self.sentences[s][1]} for s in sids if s in self.sentences]}
 
-    def thought_obj(self) -> dict:
-        return {"format": FORMAT, "question": self.question, "config": dict(self.config),
-                "rule": ("one list of the candidates of the flat cross (T10), the layers (stable-seats-path) and the sliding windows read flat, every one "
+    def rule_text(self) -> str:
+        if self.merge == "none":
+            return ("one list of the candidates of the flat cross (T10), the layers (stable-seats-path) and the sliding windows read flat, every one "
+                    "labelled by its origin and shown in per-origin blocks (flat RUN, WORD, CHAR, layers, window/plain, window/window-evidence), each block ordered by "
+                    "its stability (most stable first, ties in the source's order; a block whose candidates carry no stability stays in the source's order); candidates are NEVER merged across sources: equal word sets from different origins stay separate entries and "
+                    "an agreement is shown as a mark only (also_in), never summed or used to choose; nothing is ranked across blocks or shortened; the windows' two "
+                    "evidence variants are both listed, the window-evidence one marked; the per-source typed abstentions come first (header); an entry "
+                    "only windows give is never a single ANSWER (a list of one is a CHOICE)")
+        return ("one list of the candidates of the flat cross (T10), the layers (stable-seats-path) and the sliding windows read flat, every one "
                          "labelled by its origin; candidates with the same word set are one entry with all its origins, never merged across different "
                          "word sets; nothing is summed, ranked or shortened; the windows' two evidence variants are both listed, the window-evidence one "
                          "marked; an entry only windows give is never a single ANSWER (a list of one is a CHOICE); each source keeps its own typed "
-                         "abstentions"),
+                         "abstentions")
+
+    def thought_obj(self) -> dict:
+        return {"format": FORMAT, "question": self.question, "config": dict(self.config), "merge": self.merge,
+                "rule": self.rule_text(),
                 "sources": {s.name: {"verdict": s.verdict, "listed": len(s.cands), "read": dict(s.read), "trace": dict(s.trace),
                                      "abstentions": list(s.abstentions), "thought": dict(s.thought)} for s in self.sources},
                 "agreement": self.agreement()}
 
     def agreement(self) -> dict:
-        """REPORT ONLY: the families that give each entry (nothing is selected, counted or summed from it)."""
-        fam: Dict[str, int] = {}
+        """REPORT ONLY: the families that give each word set (nothing is selected, counted or summed from it).  Counted over distinct word sets, so the
+        numbers are the same in both merge modes (every candidate is in some entry in both, so `also_in` is not read here, L-741)."""
+        by_key: Dict[tuple, set] = {}
         for e in self.entries:
-            k = "+".join(e.families)
+            by_key.setdefault(e.words, set()).update(e.families)
+        fam: Dict[str, int] = {}
+        for fs in by_key.values():
+            k = "+".join(sorted(fs))
             fam[k] = fam.get(k, 0) + 1
         return {"entries_by_families": {k: fam[k] for k in sorted(fam)}, "used_for_selection": False}
 
@@ -330,8 +454,9 @@ class CombinedAnswer:
 
 
 def combine(question: str, sources: Sequence[Source], sentences: Optional[Mapping[int, Tuple[str, str]]] = None, *,
-            config: Optional[Mapping[str, object]] = None, effort: Optional[str] = None, ms: int = 0) -> CombinedAnswer:
-    """The combined list of finished source results (testable without a search; the experiments replay recorded results through it)."""
+            config: Optional[Mapping[str, object]] = None, effort: Optional[str] = None, ms: int = 0, merge: str = "none") -> CombinedAnswer:
+    """The combined list of finished source results (testable without a search; the experiments replay recorded results through it).  `merge` "none"
+    (default, G3-g2) or "word_set" (G3-g): see build_entries."""
     names = [s.name for s in sources]
     if len(set(names)) != len(names):
         raise ValueError("a source is given twice: %s" % names)
@@ -340,10 +465,10 @@ def combine(question: str, sources: Sequence[Source], sentences: Optional[Mappin
         for c in s.cands:
             if family(c.origin) != family(s.name) or (family(s.name) == WINDOW and c.origin != s.name):
                 raise ValueError("candidate origin %r does not belong to source %r" % (c.origin, s.name))
-    ents = merge(srcs)
+    ents = build_entries(srcs, merge)
     cited = {sid for e in ents for sid in e.source_sids}
     sent = {sid: sentences[sid] for sid in sorted(cited) if sentences is not None and sid in sentences}
-    return CombinedAnswer(question, srcs, ents, verdict_of(ents, srcs), dict(config or {}), sent, effort, ms)
+    return CombinedAnswer(question, srcs, ents, verdict_of(ents, srcs), dict(config or {}), sent, effort, ms, merge)
 
 
 # --------------------------------------------------------------------------------------------------------------
@@ -450,12 +575,15 @@ def ask_combined(index, question: str, tiers: Optional[Sequence[str]] = None, bu
                  view: str = "all", effort: Optional[str] = None, nodes: Optional[int] = None, window_evidence: str = "both",
                  windows: Optional[SQ.WindowIndex] = None, slide_members: str = SLIDE_MEMBERS, read_order: str = "qcount_first",
                  layer_variants: Sequence[str] = LAYER_VARIANTS, layer_granularity: str = LAYER_GRANULARITY, z_deep: Optional[str] = None,
-                 cache_dir: Optional[str] = None, workers: int = 1, place_kw: Optional[Mapping] = None, trace: bool = True) -> CombinedAnswer:
+                 cache_dir: Optional[str] = None, workers: int = 1, place_kw: Optional[Mapping] = None, trace: bool = True, merge: str = "none") -> CombinedAnswer:
     """`structure="combined"` (G3-g, opt-in): the flat cross (ask.ask, `tiers` and `budget` as there), the layers (stable-seats-path, variants
     `layer_variants`, T10's measured configuration) on that same layer 0, and the sliding windows read flat (RUN; evidence plain, window or both),
     ONE list.  `effort` / `nodes` are each source's own amount (crosses per tier for the flat cross, the layers' bounds, WINDOWS for the windows);
     neither = the whole read.  Each source keeps its own search budget (the flat cross T7b's 64 / 8, the windows cycle's 512 / 64, L-705).
-    `windows` = a slide_query.WindowIndex made beforehand, else the index's (built / loaded as ask_slide does)."""
+    `windows` = a slide_query.WindowIndex made beforehand, else the index's (built / loaded as ask_slide does).
+    `merge` "none" (default, G3-g2: every candidate its own entry, in per-origin blocks, `also_in` marks) | "word_set" (G3-g: one entry per word set)."""
+    if merge not in MERGES:
+        raise ValueError("merge: %s" % " | ".join(MERGES))
     if view != "all":
         raise ValueError("structure='combined' lists every tier's candidates (view 'all'); the I-16 stable view is a different list")
     if window_evidence not in WINDOW_EVIDENCES:
@@ -481,7 +609,7 @@ def ask_combined(index, question: str, tiers: Optional[Sequence[str]] = None, bu
     if c0.placement is not None:
         cfg["flat"]["placement"] = dict(c0.placement)
     sent = _sentence_map(index, srcs)
-    return combine(question, srcs, sent, config=cfg, effort=name, ms=(time.monotonic_ns() - t0) // 1000000)
+    return combine(question, srcs, sent, config=cfg, effort=name, ms=(time.monotonic_ns() - t0) // 1000000, merge=merge)
 
 
 def _sentence_map(index, srcs: Sequence[Source]) -> Dict[int, Tuple[str, str]]:
@@ -495,27 +623,47 @@ def _sentence_map(index, srcs: Sequence[Source]) -> Dict[int, Tuple[str, str]]:
 # (6) text form for the command line
 # --------------------------------------------------------------------------------------------------------------
 def format_text(c: CombinedAnswer, show_thought: bool = False) -> str:
+    """The text form (G3-g2): the per-source typed abstentions FIRST (L-742), then the verdict and the list in per-origin blocks (L-743); an entry's
+    agreement with other origins is a mark (`ほかの出所にも同じ語の集合`), not a merge."""
     a = c.answer_obj()
-    L: List[str] = []
+    L: List[str] = ["出所ごとの状況（候補の件数、または答えなしの種類）:"]
+    for h in a["header"]:
+        extra = ""
+        if h["kinds"] and h["listed"]:
+            extra = "（ほかに答えなしの部分（走り・窓）: %s）" % ", ".join("%s=%d" % kv for kv in h["kinds"].items())
+        elif h["kinds"] and len(h["kinds"]) > 1:
+            extra = "（内訳: %s）" % ", ".join("%s=%d" % kv for kv in h["kinds"].items())
+        L.append("  %s: %s%s" % (h["source"], "候補 %d 件" % h["listed"] if h["listed"] else "答えなし %s" % h["kind"], extra))
     if a["verdict"] == ANSWER:
         L.append("答え (%s): %s" % (", ".join(a["answer"]["origins"]), " / ".join(a["answer"]["path_words"])))
         L.append("  参考の中心: %s" % ", ".join(a["answer"]["reference_centres"]))
     elif a["verdict"] == CHOICE:
-        L.append("候補 %d 件（平らな十字・層・窓の候補を出所の印つきで 1 つの一覧に並べています。足したり順位をつけたりしていません。選んでください）:" % a["listed"])
+        if a["merge"] == "none":
+            L.append("候補 %d 件（平らな十字・層・窓の候補を出所ごとの区切りで並べています。各区切りは安定の高い順（同じ安定はその出所が出した順）です。安定の記録がない区切りは出所の順です。出所をまたいで束ねたり、足したり、順位をつけたりしていません。選んでください）:" % a["listed"])
+        else:
+            L.append("候補 %d 件（平らな十字・層・窓の候補を出所の印つきで 1 つの一覧に並べています。同じ語の集合は 1 件にまとめています。足したり順位をつけたりしていません。選んでください）:" % a["listed"])
         if a["window_only_single"]:
             L.append("  窓だけが出した候補が 1 件です。窓の候補は 1 件でも「答え」にしません。")
+        bl = {b["first"]: b for b in a["blocks"]}
         for i, e in enumerate(a["entries"]):
-            L.append("  [%d] (%s)%s %s  中心: %s" % (i, ", ".join(e["origins"]), "【窓の証拠の変種】" if e["marks"] else "",
-                                                   " / ".join(e["words"]), ", ".join(e["centres"])))
+            if i in bl:
+                L.append(" == %s (%d 件) ==" % (bl[i]["block"], bl[i]["listed"]))
+            if a["merge"] == "none":
+                head = "  [%d]%s" % (i, "【窓の証拠の変種】" if e["marks"] else "")
+                tail = "  中心: %s%s" % (", ".join(e["centres"]), "  ほかの出所にも同じ語の集合: %s" % ", ".join(e["also_in"]) if e["also_in"] else "")
+                L.append("%s %s%s" % (head, " / ".join(e["words"]), tail))
+            else:
+                L.append("  [%d] (%s)%s %s  中心: %s" % (i, ", ".join(e["origins"]), "【窓の証拠の変種】" if e["marks"] else "",
+                                                       " / ".join(e["words"]), ", ".join(e["centres"])))
     else:
         L.append("答えなし: %s" % a["verdict"])
-    L.append("出所ごとの件数 (束ねる前 %d 件 -> 一覧 %d 件): %s" % (a["listed_before_merge"], a["listed"],
-                                                         " ".join("%s=%d" % (k, v) for k, v in a["per_source_listed"].items())))
+    if a["merge"] == "none":
+        L.append("出所ごとの件数 (一覧 %d 件、束ねていません): %s" % (a["listed"], " ".join("%s=%d" % (k, v) for k, v in a["per_source_listed"].items())))
+    else:
+        L.append("出所ごとの件数 (束ねる前 %d 件 -> 一覧 %d 件): %s" % (a["listed_before_merge"], a["listed"],
+                                                             " ".join("%s=%d" % (k, v) for k, v in a["per_source_listed"].items())))
     for s in a["sources"]:
         L.append("  %s: 判定 %s / 候補 %d%s" % (s["name"], s["verdict"], s["listed"], " 【部分読み】" if s["read"].get("partial") else ""))
-    if a["abstention_counts"]:
-        L.append("答えなし（種類別）: %s" % "; ".join("%s: %s" % (k, ", ".join("%s=%d" % (kk, n) for kk, n in v.items()))
-                                                 for k, v in a["abstention_counts"].items()))
     for s in a["cited"]:
         L.append("  根拠 #%d: %s%s" % (s["sid"], s["text"], " [%s]" % s["source"] if s["source"] else ""))
     if show_thought:

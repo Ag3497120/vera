@@ -2408,7 +2408,7 @@ def cmd_line3(args) -> int:
                          slide_members=getattr(args, "slide_members", None) or "representative",
                          read_order=getattr(args, "read_order", "qcount_first"), z_deep=getattr(args, "z_deep", "slide"),
                          layer_variants={"both": ("A", "B"), "A": ("A",), "B": ("B",)}[args.query_pass],
-                         layer_granularity=args.layer_granularity)
+                         layer_granularity=args.layer_granularity, merge=getattr(args, "merge", "none"))
         elif structure == "slide":
             # G3-e (opt-in): the question over the sliding windows (verantyx.line3.slide_query); effort / nodes count windows
             res = l3.ask(idx, args.question, effort=effort, nodes=nodes, structure="slide",
@@ -3095,6 +3095,8 @@ def main(argv: Optional[list] = None) -> int:
                    help="ask --structure slide: read every member of a window's class of equal-key arrangements (default) or only the representative (cheaper; the member count is still shown); --structure combined: representative by default (G3-g, L-726)")
     p.add_argument("--window-evidence", dest="window_evidence", choices=["plain", "window", "both"], default="both",
                    help="ask --structure combined (G3-g): the pair count the windows' flat reading takes on every edge. plain = the corpus count (the owner's 'like T10'); window = the window's label-blind sum of the slide counts (L-714, a variant, marked in the list); both (default) = the windows are read twice and both variants' candidates are listed, each with its origin")
+    p.add_argument("--merge", choices=["none", "word_set"], default="none",
+                   help="ask --structure combined (G3-g2): none (default) = every candidate is its own entry, shown in per-origin blocks (flat RUN, WORD, CHAR, layers, window/plain, window/window-evidence), each block in its source's own order; equal word sets from different origins are NOT merged, only marked (also_in); the per-source typed abstentions come first. word_set = the G3-g form (equal word sets are one entry with all its origins), for comparison")
     p.add_argument("--answer-shape", dest="answer_shape", choices=["unit", "path"], default="unit",
                    help="ask --structure slide (G3-e2): what an agreeing axis shows. unit (default) = the end unit of the section walk (one word); path = the units of the walked section path on that axis, outer end to centre, with the provenance of every word. Whether an axis answers is the agreement's in both")
     p.add_argument("--read-order", dest="read_order", choices=["qcount_first", "grammar_first"], default="qcount_first",
