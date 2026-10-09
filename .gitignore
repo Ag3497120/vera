@@ -75,3 +75,6 @@ experiments/line3/t10/logs/
 
 # G2 probe outputs
 experiments/line3/g2/raw/
+experiments/line3/g3/c4/results/*.jsonl
+experiments/line3/g3/s1/results/*.jsonl
+experiments/line3/g3/s1/results/*.meta.json

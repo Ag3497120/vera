@@ -2330,6 +2330,22 @@ def cmd_line3(args) -> int:
     except (OSError, ValueError) as e:
         print(f"line3: {e}", file=sys.stderr)
         return 2
+    structure = getattr(args, "structure", "flat")
+    if args.l3_op == "build" and structure == "slide":
+        # G3-e: the window index (verantyx.line3.slide_query); the flat caches are not touched
+        if not args.cache:
+            print("line3 build: --cache is required", file=sys.stderr)
+            return 2
+        from .line3 import slide_query as l3s
+        try:
+            wi = l3s.WindowIndex.from_space(idx.space, args.cache, workers=args.workers, level=args.level,
+                                            log=lambda m: print(m, file=sys.stderr))
+        except (OSError, ValueError) as e:
+            print(f"line3: {e}", file=sys.stderr)
+            return 2
+        print(json.dumps({"windows": len(wi.windows), "place_spec_sha256": wi.spec.sha256(), "slide_spec_sha256": wi.slide.spec.sha256(),
+                          "corpus_sha256": idx.space.sha256()}, ensure_ascii=False, sort_keys=True))
+        return 0
     if args.l3_op == "build":
         if not args.cache:
             print("line3 build: --cache is required", file=sys.stderr)
@@ -2355,9 +2371,16 @@ def cmd_line3(args) -> int:
         else:
             print("line3 ask: choose the amount of inference: --effort fast|standard|full or --nodes N", file=sys.stderr)
             return 2
-    layered = getattr(args, "layers", "on") == "on"          # L-250: the owner's default is layers ON
+    layered = getattr(args, "layers", "on") == "on" and structure == "flat"      # L-250: the owner's default is layers ON (flat only)
+    if structure == "slide" and (args.choose is not None or args.record or getattr(args, "granularity", None)):
+        print("line3: --choose / --record / --granularity are not built for --structure slide (G3-e, L-654)", file=sys.stderr)
+        return 2
     try:
-        if layered:
+        if structure == "slide":
+            # G3-e (opt-in): the question over the sliding windows (verantyx.line3.slide_query); effort / nodes count windows
+            res = l3.ask(idx, args.question, effort=effort, nodes=nodes, structure="slide",
+                         agreement=getattr(args, "agreement", "three"), members=getattr(args, "slide_members", "all"))
+        elif layered:
             # T8 (verantyx/line3/matryoshka.py): stack when the stability was lost at this question; layer 0 is unchanged
             from .line3 import matryoshka as l3m
             vs = {"both": l3m.VARIANTS, "A": ("A",), "B": ("B",)}[args.query_pass]
@@ -2389,6 +2412,9 @@ def cmd_line3(args) -> int:
         if not args.show_thought:
             obj = {"answer": obj["answer"]}
         print(json.dumps(obj, ensure_ascii=False, sort_keys=True, indent=2))
+    elif structure == "slide":
+        from .line3 import slide_query as l3s
+        print(l3s.format_text(res, args.show_thought))
     elif layered:
         print(l3m.format_layers_text(res, args.show_thought))
     else:
@@ -3023,6 +3049,12 @@ def main(argv: Optional[list] = None) -> int:
                    help="ask: all = every tier's candidates labelled by tier (default); stable = only the most stable tier(s) (I-16)")
     p.add_argument("--granularity", choices=["entry", "all"], default=None,
                    help="ask: F2 (off by default) also show strings assembled from the connections between the tiers RUN/WORD/CHAR (units of the listed entries that touch in the same source sentence); entry = within each entry, all = across the entries of all tiers. The listed candidates are not changed")
+    p.add_argument("--structure", choices=["flat", "slide"], default="flat",
+                   help="G3-e (opt-in): flat (default) = the seed crosses of every tier, everything above; slide = the question over the sliding windows (two neighbouring sentences of one article, axes x / y / z; tier RUN; verantyx/line3/slide_query.py): each agreeing axis of each window read gives its own labelled candidate, never merged; --effort / --nodes count windows; build with `line3 build --structure slide --cache DIR` first (otherwise the windows are placed on the spot, minutes of one core)")
+    p.add_argument("--agreement", choices=["three", "two_if_single_edge"], default="three",
+                   help="ask --structure slide: the agreement rule of an axis (L-615): three = section walk, edge flow and binding all agree; two_if_single_edge = an axis with exactly one evidenced edge is judged on the edge flow and the binding only")
+    p.add_argument("--slide-members", dest="slide_members", choices=["all", "representative"], default="all",
+                   help="ask --structure slide: read every member of a window's class of equal-key arrangements (default) or only the representative (cheaper; the member count is still shown)")
     p.add_argument("--choose", type=int, default=None, help="ask: the index of the candidate you pick; its memory record (with the tier) goes to stderr and --record")
     p.add_argument("--record", default=None, help="ask: append the chosen candidate's memory record to this jsonl (with --choose, or alone for a single answer)")
     p.add_argument("--layers", choices=["off", "on"], default="on",

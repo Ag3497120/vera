@@ -262,6 +262,7 @@ class Index:
         self.group_insert, self.order = check_placement_options(group_insert, order, on_collapse)     # F1b (L-470), F1c (L-506)
         self.on_collapse = on_collapse
         self.space, self.data_sha, self.level = space, data_sha, level
+        self.cache_dir: Optional[str] = None             # G3-e: where from_jsonl read its caches (the window index of structure="slide" uses it)
         self.tiers = parse_tiers(tiers)
         self.facts = {t: cy.TierFacts(space.tiers[t]) for t in self.tiers}
         self.stores = {t: _Store(space.tiers[t], level, (loaded or {}).get(t), self.group_insert, self.order,
@@ -285,7 +286,9 @@ class Index:
                 p = cache_path(cache_dir, sha, t, level, group_insert, order, on_collapse)    # F1b/F1c: the options are in the file name
                 if os.path.exists(p):
                     loaded[t] = load_placements(p, space.tiers[t], t, level, sha, group_insert, order, on_collapse)
-        return cls(space, sha, level, tiers, loaded, group_insert=group_insert, order=order, on_collapse=on_collapse)
+        ix = cls(space, sha, level, tiers, loaded, group_insert=group_insert, order=order, on_collapse=on_collapse)
+        ix.cache_dir = cache_dir
+        return ix
 
     def precompute(self, cache_dir: Optional[str] = None, workers: int = 1, log=None) -> Dict[str, dict]:
         """Build the crosses of every unit of every tier (replacing what was loaded) and, with a cache
@@ -571,13 +574,27 @@ def ask_tier_outcome(index: Index, tier: str, question: str, budget: cy.QueryBud
     return TierOutcome(tier, res, ans, (time.monotonic_ns() - t0) // 1000000, skipped, po)
 
 
+STRUCTURES = ("flat", "slide")                        # G3-e (L-654): the structure the question is asked over; flat = everything above
+
+
 def ask(index: Index, question: str, tiers: Optional[Sequence[str]] = None,
         budget: cy.QueryBudget = DEFAULT_BUDGET, *, view: str = "all", effort: Optional[str] = None,
-        nodes: Optional[int] = None, granularity: Optional[str] = None, **kw) -> Combined:
+        nodes: Optional[int] = None, granularity: Optional[str] = None, structure: str = "flat", **kw) -> Combined:
     """I-25: every requested tier is run (none is skipped because another one answered).  `view`: every tier's
     entries labelled (default) or the I-16 most stable tier only.  `effort` (fast | standard | full) or `nodes`
     (crosses per tier): the amount of inference; neither = the whole read (what T7 did).  A budget that leaves
-    crosses unread marks the answer partial, with counts."""
+    crosses unread marks the answer partial, with counts.
+
+    `structure="slide"` (G3-e, opt-in; default "flat" = this function as it was, byte for byte): the question is asked over the sliding
+    windows of the corpus (verantyx.line3.slide_query, tier RUN) and a slide_query.SlideAnswer is returned (its own entries, labelled by
+    axis and window; `**kw` are slide_query.ask_slide's options).  `effort` / `nodes` then count windows."""
+    if structure not in STRUCTURES:
+        raise ValueError("structure: %s" % " | ".join(STRUCTURES))
+    if structure == "slide":
+        if (tiers is not None and parse_tiers(tiers) != ("RUN",)) or granularity:
+            raise ValueError("structure='slide' reads the RUN tier only and has no granularity option (G3-e, L-654)")
+        from verantyx.line3 import slide_query as SQ
+        return SQ.ask_slide(index, question, effort=effort, nodes=nodes, **kw)
     names = parse_tiers(tiers) if tiers is not None else index.tiers
     for n in names:
         if n not in index.stores:

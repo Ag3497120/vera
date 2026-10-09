@@ -1,0 +1,14 @@
+skip check: 12 questions, agreement two_if_single_edge, members all, 592 windows; slide 3df141b12327 place e2b02c23e287
+I2-001 intra2   entries 3 verdict CHOICE | read 3 of 592 windows | equal True | without the gate +40 entries in 32 windows that hold no question unit (118s)
+I2-009 intra2   entries 2 verdict CHOICE | read 8 of 592 windows | equal True | without the gate +22 entries in 21 windows that hold no question unit (128s)
+I2-017 intra2   entries 1 verdict ANSWER | read 5 of 592 windows | equal True | without the gate +52 entries in 39 windows that hold no question unit (118s)
+I2-025 intra2   entries 3 verdict CHOICE | read 13 of 592 windows | equal True | without the gate +56 entries in 35 windows that hold no question unit (125s)
+I2-033 intra2   entries 4 verdict CHOICE | read 5 of 592 windows | equal True | without the gate +28 entries in 25 windows that hold no question unit (122s)
+I2-041 intra2   entries 9 verdict CHOICE | read 11 of 592 windows | equal True | without the gate +56 entries in 42 windows that hold no question unit (131s)
+I2-050 intra2   entries 4 verdict CHOICE | read 7 of 592 windows | equal True | without the gate +40 entries in 32 windows that hold no question unit (130s)
+UF-008 unans    entries 0 verdict UNKNOWN_NO_EVIDENCE | read 1 of 592 windows | equal True | without the gate +20 entries in 19 windows that hold no question unit (120s)
+UF-016 unans    entries 7 verdict CHOICE | read 7 of 592 windows | equal True | without the gate +37 entries in 27 windows that hold no question unit (120s)
+R2-I004 intra2   entries 7 verdict CHOICE | read 8 of 592 windows | equal True | without the gate +32 entries in 24 windows that hold no question unit (121s)
+R2-I012 intra2   entries 0 verdict UNKNOWN_RATIO_DISAGREEMENT | read 1 of 592 windows | equal True | without the gate +29 entries in 24 windows that hold no question unit (117s)
+R2-I020 intra2   entries 4 verdict CHOICE | read 6 of 592 windows | equal True | without the gate +36 entries in 27 windows that hold no question unit (126s)
+TOTAL {"equal": 12, "extra_entries": 448, "extra_q": 12, "extra_windows": 347, "q": 12, "read_all": 7104, "read_exact": 75}
