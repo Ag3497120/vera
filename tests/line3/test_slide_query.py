@@ -813,7 +813,7 @@ def triple(e):
 def test_shapes_and_orders_are_named_and_refused_when_wrong(wi):
     assert Q.ANSWER_SHAPES == ("unit", "path") and Q.READ_ORDERS == ("qcount_first", "grammar_first")
     r = Q.ask_slide(wi, "東京は何ですか")
-    assert r.config["answer_shape"] == "unit" and r.config["read_order"] == "qcount_first" and r.config["z_deep"] == "slide"
+    assert r.config["answer_shape"] == "unit" and r.config["read_order"] == "qcount_first" and r.config["z_deep"] == "order"       # G3-i (L-770)
     assert r.plan.order == "qcount_first" and r.read_obj()["order"] == "qcount_first"
     with pytest.raises(ValueError, match="answer_shape"):
         Q.ask_slide(wi, "東京は何ですか", answer_shape="all")
@@ -1058,41 +1058,42 @@ def test_the_old_order_gives_the_old_blocks_and_entries_are_the_same_when_everyt
 
 # ---- z_deep through the window index, ask and the command line (L-686, L-687) ----------------------------------------------------
 @pytest.fixture(scope="module")
-def wi_order(space, rows):
-    return Q.WindowIndex.from_space(space, None, rows=rows, level=LEVEL, z_deep="order")
+def wi_slide(space, rows):
+    """G3-i (L-770): the DEFAULT window index (`wi`) places under z_deep "order" now; "slide" is the other rule."""
+    return Q.WindowIndex.from_space(space, None, rows=rows, level=LEVEL, z_deep="slide")
 
 
-def test_z_deep_is_a_placement_switch_of_the_window_index(wi, wi_order, space, rows):
-    assert wi.z_deep == "slide" and wi_order.z_deep == "order" and Q.Z_DEEPS == ("slide", "order", "order_window")
-    assert wi.slide.spec.sha256() != wi_order.slide.spec.sha256() and wi.spec.sha256() != wi_order.spec.sha256()
-    assert wi_order.slide.spec.z_deep == "order" and wi.slide.spec.z_deep == "slide"
-    same = Q.WindowIndex.from_space(space, None, rows=rows, level=LEVEL, z_deep="slide")           # the default spelled out = the default
+def test_z_deep_is_a_placement_switch_of_the_window_index(wi, wi_slide, space, rows):
+    assert wi.z_deep == "order" == SL.DEFAULT_Z_DEEP and wi_slide.z_deep == "slide" and Q.Z_DEEPS == ("slide", "order", "order_window")
+    assert wi.slide.spec.sha256() != wi_slide.slide.spec.sha256() and wi.spec.sha256() != wi_slide.spec.sha256()
+    assert wi_slide.slide.spec.z_deep == "slide" and wi.slide.spec.z_deep == "order"
+    same = Q.WindowIndex.from_space(space, None, rows=rows, level=LEVEL, z_deep="order")           # the default spelled out = the default
     assert same.slide.spec.sha256() == wi.slide.spec.sha256() and [w.doc for w in same.windows] == [w.doc for w in wi.windows]
     with pytest.raises(ValueError, match="z_deep"):
         Q.WindowIndex.from_space(space, None, rows=rows, level=LEVEL, z_deep="deep")
-    for w in wi_order.windows:                                                                   # the placements carry the rule (G3-c4)
-        assert w.doc.get("z_deep", "order") == "order" and w.doc["spec_sha256"] == wi_order.spec.sha256()
+    for w in wi_slide.windows:                                                                   # the placements carry the rule (G3-c4)
+        assert w.doc.get("z_deep", "slide") == "slide" and w.doc["spec_sha256"] == wi_slide.spec.sha256()
 
 
 def test_z_deep_is_in_the_cache_key_and_a_mismatched_cache_is_refused(tmp_path, space, rows):
     d = str(tmp_path)
-    a = Q.WindowIndex.from_space(space, d, rows=rows, level=LEVEL)
-    b = Q.WindowIndex.from_space(space, d, rows=rows, level=LEVEL, z_deep="order")
+    a = Q.WindowIndex.from_space(space, d, rows=rows, level=LEVEL)                       # the default = "order"
+    b = Q.WindowIndex.from_space(space, d, rows=rows, level=LEVEL, z_deep="slide")
     files = sorted(os.listdir(d))
     assert len(files) == 2 and files[0] != files[1]                                               # two files: the rule is in the name
     assert Q.cache_name(space.sha256(), "RUN", b.slide.spec.sha256(), b.spec.sha256()) in files
-    assert a.header.get("z_deep") == "slide" and b.header["z_deep"] == "order"
+    assert a.header.get("z_deep") == "order" and b.header["z_deep"] == "slide"
     # each rule finds its own file (loaded, not placed) ...
     a2 = Q.WindowIndex.from_space(space, d, rows=rows, level=LEVEL, build=False)
-    b2 = Q.WindowIndex.from_space(space, d, rows=rows, level=LEVEL, z_deep="order", build=False)
+    b2 = Q.WindowIndex.from_space(space, d, rows=rows, level=LEVEL, z_deep="slide", build=False)
     assert [w.doc for w in a2.windows] == [w.doc for w in a.windows] and [w.doc for w in b2.windows] == [w.doc for w in b.windows]
     # ... and a directory that holds only the other rule's file has none for this one
     only = tmp_path / "only"
     only.mkdir()
     Q.WindowIndex.from_space(space, str(only), rows=rows, level=LEVEL)
     with pytest.raises(FileNotFoundError):
-        Q.WindowIndex.from_space(space, str(only), rows=rows, level=LEVEL, z_deep="order", build=False)
-    # the "slide" file copied under the "order" name is refused by its header, never read
+        Q.WindowIndex.from_space(space, str(only), rows=rows, level=LEVEL, z_deep="slide", build=False)
+    # the "order" file copied under the "slide" name is refused by its header, never read
     name_o = Q.cache_name(space.sha256(), "RUN", b.slide.spec.sha256(), b.spec.sha256())
     name_s = Q.cache_name(space.sha256(), "RUN", a.slide.spec.sha256(), a.spec.sha256())
     with open(os.path.join(d, name_s), "rb") as f:
@@ -1100,56 +1101,56 @@ def test_z_deep_is_in_the_cache_key_and_a_mismatched_cache_is_refused(tmp_path, 
     with open(os.path.join(d, name_o), "wb") as f:
         pickle.dump(rec, f)
     with pytest.raises(ValueError, match="not for this corpus"):
-        Q.WindowIndex.from_space(space, d, rows=rows, level=LEVEL, z_deep="order", build=False)
+        Q.WindowIndex.from_space(space, d, rows=rows, level=LEVEL, z_deep="slide", build=False)
     # a header that names the other rule is refused even when the shas were made to match
-    liar = dict(b.header, z_deep="slide", windows=[w.doc for w in b.windows])
+    liar = dict(b.header, z_deep="order", windows=[w.doc for w in b.windows])
     with open(os.path.join(d, name_o), "wb") as f:
         pickle.dump(liar, f)
     with pytest.raises(ValueError, match="z_deep"):
-        Q.WindowIndex.from_space(space, d, rows=rows, level=LEVEL, z_deep="order", build=False)
+        Q.WindowIndex.from_space(space, d, rows=rows, level=LEVEL, z_deep="slide", build=False)
 
 
-def test_ask_slide_takes_z_deep_and_refuses_another_rules_index(wi, wi_order):
+def test_ask_slide_takes_z_deep_and_refuses_another_rules_index(wi, wi_slide):
     q = "猫は何を食べますか"
     a = Q.ask_slide(wi, q, agreement="two_if_single_edge")
-    assert a.config["z_deep"] == "slide" and a.spec["slide_spec_sha256"] == wi.slide.spec.sha256()
-    assert Q.ask_slide(wi, q, agreement="two_if_single_edge", z_deep="slide").to_bytes() == a.to_bytes()          # None = the index's; same
-    o = Q.ask_slide(wi_order, q, agreement="two_if_single_edge")
-    assert o.config["z_deep"] == "order" and o.spec["slide_spec_sha256"] == wi_order.slide.spec.sha256() != a.spec["slide_spec_sha256"]
+    assert a.config["z_deep"] == "order" and a.spec["slide_spec_sha256"] == wi.slide.spec.sha256()
+    assert Q.ask_slide(wi, q, agreement="two_if_single_edge", z_deep="order").to_bytes() == a.to_bytes()          # None = the index's; same
+    o = Q.ask_slide(wi_slide, q, agreement="two_if_single_edge")
+    assert o.config["z_deep"] == "slide" and o.spec["slide_spec_sha256"] == wi_slide.slide.spec.sha256() != a.spec["slide_spec_sha256"]
     assert o.spec["place_spec_sha256"] != a.spec["place_spec_sha256"] and o.to_bytes() != a.to_bytes()
-    assert Q.ask_slide(wi_order, q, agreement="two_if_single_edge", z_deep="order").to_bytes() == o.to_bytes()
+    assert Q.ask_slide(wi_slide, q, agreement="two_if_single_edge", z_deep="slide").to_bytes() == o.to_bytes()
     with pytest.raises(ValueError, match="z_deep"):
-        Q.ask_slide(wi, q, z_deep="order")
+        Q.ask_slide(wi, q, z_deep="slide")
     with pytest.raises(ValueError, match="z_deep"):
-        Q.ask_slide(wi_order, q, z_deep="slide")
+        Q.ask_slide(wi_slide, q, z_deep="order")
     with pytest.raises(ValueError, match="z_deep"):
         Q.ask_slide(wi, q, z_deep="deep")
 
 
-def test_the_new_switches_work_on_an_order_index_too(wi_order):
+def test_the_new_switches_work_on_a_slide_rule_index_too(wi_slide):
     for q in QUESTIONS:
         for ag in AGREEMENTS:
-            u, p = both_shapes(wi_order, q, agreement=ag)
+            u, p = both_shapes(wi_slide, q, agreement=ag)
             assert {triple(e) for e in u.entries} == {triple(e) for e in p.entries} and u.abstentions == p.abstentions
             for e in p.entries:
                 assert e["trace"]["ok"] and [x["word"] for x in e["word_provenance"]] == e["words"]
-            a = Q.ask_slide(wi_order, q, agreement=ag)
-            assert a.entry_keys() == Q.ask_slide(wi_order, q, agreement=ag, read_order="grammar_first").entry_keys()
+            a = Q.ask_slide(wi_slide, q, agreement=ag)
+            assert a.entry_keys() == Q.ask_slide(wi_slide, q, agreement=ag, read_order="grammar_first").entry_keys()
 
 
 def test_ask_structure_slide_takes_the_new_switches_and_keeps_one_index_per_rule(tmp_path, data_file):
     idx = A.Index.from_jsonl(data_file, str(tmp_path), "low", ("RUN",))
     Q.WindowIndex.from_space(idx.space, str(tmp_path), level="low")
-    Q.WindowIndex.from_space(idx.space, str(tmp_path), level="low", z_deep="order")
+    Q.WindowIndex.from_space(idx.space, str(tmp_path), level="low", z_deep="slide")
     q = "猫は何を食べますか"
     base = A.ask(idx, q, effort="full", structure="slide", agreement="two_if_single_edge")
-    assert base.config["answer_shape"] == "unit" and base.config["read_order"] == "qcount_first" and base.config["z_deep"] == "slide"
+    assert base.config["answer_shape"] == "unit" and base.config["read_order"] == "qcount_first" and base.config["z_deep"] == "order"
     p = A.ask(idx, q, effort="full", structure="slide", agreement="two_if_single_edge", answer_shape="path", read_order="grammar_first")
     assert p.config["answer_shape"] == "path" and p.config["read_order"] == "grammar_first"
-    o = A.ask(idx, q, effort="full", structure="slide", agreement="two_if_single_edge", z_deep="order")
-    assert o.config["z_deep"] == "order" and o.spec["slide_spec_sha256"] != base.spec["slide_spec_sha256"]
+    o = A.ask(idx, q, effort="full", structure="slide", agreement="two_if_single_edge", z_deep="slide")
+    assert o.config["z_deep"] == "slide" and o.spec["slide_spec_sha256"] != base.spec["slide_spec_sha256"]
     assert len(idx._slide_windows) == 2                                                    # one index per placement rule, built once
-    assert o.to_bytes() == A.ask(idx, q, effort="full", structure="slide", agreement="two_if_single_edge", z_deep="order").to_bytes()
+    assert o.to_bytes() == A.ask(idx, q, effort="full", structure="slide", agreement="two_if_single_edge", z_deep="slide").to_bytes()
     assert len([f for f in os.listdir(str(tmp_path)) if f.startswith("slidewin_")]) == 2        # nothing was re-placed
     # the flat default does not know the switches
     with pytest.raises(TypeError):
@@ -1159,25 +1160,25 @@ def test_ask_structure_slide_takes_the_new_switches_and_keeps_one_index_per_rule
 def test_cli_new_switches(tmp_path, data_file):
     cache = str(tmp_path / "cache")
     b1 = cli(["build", "--structure", "slide", "--data", data_file, "--cache", cache, "--level", "low"])
-    b2 = cli(["build", "--structure", "slide", "--data", data_file, "--cache", cache, "--level", "low", "--z-deep", "order"])
+    b2 = cli(["build", "--structure", "slide", "--data", data_file, "--cache", cache, "--level", "low", "--z-deep", "slide"])
     assert b1.returncode == 0 and b2.returncode == 0, b1.stderr + b2.stderr
     i1, i2 = json.loads(b1.stdout), json.loads(b2.stdout)
     assert i1["slide_spec_sha256"] != i2["slide_spec_sha256"] and len(os.listdir(cache)) == 2
     base = ["ask", "--data", data_file, "--cache", cache, "--level", "low", "--question", "猫は何を食べますか", "--format", "json", "--effort", "full",
             "--show-thought", "--structure", "slide", "--agreement", "two_if_single_edge"]
     default = cli(base)
-    explicit = cli(base + ["--answer-shape", "unit", "--read-order", "qcount_first", "--z-deep", "slide"])
+    explicit = cli(base + ["--answer-shape", "unit", "--read-order", "qcount_first", "--z-deep", "order"])
     assert default.returncode == 0 and default.stdout == explicit.stdout, default.stderr + explicit.stderr
     th = json.loads(default.stdout)["thought"]
-    assert th["config"]["answer_shape"] == "unit" and th["config"]["read_order"] == "qcount_first" and th["config"]["z_deep"] == "slide"
+    assert th["config"]["answer_shape"] == "unit" and th["config"]["read_order"] == "qcount_first" and th["config"]["z_deep"] == "order"
     assert th["spec"]["slide_spec_sha256"] == i1["slide_spec_sha256"]
-    outs = [cli(base + ["--answer-shape", "path", "--read-order", "grammar_first", "--z-deep", "order"], s) for s in ("0", "1", "12345")]
+    outs = [cli(base + ["--answer-shape", "path", "--read-order", "grammar_first", "--z-deep", "slide"], s) for s in ("0", "1", "12345")]
     for r in outs:
         assert r.returncode == 0, r.stderr
     assert outs[0].stdout == outs[1].stdout == outs[2].stdout
     obj = json.loads(outs[0].stdout)
     assert obj["thought"]["config"]["answer_shape"] == "path" and obj["thought"]["config"]["read_order"] == "grammar_first"
-    assert obj["thought"]["config"]["z_deep"] == "order" and obj["thought"]["spec"]["slide_spec_sha256"] == i2["slide_spec_sha256"]
+    assert obj["thought"]["config"]["z_deep"] == "slide" and obj["thought"]["spec"]["slide_spec_sha256"] == i2["slide_spec_sha256"]
     assert obj["answer"]["read"]["order"] == "grammar_first"
     bad = cli(base + ["--z-deep", "deep"])
     assert bad.returncode != 0

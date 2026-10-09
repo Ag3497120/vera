@@ -596,7 +596,7 @@ def ask_combined(index, question: str, tiers: Optional[Sequence[str]] = None, bu
                           bounds=M.bounds_for(effort, nodes))
     lc = M.ask_layered(index, question, tiers, budget, options=opts, view="all", effort=effort, nodes=nodes, base=c0)
     wi = windows if windows is not None else SQ.window_index_for(index, cache_dir=cache_dir, workers=workers, place_kw=place_kw,
-                                                                 z_deep=z_deep or "slide")
+                                                                 z_deep=z_deep or SL.DEFAULT_Z_DEEP)
     evs = ("plain", "window") if window_evidence == "both" else (window_evidence,)
     fas = [(ev, SF.ask_flat(wi, question, effort=effort, nodes=nodes, members=slide_members, read_order=read_order, evidence=ev,
                             word_sources=True)) for ev in evs]

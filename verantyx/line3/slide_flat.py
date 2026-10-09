@@ -573,7 +573,7 @@ def ask_flat(index, question: str, *, effort: Optional[str] = None, nodes: Optio
         raise ValueError("z_deep must be one of %r" % (SQ.Z_DEEPS,))
     t0 = time.monotonic_ns()
     wi = windows if windows is not None else SQ.window_index_for(index, cache_dir=cache_dir, workers=workers, place_kw=place_kw,
-                                                                 z_deep=z_deep or "slide")
+                                                                 z_deep=z_deep or SL.DEFAULT_Z_DEEP)
     if z_deep is not None and wi.z_deep != z_deep:
         raise ValueError("the window index was placed with z_deep %r, not %r (a different slide spec: build another index)" % (wi.z_deep, z_deep))
     name, cap, _lv = A.resolve_effort(effort, nodes)

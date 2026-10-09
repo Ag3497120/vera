@@ -39,6 +39,12 @@ TOY = [
 ]
 
 
+def slide_g3h(rows):
+    """G3-i (L-770): the default slide spec has z_deep "order" now; this file pins the G3-c2 behaviour, which is the spec of z_deep "slide"."""
+    space = sp.build_space(rows)
+    return SL.Slide(space, SL.default_spec(space, z_deep="slide"), rows=rows)
+
+
 def mk2(slide, **kw):
     """G3-c3 (L-628): this file tests the G3-c2 behaviour; the G3-c3 switches are pinned to what G3-c2 did (SP.C2_EQUIV: centre in N,
     arms grow until the budget stops, Pareto judgement), exactly as test_slide_place.py pins G3-c with SP.LEGACY."""
@@ -58,14 +64,14 @@ def toy_rows():
 @pytest.fixture(scope="module")
 def slide():
     rows = toy_rows()
-    return SL.Slide(sp.build_space(rows), rows=rows)
+    return slide_g3h(rows)
 
 
 @pytest.fixture(scope="module")
 def slide_d():
     rws = [{"title": "D", "sent": "山と川と海と空と森が見える。", "source": "D#0"},
            {"title": "D", "sent": "星と月が光る。", "source": "D#1"}]
-    return SL.Slide(sp.build_space(rws), rows=rws)
+    return slide_g3h(rws)
 
 
 def pw_of(slide, n, padding="none"):
@@ -309,7 +315,7 @@ _SD = []
 def slide_d_cache():
     if not _SD:
         rws = [{"title": "D", "sent": "山と川と海と空と森が見える。", "source": "D#0"}, {"title": "D", "sent": "星と月が光る。", "source": "D#1"}]
-        _SD.append(SL.Slide(sp.build_space(rws), rows=rws))
+        _SD.append(slide_g3h(rws))
     return _SD[0]
 
 
@@ -398,7 +404,7 @@ def test_legacy_configuration_equals_the_committed_records_of_the_first_40_fulll
     if not (os.path.exists(FL) and os.path.exists(path)):
         pytest.skip("no fulllead data / committed records")
     rows = sp.load_jsonl(FL)
-    full = SL.Slide(sp.build_space(rows), rows=rows)
+    full = slide_g3h(rows)
     spec = mk2(full, **SP.LEGACY)
     recs = [json.loads(line) for line in open(path, encoding="utf-8")]
     assert len(recs) == 40
@@ -426,7 +432,7 @@ def test_per_axis_equals_sum_on_fulllead_one_sentence_windows():
     if not os.path.exists(FL):
         pytest.skip("no fulllead data")
     rows = sp.load_jsonl(FL)
-    full = SL.Slide(sp.build_space(rows), rows=rows)
+    full = slide_g3h(rows)
     lone = [p for p in SP.place_windows(full, "none") if len(p.window.sids) == 1][:12]
     for pw in lone:
         a = SP.place_window(full, pw, mk2(full, **dict(SP.LEGACY, stability="sum")))
@@ -439,7 +445,7 @@ def test_spec_switches(slide):
     legacy = mk2(slide, **SP.LEGACY)
     assert legacy.is_legacy and "switches" not in legacy.doc()
     dflt = mk2(slide)
-    assert dflt.switches() == SP.DEFAULTS == {"stability": "per_axis", "seat_key": "unit_sid", "seat_empty_axis": "allow", "growth": "z_reserved"}
+    assert dflt.switches() == SP.DEFAULTS == {"stability": "per_axis", "seat_key": "unit_sid", "seat_empty_axis": "deny", "growth": "z_reserved"}      # G3-i (L-771): deny (allow through G3-h)
     assert dflt.doc()["switches"] == SP.DEFAULTS and set(dflt.doc()["rules"]) == set(SP.DEFAULTS)
     shas = {legacy.sha256(), dflt.sha256()}
     for k, v in (("stability", "per_axis"), ("seat_key", "unit_sid"), ("seat_empty_axis", "deny"), ("growth", "interleave"), ("growth", "z_reserved")):
@@ -495,13 +501,14 @@ EXPECTED_OWNER_FIRST6 = [((0, 1), 16, 7, 260, "budget", ((18, 16), (0, 0), (1, 1
 
 
 def test_owner_configuration_on_the_first_fulllead_windows_with_the_full_verifier():
-    """The defaults (per_axis, unit_sid, allow, z_reserved) on real data: the first 6 windows, every member checked (no sample)."""
+    """The G3-c2 owner configuration (per_axis, unit_sid, allow, z_reserved = SP.DEFAULTS_G3H; the defaults until G3-h) on real data: the first 6
+    windows, every member checked (no sample)."""
     if not os.path.exists(FL):
         pytest.skip("no fulllead data")
     rows = sp.load_jsonl(FL)
-    full = SL.Slide(sp.build_space(rows), rows=rows)
-    spec = mk2(full)
-    assert spec.switches() == SP.DEFAULTS
+    full = slide_g3h(rows)
+    spec = mk2(full, **SP.DEFAULTS_G3H)
+    assert spec.switches() == SP.DEFAULTS_G3H
     got = []
     for pw in SP.place_windows(full, "none")[:6]:
         p = SP.place_window(full, pw, spec)

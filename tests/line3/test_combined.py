@@ -58,7 +58,9 @@ def space(rows):
 
 @pytest.fixture(scope="module")
 def wi(space, rows):
-    return Q.WindowIndex.from_space(space, None, rows=rows, level=TF.LEVEL)
+    # G3-i (L-770, L-771): the defaults are z_deep "order" / seat_empty_axis "deny" now; the G3-g golden (and these tests) were made with the window index of
+    # z_deep "slide" / seat_empty_axis "allow", which is what this fixture pins
+    return Q.WindowIndex.from_space(space, None, rows=rows, level=TF.LEVEL, z_deep="slide", place_kw={"seat_empty_axis": "allow"})
 
 
 @pytest.fixture(scope="module")

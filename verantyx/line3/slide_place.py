@@ -38,7 +38,7 @@ named configuration (`LEGACY`) and stays byte-identical:
   seat_key         "unit" (G3-c: one seat per unit) | "unit_sid" (a unit in both sentences of a window has two seats, one per sentence)
   seat_empty_axis  "allow" (G3-c) | "deny" (an arm of an axis with no evidence in the window has no seats)
   growth           "n_then_n1" (G3-c) | "interleave" | "z_reserved" (x arms take sentence-N seats, z arms sentence-N+1 seats)
-The module defaults are the owner's configuration (per_axis, unit_sid, allow, z_reserved); the low-level functions (`grow`,
+The module defaults are the owner's configuration (per_axis, unit_sid, deny since G3-i / allow through G3-h, z_reserved); the low-level functions (`grow`,
 `verify_*`) default to the G3-c behaviour so that the G3-c hand tables read unchanged.
 
 G3-c3 (L-620..; docs/LINE3_LOCAL_DECISIONS.md "G3-c3"): the owner's decisions after G3-c2 and after the G3-c2 audit, three more switches
@@ -90,7 +90,8 @@ CENTRE_SCOPES: Tuple[str, ...] = ("n", "both")             # G3-c3 (L-620): the 
 ARM_CAPS: Tuple[str, ...] = ("budget", "x")                 # G3-c3 (L-624): the arms grow until the budget stops | the z arms stop at the x arms' length
 JUDGEMENTS: Tuple[str, ...] = ("strict", "pareto")          # G3-c3 (L-626): no move improves ANY axis | no move improves one axis and worsens none
 LEGACY4: Dict[str, str] = {"stability": "sum", "seat_key": "unit", "seat_empty_axis": "allow", "growth": "n_then_n1"}
-DEFAULTS: Dict[str, str] = {"stability": "per_axis", "seat_key": "unit_sid", "seat_empty_axis": "allow", "growth": "z_reserved"}
+DEFAULTS: Dict[str, str] = {"stability": "per_axis", "seat_key": "unit_sid", "seat_empty_axis": "deny", "growth": "z_reserved"}   # G3-i (L-771): deny (G3-c2..G3-h: allow)
+DEFAULTS_G3H: Dict[str, str] = dict(DEFAULTS, seat_empty_axis="allow")     # G3-i (L-771): the four switches as they were through G3-h (with slide.default_spec(z_deep="slide"))
 C2_EQUIV: Dict[str, str] = {"centre_scope": "n", "arm_cap": "budget", "stability_judgement": "pareto"}   # what G3-c2 did
 DEFAULTS3: Dict[str, str] = {"centre_scope": "both", "arm_cap": "budget", "stability_judgement": "strict"}  # the owner's configuration after G3-c3
 LEGACY: Dict[str, str] = dict(LEGACY4, **C2_EQUIV)         # G3-c: all seven switches; byte-identical to the committed G3-c records

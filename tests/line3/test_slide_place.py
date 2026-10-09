@@ -396,7 +396,7 @@ def slide_d():
     rws = [{"title": "D", "sent": "山と川と海と空と森が見える。", "source": "D#0"},      # RUN 山 川 海 空 森
            {"title": "D", "sent": "星と月が光る。", "source": "D#1"}]                  # RUN 星 月 光
     s = sp.build_space(rws)
-    return SL.Slide(s, rows=rws)
+    return SL.Slide(s, SL.default_spec(s, z_deep="slide"), rows=rws)       # G3-i (L-770): the default is "order" now; this test pins the G3-c numbers
 
 
 def test_window_where_n_fills_the_budget_records_that_n_plus_1_got_no_seat(slide_d):
@@ -630,7 +630,7 @@ def full():
         pytest.skip("no fulllead data")
     rws = sp.load_jsonl(FL)
     s = sp.build_space(rws)
-    return SL.Slide(s, rows=rws)
+    return SL.Slide(s, SL.default_spec(s, z_deep="slide"), rows=rws)       # G3-i (L-770): the default is "order" now; this test pins the G3-c numbers
 
 
 def test_fulllead_first_windows_are_stable_classes_and_the_numbers_are_the_measured_ones(full):

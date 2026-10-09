@@ -206,17 +206,18 @@ class WindowIndex:
     @classmethod
     def from_space(cls, space: sp.Space, cache_dir: Optional[str] = None, *, rows: Optional[Sequence[Mapping]] = None,
                    tier: str = TIER, padding: str = "one", level: str = "mid", place_kw: Optional[Mapping] = None,
-                   workers: int = 1, build: bool = True, log=None, z_deep: str = "slide") -> "WindowIndex":
+                   workers: int = 1, build: bool = True, log=None, z_deep: str = SL.DEFAULT_Z_DEEP) -> "WindowIndex":
         """Load the windows of `space` from `cache_dir` (refusing any mismatch of the slide spec sha, the place spec sha, the corpus sha,
         the tier or the padding) or, when the cache file is absent and `build`, place them (fork pool, the result does not depend on the
         worker count) and write it.  `place_kw` = slide_place.make_spec's switches (None = the module defaults).  `z_deep` (G3-c4,
         L-660; G3-e2, L-686) is the SLIDE spec's rule for the z-arm edges deeper than the innermost: it changes the placements, hence the
-        slide spec sha, the place spec sha and the cache file name; the default "slide" is the spec as it was."""
+        slide spec sha, the place spec sha and the cache file name; the default is `slide.DEFAULT_Z_DEEP` = "order" since G3-i (L-770;
+        "slide" was the default through G3-h and builds that spec byte for byte)."""
         if tier != TIER:
             raise ValueError("S1 reads the %s tier only (L-640)" % TIER)
         if z_deep not in Z_DEEPS:
             raise ValueError("z_deep must be one of %r" % (Z_DEEPS,))
-        slide = SL.Slide(space, rows=rows) if z_deep == "slide" else SL.Slide(space, SL.default_spec(space, z_deep=z_deep), rows=rows)
+        slide = SL.Slide(space, SL.default_spec(space, z_deep=z_deep), rows=rows)
         spec = SP.make_spec(slide, tier=tier, padding=padding, level=level, **dict(place_kw or {}))
         path = None if not cache_dir else os.path.join(
             cache_dir, cache_name(space.sha256(), tier, slide.spec.sha256(), spec.sha256()))
@@ -806,7 +807,7 @@ class SlideAnswer:
 
 
 def window_index_for(index, *, cache_dir: Optional[str] = None, workers: int = 1, place_kw: Optional[Mapping] = None,
-                     padding: str = "one", level: str = "mid", z_deep: str = "slide") -> WindowIndex:
+                     padding: str = "one", level: str = "mid", z_deep: str = SL.DEFAULT_Z_DEEP) -> WindowIndex:
     """The WindowIndex of an ask.Index (kept on it): loaded from the index's cache directory when its window file is there, else placed
     in this process (slow: about 4 minutes of one core for fulllead; build it once with WindowIndex.from_jsonl(..., workers=N))."""
     if isinstance(index, WindowIndex):
@@ -835,7 +836,7 @@ def ask_slide(index, question: str, *, effort: Optional[str] = None, nodes: Opti
     G3-e2: answer_shape "unit" (default: the entry's words are the end unit of the walk) | "path" (the units of the walked section path,
     L-680); read_order "qcount_first" (default: windows holding more question units first, the grammar order only inside a tie) |
     "grammar_first" (L-645's order), L-684; both are read-time.  z_deep "slide" | "order" | "order_window" (G3-c4, G3-h) is a PLACEMENT switch (slide spec, hence
-    the cache key, L-686): None = the rule of the window index given (else "slide"); a window index made under the other rule is refused."""
+    the cache key, L-686): None = the rule of the window index given (else `slide.DEFAULT_Z_DEEP`, "order" since G3-i); a window index made under the other rule is refused."""
     if skip not in SKIPS or members not in MEMBERS or strict not in STRICT_POLICIES:
         raise ValueError("skip: %s; members: %s; strict: %s" % (SKIPS, MEMBERS, STRICT_POLICIES))
     if answer_shape not in ANSWER_SHAPES or read_order not in READ_ORDERS:
@@ -846,7 +847,7 @@ def ask_slide(index, question: str, *, effort: Optional[str] = None, nodes: Opti
         raise ValueError("agreement must be one of %r" % (SR.AGREEMENTS,))
     t0 = time.monotonic_ns()
     wi = windows if windows is not None else window_index_for(index, cache_dir=cache_dir, workers=workers, place_kw=place_kw,
-                                                              z_deep=z_deep or "slide")
+                                                              z_deep=z_deep or SL.DEFAULT_Z_DEEP)
     if z_deep is not None and wi.z_deep != z_deep:
         raise ValueError("the window index was placed with z_deep %r, not %r (a different slide spec: build another index)"
                          % (wi.z_deep, z_deep))

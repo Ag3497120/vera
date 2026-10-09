@@ -81,8 +81,9 @@ def pw_of(slide, n):
 def test_the_default_spec_keeps_its_bytes_and_order_changes_the_sha(s_slide, s_order):
     rows = rows_of(TOY)
     space = sp.build_space(rows)
-    plain = SL.default_spec(space)
-    assert plain.to_bytes() == SL.default_spec(space, z_deep="slide").to_bytes() == s_slide.spec.to_bytes()
+    plain = SL.default_spec(space, z_deep="slide")          # G3-i (L-770): the spec's own default is "order" now; "slide" is the G3-a..G3-h default spec
+    assert plain.to_bytes() == s_slide.spec.to_bytes()
+    assert SL.DEFAULT_Z_DEEP == "order" and SL.default_spec(space).to_bytes() == s_order.spec.to_bytes() != plain.to_bytes()
     assert plain.z_deep == "slide" and "deep" not in dict(plain.axis("z").params) and "z_deep" not in plain.doc()
     assert b"deep" not in plain.to_bytes()
     assert s_order.spec.z_deep == "order" and dict(s_order.spec.axis("z").params)["deep"] == "order"
@@ -415,8 +416,8 @@ def test_z_deep_slide_equals_the_committed_g3c3_run_a_records_of_the_first_40_pa
     rows = sp.load_jsonl(FL)
     space = sp.build_space(rows)
     full = SL.Slide(space, SL.default_spec(space, z_deep="slide"), rows=rows)
-    spec = SP.make_spec(full)
-    assert spec.switches3() == SP.DEFAULTS3
+    spec = SP.make_spec(full, seat_empty_axis="allow")      # G3-i (L-771): the run was made under allow (the default is deny now)
+    assert spec.switches3() == SP.DEFAULTS3 and spec.switches() == SP.DEFAULTS_G3H
     recs = [json.loads(line) for line in open(RUNA, encoding="utf-8")]
     runner = {"wall_s", "verify", "z_seat_stats", "real_edges", "real_edges_with_count", "members_by_centre_sentence"}
     pairs = [p for p in SP.place_windows(full, "none") if len(p.window.sids) == 2][:40]
@@ -426,14 +427,14 @@ def test_z_deep_slide_equals_the_committed_g3c3_run_a_records_of_the_first_40_pa
         d = json.loads(json.dumps(d, sort_keys=True, ensure_ascii=False, separators=(",", ":"), default=str))
         assert d == {k: v for k, v in rec.items() if k not in runner}, pw.window.sids
     assert spec.sha256() == recs[0]["spec_sha256"] and full.spec.sha256() == recs[0]["slide_spec_sha256"]
-    assert SL.default_spec(space).to_bytes() == full.spec.to_bytes()
+    assert SL.default_spec(space, z_deep="slide").to_bytes() == full.spec.to_bytes()
 
 
 def ratios_digest():
     T = [('A', '東京は日本の首都である。'), ('A', '東京は日本の都市である。'), ('B', '犬が猫を追う。'), ('B', '猫が魚を食べる。'), ('C', '京都は古い都である。')]
     rows = rows_of(T)
     S = sp.build_space(rows)
-    sl = SL.Slide(S, rows=rows)
+    sl = SL.Slide(S, SL.default_spec(S, z_deep="slide"), rows=rows)      # G3-i: the committed code's default spec = z_deep "slide"
     t = S.tiers['RUN']
     h = hashlib.sha256()
     for pair in sl.pairs():

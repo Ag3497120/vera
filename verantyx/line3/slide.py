@@ -45,6 +45,7 @@ ARMS: Tuple[str, ...] = ("+x", "-x", "+y", "-y", "+z", "-z")   # G3 3.1 / 3.3: t
 SCOPES: Tuple[str, ...] = ("window", "corpus")
 LONE_RULES: Tuple[str, ...] = ("none", "last", "singleton")
 Z_DEEPS: Tuple[str, ...] = ("slide", "order", "order_window")   # G3-c4 (L-660) / G3-h (L-760): what a z-arm edge deeper than the innermost one counts
+DEFAULT_Z_DEEP = "order"      # G3-i (L-770): the owner's default of `default_spec` and of every reader that builds a spec (was "slide" through G3-h)
 
 
 def canonical(doc) -> bytes:
@@ -367,7 +368,10 @@ class SlideSpec:
 
 
 def default_spec(space: sp.Space, *, lone: str = "last", y_pairs: Sequence[Sequence[str]] = DEFAULT_Y_PAIRS,
-                 z_tiers: str = "all", foundation: Optional[Foundation] = None, z_deep: str = "slide") -> SlideSpec:
+                 z_tiers: str = "all", foundation: Optional[Foundation] = None, z_deep: str = DEFAULT_Z_DEEP) -> SlideSpec:
+    """The slide spec of a corpus.  G3-i (L-770): `z_deep` defaults to DEFAULT_Z_DEEP = "order" (the owner's choice after G3-h; the
+    G3-a..G3-h default was "slide", reachable with `z_deep="slide"`, byte-identical to the former default spec).  `default_axes`
+    itself keeps "slide" as its own default: it is the G3-a axes definition."""
     return SlideSpec(space.sha256(), WindowRule(lone=lone), default_axes(y_pairs, z_tiers, z_deep), foundation or p7())
 
 

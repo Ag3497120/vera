@@ -57,8 +57,8 @@ def test_z_deeps_and_the_spec_bytes(s_slide, s_order, s_win):
     assert SL.Z_DEEPS == ("slide", "order", "order_window") and Q.Z_DEEPS == SL.Z_DEEPS
     rows = rows_of(TOY)
     space = sp.build_space(rows)
-    plain = SL.default_spec(space)
-    assert plain.to_bytes() == s_slide.spec.to_bytes() and b"deep" not in plain.to_bytes()          # the default keeps its bytes
+    plain = SL.default_spec(space, z_deep="slide")      # G3-i (L-770): the spec's own default is "order" now
+    assert plain.to_bytes() == s_slide.spec.to_bytes() and b"deep" not in plain.to_bytes()          # "slide" keeps its bytes
     assert s_win.spec.z_deep == "order_window" and dict(s_win.spec.axis("z").params)["deep"] == "order_window"
     assert len({plain.sha256(), s_order.spec.sha256(), s_win.spec.sha256()}) == 3
     t = s_win.spec.axis("z").text
@@ -350,7 +350,7 @@ def test_order_and_slide_keep_the_bytes_of_the_committed_code():
         sl = mk(toy, "order")
         h.update(sl.spec.to_bytes())
         for cs, gr in (("n", "z_reserved"), ("both", "z_reserved"), ("n", "n_then_n1")):
-            spec = SP.make_spec(sl, centre_scope=cs, growth=gr)
+            spec = SP.make_spec(sl, centre_scope=cs, growth=gr, seat_empty_axis="allow")      # G3-i (L-771): the digest was made under allow
             h.update(spec.to_bytes())
             for pw in SP.place_windows(sl, "one"):
                 p = SP.place_window(sl, pw, spec)

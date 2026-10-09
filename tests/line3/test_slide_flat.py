@@ -50,6 +50,9 @@ QUESTIONS = ["日本の首都は何ですか", "東京は何ですか", "猫は�
              "海は何ですか", "人口は何ですか", "東京タワーは何ですか", "首都は何ですか", "猫が食べるのは何ですか", "存在しない語は何ですか"]
 LEVEL = "low"
 BUDGET = cy.QueryBudget(512, 64)
+# G3-i (L-770, L-771): the defaults are z_deep "order" / seat_empty_axis "deny" now; these tests were written (G3-f) for the window index of z_deep "slide" with
+# seat_empty_axis "allow", which is what the fixtures below pin; the new defaults are checked in the last test
+PRE_G3I = {"z_deep": "slide", "place_kw": {"seat_empty_axis": "allow"}}
 
 
 def toy_rows():
@@ -74,7 +77,7 @@ def space(rows):
 
 @pytest.fixture(scope="module")
 def wi(space, rows):
-    return Q.WindowIndex.from_space(space, None, rows=rows, level=LEVEL)
+    return Q.WindowIndex.from_space(space, None, rows=rows, level=LEVEL, **PRE_G3I)
 
 
 def edited(wi, n, edit):
@@ -656,6 +659,12 @@ def test_ask_flat_through_an_ask_index_and_the_window_index_are_the_same_read(tm
     data.write_text("".join(json.dumps(r, ensure_ascii=False) + "\n" for r in rows), encoding="utf-8")
     idx = A.Index.from_jsonl(str(data), None, LEVEL, ("RUN",))
     q = "猫は何を食べますか"
-    a = F.ask_flat(idx, q, budget=BUDGET)
+    a = F.ask_flat(idx, q, budget=BUDGET, **PRE_G3I)
     assert idx._slide_windows and a.to_bytes() == F.ask_flat(wi, q, budget=BUDGET).to_bytes()
-    assert F.ask_flat(idx, q, budget=BUDGET, z_deep="slide").to_bytes() == a.to_bytes()
+    assert F.ask_flat(idx, q, budget=BUDGET, **PRE_G3I).to_bytes() == a.to_bytes()
+    # G3-i: with nothing said the index is the new default one (z_deep "order", seat_empty_axis "deny") and it equals an explicit one
+    d = F.ask_flat(idx, q, budget=BUDGET)
+    wd = Q.WindowIndex.from_space(sp.build_space(rows), None, rows=rows, level=LEVEL, z_deep="order", place_kw={"seat_empty_axis": "deny"})
+    assert d.to_bytes() == F.ask_flat(wd, q, budget=BUDGET).to_bytes() and d.config["z_deep"] == "order"
+    assert F.ask_flat(idx, q, budget=BUDGET, z_deep="order").to_bytes() == d.to_bytes()          # the default spelled out through the same Index = the default (was z_deep="slide" before G3-i)
+    assert wd.spec.seat_empty_axis == "deny" and wd.z_deep == "order" and wd.slide.spec.sha256() != wi.slide.spec.sha256()

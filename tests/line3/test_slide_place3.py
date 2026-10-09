@@ -36,6 +36,12 @@ TOY_D = [("D", "山と川と海と空と森が見える。"), ("D", "星と月�
 TOY_OLD = [("A", "東京は日本の首都である。"), ("A", "東京は日本の都市である。"), ("B", "犬が猫を追う。"), ("B", "猫が魚を食べる。"), ("C", "京都は古い都である。")]
 
 
+def slide_g3h(rows):
+    """G3-i (L-770): the default slide spec has z_deep "order" now; this file pins the G3-c3 behaviour, which is the spec of z_deep "slide"."""
+    space = sp.build_space(rows)
+    return SL.Slide(space, SL.default_spec(space, z_deep="slide"), rows=rows)
+
+
 def mkslide(toy):
     seen = {}
     rows = []
@@ -43,7 +49,7 @@ def mkslide(toy):
         i = seen.get(t, 0)
         seen[t] = i + 1
         rows.append({"title": t, "sent": s, "source": "%s#%d" % (t, i)})
-    return SL.Slide(sp.build_space(rows), rows=rows)
+    return slide_g3h(rows)
 
 
 @pytest.fixture(scope="module")
@@ -342,7 +348,7 @@ def test_run4_windows_with_trade_off_moves_are_marked_and_the_counts_match_the_o
     if not (os.path.exists(FL) and os.path.exists(RUN4)):
         pytest.skip("no fulllead data / committed run-4 records")
     rows = sp.load_jsonl(FL)
-    full = SL.Slide(sp.build_space(rows), rows=rows)
+    full = slide_g3h(rows)
     recs = [json.loads(line) for line in open(RUN4, encoding="utf-8")]
     pairs = [p for p in SP.place_windows(full, "none") if len(p.window.sids) == 2]
     idx = [i for i, r in enumerate(recs[:40]) if r["tradeoffs"]["improve_one_worsen_another"] > 0]
@@ -384,9 +390,9 @@ def test_centre_scope_n_equals_the_committed_g3c2_run4_records_of_the_first_40_p
     if not (os.path.exists(FL) and os.path.exists(RUN4)):
         pytest.skip("no fulllead data / committed run-4 records")
     rows = sp.load_jsonl(FL)
-    full = SL.Slide(sp.build_space(rows), rows=rows)
-    spec = SP.make_spec(full, **SP.C2_EQUIV)
-    assert spec.switches() == SP.DEFAULTS and not spec.is_legacy
+    full = slide_g3h(rows)
+    spec = SP.make_spec(full, **dict(SP.C2_EQUIV, seat_empty_axis="allow"))        # G3-i (L-771): the run was made under allow
+    assert spec.switches() == SP.DEFAULTS_G3H and not spec.is_legacy
     recs = [json.loads(line) for line in open(RUN4, encoding="utf-8")]
     pairs = [p for p in SP.place_windows(full, "none") if len(p.window.sids) == 2][:40]
     timing_and_runner = {"wall_s", "verify", "z_arm_units", "z_arm_fillers", "z_arm_no_evidence"}
