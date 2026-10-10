@@ -1,0 +1,426 @@
+<title>Vera 立体十字</title>
+<meta name="description" content="Vera line 3 の構造を実データで立体表示する">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700&family=IBM+Plex+Sans+JP:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a full-height 3D stage on the left, a drafting-table side panel on the right; stacks on phones. */
+:root{
+  --bg:#edf0f4; --panel:#f7f8fa; --fg:#1a2230; --muted:#5b6675; --line:#c9d0da;
+  --accent:#2f4aa8; --accent-2:#9a6a1f; --gold:#c8961e; --x:#2f4aa8; --y:#2a8a6a; --z:#b4512a;
+  --font-display:"Shippori Mincho","Hiragino Mincho ProN","Yu Mincho",serif;
+  --font-body:"IBM Plex Sans JP","Hiragino Sans","Noto Sans JP",system-ui,sans-serif;
+  --font-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  --scene-bg:#e8ecf1;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#0f141c; --panel:#161c26; --fg:#e6eaf0; --muted:#9aa5b5; --line:#2b3442;
+  --accent:#8aa2ff; --accent-2:#d9a84a; --gold:#e6b64a; --x:#8aa2ff; --y:#5fcfa6; --z:#ff9a6a; --scene-bg:#0b1017; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#0f141c; --panel:#161c26; --fg:#e6eaf0; --muted:#9aa5b5; --line:#2b3442;
+  --accent:#8aa2ff; --accent-2:#d9a84a; --gold:#e6b64a; --x:#8aa2ff; --y:#5fcfa6; --z:#ff9a6a; --scene-bg:#0b1017; color-scheme:dark }
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:14px;line-height:1.6}
+.app{display:grid;grid-template-columns:minmax(0,1fr) 380px;height:100%;min-height:560px}
+.stage{position:relative;min-width:0;background:var(--scene-bg)}
+canvas{display:block;width:100%;height:100%}
+.hud{position:absolute;left:16px;top:calc(16px + env(safe-area-inset-top,0px));display:flex;flex-direction:column;gap:6px;pointer-events:none}
+.hud h1{font-family:var(--font-display);font-weight:700;font-size:22px;margin:0;letter-spacing:.02em;text-wrap:balance}
+.hud .sub{font-size:12px;color:var(--muted);max-width:420px}
+.toolbar{position:absolute;left:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));display:flex;flex-wrap:wrap;gap:8px;max-width:calc(100% - 32px)}
+.toolbar button{font:500 12px var(--font-body);padding:7px 11px;border:1px solid var(--line);border-radius:4px;background:var(--panel);color:var(--fg);cursor:pointer}
+.toolbar button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
+.toolbar button:focus-visible{outline:2px solid var(--accent-2);outline-offset:2px}
+.tip{position:absolute;pointer-events:none;background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:8px 10px;font-size:12px;max-width:260px;box-shadow:0 4px 16px rgba(0,0,0,.18);transform:translate(12px,12px)}
+.tip b{font-family:var(--font-mono);font-weight:500}
+.panel{background:var(--panel);border-left:1px solid var(--line);overflow:auto;min-width:0;padding-block:20px;padding-inline:20px;display:flex;flex-direction:column;gap:18px}
+.panel h2{font-family:var(--font-display);font-size:16px;margin:0 0 6px;font-weight:700}
+.panel p{margin:0;color:var(--fg)}
+.panel .k{font-family:var(--font-mono);font-size:12px;color:var(--muted);letter-spacing:.04em;text-transform:uppercase}
+.legend{display:grid;grid-template-columns:auto 1fr;gap:6px 10px;align-items:center;font-size:13px}
+.sw{width:14px;height:14px;border-radius:3px;display:inline-block}
+.sent{font-family:var(--font-display);font-size:14px;line-height:1.8;padding:10px 12px;border-left:3px solid var(--line);background:color-mix(in srgb,var(--bg) 60%,transparent)}
+.sent .n{font-family:var(--font-mono);font-size:11px;color:var(--muted);margin-right:6px}
+mark{background:color-mix(in srgb,var(--gold) 35%,transparent);color:inherit;padding:0 2px;border-radius:2px}
+table{border-collapse:collapse;width:100%;font-size:12.5px;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:5px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-weight:600;color:var(--muted);font-size:11.5px;letter-spacing:.03em}
+td.num{text-align:right;font-family:var(--font-mono)}
+.steps{display:grid;gap:8px}
+.step{display:grid;grid-template-columns:22px 1fr;gap:8px;align-items:start}
+.step i{font:500 11px var(--font-mono);color:var(--panel);background:var(--accent);border-radius:11px;width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;font-style:normal}
+.note{font-size:12px;color:var(--muted)}
+@media (max-width:860px){
+  .app{grid-template-columns:1fr;grid-template-rows:62vh auto;height:auto}
+  .panel{border-left:0;border-top:1px solid var(--line)}
+  .hud .sub{display:none}
+}
+@media (prefers-reduced-motion: reduce){ .pulse{animation:none} }
+</style>
+
+<div class="app">
+  <div class="stage" id="stage">
+    <canvas id="c" aria-label="立体十字の 3D 表示"></canvas>
+    <div class="hud">
+      <h1>Vera 立体十字</h1>
+      <div class="sub">line 3 の実データ（千葉神社の窓、fulllead 文 85–86、RUN 層、予算 mid、G3-c3 既定の配置）。ドラッグで回転、ホイールで拡大、席に触れると出所が出ます。</div>
+    </div>
+    <div class="toolbar" role="group" aria-label="表示の切り替え">
+      <button id="b-window" aria-pressed="true">窓（文 N と N+1）</button>
+      <button id="b-axes" aria-pressed="true">軸のラベル</button>
+      <button id="b-walk" aria-pressed="false">断面の歩み</button>
+      <button id="b-flow" aria-pressed="false">辺の流れ</button>
+      <button id="b-grammar" aria-pressed="false">文法層の十字</button>
+      <button id="b-layer" aria-pressed="false">入れ子の層</button>
+      <button id="b-slide" aria-pressed="false">スライド（記事）</button>
+      <button id="b-reset">視点を戻す</button>
+    </div>
+    <div class="tip" id="tip" hidden></div>
+  </div>
+
+  <aside class="panel">
+    <section>
+      <div class="k">この窓</div>
+      <h2>千葉神社（文 85 と 86）</h2>
+      <div class="sent"><span class="n">85</span>千葉神社（<mark>ちばじんじゃ</mark>）は、千葉県千葉市中央区にある神社。</div>
+      <div class="sent" style="margin-top:6px"><span class="n">86</span>旧社格は<mark>県社</mark>。</div>
+      <p class="note" style="margin-top:8px">問い I2-013「千葉神社の旧社格は何ですか」の正解は 県社。中心は探索で ちばじんじゃ になり、x の腕に文 85、z の腕に文 86 が座った。中心から −z の最初の席（県社）への辺だけが、文をまたぐ本物のスライドの辺。</p>
+    </section>
+
+    <section>
+      <div class="k">席と軸</div>
+      <table>
+        <thead><tr><th>腕</th><th>外 → 中心</th><th>文</th></tr></thead>
+        <tbody>
+          <tr><td style="color:var(--x)">+x 前</td><td>千葉神社</td><td class="num">85</td></tr>
+          <tr><td style="color:var(--x)">−x 後</td><td>神社 → 千葉県千葉市中央区</td><td class="num">85</td></tr>
+          <tr><td style="color:var(--y)">±y 粒度</td><td>（RUN のみなので空）</td><td class="num">—</td></tr>
+          <tr><td style="color:var(--z)">−z 次の文</td><td>旧社格 → <strong>県社</strong></td><td class="num">86</td></tr>
+          <tr><td>中心</td><td>ちばじんじゃ</td><td class="num">85</td></tr>
+        </tbody>
+      </table>
+      <p class="note">軸ごとの鍵: x (3, 3)、y (0, 0)、z (1, 1)。同点の並び 12 通り（類）。腕の長さ L=2。助詞の土台は腕のラベル（は の に を が で と、重み 233/377 … 13/377）で、席は取らない。</p>
+    </section>
+
+    <section>
+      <div class="k">読み方（3 つの比率）</div>
+      <div class="steps">
+        <div class="step"><i>1</i><div><strong>断面の歩み</strong>: 各断面が見える腕の外側から中心へ、エネルギーが下がらない限り歩く。終点の語が比率 1。</div></div>
+        <div class="step"><i>2</i><div><strong>辺の流れ</strong>: 問いのエネルギーが辺を伝って各語へ流れる量。最大の語が比率 2。</div></div>
+        <div class="step"><i>3</i><div><strong>配置の結合</strong>: 辺の共有回数を語の頻度で割った結合の強さ。最大の語が比率 3。</div></div>
+        <div class="step"><i>=</i><div>3 つが同じ語を指すとき「安定」。平らな読みでは十字全体で判定し、経路の語を候補に出す。軸ごとに判定すると、腕が 2 本とも埋まった断面はほぼ一致しない（S1 の結果）。</div></div>
+      </div>
+    </section>
+
+    <section>
+      <div class="k">bank2 fulllead、69 問、正解を含む候補</div>
+      <table>
+        <thead><tr><th>方式</th><th>fast</th><th>standard</th></tr></thead>
+        <tbody>
+          <tr><td>窓を軸ごとに読む（S1）</td><td class="num">0–2</td><td class="num">—</td></tr>
+          <tr><td>窓を平らに読む</td><td class="num">9</td><td class="num">10</td></tr>
+          <tr><td>同、証拠を窓の和に</td><td class="num">19</td><td class="num">21</td></tr>
+          <tr><td>平らな十字（T10、3 層）</td><td class="num">16</td><td class="num">19</td></tr>
+          <tr><td>入れ子の層（経路ごとに席の並び）</td><td class="num">21</td><td class="num">27</td></tr>
+          <tr><td>窓 ∪ T10（和の上限）</td><td class="num" colspan="2">37</td></tr>
+          <tr><td>単純な検索 / ＋次の文</td><td class="num" colspan="2">47 / 57</td></tr>
+        </tbody>
+      </table>
+      <p class="note">1 問の時間: 窓 1–3 秒、平らな十字 2–8 分、層 5–16 分（Pro 10 並列）。すべて決定論で、Pro・Air・クラウドで 1 バイトも違わない。</p>
+    </section>
+
+    <section>
+      <div class="k">凡例</div>
+      <div class="legend">
+        <span class="sw" style="background:var(--x)"></span><span>x 軸 = 語順（+ 前 / − 後）、文 N</span>
+        <span class="sw" style="background:var(--y)"></span><span>y 軸 = 粒度（+ 粗い / − 細かい）</span>
+        <span class="sw" style="background:var(--z)"></span><span>z 軸 = スライド（+ この文 / − 次の文）、文 N+1</span>
+        <span class="sw" style="background:var(--gold)"></span><span>正解の語</span>
+        <span class="sw" style="background:var(--muted)"></span><span>空の席（予算で止まった）</span>
+      </div>
+    </section>
+  </aside>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+  if(!window.THREE){ document.getElementById('stage').insertAdjacentHTML('beforeend','<p style="padding:16px">three.js を読み込めませんでした。</p>'); return; }
+  const css = getComputedStyle(document.documentElement);
+  const tok = n => css.getPropertyValue(n).trim();
+  const col = n => new THREE.Color(tok(n));
+
+  // ---------- real data: window 千葉神社 (sids 85, 86), RUN tier, L = 2 ----------
+  // position 0 = outermost seat, 1 = next to the centre
+  const WINDOW = {
+    title:'千葉神社', sids:[85,86], L:2,
+    centre:{unit:'ちばじんじゃ', sid:85},
+    seats:[
+      {arm:'+x', pos:1, unit:'千葉神社', sid:85},
+      {arm:'-x', pos:0, unit:'神社', sid:85},
+      {arm:'-x', pos:1, unit:'千葉県千葉市中央区', sid:85},
+      {arm:'-z', pos:0, unit:'旧社格', sid:86},
+      {arm:'-z', pos:1, unit:'県社', sid:86, gold:true},
+    ],
+    sentences:{85:'千葉神社（ちばじんじゃ）は、千葉県千葉市中央区にある神社。', 86:'旧社格は県社。'},
+    axisKeys:{x:[3,3], y:[0,0], z:[1,1]}, classSize:12,
+    evidence:{'+x:1':{n:3,kind:'語順 (x)'},'-x:0':{n:1,kind:'語順 (x)'},'-x:1':{n:3,kind:'語順 (x)'},'-z:1':{n:1,kind:'スライド (z) 文 85→86'},'-z:0':{n:0,kind:'スライド (z)：N+1 の語どうし、証拠なし'}}
+  };
+  const ARMS = {
+    '+x':{dir:[1,0,0], label:'+x 前（語順）', particle:'は 233/377', c:'--x'},
+    '-x':{dir:[-1,0,0], label:'−x 後（語順）', particle:'の 144/377', c:'--x'},
+    '+y':{dir:[0,1,0], label:'+y 粗い（粒度）', particle:'に 89/377', c:'--y'},
+    '-y':{dir:[0,-1,0], label:'−y 細かい（粒度）', particle:'を 55/377', c:'--y'},
+    '+z':{dir:[0,0,1], label:'+z この文（スライド）', particle:'が 34/377', c:'--z'},
+    '-z':{dir:[0,0,-1], label:'−z 次の文（スライド）', particle:'で 21/377', c:'--z'},
+  };
+  const SEAT_GAP = 1.35;      // distance between seats along an arm
+  const seatPos = (arm, pos, L) => { const d = ARMS[arm].dir; const k = L - pos; return new THREE.Vector3(d[0]*k*SEAT_GAP, d[1]*k*SEAT_GAP, d[2]*k*SEAT_GAP); };
+
+  // ---------- renderer / scene ----------
+  const canvas = document.getElementById('c'), stage = document.getElementById('stage');
+  const renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:false});
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio||1, 2));
+  const scene = new THREE.Scene();
+  scene.background = col('--scene-bg');
+  const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 200);
+  const HOME = {theta:0.55, phi:1.05, r:11.5};
+  let orbit = {...HOME}, target = new THREE.Vector3(0,0,0);
+  function placeCamera(){
+    camera.position.set(target.x + orbit.r*Math.sin(orbit.phi)*Math.sin(orbit.theta), target.y + orbit.r*Math.cos(orbit.phi), target.z + orbit.r*Math.sin(orbit.phi)*Math.cos(orbit.theta));
+    camera.lookAt(target);
+  }
+  scene.add(new THREE.HemisphereLight(0xffffff, 0x334455, 0.9));
+  const key = new THREE.DirectionalLight(0xffffff, 0.7); key.position.set(5,8,6); scene.add(key);
+  const fill = new THREE.DirectionalLight(0xffffff, 0.25); fill.position.set(-6,-3,-4); scene.add(fill);
+
+  // ground grid: drafting-paper feel
+  const grid = new THREE.GridHelper(30, 30, col('--line').getHex(), col('--line').getHex());
+  grid.material.transparent = true; grid.material.opacity = 0.35; grid.position.y = -4.2; scene.add(grid);
+
+  // ---------- text sprites (labels) ----------
+  function makeLabel(text, opts={}){
+    const size = opts.size || 34, pad = 14, fg = opts.color || tok('--fg'), bg = opts.bg || null;
+    const cv = document.createElement('canvas'); const ctx = cv.getContext('2d');
+    ctx.font = `${opts.weight||500} ${size}px ${opts.mono ? 'IBM Plex Mono, monospace' : 'IBM Plex Sans JP, Hiragino Sans, sans-serif'}`;
+    const w = Math.ceil(ctx.measureText(text).width) + pad*2, h = size + pad*2;
+    cv.width = w*2; cv.height = h*2; ctx.scale(2,2);
+    if(bg){ ctx.fillStyle = bg; roundRect(ctx, 0, 0, w, h, 8); ctx.fill(); }
+    ctx.font = `${opts.weight||500} ${size}px ${opts.mono ? 'IBM Plex Mono, monospace' : 'IBM Plex Sans JP, Hiragino Sans, sans-serif'}`;
+    ctx.fillStyle = fg; ctx.textBaseline = 'middle'; ctx.fillText(text, pad, h/2);
+    const tex = new THREE.CanvasTexture(cv); tex.minFilter = THREE.LinearFilter;
+    const mat = new THREE.SpriteMaterial({map:tex, transparent:true, depthTest:false});
+    const sp = new THREE.Sprite(mat); const s = (opts.scale||0.011); sp.scale.set(w*s, h*s, 1); sp.renderOrder = 10; return sp;
+  }
+  function roundRect(ctx,x,y,w,h,r){ ctx.beginPath(); ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r); ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath(); }
+
+  // ---------- the cross ----------
+  const groups = { window:new THREE.Group(), axes:new THREE.Group(), walk:new THREE.Group(), flow:new THREE.Group(), grammar:new THREE.Group(), layer:new THREE.Group(), slide:new THREE.Group() };
+  Object.values(groups).forEach(g => scene.add(g));
+  const pickables = [];
+
+  function buildCross(group, L, seats, centre, opts={}){
+    const o = opts.origin || new THREE.Vector3();
+    const scale = opts.scale || 1;
+    const alpha = opts.alpha == null ? 1 : opts.alpha;
+    const g = new THREE.Group(); g.position.copy(o); g.scale.setScalar(scale); group.add(g);
+    // rods
+    for(const [arm, a] of Object.entries(ARMS)){
+      const end = new THREE.Vector3(...a.dir).multiplyScalar(L*SEAT_GAP + 0.2);
+      const rod = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.045, end.length(), 12), new THREE.MeshStandardMaterial({color:col(a.c), transparent:alpha<1, opacity:alpha, roughness:0.6}));
+      rod.position.copy(end.clone().multiplyScalar(0.5));
+      rod.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0), end.clone().normalize());
+      g.add(rod);
+      // empty seats
+      for(let p=0;p<L;p++){
+        const occupied = seats.some(s => s.arm===arm && s.pos===p);
+        if(!occupied){
+          const ring = new THREE.Mesh(new THREE.TorusGeometry(0.19, 0.03, 10, 28), new THREE.MeshStandardMaterial({color:col('--muted'), transparent:true, opacity:0.55*alpha, roughness:0.7}));
+          ring.position.copy(seatPos(arm,p,L)); ring.lookAt(ring.position.clone().add(new THREE.Vector3(...a.dir))); g.add(ring);
+          if(opts.pick) pickables.push(Object.assign(ring, {userData:{kind:'empty', arm, pos:p, L}}));
+        }
+      }
+    }
+    // centre
+    const cMesh = new THREE.Mesh(new THREE.SphereGeometry(0.34, 32, 32), new THREE.MeshStandardMaterial({color:col('--fg'), transparent:alpha<1, opacity:alpha, roughness:0.35, metalness:0.1}));
+    g.add(cMesh); if(opts.pick){ cMesh.userData = {kind:'centre', unit:centre.unit, sid:centre.sid}; pickables.push(cMesh); }
+    if(opts.labels!==false){ const lb = makeLabel(centre.unit, {size:30, weight:600}); lb.position.set(0, 0.62, 0); g.add(lb); }
+    // seats
+    for(const s of seats){
+      const a = ARMS[s.arm]; const p = seatPos(s.arm, s.pos, L);
+      const m = new THREE.Mesh(new THREE.SphereGeometry(s.gold ? 0.3 : 0.24, 28, 28), new THREE.MeshStandardMaterial({color: s.gold ? col('--gold') : col(a.c), emissive: s.gold ? col('--gold') : new THREE.Color(0), emissiveIntensity: s.gold ? 0.35 : 0, transparent:alpha<1, opacity:alpha, roughness:0.45}));
+      m.position.copy(p); g.add(m);
+      if(opts.pick){ m.userData = {kind:'seat', ...s, L}; pickables.push(m); }
+      if(opts.labels!==false){ const lb = makeLabel(s.unit, {size:28, color: s.gold ? tok('--gold') : tok('--fg'), weight: s.gold ? 700 : 500}); lb.position.copy(p).add(new THREE.Vector3(0, 0.5, 0)); g.add(lb); }
+    }
+    return g;
+  }
+
+  // main window cross
+  buildCross(groups.window, WINDOW.L, WINDOW.seats, WINDOW.centre, {pick:true});
+
+  // axis labels + particle foundation labels at the arm ends
+  for(const [arm, a] of Object.entries(ARMS)){
+    const end = new THREE.Vector3(...a.dir).multiplyScalar(WINDOW.L*SEAT_GAP + 1.05);
+    const lb = makeLabel(a.label, {size:26, color: tok(a.c), weight:600}); lb.position.copy(end); groups.axes.add(lb);
+    const pl = makeLabel(a.particle, {size:22, color: tok('--muted'), mono:true}); pl.position.copy(end).add(new THREE.Vector3(0,-0.42,0)); groups.axes.add(pl);
+  }
+  // sentence tags near the arms
+  const t85 = makeLabel('文 85（中心の文 → x の腕）', {size:22, color: tok('--x')}); t85.position.set(0, -1.1, 2.2); groups.axes.add(t85);
+  const t86 = makeLabel('文 86（次の文 → z の腕）', {size:22, color: tok('--z')}); t86.position.set(0, -1.5, -2.6); groups.axes.add(t86);
+
+  // ---------- section walk: an animated marker walking −z outer → centre and +x/−x ----------
+  const walkPaths = [
+    {pts:[seatPos('-z',0,2), seatPos('-z',1,2), new THREE.Vector3()], color:'--z', label:'断面 (−z): 旧社格 → 県社 → 中心'},
+    {pts:[seatPos('-x',0,2), seatPos('-x',1,2), new THREE.Vector3()], color:'--x', label:'断面 (−x): 神社 → 千葉県千葉市中央区 → 中心'},
+    {pts:[seatPos('+x',1,2), new THREE.Vector3()], color:'--x', label:'断面 (+x): 千葉神社 → 中心'},
+  ];
+  const walkers = [];
+  for(const w of walkPaths){
+    const curve = new THREE.CatmullRomCurve3(w.pts); curve.curveType = 'centripetal';
+    const tube = new THREE.Mesh(new THREE.TubeGeometry(curve, 24, 0.07, 10, false), new THREE.MeshStandardMaterial({color:col(w.color), transparent:true, opacity:0.5, roughness:0.4}));
+    groups.walk.add(tube);
+    const dot = new THREE.Mesh(new THREE.SphereGeometry(0.13, 16, 16), new THREE.MeshStandardMaterial({color:col('--accent-2'), emissive:col('--accent-2'), emissiveIntensity:0.6}));
+    groups.walk.add(dot); walkers.push({curve, dot, t:Math.random()});
+    const lb = makeLabel(w.label, {size:20, color: tok('--muted')}); lb.position.copy(w.pts[0]).add(new THREE.Vector3(0,-0.55,0)); groups.walk.add(lb);
+  }
+
+  // ---------- edge flow: pulses along every seated edge, sized by the evidence count ----------
+  const flowEdges = [];
+  (function(){
+    const L = WINDOW.L;
+    const seatMap = {}; WINDOW.seats.forEach(s => seatMap[s.arm+':'+s.pos] = s);
+    for(const s of WINDOW.seats){
+      const inner = s.pos === L-1 ? new THREE.Vector3() : (seatMap[s.arm+':'+(s.pos+1)] ? seatPos(s.arm, s.pos+1, L) : null);
+      if(!inner) continue;
+      const ev = WINDOW.evidence[s.arm+':'+s.pos] || {n:0};
+      flowEdges.push({from:seatPos(s.arm,s.pos,L), to:inner, n:ev.n, color:ARMS[s.arm].c});
+    }
+    for(const e of flowEdges){
+      const count = Math.max(1, e.n*2), pulses = [];
+      for(let i=0;i<count;i++){
+        const m = new THREE.Mesh(new THREE.SphereGeometry(e.n ? 0.09 : 0.05, 12, 12), new THREE.MeshStandardMaterial({color: e.n ? col(e.color) : col('--muted'), emissive: e.n ? col(e.color) : new THREE.Color(0), emissiveIntensity:0.5}));
+        groups.flow.add(m); pulses.push({m, t:i/count});
+      }
+      e.pulses = pulses;
+      const lb = makeLabel(`n = ${e.n}`, {size:20, color: tok('--muted'), mono:true}); lb.position.copy(e.from.clone().add(e.to).multiplyScalar(0.5)).add(new THREE.Vector3(0.35,0.25,0)); groups.flow.add(lb);
+    }
+  })();
+
+  // ---------- grammar layer: the particle cross (centre は, arms の に を が で と), rotating as "moves" ----------
+  const grammarCross = (function(){
+    const g = new THREE.Group(); g.position.set(0, 4.6, 0); groups.grammar.add(g);
+    const parts = {'+x':'の','-x':'に','+y':'を','-y':'が','+z':'で','-z':'と'};
+    const weights = {'+x':'144/377','-x':'89/377','+y':'55/377','-y':'34/377','+z':'21/377','-z':'13/377'};
+    for(const [arm,a] of Object.entries(ARMS)){
+      const end = new THREE.Vector3(...a.dir).multiplyScalar(1.4);
+      const rod = new THREE.Mesh(new THREE.CylinderGeometry(0.03,0.03,1.4,10), new THREE.MeshStandardMaterial({color:col('--accent-2'), transparent:true, opacity:0.8}));
+      rod.position.copy(end.clone().multiplyScalar(0.5)); rod.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0), end.clone().normalize()); g.add(rod);
+      const s = new THREE.Mesh(new THREE.SphereGeometry(0.17,20,20), new THREE.MeshStandardMaterial({color:col('--accent-2')})); s.position.copy(end); g.add(s);
+      const lb = makeLabel(parts[arm]+'  '+weights[arm], {size:24, color: tok('--accent-2'), weight:600}); lb.position.copy(end).add(new THREE.Vector3(0,0.42,0)); g.add(lb);
+    }
+    const c = new THREE.Mesh(new THREE.SphereGeometry(0.24,24,24), new THREE.MeshStandardMaterial({color:col('--accent-2')})); g.add(c);
+    const cl = makeLabel('は 233/377', {size:24, color: tok('--accent-2'), weight:700}); cl.position.set(0,0.5,0); g.add(cl);
+    const title = makeLabel('文法層の十字（助詞の土台）: 24 回転を「手」にして助詞の腕をデータの腕に合わせる。読む順だけを決め、席は取らない', {size:20, color: tok('--muted')}); title.position.set(0, 2.1, 0); g.add(title);
+    return g;
+  })();
+
+  // ---------- matryoshka layer: an upper cross packing three small unstable crosses as bundles ----------
+  (function(){
+    const g = new THREE.Group(); g.position.set(7.5, 0.4, -2); groups.layer.add(g);
+    const upper = buildCross(g, 2, [], {unit:'束の種', sid:0}, {alpha:0.28, labels:false, scale:1.0});
+    const bundles = [
+      {arm:'+x', pos:1, origin:seatPos('+x',1,2)}, {arm:'-z', pos:1, origin:seatPos('-z',1,2)}, {arm:'-y', pos:0, origin:seatPos('-y',0,2)}
+    ];
+    for(const b of bundles){
+      const shell = new THREE.Mesh(new THREE.SphereGeometry(0.55, 24, 24), new THREE.MeshStandardMaterial({color:col('--accent'), transparent:true, opacity:0.12}));
+      shell.position.copy(b.origin); g.add(shell);
+      buildCross(g, 1, [{arm:'+x',pos:0,unit:'',sid:0},{arm:'-z',pos:0,unit:'',sid:0}], {unit:'',sid:0}, {origin:b.origin, scale:0.28, labels:false});
+    }
+    const lb = makeLabel('入れ子の層: 不安定になった下の十字を、直前の安定状態に戻してから上の十字が束ねる（候補は経路ごとに席の並び）', {size:20, color: tok('--muted')}); lb.position.set(0, 3.4, 0); g.add(lb);
+  })();
+
+  // ---------- sliding packs along the article: windows (N, N+1) overlapping one sentence at a time ----------
+  (function(){
+    const g = new THREE.Group(); g.position.set(-1.5, -3.4, 7.5); groups.slide.add(g);
+    const sents = ['85','86','87','88','（仮）'];
+    for(let i=0;i<sents.length;i++){
+      const box = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.22, 0.9), new THREE.MeshStandardMaterial({color: i===sents.length-1 ? col('--muted') : col('--line'), transparent:true, opacity: i===sents.length-1 ? 0.5 : 0.9}));
+      box.position.set(i*2.0, 0, 0); g.add(box);
+      const lb = makeLabel('文 '+sents[i], {size:22, color: tok('--fg'), mono:true}); lb.position.set(i*2.0, 0.45, 0); g.add(lb);
+    }
+    for(let i=0;i<sents.length-1;i++){
+      const arc = new THREE.Mesh(new THREE.TorusGeometry(1.0, 0.035, 8, 40, Math.PI), new THREE.MeshStandardMaterial({color:col('--z'), transparent:true, opacity:0.85}));
+      arc.position.set(i*2.0 + 1.0, 0.15, 0); arc.rotation.x = Math.PI; g.add(arc);
+      const t = makeLabel('窓 ('+sents[i]+', '+sents[i+1]+')', {size:19, color: tok('--z')}); t.position.set(i*2.0+1.0, -0.7 - (i%2)*0.35, 0); g.add(t);
+    }
+    const lb = makeLabel('スライド: 文ごとの 3 層パックを、この文と次の文の対で 1 文ずつ重ねて進む。記事の末尾には仮の文を 1 つ足して閉じる', {size:20, color: tok('--muted')}); lb.position.set(4.0, 1.6, 0); g.add(lb);
+  })();
+
+  // ---------- visibility toggles ----------
+  const toggles = {window:true, axes:true, walk:false, flow:false, grammar:false, layer:false, slide:false};
+  function applyToggles(){ for(const k in toggles){ groups[k].visible = toggles[k]; const b = document.getElementById('b-'+k); if(b) b.setAttribute('aria-pressed', String(toggles[k])); } }
+  for(const k in toggles){ const b = document.getElementById('b-'+k); if(b) b.addEventListener('click', () => { toggles[k] = !toggles[k]; applyToggles(); }); }
+  document.getElementById('b-reset').addEventListener('click', () => { orbit = {...HOME}; target.set(0,0,0); });
+  applyToggles();
+
+  // ---------- orbit: drag to rotate, wheel/pinch to zoom, shift-drag or two-finger to pan ----------
+  let dragging = false, last = {x:0,y:0}, pinch0 = null;
+  const dpr = () => renderer.getPixelRatio();
+  canvas.addEventListener('pointerdown', e => { dragging = true; last = {x:e.clientX, y:e.clientY}; canvas.setPointerCapture(e.pointerId); });
+  canvas.addEventListener('pointerup', () => dragging = false);
+  canvas.addEventListener('pointermove', e => {
+    if(dragging){
+      const dx = e.clientX - last.x, dy = e.clientY - last.y; last = {x:e.clientX, y:e.clientY};
+      if(e.shiftKey){ const pan = new THREE.Vector3(-dx*0.01*orbit.r/10, dy*0.01*orbit.r/10, 0).applyQuaternion(camera.quaternion); target.add(pan); }
+      else { orbit.theta -= dx*0.006; orbit.phi = Math.min(Math.PI-0.15, Math.max(0.15, orbit.phi - dy*0.006)); }
+    } else hover(e);
+  });
+  canvas.addEventListener('wheel', e => { e.preventDefault(); orbit.r = Math.min(60, Math.max(3, orbit.r * (1 + Math.sign(e.deltaY)*0.08))); }, {passive:false});
+  canvas.addEventListener('touchstart', e => { if(e.touches.length===2){ pinch0 = {d:dist(e.touches), r:orbit.r}; } }, {passive:true});
+  canvas.addEventListener('touchmove', e => { if(e.touches.length===2 && pinch0){ e.preventDefault(); orbit.r = Math.min(60, Math.max(3, pinch0.r * pinch0.d / dist(e.touches))); } }, {passive:false});
+  canvas.addEventListener('touchend', () => pinch0 = null);
+  function dist(t){ const a=t[0], b=t[1]; return Math.hypot(a.clientX-b.clientX, a.clientY-b.clientY); }
+
+  // ---------- hover: seat provenance ----------
+  const ray = new THREE.Raycaster(), ndc = new THREE.Vector2(), tip = document.getElementById('tip');
+  function hover(e){
+    const r = canvas.getBoundingClientRect();
+    ndc.set(((e.clientX - r.left)/r.width)*2-1, -((e.clientY - r.top)/r.height)*2+1);
+    ray.setFromCamera(ndc, camera);
+    const hit = ray.intersectObjects(pickables, false)[0];
+    if(!hit){ tip.hidden = true; return; }
+    const u = hit.object.userData;
+    let html = '';
+    if(u.kind==='seat'){
+      const ev = WINDOW.evidence[u.arm+':'+u.pos];
+      html = `<b>${u.unit}</b>${u.gold ? ' <span style="color:var(--gold)">正解</span>' : ''}<br>腕 ${u.arm}、席 ${u.pos===u.L-1 ? '中心の隣' : '外側'}<br>出所: 文 ${u.sid}「${WINDOW.sentences[u.sid]}」<br>内側の辺の証拠: ${ev ? ev.kind + '、n = ' + ev.n : '—'}`;
+    } else if(u.kind==='centre'){
+      html = `<b>${u.unit}</b>（中心、探索で決定）<br>出所: 文 ${u.sid}<br>軸ごとの鍵 x (3,3) y (0,0) z (1,1)、類 12 通り`;
+    } else {
+      html = `空の席（${u.arm}、位置 ${u.pos}）<br>予算で成長が止まったか、この軸に証拠が無い`;
+    }
+    tip.innerHTML = html; tip.hidden = false;
+    tip.style.left = (e.clientX - r.left) + 'px'; tip.style.top = (e.clientY - r.top) + 'px';
+  }
+  canvas.addEventListener('pointerleave', () => tip.hidden = true);
+
+  // ---------- resize / loop ----------
+  function resize(){ const w = stage.clientWidth, h = stage.clientHeight; renderer.setSize(w, h, false); camera.aspect = w/h; camera.updateProjectionMatrix(); }
+  window.addEventListener('resize', resize); resize();
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let t0 = performance.now();
+  function frame(now){
+    const dt = Math.min(0.05, (now - t0)/1000); t0 = now;
+    if(!reduced){
+      if(groups.walk.visible) for(const w of walkers){ w.t = (w.t + dt*0.25) % 1; w.dot.position.copy(w.curve.getPointAt(w.t)); }
+      if(groups.flow.visible) for(const e of flowEdges){ for(const p of e.pulses){ p.t = (p.t + dt*(e.n ? 0.45 : 0.12)) % 1; p.m.position.lerpVectors(e.from, e.to, p.t); } }
+      if(groups.grammar.visible) grammarCross.rotation.y += dt*0.35;
+    }
+    placeCamera(); renderer.render(scene, camera); requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+
+  // re-tint when the theme flips
+  const mq = window.matchMedia('(prefers-color-scheme: dark)');
+  mq.addEventListener && mq.addEventListener('change', () => { scene.background = col('--scene-bg'); });
+})();
+</script>

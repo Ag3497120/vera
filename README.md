@@ -20,6 +20,12 @@ The short answer today: **it answers fewer questions than a simple keyword searc
 - one stereo cross, with its arms and seats: <https://claude.ai/artifact/CqAGojmogqLyhSDBU3Dozb>
 - the whole structure built from the 592-sentence corpus — the three sovereigns, the layer-1 nests, the sliding windows, the grammar layer and the carry tower (exported with `tools/export_structure_json.py`, see `docs/LINE3_STRUCTURE_OVERVIEW.md`): <https://claude.ai/artifact/BZEvuMkGYR7UhG7AUymPh2>
 
+![A single stereo cross: a centre, six arms of seats, each seat with its source sentence](docs/media/stereo_cross_v1.gif)
+
+![The whole built structure: sovereign tiers, layer-1 nests, sliding windows, grammar layer](docs/media/structure_overview_v2.gif)
+
+The single-cross page is `docs/media/stereo_cross_v1.html`; the overview page is built by `tools/build_structure_overview.py`. The recordings are made by `tools/record_structure_video.js` (headless Chrome + ffmpeg; see its header).
+
 ## Measured numbers (all with denominators)
 
 Corpus `fulllead`: 592 lead sentences of Japanese Wikipedia articles. Question bank `bank2`: 128 items written by a separate system that never saw Vera's code (`experiments/line3/bank2/`); 69 are answerable from the corpus, 25 are deliberately unanswerable. Baselines: B1 = keyword lookup of one sentence; B2 = keyword lookup plus the next sentence. "Gold in a candidate" = the correct answer appears in at least one entry of the list.
