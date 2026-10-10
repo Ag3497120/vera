@@ -109,9 +109,14 @@ def words_of(text: str) -> List[Word]:
     return _raw_spans(sp.WORD, text)
 
 
-def follower(words: Sequence[Word], end: int) -> Tuple[str, Optional[str], Optional[Tuple[int, int]]]:
+STEMS: Tuple[str, ...] = ("straddle", "whole_word")                       # G3-k (L-801): what a unit that ends inside a WORD takes
+
+
+def follower(words: Sequence[Word], end: int, stem: str = "straddle") -> Tuple[str, Optional[str], Optional[Tuple[int, int]]]:
     """What follows a span ending at `end`: the first WORD unit that starts at or after `end` (only characters no tier
-    keeps lie in between, L-32).  Returns (label, surface, span):
+    keeps lie in between, L-32).  `stem` (G3-k, L-801; owner after G2-f: 「語全体（WORD）の後ろの助詞を取る」): "straddle" (default,
+    L-542) labels a span that ends inside a WORD `straddle`; "whole_word" reads what follows that WORD instead (never `straddle`).
+    Returns (label, surface, span):
       ("particle", p, span)   p in P7
       ("other", surface, span) any other WORD unit (content or another function word)
       ("end", None, None)      nothing follows (sentence end, punctuation skipped)
@@ -120,6 +125,8 @@ def follower(words: Sequence[Word], end: int) -> Tuple[str, Optional[str], Optio
     i = bisect.bisect_left(starts, end)
     if i > 0 and words[i - 1][2] > end:
         s, a, b = words[i - 1]
+        if stem == "whole_word":
+            return follower(words, b, stem)
         return ("straddle", s, (a, b))
     if i >= len(words):
         return ("end", None, None)
@@ -172,7 +179,14 @@ class Records:
     every follower label per tier (nothing is dropped silently, L-542).  Immutable by convention."""
 
     def __init__(self, attachments: Sequence[Attachment], heads: Mapping[Tuple[str, str], int],
-                 follow: Mapping[str, Mapping[str, int]], n_sentences: int, sids: Sequence[int]) -> None:
+                 follow: Mapping[str, Mapping[str, int]], n_sentences: int, sids: Sequence[int], stem: str = "straddle",
+                 stemmed: Optional[Mapping[str, int]] = None) -> None:
+        if stem not in STEMS:
+            raise ValueError("stem: %s" % " | ".join(STEMS))
+        self.stem = stem                                                # G3-k (L-801)
+        # G3-k (L-814): per tier the heads that ended inside a WORD and took what follows the whole WORD (stem "whole_word" only).  Kept OUT of `follow`: they are
+        # counted inside particle / other / end there, so a sum over `follow` must not see them twice.
+        self.stemmed: Dict[str, int] = {t: int(v) for t, v in sorted((stemmed or {}).items())}
         self.attachments: Tuple[Attachment, ...] = tuple(sorted(attachments))
         self.heads: Dict[Tuple[str, str], int] = dict(heads)
         self.follow: Dict[str, Dict[str, int]] = {t: dict(v) for t, v in follow.items()}
@@ -245,11 +259,15 @@ class Records:
 
     # -- bytes --------------------------------------------------------------------------------------------------
     def to_obj(self) -> dict:
-        return {"format": FORMAT, "foundation": foundation_sha(), "p7": list(P7), "tiers": list(self.tiers()),
-                "n_sentences": self.n_sentences, "sids": list(self.sids),
-                "heads": [[t, u, n] for (t, u), n in sorted(self.heads.items())],
-                "follow": {t: {k: v[k] for k in sorted(v)} for t, v in sorted(self.follow.items())},
-                "attachments": [a.as_list() for a in self.attachments]}
+        o = {"format": FORMAT, "foundation": foundation_sha(), "p7": list(P7), "tiers": list(self.tiers()),
+             "n_sentences": self.n_sentences, "sids": list(self.sids),
+             "heads": [[t, u, n] for (t, u), n in sorted(self.heads.items())],
+             "follow": {t: {k: v[k] for k in sorted(v)} for t, v in sorted(self.follow.items())},
+             "attachments": [a.as_list() for a in self.attachments]}
+        if self.stem != "straddle":                                     # G3-k: named only when not the default, so the default bytes are unchanged
+            o["stem"] = self.stem
+            o["stem_whole_word"] = {t: self.stemmed[t] for t in sorted(self.stemmed)}      # L-814: outside `follow`; already counted inside particle / other / end there
+        return o
 
     def to_bytes(self) -> bytes:
         return _canon(self.to_obj())
@@ -258,20 +276,23 @@ class Records:
         return hashlib.sha256(self.to_bytes()).hexdigest()
 
 
-def build_records(texts: Sequence[str]) -> Records:
+def build_records(texts: Sequence[str], stem: str = "straddle") -> Records:
     """Records of a list of sentences; sid = position in the list (L-33)."""
-    return _build(list(enumerate(texts)), len(texts))
+    return _build(list(enumerate(texts)), len(texts), stem=stem)
 
 
-def records_of_space(space: sp.Space) -> Records:
+def records_of_space(space: sp.Space, stem: str = "straddle") -> Records:
     """Records of the BASE sentences of a space (memory sentences are not corpus text, L-547); sids are the space's."""
     items = [(sid, t) for sid, (t, _) in enumerate(space.sentences) if space.kinds[sid] == sp.BASE]
-    return _build(items, space.N)
+    return _build(items, space.N, stem=stem)
 
 
-def _build(items: Sequence[Tuple[int, str]], n_sentences: int, tiers: Sequence[str] = RECORD_TIERS) -> Records:
+def _build(items: Sequence[Tuple[int, str]], n_sentences: int, tiers: Sequence[str] = RECORD_TIERS, stem: str = "straddle") -> Records:
+    if stem not in STEMS:
+        raise ValueError("stem: %s" % " | ".join(STEMS))
     heads: Dict[Tuple[str, str], int] = {}
     follow: Dict[str, Dict[str, int]] = {t: {k: 0 for k in FOLLOW_LABELS} for t in tiers}
+    stemmed: Dict[str, int] = {t: 0 for t in tiers}
     atts: List[Attachment] = []
     for sid, raw in items:
         text = strip_attribution(raw)                                   # L-44
@@ -281,13 +302,15 @@ def _build(items: Sequence[Tuple[int, str]], n_sentences: int, tiers: Sequence[s
                 if is_function_unit(u, tier):
                     continue                                            # L-540: heads are content units
                 heads[(tier, u)] = heads.get((tier, u), 0) + 1
-                lab, s, span = follower(words, b)
+                lab, s, span = follower(words, b, stem)
+                if stem == "whole_word" and follower(words, b)[0] == "straddle":
+                    stemmed[tier] += 1                                  # G3-k: a head that ended inside a WORD and took what follows the whole WORD
                 if lab == "particle":
                     follow[tier][s] += 1
                     atts.append(Attachment(tier, sid, a, b, u, s, span[0], span[1]))
                 else:
                     follow[tier][lab] += 1
-    return Records(atts, heads, follow, n_sentences, [sid for sid, _ in items])
+    return Records(atts, heads, follow, n_sentences, [sid for sid, _ in items], stem, stemmed if stem == "whole_word" else None)
 
 
 def trace_check(records: Records, sentence_text) -> List[str]:
@@ -302,7 +325,11 @@ def trace_check(records: Records, sentence_text) -> List[str]:
             bad.append("unit surface %r != %r (sid %d)" % (t[a.start:a.end], a.unit, a.sid))
         if t[a.p_start:a.p_end] != a.particle or a.particle not in P7:
             bad.append("particle surface %r != %r (sid %d)" % (t[a.p_start:a.p_end], a.particle, a.sid))
-        if a.p_start < a.end or sp._has_letter(t[a.end:a.p_start]):
+        if records.stem == "whole_word":                                # G3-k: only the rest of the WORD the unit ends in may lie between
+            lab, s_, sp_ = follower(words_of(t), a.end, "whole_word")
+            if lab != "particle" or s_ != a.particle or sp_ != (a.p_start, a.p_end):
+                bad.append("the particle is not the one after the whole word (sid %d, %r)" % (a.sid, a.unit))
+        elif a.p_start < a.end or sp._has_letter(t[a.end:a.p_start]):
             bad.append("a letter lies between unit and particle (sid %d, %r)" % (a.sid, a.unit))
         if is_function_unit(a.unit, a.tier):
             bad.append("head is a function unit: %r" % a.unit)

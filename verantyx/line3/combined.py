@@ -72,6 +72,9 @@ WINDOW_PLAIN = "window/plain"
 WINDOW_EVID = "window/window-evidence"
 MERGES: Tuple[str, ...] = ("none", "word_set")                        # G3-g2 (L-740): none = every candidate its own entry (default); word_set = G3-g's one entry per word set
 MARK_WINDOW_EVIDENCE = "window_evidence_variant"                     # L-723: the mark of an entry that the window-evidence variant (L-714) gives
+MARK_STANDIN = "via_standin"                                          # G3-k (L-808): the mark of an entry every member of which exists only through an unknown-word stand-in
+MARK_READ_STANDIN = "read_via_standin"                                # G3-k (L-811): every member comes from a cross / window that the same order would not have read under the cap without the stand-ins
+MARK_TEXT = {MARK_WINDOW_EVIDENCE: "【窓の証拠の変種】", MARK_STANDIN: "【未知語の代役のみ】", MARK_READ_STANDIN: "【代役の並びで読んだ十字・窓】"}
 LAYER_VARIANTS: Tuple[str, ...] = ("A",)                              # T10's measured ssp: variant A, compress, no feedback
 LAYER_GRANULARITY = "compress"
 LAYER_CANDIDATE = "stable-seats-path"
@@ -206,7 +209,12 @@ class Entry:
 
     @property
     def marks(self) -> Tuple[str, ...]:
-        return (MARK_WINDOW_EVIDENCE,) if any(m.origin == WINDOW_EVID for m in self.members) else ()
+        mk = (MARK_WINDOW_EVIDENCE,) if any(m.origin == WINDOW_EVID for m in self.members) else ()
+        if self.members and all(m.detail.get("via_standin") is True for m in self.members):     # G3-k: only with the grammar on (the key is absent otherwise)
+            mk += (MARK_STANDIN,)
+        if self.members and all(m.detail.get("read_via_standin") is True for m in self.members):     # G3-k (L-811): a flat via_standin entry shows both (a cross with no original unit is no candidate without the stand-ins); a window entry can be via_standin through a member that holds only a stand-in in a window both orders read
+            mk += (MARK_READ_STANDIN,)
+        return mk
 
     @property
     def centres(self) -> Tuple[str, ...]:
@@ -337,6 +345,7 @@ class CombinedAnswer:
     effort: Optional[str] = None
     ms: int = 0
     merge: str = "none"                               # G3-g2 (L-740)
+    grammar: Optional[Mapping] = None                 # G3-k (L-808): {"form", "standins", "header", "full"} of the grammar intake; None = grammar off (the bytes of before)
 
     @property
     def listed(self) -> int:
@@ -372,7 +381,7 @@ class CombinedAnswer:
             for a in abst:
                 c[a["kind"]] = c.get(a["kind"], 0) + 1
             return {k: c[k] for k in sorted(c)}
-        rows: List[dict] = []
+        rows: List[dict] = [dict(self.grammar["header"])] if self.grammar is not None else []      # G3-k (L-808): the grammar row stands first
         for s in self.sources:
             if s.name == FLAT:
                 tiers = sorted({c.origin.split("/")[1] for c in s.cands} | {a["tier"] for a in s.abstentions if "tier" in a}, key=TIERS.index)
@@ -447,6 +456,8 @@ class CombinedAnswer:
         sids = sorted({s for e in self.entries for s in e.source_sids})
         extra = ({"assembly": self.assembly_obj(), "assembled_only_single": bool(self.entries) and all(e.assembled_only for e in self.entries)}
                  if self.has_assembly else {})
+        if self.grammar is not None:                                             # G3-k (L-808): named only with the grammar on, so the default bytes are unchanged
+            extra = {**extra, "grammar_form": self.grammar["form"], "standins": self.grammar["standins"]}
         return {**extra, "verdict": self.verdict, "structure": "combined", "merge": self.merge, "header": self.header(), "blocks": self.blocks(),
                 "listed": len(ents), "listed_before_merge": self.listed_before_merge,
                 "per_source_listed": self.per_source_listed(),
@@ -489,7 +500,8 @@ class CombinedAnswer:
                 "rule": self.rule_text(),
                 "sources": {s.name: {"verdict": s.verdict, "listed": len(s.cands), "read": dict(s.read), "trace": dict(s.trace),
                                      "abstentions": list(s.abstentions), "thought": dict(s.thought)} for s in self.sources},
-                "agreement": self.agreement()}
+                "agreement": self.agreement(),
+                **({"grammar": self.grammar["full"]} if self.grammar is not None else {})}
 
     def agreement(self) -> dict:
         """REPORT ONLY: the families that give each word set (nothing is selected, counted or summed from it).  Counted over distinct word sets, so the
@@ -513,7 +525,8 @@ class CombinedAnswer:
 
 
 def combine(question: str, sources: Sequence[Source], sentences: Optional[Mapping[int, Tuple[str, str]]] = None, *,
-            config: Optional[Mapping[str, object]] = None, effort: Optional[str] = None, ms: int = 0, merge: str = "none") -> CombinedAnswer:
+            config: Optional[Mapping[str, object]] = None, effort: Optional[str] = None, ms: int = 0, merge: str = "none",
+            grammar: Optional[Mapping] = None) -> CombinedAnswer:
     """The combined list of finished source results (testable without a search; the experiments replay recorded results through it).  `merge` "none"
     (default, G3-g2) or "word_set" (G3-g): see build_entries."""
     names = [s.name for s in sources]
@@ -527,7 +540,7 @@ def combine(question: str, sources: Sequence[Source], sentences: Optional[Mappin
     ents = build_entries(srcs, merge)
     cited = {sid for e in ents for sid in e.source_sids}
     sent = {sid: sentences[sid] for sid in sorted(cited) if sentences is not None and sid in sentences}
-    return CombinedAnswer(question, srcs, ents, verdict_of(ents, srcs), dict(config or {}), sent, effort, ms, merge)
+    return CombinedAnswer(question, srcs, ents, verdict_of(ents, srcs), dict(config or {}), sent, effort, ms, merge, grammar)
 
 
 # --------------------------------------------------------------------------------------------------------------
@@ -551,10 +564,13 @@ def flat_source(c0: A.Combined, index=None) -> Source:
         if not o.entries:
             abst.append({"tier": o.tier, "kind": o.verdict})
             continue
-        for e in o.entries:
+        for i, e in enumerate(o.entries):
+            det = {"tier": o.tier, "tier_is_most_stable": o.tier in ms_}
+            if c0.grammar is not None:                                                    # G3-k (L-808): the mark of an entry that exists only through a stand-in
+                det["via_standin"] = bool(o.via_standin[i]) if o.via_standin else False
+                det["read_via_standin"] = bool(o.read_via_standin[i]) if o.read_via_standin else False
             cands.append(Cand(flat_origin(o.tier), tuple(e.words), tuple(e.centres), e.stability, e.count, tuple(e.source_sids),
-                              tuple((w, tuple(ro.entry_word_sources(e, w))) for w in e.words), tok,
-                              {"tier": o.tier, "tier_is_most_stable": o.tier in ms_}))
+                              tuple((w, tuple(ro.entry_word_sources(e, w))) for w in e.words), tok, det))
     trace = {"ok": (all(v["ok"] for v in tr.values()) if tr else None), "per_tier": tr} if index is not None else {}
     return Source(FLAT, c0.verdict, tuple(cands), tuple(abst), c0.read_obj(), trace, {})
 
@@ -642,7 +658,9 @@ def window_source_of(evidence: str, entries: Sequence[Mapping], abstentions: Seq
                           None if ws is None else tuple((w, tuple(ws[w])) for w in e["words"]), bool(e["trace"]["ok"]),
                           {"window": e["window"], "centre_sentence": e["centre_sentence"], "stable_strict": e["stable_strict"],
                            "members_read": e["members_read"], "class_size": e["class_size"], "starts": e["starts"], "evidence": e["evidence"],
-                           "axis_labels": e["axis_labels"], "trace": e["trace"]}))
+                           "axis_labels": e["axis_labels"], "trace": e["trace"],
+                           **({"via_standin": e["via_standin"]} if "via_standin" in e else {}),
+                           **({"read_via_standin": e["read_via_standin"]} if "read_via_standin" in e else {})}))
     ok = [t for _c, t, has in reads_trace if has]
     abst = tuple(dict(a) for a in abstentions)
     if not cands and not abst:                                         # no window held a question unit / the cap read none: the source's own typed verdict
@@ -666,7 +684,7 @@ def ask_combined(index, question: str, tiers: Optional[Sequence[str]] = None, bu
                  windows: Optional[SQ.WindowIndex] = None, slide_members: str = SLIDE_MEMBERS, read_order: str = "qcount_first",
                  layer_variants: Sequence[str] = LAYER_VARIANTS, layer_granularity: str = LAYER_GRANULARITY, z_deep: Optional[str] = None,
                  cache_dir: Optional[str] = None, workers: int = 1, place_kw: Optional[Mapping] = None, trace: bool = True, merge: str = "none",
-                 assembly: bool = True) -> CombinedAnswer:
+                 assembly: bool = True, grammar: str = "off", grammar_intake=None) -> CombinedAnswer:
     """`structure="combined"` (G3-g, opt-in): the flat cross (ask.ask, `tiers` and `budget` as there), the layers (stable-seats-path, variants
     `layer_variants`, T10's measured configuration) on that same layer 0, and the sliding windows read flat (RUN; evidence plain, window or both),
     ONE list.  `effort` / `nodes` are each source's own amount (crosses per tier for the flat cross, the layers' bounds, WINDOWS for the windows);
@@ -674,7 +692,14 @@ def ask_combined(index, question: str, tiers: Optional[Sequence[str]] = None, bu
     `windows` = a slide_query.WindowIndex made beforehand, else the index's (built / loaded as ask_slide does).
     `merge` "none" (default, G3-g2: every candidate its own entry, in per-origin blocks, `also_in` marks) | "word_set" (G3-g: one entry per word set).
     `assembly` (G3-j, default True; this structure is new, so the default changes no committed bytes): add the block flat/assembled, the F2 assembly of the flat
-    entries (assembled_source); False = the list, header and bytes of G3-i."""
+    entries (assembled_source); False = the list, header and bytes of G3-i.
+    `grammar` (G3-k, L-800..L-808; "off" = every committed byte): "on" = the question intake with the unknown-word stand-ins is made ONCE (wiring.intake) and shared by the
+    flat cross (stand-ins as additional, marked query units of the RUN tier; the crosses read under the cap ordered by the question units held, then the grammar
+    kind, then E_Q), the layers (the re-asks keep the same query and mark) and the windows (windows that hold only stand-ins are read after the others); the header gets a
+    `grammar` row, the answer `grammar_form` and `standins` (with their chance counts), entries that exist only through a stand-in the mark `via_standin`.
+    `grammar_intake` = a wiring.GrammarIntake made beforehand."""
+    if grammar not in ("off", "on"):
+        raise ValueError("grammar: off | on")
     if merge not in MERGES:
         raise ValueError("merge: %s" % " | ".join(MERGES))
     if view != "all":
@@ -684,15 +709,20 @@ def ask_combined(index, question: str, tiers: Optional[Sequence[str]] = None, bu
     if slide_members not in SQ.MEMBERS:
         raise ValueError("slide_members: %s" % " | ".join(SQ.MEMBERS))
     t0 = time.monotonic_ns()
-    c0 = A.ask(index, question, tiers, budget, view="all", effort=effort, nodes=nodes)
+    gi = None
+    if grammar == "on":
+        from verantyx.line3 import wiring as W
+        gi = grammar_intake if grammar_intake is not None else W.intake(index.space, question, W.context_of(index)[0])
+    c0 = A.ask(index, question, tiers, budget, view="all", effort=effort, nodes=nodes, **({"grammar": "on", "grammar_intake": gi} if gi is not None else {}))
     opts = M.LayerOptions(variants=tuple(layer_variants), granularity=layer_granularity, feedback="none", candidate=LAYER_CANDIDATE,
                           bounds=M.bounds_for(effort, nodes))
-    lc = M.ask_layered(index, question, tiers, budget, options=opts, view="all", effort=effort, nodes=nodes, base=c0)
+    lc = M.ask_layered(index, question, tiers, budget, options=opts, view="all", effort=effort, nodes=nodes, base=c0,
+                       **({"tier_kw": W.reask_kw(gi, [o.tier for o in c0.outcomes], W.context_of(index)[1])} if gi is not None else {}))
     wi = windows if windows is not None else SQ.window_index_for(index, cache_dir=cache_dir, workers=workers, place_kw=place_kw,
                                                                  z_deep=z_deep or SL.DEFAULT_Z_DEEP)
     evs = ("plain", "window") if window_evidence == "both" else (window_evidence,)
     fas = [(ev, SF.ask_flat(wi, question, effort=effort, nodes=nodes, members=slide_members, read_order=read_order, evidence=ev,
-                            word_sources=True)) for ev in evs]
+                            word_sources=True, **({"grammar": "on", "grammar_intake": gi} if gi is not None else {}))) for ev in evs]
     fsrc = flat_source(c0, index if trace else None)
     srcs = [fsrc, layers_source(lc)] + [window_source(fa, ev) for ev, fa in fas]
     if assembly:
@@ -706,8 +736,15 @@ def ask_combined(index, question: str, tiers: Optional[Sequence[str]] = None, bu
         cfg["flat"]["placement"] = dict(c0.placement)
     if assembly:
         cfg["assembly"] = {"on": True, "scope": ASSEMBLY_SCOPE, "bridge": False, "layer": 0}
+    gobj = None
+    if gi is not None:
+        cfg["grammar"] = {"on": True, "stem": "whole_word", "flat_order": "question units held, grammar kind, E_Q", "layers": "inherit the query; order unchanged",
+                          "windows": "question units held (stand-ins second), grammar kind"}
+        gobj = {"form": gi.grammar_form(), "standins": gi.standins_obj(), "header": gi.header_row(),
+                "full": {"form": gi.grammar_form(), "standins": gi.standins_obj(True), "reading": gi.reading.to_obj(), "stem": "whole_word",
+                         "foundation_sha256": W.gr.foundation_sha()}}
     sent = _sentence_map(index, srcs)
-    return combine(question, srcs, sent, config=cfg, effort=name, ms=(time.monotonic_ns() - t0) // 1000000, merge=merge)
+    return combine(question, srcs, sent, config=cfg, effort=name, ms=(time.monotonic_ns() - t0) // 1000000, merge=merge, grammar=gobj)
 
 
 def _sentence_map(index, srcs: Sequence[Source]) -> Dict[int, Tuple[str, str]]:
@@ -726,6 +763,10 @@ def format_text(c: CombinedAnswer, show_thought: bool = False) -> str:
     a = c.answer_obj()
     L: List[str] = ["出所ごとの状況（候補の件数、または答えなしの種類）:"]
     for h in a["header"]:
+        if h["source"] == "grammar":                                             # G3-k (L-808)
+            L.append("  grammar: 形 %s / slot %s / 述語 %s / 未知語の代役 %d 件（%s）" % (h["form"], h["slot"] or "なし", h["predicate"] or "なし", h["standins"],
+                                                                                   ", ".join(h["unknown_words"]) or "未知語なし"))
+            continue
         if h["source"] == ASSEMBLED:
             L.append("  %s: %s" % (h["source"], "つなげた文字列 %d 件（平らな十字の候補の単位を同じ文でつなげたもの）" % h["listed"] if h["listed"] else "つなげた文字列なし (%s)" % h["kind"]))
             continue
@@ -763,11 +804,11 @@ def format_text(c: CombinedAnswer, show_thought: bool = False) -> str:
                     i, e["words"][0], m["sid"], m["span"][0], m["span"][1], ",".join(m["aligned_tiers"]) or "なし",
                     " ".join("%s:%s" % (p["tier"], p["unit"]) for p in m["parts"])))
             elif a["merge"] == "none":
-                head = "  [%d]%s" % (i, "【窓の証拠の変種】" if e["marks"] else "")
+                head = "  [%d]%s" % (i, "".join(MARK_TEXT[k] for k in e["marks"]))
                 tail = "  中心: %s%s" % (", ".join(e["centres"]), "  ほかの出所にも同じ語の集合: %s" % ", ".join(e["also_in"]) if e["also_in"] else "")
                 L.append("%s %s%s" % (head, " / ".join(e["words"]), tail))
             else:
-                L.append("  [%d] (%s)%s %s  中心: %s" % (i, ", ".join(e["origins"]), "【窓の証拠の変種】" if e["marks"] else "",
+                L.append("  [%d] (%s)%s %s  中心: %s" % (i, ", ".join(e["origins"]), "".join(MARK_TEXT[k] for k in e["marks"]),
                                                        " / ".join(e["words"]), ", ".join(e["centres"])))
     else:
         L.append("答えなし: %s" % a["verdict"])

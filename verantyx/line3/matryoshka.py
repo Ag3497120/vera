@@ -1106,7 +1106,9 @@ def _read_layer(tier: str, variant: str, layer: Layer, chain: Sequence[Layer], a
 def _variant_chain(stack: LayerStack, res0: cy.TierResult, ans0: Optional[ro.PathAnswer], variant: str,
                    opts: LayerOptions, tier: str, budget: cy.QueryBudget, layer1: Layer) -> List[LayerRun]:
     bounds = opts.bounds
-    q_words = tuple(res0.ctx.query)
+    # G3-k (L-807): the question the layers carry up and read down is the ORIGINAL question units; the unknown-word stand-ins of layer 0 (ctx.standins) select
+    # layer-0 crosses only and never enter the energies (L-802), so they are not passed up as question bundles (no stand-ins: `ctx.query` as before)
+    q_words = tuple(u for u in res0.ctx.query if u not in set(res0.ctx.standins))
     ans_words = _answer_units(ans0)
     # L-233: the units passed to layer 1 (A: the initial query first, then the answer; B: the answer only).
     # The inner query crosses (units from the 7th on, M-5(c)) are part of the initial query: A adds them, B does not.
@@ -1171,7 +1173,9 @@ def run_layers(stack: LayerStack, res0: cy.TierResult, ans0: Optional[ro.PathAns
     tier = res0.tier
     trig = find_triggers(stack.store, res0)
     n_all = len(stack.base.postings)
-    n_cmp = len(set(res0.plan.read) | set(res0.ctx.query))
+    # G3-k (L-810): the unknown-word stand-ins (ctx.standins) are query units of layer 0 that select crosses; they are bundled in layer 1 only if their cross was READ
+    # (plan.read) or they are in the answer -- never merely because they are in ctx.query (before: every stand-in's cross, up to 431, became a layer-1 bundle)
+    n_cmp = len(set(res0.plan.read) | (set(res0.ctx.query) - set(res0.ctx.standins)))
     choice = {"options": {"compress": "bundle only the stable states this question touched (faster)",
                           "same": "bundle every stable state at the same granularity (higher precision)"},
               "chosen": opts.granularity, "bundles_if_compress": n_cmp, "bundles_if_same": n_all}
@@ -1187,7 +1191,7 @@ def run_layers(stack: LayerStack, res0: cy.TierResult, ans0: Optional[ro.PathAns
         rounds += 1
         runs: List[LayerRun] = []
         for v in opts.variants:
-            seeds = set(cur_res.plan.read) | set(cur_res.ctx.query) | set(_answer_units(cur_ans))
+            seeds = set(cur_res.plan.read) | (set(cur_res.ctx.query) - set(cur_res.ctx.standins)) | set(_answer_units(cur_ans))
             seeds = {s for s in seeds if s in stack.base.postings}
             l1 = stack.layer1(opts.granularity, seeds, opts.bounds)
             runs.extend(_variant_chain(stack, cur_res, cur_ans, v, opts, tier, budget, l1))
@@ -1382,10 +1386,11 @@ class LayeredCombined:
 def ask_layered(index: "A.Index", question: str, tiers: Optional[Sequence[str]] = None,
                 budget: cy.QueryBudget = A.DEFAULT_BUDGET, *, options: Optional[LayerOptions] = None,
                 view: str = "all", effort: Optional[str] = None, nodes: Optional[int] = None,
-                base: Optional[A.Combined] = None, **kw) -> LayeredCombined:
+                base: Optional[A.Combined] = None, tier_kw: Optional[Mapping[str, Mapping]] = None, **kw) -> LayeredCombined:
     """ask() with the layers on: layer 0 exactly as ask() gives it, then, per tier, the stability is checked at this
     question and the layers are stacked when it was lost.  `base` = a layer-0 result already computed for the same
-    arguments (the experiments reuse it to compare layers off / on without reading layer 0 twice)."""
+    arguments (the experiments reuse it to compare layers off / on without reading layer 0 twice).  `tier_kw` (G3-k, L-807) = extra keywords of the
+    re-asks of one tier ({tier: {...}}, e.g. the stand-in mark of a question whose unknown words got stand-ins); None = as before."""
     t0 = time.monotonic_ns()
     opts = options or LayerOptions(bounds=bounds_for(effort, nodes))
     c0 = base if base is not None else A.ask(index, question, tiers, budget, view=view, effort=effort, nodes=nodes, **kw)
@@ -1406,7 +1411,8 @@ def ask_layered(index: "A.Index", question: str, tiers: Optional[Sequence[str]] 
 
         def reask(units, o=o):
             ts, facts, store = index.space.tiers[o.tier], index.facts[o.tier], index.stores[o.tier]
-            r = cy.ask_tier(ts, question, store, facts=facts, budget=budget, weights=store.w, units=tuple(units), **akw)
+            r = cy.ask_tier(ts, question, store, facts=facts, budget=budget, weights=store.w, units=tuple(units),
+                            **(akw if not tier_kw or o.tier not in tier_kw else dict(akw, **tier_kw[o.tier])))
             return r, (ro.read_out_result(ts, r, facts) if r.candidates else None)
 
         out.append(run_layers(st, o.result, o.answer, opts, budget=budget, reask=reask))
