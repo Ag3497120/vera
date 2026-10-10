@@ -62,12 +62,14 @@ export PYTHONHASHSEED=0 PYTHONPATH=.
 Build the placement caches for the 300-sentence sample corpus, then ask (`--data` is a jsonl of `{"sent": ..., "source": ...}` lines):
 
 ```bash
-python -m verantyx.cli line3 build --data experiments/line3/data/S300.jsonl --cache /tmp/vera-s300 --structure combined
+python -m verantyx.cli line3 build --data experiments/line3/data/S300.jsonl --cache /tmp/vera-s300 --structure flat --workers 2
 ```
 
 ```bash
-python -m verantyx.cli line3 ask --data experiments/line3/data/S300.jsonl --cache /tmp/vera-s300 --structure combined --effort fast --question "遊眠は何の職業ですか"
+python -m verantyx.cli line3 ask --data experiments/line3/data/S300.jsonl --cache /tmp/vera-s300 --structure flat --effort fast --question "遊眠は日本の何ですか"
 ```
+
+What to expect from the sample: `S300` is one lead sentence from each of 300 different pages, so the sliding windows (`--structure combined`) do not apply to it — they need articles (`source` of the form `title#i`, as in `experiments/line3/bank2/data/fulllead_sents.jsonl`). Placing the three tiers of `S300` took 22 minutes with two workers on an M-series laptop. At `--effort fast` the reader looks at a handful of crosses per tier and reports how many it left unread (the `部分読み` line), so most questions end in a labelled list or a typed abstention; the numbers in the tables above come from `fulllead` at the `standard` preset.
 
 `--format json` prints the full record (candidates with provenance, the three ratios, the abstention type, the read order). `--show-thought` prints the trace. Placing a corpus is the slow part; it is cached per tier.
 
