@@ -584,10 +584,19 @@ def test_reach_report_lines_of_design_2_5(reach_report):
     assert line(r, "| a2 | 71 / 211") == "| a2 | 71 / 211 | 49 / 112 | 25 / 25 |"
 
 
+def _need_t9_audit_records():
+    """reach_windows.py prints the line "question units recomputed from bank2.tsv equal the T9 records: 207 / 207" only when the gitignored
+    experiments/line3/t9/audit/raw/ask_fulllead_standard.jsonl exists; the committed reports (probe_hops.txt, reach_windows.txt) carry that
+    line, so on a clean checkout without the file the generated report has one line less and these two comparisons cannot hold (L-G4-48)."""
+    if not os.path.exists(os.path.join(ROOT, "experiments/line3/t9/audit/raw/ask_fulllead_standard.jsonl")):
+        pytest.skip("experiments/line3/t9/audit/raw/ask_fulllead_standard.jsonl (gitignored) is absent: the reach report omits the T9 line")
+
+
 def test_reach_report_equals_the_probes_committed_output_but_for_its_cut_lists(reach_report):
     """Every line of the probe's committed output is reproduced byte for byte, except that the probe cut column 3 (the
     articles, first 2) and column 5 (the gold sentences, first 4) of the per-item lines; reach_windows prints them whole,
     so there the probe's list is the first 2 / 4 entries of ours (L-531 (5); I2-039 is the only cut line)."""
+    _need_t9_audit_records()
     committed = open(os.path.join(G3, "probe_hops.txt"), encoding="utf-8").read().split("\n")
     if committed and committed[-1] == "":
         committed = committed[:-1]
@@ -603,6 +612,7 @@ def test_reach_report_equals_the_probes_committed_output_but_for_its_cut_lists(r
 
 def test_reach_report_equals_the_committed_report(reach_report):
     """In process (the run's own hash seed); the three seeds 0 / 1 / 12345 were diffed by running the script (L-531)."""
+    _need_t9_audit_records()
     committed = open(os.path.join(G3, "reach_windows.txt"), encoding="utf-8").read().split("\n")
     if committed and committed[-1] == "":
         committed = committed[:-1]
