@@ -15,7 +15,10 @@ The short answer today: **it answers fewer questions than a simple keyword searc
 - Sliding windows read two neighbouring sentences of one article; layers pack unstable crosses into a larger cross; the **combined list** shows the flat read, the layers and the windows as separately labelled blocks (nothing is merged across sources).
 - Same corpus + same question ⇒ the same bytes on an M-series Mac, an Intel Mac and an x86 Linux CI runner (`tools/determinism_probe.py`, `PYTHONHASHSEED` 0 / 1 / 12345).
 
-A 3D view of the structure (three.js): <https://claude.ai/artifact/CqAGojmogqLyhSDBU3Dozb>
+3D views (three.js):
+
+- one stereo cross, with its arms and seats: <https://claude.ai/artifact/CqAGojmogqLyhSDBU3Dozb>
+- the whole structure built from the 592-sentence corpus — the three sovereigns, the layer-1 nests, the sliding windows, the grammar layer and the carry tower (exported with `tools/export_structure_json.py`, see `docs/LINE3_STRUCTURE_OVERVIEW.md`): <https://claude.ai/artifact/BZEvuMkGYR7UhG7AUymPh2>
 
 ## Measured numbers (all with denominators)
 
