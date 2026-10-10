@@ -80,10 +80,18 @@ Local decisions (docs/LINE3_LOCAL_DECISIONS.md; L-60.. kept, L-62 superseded, L-
   L-91 The quotient state is a class of label arrangements; the expanded class (the T4c
        class) is all assignments of the actual units to the label slots (up to arm
        assignment).  build_cross(quotient=False) is the T4c search byte for byte.
+  G1-b (docs/LINE3_G4_GROWTH_METER.md 4.3, docs/LINE3_G1_INITIAL_PLACEMENT.md 3.1; L-G4-20..22, L-G1b-*): `foundation="on"` seats the six
+       arm particles (the foundation, verantyx.line3.foundation) FIXED in the innermost ring of the six arms; the centre stays the data seed
+       found by search (D-1).  A seat swap is a move only if neither seat is a foundation seat (rotations stay moves: they are the identity
+       once the legs are told apart by their particle).  The key is (n, p, a), lexicographic, larger is better: n and p are the I-04 sums
+       over the CONTRACTED cross (the foundation seats removed, the data on both sides neighbours: the seam), a is the adhesion (an
+       integer over 377).  Everything else (F1 ordered insertion, stop / skip, the budget, tied classes held as one state) is unchanged in
+       form.  `foundation="off"` (the default) runs the code that was here before, byte for byte.
 Everything is exact (int / Fraction), deterministic, and hash-seed independent.
 """
 from __future__ import annotations
 
+import dataclasses
 import itertools
 import json
 from dataclasses import dataclass
@@ -91,6 +99,7 @@ from fractions import Fraction
 from typing import Dict, Iterable, List, Mapping, Optional, Sequence, Tuple
 
 from verantyx.line3 import energy as en
+from verantyx.line3 import foundation as fd
 from verantyx.line3.geometry import (
     AXES, CENTER, N_ARMS, Cross, Seat, moves_rotate, moves_swap, rotate, seats, swap,
 )
@@ -108,6 +117,7 @@ CENTER_IDX = 0             # flat index of the centre seat
 Score = Tuple[int, int]
 Flat = Tuple[Optional[str], ...]     # [centre, arm0 k=0..L-1, arm1 ..., ...]
 ZERO2: Score = (0, 0)
+ZERO3: Tuple[int, int, int] = (0, 0, 0)     # G1-b: the key (n, p, a) of a seated cross
 
 
 @dataclass(frozen=True)
@@ -198,6 +208,51 @@ def _layout(L: int) -> _Layout:
     return _LAYOUTS[L]
 
 
+class _FLayout:
+    """G1-b: the layout of a seated cross of arm length L (6L + 1 seats; the innermost seat of every leg is a foundation seat).
+    `edges` / `inc` are the edges of the CONTRACTED cross (the seam, OP-G1-4), indexed over the full flat: on every leg the data seats
+    k = 0 .. L-2 are chained outer -> inner and the innermost data seat (k = L-2) is linked to the centre; a foundation seat (k = L-1) has
+    no edge.  `cons` = the foundation seats, `data` = every other seat (the only ones a move may touch), `col[i]` = the column of seat
+    i in an adhesion row (0 = the centre relation, 1 + arm otherwise)."""
+
+    def __init__(self, L: int) -> None:
+        self.L = L
+        self.n = 6 * L + 1
+        edges: List[Tuple[int, int]] = []
+        for a in range(N_ARMS):
+            for k in range(L - 2):
+                edges.append((1 + a * L + k, 1 + a * L + k + 1))
+            if L >= 2:
+                edges.append((1 + a * L + L - 2, 0))
+        self.edges = tuple(edges)
+        inc: List[List[int]] = [[] for _ in range(self.n)]
+        for ei, (o, i) in enumerate(self.edges):
+            inc[o].append(ei)
+            inc[i].append(ei)
+        self.inc = tuple(tuple(x) for x in inc)
+        self.cons = frozenset(1 + a * L + L - 1 for a in range(N_ARMS))
+        self.data = tuple(i for i in range(self.n) if i not in self.cons)
+        col = [0] * self.n
+        for a in range(N_ARMS):
+            for k in range(L):
+                col[1 + a * L + k] = 1 + a
+        self.col = tuple(col)
+
+
+_FLAYOUTS: Dict[int, _FLayout] = {}
+
+
+def _flayout(L: int) -> _FLayout:
+    if L not in _FLAYOUTS:
+        _FLAYOUTS[L] = _FLayout(L)
+    return _FLAYOUTS[L]
+
+
+def _lay(w: "Weights", L: int):
+    """The layout a search over `w` uses: the plain cross, or (a seated cross) the contracted one."""
+    return _layout(L) if w.fnd is None else _flayout(L)
+
+
 def min_L(count: int) -> int:
     """L-65: smallest L with 6L+1 >= count."""
     L = 1
@@ -211,11 +266,29 @@ def _leg_key(leg: Sequence[Optional[str]]) -> Tuple[str, ...]:
 
 
 def canon(flat: Flat, L: int) -> Flat:
-    """L-61: legs in canonical sorted order (label only)."""
+    """L-61: legs in canonical sorted order (label only).  G1-b: a seated flat (its legs end in foundation seats) tells its legs apart by
+    their particle, so the canonical order is the ladder order of the particles (the arm order of the foundation); never a content order."""
+    c = flat[L]
+    if c is not None and c.startswith(fd.TOKEN_PREFIX):
+        return _canon_seated(flat, L)
     legs = sorted((flat[1 + a * L: 1 + (a + 1) * L] for a in range(N_ARMS)), key=_leg_key)
     out: List[Optional[str]] = [flat[0]]
     for g in legs:
         out.extend(g)
+    return tuple(out)
+
+
+_ARM_RANK: Dict[str, int] = {fd.token(p): i for i, p in enumerate(fd.DEFAULT_SPEC.arms)}
+
+
+def _canon_seated(flat: Flat, L: int) -> Flat:
+    ranks = [_ARM_RANK[flat[1 + a * L + L - 1]] for a in range(N_ARMS)]
+    if ranks == sorted(ranks):
+        return flat
+    order = sorted(range(N_ARMS), key=lambda a: ranks[a])
+    out: List[Optional[str]] = [flat[0]]
+    for a in order:
+        out.extend(flat[1 + a * L: 1 + (a + 1) * L])
     return tuple(out)
 
 
@@ -243,12 +316,36 @@ def from_cross(cross: Cross) -> Flat:
 # --------------------------------------------------------------------------
 # I-04 key
 # --------------------------------------------------------------------------
-class Weights:
-    """Edge weight (n(x,y), p(x,y)) for outer x, inner y; cached per tier (pure cache)."""
+class _FCtx:
+    """G1-b: what a search over a SEATED cross reads besides the edge weights: the adhesion rows (numerator(p) * adj(v, p) per ladder
+    column).  Built from a foundation.Adhesion; the default spec only (the leg order of a seated flat is the ladder order)."""
 
-    def __init__(self, tier: TierSpace) -> None:
+    def __init__(self, adhesion: "fd.Adhesion") -> None:
+        if adhesion.spec != fd.DEFAULT_SPEC:
+            raise ValueError("only the default foundation spec can be searched (the leg order of a seated flat is its ladder order)")
+        self.adhesion = adhesion
+        self.spec = adhesion.spec
+        self.rows = adhesion.rows()
+        self.zero7: Tuple[int, ...] = (0,) * len(adhesion.spec.ladder)
+        self.sha = adhesion.spec.sha256()
+
+    def row(self, u: Optional[str]) -> Tuple[int, ...]:
+        return self.zero7 if u is None else self.rows.get(u, self.zero7)
+
+
+class Weights:
+    """Edge weight (n(x,y), p(x,y)) for outer x, inner y; cached per tier (pure cache).  With an `adhesion` (G1-b) the weights are those
+    of a SEATED search: the edges are those of the contracted cross and the key gains a third component, a."""
+
+    fnd: Optional[_FCtx] = None
+
+    def __init__(self, tier: TierSpace, adhesion: Optional["fd.Adhesion"] = None) -> None:
         self.tier = tier
         self._c: Dict[Tuple[str, str], Score] = {}
+        if adhesion is not None:
+            if adhesion.tier != tier.name:
+                raise ValueError("adhesion of tier %s given for tier %s" % (adhesion.tier, tier.name))
+            self.fnd = _FCtx(adhesion)
 
     def __call__(self, x: Optional[str], y: Optional[str]) -> Score:
         if x is None or y is None:
@@ -311,6 +408,22 @@ def are_interchangeable(w: Weights, pool: Sequence[str], u: str, v: str,
     return True
 
 
+def _refine_twins(rep: Dict[str, str], adhesion: "fd.Adhesion") -> Dict[str, str]:
+    """G1-b: a twin class of L-90 is split by the adhesion row (numerator(p) * adj(u, p) for every particle of the foundation): two units
+    that the I-04 weights cannot tell apart are still different if one of them sticks to a particle the other does not, because
+    swapping them would change a.  The result is again a partition into classes of mutually interchangeable units; the representative
+    is the smallest unit of each part."""
+    parts: Dict[Tuple[str, Tuple[int, ...]], List[str]] = {}
+    for u in sorted(rep):
+        parts.setdefault((rep[u], adhesion.weighted(u)), []).append(u)
+    out: Dict[str, str] = {}
+    for us in parts.values():
+        m = us[0]
+        for u in us:
+            out[u] = m
+    return out
+
+
 class QWeights(Weights):
     """Edge weight on LABELS (L-90): label = representative of a twin class.  Two slots with
     the same label hold two different twins: weight w(u, v) of any two distinct members."""
@@ -318,6 +431,7 @@ class QWeights(Weights):
     def __init__(self, base: Weights, rep: Mapping[str, str]) -> None:
         self.tier = base.tier
         self._c = base._c
+        self.fnd = base.fnd
         self._same: Dict[str, Score] = {}
         by: Dict[str, List[str]] = {}
         for u, r in rep.items():
@@ -343,11 +457,35 @@ def _sub(a: Score, b: Score) -> Score:
     return (a[0] - b[0], a[1] - b[1])
 
 
-def score_flat(w: Weights, flat: Flat, L: int) -> Score:
+def score_flat(w: Weights, flat: Flat, L: int):
+    """The key of an arrangement: (n, p), or (n, p, a) for a seated cross (n, p over the contracted cross, a the adhesion)."""
+    if w.fnd is not None:
+        return _score_seated(w, flat, L)
     s = ZERO2
     for o, i in _layout(L).edges:
         s = _add(s, w(flat[o], flat[i]))
     return s
+
+
+def _seat_a(fnd: _FCtx, u: Optional[str], col: int) -> int:
+    return 0 if u is None else fnd.rows.get(u, fnd.zero7)[col]
+
+
+def _score_seated(w: Weights, flat: Flat, L: int) -> Tuple[int, int, int]:
+    lay = _flayout(L)
+    fnd = w.fnd
+    n = p = 0
+    for o, i in lay.edges:
+        d = w(flat[o], flat[i])
+        n += d[0]
+        p += d[1]
+    a = 0
+    col = lay.col
+    for i in lay.data:
+        u = flat[i]
+        if u is not None:
+            a += _seat_a(fnd, u, col[i])
+    return (n, p, a)
 
 
 def _edge_sum(w: Weights, flat: Sequence[Optional[str]], lay: _Layout, es: Iterable[int]) -> Score:
@@ -370,6 +508,19 @@ def _swap_delta(w: Weights, flat: Flat, lay: _Layout, i: int, j: int) -> Score:
     return _sub(_edge_sum(w, f, lay, es), old)
 
 
+def _swap_delta_seated(w: Weights, flat: Flat, lay: _FLayout, i: int, j: int) -> Tuple[int, int, int]:
+    """(dn, dp, da) of swapping the data seats i and j of a seated cross: the edge part is _swap_delta on the contracted edges, the
+    adhesion part moves each unit to the column of the other seat (the same arm: 0; the centre: the centre relation's column)."""
+    d = _swap_delta(w, flat, lay, i, j)
+    fnd = w.fnd
+    ui, uj = flat[i], flat[j]
+    ci, cj = lay.col[i], lay.col[j]
+    da = 0
+    if ci != cj:
+        da = (_seat_a(fnd, uj, ci) + _seat_a(fnd, ui, cj)) - (_seat_a(fnd, ui, ci) + _seat_a(fnd, uj, cj))
+    return (d[0], d[1], da)
+
+
 def _swapped(flat: Flat, L: int, i: int, j: int) -> Flat:
     f = list(flat)
     f[i], f[j] = f[j], f[i]
@@ -383,9 +534,42 @@ def _flat_sort_key(f: Flat) -> Tuple[Tuple[str, ...], ...]:
     return (_leg_key(f),)
 
 
+def _scan_seated(w: Weights, s: Flat, L: int) -> Tuple[List[Flat], List[Flat], int]:
+    """_scan on a seated cross (G1-b): a swap that touches a foundation seat is not a move (OP-G1-4); the key is (n, p, a)."""
+    lay = _flayout(L)
+    best = ZERO3
+    best_moves: List[Tuple[int, int]] = []
+    equal: Dict[Flat, None] = {}
+    tested = 0
+    data = lay.data
+    nd = len(data)
+    for x in range(nd):
+        i = data[x]
+        for y in range(x + 1, nd):
+            j = data[y]
+            if s[i] == s[j]:
+                continue
+            if i == CENTER_IDX and s[j] is None:
+                continue                  # L-77: an empty centre is not an arrangement
+            tested += 1
+            d = _swap_delta_seated(w, s, lay, i, j)
+            if d > best:
+                best, best_moves = d, [(i, j)]
+            elif d == best and d > ZERO3:
+                best_moves.append((i, j))
+            elif d == ZERO3:
+                t = _swapped(s, L, i, j)
+                if t != s:
+                    equal[t] = None
+    improved = sorted({_swapped(s, L, i, j): None for i, j in best_moves}, key=_flat_sort_key)
+    return improved, sorted(equal, key=_flat_sort_key), tested
+
+
 def _scan(w: Weights, s: Flat, L: int) -> Tuple[List[Flat], List[Flat], int]:
     """All single seat swaps of `s`.  Returns (results of the best improving moves,
     results of the equal-key moves giving a different arrangement, moves tested)."""
+    if w.fnd is not None:
+        return _scan_seated(w, s, L)
     lay = _layout(L)
     best = ZERO2
     best_moves: List[Tuple[int, int]] = []
@@ -445,6 +629,8 @@ def _settle(w: Weights, starts: Iterable[Flat], L: int, work: _Work, budget: Bud
             level = sorted(nxt, key=_flat_sort_key)
         kbest = max(score_flat(w, t, L) for t in terminals)
         comp: Dict[Flat, None] = {t: None for t in terminals if score_flat(w, t, L) == kbest}
+        if len(comp) > budget.max_class:          # L-G4-47 (owner 「規則を適用、数え方の差は受け入れる」): the class built from the terminal arrangements is held to
+            raise _Over("max_class")              # max_class like every later addition (before: checked only when it grew); raised BEFORE the tick of the first queue state
         queue = sorted(comp, key=_flat_sort_key)
         escapes: Dict[Flat, None] = {}
         qi = 0
@@ -472,7 +658,8 @@ def _insert_group(w: Weights, bases: Sequence[Flat], L: int, members: Sequence[s
     """L-64/L-72: insert all members order-free into EVERY base arrangement; at every
     step all (member, empty seat) pairs are scored, the best gain wins, ties branch (all
     kept).  Raises _Over."""
-    lay = _layout(L)
+    lay = _lay(w, L)
+    fnd = w.fnd
     rem0 = tuple(sorted(members))
     frontier: Dict[Tuple[Flat, Tuple[str, ...]], None] = {(b, rem0): None for b in bases}
     done: Dict[Flat, None] = {}
@@ -493,6 +680,8 @@ def _insert_group(w: Weights, bases: Sequence[Flat], L: int, members: Sequence[s
                     for ei in lay.inc[e]:
                         o, i = lay.edges[ei]
                         g = _add(g, w(u if o == e else st[o], u if i == e else st[i]))
+                    if fnd is not None:                       # G1-b: the adhesion of u to the arm (or the centre) of the target seat
+                        g = (g[0], g[1], _seat_a(fnd, u, lay.col[e]))
                     if best is None or g > best:
                         best, picks = g, [(u, e)]
                     elif g == best:
@@ -628,6 +817,91 @@ def verify_class(tier: TierSpace, members: Sequence[Cross]) -> ClassReport:
                        one and fixed and closed and nonempty, nonempty)
 
 
+@dataclass(frozen=True)
+class FoundationClassReport:
+    size: int
+    one_key: bool                   # every member has the same key (n, p, a)
+    members_fixed_points: bool      # no member has an improving swap of two data seats
+    closed: bool                    # every equal-key swap of two data seats stays inside the class
+    constructed_intact: bool        # every member holds the foundation tokens in the innermost ring, in the ladder order
+    swaps_tested: int
+    centres_nonempty: bool
+    is_stable_class: bool
+    key: Optional[Tuple[int, int, int]]
+    matches_record: Optional[bool] = None   # (n, p, a) recomputed here == the key the Placement stored (None = no record given)
+
+
+def seated_key(tier: TierSpace, adhesion: "fd.Adhesion", cross: Cross, w: Optional[Weights] = None) -> Tuple[int, int, int]:
+    """(n, p, a) of a seated Cross computed from geometry's edges on the contracted cross (not the search's code).  `w` = a plain
+    Weights(tier) (a pure cache) that a caller checking many crosses may share."""
+    w = w if w is not None else Weights(tier)
+    flat = from_cross(cross)
+    cf, L2 = fd.contract(flat, cross.L)
+    n, p = cross_score(w, to_cross(cf, L2))
+    return (n, p, fd.a_num(adhesion, flat, cross.L))
+
+
+def verify_class_foundation(tier: TierSpace, members: Sequence[Cross], adhesion: "fd.Adhesion",
+                            expected: Optional[Tuple[int, int, int]] = None) -> FoundationClassReport:
+    """G1-b: independent check (geometry's swap / edges, not the search's code) that a class of a SEATED cross is one key (n, p, a), a
+    fixed point at every member over every swap of two NON-foundation seats, closed under equal-key swaps, with the foundation seats
+    intact (no move generated by the search may touch them; here every pair that touches one is skipped by construction) and the
+    centre non-empty.  Rotations are the identity once the legs are told apart by their particle.  Valid for a class of units
+    (quotient=False, or a quotient build without twins); a quotient class stands for label arrangements.
+    `expected` (review fix, L-G4-46): the key the Placement stored, (score[0], score[1], a_num); the independently recomputed key of the
+    class has to equal it, else `matches_record` is False and the class is not stable."""
+    L = members[0].L
+    w = Weights(tier)
+    ladder_tokens = tuple(fd.token(q) for q in adhesion.spec.arms)
+    here = {canon(from_cross(c), L) for c in members}
+    keys = {seated_key(tier, adhesion, c, w) for c in members}
+    base = next(iter(keys))
+    intact = all(tuple(from_cross(c)[1 + a * L + L - 1] for a in range(N_ARMS)) == ladder_tokens for c in members)
+    fixed = closed = True
+    tested = 0
+    for c in members:
+        for p_, q_ in moves_swap(L):
+            if fd.is_constructed(None if c.get(p_) is None else str(c.get(p_))) or \
+                    fd.is_constructed(None if c.get(q_) is None else str(c.get(q_))):
+                continue                  # OP-G1-4: a swap that touches a foundation seat is not a move
+            if c.get(p_) == c.get(q_):
+                continue
+            c2 = swap(c, p_, q_)
+            if c2.center is None:
+                continue                  # L-77
+            tested += 1
+            k2 = seated_key(tier, adhesion, c2, w)
+            if k2 > base:
+                fixed = False
+            elif k2 == base and canon(from_cross(c2), L) not in here:
+                closed = False
+    one = len(keys) == 1
+    nonempty = all(c.center is not None for c in members)
+    matches = None if expected is None else (one and base == tuple(expected))
+    return FoundationClassReport(len(here), one, fixed, closed, intact, tested, nonempty,
+                                 one and fixed and closed and intact and nonempty and matches is not False, base if one else None, matches)
+
+
+def contract_for_read(p: "Placement") -> "Placement":
+    """G1-b (the seam, for the reader): every member with its foundation seats removed (a plain flat at L - 1), canonical (L-61), the
+    duplicates that arm labels had kept apart merged, sorted; `cross` = the first (as build_cross chooses it).  `score` is already the
+    contracted (n, p).  The identity for a placement without foundation and for one already contracted.
+    Review fix (L-G4-44): the arm labels the contraction merges are kept aside for display in `arm_labels` (aligned with `members`; see
+    Placement.arm_labels); they are not part of the contracted result (excluded from ==, repr and the JSON)."""
+    if p.foundation is None or p.contracted:
+        return p
+    L2 = max(1, p.L - 1)
+    labels: Dict[Flat, set] = {}
+    for m in p.members:
+        c = canon(fd.contract(m, p.L)[0], L2)
+        labels.setdefault(c, set()).add(
+            tuple((fd.particle_of(m[1 + a * p.L + p.L - 1]), tuple(m[1 + a * p.L: 1 + a * p.L + p.L - 1])) for a in range(N_ARMS)))
+    cm = tuple(sorted(labels, key=_flat_sort_key))
+    arm = tuple(tuple(sorted(labels[c], key=lambda lab: tuple((q, _leg_key(leg)) for q, leg in lab))) for c in cm)
+    rep_cross = next(expand_flats(cm[:1], L2, p.twin_sets), cm[0])
+    return dataclasses.replace(p, cross=to_cross(rep_cross, L2), members=cm, L=L2, contracted=True, arm_labels=arm)
+
+
 # --------------------------------------------------------------------------
 # growth of one cross (M-1(b), N-05, N-09, L-72)
 # --------------------------------------------------------------------------
@@ -669,6 +943,15 @@ class Placement:
     # F-1c (L-500..): on_collapse="skip".  Defaults = stop at the first collapse (L-463).
     on_collapse: str = "stop"        # "stop" (L-463) | "skip" (L-501)
     skipped: Tuple[Tuple[int, str, str], ...] = ()   # F-1c: (share, member, budget reason) of every member skipped, in the recorded order
+    # G1-b (L-G4-20..22, L-G1b-*): foundation="on".  Defaults = no foundation (nothing of this is written to the JSON).
+    foundation: Optional[str] = None   # G1-b: the seats_sha of the foundation spec the cross was built with; None = no foundation
+    a_num: Optional[int] = None        # G1-b: the third key component a, an integer over the spec's denominator (377); None = no foundation
+    contracted: bool = False           # G1-b: True = the reader's view (contract_for_read): members are PLAIN flats at L - 1, foundation seats removed
+    # Review fixes (L-G4-44, L-G4-47).  Neither is part of the contracted result: arm_labels is not compared, shown or written.
+    arm_labels: Optional[Tuple[Tuple[Tuple[Tuple[str, Tuple[Optional[str], ...]], ...], ...], ...]] = dataclasses.field(
+        default=None, compare=False, repr=False)   # only on a contract_for_read view: arm_labels[i] = the distinct labellings merged into members[i];
+                                                   # a labelling = (particle, the data seats of that arm outer -> inner) for the six particles in ladder order
+    first_class_over_max: int = 0      # kept settled classes (the seed's, one per kept batch) holding more than budget.max_class arrangements (a verification quantity: 0 since _settle holds the first class to max_class, L-G4-47)
 
     @property
     def centre(self) -> Optional[str]:
@@ -706,7 +989,7 @@ class Placement:
                                            "size_after": s.size_after,
                                            "class_size": s.class_size, "reason": s.reason,
                                            "expanded_size": s.expanded_size}
-        return {"seed": self.seed, "L": self.L, "centres": list(self.centres),
+        o = {"seed": self.seed, "L": self.L, "centres": list(self.centres),
                 "size": self.size, "capacity": self.capacity, "score": list(self.score),
                 "stop": self.stop, "class_size": self.class_size,
                 "members": [list(m) for m in self.members],
@@ -722,6 +1005,10 @@ class Placement:
                     **({} if self.on_collapse == "stop" else
                        {"on_collapse": self.on_collapse,
                         "skipped": [[sh, u, why] for sh, u, why in self.skipped]})})}
+        if self.foundation is not None:                      # G1-b: named only when on, so every committed byte is unchanged
+            o.update({"foundation": self.foundation, "a_num": self.a_num, "contracted": self.contracted,
+                      "first_class_over_max": self.first_class_over_max})
+        return o
 
     def to_bytes(self) -> bytes:
         return json.dumps(self.to_json_obj(), sort_keys=True, separators=(",", ":"),
@@ -814,7 +1101,8 @@ def build_cross(tier: TierSpace, seed: str, w: Optional[Weights] = None,
                 max_groups: Optional[int] = None, budget: Budget = Budget(),
                 quotient: bool = True, pool_groups: Optional[int] = None,
                 group_insert: str = "whole", order: str = "forward",
-                on_collapse: str = "stop") -> Placement:
+                on_collapse: str = "stop", foundation: str = "off",
+                adhesion: Optional["fd.Adhesion"] = None) -> Placement:
     """Build the stable CLASS around `seed` by search, growing group by group (L-72).
     quotient=True (L-90): interchangeable units are held as one group (labels);
     quotient=False: the T4c search (every unit its own label).
@@ -827,7 +1115,18 @@ def build_cross(tier: TierSpace, seed: str, w: Optional[Weights] = None,
     stops there (the later members and groups are not inserted; the counts are recorded).
     on_collapse (F-1c, L-500..; default "stop" = L-463, byte-identical): "skip" (only with
     group_insert="ordered", else ValueError) restores a collapsing member away, records it in
-    `skipped`, and goes on with the next member of the recorded order and then the next groups."""
+    `skipped`, and goes on with the next member of the recorded order and then the next groups.
+    foundation (G1-b, L-G4-20..22; default "off" = every committed byte unchanged): "on" seats the six arm particles of the foundation FIXED in
+    the innermost ring of the six arms (the centre stays the data seed, D-1); L is the smallest with 6L+1 >= the units seated plus the six;
+    no move touches a foundation seat; the key is (n, p, a) with n and p over the CONTRACTED cross (the seam) and a the adhesion; needs
+    `adhesion` (a foundation.Adhesion of this tier: the corpus the tier was cut from is not in a TierSpace)."""
+    fd.check_foundation(foundation)
+    seated = foundation == "on"
+    if seated:
+        if adhesion is None:
+            raise ValueError("foundation='on' needs the adhesion of the tier (foundation.adhesion_of_space)")
+    elif adhesion is not None:
+        raise ValueError("an adhesion is only used with foundation='on'")
     if group_insert not in ("whole", "ordered"):
         raise ValueError("group_insert must be 'whole' or 'ordered'")
     if on_collapse not in ("stop", "skip"):
@@ -838,7 +1137,15 @@ def build_cross(tier: TierSpace, seed: str, w: Optional[Weights] = None,
         raise ValueError("order must be 'forward' or 'reverse'")
     if seed not in tier.postings:
         raise KeyError(seed)
-    w = w or Weights(tier)
+    if seated:
+        if w is not None and (w.fnd is None or w.fnd.adhesion is not adhesion):
+            raise ValueError("w must be Weights(tier, adhesion) of the adhesion given")
+        w = w or Weights(tier, adhesion)
+    elif w is not None and w.fnd is not None:
+        raise ValueError("w carries an adhesion but foundation is 'off'")
+    else:
+        w = w or Weights(tier)
+    nfound = N_ARMS if seated else 0                 # G1-b: the foundation seats count in 6L+1 >= seated units
     groups = _groups(tier, seed)
     total_candidates = sum(len(g) for _, g in groups)
     cut = pool_groups is not None and len(groups) > pool_groups
@@ -846,10 +1153,14 @@ def build_cross(tier: TierSpace, seed: str, w: Optional[Weights] = None,
         groups = groups[:pool_groups]
     pool = [seed] + [u for _, g in groups for u in g]
     rep = find_twins(w, pool) if quotient else {u: u for u in pool}
+    if seated and quotient:
+        rep = _refine_twins(rep, adhesion)           # G1-b (L-G1b-5): twins must also have the same adhesion to every particle
     qw = QWeights(w, rep) if quotient else w
     L = 1
     work0 = _Work(budget)
-    state = _settle(qw, [canon((rep[seed],) + (None,) * 6, 1)], 1, work0, budget)   # L-63, L-70
+    start = fd.foundation_flat(rep[seed]) if seated else canon((rep[seed],) + (None,) * 6, 1)
+    state = _settle(qw, [start], 1, work0, budget)   # L-63, L-70
+    over_max = 1 if len(state) > budget.max_class else 0    # L-G4-47: verification only; _settle refuses such a class, so this stays 0
     size = 1
     counts: Dict[str, int] = {rep[seed]: 1}          # placed twins per label
     steps: List[Step] = []
@@ -872,7 +1183,7 @@ def build_cross(tier: TierSpace, seed: str, w: Optional[Weights] = None,
             batches = [members]
         halted = False
         for bi, batch in enumerate(batches):
-            L2 = min_L(size + len(batch))
+            L2 = min_L(size + len(batch) + nfound)
             bases = [extend(s, L, L2) if L2 > L else s for s in state]
             work = _Work(budget)
             try:
@@ -898,6 +1209,8 @@ def build_cross(tier: TierSpace, seed: str, w: Optional[Weights] = None,
                 halted = True
                 break
             state, L, size = new, L2, size + len(batch)
+            if len(new) > budget.max_class:                  # L-G4-47: verification only (must stay 0: _settle raises max_class first)
+                over_max += 1
             for u in batch:
                 counts[rep[u]] = counts.get(rep[u], 0) + 1
             steps.append(Step(share, batch, STABLE, work.n, size, len(new), None,
@@ -905,6 +1218,9 @@ def build_cross(tier: TierSpace, seed: str, w: Optional[Weights] = None,
         if halted:
             break
     score = score_flat(qw, state[0], L)
+    a_num = None
+    if seated:
+        score, a_num = score[:2], score[2]
     # display names: the smallest PLACED unit of each class (a label, L-90)
     placed = {seed}
     for st in steps:
@@ -916,7 +1232,7 @@ def build_cross(tier: TierSpace, seed: str, w: Optional[Weights] = None,
     name = {r: us[0] for r, us in by_rep.items()}
     twin_sets = tuple(sorted(tuple(us) for us in by_rep.values() if len(us) > 1))
     if any(r != n for r, n in name.items()):
-        state = tuple(sorted({canon(tuple(None if x is None else name[x] for x in f), L)
+        state = tuple(sorted({canon(tuple(x if x is None or fd.is_constructed(x) else name[x] for x in f), L)
                               for f in state}, key=_flat_sort_key))
     tsets = {t[0]: t for t in twin_sets}
     cent = sorted({u for m in state for u in tsets.get(m[0], (m[0],))},
@@ -928,7 +1244,9 @@ def build_cross(tier: TierSpace, seed: str, w: Optional[Weights] = None,
                      score, stop, broke, tuple(steps),
                      total_candidates, budget, twin_sets, quotient,
                      group_insert, order, tuple(order_log), left_in_group, left_after,
-                     on_collapse, tuple(skipped))
+                     on_collapse, tuple(skipped),
+                     *((fd.seats_sha(adhesion.spec), a_num) if seated else ()),
+                     first_class_over_max=over_max)
 
 
 class Placer:
@@ -936,14 +1254,20 @@ class Placer:
 
     def __init__(self, tier: TierSpace, budget: Budget = Budget(), quotient: bool = True,
                  group_insert: str = "whole", order: str = "forward",
-                 on_collapse: str = "stop") -> None:
+                 on_collapse: str = "stop", foundation: str = "off",
+                 adhesion: Optional["fd.Adhesion"] = None) -> None:
+        fd.check_foundation(foundation)
+        if (foundation == "on") != (adhesion is not None):
+            raise ValueError("an adhesion goes with foundation='on' and only with it")
         self.tier = tier
         self.budget = budget
         self.quotient = quotient
         self.group_insert = group_insert
         self.order = order
         self.on_collapse = on_collapse
-        self.w = Weights(tier)
+        self.foundation = foundation
+        self.adhesion = adhesion
+        self.w = Weights(tier, adhesion)
         self._done: Dict[str, Placement] = {}
 
     def cross_for(self, seed: str) -> Placement:
@@ -952,7 +1276,8 @@ class Placer:
             p = self._done[seed] = build_cross(self.tier, seed, self.w, budget=self.budget,
                                                quotient=self.quotient,
                                                group_insert=self.group_insert, order=self.order,
-                                               on_collapse=self.on_collapse)
+                                               on_collapse=self.on_collapse, foundation=self.foundation,
+                                               adhesion=self.adhesion)
         return p
 
     def precompute_all(self, seeds: Optional[Iterable[str]] = None) -> Dict[str, Placement]:
