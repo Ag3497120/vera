@@ -323,6 +323,8 @@ class TierOutcome:
     ms: int = 0                              # wall time (not part of the output bytes)
     raise_skipped: int = 0                   # T7b: budget-limited crosses read that were NOT rebuilt (no state, raise off)
     placement_order: Tuple[dict, ...] = ()   # F1b (L-473): the insertion order of every cross read, only when group_insert != "whole"
+    via_standin: Optional[Tuple[bool, ...]] = None   # G3-k (L-805): per entry, True = it exists only through an unknown-word stand-in; None = grammar off
+    read_via_standin: Optional[Tuple[bool, ...]] = None   # G3-k (L-811): per entry, True = every cross it came from would NOT have been read under the same cap and order without the stand-ins; None = grammar off
 
     @property
     def entries(self) -> Tuple[ro.AnswerEntry, ...]:
@@ -363,6 +365,7 @@ class Combined:
     raise_levels: Tuple[str, ...] = cy.RAISE_LEVELS_DEFAULT   # T7b: levels a cross may be rebuilt at ((): never)
     assembled: Optional[dict] = None                     # F2 (L-485): granularity.assemble_combined(); None = option off
     placement: Optional[dict] = None                     # F1b (L-472): {group_insert, order} of the placements; None = the default (whole)
+    grammar: Optional[dict] = None                       # G3-k (L-805): {"form", "standins", "full"} of the grammar intake; None = grammar off (the bytes of before)
 
     # ---- reference helpers ----
     def outcome(self, tier: str) -> TierOutcome:
@@ -404,9 +407,12 @@ class Combined:
     def read_obj(self) -> dict:
         per = {o.tier: o.read_counts for o in self.outcomes}
         skipped = {o.tier: o.raise_skipped for o in self.outcomes if o.raise_skipped}
-        return {"effort": self.effort, "node_budget": self.node_budget, "rebuild_levels": list(self.raise_levels),
-                "partial": any(v["left_unread"] > 0 for v in per.values()), "per_tier": per,
-                "rebuild_skipped": skipped}
+        o = {"effort": self.effort, "node_budget": self.node_budget, "rebuild_levels": list(self.raise_levels),
+             "partial": any(v["left_unread"] > 0 for v in per.values()), "per_tier": per,
+             "rebuild_skipped": skipped}
+        if self.grammar is not None:                     # G3-k (L-804): named only with the grammar on, so the default bytes are unchanged
+            o["order"] = "qcount+grammar"
+        return o
 
     def _locate(self, which: int) -> Tuple[TierOutcome, int]:
         if isinstance(which, bool) or not isinstance(which, int):
@@ -444,10 +450,17 @@ class Combined:
         one = self.verdict == ANSWER
         ms_ = set(self.most_stable_tiers)
         ents = []
+        pos: Dict[str, int] = {}
         for t, e in self.entries:
             ents.append({"tier": t, "words": list(e.words), "arrangements": e.count, "centres": list(e.centres),
                          "stability": _fs(e.stability), "source_sids": list(e.source_sids),
                          "tier_is_most_stable": t in ms_})
+            if self.grammar is not None:                 # G3-k (L-805, L-815): the position among that tier's entries is counted (never found by value)
+                o_ = self.outcome(t)
+                i_ = pos.get(t, 0)
+                pos[t] = i_ + 1
+                ents[-1]["via_standin"] = o_.via_standin[i_] if o_.via_standin else False
+                ents[-1]["read_via_standin"] = o_.read_via_standin[i_] if o_.read_via_standin else False
         sids = sorted({s for _, e in self.entries for s in e.source_sids})
         o = {"verdict": self.verdict, "view": self.view, "tiers": list(self.shown),
              "most_stable_tiers": list(self.most_stable_tiers), "tie_between_tiers": self.tie_between_tiers,
@@ -462,6 +475,9 @@ class Combined:
             o["assembled"] = self.assembled
         if self.placement is not None:                   # F1b (L-472): only when not the default, so default bytes are unchanged
             o["placement"] = dict(self.placement)
+        if self.grammar is not None:                     # G3-k (L-805): the form, the stand-ins with their chance counts
+            o["grammar_form"] = self.grammar["form"]
+            o["standins"] = self.grammar["standins"]
         return o
 
     def thought_obj(self) -> dict:
@@ -489,6 +505,8 @@ class Combined:
                 "agreement": self.agreement(), "tiers": per}
         if self.placement is not None:                   # F1b (L-472)
             th["placement"] = dict(self.placement)
+        if self.grammar is not None:                     # G3-k
+            th["grammar"] = self.grammar["full"]
         return th
 
     def to_json_obj(self) -> dict:
@@ -579,7 +597,8 @@ STRUCTURES = ("flat", "slide", "combined")           # G3-e (L-654): the structu
 
 def ask(index: Index, question: str, tiers: Optional[Sequence[str]] = None,
         budget: cy.QueryBudget = DEFAULT_BUDGET, *, view: str = "all", effort: Optional[str] = None,
-        nodes: Optional[int] = None, granularity: Optional[str] = None, structure: str = "flat", **kw) -> Combined:
+        nodes: Optional[int] = None, granularity: Optional[str] = None, structure: str = "flat", grammar: str = "off",
+        grammar_intake=None, **kw) -> Combined:
     """I-25: every requested tier is run (none is skipped because another one answered).  `view`: every tier's
     entries labelled (default) or the I-16 most stable tier only.  `effort` (fast | standard | full) or `nodes`
     (crosses per tier): the amount of inference; neither = the whole read (what T7 did).  A budget that leaves
@@ -590,14 +609,22 @@ def ask(index: Index, question: str, tiers: Optional[Sequence[str]] = None,
     axis and window; `**kw` are slide_query.ask_slide's options).  `effort` / `nodes` then count windows.
 
     `structure="combined"` (G3-g, opt-in): the flat cross, the layers (stable-seats-path) and the windows read flat, ONE list in which every candidate
-    is labelled by its origin (verantyx.line3.combined; `**kw` are combined.ask_combined's options, e.g. window_evidence="plain"|"window"|"both")."""
+    is labelled by its origin (verantyx.line3.combined; `**kw` are combined.ask_combined's options, e.g. window_evidence="plain"|"window"|"both").
+
+    `grammar="on"` (G3-k, opt-in; "off" = every committed byte): the unknown RUN words of the question get their stand-ins as ADDITIONAL, marked query units
+    (RUN tier) and the crosses read under the preset cap are ordered by the question units they hold first, then the grammar layer's kind of the cross
+    (the question's slot first), then E_Q (verantyx.line3.wiring; L-800..).  `grammar_intake` = a wiring.GrammarIntake made beforehand (combined shares one)."""
     if structure not in STRUCTURES:
         raise ValueError("structure: %s" % " | ".join(STRUCTURES))
+    if grammar not in ("off", "on"):
+        raise ValueError("grammar: off | on")
     if structure == "combined":
         if granularity:
             raise ValueError("structure='combined' has no granularity option (G3-g, L-726)")
         from verantyx.line3 import combined as CB
-        return CB.ask_combined(index, question, tiers, budget, view=view, effort=effort, nodes=nodes, **kw)
+        return CB.ask_combined(index, question, tiers, budget, view=view, effort=effort, nodes=nodes, grammar=grammar, grammar_intake=grammar_intake, **kw)
+    if grammar == "on" and structure != "flat":
+        raise ValueError("grammar='on' is built for structure 'flat' and 'combined' (G3-k, L-806)")
     if structure == "slide":
         if (tiers is not None and parse_tiers(tiers) != ("RUN",)) or granularity:
             raise ValueError("structure='slide' reads the RUN tier only and has no granularity option (G3-e, L-654)")
@@ -617,9 +644,26 @@ def ask(index: Index, question: str, tiers: Optional[Sequence[str]] = None,
             kw["raise_levels"] = lv
         else:
             kw["raise_budget"] = None
-    outs = [ask_tier_outcome(index, t, question, budget, **kw) for t in names]
+    gi = None
+    if grammar == "on":                                  # G3-k (L-801..L-805)
+        from verantyx.line3 import wiring as W
+        _ix, recs = W.context_of(index)
+        gi = grammar_intake if grammar_intake is not None else W.intake(index.space, question, _ix)
+        orig = frozenset(gi.units)
+        outs = []
+        for t in names:
+            o = ask_tier_outcome(index, t, question, budget, **dict(kw, **W.tier_kw(gi, t, recs)))
+            outs.append(replace(o, via_standin=W.via_standin_of(o.answer, orig, index.stores[t]) if t == W.TIER else tuple(False for _ in o.entries),
+                                read_via_standin=(W.read_via_standin_of(o.answer, o.result.plan.order_only_read) if t == W.TIER
+                                                  else tuple(False for _ in o.entries))))
+    else:
+        outs = [ask_tier_outcome(index, t, question, budget, **kw) for t in names]
     c = combine(question, outs, index.space, index.level, budget, view, name, cap, lv,
                 None if index.placement_is_default else placement_obj(index.group_insert, index.order, index.on_collapse))
+    if gi is not None:
+        c = replace(c, grammar={"form": gi.grammar_form(), "standins": gi.standins_obj(),
+                                "full": {"form": gi.grammar_form(), "standins": gi.standins_obj(True), "reading": gi.reading.to_obj(),
+                                         "stem": "whole_word", "foundation_sha256": W.gr.foundation_sha()}})
     if granularity:                                      # F2 (L-485), opt-in: granularity.SCOPES, or True = the default scope
         from verantyx.line3 import granularity as gr
         c = replace(c, assembled=gr.assemble_combined(
@@ -634,6 +678,11 @@ def format_text(c: Combined, show_thought: bool = False) -> str:
     a = c.answer_obj()
     L: List[str] = []
     rd = a["read"]
+    if c.grammar is not None:                            # G3-k (L-805)
+        gf = c.grammar["form"]
+        L.append("文法層: 形 %s / slot %s / 述語 %s / 未知語の代役 %d 件 (%s)" % (
+            gf["form"], gf["slot"] or "なし", gf["predicate"] or "なし", gf["standin_units"],
+            ", ".join("%s: %d/%d" % (w["word"], w["n_standins"], w["pool"]) for w in c.grammar["standins"]) or "未知語なし"))
     if a["verdict"] == ANSWER:
         L.append("答え (%s): %s" % (a["answer"]["tier"], " / ".join(a["answer"]["path_words"])))
         L.append("  参考の中心: %s" % ", ".join(a["answer"]["reference_centres"]))

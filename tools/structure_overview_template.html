@@ -1,0 +1,695 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Vera Structure Overview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+JP:wght@400;500;600&display=swap">
+<style>
+/* Layout: a full-height 3D stage on the left, a counts and detail panel on the right; the stage stacks above the panel on a phone.
+   Palette: ink-blue ground; one hue per sovereign (RUN coral, WORD mint, CHAR gold-sand); a four-step violet-to-yellow ramp for stability;
+   cyan / orange for sentence N / N+1 inside a window.  Single dark look by choice (a 3D viewer on a dark ground). */
+:root {
+  --bg: #0b1018;
+  --scene: #0b1018;
+  --panel: #121a26;
+  --panel-2: #172131;
+  --fg: #e6edf6;
+  --muted: #8d9bb0;
+  --line: #243349;
+  --accent: #6cb6ff;
+  --run: #ff7a59;
+  --word: #2fd0b5;
+  --char: #e9c46a;
+  --st-low: #8c7ae6;
+  --st-mid: #4aa3ff;
+  --st-high: #9be15d;
+  --st-full: #ffe066;
+  --sent-n: #5ec8ff;
+  --sent-n1: #ffa24d;
+  --axis-x: #7fe0c0;
+  --axis-y: #b69cff;
+  --axis-z: #ffb066;
+  --bad: #ff6b6b;
+  --font-body: "IBM Plex Sans JP", "Hiragino Sans", "Yu Gothic", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body { margin: 0; background: var(--bg); color: var(--fg); font: 13px/1.5 var(--font-body); overflow-x: hidden; }
+#app { display: grid; grid-template-columns: minmax(0, 1fr) 360px; height: 100%; }
+#stage { position: relative; min-width: 0; min-height: 0; overflow: hidden; background: var(--scene); }
+#stage canvas { display: block; width: 100%; height: 100%; touch-action: none; }
+#side { background: var(--panel); border-left: 1px solid var(--line); overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+#side > section { flex: none; }
+h1 { font-size: 15px; font-weight: 600; margin: 0; letter-spacing: .01em; }
+h2 { font-size: 11px; font-weight: 500; margin: 0 0 6px; text-transform: uppercase; letter-spacing: .09em; color: var(--muted); }
+.sub { color: var(--muted); font-size: 12px; margin: 2px 0 0; }
+.mono, td.n, .num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+table { border-collapse: collapse; width: 100%; font-size: 12px; }
+th { text-align: right; font-weight: 500; color: var(--muted); padding: 2px 0 2px 8px; }
+th:first-child, td:first-child { text-align: left; padding-left: 0; }
+td { padding: 2px 0 2px 8px; text-align: right; }
+td.k { text-align: left; padding-left: 0; }
+.sw { display: inline-block; width: 9px; height: 9px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; }
+.bar { display: flex; height: 8px; border-radius: 2px; overflow: hidden; background: var(--panel-2); margin: 3px 0 6px; }
+.bar i { display: block; height: 100%; }
+#controls { position: absolute; left: 12px; top: 12px; width: 232px; background: color-mix(in srgb, var(--panel) 88%, transparent); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; display: flex; flex-direction: column; gap: 8px; max-height: calc(100% - 24px); overflow-y: auto; }
+#controls label { display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 12.5px; }
+#controls input[type=checkbox] { accent-color: var(--accent); margin: 0; }
+#controls .row { display: flex; gap: 6px; flex-wrap: wrap; }
+button { font: inherit; font-size: 12px; color: var(--fg); background: var(--panel-2); border: 1px solid var(--line); border-radius: 6px; padding: 4px 9px; cursor: pointer; }
+button:hover { border-color: var(--accent); }
+button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+input[type=range] { width: 100%; accent-color: var(--accent); }
+#legend { position: absolute; left: 12px; bottom: 12px; background: color-mix(in srgb, var(--panel) 88%, transparent); border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; font-size: 11.5px; display: grid; gap: 3px; max-width: min(430px, calc(100% - 24px)); }
+#legend div { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+#legend .li { display: inline-flex; align-items: center; white-space: nowrap; margin-right: 6px; }
+#legend b { font-weight: 600; margin-right: 8px; }
+#hover { position: absolute; pointer-events: none; background: #05080dE6; border: 1px solid var(--line); border-radius: 6px; padding: 4px 8px; font-size: 12px; white-space: nowrap; display: none; z-index: 5; }
+#stats { position: absolute; right: 12px; top: 12px; font-family: var(--font-mono); font-size: 11px; color: var(--muted); text-align: right; pointer-events: none; }
+#detail { border-bottom: 1px solid var(--line); padding-bottom: 14px; min-height: 80px; }
+#detail .hint { color: var(--muted); }
+.chips { display: flex; flex-wrap: wrap; gap: 3px; }
+.chip { background: var(--panel-2); border: 1px solid var(--line); border-radius: 4px; padding: 0 5px; font-size: 12px; }
+.chip.n { border-color: var(--sent-n); } .chip.n1 { border-color: var(--sent-n1); }
+.arm { display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 6px; margin: 3px 0; align-items: baseline; }
+.arm b { font-family: var(--font-mono); font-weight: 500; color: var(--muted); }
+.sent { color: var(--muted); font-size: 12px; margin: 2px 0; overflow-wrap: anywhere; }
+.kv { display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 2px 8px; font-size: 12px; margin: 6px 0; }
+.kv dt { color: var(--muted); } .kv dd { margin: 0; overflow-wrap: anywhere; }
+.note { color: var(--muted); font-size: 11.5px; }
+.tag { font-size: 10.5px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+@media (max-width: 860px) {
+  body { overflow-y: auto; }
+  #app { grid-template-columns: minmax(0, 1fr); grid-template-rows: 68vh auto; height: auto; }
+  #side { border-left: 0; border-top: 1px solid var(--line); padding-inline: 16px; }
+  #controls { width: 190px; }
+  #legend { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+</style>
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+</head>
+<body>
+<div id="app">
+  <div id="stage">
+    <canvas id="gl" aria-label="3D overview of the built line-3 structure"></canvas>
+    <div id="controls">
+      <div><h1>Vera line 3</h1><p class="sub" id="subtitle"></p></div>
+      <div>
+        <h2>Show</h2>
+        <label><input type="checkbox" id="t-RUN" checked><span class="sw" style="background:var(--run)"></span>RUN sovereign</label>
+        <label><input type="checkbox" id="t-WORD" checked><span class="sw" style="background:var(--word)"></span>WORD sovereign</label>
+        <label><input type="checkbox" id="t-CHAR" checked><span class="sw" style="background:var(--char)"></span>CHAR sovereign</label>
+        <label><input type="checkbox" id="t-layers" checked><span class="sw" style="background:#fff"></span>Layer-1 nests</label>
+        <label><input type="checkbox" id="t-windows" checked><span class="sw" style="background:var(--sent-n1)"></span>Sliding windows</label>
+        <label><input type="checkbox" id="t-grammar" checked><span class="sw" style="background:var(--accent)"></span>Grammar layer</label>
+        <label><input type="checkbox" id="t-carry" checked><span class="sw" style="background:var(--st-low)"></span>Carry tower</label>
+      </div>
+      <div>
+        <h2>Minimum fill <span class="num" id="fillv">0%</span></h2>
+        <input type="range" id="fill" min="0" max="100" step="5" value="0" aria-label="Minimum fill of the stable state">
+      </div>
+      <div class="row">
+        <button id="b-over">Overview</button><button id="b-top">Top down</button>
+        <button id="b-RUN">RUN</button><button id="b-WORD">WORD</button><button id="b-CHAR">CHAR</button>
+        <button id="b-nest">Nests</button><button id="b-slide">Slide</button><button id="b-gram">Grammar</button>
+      </div>
+    </div>
+    <div id="legend"></div>
+    <div id="stats"></div>
+    <div id="hover"></div>
+  </div>
+  <aside id="side">
+    <section id="detail"><h2>Selection</h2><p class="hint">Click a cross, a nest or a window in the view to read its centre, arms, seats, stability and sentences.</p></section>
+    <section id="counts"></section>
+  </aside>
+</div>
+<script type="application/json" id="vera-data">/*__DATA__*/</script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+const D = JSON.parse(document.getElementById('vera-data').textContent);
+const TIERS = ['RUN', 'WORD', 'CHAR'].filter(t => D.tiers[t]);
+const TIER_COL = { RUN: 0xff7a59, WORD: 0x2fd0b5, CHAR: 0xe9c46a };
+const ARMS = ['+x', '-x', '+y', '-y', '+z', '-z'];
+const DIRS = [[1, 0, 0], [-1, 0, 0], [0, 1, 0], [0, -1, 0], [0, 0, 1], [0, 0, -1]];
+const AXIS_COL = [0x7fe0c0, 0x7fe0c0, 0xb69cff, 0xb69cff, 0xffb066, 0xffb066];
+const ST = [0x8c7ae6, 0x4aa3ff, 0x9be15d, 0xffe066];                 // low, mid, high, full
+const ST_NAME = ['< 1/5', '1/5 to < 1/2', '1/2 to < 1', '1 (all placed)'];
+const SENT_N = 0x5ec8ff, SENT_N1 = 0xffa24d;
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const frac = s => { if (!s) return 0; const [p, q] = s.split('/'); return Number(p) / Number(q); };
+const bucketOf = c => { const f = frac(c.stability); return f >= 1 ? 3 : f >= 0.5 ? 2 : f >= 0.2 ? 1 : 0; };
+const fmt = n => Number(n).toLocaleString('en-US');
+
+// ------------------------------------------------------------------ renderer, camera
+const canvas = $('gl'), stage = $('stage');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+renderer.setClearColor(new THREE.Color(getComputedStyle(document.documentElement).getPropertyValue('--scene').trim() || '#0b1018'));
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(48, 1, 0.5, 20000);
+const controls = new OrbitControls(camera, canvas);
+controls.enableDamping = true; controls.dampingFactor = 0.12; controls.screenSpacePanning = true;
+let dirty = true;
+controls.addEventListener('change', () => { dirty = true; });
+
+// ------------------------------------------------------------------ labels
+function label(text, h, color = '#e6edf6', weight = 600) {
+  const c = document.createElement('canvas'), g = c.getContext('2d');
+  const fs = 64; g.font = `${weight} ${fs}px "IBM Plex Sans JP", "Hiragino Sans", sans-serif`;
+  const w = Math.ceil(g.measureText(text).width) + 24; c.width = w; c.height = fs + 28;
+  g.font = `${weight} ${fs}px "IBM Plex Sans JP", "Hiragino Sans", sans-serif`; g.textBaseline = 'middle';
+  g.fillStyle = color; g.fillText(text, 12, c.height / 2 + 2);
+  const tex = new THREE.CanvasTexture(c); tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 4;
+  const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, depthTest: false, transparent: true }));
+  sp.scale.set(h * c.width / c.height, h, 1); sp.renderOrder = 10; return sp;
+}
+
+// ------------------------------------------------------------------ instanced cross batches
+// One batch = beads (InstancedMesh), arms (LineSegments with per-vertex RGBA) and picking proxies (invisible InstancedMesh).
+class Batch {
+  constructor(name) { this.name = name; this.beads = []; this.bcol = []; this.seg = []; this.scol = []; this.items = []; this.group = new THREE.Group(); }
+  push(item, pos, sc, beadsFn, origin = pos) {
+    // beadsFn(add, seg) draws in local coordinates around `origin`: add(x,y,z,r,color), seg(x0,y0,z0,x1,y1,z1,color,alpha)
+    item.beadStart = this.beads.length / 4; item.segStart = this.seg.length / 6; item.pos = pos; item.sc = sc;
+    const [ox, oy, oz] = origin;
+    beadsFn((x, y, z, r, col) => { this.beads.push(x + ox, y + oy, z + oz, r); this.bcol.push(col); },
+            (x0, y0, z0, x1, y1, z1, col, a) => { this.seg.push(x0 + ox, y0 + oy, z0 + oz, x1 + ox, y1 + oy, z1 + oz); this.scol.push(col, a); });
+    item.beadCount = this.beads.length / 4 - item.beadStart; item.segCount = this.seg.length / 6 - item.segStart;
+    item.index = this.items.length; this.items.push(item);
+  }
+  finish() {
+    const nb = this.beads.length / 4, ns = this.seg.length / 6;
+    this.nBeads = nb; this.nSegs = ns;
+    const geo = new THREE.OctahedronGeometry(1, 0);
+    this.mesh = new THREE.InstancedMesh(geo, new THREE.MeshBasicMaterial({ color: 0xffffff }), Math.max(nb, 1));
+    this.base = new Float32Array(Math.max(nb, 1) * 16);
+    const col = new THREE.Color();
+    for (let i = 0; i < nb; i++) {
+      const r = this.beads[i * 4 + 3], o = i * 16;
+      this.base[o] = r; this.base[o + 5] = r; this.base[o + 10] = r; this.base[o + 15] = 1;
+      this.base[o + 12] = this.beads[i * 4]; this.base[o + 13] = this.beads[i * 4 + 1]; this.base[o + 14] = this.beads[i * 4 + 2];
+      this.mesh.setColorAt(i, col.setHex(this.bcol[i]));
+    }
+    this.mesh.instanceMatrix.array.set(this.base); this.mesh.count = nb;
+    this.mesh.frustumCulled = false; this.mesh.raycast = () => {};
+    const lg = new THREE.BufferGeometry();
+    lg.setAttribute('position', new THREE.BufferAttribute(new Float32Array(this.seg), 3));
+    const cols = new Float32Array(ns * 8), c2 = new THREE.Color();
+    for (let i = 0; i < ns; i++) {
+      c2.setHex(this.scol[i * 2]); const a = this.scol[i * 2 + 1];
+      for (let v = 0; v < 2; v++) { const o = i * 8 + v * 4; cols[o] = c2.r; cols[o + 1] = c2.g; cols[o + 2] = c2.b; cols[o + 3] = a; }
+    }
+    this.baseCols = cols.slice();
+    lg.setAttribute('color', new THREE.BufferAttribute(cols, 4));
+    this.lines = new THREE.LineSegments(lg, new THREE.LineBasicMaterial({ vertexColors: true, transparent: true, depthWrite: false }));
+    this.lines.frustumCulled = false;
+    const ni = this.items.length;
+    this.proxy = new THREE.InstancedMesh(new THREE.OctahedronGeometry(1, 0), new THREE.MeshBasicMaterial({ visible: false }), Math.max(ni, 1));
+    this.pbase = new Float32Array(Math.max(ni, 1) * 16);
+    this.items.forEach((it, i) => {
+      const r = it.pickR, o = i * 16;
+      this.pbase[o] = r; this.pbase[o + 5] = r; this.pbase[o + 10] = r; this.pbase[o + 15] = 1;
+      this.pbase[o + 12] = it.pos[0]; this.pbase[o + 13] = it.pos[1]; this.pbase[o + 14] = it.pos[2];
+    });
+    this.proxy.instanceMatrix.array.set(this.pbase); this.proxy.count = ni; this.proxy.frustumCulled = false;
+    this.group.add(this.mesh, this.lines, this.proxy);
+    this.proxy.computeBoundingSphere();
+  }
+  filter(th) {
+    this.items.forEach((it, i) => {
+      const on = it.fill === undefined || it.fill >= th;
+      if (on === it.on) return; it.on = on;
+      const bm = this.mesh.instanceMatrix.array, pm = this.proxy.instanceMatrix.array;
+      for (let k = it.beadStart; k < it.beadStart + it.beadCount; k++) {
+        const o = k * 16; for (const j of [0, 5, 10]) bm[o + j] = on ? this.base[o + j] : 0;
+      }
+      const ca = this.lines.geometry.attributes.color.array;
+      for (let k = it.segStart; k < it.segStart + it.segCount; k++) for (let v = 0; v < 2; v++) { const o = k * 8 + v * 4 + 3; ca[o] = on ? this.baseCols[o] : 0; }
+      const po = i * 16; for (const j of [0, 5, 10]) pm[po + j] = on ? this.pbase[po + j] : 0;
+    });
+    this.mesh.instanceMatrix.needsUpdate = true; this.proxy.instanceMatrix.needsUpdate = true;
+    this.lines.geometry.attributes.color.needsUpdate = true; this.proxy.computeBoundingSphere();
+  }
+}
+const batches = [];
+function newBatch(name) { const b = new Batch(name); batches.push(b); return b; }
+
+// cross with seats along the six arms (flat crosses, layer members); bucket colours
+function flatBeads(c, sc, bucket) {
+  return (add, seg) => {
+    const sp = 0.42 * sc, col = ST[bucket];
+    add(0, 0, 0, 0.3 * sc, col);
+    for (let a = 0; a < 6; a++) {
+      const n = c.arms[a].length, d = DIRS[a], L = Math.max(n, 0.9) * sp;
+      seg(0, 0, 0, d[0] * L, d[1] * L, d[2] * L, col, n ? 0.75 : 0.3);
+      for (let k = 0; k < n; k++) add(d[0] * (k + 1) * sp, d[1] * (k + 1) * sp, d[2] * (k + 1) * sp, 0.15 * sc, col);
+      if (c.n[a] > n) add(d[0] * (n + 1) * sp, d[1] * (n + 1) * sp, d[2] * (n + 1) * sp, 0.1 * sc, 0xffffff);   // arm capped in the export
+    }
+  };
+}
+
+// ------------------------------------------------------------------ world layout (LAYOUT, not data)
+const CELL = 6.0, SP_NEST = 6.4;
+function nestDims(l) { const mx = Math.max(...l.arms.map(a => a.length), 1), sp = Math.min(SP_NEST, 34 / (mx + 1.2)); return { mx, sp, sc: Math.max(0.2, 0.55 * sp / SP_NEST), R: (mx + 1.2) * sp }; }
+const crossById = {}; TIERS.forEach(t => D.tiers[t].crosses.forEach(c => { crossById[c.id] = c; c.tier = t; }));
+const claimed = {}; TIERS.forEach(t => claimed[t] = new Set());
+const layersByTier = {}; TIERS.forEach(t => layersByTier[t] = D.layers.filter(l => l.tier === t));
+TIERS.forEach(t => layersByTier[t].forEach(l => l.members.forEach(m => claimed[t].add(m))));
+const posOf = {};                       // first world position of each cross (grammar lines end there)
+const region = {};                      // per tier: {cx, w, d, group}
+let worldX = 0;
+const slots = TIERS.map(t => {
+  const all = D.tiers[t].crosses.filter(c => !claimed[t].has(c.id));
+  all.forEach(c => c.bucket = bucketOf(c));
+  D.tiers[t].crosses.forEach(c => { c.bucket = bucketOf(c); c.fillN = frac(c.stability); });
+  all.sort((a, b) => b.bucket - a.bucket || b.size - a.size || (a.id < b.id ? -1 : 1));
+  const cols = Math.max(1, Math.ceil(Math.sqrt(all.length))), rows = Math.max(1, Math.ceil(all.length / cols));
+  const ls = layersByTier[t];
+  const R = ls.length ? Math.max(...ls.map(l => nestDims(l).R)) + 6 : 0;
+  const ncols = Math.max(1, Math.ceil(Math.sqrt(ls.length))), nrows = Math.max(1, Math.ceil(ls.length / ncols));
+  const nw = ls.length ? ncols * (2 * R + 10) : 0, nd = ls.length ? nrows * (2 * R + 10) : 0;
+  return { t, all, cols, rows, w: cols * CELL, d: rows * CELL, ls, R, ncols, nw, nd };
+});
+const GAP = 70;
+let cursor = 0;
+slots.forEach(s => { const sw = Math.max(s.w, s.nw); s.cx = cursor + sw / 2; cursor += sw + GAP; });
+const totalW = cursor - GAP;
+slots.forEach(s => { s.cx -= totalW / 2; });
+const maxD = Math.max(...slots.map(s => Math.max(s.d, s.nd)));
+const maxR = Math.max(0, ...slots.map(s => s.R));
+const NEST_Y = 34 + maxR;
+const world = new THREE.Group(); scene.add(world);
+const groups = { layers: new THREE.Group(), windows: new THREE.Group(), grammar: new THREE.Group(), carry: new THREE.Group() };
+Object.values(groups).forEach(g => world.add(g));
+
+// sovereigns: translucent region + field of crosses
+slots.forEach(s => {
+  const g = new THREE.Group(); region[s.t] = g; world.add(g);
+  const bw = s.w + 12, bd = s.d + 12, bh = 24;
+  const box = new THREE.Mesh(new THREE.BoxGeometry(bw, bh, bd), new THREE.MeshBasicMaterial({ color: TIER_COL[s.t], transparent: true, opacity: 0.055, depthWrite: false }));
+  box.position.set(s.cx, 0, 0); g.add(box);
+  const edges = new THREE.LineSegments(new THREE.EdgesGeometry(box.geometry), new THREE.LineBasicMaterial({ color: TIER_COL[s.t], transparent: true, opacity: 0.55 }));
+  edges.position.copy(box.position); g.add(edges);
+  const lab = label(`${s.t}  sovereign`, 20, '#' + new THREE.Color(TIER_COL[s.t]).getHexString());
+  lab.position.set(s.cx, 26, bd / 2 + 10); g.add(lab);
+  const sub = label(`${fmt(D.tiers[s.t].crosses.length)} crosses · ${fmt(D.tiers[s.t].units)} units`, 9, '#8d9bb0', 500);
+  sub.position.set(s.cx, 12, bd / 2 + 10); g.add(sub);
+  const b = newBatch('field-' + s.t); b.tier = s.t; s.batch = b; g.add(b.group);
+  s.all.forEach((c, i) => {
+    const col = i % s.cols, row = Math.floor(i / s.cols);
+    const pos = [s.cx - s.w / 2 + (col + 0.5) * CELL, 0, -s.d / 2 + (row + 0.5) * CELL];
+    const item = { kind: 'cross', id: c.id, tier: s.t, data: c, fill: c.fillN, pickR: 1.8, on: true };
+    b.push(item, pos, 1, flatBeads(c, 1, c.bucket));
+    if (!posOf[c.id]) posOf[c.id] = pos;
+  });
+  b.finish();
+});
+
+// layer-1 nests: an upper cross whose seats ARE the lower crosses; drawn as a wireframe octahedron around its members
+const nestFrames = [];
+const nestBatches = [];
+const layerT = {};
+slots.forEach(s => {
+  if (!s.ls.length) return;
+  const LG = layerT[s.t] = new THREE.Group(); groups.layers.add(LG);
+  const plate = new THREE.Mesh(new THREE.PlaneGeometry(s.nw + 16, s.nd + 16), new THREE.MeshBasicMaterial({ color: TIER_COL[s.t], transparent: true, opacity: 0.045, side: THREE.DoubleSide, depthWrite: false }));
+  plate.rotation.x = -Math.PI / 2; plate.position.set(s.cx, NEST_Y - s.R - 6, 0); LG.add(plate);
+  const pl = label(`layer 1 · ${s.t}`, 11, '#' + new THREE.Color(TIER_COL[s.t]).getHexString());
+  pl.position.set(s.cx, NEST_Y - s.R - 2, s.nd / 2 + 12); LG.add(pl);
+  const b = newBatch('nest-' + s.t); b.tier = s.t; nestBatches.push(b); LG.add(b.group);
+  const pitch = 2 * s.R + 10;
+  s.ls.forEach((l, i) => {
+    const col = i % s.ncols, row = Math.floor(i / s.ncols);
+    const cx = s.cx - s.nw / 2 + (col + 0.5) * pitch, cz = -s.nd / 2 + (row + 0.5) * pitch, cy = NEST_Y;
+    const nd = nestDims(l), Rn = nd.R, SPn = nd.sp, scm = nd.sc;
+    // the nest itself (an item: pick it by its centre member)
+    const lit = { kind: 'layer', id: l.id, tier: s.t, data: l, fill: frac(l.stability), pickR: 2.4, on: true, nestCentre: true };
+    const lb = frac(l.stability) >= 1 ? 3 : frac(l.stability) >= 0.5 ? 2 : frac(l.stability) >= 0.2 ? 1 : 0;
+    l.bucket = lb;
+    // members on seats: centre + arms
+    const placed = new Set();
+    const mem = (id, x, y, z, sc, tether) => {
+      const c = crossById[id]; if (!c) return;
+      placed.add(id);
+      const it = { kind: 'cross', id, tier: s.t, data: c, fill: c.fillN, pickR: 1.5, on: true, copyOf: l.id };
+      const fb = flatBeads(c, sc, c.bucket);
+      b.push(it, [cx + x, cy + y, cz + z], sc, (add, seg) => { fb(add, seg); if (tether) seg(0, 0, 0, -x, -y, -z, TIER_COL[s.t], 0.2); });
+      if (!posOf[id]) posOf[id] = [cx + x, cy + y, cz + z];
+    };
+    b.push(lit, [cx, cy + Rn, cz], 0.0001, (add, seg) => {          // the enclosing cross: arms through the member seats, in the tier colour; picked at its top vertex
+      for (let a = 0; a < 6; a++) { const d = DIRS[a], L = Rn; seg(0, 0, 0, d[0] * L, d[1] * L, d[2] * L, TIER_COL[s.t], 0.9); }
+    }, [cx, cy, cz]);
+    mem(l.centre, 0, 0, 0, scm);
+    l.arms.forEach((arm, a) => arm.forEach((id, k) => { const d = DIRS[a]; mem(id, d[0] * (k + 1) * SPn, d[1] * (k + 1) * SPn, d[2] * (k + 1) * SPn, scm); }));
+    // members without a seat on an arm (twins, or arms cut at the export cap): on a shell inside the octahedron
+    const rest = l.members.filter(m => !placed.has(m));
+    const ga = Math.PI * (3 - Math.sqrt(5)), rs = Rn * 0.5;
+    rest.forEach((id, j) => {
+      const yy = 1 - (j + 0.5) / Math.max(rest.length, 1) * 2, rr = Math.sqrt(Math.max(0, 1 - yy * yy)), th = ga * j;
+      const x = Math.cos(th) * rr * rs * 0.8, y = yy * rs * 0.8, z = Math.sin(th) * rr * rs * 0.8;
+      mem(id, x, y, z, scm, true);
+    });
+    // wireframe octahedron
+    const v = [[Rn, 0, 0], [-Rn, 0, 0], [0, Rn, 0], [0, -Rn, 0], [0, 0, Rn], [0, 0, -Rn]];
+    const e = []; [[0, 2], [0, 3], [0, 4], [0, 5], [1, 2], [1, 3], [1, 4], [1, 5], [2, 4], [2, 5], [3, 4], [3, 5]].forEach(([i, j]) => e.push(...v[i], ...v[j]));
+    const eg = new THREE.BufferGeometry(); eg.setAttribute('position', new THREE.BufferAttribute(new Float32Array(e), 3));
+    const fr = new THREE.LineSegments(eg, new THREE.LineBasicMaterial({ color: TIER_COL[s.t], transparent: true, opacity: 0.8 }));
+    fr.position.set(cx, cy, cz); LG.add(fr); nestFrames.push(fr);
+    const tag = label(l.centre_word, 4.2, '#e6edf6', 500); tag.position.set(cx, cy + Rn + 6, cz); LG.add(tag);
+    l.world = [cx, cy, cz];
+  });
+  b.finish();
+});
+
+// sliding windows: a band in front of the sovereigns
+const winBatch = newBatch('windows'); groups.windows.add(winBatch.group);
+const W = D.windows || [];
+const bySet = {}; W.forEach(w => (bySet[w.set] = bySet[w.set] || []).push(w));
+const zFront = maxD / 2 + 110;
+let winBounds = null;
+function windowBeads(w, sc) {
+  return (add, seg) => {
+    const sp = 0.5 * sc, Lw = Math.max(w.L, 1);
+    const cs = w.seats.find(s => s[0] === 'centre');
+    add(0, 0, 0, 0.36 * sc, w.stable ? (cs && cs[3] === 'next' ? SENT_N1 : SENT_N) : 0xff6b6b);
+    for (let a = 0; a < 6; a++) {
+      const d = DIRS[a], seats = w.seats.filter(s => s[0] === ARMS[a]);
+      const reserved = a >= 4;            // z arms are reserved for sentence N+1
+      seg(0, 0, 0, d[0] * Lw * sp, d[1] * Lw * sp, d[2] * Lw * sp, AXIS_COL[a], seats.length ? 0.8 : 0.22);
+      seats.forEach(s => { const dd = s[1] * sp; add(d[0] * dd, d[1] * dd, d[2] * dd, 0.17 * sc, s[3] === 'next' ? SENT_N1 : SENT_N); });
+    }
+  };
+}
+const articleSets = [], gridSets = [], linkLines = [];
+Object.entries(bySet).forEach(([k, ws]) => {
+  const real = ws.filter(w => w.sid_b !== null).length / ws.length;
+  (real > 0.3 ? articleSets : gridSets).push([k, ws]);
+});
+let zc = zFront, minX = 1e9, maxX = -1e9;
+articleSets.forEach(([k, ws]) => {
+  const arts = []; ws.forEach(w => { let a = arts[arts.length - 1]; if (!a || a.title !== w.article) arts.push(a = { title: w.article, ws: [] }); a.ws.push(w); });
+  const big = arts.length > 30;                                   // many articles: compact blocks of 25 columns
+  const SX = big ? 14 : 44, SZ = big ? 11 : 36, SC = big ? 0.75 : 1.6, PER = big ? 25 : arts.length;
+  const z0 = zc; let zRow = zc;
+  for (let r0 = 0; r0 < arts.length; r0 += PER) {
+    const row = arts.slice(r0, r0 + PER), nz = Math.max(...row.map(a => a.ws.length));
+    row.forEach((a, ai) => {
+      const x = (ai - (row.length - 1) / 2) * SX;
+      if (!big) { const lab = label(a.title, 4.6, '#e6edf6', 500); lab.position.set(x, 9, zRow - 14); groups.windows.add(lab); }
+      a.ws.forEach((w, j) => {
+        const pos = [x, 0, zRow + j * SZ];
+        winBatch.push({ kind: 'window', id: w.id, tier: 'slide', data: w, pickR: big ? 2.0 : 3.4, on: true }, pos, SC, windowBeads(w, SC));
+        if (j > 0) linkLines.push([x, 0, zRow + (j - 1) * SZ], pos);       // the slide: sentence N+1 of window j-1 is sentence N of window j
+      });
+    });
+    zRow += nz * SZ + (big ? 8 : 60);
+  }
+  const wid = Math.min(arts.length, PER) * SX + 20, dep = zRow - z0 - (big ? 8 : 60) + SZ;
+  const plate = new THREE.Mesh(new THREE.BoxGeometry(wid, 4, dep), new THREE.MeshBasicMaterial({ color: SENT_N1, transparent: true, opacity: 0.05, depthWrite: false }));
+  plate.position.set(0, -6, z0 - SZ / 2 + dep / 2); groups.windows.add(plate);
+  const e = new THREE.LineSegments(new THREE.EdgesGeometry(plate.geometry), new THREE.LineBasicMaterial({ color: SENT_N1, transparent: true, opacity: 0.4 })); e.position.copy(plate.position); groups.windows.add(e);
+  const ttl = label(`slide band · ${ws.length} windows over ${arts.length} articles · sentence N + N+1 · ${k}`, big ? 10 : 9, '#ffa24d'); ttl.position.set(0, 14, z0 - 20); groups.windows.add(ttl);
+  zc = zRow + 30;
+});
+gridSets.forEach(([k, ws]) => {
+  const cols = Math.ceil(Math.sqrt(ws.length * 1.6)), SX = 10;
+  ws.forEach((w, i) => {
+    const col = i % cols, row = Math.floor(i / cols);
+    winBatch.push({ kind: 'window', id: w.id, tier: 'slide', data: w, pickR: 2.4, on: true }, [(col - (cols - 1) / 2) * SX, 0, zc + row * SX], 0.8, windowBeads(w, 0.8));
+  });
+  const rows = Math.ceil(ws.length / cols);
+  const ttl = label(`${k} windows · ${ws.length} (one sentence per article: z arms reserved for a constructed pad)`, 7, '#ffa24d'); ttl.position.set(0, 12, zc - 12); groups.windows.add(ttl);
+  zc += rows * SX + 40;
+});
+winBatch.finish();
+if (linkLines.length) {
+  const arr = []; linkLines.forEach(p => arr.push(...p));
+  const lg = new THREE.BufferGeometry(); lg.setAttribute('position', new THREE.BufferAttribute(new Float32Array(arr), 3));
+  groups.windows.add(new THREE.LineSegments(lg, new THREE.LineDashedMaterial({ color: SENT_N1, dashSize: 1.2, gapSize: 0.8, transparent: true, opacity: 0.8 })));
+  const ls = groups.windows.children[groups.windows.children.length - 1]; ls.computeLineDistances();
+}
+
+// grammar layer: the foundation cross (は at the centre, six particles on the arms) above RUN
+const gramY = NEST_Y + maxR + 80;
+const runSlot = slots.find(s => s.t === 'RUN') || slots[0];
+const gram = D.grammar;
+const gbeads = [];
+{
+  const gc = [runSlot.cx, gramY, 0], g = groups.grammar;
+  const ttl = label('grammar layer · foundation cross', 11, '#6cb6ff'); ttl.position.set(gc[0], gc[1] + 38, 0); g.add(ttl);
+  const tot = p => (p.totals && p.totals.RUN) || 0;
+  const maxT = Math.max(1, ...gram.particles.map(tot));
+  const rad = p => 3.2 + 7.5 * Math.sqrt(tot(p) / maxT);
+  const posP = {};
+  gram.particles.forEach(p => {
+    const a = ARMS.indexOf(p.arm), d = a < 0 ? [0, 0, 0] : DIRS[a], R = 28;
+    const pos = [gc[0] + d[0] * R, gc[1] + d[1] * R, gc[2] + d[2] * R]; posP[p.p] = pos;
+    const m = new THREE.Mesh(new THREE.SphereGeometry(rad(p), 20, 14), new THREE.MeshBasicMaterial({ color: p.arm === 'centre' ? 0xe6edf6 : a < 2 ? AXIS_COL[0] : a < 4 ? AXIS_COL[2] : AXIS_COL[4], transparent: true, opacity: 0.9 }));
+    m.position.set(...pos); g.add(m);
+    const t = label(p.p, 9, '#05080d', 600); t.position.set(pos[0], pos[1], pos[2] + rad(p) + 0.5); t.material.depthTest = true; g.add(t);
+    const t2 = label(`${p.arm} · ${tot(p)} · ${p.weight}`, 3.6, '#8d9bb0', 400); t2.position.set(pos[0], pos[1] - rad(p) - 3, pos[2]); g.add(t2);
+    if (a >= 0) {
+      const ls = new THREE.BufferGeometry(); ls.setAttribute('position', new THREE.BufferAttribute(new Float32Array([...gc, ...pos]), 3));
+      g.add(new THREE.Line(ls, new THREE.LineBasicMaterial({ color: 0x6cb6ff, transparent: true, opacity: 0.6 })));
+    }
+    gbeads.push(p);
+  });
+  // faint lines to the RUN crosses whose kind is that particle (sampled, at most 40 per particle; a tied kind joins each tied particle, 10 each)
+  const lines = [], runCs = (D.tiers.RUN ? D.tiers.RUN.crosses : []);
+  const byP = {}; runCs.forEach(c => { if (!c.kind || c.kind[0] === 'none' || !posOf[c.id]) return; c.kind[1].forEach(p => (byP[p] = byP[p] || []).push([c, c.kind[0] === 'tied'])); });
+  Object.entries(byP).forEach(([p, arr]) => {
+    const own = arr.filter(x => !x[1]), tied = arr.filter(x => x[1]);
+    const take = (a, n) => { const st = Math.max(1, Math.floor(a.length / n)); return a.filter((_, i) => i % st === 0).slice(0, n); };
+    take(own, 40).concat(take(tied, 10)).forEach(([c]) => { const q = posOf[c.id], s = posP[p]; if (s) lines.push(...s, ...q); });
+  });
+  const lg = new THREE.BufferGeometry(); lg.setAttribute('position', new THREE.BufferAttribute(new Float32Array(lines), 3));
+  g.add(new THREE.LineSegments(lg, new THREE.LineBasicMaterial({ color: 0x6cb6ff, transparent: true, opacity: 0.11, depthWrite: false })));
+  groups.grammar.userData.lineCount = lines.length / 6;
+}
+
+// carry tower: the committed c3b measurement, level sizes (the dot positions on a disc are layout)
+let towerPos = null;
+if (D.carry && D.carry.data && D.carry.data.units_per_level) {
+  const up = D.carry.data.units_per_level, g = groups.carry;
+  const tx = totalW / 2 + 140, ty0 = 0;
+  towerPos = [tx, 0, 0];
+  const maxU = Math.max(...up);
+  const pts = [], cols = [], tc = new THREE.Color();
+  up.forEach((n, lv) => {
+    const r = 6 + 34 * Math.sqrt(n / maxU), y = ty0 + lv * 44;
+    const disc = new THREE.Mesh(new THREE.CylinderGeometry(r, r, 2, 48), new THREE.MeshBasicMaterial({ color: 0x8c7ae6, transparent: true, opacity: 0.12, depthWrite: false }));
+    disc.position.set(tx, y, 0); g.add(disc);
+    const ring = new THREE.LineSegments(new THREE.EdgesGeometry(disc.geometry, 30), new THREE.LineBasicMaterial({ color: 0x8c7ae6, transparent: true, opacity: 0.6 })); ring.position.copy(disc.position); g.add(ring);
+    const pl = D.carry.data.per_level ? D.carry.data.per_level[String(lv)] : null;
+    const t = label(`level ${lv} · ${fmt(n)} unit${n === 1 ? '' : 's'}` + (pl ? ` · carry med ${pl.carry.med}` : ''), 7, '#c9bff5', 500); t.position.set(tx + r + 4, y + 3, 0); t.center.set(0, 0.5); g.add(t);
+    const ga = Math.PI * (3 - Math.sqrt(5));
+    for (let i = 0; i < n; i++) { const rr = r * 0.92 * Math.sqrt((i + 0.5) / n), th = i * ga; pts.push(tx + Math.cos(th) * rr, y + 2, Math.sin(th) * rr); tc.setHex(0xc9bff5); cols.push(tc.r, tc.g, tc.b); }
+  });
+  const pg = new THREE.BufferGeometry(); pg.setAttribute('position', new THREE.BufferAttribute(new Float32Array(pts), 3)); pg.setAttribute('color', new THREE.BufferAttribute(new Float32Array(cols), 3));
+  g.add(new THREE.Points(pg, new THREE.PointsMaterial({ size: 2.2, vertexColors: true, sizeAttenuation: true, transparent: true, opacity: 0.9 })));
+  const spine = new THREE.BufferGeometry(); spine.setAttribute('position', new THREE.BufferAttribute(new Float32Array([tx, 0, 0, tx, (up.length - 1) * 44, 0]), 3));
+  g.add(new THREE.Line(spine, new THREE.LineBasicMaterial({ color: 0xc9bff5, transparent: true, opacity: 0.4 })));
+  const tt = label('carry tower · packs go up one level when a unit closes', 8, '#c9bff5'); tt.position.set(tx, (up.length) * 44 + 4, 0); g.add(tt);
+  const t3 = label(`RUN · low · rule ${D.carry.data.rule} · ${D.carry.data.n} sentences · ${fmt(D.carry.data.packs)} packs`, 5, '#8d9bb0', 400); t3.position.set(tx, (up.length) * 44 - 6, 0); g.add(t3);
+} else { $('t-carry').closest('label').hidden = true; }
+
+// ------------------------------------------------------------------ camera presets
+function bounds(obj) { const b = new THREE.Box3(); obj.updateMatrixWorld(true); obj.traverse(o => { if (o.isSprite) return; if (o.geometry && o.visible) { o.geometry.computeBoundingBox(); if (o.geometry.boundingBox && !(o.isInstancedMesh && o.material.visible === false)) { const bb = o.geometry.boundingBox.clone(); if (o.isInstancedMesh) return; bb.applyMatrix4(o.matrixWorld); b.union(bb); } } }); return b; }
+function frame(box, pitchDeg, yawDeg, pad = 1.05) {
+  const c = box.getCenter(new THREE.Vector3()), s = box.getSize(new THREE.Vector3());
+  const fov = camera.fov * Math.PI / 180, asp = camera.aspect;
+  const rad = Math.max(s.length() / 2, 1);
+  const dist = rad * pad / Math.sin(Math.min(fov / 2, Math.atan(Math.tan(fov / 2) * asp)));
+  const p = pitchDeg * Math.PI / 180, y = yawDeg * Math.PI / 180;
+  controls.target.copy(c);
+  camera.position.set(c.x + dist * Math.cos(p) * Math.sin(y), c.y + dist * Math.sin(p), c.z + dist * Math.cos(p) * Math.cos(y));
+  camera.near = Math.max(0.5, dist / 500); camera.far = dist * 20; camera.updateProjectionMatrix(); controls.update(); dirty = true;
+}
+function sceneBox() { const b = new THREE.Box3(); [...Object.values(region), groups.layers, groups.windows, groups.grammar, groups.carry].forEach(g => { if (g.visible) b.union(bounds(g)); }); if (b.isEmpty()) b.set(new THREE.Vector3(-50, -10, -50), new THREE.Vector3(50, 10, 50)); return b; }
+function boxOf(g) { return bounds(g); }
+const preset = {
+  over: () => frame(sceneBox(), 50, 10, 0.7),
+  top: () => frame(sceneBox(), 89, 0, 0.95),
+  RUN: () => frame(boxOf(region.RUN), 55, 0), WORD: () => frame(boxOf(region.WORD), 55, 0), CHAR: () => frame(boxOf(region.CHAR), 55, 0),
+  nest: () => frame(boxOf(groups.layers), 30, 18, 0.8), slide: () => frame(boxOf(groups.windows), 45, 0, 0.9), gram: () => frame(boxOf(groups.grammar), 20, 25, 0.95)
+};
+$('b-over').onclick = preset.over; $('b-top').onclick = preset.top;
+['RUN', 'WORD', 'CHAR'].forEach(t => { const b = $('b-' + t); if (!D.tiers[t]) b.hidden = true; else b.onclick = preset[t]; });
+$('b-nest').onclick = preset.nest; $('b-slide').onclick = preset.slide; $('b-gram').onclick = preset.gram;
+
+// ------------------------------------------------------------------ toggles and filter
+TIERS.forEach(t => { $('t-' + t).onchange = e => { region[t].visible = e.target.checked; if (layerT[t]) layerT[t].visible = e.target.checked; dirty = true; }; });
+$('t-layers').onchange = e => { groups.layers.visible = e.target.checked; dirty = true; };
+$('t-windows').onchange = e => { groups.windows.visible = e.target.checked; dirty = true; };
+$('t-grammar').onchange = e => { groups.grammar.visible = e.target.checked; dirty = true; };
+$('t-carry').onchange = e => { groups.carry.visible = e.target.checked; dirty = true; };
+let ft = null;
+$('fill').oninput = e => { $('fillv').textContent = e.target.value + '%'; clearTimeout(ft); ft = setTimeout(() => { batches.forEach(b => b.filter(Number(e.target.value) / 100)); dirty = true; }, 60); };
+
+// ------------------------------------------------------------------ picking: hover label and click detail
+const ray = new THREE.Raycaster(), mouse = new THREE.Vector2();
+function pickables() {
+  const out = [];
+  batches.forEach(b => {
+    if (!b.proxy) return;
+    let vis = b.group.parent ? true : true, o = b.group; while (o) { if (!o.visible) { vis = false; break; } o = o.parent; }
+    if (vis) out.push(b);
+  });
+  return out;
+}
+function pick(ev) {
+  const r = canvas.getBoundingClientRect();
+  mouse.set(((ev.clientX - r.left) / r.width) * 2 - 1, -((ev.clientY - r.top) / r.height) * 2 + 1);
+  ray.setFromCamera(mouse, camera);
+  let best = null;
+  pickables().forEach(b => { b.proxy.matrixWorldNeedsUpdate = true; const hit = ray.intersectObject(b.proxy, false)[0]; if (hit && (!best || hit.distance < best.d)) best = { d: hit.distance, item: b.items[hit.instanceId] }; });
+  return best && best.item;
+}
+const hov = $('hover'); let hoverT = 0;
+canvas.addEventListener('pointermove', ev => {
+  const now = performance.now(); if (now - hoverT < 40) return; hoverT = now;
+  const it = pick(ev);
+  if (!it) { hov.style.display = 'none'; canvas.style.cursor = 'grab'; return; }
+  canvas.style.cursor = 'pointer';
+  hov.innerHTML = hoverText(it); hov.style.display = 'block';
+  const r = stage.getBoundingClientRect(); hov.style.left = Math.min(ev.clientX - r.left + 14, r.width - hov.offsetWidth - 8) + 'px'; hov.style.top = (ev.clientY - r.top + 14) + 'px';
+});
+canvas.addEventListener('pointerleave', () => { hov.style.display = 'none'; });
+let down = null; canvas.addEventListener('pointerdown', e => { down = [e.clientX, e.clientY]; });
+canvas.addEventListener('pointerup', e => { if (!down) return; const moved = Math.hypot(e.clientX - down[0], e.clientY - down[1]); down = null; if (moved < 5) select(pick(e)); });
+function hoverText(it) {
+  const d = it.data;
+  if (it.kind === 'window') return `<b>window ${esc(d.id)}</b> · ${esc(d.article)} · sid ${d.sid_a}${d.sid_b === null ? ' + pad' : ' / ' + d.sid_b}`;
+  if (it.kind === 'layer') return `<b>layer-1 ${esc(d.tier)}</b> · centre ${esc(d.centre_word)} · ${d.n_members} members`;
+  return `<b>${esc(it.tier)}</b> · ${esc(d.centre)} · ${d.size} seats · fill ${esc(d.stability)}${it.copyOf ? ' · in a nest' : ''}`;
+}
+const marker = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.OctahedronGeometry(1, 0)), new THREE.LineBasicMaterial({ color: 0xffffff, depthTest: false })); marker.visible = false; marker.renderOrder = 20; scene.add(marker);
+function chips(arr, cls = '') { return arr.map(s => `<span class="chip ${cls}">${esc(s)}</span>`).join(''); }
+function sentLines(c) {
+  const ids = c.sids || []; let h = '';
+  ids.slice(0, 5).forEach(i => { const t = D.corpus.sentences[String(i)]; if (t) h += `<p class="sent"><span class="num">#${i}</span> ${esc(t)}</p>`; });
+  if (c.ns > ids.length) h += `<p class="note">${c.ns} sentences contain the centre; ${ids.length} ids exported.</p>`;
+  return h;
+}
+function select(it) {
+  const el = $('detail');
+  if (!it) { marker.visible = false; el.innerHTML = '<h2>Selection</h2><p class="hint">Click a cross, a nest or a window in the view to read its centre, arms, seats, stability and sentences.</p>'; dirty = true; return; }
+  const d = it.data; let h = '';
+  if (it.kind === 'cross') {
+    h += `<h2>${esc(it.tier)} cross ${esc(d.id)}${it.copyOf ? ' (seen inside a layer-1 nest)' : ''}</h2>`;
+    h += `<dl class="kv"><dt>centre</dt><dd><b>${esc(d.centre)}</b>${d.centres ? ' (class centres: ' + esc(d.centres.join(', ')) + ')' : ''}</dd><dt>seed</dt><dd>${esc(d.seed)}</dd>`;
+    h += `<dt>fill</dt><dd class="mono">${esc(d.stability)} <span class="note">= ${d.size} placed / ${d.cand + 1} (candidates + seed)</span></dd><dt>stop</dt><dd>${esc(d.stop)}</dd>`;
+    h += `<dt>tied class</dt><dd class="mono">${fmt(d.tied)} arrangements${d.exp != d.tied ? ' (expanded ' + esc(String(d.exp)) + ')' : ''}</dd><dt>twins</dt><dd class="mono">${d.twins}</dd><dt>arm length L</dt><dd class="mono">${d.L}</dd>`;
+    if (d.kind) h += `<dt>grammar kind</dt><dd>${esc(d.kind[0])} ${esc(d.kind[1].join(' '))} <span class="note">${d.kind[2]} attachments</span></dd>`;
+    h += '</dl>';
+    ARMS.forEach((a, i) => { h += `<div class="arm"><b>${a}</b><div class="chips">${chips(d.arms[i])}${d.n[i] > d.arms[i].length ? `<span class="note">+${d.n[i] - d.arms[i].length} more</span>` : ''}${d.n[i] === 0 ? '<span class="note">empty</span>' : ''}</div></div>`; });
+    h += '<p class="note">Seats are listed nearest the centre first.</p><h2>Sentences</h2>' + sentLines(d);
+  } else if (it.kind === 'layer') {
+    h += `<h2>Layer-1 cross · ${esc(d.tier)}</h2><dl class="kv"><dt>centre</dt><dd><b>${esc(d.centre_word)}</b> (lower cross ${esc(d.centre)})</dd><dt>seeded by</dt><dd>${esc(d.seed)}</dd>`;
+    h += `<dt>fill</dt><dd class="mono">${esc(d.stability)} <span class="note">= ${d.size} bundles placed / ${d.cand + 1}</span></dd><dt>stop</dt><dd>${esc(d.stop)}</dd><dt>tied class</dt><dd class="mono">${fmt(d.tied)}</dd>`;
+    h += `<dt>members</dt><dd class="mono">${d.n_members} lower crosses</dd><dt>words under it</dt><dd class="mono">${d.words_under}</dd></dl>`;
+    ARMS.forEach((a, i) => { h += `<div class="arm"><b>${a}</b><div class="chips">${chips(d.arms[i].map(m => crossById[m] ? crossById[m].centre : m))}</div></div>`; });
+    h += `<p class="note">Each seat holds one lower cross (its stable state). Other members: ${d.members.filter(m => !d.arms.some(a => a.includes(m)) && m !== d.centre).map(m => crossById[m] ? crossById[m].centre : m).slice(0, 14).map(esc).join(', ') || 'none'}.</p>`;
+  } else {
+    h += `<h2>Window ${esc(d.id)} · ${esc(d.set)}</h2><dl class="kv"><dt>article</dt><dd>${esc(d.article)}</dd>`;
+    h += `<dt>sentence N</dt><dd><span class="chip n">#${d.sid_a}</span> ${esc(d.text_a)}</dd><dt>sentence N+1</dt><dd>${d.sid_b === null ? '<span class="note">none: a constructed pad closes the article (never evidence)</span>' : `<span class="chip n1">#${d.sid_b}</span> ${esc(d.text_b)}`}</dd>`;
+    h += `<dt>centre</dt><dd><b>${esc(d.centres.join(' | '))}</b> <span class="note">in sentence ${d.centre_sentence === 'next' ? 'N+1' : 'N'}</span></dd><dt>class</dt><dd class="mono">${fmt(d.class)} tied arrangements, L ${d.L}, stop ${esc(d.stop)}</dd>`;
+    h += `<dt>grammar kind</dt><dd>${esc(d.kind[0])} ${esc(d.kind[1].join(' '))}</dd><dt>strictly stable</dt><dd>${d.stable ? 'yes' : '<span style="color:var(--bad)">no, an axis is improvable</span>'}</dd></dl>`;
+    h += '<table><tr><th>axis</th><th>key n</th><th>omega</th><th>evidence</th><th>improving moves</th></tr>';
+    ['x', 'y', 'z'].forEach(ax => { h += `<tr><td class="k">${ax}</td><td class="n">${d.axis_key[ax][0]}</td><td class="n">${d.axis_key[ax][1]}</td><td>${d.evidence[ax] ? 'yes' : 'no'}</td><td class="n">${d.improving[ax]}</td></tr>`; });
+    h += '</table>';
+    ARMS.forEach(a => { const s = d.seats.filter(x => x[0] === a); h += `<div class="arm"><b>${a}</b><div class="chips">${s.sort((p, q) => p[1] - q[1]).map(x => `<span class="chip ${x[3] === 'next' ? 'n1' : 'n'}">${esc(x[2])}</span>`).join('') || '<span class="note">no seats</span>'}</div></div>`; });
+    h += '<p class="note">Blue border = seat from sentence N, orange = sentence N+1. Nearest the centre first.</p>';
+  }
+  el.innerHTML = h; $('side').scrollTop = 0;
+  marker.visible = true; marker.position.set(...it.pos); const r = it.kind === 'window' ? 4.4 * (it.sc || 1) : it.kind === 'layer' ? 6 : 3.6 * (it.sc || 1); marker.scale.setScalar(r); dirty = true;
+}
+
+// ------------------------------------------------------------------ side panel: counts
+function counts() {
+  let h = `<h2>Corpus</h2><table><tr><td class="k">sentences</td><td class="n">${fmt(D.corpus.n_sentences)}</td></tr><tr><td class="k">articles</td><td class="n">${fmt(D.corpus.articles)}</td></tr>`;
+  h += `<tr><td class="k">level</td><td class="n">${esc(D.meta.level)}</td></tr></table>`;
+  h += '<h2 style="margin-top:14px">Sovereigns</h2><table><tr><th></th><th>crosses</th><th>units</th><th>closed</th><th>capped</th></tr>';
+  TIERS.forEach(t => {
+    const cs = D.tiers[t].crosses, ex = cs.filter(c => c.stop === 'exhausted').length;
+    h += `<tr><td class="k"><span class="sw" style="background:#${new THREE.Color(TIER_COL[t]).getHexString()}"></span>${t}</td><td class="n">${fmt(cs.length)}</td><td class="n">${fmt(D.tiers[t].units)}</td><td class="n">${fmt(ex)}</td><td class="n">${fmt(cs.length - ex)}</td></tr>`;
+  });
+  h += '</table><p class="note">closed = stop exhausted (every candidate placed); capped = the step that broke the budget was restored away.</p>';
+  h += '<h2 style="margin-top:14px">Fill distribution</h2>';
+  TIERS.forEach(t => {
+    const cs = D.tiers[t].crosses, n = [0, 0, 0, 0]; cs.forEach(c => n[bucketOf(c)]++);
+    h += `<div class="tag">${t}</div><div class="bar">${n.map((v, i) => `<i style="width:${(100 * v / cs.length).toFixed(2)}%;background:#${new THREE.Color(ST[i]).getHexString()}" title="${ST_NAME[i]}: ${v}"></i>`).join('')}</div>`;
+  });
+  h += '<table>' + ST_NAME.map((n, i) => `<tr><td class="k"><span class="sw" style="background:#${new THREE.Color(ST[i]).getHexString()}"></span>${n}</td>${TIERS.map(t => `<td class="n">${fmt(D.tiers[t].crosses.filter(c => bucketOf(c) === i).length)}</td>`).join('')}</tr>`).join('') + `<tr><td class="k"></td>${TIERS.map(t => `<th>${t}</th>`).join('')}</tr></table>`;
+  const L = D.meta.layers;
+  h += '<h2 style="margin-top:14px">Layer 1 (matryoshka)</h2>';
+  if (L) {
+    h += '<table><tr><th></th><th>built</th><th>pack 2+</th><th>shown</th></tr>' + TIERS.map(t => { const s = L.stats[t]; return s ? `<tr><td class="k">${t}</td><td class="n">${fmt(s.upper_crosses_built)}/${fmt(s.seeds)}</td><td class="n">${fmt(s.packing_two_or_more)}</td><td class="n">${s.exported}</td></tr>` : ''; }).join('') + '</table>';
+    h += `<p class="note">One upper cross per seed over all stable states (granularity same, bounds fast). Shown: the ${L.exported_per_tier_cap} per tier that pack the most lower crosses. Their members are drawn inside, not in the field.</p>`;
+  } else h += '<p class="note">Not exported (--layers off).</p>';
+  const ws = D.meta.windows;
+  h += '<h2 style="margin-top:14px">Sliding windows</h2>';
+  if (ws) {
+    h += '<table>';
+    if (ws.corpus && ws.corpus.windows) h += `<tr><td class="k">corpus windows</td><td class="n">${fmt(ws.corpus.windows)}</td></tr><tr><td class="k">with a real N+1</td><td class="n">${fmt(ws.corpus.with_real_next_sentence)}</td></tr>`;
+    else h += '<tr><td class="k" colspan="2"><span class="note">The corpus itself has no windows: its rows are one sentence per article without a title#i source, so the slide builder refuses it.</span></td></tr>';
+    if (ws.pairs_sample) h += `<tr><td class="k">pairs sample windows</td><td class="n">${fmt(ws.pairs_sample.windows)}</td></tr><tr><td class="k">with a real N+1</td><td class="n">${fmt(ws.pairs_sample.with_real_next_sentence)}</td></tr><tr><td class="k">sample articles</td><td class="n">${fmt(ws.pairs_sample.articles)}</td></tr>`;
+    const stable = W.filter(w => w.stable).length; h += `<tr><td class="k">strictly stable</td><td class="n">${stable}/${W.length}</td></tr></table>`;
+  }
+  h += '<h2 style="margin-top:14px">Grammar layer</h2><table><tr><th></th><th>arm</th>' + TIERS.filter(t => D.grammar.attachments[t] !== undefined).map(t => `<th>${t}</th>`).join('') + '</tr>';
+  D.grammar.particles.forEach(p => { h += `<tr><td class="k">${esc(p.p)}</td><td class="n">${p.arm}</td>` + TIERS.filter(t => D.grammar.attachments[t] !== undefined).map(t => `<td class="n">${fmt(p.totals[t] || 0)}</td>`).join('') + '</tr>'; });
+  h += '</table><p class="note">CHAR carries no particle records.</p>';
+  if (D.carry) { const c = D.carry.data; h += `<h2 style="margin-top:14px">Carry tower</h2><p class="note">c3b measurement: ${c.levels} levels, units per level ${c.units_per_level.join(' / ')}, ${fmt(c.packs)} packs, ${fmt(c.woken_pairs)} woken of ${fmt(c.copied_pairs)} copied pairs.</p>`; }
+  h += '<p class="note" style="margin-top:14px">Positions of crosses inside a sovereign are a layout choice (sorted by fill, then size). Seats, arms, fill, stop, tied classes, nests, windows and counts are the built data. Fill is placed / (candidates + seed); the query-time stability of the design is not stored in a build.</p>';
+  $('counts').innerHTML = h;
+}
+counts();
+$('subtitle').textContent = `${fmt(D.corpus.n_sentences)} sentences · ${TIERS.map(t => fmt(D.tiers[t].crosses.length)).join(' + ')} crosses · level ${D.meta.level}`;
+(function legend() {
+  const sw = (c, t) => `<span class="li"><span class="sw" style="background:#${new THREE.Color(c).getHexString()}"></span>${t}</span>`;
+  $('legend').innerHTML =
+    `<div><b>fill of the stable state</b>${ST.map((c, i) => sw(c, ST_NAME[i])).join('')}</div>` +
+    `<div><b>window seats</b>${sw(SENT_N, 'sentence N')}${sw(SENT_N1, 'sentence N+1')}${sw(0xff6b6b, 'centre not strictly stable')}</div>` +
+    `<div><b>window arms</b>${sw(AXIS_COL[0], 'x order')}${sw(AXIS_COL[2], 'y grain')}${sw(AXIS_COL[4], 'z slide')}</div>` +
+    `<div><b>sovereigns</b>${TIERS.map(t => sw(TIER_COL[t], t)).join('')}<span class="li">wireframe = layer-1 cross around its members</span></div>` +
+    `<div><b>grammar</b>${sw(0xe6edf6, 'は centre')}${sw(AXIS_COL[0], 'の に')}${sw(AXIS_COL[2], 'で と')}${sw(AXIS_COL[4], 'を が')}<span class="li">sphere = RUN attachments</span></div>`;
+})();
+
+// ------------------------------------------------------------------ loop
+function resize() { const w = stage.clientWidth, h = stage.clientHeight; renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); dirty = true; }
+new ResizeObserver(resize).observe(stage); resize();
+batches.forEach(b => b.filter(0));
+preset.over();
+{ // optional deep link: #slide, #nest, #gram, #RUN ... (camera) and #sel-<id> (open that cross, window or layer in the panel)
+  const h = decodeURIComponent(location.hash.slice(1));
+  if (preset[h]) preset[h]();
+  else if (h.startsWith('sel-')) { const id = h.slice(4); for (const b of batches) { const it = b.items.find(i => i.id === id); if (it) { select(it); frame(new THREE.Box3().setFromCenterAndSize(new THREE.Vector3(...it.pos), new THREE.Vector3(30, 30, 30)), 40, 10, 1); break; } } }
+}
+let frames = 0, tlast = performance.now(), fps = 0;
+function loop() {
+  requestAnimationFrame(loop);
+  controls.update();
+  if (!dirty) return; dirty = false;
+  renderer.render(scene, camera);
+  frames++; const now = performance.now(); if (now - tlast > 800) { fps = Math.round(frames * 1000 / (now - tlast)); frames = 0; tlast = now; $('stats').textContent = `${fmt(batches.reduce((a, b) => a + b.nBeads, 0))} beads · ${fmt(batches.reduce((a, b) => a + b.nSegs, 0))} arms · ${fps} fps`; }
+}
+loop();
+window.__overview = { THREE, scene, camera, controls, renderer, batches, groups, region, preset, select, pick, D, stats: () => ({ beads: batches.reduce((a, b) => a + b.nBeads, 0), segs: batches.reduce((a, b) => a + b.nSegs, 0), items: batches.reduce((a, b) => a + b.items.length, 0) }) };
+window.__ready = true;
+</script>
+</body>
+</html>

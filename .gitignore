@@ -85,3 +85,6 @@ experiments/line3/g3/s1flat/results/*.jsonl
 experiments/line3/g3/s1flat/results/*.meta.json
 experiments/line3/g3/combined/results/*.jsonl*
 experiments/line3/g3/h/results/*.jsonl*
+experiments/line3/t11/results/*.jsonl*
+experiments/line3/g3/k/results/*.jsonl*
+experiments/line3/g3/k/results/*.log

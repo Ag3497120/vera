@@ -1,0 +1,15 @@
+non-unit golds: ['I2-001', 'I2-007', 'I2-008', 'I2-015', 'I2-016', 'I2-018', 'I2-019', 'I2-026', 'I2-038', 'I2-040', 'I2-041', 'I2-046', 'I2-047', 'I2-050', 'R2-I008', 'R2-I009', 'R2-I011', 'R2-I014']
+
+== fast ==
+T9 real sids   hits  3/18 ['I2-008', 'I2-019', 'I2-040'] | exact 2 | excess [0, 0, 2] | strings/question median 12 max 403 | control 0/306 | trace not ok 0 | flat entries hold gold 0 | 0s
+T10 live       hits  4/18 ['I2-008', 'I2-038', 'I2-040', 'R2-I008'] | exact 2 | excess [0, 0, 2, 11] | strings/question median 8 max 281 | control 0/306 | trace not ok 0 | flat entries hold gold 0 | 0s
+T10 proxy sids hits  4/18 ['I2-008', 'I2-038', 'I2-040', 'R2-I008'] | exact 2 | excess [0, 0, 2, 11] | strings/question median 8 max 307 | control 0/306 | trace not ok 0 | flat entries hold gold 0 | 0s
+live entries (words, stability) equal to the recorded T10: 18 / 18 questions
+
+== standard ==
+T9 real sids   hits  4/18 ['I2-008', 'I2-019', 'I2-040', 'I2-047'] | exact 3 | excess [0, 0, 0, 2] | strings/question median 26 max 317 | control 0/306 | trace not ok 0 | flat entries hold gold 0 | 0s
+T10 proxy sids hits  5/18 ['I2-008', 'I2-038', 'I2-040', 'I2-047', 'R2-I008'] | exact 3 | excess [0, 0, 0, 2, 11] | strings/question median 12 max 320 | control 0/306 | trace not ok 0 | flat entries hold gold 0 | 0s
+
+== effect on the verdict (T9 records of the 69 intra2 questions; the flat block alone + the assembled block) ==
+fast: questions with exactly one flat entry (flat ANSWER): 16; with an assembled string beside it (-> CHOICE of 2): 0
+standard: questions with exactly one flat entry (flat ANSWER): 4; with an assembled string beside it (-> CHOICE of 2): 0

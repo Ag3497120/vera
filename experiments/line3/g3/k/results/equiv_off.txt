@@ -1,0 +1,10 @@
+equiv_off fast: 8 questions: I2-040 R2-I003 UF-006 I2-014 I2-003 I2-020 I2-023 UF-004
+I2-040 SAME: flat 42 layers 8 candidates, live 53s (T10 recorded 72s) 
+R2-I003 SAME: flat 16 layers 38 candidates, live 52s (T10 recorded 78s) 
+UF-006 SAME: flat 18 layers 5 candidates, live 70s (T10 recorded 99s) 
+I2-014 SAME: flat 4 layers 17 candidates, live 80s (T10 recorded 110s) 
+I2-003 SAME: flat 8 layers 30 candidates, live 110s (T10 recorded 114s) 
+I2-020 SAME: flat 38 layers 6 candidates, live 138s (T10 recorded 128s) 
+I2-023 SAME: flat 4 layers 11 candidates, live 146s (T10 recorded 130s) 
+UF-004 SAME: flat 5 layers 1 candidates, live 148s (T10 recorded 134s) 
+8 of 8 questions identical

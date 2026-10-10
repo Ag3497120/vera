@@ -44,6 +44,7 @@ from verantyx.line3 import slide as SL
 from verantyx.line3 import slide_place as SP
 from verantyx.line3 import slide_ratios as SR
 from verantyx.line3 import space as sp
+from verantyx.line3 import wiring as W
 from verantyx.line3.funcwords import default_filter
 from verantyx.line3.granularity import SpanIndex
 
@@ -310,6 +311,8 @@ class Intake:
     form: str                             # slot | predicate | standin | plain
     slot: Optional[str]                   # the P7 particle that selects the match group (form "slot"), else None
     standins: Tuple[str, ...]             # RUN stand-in units of the unknown question units (code point order)
+    standin_set: frozenset = frozenset()  # G3-k (L-806): the stand-in units added to `units` as marked query units (grammar "on"); not in `qset` (E_Q is the originals')
+    grammar: Optional[Mapping] = None     # G3-k: the answer-side record of the grammar intake (form, stand-ins with their chance counts); None = grammar off
 
     def form_obj(self) -> dict:
         r = self.reading
@@ -328,28 +331,36 @@ class Intake:
 
 def classify_form(reading: gr.QuestionReading) -> str:
     """L-642: slot (a P7 particle after the interrogative phrase) > predicate (the XのYは何ですか slot, L-548) > standin (an unknown
-    RUN unit of the question: pattern type T2..T5) > plain."""
-    if reading.slot_particle is not None and reading.slot_particle in gr.P7:
-        return "slot"
-    if reading.predicate is not None:
-        return "predicate"
-    if any(p.type != "T1" for p in (reading.pattern or ())):
-        return "standin"
-    return "plain"
+    RUN unit of the question: pattern type T2..T5) > plain.  (G3-k: the one definition is wiring.classify_form.)"""
+    return W.classify_form(reading)
 
 
-def intake(index: WindowIndex, question: str) -> Intake:
+def intake(index: WindowIndex, question: str, grammar_intake=None) -> Intake:
     """The question as the flat path cuts it (cycle.split_question of the RUN tier, then V2: funcwords.default_filter), the QueryContext
-    (I-07, cycle.make_context), and the grammar reading with its form (grammar.read_question over the same space)."""
+    (I-07, cycle.make_context), and the grammar reading with its form (grammar.read_question over the same space).
+    `grammar_intake` (G3-k, L-806; a wiring.GrammarIntake, opt-in): the stand-in units of the unknown words are ADDED to the query units (after the
+    question's own, marked in the context: they select windows and count in the read order, `qset` and the energies are the original units', and
+    `standin_set` names them).  None = what it was (stand-ins are candidacy-only there, L-644)."""
     all_units = cy.split_question(TIER, question)
     flt = default_filter(TIER)
     units = tuple(u for u in all_units if not flt(u)) if flt is not None else tuple(all_units)
+    if grammar_intake is not None and grammar_intake.standins:
+        if tuple(grammar_intake.units) != units:
+            raise ValueError("the grammar intake was made for another question cut")
+        ext = grammar_intake.run_units
+        ctx = cy.make_context(ext, "first_layer", grammar_intake.standins)
+        reading = grammar_intake.reading
+        form = grammar_intake.form
+        return Intake(question, tuple(all_units), ext, ctx, frozenset(ctx.energy_units), reading, form,
+                      reading.slot_particle if form == "slot" else None, tuple(sorted(grammar_intake.standins)), frozenset(grammar_intake.standins),
+                      {"form": grammar_intake.grammar_form(), "standins": grammar_intake.standins_obj()})
     ctx = cy.make_context(units)
-    reading = gr.read_question(question, index.space, index.span_index)
+    reading = grammar_intake.reading if grammar_intake is not None else gr.read_question(question, index.space, index.span_index)
     form = classify_form(reading)
     st = sorted({s.unit for p in (reading.pattern or ()) for s in p.standins if s.tier == TIER})
     return Intake(question, tuple(all_units), units, ctx, frozenset(ctx.energy_units), reading, form,
-                  reading.slot_particle if form == "slot" else None, tuple(st))
+                  reading.slot_particle if form == "slot" else None, tuple(st), frozenset(),
+                  None if grammar_intake is None else {"form": grammar_intake.grammar_form(), "standins": grammar_intake.standins_obj()})
 
 
 def axis_order(slot: Optional[str], foundation: SL.Foundation) -> Tuple[str, ...]:

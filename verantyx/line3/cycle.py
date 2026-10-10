@@ -783,19 +783,22 @@ class QueryContext:
     attached: Tuple[Optional[str], ...]    # section -> unit of the first layer (I-07)
     energy_units: Tuple[str, ...]          # the set the energies read (L-109)
     scope: str
+    standins: Tuple[str, ...] = ()         # G3-k (L-802): the query units that are unknown-word stand-ins (a subset of `query`; () = none).  They are NOT in
+                                           # the query cross, `attached` or `energy_units` (E_Q is the original units'): they select the crosses to read (V1) and count in the read order
 
     def attached_map(self) -> Dict[int, str]:
         return {s: u for s, u in enumerate(self.attached) if u is not None}
 
 
-def make_context(query: Sequence[str], scope: str = "first_layer") -> QueryContext:
+def make_context(query: Sequence[str], scope: str = "first_layer", standins: Sequence[str] = ()) -> QueryContext:
     if scope not in ("first_layer", "whole"):
         raise ValueError("scope must be first_layer or whole")
-    qc = build_query_cross(query)
+    sq = set(standins)
+    qc = build_query_cross([u for u in query if u not in sq])          # G3-k (L-802): the stand-ins are marked query units outside the query cross
     first = qc.units
     att = tuple(first[i] if i < len(first) else None for i in range(N_ARMS))
     eu = tuple(sorted(set(first if scope == "first_layer" else qc.all_units())))
-    return QueryContext(tuple(query), qc, att, eu, scope)
+    return QueryContext(tuple(query), qc, att, eu, scope, tuple(u for u in query if u in sq))
 
 
 # --------------------------------------------------------------------------
@@ -813,15 +816,65 @@ class ReadPlan:
     cap: Optional[int] = None                               # T7b: node budget (crosses) on the query-crosses read, None = no cap
     cap_unread: int = 0                                     # T7b: crosses the default read would read that the cap left unread
     cap_total: int = 0                                      # T7b: crosses the default read (without the cap) would read
+    grammar: Optional[Tuple[tuple, ...]] = None             # G3-k (L-803): per block of order_groups (original units held, stand-in units held, group reason, kind label); None = E_Q order only
+    order_only_read: Optional[Tuple[str, ...]] = None       # G3-k (L-811): the crosses the SAME ordering reads when the stand-ins are dropped from the query (same cap, same hook); None = no stand-ins
+
+
+def placement_units(p) -> set:
+    """The units a cross holds as V1 sees it: its centre and seats (`from_cross`) and its twins (the one definition of `plan_read` and of wiring.via_standin_of)."""
+    units = {c for c in from_cross(p.cross) if c is not None}
+    for t in p.twin_sets:
+        units.update(t)
+    return units
+
+
+def _plan_read_grammar(seeds, keep, shared, held, q, sq, rq, grammar, read_cap) -> ReadPlan:
+    """G3-k (L-803): the read order under a cap with the grammar layer's group (see plan_read)."""
+    gorder = {"query_unit": 0, "holds_query_unit": 1, "shares_with_query": 2}
+    rank = grammar(sorted(set(keep) | set(shared)))
+    blocks: Dict[tuple, List[str]] = {}
+    for s_ in keep:
+        n_o, n_s = held[s_]
+        g = "query_unit" if s_ in q or s_ in sq else "holds_query_unit"
+        rk, reason, kl = rank[s_]
+        blocks.setdefault((-n_o, -n_s, rk, gorder[g], -rq(s_), g, reason, kl), []).append(s_)
+    for s_ in shared:
+        rk, reason, kl = rank[s_]
+        blocks.setdefault((0, 0, rk, gorder["shares_with_query"], -rq(s_), "shares_with_query", reason, kl), []).append(s_)
+    ordered: List[Tuple[str, Tuple[str, ...]]] = []
+    rows: List[tuple] = []
+    for k in sorted(blocks):
+        ordered.append((k[5], tuple(sorted(blocks[k]))))
+        rows.append((-k[0], -k[1], k[6], k[7]))
+    rd: List[str] = []
+    bnd = 0
+    for g, ss in ordered:
+        if len(rd) + len(ss) > read_cap:
+            bnd = len(ss)
+            break
+        rd.extend(ss)
+    total_c = len(set(keep) | set(shared))
+    rds = set(rd)
+    return ReadPlan(tuple(ordered), tuple(rd), tuple(s_ for s_ in seeds if s_ not in rds), len(seeds), None, total_c > len(rd), bnd, read_cap,
+                    total_c - len(rd), total_c, tuple(rows))
 
 
 def plan_read(tier: TierSpace, facts: TierFacts, ctx: QueryContext,
               placements, amount: Optional[int] = None, query_crosses_only: bool = False,
-              share_crosses: bool = False, read_cap: Optional[int] = None) -> ReadPlan:
+              share_crosses: bool = False, read_cap: Optional[int] = None, grammar=None) -> ReadPlan:
     """I-08 / M-2(a): all crosses by default; with an amount, the order is: crosses of query
     units, crosses holding a unit that shares a sentence with a query unit, the rest; inside a
-    group by E_Q(seed) descending; equal values are read together or not at all."""
+    group by E_Q(seed) descending; equal values are read together or not at all.
+
+    `grammar` (G3-k, L-803; only with `query_crosses_only` and a `read_cap`): a callable seeds -> {seed: (rank, reason, kind label)} (the grammar
+    layer's read order of the candidate crosses by the kind of their centre word, supplied by verantyx.line3.wiring; this module imports nothing of
+    it).  The order of the crosses read under the cap becomes: (1) the number of ORIGINAL question units the cross holds, more first, then the
+    number of stand-in units (ctx.standins), more first -- the owner's 「問いの語を多く持つ窓を先に」 for crosses; (2) inside a tie of that
+    count the grammar group (rank: the question's slot kind first, then the ladder, tied kinds, none); (3) inside that the order of T7b (the
+    group query_unit / holds_query_unit / shares_with_query, then E_Q descending).  Equal on all keys = ONE block, read together or not at all.
+    The candidates (the crosses holding a query unit) and so the entries of a full read are unchanged: only the sequence."""
     q = set(ctx.energy_units)
+    sq = set(ctx.standins) - q
     seeds = tier.units()
     if query_crosses_only:
         # T6v V1 (option; default off = I-08 whole space): only the crosses that hold at least one
@@ -830,13 +883,13 @@ def plan_read(tier: TierSpace, facts: TierFacts, ctx: QueryContext,
             raise ValueError("query_crosses_only cannot be combined with amount")
         keep = []
         shared = []
+        held_g: Dict[str, Tuple[int, int]] = {}
         for s_ in seeds:
-            p = placements.cross_for(s_)
-            units = {c for c in from_cross(p.cross) if c is not None}
-            for t in p.twin_sets:
-                units.update(t)
-            if units & q:
+            units = placement_units(placements.cross_for(s_))
+            if units & (q | sq):                          # G3-k (L-802): V1 also selects the crosses that hold a stand-in
                 keep.append(s_)
+                if grammar is not None:
+                    held_g[s_] = (len(units & q), len(units & sq))
             elif share_crosses and any(facts.npair(x, u) > 0 for x in q for u in units):
                 # T6x (M-2 group 2): a cross that holds a unit sharing >= 1 sentence with a query unit
                 shared.append(s_)
@@ -851,9 +904,11 @@ def plan_read(tier: TierSpace, facts: TierFacts, ctx: QueryContext,
             if read_cap < 0:
                 raise ValueError("read_cap must be >= 0")
             rq = lambda u: facts.n[u] + sum(facts.npair(x, u) for x in ctx.energy_units)
+            if grammar is not None:
+                return _plan_read_grammar(seeds, keep, shared, held_g, q, sq, rq, grammar, read_cap)
             parts: Dict[str, Dict[int, List[str]]] = {"query_unit": {}, "holds_query_unit": {}, "shares_with_query": {}}
             for s_ in keep:
-                parts["query_unit" if s_ in q else "holds_query_unit"].setdefault(rq(s_), []).append(s_)
+                parts["query_unit" if s_ in q or s_ in sq else "holds_query_unit"].setdefault(rq(s_), []).append(s_)
             for s_ in shared:
                 parts["shares_with_query"].setdefault(rq(s_), []).append(s_)
             ordered_c: List[Tuple[str, Tuple[str, ...]]] = []
@@ -879,10 +934,7 @@ def plan_read(tier: TierSpace, facts: TierFacts, ctx: QueryContext,
             g = "query_unit"
         else:
             g = "rest"
-            p = placements.cross_for(s)
-            units = {c for c in from_cross(p.cross) if c is not None}
-            for t in p.twin_sets:
-                units.update(t)
+            units = placement_units(placements.cross_for(s))
             if any(sum(facts.npair(x, u) for x in ctx.energy_units) > 0 for u in units):
                 g = "shares_with_query"
         groups[g].setdefault(reader_q(s), []).append(s)
@@ -1057,10 +1109,13 @@ class TierResult:
             "tier": self.tier, "question": self.question, "query": self.ctx.qcross.to_json_obj(),
             "query_first_layer": list(self.ctx.qcross.units), "energy_scope": self.ctx.scope,
             "inner_layers_pending": [list(c.units) for c in self.ctx.qcross.layers()[1:]],
+            **({"standins": list(self.ctx.standins)} if self.ctx.standins else {}),
             "read": {"crosses_read": len(p.read), "crosses_unread": len(p.unread), "total": p.total,
                      "amount": p.amount, "members_read": self.members_read,
                      "members_total": self.members_total,
                      "groups": [[g, len(s)] for g, s in p.order_groups],
+                     **({"grammar_order": [list(r) for r in p.grammar]} if p.grammar is not None else {}),
+                     **({"order_only_read": list(p.order_only_read)} if p.order_only_read is not None else {}),
                      **({"node_budget": {"cap": p.cap, "would_read_without_cap": p.cap_total,
                                          "left_unread_by_cap": p.cap_unread, "tied_group_not_split": p.boundary}}
                         if p.cap is not None else {})},
@@ -1189,7 +1244,7 @@ def _ask_tier_once(tier: TierSpace, question: str, placements, *, units: Optiona
              read_rule: Optional[str] = None, state_rule: str = "query_share",
              unit_filter="default", read_cap: Optional[int] = None,
              plan_override: Optional["ReadPlan"] = None, observe: bool = True,
-             lazy_members: bool = False) -> TierResult:
+             lazy_members: bool = False, grammar=None, standins: Sequence[str] = ()) -> TierResult:
     """One question on one tier: read the crosses that hold a query unit (V1; `read_rule="whole"`
     = I-08, every cross, or `amount` crosses marked partial), every member of every cross, settle,
     adopt the states by the sentences they share with the query (V3; `state_rule="stability"` =
@@ -1197,7 +1252,9 @@ def _ask_tier_once(tier: TierSpace, question: str, placements, *, units: Optiona
     `unit_filter=None` = keep them; a predicate = own rule).  Since L-150 these three are the
     defaults; the old behaviour stays available as the explicit options.  `placements` has
     cross_for(seed).  `read_rule=None` = "query_crosses", except that an explicit `amount` (M-2
-    amount of inference, an ordered partial read of the whole space) selects "whole"."""
+    amount of inference, an ordered partial read of the whole space) selects "whole".
+    G3-k (L-801..L-803, opt-in; the defaults are the bytes of before): `standins` = the units of `units` that are unknown-word stand-ins
+    (QueryContext.standins; they are query units like the others, marked), `grammar` = the read-order hook of plan_read."""
     import time
     t0 = time.monotonic_ns()
     facts = facts or TierFacts(tier)
@@ -1213,15 +1270,21 @@ def _ask_tier_once(tier: TierSpace, question: str, placements, *, units: Optiona
         unit_filter = default_filter(tier.name)
     if unit_filter is not None:                      # T6v V2: question words / function words are not units either
         q = tuple(u for u in q if not unit_filter(u))
-    ctx = make_context(q, scope)
+    ctx = make_context(q, scope, standins)
     reader = Reader(facts, ctx.attached, ctx.energy_units)
+    if grammar is not None and read_cap is None:
+        grammar = None                                  # the grammar order only orders the crosses read UNDER A CAP of the query-crosses read (L-803)
     if read_cap is not None and read_rule == "whole":
         raise ValueError("read_cap is a node budget on the query-crosses read; with read_rule='whole' use amount")
     if plan_override is not None:       # T8 (L-232): the caller names the crosses to read (an upper layer)
         plan = plan_override
     else:
-        plan = plan_read(tier, facts, ctx, placements, amount, read_rule in ("query_crosses", "query_share_crosses"),
-                         read_rule == "query_share_crosses", read_cap)
+        qco = read_rule in ("query_crosses", "query_share_crosses")
+        plan = plan_read(tier, facts, ctx, placements, amount, qco, read_rule == "query_share_crosses", read_cap, grammar)
+        if ctx.standins and qco:
+            # G3-k (L-811): the crosses the same ordering (same cap, same hook) reads WITHOUT the stand-ins -- the exact diff behind `read_via_standin`
+            plan = replace(plan, order_only_read=plan_read(tier, facts, replace(ctx, standins=()), placements, amount, qco,
+                                                           read_rule == "query_share_crosses", read_cap, grammar).read)
     reads: List[SeedRead] = []
     for seed in sorted(plan.read):                  # canonical order; the result never depends on it
         reads.append(read_cross(reader, placements.cross_for(seed), budget, member_cap, lazy_members))

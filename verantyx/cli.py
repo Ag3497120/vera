@@ -2391,6 +2391,9 @@ def cmd_line3(args) -> int:
     if structure == "slide" and (args.choose is not None or args.record or getattr(args, "granularity", None)):
         print("line3: --choose / --record / --granularity are not built for --structure slide (G3-e, L-654)", file=sys.stderr)
         return 2
+    if structure == "slide" and getattr(args, "grammar", "off") == "on":
+        print("line3: --grammar on is built for --structure flat and combined (G3-k, L-806)", file=sys.stderr)
+        return 2
     if structure == "combined" and (args.choose is not None or args.record or getattr(args, "granularity", None)
                                     or getattr(args, "view", "all") != "all" or getattr(args, "layers", "on") != "on"
                                     or getattr(args, "layer_candidate", "path") not in ("path", "stable-seats-path")
@@ -2408,7 +2411,8 @@ def cmd_line3(args) -> int:
                          slide_members=getattr(args, "slide_members", None) or "representative",
                          read_order=getattr(args, "read_order", "qcount_first"), z_deep=getattr(args, "z_deep", "order"),
                          layer_variants={"both": ("A", "B"), "A": ("A",), "B": ("B",)}[args.query_pass],
-                         layer_granularity=args.layer_granularity, merge=getattr(args, "merge", "none"))
+                         layer_granularity=args.layer_granularity, merge=getattr(args, "merge", "none"),
+                         assembly=getattr(args, "assembly", "on") == "on", grammar=getattr(args, "grammar", "off"))
         elif structure == "slide":
             # G3-e (opt-in): the question over the sliding windows (verantyx.line3.slide_query); effort / nodes count windows
             res = l3.ask(idx, args.question, effort=effort, nodes=nodes, structure="slide",
@@ -2424,10 +2428,18 @@ def cmd_line3(args) -> int:
                                      down_query=args.layer_down_query)
             base = (l3.ask(idx, args.question, view=args.view, effort=effort, nodes=nodes, granularity=args.granularity)
                     if getattr(args, "granularity", None) else None)          # F2: layer 0 carries the assembled strings
-            res = l3m.ask_layered(idx, args.question, view=args.view, effort=effort, nodes=nodes, options=lopts, base=base)
+            lkw = {}
+            if getattr(args, "grammar", "off") == "on":
+                # G3-k: layer 0 with the stand-ins and the grammar read order; the layers' re-asks keep the same query and scope
+                from .line3 import wiring as l3w
+                gi = l3w.intake(idx.space, args.question, l3w.context_of(idx)[0])
+                base = l3.ask(idx, args.question, view=args.view, effort=effort, nodes=nodes, granularity=getattr(args, "granularity", None),
+                              grammar="on", grammar_intake=gi)
+                lkw["tier_kw"] = l3w.reask_kw(gi, [o.tier for o in base.outcomes], l3w.context_of(idx)[1])
+            res = l3m.ask_layered(idx, args.question, view=args.view, effort=effort, nodes=nodes, options=lopts, base=base, **lkw)
         else:
             res = l3.ask(idx, args.question, view=args.view, effort=effort, nodes=nodes,
-                         granularity=getattr(args, "granularity", None))
+                         granularity=getattr(args, "granularity", None), grammar=getattr(args, "grammar", "off"))
     except ValueError as e:
         print(f"line3: {e}", file=sys.stderr)
         return 2
@@ -3095,8 +3107,12 @@ def main(argv: Optional[list] = None) -> int:
                    help="ask --structure slide: read every member of a window's class of equal-key arrangements (default) or only the representative (cheaper; the member count is still shown); --structure combined: representative by default (G3-g, L-726)")
     p.add_argument("--window-evidence", dest="window_evidence", choices=["plain", "window", "both"], default="both",
                    help="ask --structure combined (G3-g): the pair count the windows' flat reading takes on every edge. plain = the corpus count (the owner's 'like T10'); window = the window's label-blind sum of the slide counts (L-714, a variant, marked in the list); both (default) = the windows are read twice and both variants' candidates are listed, each with its origin")
+    p.add_argument("--grammar", choices=["on", "off"], default="off",
+                   help="ask --structure flat|combined (G3-k, L-800..): off (default) = every committed byte. on = the owner's 「未知語の代役と文法層の読む順」: the unknown RUN words of the question get their stand-ins (WORD parts known to the corpus; CHAR parts when no WORD part is known) as ADDITIONAL query units of the RUN tier, marked provenance stand-in (they select the crosses to read and count in the read order; E_Q is the original units'; the answer lists them with their chance counts: stand-in units / RUN units of the corpus; entries that exist only through a stand-in carry via_standin); the crosses read under the --effort / --nodes cap are ordered by the question units they hold (originals first, then stand-ins), then the grammar layer's kind of the cross (the particle after its centre word, a stem taking the particle after the whole word; the question's slot first), then E_Q; ties are never split; the candidate set of a full read is unchanged; combined: also the windows (stand-ins as query units) and the layers (same query); the header has a grammar row (form, slot, predicate, stand-ins)")
     p.add_argument("--merge", choices=["none", "word_set"], default="none",
                    help="ask --structure combined (G3-g2): none (default) = every candidate is its own entry, shown in per-origin blocks (flat RUN, WORD, CHAR, layers, window/plain, window/window-evidence), each block in its source's own order; equal word sets from different origins are NOT merged, only marked (also_in); the per-source typed abstentions come first. word_set = the G3-g form (equal word sets are one entry with all its origins), for comparison")
+    p.add_argument("--assembly", choices=["on", "off"], default="on",
+                   help="ask --structure combined (G3-j, L-780): on (default; combined is new, so no committed bytes change) = add the block flat/assembled: the F2 granularity assembly over the entries of the FLAT block (layer 0 only, scope all, no bridging over function words): the strings that units of different tiers (RUN / WORD / CHAR) of the flat entries make where they overlap or touch in one source sentence, each with its parts, tiers, per-character provenance and trace check; they are extra candidates in a block of their own, never merged with another block, and a single assembled string is a CHOICE, never an ANSWER; the header has a row for the block (listed N, or no assembly). off = the list, header and bytes of G3-i (no flat/assembled block)")
     p.add_argument("--answer-shape", dest="answer_shape", choices=["unit", "path"], default="unit",
                    help="ask --structure slide (G3-e2): what an agreeing axis shows. unit (default) = the end unit of the section walk (one word); path = the units of the walked section path on that axis, outer end to centre, with the provenance of every word. Whether an axis answers is the agreement's in both")
     p.add_argument("--read-order", dest="read_order", choices=["qcount_first", "grammar_first"], default="qcount_first",

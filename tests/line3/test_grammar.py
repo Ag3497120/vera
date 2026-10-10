@@ -558,7 +558,7 @@ def test_nothing_hooks_into_the_question_path():
             "('ask', 'cycle', 'placement', 'matryoshka', 'energy', 'carry', 'carry_query', 'cli', 'readout')))")
     r = subprocess.run([sys.executable, "-c", code], capture_output=True, env=dict(os.environ, PYTHONPATH=ROOT), timeout=120)
     assert r.returncode == 0 and r.stdout.strip() == b"[]", r.stderr.decode()[-800:]
-    # and no module of the question path imports grammar (nothing is hooked in yet)
+    # and no module of the question path imports grammar itself (G3-k hooks it in through verantyx/line3/wiring.py, which they import)
     for name in ("ask", "cycle", "placement", "matryoshka", "energy", "carry", "carry_query", "readout"):
         path = os.path.join(ROOT, "verantyx", "line3", name + ".py")
         tree = ast.parse(open(path, encoding="utf-8").read())

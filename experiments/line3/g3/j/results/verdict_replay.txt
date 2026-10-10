@@ -1,0 +1,2 @@
+fast {'questions': 94, 'with_block': 91, 'strings': 2246, 'verdict_changed': 0, 'answer_changed': 0, 'answer_off': 0, 'answer_on': 0, 'flat_single_with_block': 3}
+standard {'questions': 94, 'with_block': 94, 'strings': 5595, 'verdict_changed': 0, 'answer_changed': 0, 'answer_off': 0, 'answer_on': 0, 'flat_single_with_block': 1}

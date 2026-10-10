@@ -1,0 +1,2291 @@
+[
+ {
+  "bank": "bank3",
+  "baseline": "order-only",
+  "entries": [
+   {
+    "marks": [],
+    "origin": "layers/RUN/1A",
+    "path": "layers entry: not marked per entry (union over bundles)",
+    "words": [
+     "1981年に",
+     "Aborigines",
+     "Young",
+     "the",
+     "するようになり",
+     "は1978年に"
+    ]
+   }
+  ],
+  "id": "b3_pa06",
+  "standin_units": 431
+ },
+ {
+  "bank": "bank3",
+  "baseline": "off",
+  "entries": [
+   {
+    "marks": [],
+    "origin": "layers/RUN/1A",
+    "path": "layers entry: not marked per entry (union over bundles)",
+    "words": [
+     "1981年に",
+     "Aborigines",
+     "Young",
+     "the",
+     "するようになり",
+     "は1978年に"
+    ]
+   }
+  ],
+  "id": "b3_pa06",
+  "standin_units": 431
+ },
+ {
+  "bank": "bank3",
+  "baseline": "order-only",
+  "entries": [
+   {
+    "baseline_lists_this_window": false,
+    "marks": [
+     "read_via_standin"
+    ],
+    "origin": "window/plain",
+    "path": "window read only through the stand-ins (not read by the same order without them)",
+    "read_by_the_order_alone": false,
+    "read_with_standins": true,
+    "window": 144,
+    "words": [
+     "が1974年に",
+     "カナダ",
+     "主戦場",
+     "反応",
+     "想定",
+     "複雑な"
+    ]
+   },
+   {
+    "baseline_lists_this_window": false,
+    "marks": [
+     "read_via_standin"
+    ],
+    "origin": "window/plain",
+    "path": "window read only through the stand-ins (not read by the same order without them)",
+    "read_by_the_order_alone": false,
+    "read_with_standins": true,
+    "window": 144,
+    "words": [
+     "カナダ",
+     "主戦場",
+     "反応",
+     "想定",
+     "機密解除",
+     "複雑な"
+    ]
+   },
+   {
+    "baseline_lists_this_window": false,
+    "marks": [
+     "window_evidence_variant",
+     "read_via_standin"
+    ],
+    "origin": "window/window-evidence",
+    "path": "window read only through the stand-ins (not read by the same order without them)",
+    "read_by_the_order_alone": false,
+    "read_with_standins": true,
+    "window": 144,
+    "words": [
+     "が1974年に",
+     "カナダ",
+     "主戦場",
+     "反応",
+     "想定",
+     "複雑な"
+    ]
+   },
+   {
+    "baseline_lists_this_window": false,
+    "marks": [
+     "window_evidence_variant",
+     "read_via_standin"
+    ],
+    "origin": "window/window-evidence",
+    "path": "window read only through the stand-ins (not read by the same order without them)",
+    "read_by_the_order_alone": false,
+    "read_with_standins": true,
+    "window": 144,
+    "words": [
+     "カナダ",
+     "主戦場",
+     "反応",
+     "想定",
+     "機密解除",
+     "複雑な"
+    ]
+   }
+  ],
+  "id": "b3_pa09",
+  "standin_units": 21
+ },
+ {
+  "bank": "bank3",
+  "baseline": "off",
+  "entries": [
+   {
+    "baseline_lists_this_window": false,
+    "marks": [
+     "read_via_standin"
+    ],
+    "origin": "window/plain",
+    "path": "window read only through the stand-ins (not read by the same order without them)",
+    "read_by_the_order_alone": false,
+    "read_with_standins": true,
+    "window": 144,
+    "words": [
+     "が1974年に",
+     "カナダ",
+     "主戦場",
+     "反応",
+     "想定",
+     "複雑な"
+    ]
+   },
+   {
+    "baseline_lists_this_window": false,
+    "marks": [
+     "read_via_standin"
+    ],
+    "origin": "window/plain",
+    "path": "window read only through the stand-ins (not read by the same order without them)",
+    "read_by_the_order_alone": false,
+    "read_with_standins": true,
+    "window": 144,
+    "words": [
+     "カナダ",
+     "主戦場",
+     "反応",
+     "想定",
+     "機密解除",
+     "複雑な"
+    ]
+   },
+   {
+    "baseline_lists_this_window": false,
+    "marks": [
+     "window_evidence_variant",
+     "read_via_standin"
+    ],
+    "origin": "window/window-evidence",
+    "path": "window read only through the stand-ins (not read by the same order without them)",
+    "read_by_the_order_alone": false,
+    "read_with_standins": true,
+    "window": 144,
+    "words": [
+     "が1974年に",
+     "カナダ",
+     "主戦場",
+     "反応",
+     "想定",
+     "複雑な"
+    ]
+   },
+   {
+    "baseline_lists_this_window": false,
+    "marks": [
+     "window_evidence_variant",
+     "read_via_standin"
+    ],
+    "origin": "window/window-evidence",
+    "path": "window read only through the stand-ins (not read by the same order without them)",
+    "read_by_the_order_alone": false,
+    "read_with_standins": true,
+    "window": 144,
+    "words": [
+     "カナダ",
+     "主戦場",
+     "反応",
+     "想定",
+     "機密解除",
+     "複雑な"
+    ]
+   }
+  ],
+  "id": "b3_pa09",
+  "standin_units": 21
+ },
+ {
+  "bank": "bank3",
+  "baseline": "order-only",
+  "entries": [
+   {
+    "baseline_lists_this_window": false,
+    "marks": [
+     "read_via_standin"
+    ],
+    "origin": "window/plain",
+    "path": "window read only through the stand-ins (not read by the same order without them)",
+    "read_by_the_order_alone": false,
+    "read_with_standins": true,
+    "window": 224,
+    "words": [
+     "Orsasjon",
+     "km2",
+     "は120",
+     "は354",
+     "を合わせて",
+     "最大水深"
+    ]
+   },
+   {
+    "baseline_lists_this_window": false,
+    "marks": [
+     "read_via_standin"
+    ],
+    "origin": "window/plain",
+    "path": "window read only through the stand-ins (not read by the same order without them)",
+    "read_by_the_order_alone": false,
+    "read_with_standins": true,
+    "window": 224,
+    "words": [
+     "km2",
+     "は120",
+     "は354",
+     "を合わせて",
+     "最大水深",
+     "隣接"
+    ]
+   },
+   {
+    "baseline_lists_this_window": false,
+    "marks": [
+     "read_via_standin"
+    ],
+    "origin": "window/plain",
+    "path": "window read only through the stand-ins (not read by the same order without them)",
+    "read_by_the_order_alone": false,
+    "read_with_standins": true,
+    "window": 225,
+    "words": [
+     "Orsasjon",
+     "km2",
+     "は120",
+     "は354",
+     "を合わせて",
+     "最大水深"
+    ]
+   },
+   {
+    "baseline_lists_this_window": false,
+    "marks": [
+     "read_via_standin"
+    ],
+    "origin": "window/plain",
+    "path": "window read only through the stand-ins (not read by the same order without them)",
+    "read_by_the_order_alone": false,
+    "read_with_standins": true,
+    "window": 225,
+    "words": [
+     "km2",
+     "は120",
+     "は354",
+     "を合わせて",
+     "最大水深",
+     "隣接"
+    ]
+   },
+   {
+    "baseline_lists_this_window": false,
+    "marks": [
+     "window_evidence_variant",
+     "read_via_standin"
+    ],
+    "origin": "window/window-evidence",
+    "path": "window read only through the stand-ins (not read by the same order without them)",
+    "read_by_the_order_alone": false,
+    "read_with_standins": true,
+    "window": 225,
+    "words": [
+     "Orsasjon",
+     "km2",
+     "は120",
+     "は354",
+     "を合わせて",
+     "最大水深"
+    ]
+   },
+   {
+    "baseline_lists_this_window": false,
+    "marks": [
+     "window_evidence_variant",
+     "read_via_standin"
+    ],
+    "origin": "window/window-evidence",
+    "path": "window read only through the stand-ins (not read by the same order without them)",
+    "read_by_the_order_alone": false,
+    "read_with_standins": true,
+    "window": 225,
+    "words": [
+     "km2",
+     "は120",
+     "は354",
+     "を合わせて",
+     "最大水深",
+     "隣接"
+    ]
+   },
+   {
+    "baseline_lists_this_window": false,
+    "marks": [
+     "window_evidence_variant",
+     "read_via_standin"
+    ],
+    "origin": "window/window-evidence",
+    "path": "window read only through the stand-ins (not read by the same order without them)",
+    "read_by_the_order_alone": false,
+    "read_with_standins": true,
+    "window": 224,
+    "words": [
+     "km2",
+     "は120",
+     "は354",
+     "最大水深",
+     "湖",
+     "面積"
+    ]
+   }
+  ],
+  "id": "b3_pa18",
+  "standin_units": 10
+ },
+ {
+  "bank": "bank3",
+  "baseline": "off",
+  "entries": [
+   {
+    "baseline_lists_this_window": false,
+    "marks": [
+     "read_via_standin"
+    ],
+    "origin": "window/plain",
+    "path": "window read only through the stand-ins (not read by the same order without them)",
+    "read_by_the_order_alone": false,
+    "read_with_standins": true,
+    "window": 224,
+    "words": [
+     "Orsasjon",
+     "km2",
+     "は120",
+     "は354",
+     "を合わせて",
+     "最大水深"
+    ]
+   },
+   {
+    "baseline_lists_this_window": false,
+    "marks": [
+     "read_via_standin"
+    ],
+    "origin": "window/plain",
+    "path": "window read only through the stand-ins (not read by the same order without them)",
+    "read_by_the_order_alone": false,
+    "read_with_standins": true,
+    "window": 224,
+    "words": [
+     "km2",
+     "は120",
+     "は354",
+     "を合わせて",
+     "最大水深",
+     "隣接"
+    ]
+   },
+   {
+    "baseline_lists_this_window": false,
+    "marks": [
+     "read_via_standin"
+    ],
+    "origin": "window/plain",
+    "path": "window read only through the stand-ins (not read by the same order without them)",
+    "read_by_the_order_alone": false,
+    "read_with_standins": true,
+    "window": 225,
+    "words": [
+     "Orsasjon",
+     "km2",
+     "は120",
+     "は354",
+     "を合わせて",
+     "最大水深"
+    ]
+   },
+   {
+    "baseline_lists_this_window": false,
+    "marks": [
+     "read_via_standin"
+    ],
+    "origin": "window/plain",
+    "path": "window read only through the stand-ins (not read by the same order without them)",
+    "read_by_the_order_alone": false,
+    "read_with_standins": true,
+    "window": 225,
+    "words": [
+     "km2",
+     "は120",
+     "は354",
+     "を合わせて",
+     "最大水深",
+     "隣接"
+    ]
+   },
+   {
+    "baseline_lists_this_window": false,
+    "marks": [
+     "window_evidence_variant",
+     "read_via_standin"
+    ],
+    "origin": "window/window-evidence",
+    "path": "window read only through the stand-ins (not read by the same order without them)",
+    "read_by_the_order_alone": false,
+    "read_with_standins": true,
+    "window": 225,
+    "words": [
+     "Orsasjon",
+     "km2",
+     "は120",
+     "は354",
+     "を合わせて",
+     "最大水深"
+    ]
+   },
+   {
+    "baseline_lists_this_window": false,
+    "marks": [
+     "window_evidence_variant",
+     "read_via_standin"
+    ],
+    "origin": "window/window-evidence",
+    "path": "window read only through the stand-ins (not read by the same order without them)",
+    "read_by_the_order_alone": false,
+    "read_with_standins": true,
+    "window": 225,
+    "words": [
+     "km2",
+     "は120",
+     "は354",
+     "を合わせて",
+     "最大水深",
+     "隣接"
+    ]
+   },
+   {
+    "baseline_lists_this_window": false,
+    "marks": [
+     "window_evidence_variant",
+     "read_via_standin"
+    ],
+    "origin": "window/window-evidence",
+    "path": "window read only through the stand-ins (not read by the same order without them)",
+    "read_by_the_order_alone": false,
+    "read_with_standins": true,
+    "window": 224,
+    "words": [
+     "km2",
+     "は120",
+     "は354",
+     "最大水深",
+     "湖",
+     "面積"
+    ]
+   }
+  ],
+  "id": "b3_pa18",
+  "standin_units": 10
+ },
+ {
+  "bank": "bank3",
+  "baseline": "order-only",
+  "entries": [
+   {
+    "marks": [
+     "read_via_standin"
+    ],
+    "n_read_on": 4,
+    "n_read_order_only": 4,
+    "origin": "flat/RUN",
+    "path": "read only through the tie-break",
+    "read_only_with_standins": [
+     "Aborigines",
+     "メンバー"
+    ],
+    "read_only_without_standins": [
+     "ジーズ",
+     "完全"
+    ],
+    "seeds": [
+     "Aborigines"
+    ],
+    "seeds_read_by_the_order_alone": [],
+    "words": [
+     "Aborigines",
+     "Young",
+     "the",
+     "は1978年に",
+     "アボリジニーズ",
+     "バンド"
+    ]
+   },
+   {
+    "marks": [],
+    "origin": "layers/RUN/1A",
+    "path": "layers entry: not marked per entry (union over bundles)",
+    "words": [
+     "1972年からは",
+     "3兄弟",
+     "5人編成",
+     "Aborigines",
+     "Young",
+     "the"
+    ]
+   }
+  ],
+  "id": "b3_uw15",
+  "standin_units": 121
+ },
+ {
+  "bank": "bank3",
+  "baseline": "off",
+  "entries": [
+   {
+    "marks": [],
+    "n_read_on": 4,
+    "n_read_order_only": 4,
+    "origin": "flat/RUN",
+    "path": "the crosses are read by the order alone too: the SET read differs (V3 pool), not a stand-in cross",
+    "read_only_with_standins": [],
+    "read_only_without_standins": [],
+    "seeds": [
+     "千家十職"
+    ],
+    "seeds_read_by_the_order_alone": [
+     "千家十職"
+    ],
+    "words": [
+     "どぶろ",
+     "どを",
+     "一",
+     "代",
+     "千家十職",
+     "焼物師"
+    ]
+   },
+   {
+    "marks": [],
+    "origin": "layers/RUN/1A",
+    "path": "layers entry: not marked per entry (union over bundles)",
+    "words": [
+     "9代",
+     "であり",
+     "どぶろ",
+     "どを",
+     "一",
+     "主"
+    ]
+   }
+  ],
+  "id": "b3_uw18",
+  "standin_units": 22
+ },
+ {
+  "bank": "bank2",
+  "baseline": "off",
+  "entries": [
+   {
+    "marks": [],
+    "n_read_on": 4,
+    "n_read_order_only": 3,
+    "origin": "flat/RUN",
+    "path": "the crosses are read by the order alone too: the SET read differs (V3 pool), not a stand-in cross",
+    "read_only_with_standins": [
+     "富国強兵",
+     "日本最大",
+     "洋紙会社な"
+    ],
+    "read_only_without_standins": [
+     "はくぶんかん",
+     "東京都"
+    ],
+    "seeds": [
+     "出版社"
+    ],
+    "seeds_read_by_the_order_alone": [
+     "出版社"
+    ],
+    "words": [
+     "はくぶんかん",
+     "乗り",
+     "出版社",
+     "創刊",
+     "博文館",
+     "国粋主義的な"
+    ]
+   },
+   {
+    "marks": [],
+    "n_read_on": 4,
+    "n_read_order_only": 3,
+    "origin": "flat/RUN",
+    "path": "the crosses are read by the order alone too: the SET read differs (V3 pool), not a stand-in cross",
+    "read_only_with_standins": [
+     "富国強兵",
+     "日本最大",
+     "洋紙会社な"
+    ],
+    "read_only_without_standins": [
+     "はくぶんかん",
+     "東京都"
+    ],
+    "seeds": [
+     "出版社"
+    ],
+    "seeds_read_by_the_order_alone": [
+     "出版社"
+    ],
+    "words": [
+     "乗り",
+     "出版社",
+     "創刊",
+     "博文館",
+     "国粋主義的な",
+     "富国強兵"
+    ]
+   },
+   {
+    "marks": [],
+    "n_read_on": 4,
+    "n_read_order_only": 3,
+    "origin": "flat/RUN",
+    "path": "the crosses are read by the order alone too: the SET read differs (V3 pool), not a stand-in cross",
+    "read_only_with_standins": [
+     "富国強兵",
+     "日本最大",
+     "洋紙会社な"
+    ],
+    "read_only_without_standins": [
+     "はくぶんかん",
+     "東京都"
+    ],
+    "seeds": [
+     "出版社"
+    ],
+    "seeds_read_by_the_order_alone": [
+     "出版社"
+    ],
+    "words": [
+     "はくぶんかん",
+     "乗り",
+     "出版社",
+     "創刊",
+     "国粋主義的な",
+     "富国強兵"
+    ]
+   },
+   {
+    "marks": [],
+    "origin": "layers/RUN/1A",
+    "path": "layers entry: not marked per entry (union over bundles)",
+    "words": [
+     "はくぶんかん",
+     "乗り",
+     "共",
+     "出版社",
+     "創刊",
+     "博文館"
+    ]
+   },
+   {
+    "marks": [],
+    "origin": "layers/RUN/1A",
+    "path": "layers entry: not marked per entry (union over bundles)",
+    "words": [
+     "2011年10月3日から10月9日にかけて",
+     "2011年楽天ジャパン",
+     "はくぶんかん",
+     "オープン",
+     "テニス",
+     "乗り"
+    ]
+   },
+   {
+    "marks": [],
+    "origin": "layers/RUN/1A",
+    "path": "layers entry: not marked per entry (union over bundles)",
+    "words": [
+     "2011年10月3日から10月9日にかけて",
+     "2011年楽天ジャパン",
+     "はくぶんかん",
+     "オープン",
+     "テニス",
+     "乗り"
+    ]
+   },
+   {
+    "marks": [],
+    "origin": "layers/RUN/1A",
+    "path": "layers entry: not marked per entry (union over bundles)",
+    "words": [
+     "2011年10月3日から10月9日にかけて",
+     "2011年楽天ジャパン",
+     "はくぶんかん",
+     "オープン",
+     "テニス",
+     "乗り"
+    ]
+   }
+  ],
+  "id": "I2-023",
+  "standin_units": 8
+ },
+ {
+  "bank": "bank2",
+  "baseline": "off",
+  "entries": [
+   {
+    "marks": [],
+    "origin": "layers/WORD/1A",
+    "path": "layers entry: not marked per entry (union over bundles)",
+    "words": [
+     "17",
+     "19",
+     "1974",
+     "2",
+     "20",
+     "2005"
+    ]
+   }
+  ],
+  "id": "I2-025",
+  "standin_units": 10
+ },
+ {
+  "bank": "bank2",
+  "baseline": "off",
+  "entries": [
+   {
+    "marks": [],
+    "n_read_on": 4,
+    "n_read_order_only": 4,
+    "origin": "flat/RUN",
+    "path": "the crosses are read by the order alone too: the SET read differs (V3 pool), not a stand-in cross",
+    "read_only_with_standins": [
+     "アルカディアー",
+     "ギリシア",
+     "神話"
+    ],
+    "read_only_without_standins": [
+     "ニュクティーモス",
+     "父",
+     "賞"
+    ],
+    "seeds": [
+     "地方"
+    ],
+    "seeds_read_by_the_order_alone": [
+     "地方"
+    ],
+    "words": [
+     "こった",
+     "アルカディアー",
+     "ウガンダ",
+     "デウカリオーン",
+     "北部地域",
+     "地方"
+    ]
+   },
+   {
+    "marks": [],
+    "n_read_on": 4,
+    "n_read_order_only": 4,
+    "origin": "flat/RUN",
+    "path": "the crosses are read by the order alone too: the SET read differs (V3 pool), not a stand-in cross",
+    "read_only_with_standins": [
+     "アルカディアー",
+     "ギリシア",
+     "神話"
+    ],
+    "read_only_without_standins": [
+     "ニュクティーモス",
+     "父",
+     "賞"
+    ],
+    "seeds": [
+     "地方"
+    ],
+    "seeds_read_by_the_order_alone": [
+     "地方"
+    ],
+    "words": [
+     "こった",
+     "アルカディアー",
+     "ウガンダ",
+     "デウカリオーン",
+     "北部地域",
+     "地方"
+    ]
+   },
+   {
+    "marks": [],
+    "n_read_on": 4,
+    "n_read_order_only": 4,
+    "origin": "flat/RUN",
+    "path": "the crosses are read by the order alone too: the SET read differs (V3 pool), not a stand-in cross",
+    "read_only_with_standins": [
+     "アルカディアー",
+     "ギリシア",
+     "神話"
+    ],
+    "read_only_without_standins": [
+     "ニュクティーモス",
+     "父",
+     "賞"
+    ],
+    "seeds": [
+     "地方"
+    ],
+    "seeds_read_by_the_order_alone": [
+     "地方"
+    ],
+    "words": [
+     "こった",
+     "アルカディアー",
+     "ウガンダ",
+     "北部地域",
+     "地方",
+     "大洪水"
+    ]
+   },
+   {
+    "marks": [],
+    "n_read_on": 4,
+    "n_read_order_only": 4,
+    "origin": "flat/RUN",
+    "path": "the crosses are read by the order alone too: the SET read differs (V3 pool), not a stand-in cross",
+    "read_only_with_standins": [
+     "アルカディアー",
+     "ギリシア",
+     "神話"
+    ],
+    "read_only_without_standins": [
+     "ニュクティーモス",
+     "父",
+     "賞"
+    ],
+    "seeds": [
+     "地方"
+    ],
+    "seeds_read_by_the_order_alone": [
+     "地方"
+    ],
+    "words": [
+     "こった",
+     "アルカディアー",
+     "ウガンダ",
+     "北部地域",
+     "地方",
+     "大洪水"
+    ]
+   },
+   {
+    "marks": [],
+    "n_read_on": 4,
+    "n_read_order_only": 4,
+    "origin": "flat/RUN",
+    "path": "the crosses are read by the order alone too: the SET read differs (V3 pool), not a stand-in cross",
+    "read_only_with_standins": [
+     "アルカディアー",
+     "ギリシア",
+     "神話"
+    ],
+    "read_only_without_standins": [
+     "ニュクティーモス",
+     "父",
+     "賞"
+    ],
+    "seeds": [
+     "地方"
+    ],
+    "seeds_read_by_the_order_alone": [
+     "地方"
+    ],
+    "words": [
+     "アルカディアー",
+     "ウガンダ",
+     "デウカリオーン",
+     "北部地域",
+     "地方",
+     "大洪水"
+    ]
+   },
+   {
+    "marks": [],
+    "n_read_on": 4,
+    "n_read_order_only": 4,
+    "origin": "flat/RUN",
+    "path": "the crosses are read by the order alone too: the SET read differs (V3 pool), not a stand-in cross",
+    "read_only_with_standins": [
+     "アルカディアー",
+     "ギリシア",
+     "神話"
+    ],
+    "read_only_without_standins": [
+     "ニュクティーモス",
+     "父",
+     "賞"
+    ],
+    "seeds": [
+     "地方"
+    ],
+    "seeds_read_by_the_order_alone": [
+     "地方"
+    ],
+    "words": [
+     "アルカディアー",
+     "ウガンダ",
+     "デウカリオーン",
+     "北部地域",
+     "地方",
+     "大洪水"
+    ]
+   },
+   {
+    "marks": [
+     "read_via_standin"
+    ],
+    "n_read_on": 4,
+    "n_read_order_only": 4,
+    "origin": "flat/RUN",
+    "path": "read only through the tie-break",
+    "read_only_with_standins": [
+     "アルカディアー",
+     "ギリシア",
+     "神話"
+    ],
+    "read_only_without_standins": [
+     "ニュクティーモス",
+     "父",
+     "賞"
+    ],
+    "seeds": [
+     "アルカディアー"
+    ],
+    "seeds_read_by_the_order_alone": [],
+    "words": [
+     "50人",
+     "こった",
+     "アルカディアー",
+     "デウカリオーン",
+     "地方",
+     "大洪水"
+    ]
+   },
+   {
+    "marks": [],
+    "n_read_on": 4,
+    "n_read_order_only": 4,
+    "origin": "flat/RUN",
+    "path": "the crosses are read by the order alone too: the SET read differs (V3 pool), not a stand-in cross",
+    "read_only_with_standins": [
+     "アルカディアー",
+     "ギリシア",
+     "神話"
+    ],
+    "read_only_without_standins": [
+     "ニュクティーモス",
+     "父",
+     "賞"
+    ],
+    "seeds": [
+     "地方"
+    ],
+    "seeds_read_by_the_order_alone": [
+     "地方"
+    ],
+    "words": [
+     "こった",
+     "ウガンダ",
+     "デウカリオーン",
+     "北部地域",
+     "地方",
+     "子供"
+    ]
+   },
+   {
+    "marks": [],
+    "n_read_on": 4,
+    "n_read_order_only": 4,
+    "origin": "flat/RUN",
+    "path": "the crosses are read by the order alone too: the SET read differs (V3 pool), not a stand-in cross",
+    "read_only_with_standins": [
+     "アルカディアー",
+     "ギリシア",
+     "神話"
+    ],
+    "read_only_without_standins": [
+     "ニュクティーモス",
+     "父",
+     "賞"
+    ],
+    "seeds": [
+     "地方"
+    ],
+    "seeds_read_by_the_order_alone": [
+     "地方"
+    ],
+    "words": [
+     "こった",
+     "ウガンダ",
+     "北部地域",
+     "地方",
+     "大洪水",
+     "子供"
+    ]
+   },
+   {
+    "marks": [],
+    "n_read_on": 4,
+    "n_read_order_only": 4,
+    "origin": "flat/RUN",
+    "path": "the crosses are read by the order alone too: the SET read differs (V3 pool), not a stand-in cross",
+    "read_only_with_standins": [
+     "アルカディアー",
+     "ギリシア",
+     "神話"
+    ],
+    "read_only_without_standins": [
+     "ニュクティーモス",
+     "父",
+     "賞"
+    ],
+    "seeds": [
+     "地方"
+    ],
+    "seeds_read_by_the_order_alone": [
+     "地方"
+    ],
+    "words": [
+     "ウガンダ",
+     "デウカリオーン",
+     "北部地域",
+     "地方",
+     "大洪水",
+     "子供"
+    ]
+   },
+   {
+    "marks": [],
+    "n_read_on": 4,
+    "n_read_order_only": 4,
+    "origin": "flat/RUN",
+    "path": "the crosses are read by the order alone too: the SET read differs (V3 pool), not a stand-in cross",
+    "read_only_with_standins": [
+     "アルカディアー",
+     "ギリシア",
+     "神話"
+    ],
+    "read_only_without_standins": [
+     "ニュクティーモス",
+     "父",
+     "賞"
+    ],
+    "seeds": [
+     "地方"
+    ],
+    "seeds_read_by_the_order_alone": [
+     "地方"
+    ],
+    "words": [
+     "50人",
+     "こった",
+     "アルカディアー",
+     "ウガンダ",
+     "デウカリオーン",
+     "北部地域"
+    ]
+   },
+   {
+    "marks": [],
+    "n_read_on": 4,
+    "n_read_order_only": 4,
+    "origin": "flat/RUN",
+    "path": "the crosses are read by the order alone too: the SET read differs (V3 pool), not a stand-in cross",
+    "read_only_with_standins": [
+     "アルカディアー",
+     "ギリシア",
+     "神話"
+    ],
+    "read_only_without_standins": [
+     "ニュクティーモス",
+     "父",
+     "賞"
+    ],
+    "seeds": [
+     "地方"
+    ],
+    "seeds_read_by_the_order_alone": [
+     "地方"
+    ],
+    "words": [
+     "こった",
+     "ウガンダ",
+     "北部地域",
+     "地方",
+     "子供",
+     "末子"
+    ]
+   },
+   {
+    "marks": [],
+    "n_read_on": 4,
+    "n_read_order_only": 4,
+    "origin": "flat/RUN",
+    "path": "the crosses are read by the order alone too: the SET read differs (V3 pool), not a stand-in cross",
+    "read_only_with_standins": [
+     "アルカディアー",
+     "ギリシア",
+     "神話"
+    ],
+    "read_only_without_standins": [
+     "ニュクティーモス",
+     "父",
+     "賞"
+    ],
+    "seeds": [
+     "地方"
+    ],
+    "seeds_read_by_the_order_alone": [
+     "地方"
+    ],
+    "words": [
+     "こった",
+     "アルカディアー",
+     "ウガンダ",
+     "デウカリオーン",
+     "北部地域",
+     "地方"
+    ]
+   },
+   {
+    "marks": [],
+    "n_read_on": 4,
+    "n_read_order_only": 4,
+    "origin": "flat/RUN",
+    "path": "the crosses are read by the order alone too: the SET read differs (V3 pool), not a stand-in cross",
+    "read_only_with_standins": [
+     "アルカディアー",
+     "ギリシア",
+     "神話"
+    ],
+    "read_only_without_standins": [
+     "ニュクティーモス",
+     "父",
+     "賞"
+    ],
+    "seeds": [
+     "地方"
+    ],
+    "seeds_read_by_the_order_alone": [
+     "地方"
+    ],
+    "words": [
+     "こった",
+     "アルカディアー",
+     "ウガンダ",
+     "デウカリオーン",
+     "北部地域",
+     "地方"
+    ]
+   },
+   {
+    "marks": [],
+    "n_read_on": 4,
+    "n_read_order_only": 4,
+    "origin": "flat/RUN",
+    "path": "the crosses are read by the order alone too: the SET read differs (V3 pool), not a stand-in cross",
+    "read_only_with_standins": [
+     "アルカディアー",
+     "ギリシア",
+     "神話"
+    ],
+    "read_only_without_standins": [
+     "ニュクティーモス",
+     "父",
+     "賞"
+    ],
+    "seeds": [
+     "地方"
+    ],
+    "seeds_read_by_the_order_alone": [
+     "地方"
+    ],
+    "words": [
+     "こった",
+     "アルカディアー",
+     "ウガンダ",
+     "北部地域",
+     "地方",
+     "大洪水"
+    ]
+   },
+   {
+    "marks": [],
+    "n_read_on": 4,
+    "n_read_order_only": 4,
+    "origin": "flat/RUN",
+    "path": "the crosses are read by the order alone too: the SET read differs (V3 pool), not a stand-in cross",
+    "read_only_with_standins": [
+     "アルカディアー",
+     "ギリシア",
+     "神話"
+    ],
+    "read_only_without_standins": [
+     "ニュクティーモス",
+     "父",
+     "賞"
+    ],
+    "seeds": [
+     "地方"
+    ],
+    "seeds_read_by_the_order_alone": [
+     "地方"
+    ],
+    "words": [
+     "こった",
+     "アルカディアー",
+     "ウガンダ",
+     "北部地域",
+     "地方",
+     "大洪水"
+    ]
+   },
+   {
+    "marks": [],
+    "n_read_on": 4,
+    "n_read_order_only": 4,
+    "origin": "flat/RUN",
+    "path": "the crosses are read by the order alone too: the SET read differs (V3 pool), not a stand-in cross",
+    "read_only_with_standins": [
+     "アルカディアー",
+     "ギリシア",
+     "神話"
+    ],
+    "read_only_without_standins": [
+     "ニュクティーモス",
+     "父",
+     "賞"
+    ],
+    "seeds": [
+     "地方"
+    ],
+    "seeds_read_by_the_order_alone": [
+     "地方"
+    ],
+    "words": [
+     "アルカディアー",
+     "ウガンダ",
+     "デウカリオーン",
+     "北部地域",
+     "地方",
+     "大洪水"
+    ]
+   },
+   {
+    "marks": [],
+    "n_read_on": 4,
+    "n_read_order_only": 4,
+    "origin": "flat/RUN",
+    "path": "the crosses are read by the order alone too: the SET read differs (V3 pool), not a stand-in cross",
+    "read_only_with_standins": [
+     "アルカディアー",
+     "ギリシア",
+     "神話"
+    ],
+    "read_only_without_standins": [
+     "ニュクティーモス",
+     "父",
+     "賞"
+    ],
+    "seeds": [
+     "地方"
+    ],
+    "seeds_read_by_the_order_alone": [
+     "地方"
+    ],
+    "words": [
+     "アルカディアー",
+     "ウガンダ",
+     "デウカリオーン",
+     "北部地域",
+     "地方",
+     "大洪水"
+    ]
+   },
+   {
+    "marks": [],
+    "n_read_on": 4,
+    "n_read_order_only": 4,
+    "origin": "flat/RUN",
+    "path": "the crosses are read by the order alone too: the SET read differs (V3 pool), not a stand-in cross",
+    "read_only_with_standins": [
+     "アルカディアー",
+     "ギリシア",
+     "神話"
+    ],
+    "read_only_without_standins": [
+     "ニュクティーモス",
+     "父",
+     "賞"
+    ],
+    "seeds": [
+     "地方"
+    ],
+    "seeds_read_by_the_order_alone": [
+     "地方"
+    ],
+    "words": [
+     "50人",
+     "こった",
+     "ウガンダ",
+     "デウカリオーン",
+     "北部地域",
+     "地方"
+    ]
+   },
+   {
+    "marks": [],
+    "n_read_on": 4,
+    "n_read_order_only": 4,
+    "origin": "flat/RUN",
+    "path": "the crosses are read by the order alone too: the SET read differs (V3 pool), not a stand-in cross",
+    "read_only_with_standins": [
+     "アルカディアー",
+     "ギリシア",
+     "神話"
+    ],
+    "read_only_without_standins": [
+     "ニュクティーモス",
+     "父",
+     "賞"
+    ],
+    "seeds": [
+     "地方"
+    ],
+    "seeds_read_by_the_order_alone": [
+     "地方"
+    ],
+    "words": [
+     "50人",
+     "こった",
+     "ウガンダ",
+     "デウカリオーン",
+     "北部地域",
+     "地方"
+    ]
+   },
+   {
+    "marks": [],
+    "n_read_on": 4,
+    "n_read_order_only": 4,
+    "origin": "flat/RUN",
+    "path": "the crosses are read by the order alone too: the SET read differs (V3 pool), not a stand-in cross",
+    "read_only_with_standins": [
+     "アルカディアー",
+     "ギリシア",
+     "神話"
+    ],
+    "read_only_without_standins": [
+     "ニュクティーモス",
+     "父",
+     "賞"
+    ],
+    "seeds": [
+     "地方"
+    ],
+    "seeds_read_by_the_order_alone": [
+     "地方"
+    ],
+    "words": [
+     "50人",
+     "ウガンダ",
+     "デウカリオーン",
+     "北部地域",
+     "地方",
+     "大洪水"
+    ]
+   },
+   {
+    "marks": [],
+    "n_read_on": 4,
+    "n_read_order_only": 4,
+    "origin": "flat/RUN",
+    "path": "the crosses are read by the order alone too: the SET read differs (V3 pool), not a stand-in cross",
+    "read_only_with_standins": [
+     "アルカディアー",
+     "ギリシア",
+     "神話"
+    ],
+    "read_only_without_standins": [
+     "ニュクティーモス",
+     "父",
+     "賞"
+    ],
+    "seeds": [
+     "地方"
+    ],
+    "seeds_read_by_the_order_alone": [
+     "地方"
+    ],
+    "words": [
+     "50人",
+     "ウガンダ",
+     "デウカリオーン",
+     "北部地域",
+     "地方",
+     "大洪水"
+    ]
+   },
+   {
+    "marks": [],
+    "n_read_on": 4,
+    "n_read_order_only": 4,
+    "origin": "flat/RUN",
+    "path": "the crosses are read by the order alone too: the SET read differs (V3 pool), not a stand-in cross",
+    "read_only_with_standins": [
+     "アルカディアー",
+     "ギリシア",
+     "神話"
+    ],
+    "read_only_without_standins": [
+     "ニュクティーモス",
+     "父",
+     "賞"
+    ],
+    "seeds": [
+     "地方"
+    ],
+    "seeds_read_by_the_order_alone": [
+     "地方"
+    ],
+    "words": [
+     "50人",
+     "ウガンダ",
+     "デウカリオーン",
+     "北部地域",
+     "地方",
+     "大洪水"
+    ]
+   },
+   {
+    "marks": [],
+    "n_read_on": 4,
+    "n_read_order_only": 4,
+    "origin": "flat/RUN",
+    "path": "the crosses are read by the order alone too: the SET read differs (V3 pool), not a stand-in cross",
+    "read_only_with_standins": [
+     "アルカディアー",
+     "ギリシア",
+     "神話"
+    ],
+    "read_only_without_standins": [
+     "ニュクティーモス",
+     "父",
+     "賞"
+    ],
+    "seeds": [
+     "地方"
+    ],
+    "seeds_read_by_the_order_alone": [
+     "地方"
+    ],
+    "words": [
+     "50人",
+     "ウガンダ",
+     "デウカリオーン",
+     "北部地域",
+     "地方",
+     "大洪水"
+    ]
+   },
+   {
+    "marks": [],
+    "n_read_on": 4,
+    "n_read_order_only": 4,
+    "origin": "flat/RUN",
+    "path": "the crosses are read by the order alone too: the SET read differs (V3 pool), not a stand-in cross",
+    "read_only_with_standins": [
+     "アルカディアー",
+     "ギリシア",
+     "神話"
+    ],
+    "read_only_without_standins": [
+     "ニュクティーモス",
+     "父",
+     "賞"
+    ],
+    "seeds": [
+     "地方"
+    ],
+    "seeds_read_by_the_order_alone": [
+     "地方"
+    ],
+    "words": [
+     "アルカディアー",
+     "ウガンダ",
+     "北部地域",
+     "地方",
+     "子供",
+     "王リュカーオーン"
+    ]
+   },
+   {
+    "marks": [],
+    "n_read_on": 4,
+    "n_read_order_only": 4,
+    "origin": "flat/RUN",
+    "path": "the crosses are read by the order alone too: the SET read differs (V3 pool), not a stand-in cross",
+    "read_only_with_standins": [
+     "アルカディアー",
+     "ギリシア",
+     "神話"
+    ],
+    "read_only_without_standins": [
+     "ニュクティーモス",
+     "父",
+     "賞"
+    ],
+    "seeds": [
+     "地方"
+    ],
+    "seeds_read_by_the_order_alone": [
+     "地方"
+    ],
+    "words": [
+     "アルカディアー",
+     "ウガンダ",
+     "北部地域",
+     "地方",
+     "末子",
+     "王リュカーオーン"
+    ]
+   },
+   {
+    "marks": [],
+    "n_read_on": 4,
+    "n_read_order_only": 4,
+    "origin": "flat/RUN",
+    "path": "the crosses are read by the order alone too: the SET read differs (V3 pool), not a stand-in cross",
+    "read_only_with_standins": [
+     "アルカディアー",
+     "ギリシア",
+     "神話"
+    ],
+    "read_only_without_standins": [
+     "ニュクティーモス",
+     "父",
+     "賞"
+    ],
+    "seeds": [
+     "地方"
+    ],
+    "seeds_read_by_the_order_alone": [
+     "地方"
+    ],
+    "words": [
+     "50人",
+     "アルカディアー",
+     "ウガンダ",
+     "北部地域",
+     "地方",
+     "王リュカーオーン"
+    ]
+   },
+   {
+    "marks": [],
+    "n_read_on": 4,
+    "n_read_order_only": 4,
+    "origin": "flat/RUN",
+    "path": "the crosses are read by the order alone too: the SET read differs (V3 pool), not a stand-in cross",
+    "read_only_with_standins": [
+     "アルカディアー",
+     "ギリシア",
+     "神話"
+    ],
+    "read_only_without_standins": [
+     "ニュクティーモス",
+     "父",
+     "賞"
+    ],
+    "seeds": [
+     "地方"
+    ],
+    "seeds_read_by_the_order_alone": [
+     "地方"
+    ],
+    "words": [
+     "ウガンダ",
+     "デウカリオーン",
+     "北部地域",
+     "地方",
+     "子供",
+     "末子"
+    ]
+   },
+   {
+    "marks": [],
+    "n_read_on": 4,
+    "n_read_order_only": 4,
+    "origin": "flat/RUN",
+    "path": "the crosses are read by the order alone too: the SET read differs (V3 pool), not a stand-in cross",
+    "read_only_with_standins": [
+     "アルカディアー",
+     "ギリシア",
+     "神話"
+    ],
+    "read_only_without_standins": [
+     "ニュクティーモス",
+     "父",
+     "賞"
+    ],
+    "seeds": [
+     "地方"
+    ],
+    "seeds_read_by_the_order_alone": [
+     "地方"
+    ],
+    "words": [
+     "ウガンダ",
+     "北部地域",
+     "地方",
+     "大洪水",
+     "子供",
+     "末子"
+    ]
+   },
+   {
+    "marks": [],
+    "n_read_on": 4,
+    "n_read_order_only": 4,
+    "origin": "flat/RUN",
+    "path": "the crosses are read by the order alone too: the SET read differs (V3 pool), not a stand-in cross",
+    "read_only_with_standins": [
+     "アルカディアー",
+     "ギリシア",
+     "神話"
+    ],
+    "read_only_without_standins": [
+     "ニュクティーモス",
+     "父",
+     "賞"
+    ],
+    "seeds": [
+     "地方"
+    ],
+    "seeds_read_by_the_order_alone": [
+     "地方"
+    ],
+    "words": [
+     "ウガンダ",
+     "北部地域",
+     "地方",
+     "子供",
+     "末子",
+     "王リュカーオーン"
+    ]
+   },
+   {
+    "marks": [],
+    "n_read_on": 4,
+    "n_read_order_only": 4,
+    "origin": "flat/RUN",
+    "path": "the crosses are read by the order alone too: the SET read differs (V3 pool), not a stand-in cross",
+    "read_only_with_standins": [
+     "アルカディアー",
+     "ギリシア",
+     "神話"
+    ],
+    "read_only_without_standins": [
+     "ニュクティーモス",
+     "父",
+     "賞"
+    ],
+    "seeds": [
+     "地方"
+    ],
+    "seeds_read_by_the_order_alone": [
+     "地方"
+    ],
+    "words": [
+     "50人",
+     "ウガンダ",
+     "北部地域",
+     "地方",
+     "子供",
+     "王リュカーオーン"
+    ]
+   },
+   {
+    "marks": [],
+    "n_read_on": 4,
+    "n_read_order_only": 4,
+    "origin": "flat/RUN",
+    "path": "the crosses are read by the order alone too: the SET read differs (V3 pool), not a stand-in cross",
+    "read_only_with_standins": [
+     "アルカディアー",
+     "ギリシア",
+     "神話"
+    ],
+    "read_only_without_standins": [
+     "ニュクティーモス",
+     "父",
+     "賞"
+    ],
+    "seeds": [
+     "地方"
+    ],
+    "seeds_read_by_the_order_alone": [
+     "地方"
+    ],
+    "words": [
+     "50人",
+     "ウガンダ",
+     "北部地域",
+     "地方",
+     "末子",
+     "王リュカーオーン"
+    ]
+   },
+   {
+    "marks": [],
+    "n_read_on": 4,
+    "n_read_order_only": 4,
+    "origin": "flat/WORD",
+    "path": "the crosses are read by the order alone too: the SET read differs (V3 pool), not a stand-in cross",
+    "read_only_with_standins": [],
+    "read_only_without_standins": [],
+    "seeds": [
+     "アルカディア",
+     "地方"
+    ],
+    "seeds_read_by_the_order_alone": [
+     "アルカディア",
+     "地方"
+    ],
+    "words": [
+     "アルカディア",
+     "デウカリオーン",
+     "リュカーオーン",
+     "子供",
+     "末子",
+     "洪水"
+    ]
+   },
+   {
+    "marks": [],
+    "n_read_on": 4,
+    "n_read_order_only": 4,
+    "origin": "flat/WORD",
+    "path": "the crosses are read by the order alone too: the SET read differs (V3 pool), not a stand-in cross",
+    "read_only_with_standins": [],
+    "read_only_without_standins": [],
+    "seeds": [
+     "アルカディア",
+     "地方"
+    ],
+    "seeds_read_by_the_order_alone": [
+     "アルカディア",
+     "地方"
+    ],
+    "words": [
+     "アルカディア",
+     "デウカリオーン",
+     "リュカーオーン",
+     "子供",
+     "末子",
+     "洪水"
+    ]
+   },
+   {
+    "marks": [],
+    "n_read_on": 4,
+    "n_read_order_only": 4,
+    "origin": "flat/WORD",
+    "path": "the crosses are read by the order alone too: the SET read differs (V3 pool), not a stand-in cross",
+    "read_only_with_standins": [],
+    "read_only_without_standins": [],
+    "seeds": [
+     "アルカディア",
+     "地方"
+    ],
+    "seeds_read_by_the_order_alone": [
+     "アルカディア",
+     "地方"
+    ],
+    "words": [
+     "アルカディア",
+     "デウカリオーン",
+     "リュカーオーン",
+     "子供",
+     "末子",
+     "王位"
+    ]
+   },
+   {
+    "marks": [],
+    "n_read_on": 4,
+    "n_read_order_only": 4,
+    "origin": "flat/WORD",
+    "path": "the crosses are read by the order alone too: the SET read differs (V3 pool), not a stand-in cross",
+    "read_only_with_standins": [],
+    "read_only_without_standins": [],
+    "seeds": [
+     "アルカディア",
+     "地方"
+    ],
+    "seeds_read_by_the_order_alone": [
+     "アルカディア",
+     "地方"
+    ],
+    "words": [
+     "アルカディア",
+     "リュカーオーン",
+     "子供",
+     "末子",
+     "洪水",
+     "王位"
+    ]
+   },
+   {
+    "marks": [],
+    "n_read_on": 4,
+    "n_read_order_only": 4,
+    "origin": "flat/WORD",
+    "path": "the crosses are read by the order alone too: the SET read differs (V3 pool), not a stand-in cross",
+    "read_only_with_standins": [],
+    "read_only_without_standins": [],
+    "seeds": [
+     "アルカディア"
+    ],
+    "seeds_read_by_the_order_alone": [
+     "アルカディア"
+    ],
+    "words": [
+     "50",
+     "アルカディア",
+     "デウカリオーン",
+     "リュカーオーン",
+     "子供",
+     "王位"
+    ]
+   },
+   {
+    "marks": [],
+    "n_read_on": 4,
+    "n_read_order_only": 4,
+    "origin": "flat/WORD",
+    "path": "the crosses are read by the order alone too: the SET read differs (V3 pool), not a stand-in cross",
+    "read_only_with_standins": [],
+    "read_only_without_standins": [],
+    "seeds": [
+     "アルカディア"
+    ],
+    "seeds_read_by_the_order_alone": [
+     "アルカディア"
+    ],
+    "words": [
+     "50",
+     "アルカディア",
+     "リュカーオーン",
+     "子供",
+     "洪水",
+     "王位"
+    ]
+   },
+   {
+    "marks": [],
+    "n_read_on": 4,
+    "n_read_order_only": 4,
+    "origin": "flat/WORD",
+    "path": "the crosses are read by the order alone too: the SET read differs (V3 pool), not a stand-in cross",
+    "read_only_with_standins": [],
+    "read_only_without_standins": [],
+    "seeds": [
+     "アルカディア"
+    ],
+    "seeds_read_by_the_order_alone": [
+     "アルカディア"
+    ],
+    "words": [
+     "アルカディア",
+     "デウカリオーン",
+     "リュカーオーン",
+     "子供",
+     "末子",
+     "洪水"
+    ]
+   },
+   {
+    "marks": [],
+    "n_read_on": 4,
+    "n_read_order_only": 4,
+    "origin": "flat/WORD",
+    "path": "the crosses are read by the order alone too: the SET read differs (V3 pool), not a stand-in cross",
+    "read_only_with_standins": [],
+    "read_only_without_standins": [],
+    "seeds": [
+     "アルカディア",
+     "地方"
+    ],
+    "seeds_read_by_the_order_alone": [
+     "アルカディア",
+     "地方"
+    ],
+    "words": [
+     "アルカディア",
+     "デウカリオーン",
+     "リュカーオーン",
+     "子供",
+     "末子",
+     "王位"
+    ]
+   },
+   {
+    "marks": [],
+    "n_read_on": 4,
+    "n_read_order_only": 4,
+    "origin": "flat/WORD",
+    "path": "the crosses are read by the order alone too: the SET read differs (V3 pool), not a stand-in cross",
+    "read_only_with_standins": [],
+    "read_only_without_standins": [],
+    "seeds": [
+     "アルカディア",
+     "地方"
+    ],
+    "seeds_read_by_the_order_alone": [
+     "アルカディア",
+     "地方"
+    ],
+    "words": [
+     "アルカディア",
+     "デウカリオーン",
+     "リュカーオーン",
+     "子供",
+     "末子",
+     "継承"
+    ]
+   },
+   {
+    "marks": [],
+    "n_read_on": 4,
+    "n_read_order_only": 4,
+    "origin": "flat/WORD",
+    "path": "the crosses are read by the order alone too: the SET read differs (V3 pool), not a stand-in cross",
+    "read_only_with_standins": [],
+    "read_only_without_standins": [],
+    "seeds": [
+     "アルカディア",
+     "地方"
+    ],
+    "seeds_read_by_the_order_alone": [
+     "アルカディア",
+     "地方"
+    ],
+    "words": [
+     "アルカディア",
+     "リュカーオーン",
+     "子供",
+     "末子",
+     "洪水",
+     "王位"
+    ]
+   },
+   {
+    "marks": [],
+    "n_read_on": 4,
+    "n_read_order_only": 4,
+    "origin": "flat/WORD",
+    "path": "the crosses are read by the order alone too: the SET read differs (V3 pool), not a stand-in cross",
+    "read_only_with_standins": [],
+    "read_only_without_standins": [],
+    "seeds": [
+     "アルカディア",
+     "地方"
+    ],
+    "seeds_read_by_the_order_alone": [
+     "アルカディア",
+     "地方"
+    ],
+    "words": [
+     "アルカディア",
+     "リュカーオーン",
+     "子供",
+     "末子",
+     "洪水",
+     "継承"
+    ]
+   },
+   {
+    "marks": [],
+    "n_read_on": 4,
+    "n_read_order_only": 4,
+    "origin": "flat/WORD",
+    "path": "the crosses are read by the order alone too: the SET read differs (V3 pool), not a stand-in cross",
+    "read_only_with_standins": [],
+    "read_only_without_standins": [],
+    "seeds": [
+     "アルカディア"
+    ],
+    "seeds_read_by_the_order_alone": [
+     "アルカディア"
+    ],
+    "words": [
+     "アルカディア",
+     "リュカーオーン",
+     "子供",
+     "末子",
+     "王位",
+     "継承"
+    ]
+   },
+   {
+    "marks": [],
+    "n_read_on": 4,
+    "n_read_order_only": 4,
+    "origin": "flat/WORD",
+    "path": "the crosses are read by the order alone too: the SET read differs (V3 pool), not a stand-in cross",
+    "read_only_with_standins": [],
+    "read_only_without_standins": [],
+    "seeds": [
+     "アルカディア"
+    ],
+    "seeds_read_by_the_order_alone": [
+     "アルカディア"
+    ],
+    "words": [
+     "50",
+     "アルカディア",
+     "デウカリオーン",
+     "リュカーオーン",
+     "子供",
+     "洪水"
+    ]
+   },
+   {
+    "marks": [],
+    "n_read_on": 4,
+    "n_read_order_only": 4,
+    "origin": "flat/WORD",
+    "path": "the crosses are read by the order alone too: the SET read differs (V3 pool), not a stand-in cross",
+    "read_only_with_standins": [],
+    "read_only_without_standins": [],
+    "seeds": [
+     "アルカディア"
+    ],
+    "seeds_read_by_the_order_alone": [
+     "アルカディア"
+    ],
+    "words": [
+     "50",
+     "アルカディア",
+     "リュカーオーン",
+     "子供",
+     "王位",
+     "継承"
+    ]
+   },
+   {
+    "marks": [],
+    "n_read_on": 4,
+    "n_read_order_only": 4,
+    "origin": "flat/WORD",
+    "path": "the crosses are read by the order alone too: the SET read differs (V3 pool), not a stand-in cross",
+    "read_only_with_standins": [],
+    "read_only_without_standins": [],
+    "seeds": [
+     "地方"
+    ],
+    "seeds_read_by_the_order_alone": [
+     "地方"
+    ],
+    "words": [
+     "50",
+     "アルカディア",
+     "ニュクティーモス",
+     "リュカーオーン",
+     "地方",
+     "継承"
+    ]
+   },
+   {
+    "marks": [],
+    "origin": "layers/RUN/1A",
+    "path": "layers entry: not marked per entry (union over bundles)",
+    "words": [
+     "50人",
+     "6つ",
+     "おうさまのみみはろばのみみ",
+     "けん",
+     "こった",
+     "アルカディアー"
+    ]
+   },
+   {
+    "marks": [],
+    "origin": "layers/RUN/1A",
+    "path": "layers entry: not marked per entry (union over bundles)",
+    "words": [
+     "50人",
+     "6つ",
+     "おうさまのみみはろばのみみ",
+     "けん",
+     "こった",
+     "アルカディアー"
+    ]
+   },
+   {
+    "marks": [],
+    "origin": "layers/RUN/1A",
+    "path": "layers entry: not marked per entry (union over bundles)",
+    "words": [
+     "50人",
+     "おうさまのみみはろばのみみ",
+     "けん",
+     "こった",
+     "アルカディアー",
+     "ウガンダ"
+    ]
+   },
+   {
+    "marks": [],
+    "origin": "layers/WORD/1A",
+    "path": "layers entry: not marked per entry (union over bundles)",
+    "words": [
+     "2025",
+     "50",
+     "UEFA",
+     "けん",
+     "こと",
+     "みょう"
+    ]
+   },
+   {
+    "marks": [],
+    "origin": "layers/WORD/1A",
+    "path": "layers entry: not marked per entry (union over bundles)",
+    "words": [
+     "2025",
+     "50",
+     "UEFA",
+     "けん",
+     "こと",
+     "みょう"
+    ]
+   }
+  ],
+  "id": "I2-033",
+  "standin_units": 5
+ },
+ {
+  "bank": "bank2",
+  "baseline": "off",
+  "entries": [
+   {
+    "marks": [],
+    "origin": "layers/WORD/1A",
+    "path": "layers entry: not marked per entry (union over bundles)",
+    "words": [
+     "2",
+     "5",
+     "こと",
+     "ず",
+     "ため",
+     "もの"
+    ]
+   }
+  ],
+  "id": "R2-I017",
+  "standin_units": 0
+ },
+ {
+  "bank": "bank2",
+  "baseline": "off",
+  "entries": [
+   {
+    "baseline_lists_this_window": false,
+    "marks": [
+     "window_evidence_variant",
+     "read_via_standin"
+    ],
+    "origin": "window/window-evidence",
+    "path": "window read only through the stand-ins (not read by the same order without them)",
+    "read_by_the_order_alone": false,
+    "read_with_standins": true,
+    "window": 503,
+    "words": [
+     "102平方キロメートル",
+     "2014年国勢調査",
+     "2020年投影人口",
+     "20万人",
+     "23万人",
+     "は1"
+    ]
+   }
+  ],
+  "id": "R2-I018",
+  "standin_units": 30
+ },
+ {
+  "bank": "bank2",
+  "baseline": "off",
+  "entries": [
+   {
+    "baseline_lists_this_window": false,
+    "marks": [
+     "via_standin"
+    ],
+    "origin": "window/plain",
+    "path": "window read in both; the entry is new: a start that holds only a stand-in, or a different cycle over the window",
+    "read_by_the_order_alone": true,
+    "read_with_standins": true,
+    "window": 512,
+    "words": [
+     "2013年当時",
+     "するに至った",
+     "入り",
+     "年間15台程度",
+     "既",
+     "注文生産体制"
+    ]
+   },
+   {
+    "baseline_lists_this_window": false,
+    "marks": [
+     "window_evidence_variant",
+     "via_standin"
+    ],
+    "origin": "window/window-evidence",
+    "path": "window read in both; the entry is new: a start that holds only a stand-in, or a different cycle over the window",
+    "read_by_the_order_alone": true,
+    "read_with_standins": true,
+    "window": 512,
+    "words": [
+     "2013年当時",
+     "するに至った",
+     "入り",
+     "年間15台程度",
+     "既",
+     "注文生産体制"
+    ]
+   }
+  ],
+  "id": "R2-I019",
+  "standin_units": 126
+ }
+]
