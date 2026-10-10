@@ -45,7 +45,7 @@ A 3,000-sentence corpus (`S3000`), flat read, fast preset, on a 4-core CI runner
 
 ## What it does not do
 
-- It does not beat keyword search (33 vs 57 of 69 at best so far).
+- It does not beat keyword search (32 vs 57 of 69).
 - It does not handle paraphrase or unknown words well (3 / 20, 6 / 18).
 - It is slow: minutes per question; a 3,000-sentence corpus takes about 3 hours to place on a 4-core runner.
 - It does not generate text. Answers are units of the corpus (an "assembled" block joins spans for display only and is never counted).
