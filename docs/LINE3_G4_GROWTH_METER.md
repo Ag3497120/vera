@@ -1,12 +1,14 @@
-# LINE3_G4_GROWTH_METER — 重ねて成長する計器（初期配置に文書を 1 本ずつ重ね、答えが「現れる・残る・壊れる」を測る）
+# LINE3_G4_GROWTH_METER — 重ねて成長する計器（基盤を座らせた平面の十字を凍結して文書ごとに積み、答えが「現れる・残る・壊れる」を測る）
 
-Author: the designer (2026-10-10). Target: `wt/line3` (branch line3), base HEAD `c3cd793c` (the commit that records the decision after G3-k).
-This document is design only. No product code was written and nothing was built or run. The numbers marked (O) come from light reads of
-`experiments/line3/bank2/{bank2.tsv,data/fulllead_sents.jsonl}` (article order, entry steps, unit counts per prefix: a few seconds of tokenising).
-The numbers marked (C) are copied from committed records and were not reproduced here. (E) marks an estimate derived from (C).
+Author: the designer (first version 2026-10-10; this revision 2026-10-10, after the owner's answers). Target: `wt/line3` (branch line3), base HEAD
+`fa70eb16` (the commit recording OP-G4-5). The working tree also holds uncommitted G3-k2 changes (`flat_order`, in `ask.py`, `cycle.py`, `wiring.py`,
+`combined.py`, `cli.py`). G4 code starts only after those are committed. This document is a design and implementation plan only. No product code was
+written, and nothing was built or run. (O) = counted by the designer from light reads of `experiments/line3/bank2/{bank2.tsv,data/fulllead_sents.jsonl}`.
+(C) = copied from committed records. (E) = an estimate derived from (C).
 
-**This is a measuring instrument, not a new reader.** It feeds documents into structures that already exist and asks with readers that already exist.
-It writes records and does not change `verantyx/`. The gaps it shows (§1.3) become later tickets, and only after the owner has answered.
+**What changed in this revision.** The owner answered every G4 question (§1.4), mostly NOT with the options I had recommended. The carry tower is no longer
+an arm. The 「重ねる」 mechanism is a NEW frozen flat stack (§5). It is built on the G1 foundation, seated first in every cross (§4). §1–§3 keep the
+facts. Everything from §4 on is the plan under the owner's choices. The options he declined are listed in §13.
 
 ---
 
@@ -16,15 +18,13 @@ It writes records and does not change `verantyx/`. The gaps it shows (§1.3) bec
 |---|---|
 | 【オーナー】 | The owner's words, quoted verbatim, and nothing else |
 | 【決定 x】 | A decision in `ops/decisions/2026-10-06_line3_faithful_build.md` |
-| 【条件 n】 | The three conditions for plan 2 (出所・引き継ぎの印・順番の台帳). The auditor stated them and the owner did not object |
-| 【推奨】 | The designer's proposal. It is not the owner's design |
-| 【OP-G4-n】 | A point that carries meaning and that the owner's words do not settle (§5). Nothing beyond the 【推奨】 default runs until the owner answers |
-| 【L-G4-n】 | An engineering choice that does not change meaning (§6). The implementer records it in `docs/LINE3_LOCAL_DECISIONS.md` |
-| (O)/(C)/(E) | Counted by the designer here / copied from a committed record / estimated from (C) |
+| 【条件 n】 | The three conditions for plan 2 (出所・引き継ぎの印・順番の台帳) |
+| 【導出】 | A point the owner's words leave open, derived here from binding decisions (§12 shows each derivation). Not a guess |
+| 【L-G4-n】 | An engineering choice that does not change meaning (§10). The implementer records it in `docs/LINE3_LOCAL_DECISIONS.md` |
+| (O)/(C)/(E) | Counted here / copied from a committed record / estimated from (C) |
 
-The rules are the same as everywhere in line 3. A tie means abstain, and no order makes a winner. Nothing is cut off silently. No floats.
-The default output is byte-identical. In addition, the order of the documents is a recorded input (【条件 3】). It is the only order allowed to
-shape a structure.
+The rules are the same as everywhere in line 3. A tie means abstain, and no order makes a winner. Nothing is cut off silently. No floats. Every
+default output stays byte-identical. The document order is a recorded input (【条件 3】), and it is the only order allowed to shape a structure.
 
 ---
 
@@ -39,335 +39,522 @@ shape a structure.
 | G3-k の測定後の決定（次の本命の方向） | 「重ねて成長する計器を作る (Recommended)」— G1 の最小初期配置（助詞 + フィボナッチの腕）に fulllead の文書を 1 本ずつ重ね、重ねるたびに bank2 の同じ問いを投げて「答えが現れる・残る・壊れる」を記録する |
 | オーナーの原則（2026-10-08） | 「立体十字構造体において初期配置と規則が大切です。」 |
 | 「黄金比率」とは何か | 「初期の基盤からデータを入れるだけでモデルの初期作成者が意図する方向にモデルをユーザーが使うことでその方向に制御しながら成長できるものを人為的に作り出す。」 |
-| 「最小限の初期配置」の材料 | 「助詞などで組むのと、言葉の粒度のものから未知語への自然対応に向けるところの最小構成を探す形で組む」 |
 | G1 の決定 OP-G1-1 / OP-G1-3 | 「全ての十字の最初の状態に写す (Recommended)」／「フィボナッチの梯子（233/377 … 1/377） (Recommended)」 |
-| G2 の決定 OP-G2-8 | 「軸では腕のラベルとして、文法層では十字ごとの参照として (Recommended)」 |
-| 作る順番の決定（案 2） | 「２つ目に統合した形になったので案２で設計に入って」（案 2 の中身: 「赤の十字でパックされた圧縮された情報が隣にできた黒の十字にコピーされます。そこから黒の十字内で情報を積んでいって不安定状態になるとその上に赤の十字が構築されて…」） |
-| G2-f の監査後 | 「入力があると各ソブリンに投入してそこから両替機のように形でタンクに入れるような様々な状況に対応するためのソブリンを組んでおいて構造体を進化させる形」 |
-| T6ab の後 | 「…この狭い問題セットで点数を取ることが最終目標ではありません。候補が出るのは実際の利用者に採点してもらって最適化するためです。」 |
+| G3 の決定 OP-G3-6 | 「梯子の順に x、y、z へ。重みは辺の流れと配置の結合と読む順に (Recommended)」（L-529: は is the centre side, on no arm; の +x 144, に −x 89, で +y 55, と −y 34, を +z 21, が −z 13, over 377） |
 | 【条件 1〜3】（案 2） | (1) compression keeps the provenance, (2) inherited information is not counted again as new evidence, (3) the input order is fixed, written to the ledger, and the change in the answers under another order is measured |
 
-The decision file has no section titled 「モデルの命題」. The nearest owner text is 「オーナーのモデル像」 and 「モデル像の具体化」 (2026-10-08), quoted above.
-
-What these words fix for the instrument:
-1. **The unit of growth is "a document stacked on the initial placement".** No learning: no weight is fitted, and the only thing that changes is the
-   structure that the documents build.
-2. **The judgement matters, not the prose.** A typed abstention, a list a user can reject, provenance, and no confident wrong answer all count
-   as "回答". Assembling natural sentences is not required (G3-j already made the assembled strings display-only).
-3. **"Thin" grammar layer and vocabulary.** The initial placement should be small. Growth comes from the documents.
+What these words fix: the unit of growth is "a document stacked on the initial placement". No weight is fitted. The judgement matters, not the prose:
+a typed abstention, a list the user can reject, provenance, and no confident wrong answer all count as 「回答」.
 
 ### 1.2 「G1 の最小初期配置」はコードの上で今何か (O: code read)
 
 | Artefact | Where | What it is | Does data sit in it? |
 |---|---|---|---|
-| The foundation F (P7 + Fibonacci ladder) | `grammar.py:48-97` `LADDER = (は, の, に, で, と, を, が)`, `WEIGHTS` = F(14−k)/377 (233/377 … 13/377), `foundation_obj()`, `foundation_sha()` | A constant made by hand: centre は 233/377, arms の 144, に 89, で 55, と 34, を 21, が 13 (/377). Exact Fractions, with a sha | — |
-| The foundation cross | `grammar.foundation_cross()` (`grammar.py:616`), `rotated` (`:709`) | A `geometry.Cross` with L=1: centre は and the six particles on the arms in ladder order. Used as the grammar layer's reference cross per window (`GrammarCross`, `:624-665`) | **No.** It holds only the 7 particles |
-| Arm labels of the windows | `slide.py:156-195` `P7_LADDER`, `Foundation` (a validated spec: distinct labels, strictly decreasing Fractions) | The labels and weights of the window crosses' axes (OP-G2-8 「軸では腕のラベルとして」) | Labels only. Data units sit on the window arms; the particles do not |
-| The grammar records (adj, kind) | `grammar.build_records(texts)` (`:279`), `Records` (`:177`) | Counted from the data, per sentence: which P7 particle follows each content unit. `kind(c)` = the most frequent follower | Data-derived. Each sentence contributes on its own, so the records can be built prefix by prefix |
-| The read order of the grammar layer | `wiring.ReadHook`, `cycle.plan_read(grammar=)`, `--grammar on\|off` (default off) | The foundation decides only the READ ORDER inside ties (G3-k, 「E_Q が先、単位数は同点内」) | No |
+| The foundation F (P7 + Fibonacci ladder) | `grammar.py:48-97` `LADDER = (は, の, に, で, と, を, が)`, `WEIGHTS` = F(14−k)/377, `foundation_obj()`, `foundation_sha()` | A hand-made constant: は 233, の 144, に 89, で 55, と 34, を 21, が 13 (/377). Exact Fractions, with a sha | — |
+| The foundation cross | `grammar.foundation_cross()` (`:616`) | A `geometry.Cross` with L=1: centre は, and the six others on +x −x +y −y +z −z. It is the grammar layer's reference per window | **No** |
+| Arm labels of the windows | `slide.py` `P7_LADDER`, `Foundation` (L-529, L-560) | Labels and weights on the window crosses' axes | Labels only |
+| The grammar records | `grammar.build_records`, `records_of_space`, `Records` | Per sentence and content unit (RUN, WORD; CHAR has none, L-541): which P7 particle follows it on the WORD cut | Data-derived, per sentence |
+| The read order of the grammar layer | `wiring.ReadHook`, `--grammar on\|off` (default off) | The foundation sets only the read order inside E_Q ties (G3-k, G3-k2 `flat_order`) | No |
 
-**What was never built (O: no `foundation=` exists in `placement.py` or `carry.py`):** the tickets G1-b ("基盤つきの配置", `build_cross(..., foundation=)`,
-fixed constructed seats, contracted key 「継ぎ目」, attachment key `a`) and G1-c. The owner chose OP-G1-1 (a) 「全ての十字の最初の状態に写す」, but
-OP-G1-4/5 (fixed or moving seats, where the attachment enters the key) were redirected into G2 (axes plus grammar layer) and never answered as
-seat questions. G2 then placed the foundation as **labels and reference** (OP-G2-8), not as seats.
+**Never built:** G1-b ("基盤つきの配置": `build_cross(..., foundation=)`, fixed constructed seats, the seam, the adhesion key a). No `foundation=` exists
+in `placement.py`. The owner has now answered the seat questions (OP-G1-4/5/9, §1.4), so G1-b is buildable. It is the first prerequisite here (§4).
 
-So, concretely: **「G1 の最小初期配置」 exists today as a reference (a constant cross with a sha, used as labels and as a read order). It does not exist
-as a buildable starting state into which data is placed.** No data cross and no tower starts from the foundation's seats.
+The apparatus that every arm shares: the tokenisers (RUN = `verantyx.lang.ja_content_runs` + the gap pieces; WORD = fugashi/UniDic-lite short units;
+CHAR = single characters), the V2 function rule (`funcwords.is_function_unit`: UniDic POS for RUN and WORD, **the hiragana range for CHAR, no
+dictionary**), the placement rules (I-04, F1 ordered insertion, stop on collapse, budget levels), and the three-ratio cycle. By OP-G4-5 the UniDic
+dictionary now **counts as part of the initial placement** (it is not thin), and a dictionary-free arm is measured beside it (§7.1 arm B).
 
-A minimal placement with "only particles and Fibonacci arms" can be constructed, because it is the constant `foundation_cross()` (sha `foundation_sha()`).
-At step 0 it holds no data, so every question must abstain. That is the meter's first test (§2.1, T-G4-2). Its weakness is that nothing makes the
-documents seat on it.
+### 1.3 「1 本重ねる」の仕組み — 既存のものと、新設する第 3 の機構
 
-Why the foundation cannot be bolted onto the tower cheaply (O: code read): the data stream fed to a tower is the V2 space (`funcwords.default_filter`).
-Particles are **removed** from it (L-150, the decision after T6v). A carried element seats only when a new occurrence of a word in its vocab arrives
-(OP-1 (a), L-307/L-372, `CarryTower._woken`). A constructed "particle pack" copied into every black would therefore **never wake**, because no
-particle occurrence ever arrives. Seating the foundation needs the G1 machinery (constructed seats that are fixed and transparent, 「継ぎ目」 §3.1.4).
-That is placement code, not a measurement → OP-G4-1.
+The owner's 「第 3 の機構」 counts the stacking mechanisms: the carry tower, re-placement on the prefix, and now the frozen stack. M-L is listed only for
+completeness: it is part of a reader, not a stacking mechanism.
 
-The parts of the "initial placement" that every arm below shares, stated so that nobody mistakes them for data (→ OP-G4-5):
-the tokenisers (RUN = `verantyx.lang.ja_content_runs` + the gap pieces, WORD = fugashi/UniDic-lite short units, CHAR), the V2 function-word rule
-(`funcwords.is_function_unit`, which uses UniDic POS for RUN and WORD), the placement rules (I-04 key, F1 ordered insertion, stop on collapse,
-budget levels), the three-ratio cycle, and the foundation constant. **The UniDic dictionary is a large external vocabulary.** It is fixed and
-not learned, but it is not "thin". The meter reports per tier, so the dictionary-light tiers (RUN, CHAR) stay visible.
-
-### 1.3 「1 本重ねる」を今ある仕組みで言うと — 3 つの仕組みの判定
-
-| Mechanism | What "add article k" does | State carried from k−1 to k? | Can earlier placements change? | Verdict |
+| Mechanism | What "add article k" does | State carried from k−1 to k? | Can earlier placements change? | Role now |
 |---|---|---|---|---|
-| **M-C carry tower (案 2)** `carry.build_tower(..., after_sentence=)`, `CarryTower` | The article's sentences are fed in ledger order into the open black. If the black collapses it is closed and packed, the pack carries up, and the frontier is **copied** to the next black (OP-1 a) | **Yes.** It is a fold: tower_k = feed(tower_{k−1}, article k). The ledger numbers every event (C1 決定 「全ての出来事に番号」) | Closed units: **never** (a closed unit is never rebuilt, design C3/L-315; its pack's vocab is fixed at copy time, C1 決定). The open unit of each level re-settles when its scope grows (L-353) | **The only mechanism that stacks.** Faithful to 案 2 and to 【条件 1〜3】 |
-| M-L layers (matryoshka, T8) `matryoshka.ask_layered` | Nothing persists. Layers are built **at question time** from the crosses read (「the check happens WHEN A QUESTION IS ASKED」, matryoshka.py header) | No | — | Not a document stack. It is part of the reader |
-| M-P placement on the prefix (flat crosses, windows, combined) `line3 build` + `ask(index, structure="combined")` | Every seed's cross is placed again from the prefix's counts. n(x,y) and p(x,y) are corpus-wide, so any cross whose pool gains a co-occurrence can change | **No.** placement_k is a deterministic function of the prefix only, with no memory of placement_{k−1} | **Everything** that the new counts touch | **Not stacking** in the thesis' sense. It equals "stacking where every document may rearrange every earlier placement it touches" (the result is identical, history adds nothing). Kept as the **reference curve** (data-size curve) |
+| M-C carry tower (案 2) `carry.build_tower` | Sentences fed into the open black, which closes, packs and carries up | Yes (a fold) | Closed units never. The open unit re-settles | **Not an arm** (OP-G4-2). T9: 0–10/69 gold in a candidate (C) |
+| M-L layers (T8) `matryoshka.ask_layered` | Nothing persists: the layers are built at question time | No | — | Part of a reader. Not used here |
+| M-P one-shot placement on the prefix (`line3 build`) | Every seed's cross is placed again from the prefix counts | No (a function of the prefix only) | Everything that the new counts touch | **Arm C, the reference curve** (§7.1) |
+| **M-F frozen flat stack (new, `verantyx/line3/stack.py`)** | The crosses of the seeds in article k are opened or grown. Earlier seated units never move | **Yes**: stack_k = step(stack_{k−1}, article k) | No seated unit moves. A held class can only narrow, and empty seats can only fill (§5.4) | **Arms A and B** |
 
-Why M-C is a true prefix (O: code read; it becomes a test, L-G4-4 / T-G4-3):
-`occurrences_of(tier, sid)` reads only `tier.sentence_units[sid]`, and the unit cut of a sentence depends only on that sentence (space.py L-30..L-32, the
-V2 predicate is per unit). Every count of a unit is taken over its own scope only (`LocalSpace`, design 3.5, L-323/L-327). Nothing looks ahead in the
-stream. So the tower after k articles must equal the tower built on the first k articles alone. The only difference is the ledger header (`order_sha256`
-covers the whole sid list), so the ledger events must be a leading prefix.
-
-**The uncomfortable number (C, T9 `results/summary.md`, intra2 n = 69, fulllead, RUN tower at level low):** the faithful mechanism scored
-**0–10/69** gold in a candidate (close-index-standard 7, defer-index-standard 10, both path descents 0–2, every fast run 0).
-The one-shot reader scores **33/69** (G3-k, combined fast, grammar on), and the keyword baseline B2 scores 57. So the owner's decision names G1 + 「重ねる」,
-but the only mechanism that stacks is the weakest reader in line 3, and it has no foundation in it (§1.2). The meter shows this gap rather than
-hiding it: it runs M-C as the 「重ねる」 arm and M-P as the control, on the same questions, at the same steps (→ OP-G4-2).
-
-What is missing for the literal thesis ("G1 foundation + stacking" in ONE structure):
-- (gap 1) The foundation inside the tower: G1-b in the tower (constructed seats in every black's first state) → OP-G4-1.
-- (gap 2) The grammar read order and the stand-ins in the tower reader: `carry_query.ask` has no `grammar=` and no `standins`. Its read order is
-  (level desc, rq desc), L-314. Wiring them in, as G3-k did for the flat reader, is a reader change and lies outside G4.
-- (gap 3) The tower exists for one tier at a time (T9 built RUN only). WORD and CHAR towers are possible (the code is tier-generic), but they have never
-  been built on fulllead (C0 prototype: ~4.3 s / ~8 s per sentence, (C)).
-- (gap 4) There is no window (slide) structure in the tower.
+Facts (C) that frame the comparison: the one-shot flat reader at step 300 scores 16/69 gold in a candidate (T10 flat fast, ordered-stop, grammar
+off). The combined reader scores 33/69 (G3-k, combined fast, grammar on). B2 (keyword) scores 57/69. The stack is read by the **flat** reader
+(§6), so its natural reference is the flat 16, not the combined 33.
 
 ---
 
-## 2. 手順（プロトコル）
+## 2. 文書の順・段・問い（事実）
 
 ### 2.1 文書の順と段
 
-- **Order** 【L-G4-1】: the line order of `experiments/line3/bank2/data/fulllead_sents.jsonl` (sha256 `45efdaed…6cefe`, (C) t9 README).
-  An article is a maximal run of equal `title`. There are **300 articles and 300 distinct titles**, 592 sentences, 125 one-sentence articles, and at most
-  7 sentences per article (O). The order is fixed and recorded as the sha256 of the canonical list of titles, plus the tower's `order_sha256`
-  of the sids (carry L-333).
-- **Step k** 【L-G4-2】 = the first k articles. `prefix_k.jsonl` is the exact byte slice of the first lines of `fulllead_sents.jsonl`, and its sha256 is
-  the data sha of every cache at step k.
-- **Step 0** 【L-G4-3】 = no sentence. Tower: `build_tower` with no sids (one empty open black U0:0, empty carry). The foundation constant is recorded by
-  its sha. Every question must come back `UNKNOWN_NO_EVIDENCE`, because rq = 0 everywhere (carry_query L-313/L-425). The control arm has no step 0
-  (an index of 0 crosses is not something the reader takes), so it starts at step 1.
-- **The reverse order** (【条件 3】 says the order change must be measured): the articles in reverse, with the sentence order inside each article
-  kept. Tower arm only, at the staircase only 【L-G4-17】.
+- **Order** 【L-G4-1】: the line order of `experiments/line3/bank2/data/fulllead_sents.jsonl` (sha256 `45efdaed…6cefe`, (C) t9 README). An article
+  is a maximal run of equal `title`: **300 articles and 300 distinct titles**, 592 sentences, at most 7 sentences per article (O). The order is recorded
+  as the sha256 of the canonical title list.
+- **Step k** = the first k articles. `prefix_k.jsonl` = the exact leading byte slice of the file, and its sha256 is the data sha of every step-k
+  cache. Sids are global line numbers, so a sid means the same sentence at every step.
+- **Step 0** = no sentence, so there is no cross (a cross needs a centre word, L-77). Every question must come back `UNKNOWN_NO_STATE` (T-G4-2).
+- **Reverse order** (【条件 3】): articles reversed, with the sentence order inside each article kept. Arm A at step 300 only 【L-G4-17】.
 
-### 2.2 問い・入る段 (O)
+### 2.2 問いと入る段 (O, recomputed from bank2.tsv)
 
-All 94 fulllead questions of bank2 at every measured step: intra2 69 + unans 25 (cross2 and the s3000 unans belong to the other corpus and are not
-asked). For each intra2 question, **e(q) = the article position of the title in `evidence`** (`title#i`) 【L-G4-5】. For each unans question,
-**s(q) = the article position of its subject**. That is only a label, because unans questions have no evidence.
+All 94 fulllead questions of bank2: intra2 69 + unans 25. **e(q)** = the article position of the title in `evidence` (`title#i`). **s(q)** = the
+article position of an unans subject (a label only).
 
-intra2 entry steps (O): 1, 2, 8, 9, 10, 12, 18, 19, 23, 24, 30, 33, 34, 43, 44, 44, 45, 48, 49, 53, 57, 57, 58, 59, 60, 60, 60, 61, 65, 66, 70, 70, 75,
-77, 79, 82, 88, 88, 89, 89, 99, 105, 106, 106, 106, 107, 121, 142, 145, 148, 157, 158, 169, 169, 170, 173, 176, 186, 196, 196, 201, 208, 236, 250,
-255, 261, 273, 292, 294 (59 distinct articles).
-unans subject steps (O): 1, 3, 8, 9, 12, 18, 19, 26, 28, 34, 36, 43, 44, 45, 59, 60, 66, 68, 89, 93, 121, 131, 158, 255, 261.
+intra2 e(q): 1, 2, 8, 9, 10, 12, 18, 19, 23, 24, 30, 33, 34, 43, 44, 44, 45, 48, 49, 53, 57, 57, 58, 59, 60, 60, 60, 61, 65, 66, 70, 70, 75, 77, 79,
+82, 88, 88, 89, 89, 99, 105, 106, 106, 106, 107, 121, 142, 145, 148, 157, 158, 169, 169, 170, 173, 176, 186, 196, 196, 201, 208, 236, 250, 255,
+261, 273, 292, 294 — **58 distinct articles** (the first version said 59: a miscount).
+unans s(q): 1, 3, 8, 9, 12, 18, 19, 26, 28, 34, 36, 43, 44, 45, 59, 60, 66, 68, 89, 93, 121, 131, 158, 255, 261.
 
-**The implicit requirement:** before its article enters (k < e(q)), every intra2 question is unanswerable. At those steps the correct output is a typed
-abstention, a list is a false presence, and a single answer is a confident wrong answer. So every intra2 question is its own unanswerable control at
-every step before entry, and the 25 unans questions are that control at every step. The 2×2 judgement (§2.5) follows from this at every step, at no
-extra cost.
+Before its article enters (k < e(q)), every intra2 question is unanswerable. So every intra2 question is its own unanswerable control at every step
+before entry, and the 25 unans questions are that control at every step.
 
-### 2.3 階段（段の選び方）
+### 2.3 計器の段（OP-G4-6 の答え）
 
-| Schedule | Steps | Use |
-|---|---|---|
-| S-all | 1, 2, …, 300 (every article) | Tower arm, the two index-standard configs (§3.2): affordable |
-| **S-fib** (the owner's Fibonacci numbers, plus 300) | **1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 300** | Every arm and every config |
-| S-anchor(q) | e(q) + {0, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233}, clipped to ≤ 300 | Tower arm, per question: 現れる and 残る measured relative to entry |
+【決定 OP-G4-6】 「フィボナッチの階段 + 各問の記事が入った段」: **S = S-fib ∪ {e(q)}**, where S-fib = 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 300.
+That is **66 measured steps** (O): 1 2 3 5 8 9 10 12 13 18 19 21 23 24 30 33 34 43 44 45 48 49 53 55 57 58 59 60 61 65 66 70 75 77 79 82 88 89 99 105
+106 107 121 142 144 145 148 157 158 169 170 173 176 186 196 201 208 233 236 250 255 261 273 292 294 300.
+"入った直後の段" = step e(q): the first step whose prefix holds the article. The sum of prefix sizes over S = 14,202 sentences = **24.0 × the full
+corpus** (O). This number drives the cost in §8. Over S-fib alone it is 1,856 = 3.14 × (O).
 
-What S-fib holds (O):
-
-| step | 1 | 2 | 3 | 5 | 8 | 13 | 21 | 34 | 55 | 89 | 144 | 233 | 300 |
+| S-fib step | 1 | 2 | 3 | 5 | 8 | 13 | 21 | 34 | 55 | 89 | 144 | 233 | 300 |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | sentences | 3 | 6 | 12 | 14 | 20 | 29 | 41 | 68 | 114 | 192 | 296 | 469 | 592 |
 | intra2 entered (of 69) | 1 | 2 | 2 | 2 | 3 | 6 | 8 | 13 | 20 | 40 | 48 | 62 | 69 |
 | unans subjects entered (of 25) | 1 | 1 | 2 | 2 | 3 | 5 | 7 | 10 | 14 | 19 | 22 | 23 | 25 |
 | RUN / WORD / CHAR content units | 24/27/42 | 44/46/76 | 110/112/151 | 124/126/164 | 185/199/248 | 241/272/315 | 354/408/426 | 501/576/534 | 815/937/710 | 1317/1474/914 | 1972/2074/1062 | 2906/2919/1242 | 3653/3557/1358 |
 
-Steps 2→3→5 add no new gold article. That is fine: those steps show whether stacking unrelated documents moves an answer that is already there.
-The 7 questions whose article enters after 233 are seen on S-fib only at 300, so 残る cannot be measured for them there. S-anchor covers them
-for the tower.
+---
 
-### 2.4 1 問 1 段の記録（per-question record）
+## 3. 既知の費用（事実）
 
-One canonical-JSON line per (arm, config, step, question). The hashed part has no floats and no wall time 【L-G4-7】:
+| Fact | Value | Source |
+|---|---|---|
+| One-shot F1 ordered placement, full fulllead, CPU s | RUN 3281, WORD 4662, CHAR 6582 (sum 14,525) | (C) f1/summary.md |
+| Same, RUN, the F1b cache build | 3653 crosses, 1762 s wall / 3524 s CPU at 2 workers | (C) `experiments/line3/f1b/build_cache.log` |
+| Flat reader, fast, one fulllead question (3 tiers) | 115–130 s single process at Air load 6–9 (F1b probe); T10 sweep median 167 s / max 414 s wall under load 28 | (C) t10/README.md, t10/results/summary.md |
+| Combined fast, 94 questions | 4,125–4,686 s wall with 10 workers on the Pro | (C) G3-k |
+| GHA runners (public repo) | 4 vCPU / 16 GB per job, ≤ 20 jobs at once, 6 h per job; probe → cache → sweep → summarize in `line3-sweep.yml` | (C) the workflow header |
+
+Note: the brief I was given quoted "flat build 22 min for 300 sentences at 2 workers". The primary record is RUN only, 592 sentences, 1762 s wall
+(29 min) at 2 workers. I use the primary numbers.
+
+---
+
+## 4. 基盤を座らせる（G1-b、前提）
+
+### 4.1 決まっていること
+
+【決定】 OP-G1-1 「全ての十字の最初の状態に写す」, OP-G1-3 「フィボナッチの梯子」, OP-G1-4 「固定かつ継ぎ目」, OP-G1-5 「鍵の 3 番目 (n, p, a)」,
+OP-G1-9 「腕＝関係の札」, OP-G3-6 (a) (the ladder on the axes; は on the centre side), OP-G4-1 「先に基盤を全ブラックに座らせる」.
+
+【導出 D-1】 **The centre stays the data seed. The six arm particles take ring 1. は takes no seat and binds to the centre.** OP-G1-2 (whether the
+centre is a data word or は) was never answered. The binding decisions settle it (§12):
+(i) I-02 (the centre is found by search) and the decision 「中心には必ず語がある」 need a centre that can move among data words. A constructed は
+centre is fixed (OP-G1-4), so no search would ever find a centre.
+(ii) OP-G1-4 says 「両側のデータの語を隣とみなす」. That needs data on both sides of every foundation seat. In the `_Layout` edges, the only link between
+arms is the centre. With a constructed centre removed, the cross falls apart into six separate chains, and the I-04 key no longer couples the arms.
+(iii) L-529 / L-549 already place は 「centre side, on no arm」.
+So the shape is the foundation cross of `grammar.foundation_cross()` with its centre given to the data. The six arm particles sit where its arms are,
+and は is the relation of whatever data unit holds the centre.
+
+### 4.2 基盤の席の仕様（`verantyx/line3/foundation.py`、新規）
+
+- **Constructed tokens** 【L-G4-20】: the seat content is the string `"\u0000F:" + particle`. It never equals a data unit (no text unit contains NUL),
+  and it never enters a space, a posting, n, p, N, r0 or E_Q (I-G1-2). `is_constructed(x)` = `x is not None and x.startswith("\u0000F:")`.
+- **Position rule**: in every cross, on each of the six arms, the innermost seat (flat index `1 + a·L + (L−1)`, k = L−1) holds one arm particle:
+  の, に, で, と, を, が (OP-G3-6 (a) order). L growth (L-65 `extend`) prepends empty OUTER seats, so the particles stay innermost forever. Under
+  L-61 the arms are still a multiset of legs. The legs are now told apart by their particle, so arm identity = the particle (腕＝関係の札).
+- **L** (L-G1-4): the smallest L with 6L+1 ≥ (data units) + 6. The seed alone is L=1 (centre + six particles). From the second data unit, L ≥ 2.
+  The data seats at L are exactly the 6(L−1)+1 seats of a plain cross at L−1.
+- **Moves** (OP-G1-4): a seat swap (i, j) is a move only if neither seat is constructed. L-77 stays (no empty centre). Rotations stay moves, but they
+  are the identity under `canon`. The centre swaps with data seats as before (I-02).
+- **The seam (contracted cross)**: the (n, p) edges are those of the cross with every constructed seat removed. On arm a, the data seats
+  k = 0..L−2 are chained outer → inner, and seat k = L−2 links to the centre. The particle seat has no (n, p) edge. Because all six particles are
+  innermost, **the contracted cross is exactly a plain flat at L−1**: drop seat k = L−1 of every leg. One function, `contract(flat, L) -> (flat', L')`,
+  serves the key, the three ratios and the reader (§6). L' = max(1, L−1). The lone seed (L=1) contracts to `(seed, None×6)` at L=1.
+- **Adhesion adj_T(v, p)** (L-G1-1 right-attached; per sentence): the number of **distinct sids** of the space's BASE sentences in which an occurrence
+  of v ends where p begins.
+  - RUN, WORD: from `grammar.records_of_space(space)` (default stem `straddle`; the WORD cut, punctuation skipped, L-542). adj = |{a.sid : a ∈
+    Records.of(T, v), a.particle = p}|. This is L-G1-2 unchanged.
+  - **CHAR (dictionary-free) 【L-G4-21】**: on the attribution-stripped text, the character at i is a CHAR unit v, and the character at i+1 is p ∈ P7
+    (all seven are single characters). Nothing is skipped, and no tokeniser is used. This replaces L-G1-2 for the CHAR tier only, **in every arm**.
+    So arm A's CHAR stack and arm B's stack are one and the same (§7.1).
+  - Every count is reproducible with (sid, start, end, p_start) (I-G1-1). `adhesion_records(space, tier)` returns them, and the table is derived
+    from them.
+- **The key** (OP-G1-5 (a)): `(n, p, a_num)` lexicographic, larger is better. n and p = the I-04 sums over the contracted edges (the same `Weights`).
+  a_num = Σ_arms Σ_{data v on the arm} F(p_arm)·adj_T(v, p_arm) + F(は)·adj_T(centre, は), with F = 144, 89, 55, 34, 21, 13 and 233. **Integers.**
+  The denominator 377 is recorded and never divided 【L-G4-22】. (Under OP-G1-9 every data seat of an arm is bound to that arm's particle.)
+- **Spec sha**: canonical JSON {format `line3.foundation_seats.v1`, `foundation_obj()`, arms → particle, centre relation は, position rule "ring1",
+  seam "contract", attach {RUN: "records/straddle", WORD: "records/straddle", CHAR: "char_next"}, F numerators, 377}. Its sha256 → `seats_sha`.
+
+### 4.3 `placement.py` の変更（foundation=None で既存のバイトは一切変わらない）
+
+| Function | Change when `foundation` is given | When None |
+|---|---|---|
+| `build_cross(..., foundation=None)` | The start is the seed at the centre + the six particles (L=1) instead of the seed alone (L-63). `min_L` counts the 6. Placement gains `foundation` (the seats_sha) and `a_num` | Unchanged code path |
+| `_layout` / `score_flat` / `_edge_sum` / `_swap_delta` | Use a `FoundationLayout(L)` whose `edges`/`inc` are those of the contracted cross, indexed over the full flat. Score = (n, p, a_num) | `_Layout`, (n, p) |
+| `_scan` (moves, L-71) | Skip any pair (i, j) where a seat is constructed. Δa: a unit that changes arm (or moves to or from the centre) changes its F·adj term | Unchanged |
+| `_insert_group` (L-64) | The empty seats are the candidates (a constructed seat is never empty). The gain is (Δn, Δp, Δa_num) over the incident contracted edges, plus F(p_arm)·adj(u, p_arm) for the target seat's arm (F(は)·adj(u, は) for the centre). All tied best gains are kept | Unchanged |
+| `_settle` (L-71) | The triple key. Classes close under equal-triple-key moves | Unchanged |
+| `find_twins` (L-90) | Also requires adj_T(u, p) = adj_T(v, p) for every p ∈ P7 (so a is invariant under the swap) | Unchanged |
+| `group_order`, F1 ordered insertion (L-460/461), stop (L-463), budget (L-73/76) | **Unchanged** | — |
+| `verify_class_foundation(tier, members, spec, adj)` (new, independent code) | Brute force: every non-constructed swap of every member, on the contracted cross with a recomputed from the adhesion records. No improving move, and the class is closed under equal-key moves | — |
+| `contract_for_read(placement) -> Placement` (new) | The reader's view: every member contracted (L'), canonical, deduplicated, sorted. `cross` = the first. `twin_sets` carried. `arm_labels` kept aside (display only) | identity |
+
+One consequence, recorded and measured (G1-b acceptance), not hidden: insertion compares the triple. A branch tied in (Δn, Δp) but worse in Δa is
+dropped, so the (n, p) reached by greedy growth can differ from the foundation-off build. The decision's 「今の定義で区別できたものは変わらず」 holds
+for each key comparison, not for every greedy path. G1-b reports the number of crosses whose contracted (n, p) differs from off.
+
+Also changed: `ask.placement_key` adds `_found-<sha12>` only when on (L-G1-7). `Index(..., foundation=None)` and `load_placements` refuse a cache with
+another seats_sha. `ask._Store.cross_for` returns `contract_for_read(p)` when `p.foundation` is set. CLI: `line3 build --foundation off|on` (default off).
+With off, every committed byte is unchanged: `tests/line3/test_variants.py` GOLDEN, `tests/line3/test_matryoshka.py` GOLDEN_OLD, and the probe hashes
+RUN `79b0a11f444ec220`, WORD `a44611defdd6bec4`, CHAR `51b97f502940dcc2` (`tools/determinism_probe.py`, the GHA gate).
+
+---
+
+## 5. 凍結した平面の積み（`verantyx/line3/stack.py`、新規）
+
+### 5.1 状態
+
+The stack is built per tier, independently (I-16: tiers never merge). For one tier, the state after step k is
+`StackTier{tier, step k, prefix_sha256, title_order_sha256, seats_sha | None, level, crosses: {seed: StackCross}}`, where:
+
+| StackCross field | Meaning |
+|---|---|
+| `seed` | The unit whose first appearance opened the cross |
+| `L`, `members` | The held class: labelled flats (constructed tokens included), canonical sorted. **quotient off** (no twins, §5.5) |
+| `seated` | `((unit, step), …)` in seating order. A unit is **seated** when the step that inserted it ends |
+| `opened_at`, `closed_at` (None or a step), `closed_reason` | A cross closes at its first collapse (§5.3) and stays closed |
+| `left` | `((step, unit, reason), …)`: the unit that collapsed, the rest of that step's candidates (`left_in_step`), and every later co-occurring unit (`left_after`) |
+| `key`, `keyed_at` | (n, p, a_num) of the class at its last growth step, with that step's counts |
+
+Every unit of prefix k owns exactly one cross at step k: `set(crosses) == set(tier_k.units())`. This is what `ask.load_placements` already requires.
+
+### 5.2 1 段（文書 d = 記事 k+1）の操作 — これだけが状態を変える
+
+1. Build `tier_{k+1}` from `prefix_{k+1}` rows (a full rebuild each step: tokenising ≤ 592 sentences takes seconds, 【L-G4-23】), plus the adhesion
+   table of `tier_{k+1}` when the foundation is on.
+2. D = the distinct units of the tier in d's sentences. Each u ∈ D is processed **independently** (crosses do not read each other). For the logs, D
+   goes in code-point order.
+3. **u is new (not in tier_k) → open its cross.** It is `build_cross(tier_{k+1}, u, quotient=False, group_insert="ordered", order="forward",
+   on_collapse="stop", foundation=F, budget=level)`. Every co-occurring unit of a new u lies in d, so "the prefix" and "the document" give the same
+   pool. All its units are seated at k+1. If it stopped by budget, `closed_at = k+1`.
+4. **u has an open cross → grow it.** The candidates are V = {v : n_{k+1}(u, v) > 0, v not seated}. Because the cross is open, every earlier
+   co-occurring unit was seated. So V = the units that first co-occur with u in d (asserted as an invariant). The order is M-1(b) on the current
+   counts: groups by n_{k+1}(u, v) descending, and inside a group `group_order(tier_{k+1}, u, members)` (L-461: u's postings ascending, first
+   occurrence). The document order therefore comes first, and the share order comes second, inside the document (【条件 3】). For each v in turn:
+   `L2 = min_L(size + 1 [+ 6])`. `bases = extend(members)`. `_insert_group` and then `_settle` run with **`fixed_units` = the units seated before
+   k+1** (plus the constructed seats). A seat is fixed iff its content is constructed or in `fixed_units`. Swaps only between non-fixed seats.
+   The units inserted at k+1 may still move among themselves and the empty seats until the step ends.
+5. **u has a closed cross →** nothing is inserted. `left_after` records V (N-05: the capacity was reached at the collapse).
+6. **Every cross whose seed is not in D is byte-unchanged** (T-G4-5). It is not re-keyed, even though its pair counts may have changed.
+
+The only change to `placement.py` for the stack: `_scan`, `_settle` and `_insert_group` take an optional `fixed_units: frozenset = frozenset()`.
+The default keeps today's code path byte for byte.
+
+**About the brief's "(b) open new crosses … when no seat accepts them":** in the flat plane every unit is a seed (L-63, I-08). The reader also
+requires a cross for every unit (`load_placements`). So a new unit **always** opens its own cross (step 3). It is **also** seated in the open
+crosses of every seed it co-occurs with (step 4). "No seat accepts" happens only for a closed cross, and then the unit is recorded in `left_after`. A
+shared-cross reading (open a cross only when nobody accepts) is G1's R1, which the owner did not choose (OP-G1-1 → R2).
+
+### 5.3 予算・閉じる
+
+Level `mid` (the flat caches' level, L-210) 【L-G4-24】. A unit whose insertion or settle exceeds the budget is restored away (N-05). The rest of
+that step's candidates are not inserted (L-463), and the cross **closes** (`closed_at`, `closed_reason` ∈ max_class / max_states / max_moves). N-05
+makes the size at that moment the capacity, so a closed cross never grows again. This is what keeps the fold free of retry rules.
+
+### 5.4 「並び替え」が凍結した積みで何になるか（OP-G4-3 の対象）
+
+No seated unit ever moves. Between two steps j < k, a cross can change in exactly two ways, and only when its seed occurs in an article in (j, k]:
+
+| Change | Definition (mechanical) |
+|---|---|
+| **充填** (fill) | units seated at a step in (j, k] (the fill can take the empty seat next to a gold path; L may grow, which adds an outer ring and moves nothing) |
+| **絞り** (narrow) | some member of the class at j has no descendant at k. A descendant = a member whose seats hold, after `extend`, the same units on the same particle-labelled legs (foundation on) or on legs matched one-to-one (off) |
+
+`arr_sha(X, k)` = the sha256 of the canonical `{L, members, seated}` of cross X at step k. **X was rearranged in (j, k]** ⇔ `arr_sha(X, j) ≠
+arr_sha(X, k)` ⇔ 充填 or 絞り. Nothing else in the stack counts as rearrangement. A gold cross that is pushed out of the read cap is a READING change, and
+a gold cross whose read changed only through the counts is an ADOPTION change (§7.4).
+
+### 5.5 双子（L-90）を積みで使わない理由
+
+Twin status depends on the pool's counts. Those grow every step, while the seats of a twin label would be frozen. A pair that is interchangeable
+at step j can stop being interchangeable at k, and a held label class cannot express that. So the stack runs **quotient off** (the T4c search,
+L-91), and every member holds actual units 【L-G4-25】. Consequence: on large crosses, classes grow faster than in the quotient flat build, so
+crosses may close earlier. G4-d measures this before any question runs (gate G-2, §9).
+
+### 5.6 台帳（1 段 1 行、追記のみ）
+
+`ledger_<tier>.jsonl`, canonical JSON, one line per step: `{step, title, sids, prefix_sha256, opened: [seed…], grown: [{seed, seated: [unit…] (order of
+insertion), L: [before, after], members: [before, after], narrowed: bool, key: [[n,p,a] before, after], a_gain}], closed: [{seed, reason,
+left_in_step: [unit…]}], left_after: {seed: count}, adhesion: {attachments_added, by_particle: {p: count}}, state_sha256}`. `state_sha256` = the sha256 over
+`(seed, canonical StackCross bytes)` sorted by seed: **the step identity**. With the foundation on, each seated unit's arm is recorded as the sorted
+set of particles (or `centre`) it occupies across the members (`seats`). These are the "foundation attachments a".
+
+### 5.7 決定論・写し・畳み込み
+
+- **Determinism**: exact ints and Fractions, canonical sorted orders, PYTHONHASHSEED-free (as in placement.py). A step reads only `prefix_{k+1}` rows
+  and the step-k state.
+- **Snapshots** 【L-G4-26】: one pass from step 1 to 300. At every step the delta (the crosses changed at that step) goes to
+  `stack/<tier>/<order>/<found>/delta_<k>.pkl`, and the manifest gets the step identity. The state at k = deltas 1..k composed (the last version of each
+  seed). The loader recomputes `state_sha256` and refuses on a mismatch. Pickles are a local cache only. Only canonical bytes are compared.
+- **The fold is true by construction**: `stack(1..k+1) = step(stack(1..k), article k+1)`. Nothing looks ahead (the prefix space of k+1 holds no row
+  past article k+1), the step-k state holds everything the step reads, and no order comes from hashing. Test T-G4-4 checks it the hard way. In process 1,
+  build 1..k and write the deltas. In process 2, load them and step k+1. Compare `state_sha256` with a single pass 1..k+1, for k ∈ {1, 2, 13, 34}
+  and a 9-sentence toy. In addition, a stack built from `prefix_k.jsonl` alone must equal the step-k snapshot of the full pass (no lookahead).
+- **Birth equals the one-shot build**: a cross opened at step k equals `contract_for_read(build_cross(tier_k, u, quotient=False, ordered, stop,
+  foundation=F))`, member for member (T-G4-6). At step 1 every cross is a birth, so stack(1) = the one-shot quotient-off placement of prefix 1.
+
+---
+
+## 6. 積みを読む（ask の変更）
+
+The reader (`cycle`, `readout`) **does not change**. The stack hands it standard `pl.Placement` objects.
+
+1. **Read view** (`stack.read_view(StackCross, tier_k) -> pl.Placement`): `contract_for_read` of the class (§4.3). `size` = the data units seated.
+   `stop` = "budget" if closed, else "exhausted". `candidates` = |{v : n_k(seed, v) > 0}|. `twin_sets` = (). `quotient` = False.
+   `group_insert` = "ordered". `left_in_group`/`left_after` come from `left`. `score` = the contracted (n, p) recomputed on tier_k (display only;
+   the reader does not select by it).
+2. **`Index.from_stack(prefix_jsonl, stack_dir, step, tiers, foundation, order="forward")`** (ask.py): it builds the prefix space, composes and verifies
+   each tier's state at `step`, and loads the read views. It records `{structure: "stack", step, state_sha256 per tier, seats_sha, order}` in the
+   thought (placement records gain these fields only for a stack).
+3. **`_Store(on_demand=False)` for a stack**: a seed without a cross raises an error. It never builds a one-shot cross silently.
+4. **effort `full`** (which may rebuild a cross at a raised level, T6y) is refused on a stack index. `fast` (cap 4/tier) and `standard` (10) never rebuild.
+5. **`space.build_space(rows, tiers=TIERS)`**: a new optional subset (the default bytes are unchanged), so arm B builds the CHAR tier only. The
+   `Space` must accept a subset of tiers.
+6. `grammar="on"` reads only `index.space` (the prefix): the records and stand-ins come from prefix k. T-G4-9 checks that no sid ≥ N_k appears in
+   any grammar object.
+
+Every tier (RUN, WORD, CHAR) is stacked and read for arm A. Arm B is the CHAR tier alone (§7.1).
+
+---
+
+## 7. 計器（`experiments/line3/g4/`）
+
+### 7.1 腕と読み方（全ての腕で同じ読み手の設定。違いは表に書いたものだけ）
+
+| Arm | Structure | Tiers | Reader `ask(…)` | Steps |
+|---|---|---|---|---|
+| **A** foundation + stack | M-F, foundation on | RUN, WORD, CHAR | `structure="flat", view="all", effort="fast", grammar="on"` (flat_order default eq_first) | all 66 |
+| **B** dictionary-free | **the CHAR stack of A** (CHAR adhesion is char-level in every arm, §4.2) | CHAR | `tiers=("CHAR",), view="all", effort="fast", grammar="off"`, no stand-ins; run in a process where `fugashi`/`unidic_lite` cannot be imported | all 66 |
+| **C** control, one-shot | M-P: `line3 build --group-insert ordered --on-collapse stop --level mid` on prefix k, foundation off (today's code), quotient on | RUN, WORD, CHAR | the reader of A | S-fib (13). Step 300 = the cache T10 used: `vera-impl/cache/f1b`, `placements_45efdaedb7ab_{RUN,WORD,CHAR}_mid_ordered-forward.pkl` (C: t10 `.meta.json`) |
+| C_B | C's CHAR caches | CHAR | the reader of B | S-fib |
+| A0 (diagnostic) | M-F, foundation **off** | RUN, WORD, CHAR | the reader of A | S-fib |
+| C_F@300 (diagnostic) | one-shot, foundation on (the G1-b acceptance build) | RUN, WORD, CHAR | the reader of A | 300 |
+| A_rev@300 (【条件 3】) | M-F, foundation on, reverse order | RUN, WORD, CHAR | the reader of A | 300 |
+
+- **Why B runs on its own** 【L-G4-27】: B shares A's CHAR stack, but not A's reader. Grammar on is NOT inert for CHAR. CHAR has no records
+  (kind none), but the read hook is given to every tier (`wiring.tier_kw`). Under `eq_first`, it splits an exact E_Q tie by the number of original
+  question units a cross holds, which can change which CHAR crosses a cap of 4 reads. The question's grammar reading also uses the WORD cut
+  (UniDic). So B runs directly at every measured step, with grammar off and with `fugashi`/`unidic_lite` imports blocked (`sys.modules[...] = None`).
+  As a diagnostic, the summary reports how often B's answer equals A's CHAR-tier entries (no requirement).
+- **Confounds, named**: A vs C differ in foundation, stacking (document-order insertion, frozen seats, closing) and quotient (off vs on). A0 vs C
+  isolates stacking + quotient. A vs A0 isolates the foundation within the stack. C_F@300 vs C@300 isolates the foundation in a one-shot build.
+- Step 300 of C must reproduce 8 sampled T10 records (`t10/results/ask_fulllead_fast_ordered-stop.jsonl`, grammar off) byte for byte when run with
+  grammar off (the T10 settings). With grammar on, C@300 is new. A code drift since T10 is reported as a diff, never hidden 【L-G4-11】.
+
+### 7.2 1 問 1 段の記録
+
+One canonical-JSON line per (arm, step, qid). The hashed part has no floats and no time 【L-G4-7】.
 
 | Field | Content |
 |---|---|
-| ids | `arm` (tower / control), `config` (§3.2), `step`, `article` (title entered at this step), `prefix_sha256`, `structure_sha256` (tower: §3.1 snapshot identity; control: the sha of each tier's placement cache and of the window cache), `foundation_sha256`, `code_sha256` of every module read |
-| question | `qid`, `kind` (intra2 / unans), `e` (or `s` for unans), `entered` = step ≥ e, `evidence_sid` (global sid of `title#i`; `null` if not yet in the prefix) |
-| verdict | the reader's typed verdict (`ANSWER` / `CHOICE` / `UNKNOWN_*`), `listed`, per-source listed (control), `partial` / `left_unread` / `tied_group_not_split` |
-| gold | `gold_in_candidate` (t9 `scorer.py`, unchanged 【L-G4-6】), `gold_entries` (indices), `first_gold_pos`, `single_wrong` = (verdict ANSWER and gold not in it) |
-| provenance of the gold entry | `source_sids` of each gold entry; `gold_from_evidence` = some source sid is in the gold article (and separately `= evidence_sid`). Tower: the `chain` (unit, level, open/closed at this step, entrances, `lateral` = through an inherited pack). Control: `block`/`origins`, `via_standin`, `read_via_standin`. Pre-entry hits are kept and flagged (`pre_entry_hit`) |
-| three ratios | for each gold entry: the reader's `stability` (Fraction "a/b") and the key. The meter runs the reader live, so it takes the end state from the live read object: flat cycle `TierResult.candidates[].end` (the source of `trace[].state`). Tower: `carry_query.read_unit` → `UnitRead.result.candidates[].end` on the unit's `ReadTier` (O: carry_query.py:166-204), even though `CarryAnswer.answer_obj()` does not serialise it. `energy.three_ratios` is recomputed independently on that state, and the three targets (section walk, edge flow, binding) are stored as Fractions with the unit they agree on. Store `"not_exposed"` (counted) only where even the live object has no end state (e.g. a layers or window entry whose member state the combiner does not keep); never reconstruct it by guess 【L-G4-14】 |
-| answer bytes | `answer_sha256` = sha256 of the reader's `to_bytes()` (answer + thought, canonical), `answer_obj_sha256` = sha256 of the canonical `answer_obj()` alone |
-| question-side growth | per tier, the question's content units and how many are in the prefix space; the G2-f pattern types T1..T5 of its RUN units; control with grammar on: the stand-in counts (`n_standins`, `chance`) 【L-G4-13】 |
-| structure-side cause data | tower: the unit ids holding gold, whether each was read, `queue_left`. Control: the seeds of the gold crosses, whether they were read (`crosses_read`, `order_only_read`), and the cross bytes sha |
-| cost (not hashed) | process CPU s, wall s, load1, host |
+| ids | `arm`, `step`, `article`, `prefix_sha256`, `structure_sha256` (stack: `state_sha256` per tier; one-shot: the cache file sha per tier), `seats_sha` or null, `code_sha256` per module read |
+| question | `qid`, `kind`, `e` (or `s`), `entered` = step ≥ e, `evidence_sids` = the sids of article e(q) inside the prefix ([] before entry) |
+| verdict | the typed verdict (`ANSWER` / `CHOICE` / `UNKNOWN_*`), `listed`, `partial`, `left_unread`, `tied_group_not_split`; per tier: verdict, entries, `read` seeds, `unread` count |
+| gold | `gold_in_candidate` (`experiments/line3/t9/scorer.py`, unchanged 【L-G4-6】), `gold_entries`, `first_gold_pos`, `single_wrong` = (ANSWER and no entry holds gold) |
+| provenance | per gold entry: `source_sids`, **`from_evidence`** = source_sids ∩ evidence_sids ≠ ∅, `origins` → (tier, seed) of the adopted states (`Candidate.seed`), and `pre_entry_hit` |
+| structure of the gold crosses | per (tier, seed) of a gold origin: `arr_sha` (§5.4; one-shot: the sha of `Placement.to_bytes()`), `opened_at`, `closed_at`, seated count, whether read |
+| answer bytes | `answer_sha256` (the reader's `to_bytes()`), `answer_obj_sha256` |
+| question side | per tier: the question's content units and how many exist in the prefix space; A: `n_standins` |
+| cost (not hashed) | CPU s, wall s, load1, host |
 
-A `.meta.json` sits beside every run (argv, code sha256 per module, prefix and cache shas, PYTHONHASHSEED, Python version, host) 【L-G4-15】.
+A `.meta.json` per run (argv, code shas, prefix and structure shas, seed, Python, host) 【L-G4-15】.
 
-### 2.5 3 つの出来事と 2×2（summarizer の定義。測った段だけで数える）
+### 7.3 2×2（見出し）と併記
 
-For an intra2 question q, over its measured steps k_1 < k_2 < … at or after e(q):
+Each (arm, step, question) falls in exactly one cell. **The headline is the two "correct" cells.**
+
+| | correct | miss / rejectable | confident wrong |
+|---|---|---|---|
+| **present** (intra2, k ≥ e(q)) | **some entry holds the gold AND `from_evidence`** | typed abstention (`UNKNOWN_*`); a list without gold; a list whose gold is not from the evidence article (`gold_not_from_evidence`, counted apart) | `ANSWER` single without gold |
+| **absent** (intra2 k < e(q); unans at every step) | **typed abstention (`UNKNOWN_*`)** | a list (`CHOICE`, or `ANSWER` with gold = `pre_entry_hit`): false presence | `ANSWER` single without gold |
+
+**Beside** (OP-G4-4 「候補に正解がある」も併記): `gold_in_candidate` per step (t9 scorer, any source). The flat reader assembles nothing, so G3-j does
+not apply. An entry `from_evidence` before entry is impossible, and it is asserted.
+
+Per step and arm, the curves are: present-correct / present, absent-correct / absent, confident wrong (both rows), gold in a candidate, median list
+size, crosses read per tier, and (stacks) the crosses opened / grown / closed and the cumulative closed share.
+
+### 7.4 現れる・残る・壊れる（OP-G4-3 の後の正確な定義）
+
+For an intra2 q, M_q = the measured steps ≥ e(q) (e(q) is always measured). H_k = present-correct at k. G_k = gold in a candidate at k.
 
 | Event | Definition |
 |---|---|
-| **現れる** appear(q) | the first measured step ≥ e(q) with `gold_in_candidate`. Two delays are recorded: in articles (appear − e) and in measured steps. **直入** = appears at e(q). **成長** = appears only later (delay > 0): the gold needed documents stacked after its own article. Those cases get a provenance check: do the gold entry's sources include sentences of later articles? A question that never appears is recorded as such |
-| **残る** stays(q) | gold held at every measured step from appear(q) to 300. The persistence ratio = measured steps holding gold / measured steps after appear. Byte-unchanged answers (`answer_obj_sha256` equal) are reported separately as **不変** |
-| **壊れる** breaks(q) | the first measured step after appear(q) where either **消える** (no candidate holds the gold) or **単独誤答化** (verdict ANSWER with one entry that does not hold the gold). **戻る** = the gold is held again later. Every break gets a cause tag 【L-G4-9】: **配置** (the unit or cross that held the gold changed bytes), **読み** (that structure is unchanged but was not read: cap, order, exact skip), **採択** (read but not adopted, e.g. by the V3 pool) |
-| pre-entry | at steps < e(q): the verdict class, plus `pre_entry_hit` (gold in a candidate before its article: the gold string occurs elsewhere, or chance) |
+| **現れる** | appear(q) = min{k ∈ M_q : H_k}. **直入** if appear = e(q). **後から** if appear > e(q): the delay in articles, and whether the gold entry's sources or its cross's seats include units seated after e(q) |
+| never appears | a tag at 300: **未着** (no tier's prefix space holds the gold as a unit, and no path spells it), **未着席** (the gold unit exists but sits in no cross holding a question unit; `closed_before` if such a cross closed before the gold co-occurred), **未読** (such a cross exists but is unread), **未採択** (read, not adopted) |
+| **残る** | H at every measured step from appear(q) to 300. Also reported with G |
+| a **loss** at k | consecutive measured steps j < k with H_j and not H_k |
+| **壊れる** | a loss that is (i) **単独誤答化**: the verdict at k is `ANSWER` with one entry without gold, whatever the cause; or (ii) any other loss in which **at least one** gold-holding cross X of step j (the (tier, seed) origins of its gold entries) is **U** or **A**, as defined below |
+| **置き換え（成長）** | a loss that is not 単独誤答化 and in which **every** gold-holding cross X of step j is **R**. OP-G4-3: 「並び替えによる消失は「成長」— 壊れるには入れない」. It is counted in the growth columns, never in 壊れる |
+| **戻る** | H again after a loss |
 
-For an unans question: the verdict class at every step, and the event **単独誤答が現れる** (the first step with an ANSWER).
+Cause per gold-holding cross X of step j, at the loss step k (mechanical, from the records):
+**R** (rearranged) = `arr_sha(X, j) ≠ arr_sha(X, k)`: in the stack 充填/絞り (§5.4); in the one-shot arm a re-placement. **U** (unread) = equal
+arr_sha, and X is not in the tier's `read` at k (the cap or the order changed: new crosses, other crosses' E_Q). **A** (not adopted) = equal arr_sha,
+and X was read at k, but it gave no gold entry (the counts changed E_Q, the three ratios or the V3 pool). Every 壊れる and 置き換え stores the multiset
+of tags, so a mixed loss is never hidden (it counts as 壊れる).
 
-**2×2 at each step** (all 94 questions; rows from §2.2):
+For unans questions and pre-entry steps: the verdict class at every measured step, and **単独誤答が現れる** (the first step with a single `ANSWER`).
 
-| | holds the gold, sourced from the evidence article | typed abstention (`UNKNOWN_*`, no entry) | list without gold | single answer without gold |
-|---|---|---|---|---|
-| evidence present (intra2, k ≥ e) | **correct** | miss | miss (rejectable) | confident wrong |
-| evidence absent (intra2 k < e; unans at every step) | (impossible; flagged if it happens) | **correct** | false presence (rejectable) | confident wrong |
+### 7.5 事前登録の予測（測る前に書く。外れたら外れたと書く）
 
-Curves per step and per config: entered, gold held, gold from evidence, 直入 / 成長, 残る, 壊れる by cause, single wrong, correct abstentions,
-median list size, vocabulary known, and the rearrangement metric (§3.1 / §3.3).
-
-### 2.6 「学習なし」の対照（one-shot）
-
-- **Step 300 of the control equals the one-shot placement.** The existing records are the control, and nothing is rerun to get them:
-  T10 (`experiments/line3/t10/results/ask_fulllead_{fast,standard}_ordered-stop.jsonl`: flat 16 / layers-ssp 21 fast, (C)) and the G3-k bank2 runs
-  (combined fast: grammar off 28, on 33, (C); raw jsonl git-ignored on the Pro). Step 300 of the control arm, re-run from the step-300 cache, must
-  reproduce a sample of 8 of these records byte for byte, the way G3-k checked 8 of 8 【L-G4-11】. If the code changed since, the report shows the diff.
-- **Step 300 of the tower equals the T9 tower** (same data, same order, level low, same `pack_overflow`). The T9 carry records are its answers
-  (`experiments/line3/t9/results/carry_fulllead_*`). The same byte check applies on a sample, or a diff is reported.
-- The headline comparison is **tower at 300 vs one-shot at 300** (per question: both / tower only / one-shot only / neither), plus the whole curve of the
-  tower against the control curve on S-fib.
-
----
-
-## 3. 決定論・費用・置き場所
-
-### 3.1 塔の腕（M-C）
-
-- **One build per (tier, level, pack_overflow, order).** Use `build_tower(..., after_sentence=hook)`. The hook fires after each sentence, and at the last
-  sentence of an article in the schedule it takes a snapshot 【L-G4-4】: a pickle of the tower (a local cache only, never compared) plus the
-  **snapshot identity**: the sha256 of the canonical `{units, packs}` part of `CarryTower.to_bytes()` (without the `ledger` sha) and the sha256 of the
-  ledger **events** so far. The ledger header is excluded because its `order_sha256` names the whole stream.
-- The **prefix property** (test T-G4-3): for k ∈ {1, 2, 13, 89}, the tower built on the first k articles alone has the same snapshot identity, and its
-  ledger events are exactly the leading events of the stream run.
-- The **frozen-closed invariant** (T-G4-4): between consecutive snapshots, every closed unit's bytes (elements, scope, state, space sha) are unchanged.
-  Only the open unit of each level, and new units, may differ. This is 案 2's structural promise. It is also the rearrangement metric of the tower
-  (the number of units whose bytes changed per step) 【L-G4-12】.
-- **Closed-black read invariant** (T-G4-12): a closed black read under the same question gives the same entries at every step (its read depends only on
-  its own bytes and the question). Then in the tower a 壊れる can only be **配置** (the gold black was open) or **読み** (the descent or the cap did not
-  reach it). To separate the two, the configs at S-fib include `effort=None` (unbounded descent) 【L-G4-8】.
-- Configs 【L-G4-8】: RUN, level low (T9 parity), `pack_overflow` ∈ {close, defer} × descent `fallback` ∈ {None (path, the design), "index"} ×
-  effort ∈ {fast, standard} at S-fib, plus `effort=None` at S-fib. The owner left both overflow rules (C3b) and both descents (C5 「新しい問いができてから両方測る」)
-  as 測ってから決める, and in T9 only the index descent found anything. S-all and S-anchor: close-index-standard and defer-index-standard.
-- **Cost (E, from the T9 records):** tower build 71 s CPU for all 592 sentences (close, (C)), done once per config family. Per question at step 300,
-  median wall s in one worker (C, under load 5–15): close-index fast 2.2 / standard 5.1, defer-index 1.7 / 3.9, path 0.4–1.3. A question with
-  rq = 0 everywhere returns at once (pre-entry questions whose words are absent).
-  S-fib, all 8 configs: 13 × 94 × ~16 s ≈ 20,000 s. `effort=None` at S-fib: unknown (not run in T9); budget ≤ 30,000 s, with a stop at 3 h.
-  S-all, two index-standard configs: 300 × 94 × (5.1 + 3.9) × ~0.6 (smaller towers early) ≈ 150,000 s. S-anchor: ~1,000 asks per config, ≈ 5,000 s.
-  Reverse order at S-fib: ≈ 20,000 s. **Total ≈ 0.2–0.23 M CPU s ≈ 6 h on 10 cores.** Without S-all (S-fib + S-anchor only): **≈ 1.5–2 h**.
-- **Where:** the Pro, 1 build process + 9 ask workers, after the running sweep ends (or the Air via `tools/air.sh`, as the compute-host memo says).
-  The tower is a single sequential build, so sharding does not help it. The asks are embarrassingly parallel over (step, question).
-
-### 3.2 対照の腕（M-P、作り直し）
-
-- **Reader:** `ask(index, question, structure="combined", effort="fast")` with `--grammar on`, merge none, assembly on, every other option at the
-  committed default. This is the current best reader, and its foundation is present as the read order. Grammar off is available at 300 from the
-  records, and at other steps only if the owner asks 【L-G4-10】. The grammar records and the stand-ins are rebuilt from the prefix, so a word unknown
-  at step k can be known at k+1. That is reported as vocabulary growth (§2.4).
-- **Caches** 【L-G4-10】: one cache directory per step, keyed by the prefix sha, under `vera-impl/cache/g4/prefix_<k>_<sha12>/`: the three ordered
-  placements (`line3 build --group-insert ordered --on-collapse stop`, level mid) plus the window cache. A cache is never reused across steps (the
-  existing L-471 refusal of another corpus's cache stays). Step 300 = the existing `cache/t11` (= `cache/f1b` + windows): a free consistency check.
-  An exact incremental re-placement (reuse a cross whose dependency key is unchanged) is NOT in v0. It is allowed later only after a byte-equality
-  test against a from-scratch build on ≥ 3 steps.
-- **Cost (E):** a full placement is RUN 3281 + WORD 4662 + CHAR 6582 = 14,525 CPU s (F1 ordered, (C)). Taking it as linear in the number of units
-  (an upper bound: smaller prefixes have smaller pools), the 12 new S-fib prefixes need ≤ ~48,000 CPU s (≈ 1.3 h on 10 cores). Questions: the
-  combined fast sweep of 94 questions took 4,125–4,686 s wall with 10 workers on the Pro (G3-k, (C)), so ≤ ~1.3 h wall per step at full size.
-  8 of the 12 new steps have ≤ 68 sentences, which makes them cheap. The heavy ones are 89, 144 and 233. **Expected 5–8 h wall on the Pro;
-  upper bound ~17 h.** `effort=None` is not run on the control (one question took ~16 min at `full` in T9).
-- **Where (【推奨】): GitHub Actions**, extending `line3-sweep.yml` (it already has the probe → cache → sweep → summarize stages and byte-identity
-  probes). Shard by (step × question shard). Per step, the cache jobs (3 tiers + windows) fit the 6 h job limit. With 18 shards × 4 vCPU this is
-  ≈ 2–4 h. The workflow change is ticket G4-e, not this document.
-
-### 3.3 バイト一致・マシンをまたぐ一致
-
-- PYTHONHASHSEED=0 for every run. Exact Fractions only. The records hash canonical bytes, never pickles (F1c: "unchanged" is judged on placements,
-  not pickle bytes).
-- Seed independence (T-G4-8): 3 questions × steps {1, 34, 300} × both arms give identical `answer_sha256` under seeds 0 / 1 / 12345.
-- Across machines 【L-G4-16】: extend `tools/determinism_probe.py` with the tower snapshot identity at steps {1, 34, 300} (RUN, low, close) and the
-  RUN placement sha of prefix 34. The GHA probe stage then requires the Pro/Air values before any shard runs (as it does for RUN/WORD/CHAR today).
-  Python 3.11 (Pro) vs 3.13 (cloud): only canonical bytes are compared, so pickles are rebuilt per host.
-- Rearrangement metric of the control 【L-G4-12】: per tier and step, the number of crosses whose canonical bytes changed since the previous measured
-  step, plus new crosses. Expected to be large for common seeds. This is what the tower forbids for closed units.
-
-### 3.4 事前登録の予測（測る前に書く。外れたら外れたと書く）
-
-- P-1 (tower): most 現れる are 直入 (the article's sentences sit in the open black, which is an entrance, C5 L-420). Many 壊れる are **読み** once that
-  black closes, and the unbounded descent recovers part of them. Very few 成長 cases.
-- P-2 (tower): no **配置** break comes from a closed unit (structurally impossible, T-G4-4). Any 配置 break is an open-unit re-settle.
-- P-3 (control): at 300 it equals the one-shot records (33 combined). The curve rises roughly with entered questions, and 配置 breaks concentrate on
-  questions whose subject is a common unit (large pools are re-placed often).
-- P-4 (both): the pre-entry row of the 2×2 is "list without gold" for the control almost everywhere (combined abstained on 0/25 unans, (C)), and
-  "typed abstention" for the tower almost everywhere (T9 carry abstained on 7–25/25, (C)). The two arms sit in opposite corners of the
-  judgement table.
+- P-1 (A): most 現れる are 直入. 後から ≤ 5 of 69.
+- P-2 (A): at 300, A ≤ C@300 − 3 on gold in a candidate (document-order insertion plus closing seats fewer golds than the one-shot build).
+- P-3 (A): among losses, U (read cap: more crosses hold question units as the prefix grows) > R > A. 単独誤答化 ≤ 2 over all steps.
+- P-4 (A, C): the absent row is mostly "false presence" for both. The flat reader lists whenever a question unit's cross exists (C: T10 flat fast on
+  unans = 23 CHOICE, 1 ANSWER, 1 UNKNOWN of 25). Absent-correct ≤ 5/25 on unans at 300 for both, and ≥ 1 confident wrong somewhere on the absent row.
+- P-5 (B): ≤ 3/69 present-correct at 300 (T9 audit: CHAR contributed 1/69). Absent row like A.
+- P-6 (A vs A0): |Δ present-correct| ≤ 3 at 300. The foundation acts through tie splitting and through which crosses close.
+- P-7 (stack): the share of crosses closed at 300 is higher with the foundation on than off (arm-distinct ties grow classes; the risk in §13).
 
 ---
 
-## 4. チケット（実装は計測だけ。`verantyx/` は変えない）
+## 8. 費用と置き場所
 
-| Ticket | Depends on | Owner answers needed | Files | Acceptance |
-|---|---|---|---|---|
-| G4-a 段と問い | — | OP-G4-6 (default S-fib + S-anchor) | `experiments/line3/g4/prefixes.py`, `schedule.py`, `tests/line3/test_g4_prefixes.py` | 300 articles and distinct titles; the concatenation of the prefixes = the file byte for byte; the e(q)/s(q) table equals §2.2; the S-fib table equals §2.3 |
-| G4-b 塔の写し | G4-a | OP-G4-1 (a), OP-G4-2 | `experiments/line3/g4/tower_snapshots.py`, `tests/line3/test_g4_tower.py` | T-G4-2, -3, -4, -9, -12; snapshot identities written to a manifest |
-| G4-c 計器の実行 | G4-b (tower), G4-e caches (control) | OP-G4-4 (records both anyway) | `experiments/line3/g4/meter.py` (`--arm tower\|control --config … --steps … --workers N --resume --check`) | the record schema of §2.4 (T-G4-10); worker errors recorded as `{"id","error"}`, not fatal; resume per (config, step, qid). The combined reader has never run on a corpus as small as steps 1–8 (≤ 20 sentences, 24–185 RUN units, windows over 1–8 articles): an error there is a finding about the reader. It is reported per step in the summary and never filtered out as noise |
-| G4-d 出来事と表 | G4-c | OP-G4-3, OP-G4-4 | `experiments/line3/g4/events.py`, `summarize.py`, `tests/line3/test_g4_events.py` | T-G4-5, -6; `results/summary.md` with the curves, events, 2×2, causes, step-300 comparisons |
-| G4-e 対照の階段 | G4-a | OP-G4-2 (whether the control is shown as a curve at all) | `.github/workflows/line3-sweep.yml` (`prefix` input), `tools/determinism_probe.py` | per-step caches keyed by the prefix sha; T-G4-7, -8, -11; the probe gate |
-| (later, owner-gated) G4-f 土台を塔に | the answer to OP-G4-1 (b) | OP-G1-4/5/9 as seat questions | `placement.py`/`carry.py` (G1-b) | outside G4: it is a placement rule, not a measurement |
+**Model (E)**: one flat fast question at full size costs ≈ 120 s CPU (3 tiers; §3). It is taken as linear in the prefix size (sentences_k / 592).
+This is an estimate: small prefixes have fewer and smaller crosses. Upper bound = full cost at every step. Builds are linear in the prefix (an upper
+bound: smaller pools are cheaper).
 
----
-
-## 5. オーナーへの問い（意味に関わる。推奨を先頭に）
-
-| id | Question | Options | Recommended |
+| Item | Estimate (CPU h) | Upper (CPU h) | Notes |
 |---|---|---|---|
-| **OP-G4-1** | 土台をどう入れて始めるか。The G1 foundation exists only as a reference (§1.2) and cannot seat in the tower without new placement rules (V2 drops particles, so a particle pack would never wake) | (a) **Start now from what exists**: step 0 = an empty tower + the foundation constant by sha (it acts as labels and the read order only where a reader uses it). The tower arm has no foundation, the control arm has it as the read order. Build G1-b later as G4-f. (b) Build G1-b first (constructed seats in every black's first state, 「継ぎ目」, the attachment key), which needs the old OP-G1-4/5/9 answered as seat questions, then measure. (c) Copy the foundation into the first black as a pack (G1 R3): it would never wake, so this is not recommended | **(a)** |
-| **OP-G4-2** | 「重ねる」とみなす仕組みはどれか | (a) **Only the plan-2 tower is 「重ねる」. Placement on the prefix is shown beside it as the reference curve** (it equals stacking where a document may rearrange everything). (b) Count placement on the prefix as 「重ねる」 too (then history plays no role: the article order still shapes a prefix placement, but only as the sid order that F1 already takes (tied members inserted in the seed's posting order, L-461; 「文の語順が初期配置の一部」), not as a memory of earlier placements). (c) Build a new "frozen flat" stack (new seeds placed against the prefix, earlier crosses never re-placed, read by the current reader): new index code | **(a)**, accepting that the tower is today's weakest reader (0–10/69 vs 33/69). The meter shows the gap instead of choosing for you |
-| **OP-G4-3** | 文書が前の配置を並べ替えることは「成長」か「壊れる」か | (a) **Every lost gold counts as 壊れる and carries a cause tag (配置 / 読み / 採択)**. The meaning can be decided later on the data. (b) A loss by rearrangement, where a more stable gold-free state replaced the old one, counts as growth (置き換え), not 壊れる. (c) Forbid rearrangement: freeze the open units too (changes carry L-353; new rule) | **(a)** |
-| **OP-G4-4** | 「問題なく回答が生成できる」を何で測るか | (a) Gold in a candidate after its article entered (the t9 scorer). (b) The 2×2 judgement: evidence present → a candidate holding the gold, sourced from the evidence article; evidence absent (before entry, unans) → a typed abstention, where a list does not count as abstaining. (c) **Both. The headline is the pair (present → gold from evidence; absent → correct abstention)**, per step | **(c)**: you said 「判断するモデルとしても良い」 and also 「回答が生成できること」 |
-| **OP-G4-5** | 「薄い文法層や語彙」の範囲 | (a) **The initial placement = the foundation (P7 + ladder) only. The tokenisers, the UniDic dictionary and the V2 rule are a fixed apparatus shared by every arm, named as such, with per-tier reports** (RUN and CHAR are dictionary-light). (b) Count the dictionary as part of the initial placement, report that it is not thin, and add a dictionary-free arm (CHAR only, with a non-UniDic function rule: new code). (c) Also count the grammar records from the whole corpus at every step (not thin: they would see the future); not recommended | **(a)** |
-| **OP-G4-6** | 階段 | (a) Every article (300 steps) for everything: the control alone would be ~300 × 1 h. (b) The Fibonacci staircase 1, 2, 3, 5, …, 233, 300 for everything. (c) **The tower at every article for the two index-standard configs, plus S-anchor; S-fib for all other configs and for the control** | **(c)** (≈ 6 h tower + 5–8 h control; without S-all ≈ 2 h + 5–8 h) |
+| G1-b one-shot, foundation on, full (also C_F@300) | 4–12 | 12 | 14,525 s × a foundation factor of 1–3 (unknown until G1-b) |
+| Stack passes A, A0, A_rev (3 tiers each; one pass gives all 300 steps) | 12–36 | 36 | each ≤ the one-shot full build × 1–3: a step settles only its own units, but classes are quotient-off |
+| C prefix caches, 12 new S-fib steps | 8.6 | 8.6 | 2.14 corpus-equivalents × 14,525 s |
+| Asks A (66 steps × 94) | 75 | 207 | 94 × 24.0 × 120 s |
+| Asks B (66 steps, CHAR only, fugashi blocked) | 45 | 124 | 94 × 24.0 × 120 s × 0.6 (the CHAR share of a question, taken as ≤ 0.6) |
+| Asks C, C_B, A0 (S-fib) | 10 + 6 + 10 | 30 + 20 + 30 | 94 × 3.14 × 120 s each |
+| Asks C_F@300, A_rev@300 | 3 + 3 | 3 + 3 | 94 × 120 s each |
+| **Total** | **≈ 180–220** | **≈ 500** | |
 
-Not asked (already decided): the article order is the file order (fixed, recorded); the reverse order is run because 【条件 3】 requires it;
-one article per step; bank2's 94 fulllead questions.
+**Where** 【L-G4-28】: **GitHub Actions** on the public mirror. Unit tests and small probes (steps ≤ 34) run on the Air (`tools/air.sh`). The Pro runs
+no G4 compute (compute-host arrangement; it also has a sweep running now). At 18 shards × 4 vCPU = 72 workers, the asks take ≈ 2.5–3.5 h wall (upper
+≈ 7 h: split per arm, so that no job passes the 6 h limit). The stack passes need one job per tier per pass (sequential over steps; the touched crosses
+of one step run in parallel over 4 workers), ≈ 1–3 h. The C caches: 12 steps × 3 tiers jobs, ≈ 1 h. **Wall total ≈ 9–13 h over four workflow runs**
+(G1-b gate → stacks + gate G-2 → C caches → asks). On the Pro alone it would be ≥ 23–28 h at full use of 8 cores, which is not available.
+
+Workflow 【L-G4-29】: a new `.github/workflows/line3-g4.yml` (not more inputs on `line3-sweep.yml`, whose stages assume one corpus file). Stages:
+probe (the existing hashes + the stack identities at steps 1 and 34 RUN, T-G4-12) → `stack` (matrix tier × pass, artifact = deltas + manifest +
+ledger) → `prefix-cache` (matrix step × tier, for C) → `ask` (matrix arm × shard; each shard composes the states it needs) → `summarize`.
 
 ---
 
-## 6. 局所の選択（L-G4-n）
+## 9. チケット（実装: Sonnet、審査: Opus。順番どおり）
+
+Common acceptance: change only the files listed. Number every judgement (L-G4-n / L-G1-n). With the foundation off and outside the stack, every
+existing test and GOLDEN hash is unchanged. PYTHONHASHSEED 0/1/12345 give identical bytes. No float. Every cut is counted. Never open `vera-impl/hidden`.
+
+| # | Ticket | Depends | Files | Acceptance (machine-checked) | Effort |
+|---|---|---|---|---|---|
+| 1 | **G1-a 基盤の席の仕様と付着** | — | `verantyx/line3/foundation.py` (new), `tests/line3/test_foundation.py` | spec sha stable; constructed tokens never in any space; adhesion for RUN/WORD equals the distinct-sid counts of `records_of_space`; CHAR char-level adjacency imports no fugashi (blocked-import test); every count re-derivable from (sid, span) and matching the text (I-G1-1); a float or a tied ratio raises | 0.5 d |
+| 2 | **G1-b 基盤つきの配置** | 1 | `placement.py` (`foundation=`, `FoundationLayout`, `fixed_units`, `contract_for_read`, `verify_class_foundation`), `ask.py` (key `_found-`, `_Store` read view, `Index(foundation=)`), `cli.py` (`--foundation`), `tests/line3/test_placement_foundation.py` | T-G4-1; toy: two (n,p)-tied arrangements split by a; an (n,p)-decided toy unchanged by on/off in its contracted form; no generated move touches a constructed seat; every returned class passes `verify_class_foundation`; works with ordered/reverse/stop | 2 d |
+| 3 | **G1-b 測定（関門 G-1）** | 2 | `experiments/line3/g4/gate1/` | full fulllead one-shot, foundation on vs off, 3 tiers: crosses by stop reason, size median, class size, contracted (n,p) differences, `f1/reach.py` reach (off = 41). Written as `gate1/summary.md`. **Stop and report to the owner if reach drops by > 5 or the max_class stops rise by > 25 %** (L-G4-31) | 0.5 d + GHA |
+| 4 | **G4-a 段と問い** | — | `experiments/line3/g4/prefixes.py`, `schedule.py`, `tests/line3/test_g4_prefixes.py` | T-G4-3: 300 articles and titles; the prefixes are leading byte slices; e(q)/s(q) equal §2.2 (58 distinct); S equals §2.3 (66 steps, Σ sentences 14,202) | 0.5 d |
+| 5 | **G4-b 凍結した積み** | 2, 4 | `verantyx/line3/stack.py`, `cli.py` (`line3 stack build --data --tiers --foundation --order --level --out`), `tests/line3/test_stack.py` | T-G4-4, -5, -6, -7, -8; ledger schema; deltas compose to the manifest identities | 2 d |
+| 6 | **G4-c 積みを読む** | 5 | `ask.py` (`Index.from_stack`, `_Store(on_demand=False)`, refuse `full`), `space.py` (`build_space(tiers=)`), `tests/line3/test_ask_stack.py` | T-G4-2, -9, -10 (on a toy), -11; the read view passes the reader's existing checks; `build_space` default bytes unchanged | 1 d |
+| 7 | **G4-d 積みの構築（関門 G-2）** | 5, 6, 3 | `experiments/line3/g4/build_stacks.py`, `.github/workflows/line3-g4.yml` (stack stage) | stacks A, A0, A_rev built; `gate2/summary.md`: per measured step and tier, crosses open/closed, the closed share, closures by reason, size and class medians; for each intra2 q, whether its gold unit sits in a cross holding a question unit at e(q). **Stop and report if > 50 % of those crosses closed before the gold co-occurred** (L-G4-32) | 0.5 d + GHA |
+| 8 | **G4-e 計器の実行** | 6, 7 | `experiments/line3/g4/meter.py` (`--arm A\|B\|C\|C_B\|A0\|C_F\|A_rev --steps … --shard i/n --resume --check`), prefix caches for C | the §7.2 schema (T-G4-13); B runs in a process that cannot import fugashi/unidic_lite (T-G4-10); worker errors recorded as `{"id","error"}` and reported per step; resume per (arm, step, qid); C@300 grammar off reproduces 8 T10 records | 1.5 d |
+| 9 | **G4-f 出来事と表** | 8 | `experiments/line3/g4/events.py`, `summarize.py`, `tests/line3/test_g4_events.py` | T-G4-14, -15; `results/summary.md`: the 2×2 per arm and step, gold in a candidate beside it, events with cause tags, never-appears tags, the step-300 A/C/A0/C_F/A_rev table per question, §7.5 predictions marked held or failed | 1 d |
+| 10 | **G4-g ワークフロー仕上げ** | 8 | `line3-g4.yml` (prefix-cache, ask, summarize stages), `tools/determinism_probe.py` (stack identities) | T-G4-12; a dry run at steps {1, 2, 3} for all arms on GHA reproduces the Air bytes | 1 d |
+
+Build order: 1 → 2 → 3 (gate G-1) → 4 (can run in parallel with 1–3) → 5 → 6 → 7 (gate G-2) → 8 → 9 → 10 → the measurement runs. **≈ 10.5
+implementer-days plus ≈ 9–13 h of GHA wall.**
+
+---
+
+## 10. 局所の選択（L-G4-n）
 
 | id | Choice |
 |---|---|
-| L-G4-1 | Order = the line order of `fulllead_sents.jsonl`. An article = a maximal run of one `title`. Recorded: the sha256 of the canonical title list and carry's `order_sha256` of the sids |
-| L-G4-2 | `prefix_k.jsonl` = the first lines of the file up to the end of article k, byte for byte. Its sha256 is the data sha of every step-k cache |
-| L-G4-3 | Step 0 is a tower step only (an empty tower, every answer must be `UNKNOWN_NO_EVIDENCE`). The control starts at step 1 |
-| L-G4-4 | Tower snapshots are taken in one stream pass via `after_sentence` at article ends. Identity = sha256 of the canonical `{units, packs}` part of `to_bytes()` + sha256 of the ledger events (the header is excluded). Pickles are a local cache only |
-| L-G4-5 | e(q) = the article position of the evidence title; s(q) = that of the unans subject (a label only) |
-| L-G4-6 | Grading = `experiments/line3/t9/scorer.py` unchanged. `gold_from_evidence` = a gold entry cites a sentence of the gold article (`= evidence_sid` recorded separately) |
-| L-G4-7 | Records are canonical JSON (sorted keys, compact, UTF-8, no floats). `answer_sha256` is taken over the reader's `to_bytes()`, `answer_obj_sha256` over `answer_obj()`. Time and load sit outside the hashed part |
-| L-G4-8 | Tower configs: RUN, level low; close/defer × path/index × fast/standard at S-fib; `effort=None` at S-fib (a 3 h stop, recorded as `partial`); index-standard × {close, defer} at S-all and S-anchor |
-| L-G4-9 | Events are computed over measured steps only. Cause tags come from byte comparison of the gold-holding structure between the appear step and the break step, plus the read logs |
-| L-G4-10 | Control = combined fast with grammar on; per-step caches keyed by the prefix sha; no reuse across steps; no incremental re-placement in v0 |
-| L-G4-11 | Step-300 checks: the tower against the T9 carry records, the control against the T10 and G3-k records, 8 sampled questions each, byte-equal or a reported diff |
-| L-G4-12 | Rearrangement metric: tower = units whose bytes changed between measured steps; control = crosses per tier whose bytes changed, plus new crosses |
-| L-G4-13 | Vocabulary growth per question and step: content units per tier present in the prefix space, and the G2-f pattern types T1..T5 |
-| L-G4-14 | Three ratios: the reader's stability and key; `energy.three_ratios` recomputed from the end state of the LIVE read object for every arm (flat `TierResult.candidates[].end`; tower `UnitRead.result.candidates[].end` on its `ReadTier`); `"not_exposed"` (counted) only where even the live object lacks it |
-| L-G4-15 | A `.meta.json` per run: argv, code sha256 per module, prefix and cache shas, seed, Python version, host |
-| L-G4-16 | Cross-machine identity via `tools/determinism_probe.py` (the tower at steps 1, 34, 300; the RUN placement at prefix 34); the GHA probe gate |
-| L-G4-17 | Reverse order (articles reversed, sentence order inside each article kept): tower only, S-fib only; e(q) recomputed for that order |
+| L-G4-1 | Order = the line order of `fulllead_sents.jsonl`. Article = a maximal run of one `title`. Recorded: the sha256 of the canonical title list |
+| L-G4-6 | Grading = `t9/scorer.py` unchanged. `from_evidence` = a gold entry's source_sids meet the sids of the evidence article |
+| L-G4-7 | Records = canonical JSON (sorted keys, compact, UTF-8, no floats). `answer_sha256` over `to_bytes()`. Time and load outside the hash |
+| L-G4-11 | Step-300 checks: C (grammar off) against 8 T10 records; byte-equal or a reported diff |
+| L-G4-15 | A `.meta.json` per run |
+| L-G4-17 | Reverse order (articles reversed, inner order kept): arm A at step 300 only |
+| L-G4-20 | Constructed token = `"\u0000F:" + particle` |
+| L-G4-21 | CHAR adhesion = the next character is a P7 particle (no tokeniser, nothing skipped), in every arm. Supersedes L-G1-2 for CHAR only |
+| L-G4-22 | a is held as an integer numerator over 377. The denominator is recorded, never divided |
+| L-G4-23 | Each step rebuilds the prefix tier space from the prefix rows (no incremental space) |
+| L-G4-24 | Stack budget level = mid (as the flat caches) |
+| L-G4-25 | The stack runs quotient off (no twins) |
+| L-G4-26 | Snapshots = per-step deltas + a manifest of `state_sha256`. The loader verifies the composed identity |
+| L-G4-27 | B shares A's CHAR stack but runs its own reader (CHAR only, grammar off, no stand-ins) at all 66 steps in a process that cannot import fugashi/unidic_lite |
+| L-G4-28 | Compute: GHA for builds and asks, the Air for tests and small probes, the Pro for none |
+| L-G4-29 | A separate workflow `line3-g4.yml` |
+| L-G4-30 | Events and cause tags are computed over measured steps only. A loss is 置き換え only if every gold-holding cross of the last holding step is R |
+| L-G4-31 | Gate G-1 (after G1-b): stop and report if the foundation-on one-shot reach (`f1/reach.py`) is more than 5 below off (41), or the crosses stopped by max_class rise by more than 25 % in any tier. A designer's threshold: it stops work, it decides no meaning |
+| L-G4-32 | Gate G-2 (after the stack build): stop and report if, for more than half of the intra2 questions, every cross holding a question unit had closed before the gold unit co-occurred with its seed. Same status as L-G4-31 |
 
 ---
 
-## 7. 試験計画
+## 11. 試験計画（T-G4-n）
 
 | id | Test | Kind |
 |---|---|---|
-| T-G4-1 | Prefix slicing: 300 articles, 300 distinct titles; prefixes concatenate to the file; the shas are stable; the e(q)/s(q) tables equal §2.2 | unit |
-| T-G4-2 | Step 0: an empty tower answers every one of the 94 questions with `UNKNOWN_NO_EVIDENCE`; the foundation sha is recorded and equals `grammar.foundation_sha()` | unit |
-| T-G4-3 | Prefix property: for k ∈ {1, 2, 13, 89} (and a 9-sentence toy), tower(prefix k) has the same snapshot identity as the stream snapshot at k, and its ledger events = the leading events | unit + fulllead |
-| T-G4-4 | Frozen-closed: between all consecutive snapshots, closed units are byte-unchanged; only open units and new units differ | fulllead (all 300) |
-| T-G4-5 | Events on synthetic series: appear / 直入 / 成長, stays, 消える, 単独誤答化, 戻る, unmeasured steps skipped, pre-entry hits kept apart | unit |
-| T-G4-6 | 2×2 classification of every verdict shape (ANSWER with and without gold, CHOICE with and without gold, each `UNKNOWN_*`, assembled-only entries not counted per G3-j) | unit |
-| T-G4-7 | Step-300 equality with the existing records (8 sampled questions per arm) | fulllead |
-| T-G4-8 | Seed independence: 3 questions × steps {1, 34, 300} × both arms under seeds 0 / 1 / 12345 give identical `answer_sha256` | fulllead |
-| T-G4-9 | A step-k snapshot or cache is refused for step k' ≠ k (prefix sha / order sha mismatch) | unit |
-| T-G4-10 | Record schema: canonical bytes, no float anywhere in the hashed part, every field of §2.4 present | unit |
-| T-G4-11 | A control cache built for the full corpus is refused for a prefix (the existing L-471 refusal holds under the meter) | unit |
-| T-G4-12 | Closed-black read invariant: a closed black read under the same question gives byte-identical entries at every later step | fulllead (sampled) |
+| T-G4-1 | foundation off: every existing test, `test_variants.py` GOLDEN, `test_matryoshka.py` GOLDEN_OLD and the three probe hashes are unchanged | unit + probe |
+| T-G4-2 | step 0 (an empty stack index) answers all 94 questions `UNKNOWN_NO_STATE` | unit |
+| T-G4-3 | prefixes, titles, e(q)/s(q), S (66 steps, Σ 14,202 sentences) | unit |
+| T-G4-4 | **fold**: build 1..k, write, load in a new process, step k+1 → the same `state_sha256` as one pass 1..k+1 (k ∈ {1, 2, 13, 34} + a toy); a stack from `prefix_k.jsonl` alone = the step-k snapshot | unit + fulllead (Air) |
+| T-G4-5 | **untouched**: every cross whose seed is not in article k+1 is byte-identical between k and k+1 | fulllead, all 300 steps |
+| T-G4-6 | **birth**: a cross opened at step k = `build_cross(tier_k, seed, quotient=False, ordered, stop, foundation)`; stack(1) = the one-shot quotient-off placement of prefix 1 | unit + fulllead sample |
+| T-G4-7 | **frozen**: every member at k+1 descends from a member at k (§5.4); every unit seated by step k sits on the same particle-labelled leg and ring in each descendant; constructed seats never move | fulllead, all steps |
+| T-G4-8 | **restricted fixed point**: every class after a growth step passes `verify_class_foundation` restricted to the non-fixed seats (no improving move among this step's units and the empty seats; closed under equal-key moves) | unit + sample |
+| T-G4-9 | no lookahead in reading: the space, the grammar records and the stand-ins of step k hold no sid ≥ N_k | unit |
+| T-G4-10 | **dictionary-free B**: with `fugashi`/`unidic_lite` imports blocked, the CHAR-only stack build (`build_space(tiers=("CHAR",))`, CHAR adhesion) and the B read succeed, and the CHAR stack's `state_sha256` equals A's CHAR stack at the same step | unit (toy) + steps 1, 34 |
+| T-G4-11 | a stack index refuses `effort="full"`; a missing seed raises (no on-demand build); a state for another prefix or order is refused | unit |
+| T-G4-12 | cross-machine: the stack identities at steps 1 and 34 (RUN, foundation on) equal the Air values on GHA (Python 3.11) and in the cloud session (3.13) | probe |
+| T-G4-13 | record schema: canonical bytes, no float in the hashed part, every §7.2 field present | unit |
+| T-G4-14 | events on synthetic series: appear 直入/後から, stays, a loss with all-R (置き換え), mixed R+U (壊れる), A, 単独誤答化 with R (壊れる), 戻る, unmeasured steps skipped | unit |
+| T-G4-15 | the 2×2 classification of every verdict shape, present and absent, including `gold_not_from_evidence` and the impossible pre-entry `from_evidence` (raises) | unit |
 
-All tests run at PYTHONHASHSEED 0 / 1 / 12345. Tests on the full fulllead data run on the compute host, not on the Pro while it has a sweep running.
+All tests run at PYTHONHASHSEED 0 / 1 / 12345. Tests on the full fulllead data run on the Air or GHA, never on the Pro while a sweep runs.
+
+---
+
+## 12. オーナーへの問い
+
+**None.** Every meaning-level point is settled by the owner's G4 answers and earlier decisions. The points the words did not state explicitly were
+derived as follows (reviewers: check these first):
+
+| Point | Derivation |
+|---|---|
+| D-1 The centre of a seated cross (old OP-G1-2, unanswered) | The data seed, not は. I-02 (centre found by search), 「中心には必ず語がある」, and OP-G1-4's 「両側のデータの語を隣とみなす」 all need a data centre. A constructed centre would leave six disconnected chains after contraction. L-529/L-549 put は on the centre side, on no arm, so は binds to the centre's adhesion and has no seat (§4.1) |
+| D-2 What 「並び替え」 is in a frozen stack | 充填 and 絞り of a gold-holding cross, i.e. `arr_sha` changed (§5.4). Read-order displacement and count drift are not placement rearrangements (the old OP-G4-3 asked about 「文書が前の配置を並べ替えること」) |
+| D-3 単独誤答化 after a rearrangement | 壊れる. OP-G4-3 exempts the loss of the gold. A confident wrong answer is the confident-wrong cell of the 2×2 headline the owner chose (OP-G4-4) |
+| D-4 A cross that collapses | It closes for good: N-05, 「その大きさが容量」 |
+| D-5 New units | Always open their own cross (L-63/I-08 flat plane; OP-G1-1 chose R2, not the shared-cross R1) |
+
+---
+
+## 13. 却下された案（記録のために残す）
+
+The options I recommended in the first version that the owner declined, and other parts of that version now dropped:
+
+| Point | My recommendation (declined) | The owner's choice |
+|---|---|---|
+| OP-G4-1 | (a) Start from what exists: the foundation only as a sha/label/read order. G1-b later | 「先に基盤を全ブラックに座らせる」 (my option (b)) |
+| OP-G4-2 | (a) Only the plan-2 carry tower counts as 「重ねる」; the prefix placement is the reference curve | 「凍結した平面の積みを新しく作る」 (my option (c)) |
+| OP-G4-3 | (a) Every lost gold counts as 壊れる with a cause tag | 「並び替えによる消失は「成長」」 (my option (b)) |
+| OP-G4-5 | (a) The initial placement = the foundation only; the tokenisers and UniDic are shared apparatus | 「辞書も初期配置に数え、辞書なしの腕を足す」 (my option (b)) |
+| OP-G4-6 | (c) The tower at every article for two configs, plus S-anchor | 「フィボナッチの階段 + 各問の記事が入った段」 (a new shape: S-fib ∪ entry steps) |
+| Accepted as recommended | OP-G4-4 (c) both, with the 2×2 headline; OP-G1-4 (a), OP-G1-5 (a), OP-G1-9 (a) | — |
+
+Dropped with OP-G4-2: the tower arm and its 8 configs, S-all, S-anchor, `effort=None` on the tower, the tower snapshot and frozen-closed tests (old
+T-G4-3/-4/-12), and the reverse order of the tower (now A_rev@300).
+
+**The largest risk** (measured at gates G-1 and G-2 before any question runs): with the foundation seated, the arms become relation-labelled. In a
+plain flat, the arm symmetry (L-61) merged arrangements that differed only by arm. With the foundation, those arrangements are distinct, and
+wherever the adhesion does not separate them (units with no particle after them: about 35–50 % of content units, G1 §2.4 (3)), they stay tied.
+The stack also runs quotient off. So classes can grow toward `max_class` within a few units, and crosses may close early. The meter would then
+measure the budget instead of growth. The gates stop the plan and report, rather than spending ~200 CPU h on that.
