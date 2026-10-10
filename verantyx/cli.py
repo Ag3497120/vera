@@ -2394,6 +2394,16 @@ def cmd_line3(args) -> int:
     if structure == "slide" and getattr(args, "grammar", "off") == "on":
         print("line3: --grammar on is built for --structure flat and combined (G3-k, L-806)", file=sys.stderr)
         return 2
+    # G3-k2 (L-820): --read-order is the WINDOWS' order (qcount_first | grammar_first, default qcount_first) and, with --grammar on, the FLAT plane's (eq_first, the default, | qcount_first)
+    ro_arg = getattr(args, "read_order", None)
+    if structure == "slide" and ro_arg == "eq_first":
+        print("line3: --read-order eq_first is the flat plane's order (--grammar on); the windows' orders are qcount_first | grammar_first (G3-k2, L-820)", file=sys.stderr)
+        return 2
+    if structure == "flat" and getattr(args, "grammar", "off") == "on" and ro_arg == "grammar_first":
+        print("line3: --read-order grammar_first is a window order; the flat plane's are eq_first (default) | qcount_first (G3-k2, L-820)", file=sys.stderr)
+        return 2
+    win_order = ro_arg if ro_arg in ("qcount_first", "grammar_first") else "qcount_first"
+    flat_order = ro_arg if ro_arg in ("eq_first", "qcount_first") else None            # None = the default of the grammar-on path (eq_first)
     if structure == "combined" and (args.choose is not None or args.record or getattr(args, "granularity", None)
                                     or getattr(args, "view", "all") != "all" or getattr(args, "layers", "on") != "on"
                                     or getattr(args, "layer_candidate", "path") not in ("path", "stable-seats-path")
@@ -2409,7 +2419,7 @@ def cmd_line3(args) -> int:
             res = l3.ask(idx, args.question, effort=effort, nodes=nodes, structure="combined",
                          window_evidence=getattr(args, "window_evidence", "both"),
                          slide_members=getattr(args, "slide_members", None) or "representative",
-                         read_order=getattr(args, "read_order", "qcount_first"), z_deep=getattr(args, "z_deep", "order"),
+                         read_order=win_order, flat_order=flat_order, z_deep=getattr(args, "z_deep", "order"),
                          layer_variants={"both": ("A", "B"), "A": ("A",), "B": ("B",)}[args.query_pass],
                          layer_granularity=args.layer_granularity, merge=getattr(args, "merge", "none"),
                          assembly=getattr(args, "assembly", "on") == "on", grammar=getattr(args, "grammar", "off"))
@@ -2417,7 +2427,7 @@ def cmd_line3(args) -> int:
             # G3-e (opt-in): the question over the sliding windows (verantyx.line3.slide_query); effort / nodes count windows
             res = l3.ask(idx, args.question, effort=effort, nodes=nodes, structure="slide",
                          agreement=getattr(args, "agreement", "three"), members=getattr(args, "slide_members", None) or "all",
-                         answer_shape=getattr(args, "answer_shape", "unit"), read_order=getattr(args, "read_order", "qcount_first"),
+                         answer_shape=getattr(args, "answer_shape", "unit"), read_order=win_order,
                          z_deep=getattr(args, "z_deep", "order"))
         elif layered:
             # T8 (verantyx/line3/matryoshka.py): stack when the stability was lost at this question; layer 0 is unchanged
@@ -2434,12 +2444,13 @@ def cmd_line3(args) -> int:
                 from .line3 import wiring as l3w
                 gi = l3w.intake(idx.space, args.question, l3w.context_of(idx)[0])
                 base = l3.ask(idx, args.question, view=args.view, effort=effort, nodes=nodes, granularity=getattr(args, "granularity", None),
-                              grammar="on", grammar_intake=gi)
-                lkw["tier_kw"] = l3w.reask_kw(gi, [o.tier for o in base.outcomes], l3w.context_of(idx)[1])
+                              grammar="on", grammar_intake=gi, flat_order=flat_order)
+                lkw["tier_kw"] = l3w.reask_kw(gi, [o.tier for o in base.outcomes], l3w.context_of(idx)[1], l3w.flat_order_of(flat_order))
             res = l3m.ask_layered(idx, args.question, view=args.view, effort=effort, nodes=nodes, options=lopts, base=base, **lkw)
         else:
             res = l3.ask(idx, args.question, view=args.view, effort=effort, nodes=nodes,
-                         granularity=getattr(args, "granularity", None), grammar=getattr(args, "grammar", "off"))
+                         granularity=getattr(args, "granularity", None), grammar=getattr(args, "grammar", "off"),
+                         **({"flat_order": flat_order} if getattr(args, "grammar", "off") == "on" else {}))
     except ValueError as e:
         print(f"line3: {e}", file=sys.stderr)
         return 2
@@ -3108,15 +3119,15 @@ def main(argv: Optional[list] = None) -> int:
     p.add_argument("--window-evidence", dest="window_evidence", choices=["plain", "window", "both"], default="both",
                    help="ask --structure combined (G3-g): the pair count the windows' flat reading takes on every edge. plain = the corpus count (the owner's 'like T10'); window = the window's label-blind sum of the slide counts (L-714, a variant, marked in the list); both (default) = the windows are read twice and both variants' candidates are listed, each with its origin")
     p.add_argument("--grammar", choices=["on", "off"], default="off",
-                   help="ask --structure flat|combined (G3-k, L-800..): off (default) = every committed byte. on = the owner's 「未知語の代役と文法層の読む順」: the unknown RUN words of the question get their stand-ins (WORD parts known to the corpus; CHAR parts when no WORD part is known) as ADDITIONAL query units of the RUN tier, marked provenance stand-in (they select the crosses to read and count in the read order; E_Q is the original units'; the answer lists them with their chance counts: stand-in units / RUN units of the corpus; entries that exist only through a stand-in carry via_standin); the crosses read under the --effort / --nodes cap are ordered by the question units they hold (originals first, then stand-ins), then the grammar layer's kind of the cross (the particle after its centre word, a stem taking the particle after the whole word; the question's slot first), then E_Q; ties are never split; the candidate set of a full read is unchanged; combined: also the windows (stand-ins as query units) and the layers (same query); the header has a grammar row (form, slot, predicate, stand-ins)")
+                   help="ask --structure flat|combined (G3-k, L-800..): off (default) = every committed byte. on = the owner's 「未知語の代役と文法層の読む順」: the unknown RUN words of the question get their stand-ins (WORD parts known to the corpus; CHAR parts when no WORD part is known) as ADDITIONAL query units of the RUN tier, marked provenance stand-in (they select the crosses to read and count in the read order; E_Q is the original units'; the answer lists them with their chance counts: stand-in units / RUN units of the corpus; entries that exist only through a stand-in carry via_standin); the crosses read under the --effort / --nodes cap are ordered by E_Q first (the energy order of the plain cap read) and, only inside an exact E_Q tie, by the original question units they hold, the stand-in units, then the grammar layer's kind of the cross (the particle after its centre word, a stem taking the particle after the whole word; the question's slot first) (--read-order eq_first, G3-k2; --read-order qcount_first = G3-k's order, the question units first); blocks equal on every key are never split; both marks via_standin and read_via_standin are shown; the candidate set of a full read is unchanged; combined: also the windows (stand-ins as query units) and the layers (same query); the header has a grammar row (form, slot, predicate, stand-ins)")
     p.add_argument("--merge", choices=["none", "word_set"], default="none",
                    help="ask --structure combined (G3-g2): none (default) = every candidate is its own entry, shown in per-origin blocks (flat RUN, WORD, CHAR, layers, window/plain, window/window-evidence), each block in its source's own order; equal word sets from different origins are NOT merged, only marked (also_in); the per-source typed abstentions come first. word_set = the G3-g form (equal word sets are one entry with all its origins), for comparison")
     p.add_argument("--assembly", choices=["on", "off"], default="on",
                    help="ask --structure combined (G3-j, L-780): on (default; combined is new, so no committed bytes change) = add the block flat/assembled: the F2 granularity assembly over the entries of the FLAT block (layer 0 only, scope all, no bridging over function words): the strings that units of different tiers (RUN / WORD / CHAR) of the flat entries make where they overlap or touch in one source sentence, each with its parts, tiers, per-character provenance and trace check; they are extra candidates in a block of their own, never merged with another block, and a single assembled string is a CHOICE, never an ANSWER; the header has a row for the block (listed N, or no assembly). off = the list, header and bytes of G3-i (no flat/assembled block)")
     p.add_argument("--answer-shape", dest="answer_shape", choices=["unit", "path"], default="unit",
                    help="ask --structure slide (G3-e2): what an agreeing axis shows. unit (default) = the end unit of the section walk (one word); path = the units of the walked section path on that axis, outer end to centre, with the provenance of every word. Whether an axis answers is the agreement's in both")
-    p.add_argument("--read-order", dest="read_order", choices=["qcount_first", "grammar_first"], default="qcount_first",
-                   help="ask --structure slide (G3-e2): the order of the candidate windows. qcount_first (default) = windows that hold more question units first, the grammar order (kind match, ladder) only inside a tie; grammar_first = the grammar order first, then the number of question units held (the order before G3-e2)")
+    p.add_argument("--read-order", dest="read_order", choices=["eq_first", "qcount_first", "grammar_first"], default=None,
+                   help="ask --structure slide (G3-e2): the order of the candidate windows. qcount_first (default) = windows that hold more question units first, the grammar order (kind match, ladder) only inside a tie; grammar_first = the grammar order first, then the number of question units held (the order before G3-e2). ask --structure flat|combined --grammar on (G3-k2, L-819): the order of the FLAT plane's crosses under the --effort / --nodes cap. eq_first (default with --grammar on; the owner's 「E_Q が先、単位数は同点内」) = the energy order of the plain cap read (the group, then E_Q descending) and only inside an exact E_Q tie the original question units held, then the stand-in units held, then the grammar kind; qcount_first = G3-k's order (the question units held first, E_Q last), kept for comparison. In combined the value also names the windows' order when it is a window order (qcount_first | grammar_first; eq_first = the windows' default qcount_first); grammar_first does not apply to the flat plane (flat: error; combined: the flat plane keeps eq_first). eq_first is not a window order (slide: error). Without --grammar on the flat plane has no such order (T7b's) and the option does nothing there")
     p.add_argument("--z-deep", dest="z_deep", choices=["slide", "order"], default="order",
                    help="line3 build/ask --structure slide|combined (G3-c4, default changed by G3-i / L-770): the evidence of a z-arm edge deeper than the innermost. order (default since G3-i, the owner's choice after G3-h) = the pair's word order in its sentences over the whole corpus, counted as an x arm does; slide = a slide edge (n_z, almost no evidence; the default through G3-h). A PLACEMENT switch: another slide spec, another window cache file (a cache built with the other value is not read; `line3 build --structure slide --z-deep slide` builds the former one). The other window defaults of G3-i (not options of this command): arm_cap budget, seat_empty_axis deny, padding one per article, centre_scope both, growth z_reserved, strict per-axis stability")
     p.add_argument("--choose", type=int, default=None, help="ask: the index of the candidate you pick; its memory record (with the tier) goes to stderr and --record")

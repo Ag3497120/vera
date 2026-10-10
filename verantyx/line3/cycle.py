@@ -828,8 +828,15 @@ def placement_units(p) -> set:
     return units
 
 
+READ_ORDERS_FLAT: Tuple[str, ...] = ("eq_first", "qcount_first")     # G3-k2 (L-819): the grammar-on order of the flat plane's crosses; eq_first is the default
+
+
 def _plan_read_grammar(seeds, keep, shared, held, q, sq, rq, grammar, read_cap) -> ReadPlan:
-    """G3-k (L-803): the read order under a cap with the grammar layer's group (see plan_read)."""
+    """G3-k (L-803) / G3-k2 (L-819): the read order under a cap with the grammar layer's group (see plan_read).  The order is `grammar.order`
+    (a hook without the attribute = "eq_first", the default of the grammar-on path)."""
+    order = getattr(grammar, "order", "eq_first")
+    if order not in READ_ORDERS_FLAT:
+        raise ValueError("flat read order: %s" % " | ".join(READ_ORDERS_FLAT))
     gorder = {"query_unit": 0, "holds_query_unit": 1, "shares_with_query": 2}
     rank = grammar(sorted(set(keep) | set(shared)))
     blocks: Dict[tuple, List[str]] = {}
@@ -837,15 +844,26 @@ def _plan_read_grammar(seeds, keep, shared, held, q, sq, rq, grammar, read_cap) 
         n_o, n_s = held[s_]
         g = "query_unit" if s_ in q or s_ in sq else "holds_query_unit"
         rk, reason, kl = rank[s_]
-        blocks.setdefault((-n_o, -n_s, rk, gorder[g], -rq(s_), g, reason, kl), []).append(s_)
+        if order == "eq_first":
+            # E_Q first, T7b's own order (the group, then E_Q descending); only inside an exact E_Q tie (integers: counts) the original units held,
+            # the stand-in units held, the grammar kind.  Equal on every field = one block.
+            blocks.setdefault((gorder[g], -rq(s_), -n_o, -n_s, rk, g, reason, kl), []).append(s_)
+        else:
+            blocks.setdefault((-n_o, -n_s, rk, gorder[g], -rq(s_), g, reason, kl), []).append(s_)
     for s_ in shared:
         rk, reason, kl = rank[s_]
-        blocks.setdefault((0, 0, rk, gorder["shares_with_query"], -rq(s_), "shares_with_query", reason, kl), []).append(s_)
+        if order == "eq_first":
+            blocks.setdefault((gorder["shares_with_query"], -rq(s_), 0, 0, rk, "shares_with_query", reason, kl), []).append(s_)
+        else:
+            blocks.setdefault((0, 0, rk, gorder["shares_with_query"], -rq(s_), "shares_with_query", reason, kl), []).append(s_)
     ordered: List[Tuple[str, Tuple[str, ...]]] = []
     rows: List[tuple] = []
     for k in sorted(blocks):
         ordered.append((k[5], tuple(sorted(blocks[k]))))
-        rows.append((-k[0], -k[1], k[6], k[7]))
+        if order == "eq_first":
+            rows.append((-k[2], -k[3], k[6], k[7], -k[1]))                   # (originals held, stand-ins held, group reason, kind label, E_Q)
+        else:
+            rows.append((-k[0], -k[1], k[6], k[7]))
     rd: List[str] = []
     bnd = 0
     for g, ss in ordered:
@@ -866,12 +884,15 @@ def plan_read(tier: TierSpace, facts: TierFacts, ctx: QueryContext,
     units, crosses holding a unit that shares a sentence with a query unit, the rest; inside a
     group by E_Q(seed) descending; equal values are read together or not at all.
 
-    `grammar` (G3-k, L-803; only with `query_crosses_only` and a `read_cap`): a callable seeds -> {seed: (rank, reason, kind label)} (the grammar
+    `grammar` (G3-k, L-803; G3-k2, L-819; only with `query_crosses_only` and a `read_cap`): a callable seeds -> {seed: (rank, reason, kind label)} (the grammar
     layer's read order of the candidate crosses by the kind of their centre word, supplied by verantyx.line3.wiring; this module imports nothing of
-    it).  The order of the crosses read under the cap becomes: (1) the number of ORIGINAL question units the cross holds, more first, then the
-    number of stand-in units (ctx.standins), more first -- the owner's 「問いの語を多く持つ窓を先に」 for crosses; (2) inside a tie of that
-    count the grammar group (rank: the question's slot kind first, then the ladder, tied kinds, none); (3) inside that the order of T7b (the
-    group query_unit / holds_query_unit / shares_with_query, then E_Q descending).  Equal on all keys = ONE block, read together or not at all.
+    it), with an attribute `order`:
+      "eq_first" (default, owner after G3-k: 「E_Q が先、単位数は同点内」): T7b's own order -- the group (query_unit, holds_query_unit, shares_with_query), then E_Q
+          descending -- and ONLY inside an exact E_Q tie (integer counts) the number of ORIGINAL question units the cross holds (more first), then the number of
+          stand-in units (ctx.standins), then the grammar kind (rank: the question's slot kind first, then the ladder, tied kinds, none);
+      "qcount_first" (G3-k's order, kept): (1) the number of original question units held, then of stand-in units; (2) inside a tie of that count the grammar
+          group; (3) inside that the group of T7b, then E_Q descending.
+    Equal on all keys = ONE block, read together or not at all.
     The candidates (the crosses holding a query unit) and so the entries of a full read are unchanged: only the sequence."""
     q = set(ctx.energy_units)
     sq = set(ctx.standins) - q

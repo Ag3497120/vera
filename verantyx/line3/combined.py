@@ -381,7 +381,11 @@ class CombinedAnswer:
             for a in abst:
                 c[a["kind"]] = c.get(a["kind"], 0) + 1
             return {k: c[k] for k in sorted(c)}
-        rows: List[dict] = [dict(self.grammar["header"])] if self.grammar is not None else []      # G3-k (L-808): the grammar row stands first
+        rows: List[dict] = []
+        if self.grammar is not None:                                             # G3-k (L-808): the grammar row stands first; G3-k2 (L-821): both marks counted over the list
+            rows.append({**self.grammar["header"],
+                         MARK_STANDIN: sum(1 for e in self.entries if MARK_STANDIN in e.marks),
+                         MARK_READ_STANDIN: sum(1 for e in self.entries if MARK_READ_STANDIN in e.marks)})
         for s in self.sources:
             if s.name == FLAT:
                 tiers = sorted({c.origin.split("/")[1] for c in s.cands} | {a["tier"] for a in s.abstentions if "tier" in a}, key=TIERS.index)
@@ -682,7 +686,7 @@ def _frac(s: Optional[str]) -> Optional[Fraction]:
 def ask_combined(index, question: str, tiers: Optional[Sequence[str]] = None, budget: cy.QueryBudget = A.DEFAULT_BUDGET, *,
                  view: str = "all", effort: Optional[str] = None, nodes: Optional[int] = None, window_evidence: str = "both",
                  windows: Optional[SQ.WindowIndex] = None, slide_members: str = SLIDE_MEMBERS, read_order: str = "qcount_first",
-                 layer_variants: Sequence[str] = LAYER_VARIANTS, layer_granularity: str = LAYER_GRANULARITY, z_deep: Optional[str] = None,
+                 flat_order: Optional[str] = None, layer_variants: Sequence[str] = LAYER_VARIANTS, layer_granularity: str = LAYER_GRANULARITY, z_deep: Optional[str] = None,
                  cache_dir: Optional[str] = None, workers: int = 1, place_kw: Optional[Mapping] = None, trace: bool = True, merge: str = "none",
                  assembly: bool = True, grammar: str = "off", grammar_intake=None) -> CombinedAnswer:
     """`structure="combined"` (G3-g, opt-in): the flat cross (ask.ask, `tiers` and `budget` as there), the layers (stable-seats-path, variants
@@ -694,10 +698,14 @@ def ask_combined(index, question: str, tiers: Optional[Sequence[str]] = None, bu
     `assembly` (G3-j, default True; this structure is new, so the default changes no committed bytes): add the block flat/assembled, the F2 assembly of the flat
     entries (assembled_source); False = the list, header and bytes of G3-i.
     `grammar` (G3-k, L-800..L-808; "off" = every committed byte): "on" = the question intake with the unknown-word stand-ins is made ONCE (wiring.intake) and shared by the
-    flat cross (stand-ins as additional, marked query units of the RUN tier; the crosses read under the cap ordered by the question units held, then the grammar
-    kind, then E_Q), the layers (the re-asks keep the same query and mark) and the windows (windows that hold only stand-ins are read after the others); the header gets a
-    `grammar` row, the answer `grammar_form` and `standins` (with their chance counts), entries that exist only through a stand-in the mark `via_standin`.
-    `grammar_intake` = a wiring.GrammarIntake made beforehand."""
+    flat cross (stand-ins as additional, marked query units of the RUN tier; the crosses read under the cap in the order `flat_order`: eq_first = E_Q first, the question units held
+    and the grammar kind only inside an exact E_Q tie [default, G3-k2]; qcount_first = the question units held first, then the grammar kind, then E_Q [G3-k]), the layers (the re-asks keep the same query and mark) and the windows (windows that hold only stand-ins are read after the others); the header gets a
+    `grammar` row, the answer `grammar_form` and `standins` (with their chance counts), entries that exist only through a stand-in the mark `via_standin`, entries from a cross / window read only because of the stand-ins `read_via_standin` (G3-k2: both are
+    counted in the grammar row).
+    `grammar_intake` = a wiring.GrammarIntake made beforehand.
+    `flat_order` (G3-k2, L-819; only with grammar "on"): the order of the flat cross's crosses under the cap, None / "eq_first" (default: E_Q first, the question units held and the grammar
+    kind only inside an exact E_Q tie) | "qcount_first" (G3-k's).  `read_order` stays the WINDOWS' order (qcount_first | grammar_first, unchanged).  The layers' re-asks and the
+    `read_via_standin` re-plans use the same flat order."""
     if grammar not in ("off", "on"):
         raise ValueError("grammar: off | on")
     if merge not in MERGES:
@@ -710,14 +718,16 @@ def ask_combined(index, question: str, tiers: Optional[Sequence[str]] = None, bu
         raise ValueError("slide_members: %s" % " | ".join(SQ.MEMBERS))
     t0 = time.monotonic_ns()
     gi = None
+    forder = None
     if grammar == "on":
         from verantyx.line3 import wiring as W
+        forder = W.flat_order_of(flat_order)
         gi = grammar_intake if grammar_intake is not None else W.intake(index.space, question, W.context_of(index)[0])
-    c0 = A.ask(index, question, tiers, budget, view="all", effort=effort, nodes=nodes, **({"grammar": "on", "grammar_intake": gi} if gi is not None else {}))
+    c0 = A.ask(index, question, tiers, budget, view="all", effort=effort, nodes=nodes, **({"grammar": "on", "grammar_intake": gi, "flat_order": forder} if gi is not None else {}))
     opts = M.LayerOptions(variants=tuple(layer_variants), granularity=layer_granularity, feedback="none", candidate=LAYER_CANDIDATE,
                           bounds=M.bounds_for(effort, nodes))
     lc = M.ask_layered(index, question, tiers, budget, options=opts, view="all", effort=effort, nodes=nodes, base=c0,
-                       **({"tier_kw": W.reask_kw(gi, [o.tier for o in c0.outcomes], W.context_of(index)[1])} if gi is not None else {}))
+                       **({"tier_kw": W.reask_kw(gi, [o.tier for o in c0.outcomes], W.context_of(index)[1], forder)} if gi is not None else {}))
     wi = windows if windows is not None else SQ.window_index_for(index, cache_dir=cache_dir, workers=workers, place_kw=place_kw,
                                                                  z_deep=z_deep or SL.DEFAULT_Z_DEEP)
     evs = ("plain", "window") if window_evidence == "both" else (window_evidence,)
@@ -738,10 +748,10 @@ def ask_combined(index, question: str, tiers: Optional[Sequence[str]] = None, bu
         cfg["assembly"] = {"on": True, "scope": ASSEMBLY_SCOPE, "bridge": False, "layer": 0}
     gobj = None
     if gi is not None:
-        cfg["grammar"] = {"on": True, "stem": "whole_word", "flat_order": "question units held, grammar kind, E_Q", "layers": "inherit the query; order unchanged",
+        cfg["grammar"] = {"on": True, "stem": "whole_word", "flat_order": forder, "flat_order_text": W._order_text(forder, False), "layers": "inherit the query; order unchanged",
                           "windows": "question units held (stand-ins second), grammar kind"}
-        gobj = {"form": gi.grammar_form(), "standins": gi.standins_obj(), "header": gi.header_row(),
-                "full": {"form": gi.grammar_form(), "standins": gi.standins_obj(True), "reading": gi.reading.to_obj(), "stem": "whole_word",
+        gobj = {"form": gi.grammar_form(forder), "standins": gi.standins_obj(), "header": gi.header_row(),
+                "full": {"form": gi.grammar_form(forder), "order": forder, "standins": gi.standins_obj(True), "reading": gi.reading.to_obj(), "stem": "whole_word",
                          "foundation_sha256": W.gr.foundation_sha()}}
     sent = _sentence_map(index, srcs)
     return combine(question, srcs, sent, config=cfg, effort=name, ms=(time.monotonic_ns() - t0) // 1000000, merge=merge, grammar=gobj)
@@ -764,8 +774,9 @@ def format_text(c: CombinedAnswer, show_thought: bool = False) -> str:
     L: List[str] = ["出所ごとの状況（候補の件数、または答えなしの種類）:"]
     for h in a["header"]:
         if h["source"] == "grammar":                                             # G3-k (L-808)
-            L.append("  grammar: 形 %s / slot %s / 述語 %s / 未知語の代役 %d 件（%s）" % (h["form"], h["slot"] or "なし", h["predicate"] or "なし", h["standins"],
-                                                                                   ", ".join(h["unknown_words"]) or "未知語なし"))
+            L.append("  grammar: 形 %s / slot %s / 述語 %s / 未知語の代役 %d 件（%s）/ 印の件数: %s %d 件・%s %d 件" % (
+                h["form"], h["slot"] or "なし", h["predicate"] or "なし", h["standins"], ", ".join(h["unknown_words"]) or "未知語なし",
+                MARK_STANDIN, h[MARK_STANDIN], MARK_READ_STANDIN, h[MARK_READ_STANDIN]))
             continue
         if h["source"] == ASSEMBLED:
             L.append("  %s: %s" % (h["source"], "つなげた文字列 %d 件（平らな十字の候補の単位を同じ文でつなげたもの）" % h["listed"] if h["listed"] else "つなげた文字列なし (%s)" % h["kind"]))
