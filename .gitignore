@@ -89,3 +89,4 @@ experiments/line3/t11/results/*.jsonl*
 experiments/line3/g3/k/results/*.jsonl*
 experiments/line3/g3/k/results/*.log
 docs/media/*.mp4
+experiments/line3/g4/prefixes/
