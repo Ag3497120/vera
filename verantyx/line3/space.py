@@ -231,7 +231,7 @@ class Space:
             return self
         texts = [strip_attribution(t) for t, _ in new]
         return Space(self.sentences + new,
-                     {n: self.tiers[n].append(texts) for n in TIERS},
+                     {n: self.tiers[n].append(texts) for n in TIERS if n in self.tiers},     # G4-c (L-G4-75): a subset of the tiers appends its own
                      self.kinds + kinds)
 
     def postings_union(self, tier: str, units: Iterable[str]) -> Tuple[int, ...]:   # L-42
@@ -250,6 +250,8 @@ class Space:
             "tiers": {},
         }
         for name in TIERS:
+            if name not in self.tiers:                   # G4-c (L-G4-75): a Space of a subset of the tiers writes the tiers it has (all three: unchanged)
+                continue
             t = self.tiers[name]
             doc["tiers"][name] = {
                 "N": t.N,
@@ -306,13 +308,19 @@ def _rows(rows: Iterable[Mapping[str, str]]):
     return sentences, kinds
 
 
-def build_space(rows: Iterable[Mapping[str, str]], unit_filter=DEFAULT_FILTER) -> Space:
+def build_space(rows: Iterable[Mapping[str, str]], unit_filter=DEFAULT_FILTER, tiers: Sequence[str] = TIERS) -> Space:
     """rows: dicts with 'sent' (sentence) and optional 'source'.  No centre is chosen (I-02).
     `unit_filter`: see build_tier (default: function / question words are not units; None = the
-    old space).  Space.append applies the space's own filter to the new sentences."""
+    old space).  Space.append applies the space's own filter to the new sentences.
+    `tiers` (G4-c, L-G4-75; default all three = every committed byte): a non-empty subset of RUN, WORD, CHAR, built in the fixed order of TIERS.
+    The tiers are independent (I-16), so a tier built alone is the tier of the full space, object for object; a CHAR-only space needs no
+    tokeniser (arm B of the growth meter, T-G4-10)."""
+    names = tuple(tiers)
+    if not names or any(n not in TIERS for n in names) or len(set(names)) != len(names):
+        raise ValueError("tiers: a non-empty subset of RUN, WORD, CHAR without repeats")
     sentences, kinds = _rows(rows)
     texts = [strip_attribution(t) for t, _ in sentences]
-    return Space(sentences, {n: build_tier(n, texts, unit_filter) for n in TIERS}, kinds)
+    return Space(sentences, {n: build_tier(n, texts, unit_filter) for n in TIERS if n in names}, kinds)
 
 
 def tier_counts(space: Space) -> Dict[str, object]:

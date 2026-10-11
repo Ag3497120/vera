@@ -184,8 +184,9 @@ class Layer:
 
     def __init__(self, k: int, base: TierSpace, lower_units: Mapping[str, Tuple[str, ...]],
                  words: Mapping[str, frozenset], pos_of, bounds: LayerBounds,
-                 group_insert: str = "whole", order: str = "forward", on_collapse: str = "stop") -> None:
+                 group_insert: str = "whole", order: str = "forward", on_collapse: str = "stop", counter: Optional[List[int]] = None) -> None:
         self.k = k
+        self.counter = counter                                   # L-G4-99: a one-element list the owner of the layer counts its bundle-cross builds in (None = not counted)
         self.group_insert, self.order = group_insert, order      # F1b (L-475): the index's insertion order, also for upper crosses
         self.on_collapse = on_collapse                           # F1c (L-506)
         self.lower_units = dict(lower_units)
@@ -203,6 +204,8 @@ class Layer:
         p = self._cross.get(seed)
         if p is None:
             self.builds += 1
+            if self.counter is not None:
+                self.counter[0] += 1
             p = self._cross[seed] = pl.build_cross(self.space, seed, self.w, budget=self.budget,
                                                    pool_groups=self.bounds.pool_groups,
                                                    group_insert=self.group_insert, order=self.order,
@@ -226,6 +229,7 @@ class LayerStack:
         self._pos: Dict[str, Dict[int, int]] = {}
         self._layer1: Dict[Tuple[str, str, int, Optional[int]], Layer] = {}
         self.layer1_build_ms: Dict[str, int] = {}
+        self.bundle_builds: List[int] = [0]                      # L-G4-99: bundle crosses built by every layer of this tier (placement.build_cross), ever
 
     def pos_of(self, w: str) -> Mapping[int, int]:
         r = self._pos.get(w)
@@ -252,7 +256,7 @@ class LayerStack:
             us = placed_units(self.store.cross_for(s))
             lower[bundle_id(1, s)] = us
             words[bundle_id(1, s)] = frozenset(us)
-        return Layer(1, self.base, lower, words, self.pos_of, bounds, self.group_insert, self.order, self.on_collapse)
+        return Layer(1, self.base, lower, words, self.pos_of, bounds, self.group_insert, self.order, self.on_collapse, self.bundle_builds)
 
     def layer_above(self, k: int, lower: Layer, read_seeds: Sequence[str], bounds: LayerBounds) -> Layer:
         """Layer k from the upper crosses of `lower` that were read (the stable states this question needed)."""
@@ -261,7 +265,7 @@ class LayerStack:
             us = placed_units(lower.cross_for(b))
             lu[bundle_id(k, b)] = us
             words[bundle_id(k, b)] = frozenset().union(*(lower.words[u] for u in us))
-        return Layer(k, self.base, lu, words, self.pos_of, bounds, self.group_insert, self.order, self.on_collapse)
+        return Layer(k, self.base, lu, words, self.pos_of, bounds, self.group_insert, self.order, self.on_collapse, self.bundle_builds)
 
 
 def stack_of(index: "A.Index", tier: str) -> LayerStack:
@@ -1298,6 +1302,7 @@ class LayeredCombined:
     options: LayerOptions
     ms: int = 0
     extra_sentences: Mapping = field(default_factory=dict, compare=False, repr=False)   # L-251: sources of path words
+    outside_stack: Optional[Mapping] = None  # G4-c (L-G4-99): over a frozen stack only (None elsewhere, the bytes of before): the upper layers' crosses are one-shot builds OUTSIDE the stack, with the count
 
     @property
     def question(self) -> str:
@@ -1311,7 +1316,7 @@ class LayeredCombined:
                         "bundles": []})
         for tl in self.layers:
             for e in tl.entries:
-                out.append(e.to_json_obj())
+                out.append(e.to_json_obj() if self.outside_stack is None else {**e.to_json_obj(), "outside_stack": True})
         return tuple(out)
 
     @property
@@ -1333,6 +1338,7 @@ class LayeredCombined:
                                                     **{"%d%s" % (r.k, r.variant): len(r.entries) for r in tl.runs}}
                                           for tl in self.layers},
                 "entries": list(ent), "layer0": self.base.answer_obj(),
+                **({"outside_stack": dict(self.outside_stack)} if self.outside_stack is not None else {}),
                 "sources": [{"sid": s, "text": (self.base.sentences[s] if s in self.base.sentences else self.extra_sentences[s])[0]}
                             for s in sids if s in self.base.sentences or s in self.extra_sentences]}
 
@@ -1344,6 +1350,8 @@ class LayeredCombined:
             o["down_query"] = self.options.down_query
         if self.base.placement is not None:          # F1b (L-475): upper crosses are placed with the same insertion order
             o["placement"] = dict(self.base.placement)
+        if self.outside_stack is not None:           # G4-c (L-G4-99)
+            o["outside_stack"] = dict(self.outside_stack)
         return {"layers": {"format": LAYER_FORMAT, "options": o,
                            "stacked": self.stacked,
                            "per_tier": {tl.tier: tl.to_json_obj() for tl in self.layers}},
@@ -1383,6 +1391,9 @@ class LayeredCombined:
         return rec
 
 
+OUTSIDE_STACK = "stack: the upper layers' bundle crosses are one-shot builds outside the stack"      # G4-c (L-G4-99)
+
+
 def ask_layered(index: "A.Index", question: str, tiers: Optional[Sequence[str]] = None,
                 budget: cy.QueryBudget = A.DEFAULT_BUDGET, *, options: Optional[LayerOptions] = None,
                 view: str = "all", effort: Optional[str] = None, nodes: Optional[int] = None,
@@ -1406,6 +1417,7 @@ def ask_layered(index: "A.Index", question: str, tiers: Optional[Sequence[str]] 
         else:
             akw["raise_budget"] = None
     out: List[TierLayers] = []
+    before = {o.tier: stack_of(index, o.tier).bundle_builds[0] for o in c0.outcomes} if index.stack is not None else None
     for o in c0.outcomes:
         st = stack_of(index, o.tier)
 
@@ -1423,11 +1435,18 @@ def ask_layered(index: "A.Index", question: str, tiers: Optional[Sequence[str]] 
                 for sid in e.source_sids:
                     if sid not in c0.sentences and 0 <= sid < len(index.space.sentences):
                         extra[sid] = index.space.sentences[sid]
-    return LayeredCombined(c0, tuple(out), opts, (time.monotonic_ns() - t0) // 1000000, extra)
+    outside = None
+    if before is not None:                               # G4-c (L-G4-99): over a frozen stack the layers are marked: their crosses are one-shot builds outside the stack
+        per = {t: stack_of(index, t).bundle_builds[0] - n for t, n in before.items()}
+        outside = {"layers_oneshot": True, "reason": OUTSIDE_STACK, "bundle_builds": per, "bundle_builds_total": sum(per.values())}
+    return LayeredCombined(c0, tuple(out), opts, (time.monotonic_ns() - t0) // 1000000, extra, outside)
 
 
 def format_layers_text(c: LayeredCombined, show_thought: bool = False) -> str:
     L: List[str] = [A.format_text(c.base, False)]
+    if c.outside_stack is not None:                      # G4-c (L-G4-99)
+        L.append("層【積みの外】: 上の層の十字は積みの十字ではなく、その場で作った一回きりの配置です（この問いで作った十字 %d 本: %s）" % (
+            c.outside_stack["bundle_builds_total"], " ".join("%s=%d" % kv for kv in c.outside_stack["bundle_builds"].items())))
     if not c.stacked:
         L.append("層: 積み上げなし（読んだ十字はどれも安定が保たれた）")
     else:
@@ -1438,7 +1457,8 @@ def format_layers_text(c: LayeredCombined, show_thought: bool = False) -> str:
             L.append("  [%d] (%s 第%d層 %s) %s  中心: %s  並べ方 %d  安定度 %s%s" % (
                 n0 + i, e.tier, e.layer, "問いを渡した(A)" if e.variant == "A" else "答えだけ(B)", " / ".join(e.words),
                 ", ".join(e.centres), e.arrangements, _fs(e.stability),
-                ("  経路の語のみ・出典文 %s" % ",".join(str(x) for x in e.source_sids)) if e.word_sources is not None else ""))
+                (("  経路の語のみ・出典文 %s" % ",".join(str(x) for x in e.source_sids)) if e.word_sources is not None else "")
+                + ("  【積みの外】" if c.outside_stack is not None else "")))
         for tl in c.layers:
             if tl.triggered:
                 ch = tl.choice

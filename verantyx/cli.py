@@ -2323,14 +2323,38 @@ def cmd_line3(args) -> int:
     import sys
     from .line3 import ask as l3
 
-    try:
-        idx = l3.Index.from_jsonl(args.data, args.cache, args.level, args.tiers,
-                                  group_insert=getattr(args, "group_insert", "whole"), order=getattr(args, "order", "forward"),
-                                  on_collapse=getattr(args, "on_collapse", "stop"))
-    except (OSError, ValueError) as e:
-        print(f"line3: {e}", file=sys.stderr)
-        return 2
     structure = getattr(args, "structure", "flat")
+    foundation = getattr(args, "foundation", "off")
+    stack_dir = getattr(args, "stack", None)
+    if getattr(args, "step", None) is not None and not stack_dir:
+        print("line3: --step picks a step of a saved stack: it goes with --stack DIR", file=sys.stderr)
+        return 2
+    if foundation == "on" and structure == "slide":
+        print("line3: --foundation on seats the flat plane's crosses (--structure flat | combined); the windows do not use it (G4-c, L-G4-78)", file=sys.stderr)
+        return 2
+    if stack_dir:
+        # G4-c (L-G4-79, L-G4-80): read a saved step of a frozen stack (verantyx.line3.stack); nothing is built, nothing is cached, nothing is silently ignored
+        if args.l3_op != "ask":
+            print("line3: --stack is for `line3 ask`; the stack is written by stack.build / stack.save", file=sys.stderr)
+            return 2
+        if args.cache or getattr(args, "group_insert", "whole") != "whole" or getattr(args, "on_collapse", "stop") != "stop":
+            print("line3: --stack replaces --cache / --group-insert / --on-collapse (the stack's crosses are its own; its placement is ordered / forward / stop); "
+                  "--order forward|reverse names the stack's document order, --level its level, --foundation its sub-directory", file=sys.stderr)
+            return 2
+        try:
+            idx = l3.Index.from_stack(stack_dir, args.tiers, data=args.data, step=getattr(args, "step", None), foundation=foundation,
+                                      level=args.level, order=getattr(args, "order", "forward"))
+        except (OSError, ValueError) as e:
+            print(f"line3: {e}", file=sys.stderr)
+            return 2
+    else:
+        try:
+            idx = l3.Index.from_jsonl(args.data, args.cache, args.level, args.tiers,
+                                      group_insert=getattr(args, "group_insert", "whole"), order=getattr(args, "order", "forward"),
+                                      on_collapse=getattr(args, "on_collapse", "stop"), foundation=foundation)
+        except (OSError, ValueError) as e:
+            print(f"line3: {e}", file=sys.stderr)
+            return 2
     if args.l3_op == "build" and structure == "combined":
         # G3-g: both caches of the combined list, the flat placements and the window index (different files in the same directory)
         if not args.cache:
@@ -3100,6 +3124,11 @@ def main(argv: Optional[list] = None) -> int:
                    help="F1b: with --group-insert ordered, forward = the sentence order (default); reverse = its exact reverse (a measurement probe)")
     p.add_argument("--on-collapse", dest="on_collapse", choices=["stop", "skip"], default="stop",
                    help="F1c (L-506): with --group-insert ordered, what a member that breaks the budget does. stop (default) = growth stops just before it (L-463); skip = only that member is left out (recorded) and the next member / group is tried (owner 2026-10-08). skip with --group-insert whole is refused. Part of the cache key and recorded in the answer and the thought")
+    p.add_argument("--foundation", choices=["off", "on"], default="off",
+                   help="G1-b wiring (G4-c, L-G4-78): off (default) = every committed byte. on = the foundation's six particle seats are fixed in the innermost ring of every cross (の に で と を が; は on the centre word), the key is (n, p, a) with the adhesion a, and the reader sees the contracted crosses; the cache file name gets found-<sha12> and a cache of another seats sha is refused. Not for --structure slide. With --stack: the sub-directory of the stack")
+    p.add_argument("--stack", default=None, metavar="DIR",
+                   help="ask (G4-c, L-G4-79): read a saved step of a frozen stack (stack.save) instead of a placement cache: the step is keyed by the sha of the first --step articles of --data (a corpus that is not that prefix is refused). Nothing is built on demand; --effort full and --structure slide are refused; --structure combined reads flat and layers only (no window cache). Replaces --cache; --order forward|reverse = the stack's document order")
+    p.add_argument("--step", type=int, default=None, help="ask --stack: how many articles of --data the saved step holds (default: all of them)")
     p.add_argument("--question", default=None, help="ask: the question")
     p.add_argument("--show-thought", dest="show_thought", action="store_true", help="ask: also show the thought (internal state; N-08, N-10)")
     p.add_argument("--format", choices=["text", "json"], default="text", help="ask: text (default) or json {answer, thought}")
