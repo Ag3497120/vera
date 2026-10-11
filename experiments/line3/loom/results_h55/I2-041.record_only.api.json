@@ -1,0 +1,240 @@
+{
+ "abandoned": [
+  "done_without_close"
+ ],
+ "annotated": null,
+ "answer_view": {
+  "excess_chars": null,
+  "hit_record_text": null,
+  "hits_text": null
+ },
+ "base": "I2-041",
+ "closing": null,
+ "control": false,
+ "control_note": null,
+ "declared_model": "claude-haiku-5-5",
+ "driver": "api",
+ "driver_report": {
+  "calls_skipped_after_close": 0,
+  "control_text_chars": null,
+  "ended": "done",
+  "error": null,
+  "response_models": [
+   "claude-haiku-5-5"
+  ],
+  "stop_reasons": [
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use"
+  ],
+  "system_prompt_sha256": "55e3286d786ba2b0238cd879fc80cc61570d5c62893c1c5b0c17c04b3c390f9e",
+  "text_blocks_dropped": 0,
+  "thinking_dropped": {
+   "chars": 0,
+   "n": 0,
+   "sha256": []
+  },
+  "tool_calls": 32,
+  "tool_choice": {
+   "type": "any"
+  },
+  "tool_less_turns": 0,
+  "tools": [
+   "lookup",
+   "read_sentence",
+   "add",
+   "open_cross",
+   "seat",
+   "seat_run",
+   "unseat",
+   "swap",
+   "extend",
+   "topic",
+   "set_depth",
+   "link",
+   "unlink",
+   "read",
+   "emit",
+   "abstain",
+   "status",
+   "done"
+  ],
+  "turns": 20
+ },
+ "footnotes": {
+  "hits_words": "hits_words (the gold inside ONE record unit; `score.hits_words`) is false by construction for every multi-unit answer (ハッシュ表, キューバの太陽, カールマルクス, 1981年); it is not a correctness column"
+ },
+ "free_text_dropped": {
+  "chars": 0,
+  "n": 0,
+  "sha256": []
+ },
+ "harness_meta": [
+  {
+   "agent_definition_sha": "55e3286d786ba2b0238cd879fc80cc61570d5c62893c1c5b0c17c04b3c390f9e",
+   "driver": "L2-api",
+   "requested_model": "claude-haiku-5-5"
+  },
+  {
+   "response_model": "claude-haiku-5-5"
+  }
+ ],
+ "ledger": "experiments/line3/loom/runs_h55/I2-041.record_only.api/ops.jsonl",
+ "ledger_head": "7f265f926d2828847f5ad20d02fe64368091ff2813099e8248da43eb7093b3d3",
+ "mode": "record_only",
+ "model_result": true,
+ "op_counts": {
+  "by_class": {
+   "lookups": 31,
+   "other": 1
+  },
+  "by_op": {
+   "begin": 1,
+   "lookup": 30,
+   "read_sentence": 1
+  },
+  "emit_attempts": 0,
+  "model_rows": 32,
+  "rows": 35
+ },
+ "output_text": null,
+ "refusals": {
+  "lookup_cap": 1
+ },
+ "schema": "loom-result-1",
+ "score": {
+  "abstain_type": null,
+  "answer_line": null,
+  "base": "I2-041",
+  "chars": {},
+  "control": false,
+  "correct": false,
+  "excess_chars": null,
+  "hit_record_text": null,
+  "hits_text": null,
+  "hits_words": null,
+  "kind": "answerable",
+  "mode": "record_only",
+  "note": "the run closed with neither emit nor abstain (abandoned: ['done_without_close'])",
+  "outcome": "no_output",
+  "output_sha": null,
+  "replay_verified": true,
+  "share_permille": {},
+  "stability": null,
+  "status": "no_output",
+  "task_id": "bank2/I2-041.record_only",
+  "text": null,
+  "verify_status": "OK"
+ },
+ "self_corrections": {
+  "counts": {
+   "plan_change_after_empty": 15,
+   "recovery_after_refusal": 0,
+   "refusals_recoverable": 0,
+   "unseat_swap_before_close": 0
+  },
+  "plan_change_after_empty": [
+   {
+    "i": 2,
+    "next_i": 3,
+    "next_op": "lookup"
+   },
+   {
+    "i": 5,
+    "next_i": 6,
+    "next_op": "lookup"
+   },
+   {
+    "i": 9,
+    "next_i": 10,
+    "next_op": "lookup"
+   },
+   {
+    "i": 10,
+    "next_i": 11,
+    "next_op": "lookup"
+   },
+   {
+    "i": 12,
+    "next_i": 13,
+    "next_op": "lookup"
+   },
+   {
+    "i": 13,
+    "next_i": 14,
+    "next_op": "lookup"
+   },
+   {
+    "i": 14,
+    "next_i": 15,
+    "next_op": "lookup"
+   },
+   {
+    "i": 15,
+    "next_i": 16,
+    "next_op": "lookup"
+   },
+   {
+    "i": 18,
+    "next_i": 19,
+    "next_op": "lookup"
+   },
+   {
+    "i": 21,
+    "next_i": 22,
+    "next_op": "lookup"
+   },
+   {
+    "i": 24,
+    "next_i": 25,
+    "next_op": "lookup"
+   },
+   {
+    "i": 25,
+    "next_i": 26,
+    "next_op": "lookup"
+   },
+   {
+    "i": 26,
+    "next_i": 27,
+    "next_op": "lookup"
+   },
+   {
+    "i": 27,
+    "next_i": 28,
+    "next_op": "lookup"
+   },
+   {
+    "i": 29,
+    "next_i": 30,
+    "next_op": "lookup"
+   }
+  ],
+  "recovery_after_refusal": [],
+  "refusals_recoverable": 0,
+  "unseat_swap_before_close": []
+ },
+ "t_loom_34": "unchecked",
+ "task_id": "bank2/I2-041.record_only",
+ "wall": {
+  "driver_ns": 22063657292,
+  "ledger_ns": 22063652291
+ }
+}

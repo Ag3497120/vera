@@ -1,0 +1,123 @@
+=== I2-001 record_only
+bank2/I2-001.record_only hit "ハッシュ表ともいう" -> experiments/line3/loom/results_h55/I2-001.record_only.api.json
+rc=0
+=== I2-001 constructed_allowed
+bank2/I2-001.constructed_allowed miss "ハッシュテーブルは連想配列" -> experiments/line3/loom/results_h55/I2-001.constructed_allowed.api.json
+rc=0
+=== I2-001 free_text
+bank2/I2-001.free_text abstained_wrong "不明" -> experiments/line3/loom/results_h55/I2-001.free_text.api.json
+rc=0
+=== I2-041 record_only
+bank2/I2-041.record_only no_output null -> experiments/line3/loom/results_h55/I2-041.record_only.api.json
+rc=0
+=== I2-041 constructed_allowed
+bank2/I2-041.constructed_allowed abstained_wrong null -> experiments/line3/loom/results_h55/I2-041.constructed_allowed.api.json
+rc=0
+=== I2-041 free_text
+bank2/I2-041.free_text hit "「キューバの太陽」という意味" -> experiments/line3/loom/results_h55/I2-041.free_text.api.json
+rc=0
+=== I2-008 record_only
+bank2/I2-008.record_only abstained_wrong null -> experiments/line3/loom/results_h55/I2-008.record_only.api.json
+rc=0
+=== I2-008 constructed_allowed
+bank2/I2-008.constructed_allowed abstained_wrong null -> experiments/line3/loom/results_h55/I2-008.constructed_allowed.api.json
+rc=0
+=== I2-008 free_text
+bank2/I2-008.free_text hit "カール・マルクス" -> experiments/line3/loom/results_h55/I2-008.free_text.api.json
+rc=0
+=== I2-034 record_only
+bank2/I2-034.record_only hit "サンゴーカメラ1981年にに設立" -> experiments/line3/loom/results_h55/I2-034.record_only.api.json
+rc=0
+=== I2-034 constructed_allowed
+bank2/I2-034.constructed_allowed hit "サンゴーカメラ1981年に設立" -> experiments/line3/loom/results_h55/I2-034.constructed_allowed.api.json
+rc=0
+=== I2-034 free_text
+bank2/I2-034.free_text hit "1981年" -> experiments/line3/loom/results_h55/I2-034.free_text.api.json
+rc=0
+=== I2-013 record_only
+bank2/I2-013.record_only hit "千葉神社の旧社格県社" -> experiments/line3/loom/results_h55/I2-013.record_only.api.json
+rc=0
+=== I2-013 constructed_allowed
+bank2/I2-013.constructed_allowed hit "千葉神社の旧社格県社" -> experiments/line3/loom/results_h55/I2-013.constructed_allowed.api.json
+rc=0
+=== I2-013 free_text
+bank2/I2-013.free_text hit "県社" -> experiments/line3/loom/results_h55/I2-013.free_text.api.json
+rc=0
+=== R2-I013 record_only
+bank2/R2-I013.record_only hit "ネパール" -> experiments/line3/loom/results_h55/R2-I013.record_only.api.json
+rc=0
+=== R2-I013 constructed_allowed
+bank2/R2-I013.constructed_allowed abstained_wrong null -> experiments/line3/loom/results_h55/R2-I013.constructed_allowed.api.json
+rc=0
+=== R2-I013 free_text
+bank2/R2-I013.free_text hit "ネパール" -> experiments/line3/loom/results_h55/R2-I013.free_text.api.json
+rc=0
+=== I2-025 record_only
+bank2/I2-025.record_only abstained_wrong null -> experiments/line3/loom/results_h55/I2-025.record_only.api.json
+rc=0
+=== I2-025 constructed_allowed
+bank2/I2-025.constructed_allowed abstained_wrong null -> experiments/line3/loom/results_h55/I2-025.constructed_allowed.api.json
+rc=0
+=== I2-025 free_text
+bank2/I2-025.free_text hit "青" -> experiments/line3/loom/results_h55/I2-025.free_text.api.json
+rc=0
+=== UF-001 record_only
+bank2/UF-001.record_only abstained_correct null -> experiments/line3/loom/results_h55/UF-001.record_only.api.json
+rc=0
+=== UF-001 constructed_allowed
+bank2/UF-001.constructed_allowed abstained_correct null -> experiments/line3/loom/results_h55/UF-001.constructed_allowed.api.json
+rc=0
+=== UF-001 free_text
+bank2/UF-001.free_text abstained_correct "不明" -> experiments/line3/loom/results_h55/UF-001.free_text.api.json
+rc=0
+=== UF-015 record_only
+bank2/UF-015.record_only abstained_correct null -> experiments/line3/loom/results_h55/UF-015.record_only.api.json
+rc=0
+=== UF-015 constructed_allowed
+bank2/UF-015.constructed_allowed abstained_correct null -> experiments/line3/loom/results_h55/UF-015.constructed_allowed.api.json
+rc=0
+=== UF-015 free_text
+bank2/UF-015.free_text abstained_correct "不明" -> experiments/line3/loom/results_h55/UF-015.free_text.api.json
+rc=0
+=== R2-U003 record_only
+bank2/R2-U003.record_only abstained_correct null -> experiments/line3/loom/results_h55/R2-U003.record_only.api.json
+rc=0
+=== R2-U003 constructed_allowed
+bank2/R2-U003.constructed_allowed abstained_correct null -> experiments/line3/loom/results_h55/R2-U003.constructed_allowed.api.json
+rc=0
+=== R2-U003 free_text
+bank2/R2-U003.free_text abstained_correct "不明" -> experiments/line3/loom/results_h55/R2-U003.free_text.api.json
+rc=0
+task                               mode                 driver    status             hits_text hit_record_text excess_chars
+bank2/I2-001.constructed_allowed   constructed_allowed  api       miss               N         N               -
+bank2/I2-001.free_text             free_text            api       abstained_wrong    -         -               -
+bank2/I2-001.record_only           record_only          api       hit                Y         Y               4
+bank2/I2-008.constructed_allowed   constructed_allowed  api       abstained_wrong    -         -               -
+bank2/I2-008.free_text             free_text            api       hit                Y         -               0
+bank2/I2-008.record_only           record_only          api       abstained_wrong    -         -               -
+bank2/I2-013.constructed_allowed   constructed_allowed  api       hit                Y         Y               8
+bank2/I2-013.free_text             free_text            api       hit                Y         -               0
+bank2/I2-013.record_only           record_only          api       hit                Y         Y               8
+bank2/I2-025.constructed_allowed   constructed_allowed  api       abstained_wrong    -         -               -
+bank2/I2-025.free_text             free_text            api       hit                Y         -               0
+bank2/I2-025.record_only           record_only          api       abstained_wrong    -         -               -
+bank2/I2-034.constructed_allowed   constructed_allowed  api       hit                Y         Y               10
+bank2/I2-034.free_text             free_text            api       hit                Y         -               0
+bank2/I2-034.record_only           record_only          api       hit                Y         Y               11
+bank2/I2-041.constructed_allowed   constructed_allowed  api       abstained_wrong    -         -               -
+bank2/I2-041.free_text             free_text            api       hit                Y         -               7
+bank2/I2-041.record_only           record_only          api       no_output          -         -               -
+bank2/R2-I013.constructed_allowed  constructed_allowed  api       abstained_wrong    -         -               -
+bank2/R2-I013.free_text            free_text            api       hit                Y         -               0
+bank2/R2-I013.record_only          record_only          api       hit                Y         Y               0
+bank2/R2-U003.constructed_allowed  constructed_allowed  api       abstained_correct  -         -               -
+bank2/R2-U003.free_text            free_text            api       abstained_correct  -         -               -
+bank2/R2-U003.record_only          record_only          api       abstained_correct  -         -               -
+bank2/UF-001.constructed_allowed   constructed_allowed  api       abstained_correct  -         -               -
+bank2/UF-001.free_text             free_text            api       abstained_correct  -         -               -
+bank2/UF-001.record_only           record_only          api       abstained_correct  -         -               -
+bank2/UF-015.constructed_allowed   constructed_allowed  api       abstained_correct  -         -               -
+bank2/UF-015.free_text             free_text            api       abstained_correct  -         -               -
+bank2/UF-015.record_only           record_only          api       abstained_correct  -         -               -
+
+hits_text is the primary column.  (1) hits_words (the gold inside ONE record unit; `score.hits_words`) is false by construction for every multi-unit answer (ハッシュ表, キューバの太陽, カールマルクス, 1981年); it is not a correctness column.

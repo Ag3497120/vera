@@ -1,0 +1,309 @@
+{
+ "abandoned": [],
+ "annotated": [
+  {
+   "cid": "c1",
+   "kind": "record",
+   "prov": {
+    "n": 1,
+    "tier": "RUN"
+   },
+   "s": "サンゴーカメラ",
+   "seat": "centre",
+   "tier": "RUN",
+   "uid": "u1"
+  },
+  {
+   "adhesion": {
+    "n": 0,
+    "particle": "に"
+   },
+   "cid": "c2",
+   "join": {
+    "attested": null,
+    "prev": "u1"
+   },
+   "kind": "record",
+   "prov": {
+    "n": 2,
+    "tier": "RUN"
+   },
+   "s": "1981年に",
+   "seat": "-x:0",
+   "tier": "RUN",
+   "uid": "u2"
+  },
+  {
+   "cid": "c2",
+   "kind": "foundation",
+   "prov": {
+    "arm": "-x",
+    "kind": "foundation",
+    "ratio": "89/377",
+    "seats_sha": "a2083d4536377ac0b8381db5df6d0ba6ebcc6d20ec5d16f80f34f74fa802a5d7"
+   },
+   "s": "に",
+   "seat": "-x:1"
+  },
+  {
+   "cid": "c2",
+   "kind": "record",
+   "prov": {
+    "n": 3,
+    "tier": "RUN"
+   },
+   "s": "設立",
+   "seat": "centre",
+   "tier": "RUN",
+   "uid": "u4"
+  }
+ ],
+ "answer_view": {
+  "excess_chars": 11,
+  "hit_record_text": true,
+  "hits_text": true
+ },
+ "base": "I2-034",
+ "closing": {
+  "i": 44,
+  "op": "emit",
+  "status": "emitted",
+  "type": null
+ },
+ "control": false,
+ "control_note": null,
+ "declared_model": "claude-haiku-5-5",
+ "driver": "api",
+ "driver_report": {
+  "calls_skipped_after_close": 0,
+  "control_text_chars": null,
+  "ended": "closed",
+  "error": null,
+  "response_models": [
+   "claude-haiku-5-5"
+  ],
+  "stop_reasons": [
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use"
+  ],
+  "system_prompt_sha256": "55e3286d786ba2b0238cd879fc80cc61570d5c62893c1c5b0c17c04b3c390f9e",
+  "text_blocks_dropped": 0,
+  "thinking_dropped": {
+   "chars": 0,
+   "n": 0,
+   "sha256": []
+  },
+  "tool_calls": 43,
+  "tool_choice": {
+   "type": "any"
+  },
+  "tool_less_turns": 0,
+  "tools": [
+   "lookup",
+   "read_sentence",
+   "add",
+   "open_cross",
+   "seat",
+   "seat_run",
+   "unseat",
+   "swap",
+   "extend",
+   "topic",
+   "set_depth",
+   "link",
+   "unlink",
+   "read",
+   "emit",
+   "abstain",
+   "status",
+   "done"
+  ],
+  "turns": 21
+ },
+ "footnotes": {
+  "hits_words": "hits_words (the gold inside ONE record unit; `score.hits_words`) is false by construction for every multi-unit answer (ハッシュ表, キューバの太陽, カールマルクス, 1981年); it is not a correctness column"
+ },
+ "free_text_dropped": {
+  "chars": 0,
+  "n": 0,
+  "sha256": []
+ },
+ "harness_meta": [
+  {
+   "agent_definition_sha": "55e3286d786ba2b0238cd879fc80cc61570d5c62893c1c5b0c17c04b3c390f9e",
+   "driver": "L2-api",
+   "requested_model": "claude-haiku-5-5"
+  },
+  {
+   "response_model": "claude-haiku-5-5"
+  }
+ ],
+ "ledger": "experiments/line3/loom/runs_h55/I2-034.record_only.api/ops.jsonl",
+ "ledger_head": "63a757226acd923924edcf3e4a5686ad65e1947686e7036e110a7904d1cfb82b",
+ "mode": "record_only",
+ "model_result": true,
+ "op_counts": {
+  "by_class": {
+   "emit_attempts": 1,
+   "lookups": 6,
+   "ops": 28,
+   "other": 3,
+   "reads": 6
+  },
+  "by_op": {
+   "add": 4,
+   "begin": 1,
+   "emit": 1,
+   "link": 3,
+   "lookup": 5,
+   "open_cross": 3,
+   "read": 6,
+   "read_sentence": 1,
+   "seat": 11,
+   "status": 2,
+   "unlink": 1,
+   "unseat": 6
+  },
+  "emit_attempts": 1,
+  "model_rows": 44,
+  "rows": 46
+ },
+ "output_text": "サンゴーカメラ1981年にに設立",
+ "refusals": {
+  "seat_occupied": 1,
+  "unit_already_seated": 1
+ },
+ "schema": "loom-result-1",
+ "score": {
+  "abstain_type": null,
+  "answer_line": null,
+  "base": "I2-034",
+  "chars": {
+   "constructed": 0,
+   "foundation": 1,
+   "layout": 0,
+   "record": 15
+  },
+  "control": false,
+  "correct": true,
+  "excess_chars": 11,
+  "hit_record_text": true,
+  "hits_text": true,
+  "hits_words": true,
+  "kind": "answerable",
+  "mode": "record_only",
+  "note": "",
+  "outcome": "emitted",
+  "output_sha": "7032f9249deccc4cac0e4df886b49f63c9e905c2fe78112f78605bba4523da9f",
+  "replay_verified": true,
+  "share_permille": {
+   "constructed": 0,
+   "foundation": 62,
+   "layout": 0,
+   "record": 937
+  },
+  "stability": [
+   {
+    "cid": "c1",
+    "improving": [],
+    "key": [
+     0,
+     0,
+     0
+    ],
+    "moves_tested": 0,
+    "status": "trivially_stable",
+    "tier": "RUN"
+   },
+   {
+    "cid": "c2",
+    "improving": [],
+    "key": [
+     1,
+     1,
+     0
+    ],
+    "moves_tested": 6,
+    "status": "stable",
+    "tier": "RUN"
+   }
+  ],
+  "status": "hit",
+  "task_id": "bank2/I2-034.record_only",
+  "text": "サンゴーカメラ1981年にに設立",
+  "verify_status": "OK"
+ },
+ "self_corrections": {
+  "counts": {
+   "plan_change_after_empty": 0,
+   "recovery_after_refusal": 2,
+   "refusals_recoverable": 2,
+   "unseat_swap_before_close": 6
+  },
+  "plan_change_after_empty": [],
+  "recovery_after_refusal": [
+   {
+    "i": 17,
+    "op": "seat",
+    "refusal": "unit_already_seated"
+   },
+   {
+    "i": 25,
+    "op": "seat",
+    "refusal": "seat_occupied"
+   }
+  ],
+  "refusals_recoverable": 2,
+  "unseat_swap_before_close": [
+   {
+    "i": 18,
+    "op": "unseat"
+   },
+   {
+    "i": 24,
+    "op": "unseat"
+   },
+   {
+    "i": 31,
+    "op": "unseat"
+   },
+   {
+    "i": 32,
+    "op": "unseat"
+   },
+   {
+    "i": 36,
+    "op": "unseat"
+   },
+   {
+    "i": 40,
+    "op": "unseat"
+   }
+  ]
+ },
+ "t_loom_34": "unchecked",
+ "task_id": "bank2/I2-034.record_only",
+ "wall": {
+  "driver_ns": 25158255791,
+  "ledger_ns": 25158136875
+ }
+}

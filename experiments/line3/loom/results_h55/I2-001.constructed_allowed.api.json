@@ -1,0 +1,239 @@
+{
+ "abandoned": [],
+ "annotated": [
+  {
+   "adhesion": {
+    "n": 2,
+    "particle": "は"
+   },
+   "cid": "c2",
+   "kind": "record",
+   "prov": {
+    "n": 2,
+    "tier": "RUN"
+   },
+   "s": "ハッシュテーブル",
+   "seat": "centre",
+   "tier": "RUN",
+   "uid": "u1"
+  },
+  {
+   "cid": "c2",
+   "kind": "foundation",
+   "prov": {
+    "kind": "foundation",
+    "ratio": "233/377",
+    "seats_sha": "a2083d4536377ac0b8381db5df6d0ba6ebcc6d20ec5d16f80f34f74fa802a5d7"
+   },
+   "s": "は",
+   "seat": "centre"
+  },
+  {
+   "cid": "c1",
+   "kind": "record",
+   "prov": {
+    "n": 1,
+    "tier": "RUN"
+   },
+   "s": "連想配列",
+   "seat": "centre",
+   "tier": "RUN",
+   "uid": "u2"
+  }
+ ],
+ "answer_view": {
+  "excess_chars": null,
+  "hit_record_text": false,
+  "hits_text": false
+ },
+ "base": "I2-001",
+ "closing": {
+  "i": 18,
+  "op": "emit",
+  "status": "emitted",
+  "type": null
+ },
+ "control": false,
+ "control_note": null,
+ "declared_model": "claude-haiku-5-5",
+ "driver": "api",
+ "driver_report": {
+  "calls_skipped_after_close": 0,
+  "control_text_chars": null,
+  "ended": "closed",
+  "error": null,
+  "response_models": [
+   "claude-haiku-5-5"
+  ],
+  "stop_reasons": [
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use"
+  ],
+  "system_prompt_sha256": "7d261a6c27f59cce14644e1ae070456ea8c87079797b97b06caf6b23523a80d9",
+  "text_blocks_dropped": 0,
+  "thinking_dropped": {
+   "chars": 0,
+   "n": 0,
+   "sha256": []
+  },
+  "tool_calls": 17,
+  "tool_choice": {
+   "type": "any"
+  },
+  "tool_less_turns": 0,
+  "tools": [
+   "lookup",
+   "read_sentence",
+   "add",
+   "open_cross",
+   "seat",
+   "seat_run",
+   "unseat",
+   "swap",
+   "extend",
+   "topic",
+   "set_depth",
+   "link",
+   "unlink",
+   "read",
+   "emit",
+   "abstain",
+   "status",
+   "done"
+  ],
+  "turns": 9
+ },
+ "footnotes": {
+  "hits_words": "hits_words (the gold inside ONE record unit; `score.hits_words`) is false by construction for every multi-unit answer (ハッシュ表, キューバの太陽, カールマルクス, 1981年); it is not a correctness column"
+ },
+ "free_text_dropped": {
+  "chars": 0,
+  "n": 0,
+  "sha256": []
+ },
+ "harness_meta": [
+  {
+   "agent_definition_sha": "7d261a6c27f59cce14644e1ae070456ea8c87079797b97b06caf6b23523a80d9",
+   "driver": "L2-api",
+   "requested_model": "claude-haiku-5-5"
+  },
+  {
+   "response_model": "claude-haiku-5-5"
+  }
+ ],
+ "ledger": "experiments/line3/loom/runs_h55/I2-001.constructed_allowed.api/ops.jsonl",
+ "ledger_head": "1cd80cf96a53a725ec392e92d8869a187a2d08a2a84fb08c9deb02b4747a0472",
+ "mode": "constructed_allowed",
+ "model_result": true,
+ "op_counts": {
+  "by_class": {
+   "emit_attempts": 1,
+   "lookups": 6,
+   "ops": 9,
+   "other": 1,
+   "reads": 1
+  },
+  "by_op": {
+   "add": 2,
+   "begin": 1,
+   "emit": 1,
+   "link": 2,
+   "lookup": 4,
+   "open_cross": 2,
+   "read": 1,
+   "read_sentence": 2,
+   "seat": 2,
+   "topic": 1
+  },
+  "emit_attempts": 1,
+  "model_rows": 18,
+  "rows": 20
+ },
+ "output_text": "ハッシュテーブルは連想配列",
+ "refusals": {},
+ "schema": "loom-result-1",
+ "score": {
+  "abstain_type": null,
+  "answer_line": null,
+  "base": "I2-001",
+  "chars": {
+   "constructed": 0,
+   "foundation": 1,
+   "layout": 0,
+   "record": 12
+  },
+  "control": false,
+  "correct": false,
+  "excess_chars": null,
+  "hit_record_text": false,
+  "hits_text": false,
+  "hits_words": false,
+  "kind": "answerable",
+  "mode": "constructed_allowed",
+  "note": "",
+  "outcome": "emitted",
+  "output_sha": "21391e650e1c03a159c5c1e8377e104dcc75bc3dfda0142dab3ae35170c478aa",
+  "replay_verified": true,
+  "share_permille": {
+   "constructed": 0,
+   "foundation": 76,
+   "layout": 0,
+   "record": 923
+  },
+  "stability": [
+   {
+    "cid": "c2",
+    "improving": [],
+    "key": [
+     0,
+     0,
+     466
+    ],
+    "moves_tested": 0,
+    "status": "trivially_stable",
+    "tier": "RUN"
+   },
+   {
+    "cid": "c1",
+    "improving": [],
+    "key": [
+     0,
+     0,
+     0
+    ],
+    "moves_tested": 0,
+    "status": "trivially_stable",
+    "tier": "RUN"
+   }
+  ],
+  "status": "miss",
+  "task_id": "bank2/I2-001.constructed_allowed",
+  "text": "ハッシュテーブルは連想配列",
+  "verify_status": "OK"
+ },
+ "self_corrections": {
+  "counts": {
+   "plan_change_after_empty": 0,
+   "recovery_after_refusal": 0,
+   "refusals_recoverable": 0,
+   "unseat_swap_before_close": 0
+  },
+  "plan_change_after_empty": [],
+  "recovery_after_refusal": [],
+  "refusals_recoverable": 0,
+  "unseat_swap_before_close": []
+ },
+ "t_loom_34": "unchecked",
+ "task_id": "bank2/I2-001.constructed_allowed",
+ "wall": {
+  "driver_ns": 9597777167,
+  "ledger_ns": 9597601792
+ }
+}

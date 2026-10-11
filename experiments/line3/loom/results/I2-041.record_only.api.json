@@ -1,0 +1,242 @@
+{
+ "abandoned": [],
+ "annotated": [
+  {
+   "adhesion": {
+    "n": 2,
+    "particle": "の"
+   },
+   "cid": "c1",
+   "kind": "record",
+   "prov": {
+    "n": 3,
+    "tier": "RUN"
+   },
+   "s": "キューバ",
+   "seat": "+x:0",
+   "tier": "RUN",
+   "uid": "u1"
+  },
+  {
+   "cid": "c1",
+   "kind": "foundation",
+   "prov": {
+    "arm": "+x",
+    "kind": "foundation",
+    "ratio": "144/377",
+    "seats_sha": "a2083d4536377ac0b8381db5df6d0ba6ebcc6d20ec5d16f80f34f74fa802a5d7"
+   },
+   "s": "の",
+   "seat": "+x:1"
+  },
+  {
+   "cid": "c1",
+   "kind": "record",
+   "prov": {
+    "n": 2,
+    "tier": "RUN"
+   },
+   "s": "太陽",
+   "seat": "centre",
+   "tier": "RUN",
+   "uid": "u2"
+  }
+ ],
+ "answer_view": {
+  "excess_chars": 0,
+  "hit_record_text": true,
+  "hits_text": true
+ },
+ "base": "I2-041",
+ "closing": {
+  "i": 17,
+  "op": "emit",
+  "status": "emitted",
+  "type": null
+ },
+ "control": false,
+ "control_note": null,
+ "declared_model": "claude-haiku-4-5-20251001",
+ "driver": "api",
+ "driver_report": {
+  "calls_skipped_after_close": 0,
+  "control_text_chars": null,
+  "ended": "closed",
+  "error": null,
+  "response_models": [
+   "claude-haiku-4-5-20251001"
+  ],
+  "stop_reasons": [
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use"
+  ],
+  "system_prompt_sha256": "55e3286d786ba2b0238cd879fc80cc61570d5c62893c1c5b0c17c04b3c390f9e",
+  "text_blocks_dropped": 0,
+  "thinking_dropped": {
+   "chars": 0,
+   "n": 0,
+   "sha256": []
+  },
+  "tool_calls": 16,
+  "tool_choice": {
+   "type": "any"
+  },
+  "tool_less_turns": 0,
+  "tools": [
+   "lookup",
+   "read_sentence",
+   "add",
+   "open_cross",
+   "seat",
+   "seat_run",
+   "unseat",
+   "swap",
+   "extend",
+   "topic",
+   "set_depth",
+   "link",
+   "unlink",
+   "read",
+   "emit",
+   "abstain",
+   "status",
+   "done"
+  ],
+  "turns": 9
+ },
+ "footnotes": {
+  "hits_words": "hits_words (the gold inside ONE record unit; `score.hits_words`) is false by construction for every multi-unit answer (ハッシュ表, キューバの太陽, カールマルクス, 1981年); it is not a correctness column"
+ },
+ "free_text_dropped": {
+  "chars": 0,
+  "n": 0,
+  "sha256": []
+ },
+ "harness_meta": [
+  {
+   "agent_definition_sha": "55e3286d786ba2b0238cd879fc80cc61570d5c62893c1c5b0c17c04b3c390f9e",
+   "driver": "L2-api",
+   "requested_model": "claude-haiku-4-5-20251001"
+  },
+  {
+   "response_model": "claude-haiku-4-5-20251001"
+  }
+ ],
+ "ledger": "experiments/line3/loom/runs/I2-041.record_only.api/ops.jsonl",
+ "ledger_head": "b14f4fd96cf52093f114ab9df347950b3ba7e6a6476157194724ead133508f5a",
+ "mode": "record_only",
+ "model_result": true,
+ "op_counts": {
+  "by_class": {
+   "emit_attempts": 1,
+   "lookups": 7,
+   "ops": 7,
+   "other": 1,
+   "reads": 1
+  },
+  "by_op": {
+   "add": 3,
+   "begin": 1,
+   "emit": 1,
+   "link": 1,
+   "lookup": 6,
+   "open_cross": 1,
+   "read": 1,
+   "read_sentence": 1,
+   "seat": 1,
+   "seat_run": 1
+  },
+  "emit_attempts": 1,
+  "model_rows": 17,
+  "rows": 19
+ },
+ "output_text": "キューバの太陽",
+ "refusals": {
+  "not_a_record": 1
+ },
+ "schema": "loom-result-1",
+ "score": {
+  "abstain_type": null,
+  "answer_line": null,
+  "base": "I2-041",
+  "chars": {
+   "constructed": 0,
+   "foundation": 1,
+   "layout": 0,
+   "record": 6
+  },
+  "control": false,
+  "correct": true,
+  "excess_chars": 0,
+  "hit_record_text": true,
+  "hits_text": true,
+  "hits_words": false,
+  "kind": "answerable",
+  "mode": "record_only",
+  "note": "",
+  "outcome": "emitted",
+  "output_sha": "6c2e7f9480a59f02116f8d04ce5bdb4efd384d784f8f0d64283fc18e99eaf750",
+  "replay_verified": true,
+  "share_permille": {
+   "constructed": 0,
+   "foundation": 142,
+   "layout": 0,
+   "record": 857
+  },
+  "stability": [
+   {
+    "cid": "c1",
+    "improving": [],
+    "key": [
+     1,
+     1,
+     288
+    ],
+    "moves_tested": 6,
+    "status": "stable",
+    "tier": "RUN"
+   }
+  ],
+  "status": "hit",
+  "task_id": "bank2/I2-041.record_only",
+  "text": "キューバの太陽",
+  "verify_status": "OK"
+ },
+ "self_corrections": {
+  "counts": {
+   "plan_change_after_empty": 1,
+   "recovery_after_refusal": 1,
+   "refusals_recoverable": 1,
+   "unseat_swap_before_close": 0
+  },
+  "plan_change_after_empty": [
+   {
+    "i": 2,
+    "next_i": 3,
+    "next_op": "lookup"
+   }
+  ],
+  "recovery_after_refusal": [
+   {
+    "i": 10,
+    "op": "add",
+    "refusal": "not_a_record"
+   }
+  ],
+  "refusals_recoverable": 1,
+  "unseat_swap_before_close": []
+ },
+ "t_loom_34": "unchecked",
+ "task_id": "bank2/I2-041.record_only",
+ "wall": {
+  "driver_ns": 11717360166,
+  "ledger_ns": 11716867167
+ }
+}

@@ -1,0 +1,215 @@
+{
+ "abandoned": [],
+ "annotated": null,
+ "answer_view": {
+  "excess_chars": null,
+  "hit_record_text": null,
+  "hits_text": null
+ },
+ "base": "I2-008",
+ "closing": {
+  "i": 30,
+  "op": "abstain",
+  "status": "abstained",
+  "type": "no_record"
+ },
+ "control": false,
+ "control_note": null,
+ "declared_model": "claude-haiku-5-5",
+ "driver": "api",
+ "driver_report": {
+  "calls_skipped_after_close": 0,
+  "control_text_chars": null,
+  "ended": "closed",
+  "error": null,
+  "response_models": [
+   "claude-haiku-5-5"
+  ],
+  "stop_reasons": [
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use"
+  ],
+  "system_prompt_sha256": "55e3286d786ba2b0238cd879fc80cc61570d5c62893c1c5b0c17c04b3c390f9e",
+  "text_blocks_dropped": 0,
+  "thinking_dropped": {
+   "chars": 0,
+   "n": 0,
+   "sha256": []
+  },
+  "tool_calls": 29,
+  "tool_choice": {
+   "type": "any"
+  },
+  "tool_less_turns": 0,
+  "tools": [
+   "lookup",
+   "read_sentence",
+   "add",
+   "open_cross",
+   "seat",
+   "seat_run",
+   "unseat",
+   "swap",
+   "extend",
+   "topic",
+   "set_depth",
+   "link",
+   "unlink",
+   "read",
+   "emit",
+   "abstain",
+   "status",
+   "done"
+  ],
+  "turns": 14
+ },
+ "footnotes": {
+  "hits_words": "hits_words (the gold inside ONE record unit; `score.hits_words`) is false by construction for every multi-unit answer (ハッシュ表, キューバの太陽, カールマルクス, 1981年); it is not a correctness column"
+ },
+ "free_text_dropped": {
+  "chars": 0,
+  "n": 0,
+  "sha256": []
+ },
+ "harness_meta": [
+  {
+   "agent_definition_sha": "55e3286d786ba2b0238cd879fc80cc61570d5c62893c1c5b0c17c04b3c390f9e",
+   "driver": "L2-api",
+   "requested_model": "claude-haiku-5-5"
+  },
+  {
+   "response_model": "claude-haiku-5-5"
+  }
+ ],
+ "ledger": "experiments/line3/loom/runs_h55/I2-008.record_only.api/ops.jsonl",
+ "ledger_head": "efc1431e43689e1b7f1f1ee3a23fd45f4426163029bfa4738600d0148d816b13",
+ "mode": "record_only",
+ "model_result": true,
+ "op_counts": {
+  "by_class": {
+   "lookups": 24,
+   "ops": 3,
+   "other": 2,
+   "reads": 1
+  },
+  "by_op": {
+   "abstain": 1,
+   "add": 3,
+   "begin": 1,
+   "lookup": 21,
+   "read": 1,
+   "read_sentence": 3
+  },
+  "emit_attempts": 0,
+  "model_rows": 30,
+  "rows": 32
+ },
+ "output_text": null,
+ "refusals": {},
+ "schema": "loom-result-1",
+ "score": {
+  "abstain_type": "no_record",
+  "answer_line": null,
+  "base": "I2-008",
+  "chars": {},
+  "control": false,
+  "correct": false,
+  "excess_chars": null,
+  "hit_record_text": null,
+  "hits_text": null,
+  "hits_words": null,
+  "kind": "answerable",
+  "mode": "record_only",
+  "note": "an answerable question was abstained",
+  "outcome": "abstained",
+  "output_sha": null,
+  "replay_verified": true,
+  "share_permille": {},
+  "stability": null,
+  "status": "abstained_wrong",
+  "task_id": "bank2/I2-008.record_only",
+  "text": null,
+  "verify_status": "OK"
+ },
+ "self_corrections": {
+  "counts": {
+   "plan_change_after_empty": 10,
+   "recovery_after_refusal": 0,
+   "refusals_recoverable": 0,
+   "unseat_swap_before_close": 0
+  },
+  "plan_change_after_empty": [
+   {
+    "i": 3,
+    "next_i": 4,
+    "next_op": "lookup"
+   },
+   {
+    "i": 6,
+    "next_i": 7,
+    "next_op": "lookup"
+   },
+   {
+    "i": 8,
+    "next_i": 9,
+    "next_op": "lookup"
+   },
+   {
+    "i": 10,
+    "next_i": 11,
+    "next_op": "read_sentence"
+   },
+   {
+    "i": 13,
+    "next_i": 14,
+    "next_op": "lookup"
+   },
+   {
+    "i": 21,
+    "next_i": 22,
+    "next_op": "lookup"
+   },
+   {
+    "i": 24,
+    "next_i": 25,
+    "next_op": "lookup"
+   },
+   {
+    "i": 26,
+    "next_i": 27,
+    "next_op": "lookup"
+   },
+   {
+    "i": 27,
+    "next_i": 28,
+    "next_op": "lookup"
+   },
+   {
+    "i": 28,
+    "next_i": 29,
+    "next_op": "lookup"
+   }
+  ],
+  "recovery_after_refusal": [],
+  "refusals_recoverable": 0,
+  "unseat_swap_before_close": []
+ },
+ "t_loom_34": "unchecked",
+ "task_id": "bank2/I2-008.record_only",
+ "wall": {
+  "driver_ns": 18120214000,
+  "ledger_ns": 18119996834
+ }
+}

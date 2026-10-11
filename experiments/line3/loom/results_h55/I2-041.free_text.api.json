@@ -1,0 +1,140 @@
+{
+ "abandoned": [
+  "control_free_text"
+ ],
+ "annotated": null,
+ "answer_view": {
+  "excess_chars": 7,
+  "hit_record_text": null,
+  "hits_text": true
+ },
+ "base": "I2-041",
+ "closing": null,
+ "control": true,
+ "control_note": "FREE-TEXT CONTROL: no loom; the answer line of the final text is the output; for comparison with the loom only",
+ "declared_model": "claude-haiku-5-5",
+ "driver": "api",
+ "driver_report": {
+  "calls_skipped_after_close": 0,
+  "control_text_chars": 14,
+  "ended": "control_answer",
+  "error": null,
+  "response_models": [
+   "claude-haiku-5-5"
+  ],
+  "stop_reasons": [
+   "tool_use",
+   "end_turn"
+  ],
+  "system_prompt_sha256": "2f9091d5534401a27f7fd00d6fa4a522c3cfee609dae66a60fe9125e0ee3cfa3",
+  "text_blocks_dropped": 0,
+  "thinking_dropped": {
+   "chars": 0,
+   "n": 1,
+   "sha256": [
+    "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+   ]
+  },
+  "tool_calls": 2,
+  "tool_choice": {
+   "type": "auto"
+  },
+  "tool_less_turns": 0,
+  "tools": [
+   "lookup",
+   "read_sentence"
+  ],
+  "turns": 2
+ },
+ "footnotes": {
+  "hits_words": "hits_words (the gold inside ONE record unit; `score.hits_words`) is false by construction for every multi-unit answer (ハッシュ表, キューバの太陽, カールマルクス, 1981年); it is not a correctness column"
+ },
+ "free_text_dropped": {
+  "chars": 0,
+  "n": 0,
+  "sha256": []
+ },
+ "harness_meta": [
+  {
+   "agent_definition_sha": "2f9091d5534401a27f7fd00d6fa4a522c3cfee609dae66a60fe9125e0ee3cfa3",
+   "driver": "L2-api",
+   "requested_model": "claude-haiku-5-5"
+  },
+  {
+   "response_model": "claude-haiku-5-5"
+  }
+ ],
+ "ledger": "experiments/line3/loom/runs_h55/I2-041.free_text.api/ops.jsonl",
+ "ledger_head": "979167be1fd010d7f4c2c8150bba2f6b2cb3bb498efe2dbd4d348668edebfee4",
+ "mode": "free_text",
+ "model_result": true,
+ "op_counts": {
+  "by_class": {
+   "lookups": 2,
+   "other": 1
+  },
+  "by_op": {
+   "begin": 1,
+   "lookup": 2
+  },
+  "emit_attempts": 0,
+  "model_rows": 3,
+  "rows": 7
+ },
+ "output_text": "「キューバの太陽」という意味",
+ "refusals": {},
+ "schema": "loom-result-1",
+ "score": {
+  "abstain_type": null,
+  "answer_line": "「キューバの太陽」という意味",
+  "base": "I2-041",
+  "chars": {
+   "constructed": 0,
+   "foundation": 0,
+   "layout": 0,
+   "record": 0
+  },
+  "control": true,
+  "correct": true,
+  "excess_chars": 7,
+  "hit_record_text": null,
+  "hits_text": true,
+  "hits_words": null,
+  "kind": "answerable",
+  "mode": "free_text",
+  "note": "CONTROL (free text, no loom): the answer line IS the output; for comparison with the loom only",
+  "outcome": "emitted",
+  "output_sha": null,
+  "replay_verified": true,
+  "share_permille": {},
+  "stability": null,
+  "status": "hit",
+  "task_id": "bank2/I2-041.free_text",
+  "text": "「キューバの太陽」という意味",
+  "verify_status": "OK"
+ },
+ "self_corrections": {
+  "counts": {
+   "plan_change_after_empty": 1,
+   "recovery_after_refusal": 0,
+   "refusals_recoverable": 0,
+   "unseat_swap_before_close": 0
+  },
+  "plan_change_after_empty": [
+   {
+    "i": 2,
+    "next_i": 3,
+    "next_op": "lookup"
+   }
+  ],
+  "recovery_after_refusal": [],
+  "refusals_recoverable": 0,
+  "unseat_swap_before_close": []
+ },
+ "t_loom_34": "unchecked",
+ "task_id": "bank2/I2-041.free_text",
+ "wall": {
+  "driver_ns": 2441352750,
+  "ledger_ns": 2443550084
+ }
+}
