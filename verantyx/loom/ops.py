@@ -19,6 +19,7 @@ reaches a row (design 5.1).
 """
 from __future__ import annotations
 
+import keyword
 import platform
 import re
 import sys
@@ -30,6 +31,7 @@ from verantyx.line3 import foundation as fd
 from verantyx.loom import LOOM_VERSION
 from verantyx.loom import code as codelib
 from verantyx.loom import read as rd
+from verantyx.loom.code import CodeIndex
 from verantyx.loom.corpus import Corpus
 from verantyx.loom.state import (ABSTAIN_TYPES, ALL_TIERS, ARG_STR_CAP, ARGS_CHARS_CAP, AXES, CAPS, CENTRE, CODE, CODE_TIER, CONSTRUCTED, GUARD_CAPS, LANGS, MODES,
                                  PROSE, PROSE_TIERS, RECORD, LoomCross, LoomState, Refuse, canonical, fmt_seat, parse_seat, sha256_text)
@@ -92,16 +94,61 @@ def normalize_task(d: dict) -> dict:
         if d.get(k) is not None:
             if not isinstance(d[k], str):
                 raise ValueError("task: %r must be a path string" % k)
+            if k == "fixture" and d["lang"] != CODE:        # L-LOOM-79: a prose task with a fixture built a CODE index (header, begin and replay all branch on it)
+                raise ValueError("task: fixture belongs to a code task")
             out[k] = d[k]
     if d.get("context_names") is not None:
-        out["context_names"] = list(d["context_names"])
+        cn = d["context_names"]
+        if d["lang"] != CODE:
+            raise ValueError("task: context_names belong to a code task")
+        if not (isinstance(cn, list) and all(isinstance(x, str) and x.isidentifier() and not keyword.iskeyword(x) for x in cn)):
+            raise ValueError("task: context_names is a list of identifiers")
+        out["context_names"] = list(cn)
+    if d.get("target") is not None or d.get("tests") is not None:
+        if d["lang"] != CODE:
+            raise ValueError("task: target / tests belong to a code task")
+        if d.get("target") is not None:
+            tg = d["target"]
+            if not (isinstance(tg, dict) and set(tg) == {"file"} and _relpath(tg["file"])):
+                raise ValueError("task: target is {\"file\": <relative .py path in the fixture>}")
+            out["target"] = {"file": tg["file"]}
+        if d.get("tests") is not None:
+            ts = d["tests"]
+            if not (isinstance(ts, list) and ts and all(_relpath(t) for t in ts)):
+                raise ValueError("task: tests is a non-empty list of relative .py paths in the fixture")
+            out["tests"] = list(ts)
     return out
+
+
+def _relpath(p: Any) -> bool:
+    """A relative posix path of a .py file, no `..`, no absolute part, no backslash, and NOT starting with `-` (L-LOOM-80: the name goes
+    into pytest's argv, where `-x` or `--pyargs` would be an option): the fixture is addressed only by such names."""
+    return (isinstance(p, str) and p.endswith(".py") and not p.startswith(("/", "-")) and "\\" not in p and "\x00" not in p
+            and all(part not in ("", ".", "..") for part in p.split("/")))
+
+
+def check_task_against_index(task: dict, index: CodeIndex) -> Optional[dict]:
+    """L-LOOM-80: what a code task names must exist in the fixture it names.  None, or {"refusal", "detail"} for `begin`:
+    `target_not_in_fixture {file}` (the target must be a file the index holds, i.e. a non-test .py of the fixture) and
+    `unknown_context_name {name}` (an explicit context name must be a module-level name of some module of the fixture)."""
+    tg = task.get("target")
+    if tg is not None and tg["file"] not in index.file_sha:
+        return {"refusal": "target_not_in_fixture", "detail": {"file": tg["file"]}}
+    known = {n for names in index.top.values() for n in names}
+    for name in task.get("context_names", ()):
+        if name not in known:
+            return {"refusal": "unknown_context_name", "detail": {"name": name}}
+    return None
 
 
 def task_view(task: dict) -> dict:
     """What `begin` returns and what the row stores: the task WITHOUT paths (no absolute path in a hashed row) and with the caps."""
-    return {"task_id": task["task_id"], "text": task["text"], "lang": task["lang"], "mode": task["mode"], "tiers": list(task["tiers"]),
+    view = {"task_id": task["task_id"], "text": task["text"], "lang": task["lang"], "mode": task["mode"], "tiers": list(task["tiers"]),
             "caps": dict(CAPS[task["lang"]])}
+    for k in ("target", "tests", "context_names"):         # code only, and only when the task has them: a prose row 0 is unchanged
+        if k in task:
+            view[k] = task[k]
+    return view
 
 
 def refusal(type: str, detail: Optional[dict] = None) -> dict:
@@ -159,10 +206,12 @@ def _args(a: dict, spec: Dict[str, Tuple[Any, bool]]) -> dict:
 # the run
 # ------------------------------------------------------------------------------------------------------------
 class Run:
-    def __init__(self, corpus: Corpus, task: dict, model: str, run_id: str, stability_mode: str = rd.DEFAULT_STABILITY) -> None:
+    def __init__(self, corpus: Corpus, task: dict, model: str, run_id: str, stability_mode: str = rd.DEFAULT_STABILITY,
+                 code_index: Optional[CodeIndex] = None) -> None:
         if stability_mode not in rd.STABILITY_MODES:
             raise ValueError("stability must be one of %s" % (rd.STABILITY_MODES,))
         self.corpus = corpus
+        self.code_index = code_index                       # the CODE record index of the task's fixture (None: prose, or a code task with no fixture)
         self.task = normalize_task(task)
         self.model = model
         self.run_id = run_id
@@ -180,7 +229,15 @@ class Run:
         return {"loom_version": LOOM_VERSION, "python_version": "%d.%d.%d" % tuple(sys.version_info[:3]),
                 "python_implementation": platform.python_implementation(), "corpus_sha": self.corpus.corpus_sha,
                 "space_sha": self.corpus.space_sha, "adhesion_sha": dict(self.corpus.adhesion_sha), "seats_sha": self.corpus.seats_sha,
-                "code_index_sha": None, "stability_mode": self.stability_mode, "declared_model": self.model}
+                "code_index_sha": self.code_index.sha if self.code_index is not None else None, "stability_mode": self.stability_mode, "declared_model": self.model}
+
+    def context_names(self) -> List[str]:
+        """The names a code thread may use without defining them: the task's `context_names` and the top-level names of the target file
+        (the emitted text is appended at the end of it, so every one of them is earlier)."""
+        names = set(self.task.get("context_names", ()))
+        if self.code_index is not None and "target" in self.task:
+            names.update(self.code_index.top_names(self.task["target"]["file"]))
+        return sorted(names)
 
     def begin_body(self) -> dict:
         res = {"ok": True, "run_id": self.run_id, "task": task_view(self.task), "rules": RULES, "header": self.header()}
@@ -314,8 +371,8 @@ def _task_tier(run: Run, tier: str) -> str:
         raise Refuse("bad_args", {"field": "tier", "reason": "one of %s" % (list(ALL_TIERS),)})
     if tier not in run.task["tiers"]:
         raise Refuse("tier_not_in_task", {"tier": tier, "tiers": list(run.task["tiers"])})
-    if tier == CODE_TIER:
-        raise Refuse("code_index_unavailable", {"tier": tier, "reason": "the CODE record index is ticket LOOM-e"})
+    if tier == CODE_TIER and run.code_index is None:
+        raise Refuse("code_index_unavailable", {"tier": tier, "reason": "the task names no fixture, so there is no CODE record index"})
     return tier
 
 
@@ -324,10 +381,13 @@ def h_lookup(run: Run, a: dict, i: int) -> dict:
     text, tier = a["text"], a["tier"]
     if not 1 <= len(text) <= 32:
         raise Refuse("bad_args", {"field": "text", "reason": "1 to 32 characters"})
+    if run.code_index is not None and tier in (CODE_TIER, "any"):
+        m = run.code_index.match(text)
+        return {"ok": True, "matches": [m] if m else []}
     if tier == "any":
         tiers = [t for t in PROSE_TIERS if t in run.task["tiers"]]
         if not tiers:
-            raise Refuse("code_index_unavailable", {"tier": CODE_TIER, "reason": "the CODE record index is ticket LOOM-e"})
+            raise Refuse("code_index_unavailable", {"tier": CODE_TIER, "reason": "the task names no fixture, so there is no CODE record index"})
     else:
         tiers = [_task_tier(run, tier)]
     matches = []
@@ -342,10 +402,17 @@ def h_lookup(run: Run, a: dict, i: int) -> dict:
 def h_read_sentence(run: Run, a: dict, i: int) -> dict:
     a = _args(a, {"sid": (int, True)})
     sid = a["sid"]
+    if run.code_index is not None:
+        if not 0 <= sid < run.code_index.n_sentences:
+            raise Refuse("unknown_sid", {"sid": sid, "n": run.code_index.n_sentences})
+        out = dict(run.code_index.sentence(sid))
+        out["units"] = {CODE_TIER: list(run.code_index.sentences[sid]["tokens"])}
+        out["ok"] = True
+        return out
     if not 0 <= sid < run.corpus.n_sentences:
         raise Refuse("unknown_sid", {"sid": sid, "n": run.corpus.n_sentences})
     if CODE_TIER in run.task["tiers"]:
-        raise Refuse("code_index_unavailable", {"reason": "the CODE record index is ticket LOOM-e"})
+        raise Refuse("code_index_unavailable", {"reason": "the task names no fixture, so there is no CODE record index"})
     units = run.corpus.units_of(sid)
     out = dict(run.corpus.sentence(sid))
     out["units"] = {t: units[t] for t in PROSE_TIERS if t in run.task["tiers"]}
@@ -374,6 +441,11 @@ def h_add(run: Run, a: dict, i: int) -> dict:
         if "tier" not in a:
             raise Refuse("bad_args", {"field": "tier", "reason": "required for a record unit"})
         tier = _task_tier(run, a["tier"])
+        if tier == CODE_TIER:
+            if run.code_index.occurrences(a["text"]) is None:
+                raise Refuse("not_a_record", {"text": a["text"], "tier": tier, "in_tiers": []})
+            u = st.new_unit(a["text"], RECORD, tier, run.code_index.prov(a["text"]))
+            return {"ok": True, "uid": u.uid, "kind": u.kind, "surface": u.surface, "prov": u.prov}
         post = run.corpus.postings(tier, a["text"])
         if post is None:
             raise Refuse("not_a_record", {"text": a["text"], "tier": tier, "in_tiers": run.corpus.tiers_holding(a["text"])})
@@ -390,6 +462,10 @@ def h_add(run: Run, a: dict, i: int) -> dict:
             held = run.corpus.tiers_holding(t)
             if held:
                 raise Refuse("constructed_shadows_record", {"text": t, "tiers": held})
+        elif run.code_index is not None:                  # code: a token the fixture has must be added as a record (its provenance cannot be hidden)
+            occ = run.code_index.occurrences(t)
+            if occ is not None:
+                raise Refuse("constructed_shadows_record", {"text": t, "tiers": [CODE_TIER], "n": len(occ)})
         u = st.new_unit(t, CONSTRUCTED, None, {"by": run.model, "at": i})
         st.counters["constructed"] += 1
     else:

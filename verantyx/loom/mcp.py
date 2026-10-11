@@ -24,10 +24,11 @@ from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional
 
 from verantyx.ledger_events import LedgerError, canonical, redact
+from verantyx.loom import fixture as fx
 from verantyx.loom import ledger as lg
 from verantyx.loom.ledger import SandboxError
 from verantyx.loom.corpus import Corpus
-from verantyx.loom.ops import MODEL_OPS, Run, normalize_task, refusal
+from verantyx.loom.ops import MODEL_OPS, Run, check_task_against_index, normalize_task, refusal
 from verantyx.loom.read import DEFAULT_STABILITY, STABILITY_MODES
 
 _RUN_ID_RX = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$")
@@ -141,9 +142,23 @@ class LoomServer:
             return refusal("bad_run_id", {"run_id": rid if isinstance(rid, str) else None})
         if rdir.exists() or rid in self.runs:
             return refusal("run_exists", {"run_id": rid})
-        run = Run(corpus, task, model, rid, self.stability)
+        index = None
+        if "fixture" in task:                                  # LOOM-code (L-LOOM-70): the CODE record index, read through the sandbox
+            try:
+                index = fx.build_index(task["fixture"], self.sandbox.read_bytes)
+            except SandboxError:
+                return refusal("path_outside_sandbox", {})
+            except (OSError, ValueError):
+                return refusal("fixture_unreadable", {})
+            bad = check_task_against_index(task, index)       # L-LOOM-80: the target file / explicit context names must exist in the fixture
+            if bad is not None:
+                return refusal(bad["refusal"], bad["detail"])
+        run = Run(corpus, task, model, rid, self.stability, index)
         led = lg.Ledger(rdir)
-        led.create({"corpus": str(Path(task["corpus"]).resolve()), "task_id": task_id})
+        meta = {"corpus": str(Path(task["corpus"]).resolve()), "task_id": task_id}
+        if index is not None:
+            meta["fixture"] = str(Path(task["fixture"]).resolve())
+        led.create(meta)
         with led.locked() as lk:
             body = run.begin_body()
             row = lk.append(body, 0)

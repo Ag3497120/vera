@@ -39,7 +39,7 @@ ARM_ORDER: Tuple[str, ...] = tuple(sorted(AXES, key=lambda ax: SPEC.numerator(SP
 CONSTRUCTED_PREFIX = "\u0000C:"                       # L-LOOM-19
 REFUSAL_ORDER: Tuple[str, ...] = (
     "empty_thread", "unlinked_cross", "empty_centre", "leg_gap", "tier_mix", "constructed_forbidden", "unstable_cross",
-    "parse_error", "undefined_name", "import_not_allowed", "unsupported_construct", "layout_changed_tokens", "code_gates_incomplete")
+    "parse_error", "undefined_name", "import_not_allowed", "unsupported_construct", "cross_not_one_statement", "line_cross_mismatch", "layout_changed_tokens")
 KINDS = ("record", "constructed", "foundation", "layout")
 
 
@@ -289,12 +289,15 @@ def evaluate(run) -> dict:
 
     segs: List[dict] = []
     code_lang = any(c.lang == CODE for c in linked)
+    line_cids: List[str] = []                          # code: the cross that printed line i + 1 (a cross with no unit prints nothing)
     for pos, c in enumerate(linked):
         if c.lang == PROSE:
             segs.extend(read_prose(state, c))
         else:
             cs, ok = read_code(state, c)
             segs.extend(cs)
+            if cs:
+                line_cids.append(c.cid)
             if not ok:
                 add({"type": "layout_changed_tokens", "cid": c.cid}, pos)
     text = "".join(s["s"] for s in segs)
@@ -302,7 +305,9 @@ def evaluate(run) -> dict:
         pe = codelib.parse_gate(text)
         if pe is not None:
             add(dict(pe, type="parse_error"))
-        add({"type": "code_gates_incomplete", "missing": list(codelib.GATES_MISSING_IN_CORE)})
+        else:
+            for r in codelib.gate_refusals(text, run.code_index, run.context_names(), line_cids):
+                add(r, state.thread.index(r["cid"]) if "cid" in r else 0)
     annotate(run, segs)
     refusals.sort(key=lambda t: (t[0], t[1]))
     shares = {k: 0 for k in KINDS}

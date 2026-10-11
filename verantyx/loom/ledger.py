@@ -37,6 +37,7 @@ from typing import Callable, Dict, List, Optional, Tuple
 
 from verantyx.ledger_events import GENESIS, LedgerError, canonical
 from verantyx.loom import LOOM_VERSION
+from verantyx.loom import fixture as fx
 from verantyx.loom.corpus import Corpus
 from verantyx.loom.ops import Run, normalize_task
 
@@ -332,7 +333,21 @@ def replay(run_dir, corpus_path: Optional[str] = None, loader: Loader = default_
         out.status, out.mismatch = "INPUTS", "corpus_unreadable"
         return out
     corpus = Corpus.load(data)
-    run = Run(corpus, task, model, run_id, stability)
+    index = None
+    if recorded_header.get("code_index_sha") is not None:        # LOOM-code: rebuild the CODE index from the fixture the run names
+        froot = Ledger(run_dir).read_meta().get("fixture")
+        if not froot:
+            out.status, out.mismatch = "INPUTS", "fixture_unresolved"
+            return out
+        try:
+            index = fx.build_index(froot, loader)
+        except SandboxError:
+            out.status, out.mismatch = "INPUTS", "fixture_outside_sandbox"
+            return out
+        except (OSError, ValueError):
+            out.status, out.mismatch = "INPUTS", "fixture_unreadable"
+            return out
+    run = Run(corpus, task, model, run_id, stability, index)
     mm = header_mismatch(recorded_header, run.header())
     if mm is not None:
         out.status, out.mismatch = "INPUTS", mm
