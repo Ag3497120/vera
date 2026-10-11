@@ -577,6 +577,9 @@ The loom imports `geometry`, `foundation`, `placement` (only `seated_key`, `exte
 
 Order: a → b → c → d → (e, f, h in parallel) → g → i → j → k. LOOM-c needs OP-LOOM-1; LOOM-e needs OP-LOOM-2; LOOM-b needs OP-LOOM-3. All three may be prototyped on the recommended default, labelled as such.
 
+#### LOOM-notes (added 2026-10-11, owner question on 気づき)
+Three layers, never mixed: (1) structural PREVENTION — typed refusals already in the core (definition-first, parse gate, unstable key, constructed in record_only); (2) structural NOTES that do not block — a thread-wide consistency pass at `read`/`emit` producing typed annotations in the `annotated` output and the ledger: `CONFLICT` (two crosses with the same centre whose arm contents contradict within the thread, e.g. 首都 ← 東京 vs 首都 ← 大阪), `UNANCHORED` (a constructed unit seated on an arm whose particle the corpus evidence contradicts), `NO_RECORD` (a lookup returned nothing and the model fell back to a constructed unit at that position); same type family as attest's record/testimony/conflict; (3) the model's own NOTICING — not guaranteed by the structure, only made observable: the ledger exposes self-corrections (unseat/swap before emit, a plan change after an empty lookup, recovery after a refusal). Meter columns for (3): self-correction count and kinds, recovery rate after refusals, against the free-text control. Effort: notes 1 d, meter columns 0.5 d.
+
 ### 12.3 Local decisions fixed by this design (L-LOOM-nn; the implementer copies them into LINE3_LOCAL_DECISIONS `## LOOM`)
 
 | id | decision |
