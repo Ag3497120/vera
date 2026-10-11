@@ -842,7 +842,9 @@ def _plan_read_grammar(seeds, keep, shared, held, q, sq, rq, grammar, read_cap) 
     blocks: Dict[tuple, List[str]] = {}
     for s_ in keep:
         n_o, n_s = held[s_]
-        g = "query_unit" if s_ in q or s_ in sq else "holds_query_unit"
+        # G3-k3 (L-826): under eq_first a cross whose SEED is a stand-in is "a cross that holds a question unit", not "the question unit's own cross": group
+        # holds_query_unit, so the original words' crosses (group query_unit) are always read first.  qcount_first keeps G3-k's group (stand-in seed = query_unit).
+        g = "query_unit" if s_ in q or (s_ in sq and order != "eq_first") else "holds_query_unit"
         rk, reason, kl = rank[s_]
         if order == "eq_first":
             # E_Q first, T7b's own order (the group, then E_Q descending); only inside an exact E_Q tie (integers: counts) the original units held,
@@ -888,7 +890,8 @@ def plan_read(tier: TierSpace, facts: TierFacts, ctx: QueryContext,
     layer's read order of the candidate crosses by the kind of their centre word, supplied by verantyx.line3.wiring; this module imports nothing of
     it), with an attribute `order`:
       "eq_first" (default, owner after G3-k: 「E_Q が先、単位数は同点内」): T7b's own order -- the group (query_unit, holds_query_unit, shares_with_query), then E_Q
-          descending -- and ONLY inside an exact E_Q tie (integer counts) the number of ORIGINAL question units the cross holds (more first), then the number of
+          descending (G3-k3, L-826, 「代役の種は holds_query_unit の群へ」: a cross whose SEED is a stand-in is in holds_query_unit, never in query_unit, so the
+          original words' crosses are read first; E_Q first stays inside each group) -- and ONLY inside an exact E_Q tie (integer counts) the number of ORIGINAL question units the cross holds (more first), then the number of
           stand-in units (ctx.standins), then the grammar kind (rank: the question's slot kind first, then the ladder, tied kinds, none);
       "qcount_first" (G3-k's order, kept): (1) the number of original question units held, then of stand-in units; (2) inside a tie of that count the grammar
           group; (3) inside that the group of T7b, then E_Q descending.
