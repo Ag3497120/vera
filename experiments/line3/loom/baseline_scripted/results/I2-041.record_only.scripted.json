@@ -1,0 +1,167 @@
+{
+ "abandoned": [],
+ "annotated": [
+  {
+   "adhesion": {
+    "n": 2,
+    "particle": "の"
+   },
+   "cid": "c1",
+   "kind": "record",
+   "prov": {
+    "n": 3,
+    "tier": "WORD"
+   },
+   "s": "キューバ",
+   "seat": "+x:0",
+   "tier": "WORD",
+   "uid": "u2"
+  },
+  {
+   "cid": "c1",
+   "kind": "foundation",
+   "prov": {
+    "arm": "+x",
+    "kind": "foundation",
+    "ratio": "144/377",
+    "seats_sha": "a2083d4536377ac0b8381db5df6d0ba6ebcc6d20ec5d16f80f34f74fa802a5d7"
+   },
+   "s": "の",
+   "seat": "+x:1"
+  },
+  {
+   "cid": "c1",
+   "kind": "record",
+   "prov": {
+    "n": 3,
+    "tier": "WORD"
+   },
+   "s": "太陽",
+   "seat": "centre",
+   "tier": "WORD",
+   "uid": "u1"
+  }
+ ],
+ "answer_view": {
+  "excess_chars": 0,
+  "hit_record_text": true,
+  "hits_text": true
+ },
+ "base": "I2-041",
+ "closing": {
+  "i": 10,
+  "op": "emit",
+  "status": "emitted",
+  "type": null
+ },
+ "control": false,
+ "control_note": null,
+ "declared_model": "scripted-weaver",
+ "driver": "scripted",
+ "footnotes": {
+  "hits_words": "hits_words (the gold inside ONE record unit; `score.hits_words`) is false by construction for every multi-unit answer (ハッシュ表, キューバの太陽, カールマルクス, 1981年); it is not a correctness column"
+ },
+ "free_text_dropped": {
+  "chars": 0,
+  "n": 0,
+  "sha256": []
+ },
+ "harness_meta": [
+  {
+   "driver": "scripted",
+   "requested_model": "scripted-weaver"
+  }
+ ],
+ "ledger": "experiments/line3/loom/baseline_scripted/runs/I2-041.record_only.scripted/ops.jsonl",
+ "ledger_head": "a27afb9fb7c2a327e6a35d4c5acbd2025d9c40191ba284ce0568c493dc59325d",
+ "mode": "record_only",
+ "model_result": false,
+ "op_counts": {
+  "by_class": {
+   "emit_attempts": 1,
+   "lookups": 2,
+   "ops": 6,
+   "other": 1
+  },
+  "by_op": {
+   "add": 2,
+   "begin": 1,
+   "emit": 1,
+   "link": 1,
+   "lookup": 2,
+   "open_cross": 1,
+   "seat": 2
+  },
+  "emit_attempts": 1,
+  "model_rows": 10,
+  "rows": 11
+ },
+ "output_text": "キューバの太陽",
+ "refusals": {},
+ "schema": "loom-result-1",
+ "score": {
+  "abstain_type": null,
+  "answer_line": null,
+  "base": "I2-041",
+  "chars": {
+   "constructed": 0,
+   "foundation": 1,
+   "layout": 0,
+   "record": 6
+  },
+  "control": false,
+  "correct": true,
+  "excess_chars": 0,
+  "hit_record_text": true,
+  "hits_text": true,
+  "hits_words": false,
+  "kind": "answerable",
+  "mode": "record_only",
+  "note": "",
+  "outcome": "emitted",
+  "output_sha": "6c2e7f9480a59f02116f8d04ce5bdb4efd384d784f8f0d64283fc18e99eaf750",
+  "replay_verified": true,
+  "share_permille": {
+   "constructed": 0,
+   "foundation": 142,
+   "layout": 0,
+   "record": 857
+  },
+  "stability": [
+   {
+    "cid": "c1",
+    "improving": [],
+    "key": [
+     1,
+     1,
+     288
+    ],
+    "moves_tested": 6,
+    "status": "stable",
+    "tier": "WORD"
+   }
+  ],
+  "status": "hit",
+  "task_id": "bank2/I2-041.record_only",
+  "text": "キューバの太陽",
+  "verify_status": "OK"
+ },
+ "self_corrections": {
+  "counts": {
+   "plan_change_after_empty": 0,
+   "recovery_after_refusal": 0,
+   "refusals_recoverable": 0,
+   "unseat_swap_before_close": 0
+  },
+  "plan_change_after_empty": [],
+  "recovery_after_refusal": [],
+  "refusals_recoverable": 0,
+  "unseat_swap_before_close": []
+ },
+ "t_loom_34": "unchecked",
+ "task_id": "bank2/I2-041.record_only",
+ "wall": {
+  "driver_ns": 6806083,
+  "ledger_ns": 8489041
+ }
+}
