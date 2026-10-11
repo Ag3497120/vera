@@ -261,7 +261,10 @@ def make_anthropic_client():
         import anthropic
     except ImportError as e:
         raise HarnessError("the `anthropic` SDK is not installed (pip install anthropic); the L2 driver is tested with a fake client only") from e
-    from verantyx.loom.keyring import resolve_api_key
+    import importlib.util as _ilu
+    _spec = _ilu.spec_from_file_location("keyring_loom", os.path.join(os.path.dirname(os.path.abspath(__file__)), "keyring_loom.py"))
+    _mod = _ilu.module_from_spec(_spec); _spec.loader.exec_module(_mod)   # outside the loom package: it shells out to `security`
+    resolve_api_key = _mod.resolve_api_key
     key = resolve_api_key()
     if not key:
         raise HarnessError("no API key: set ANTHROPIC_API_KEY or run `python tools/vera_api_key.py set` (macOS Keychain)")
