@@ -1366,11 +1366,13 @@ class _OverlayPlacements:
 
 
 RAISE_LEVELS_DEFAULT = ("high", "max")
+STACK_REFUSED = "stack: closed cross not rebuilt"        # G4-c (L-G4-76): why a closed cross of a frozen stack is not rebuilt on demand
 
 
 def ask_tier(tier: TierSpace, question: str, placements, *, raise_budget: Optional[str] = "on_demand",
              raise_levels: Sequence[str] = RAISE_LEVELS_DEFAULT, weights=None,
-             group_insert: str = "whole", order: str = "forward", on_collapse: str = "stop", **kw) -> TierResult:
+             group_insert: str = "whole", order: str = "forward", on_collapse: str = "stop",
+             foundation: str = "off", adhesion=None, **kw) -> TierResult:
     """`_ask_tier_once` (all its keywords) plus T6y option `raise_budget="on_demand"` (L-171, owner:
     "問いで必要になったときだけ上げる"): the placement budget of a cross is raised only when a query needs
     it.  "Needs" = the question has no adopted state and a cross it read stopped by budget (stop ==
@@ -1380,7 +1382,13 @@ def ask_tier(tier: TierSpace, question: str, placements, *, raise_budget: Option
     rebuilt crosses in place of the stored ones, until a state is adopted or the levels run out.  What
     was raised is recorded in thought_obj()["variant"]["budget_raise"] (the stored placements are
     not changed).  T6z (owner): "on_demand" is the DEFAULT; `raise_budget=None` is exactly
-    `_ask_tier_once` (the previous default, byte-identical)."""
+    `_ask_tier_once` (the previous default, byte-identical).
+
+    G4-c (L-G4-76, L-G4-77; both default to the old behaviour byte for byte): a cross that comes from a FROZEN STACK (`Placement.from_stack`, L-G4-68) is never
+    rebuilt: the stack's flats are what the reader reads, and a rebuild would put a one-shot cross (quotient on, foundation off, group_insert "whole") in its
+    place.  Such a closed cross is refused, typed: `variant.budget_raise.refused = {"reason": STACK_REFUSED, "seeds": [...]}` (named only when something was
+    refused), the question is not asked again for it.  `foundation` / `adhesion` (G1-b wiring): a cross rebuilt for an index with the foundation on is
+    rebuilt WITH the seats and enters the re-ask through `contract_for_read` (the reader sees plain flats)."""
     res = _ask_tier_once(tier, question, placements, **kw)
     if raise_budget is None:
         return res
@@ -1393,8 +1401,11 @@ def ask_tier(tier: TierSpace, question: str, placements, *, raise_budget: Option
             raise ValueError("raise_levels: names of placement levels")
     steps: List[dict] = []
     repl: Dict[str, Placement] = {}
+    refused: set = set()
     cur = res
     w = weights
+    if foundation == "on" and adhesion is None:          # G4-c (L-G4-77): the seated weights of the store carry the tier's adhesion
+        adhesion = getattr(getattr(weights, "fnd", None), "adhesion", None)
     for lv in raise_levels:
         if cur.candidates:
             break
@@ -1404,14 +1415,20 @@ def ask_tier(tier: TierSpace, question: str, placements, *, raise_budget: Option
 
         limited = sorted(sd for sd in cur.plan.read
                          if repl.get(sd, placements.cross_for(sd)).stop == "budget" and lvl(sd) < lv_order.index(lv))
+        stacked = {sd for sd in limited if getattr(repl.get(sd, placements.cross_for(sd)), "from_stack", False)}
+        if stacked:                                      # G4-c (L-G4-76): a closed cross of a frozen stack is not rebuilt
+            refused |= stacked
+            limited = [sd for sd in limited if sd not in stacked]
         if not limited:
             break
-        w = w or pl.Weights(tier)
+        w = w or pl.Weights(tier, adhesion)
         rec = []
         for sd in limited:
             before = repl.get(sd, placements.cross_for(sd))
             nb = pl.build_cross(tier, sd, w, budget=pl.budget_level(lv), group_insert=group_insert, order=order,
-                                on_collapse=on_collapse)   # F1b (L-474), F1c (L-506)
+                                on_collapse=on_collapse, foundation=foundation, adhesion=adhesion)   # F1b (L-474), F1c (L-506), G4-c (L-G4-77)
+            if foundation == "on":
+                nb = pl.contract_for_read(nb)
             repl[sd] = nb
             rec.append({"seed": sd, "capacity_before": before.capacity, "capacity_after": nb.capacity,
                         "stop_after": nb.stop})
@@ -1424,6 +1441,10 @@ def ask_tier(tier: TierSpace, question: str, placements, *, raise_budget: Option
         info["group_insert"], info["order"] = group_insert, order
         if on_collapse != "stop":                        # F1c (L-507)
             info["on_collapse"] = on_collapse
+    if foundation == "on":                               # G4-c (L-G4-77): named only with the foundation on
+        info["foundation"] = "on"
+    if refused:                                          # G4-c (L-G4-76): named only when a stack cross was refused
+        info["refused"] = {"reason": STACK_REFUSED, "seeds": sorted(refused)}
     var = dict(cur.variant or {})
     var["budget_raise"] = info
     return replace(cur, variant=var)
