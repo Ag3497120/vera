@@ -16,7 +16,8 @@ What it provides (pure functions of their arguments; no floating-point number, n
     already question units, in that order (the stand-ins in the order of the unknown words in the question, each word's in code point order: a label, not a rank).
   * `ReadHook`: the picklable callable `cycle.plan_read(grammar=...)` takes: seeds -> {seed: (rank, reason, kind label)}, the kind of a cross = the kind of its
     centre word (grammar.Records.kind, the records read with stem "whole_word"; CHAR has no records, L-541: kind none), ordered by grammar.read_order with the
-    question's slot (form "slot" only; every other form passes None, L-642 / L-548).
+    question's slot (form "slot" only; every other form passes None, L-642 / L-548).  Its `order` (G3-k2, L-819) is the flat plane's read order: "eq_first" (default,
+    the owner's 「E_Q が先、単位数は同点内」) or "qcount_first" (G3-k's).
   * `tier_kw`: the keywords of one tier's cycle.ask_tier: RUN gets the extended units, the stand-ins marked in QueryContext.standins (they select the crosses to
     read and count in the read order; they are NOT in the query cross, the sections or E_Q: the energies of the question are the original units', L-802);
     every tier gets the read hook.
@@ -41,6 +42,18 @@ GRAMMARS: Tuple[str, ...] = ("off", "on")                 # the switch of ask / 
 TIER = sp.RUN                                              # the tier whose unknown words get stand-ins (grammar.standins_of is RUN, L-550)
 PROVENANCE = "stand-in"                                    # the mark of an added query unit
 FORMS: Tuple[str, ...] = ("slot", "predicate", "standin", "plain")
+FLAT_ORDERS: Tuple[str, ...] = cy.READ_ORDERS_FLAT          # G3-k2 (L-819): the grammar-on read order of the flat plane's crosses: eq_first (default) | qcount_first (G3-k's)
+DEFAULT_FLAT_ORDER = "eq_first"
+
+
+def flat_order_of(read_order: Optional[str]) -> str:
+    """G3-k2 (L-820): the flat plane's order from the `--read-order` value.  None / "eq_first" = eq_first; "qcount_first" = G3-k's order; "grammar_first" is a WINDOW order
+    (slide_query.READ_ORDERS) and is not built for the flat plane's crosses (ValueError)."""
+    if read_order is None:
+        return DEFAULT_FLAT_ORDER
+    if read_order not in FLAT_ORDERS:
+        raise ValueError("the flat plane's read order: %s (%r is a window order)" % (" | ".join(FLAT_ORDERS), read_order))
+    return read_order
 
 
 def classify_form(reading: gr.QuestionReading) -> str:
@@ -102,7 +115,8 @@ class GrammarIntake:
     def n_standins(self) -> int:
         return len(self.standins)
 
-    def grammar_form(self) -> dict:
+    def grammar_form(self, order: Optional[str] = None) -> dict:
+        """`order` None = the text the windows' reports carry (unchanged); "eq_first" / "qcount_first" = the flat plane's order named (L-819)."""
         r = self.reading
         types: Dict[str, int] = {}
         for p in (r.pattern or ()):
@@ -111,9 +125,7 @@ class GrammarIntake:
                 "slot_phrase": None if r.slot is None else r.slot.phrase, "slot_after": None if r.slot is None else r.slot.after,
                 "predicate": None if r.predicate is None else r.predicate.y, "predicate_of": None if r.predicate is None else r.predicate.x,
                 "pattern_types": {k: types[k] for k in sorted(types)}, "standin_units": len(self.standins),
-                "read_order": ("question units held (originals, then stand-ins), then the kind of the cross = the slot, then the ladder weight of the kind, "
-                               "then E_Q" if self.form == "slot" else
-                               "question units held (originals, then stand-ins), then the ladder weight of the kind (no slot particle), then E_Q")}
+                "read_order": (_order_text(order, self.form == "slot"))}
 
     def standins_obj(self, full: bool = False) -> List[dict]:
         return [w.to_obj(full) for w in self.words]
@@ -124,6 +136,13 @@ class GrammarIntake:
         return {"source": "grammar", "form": self.form, "slot": None if r.slot is None else r.slot.particle,
                 "predicate": None if r.predicate is None else r.predicate.y, "standins": len(self.standins),
                 "unknown_words": [w.word for w in self.words]}
+
+
+def _order_text(order: Optional[str], slot: bool) -> str:
+    kind = "the kind of the cross = the slot, then the ladder weight of the kind" if slot else "the ladder weight of the kind (no slot particle)"
+    if order == "eq_first":
+        return ("E_Q first (T7b's group, then E_Q descending); inside an exact E_Q tie only: question units held (originals, then stand-ins), then " + kind)
+    return "question units held (originals, then stand-ins), then %s, then E_Q" % kind
 
 
 def intake(space: sp.Space, question: str, span_index: Optional[SpanIndex] = None) -> GrammarIntake:
@@ -168,10 +187,14 @@ def kind_label(k: gr.Kind) -> str:
 class ReadHook:
     """cycle.plan_read(grammar=...): the grammar layer's read order of candidate crosses of one tier.  A cross's kind is the kind of its seed (centre word)
     over the particle records (`records.kind(tier, seed)`: the particle after the word, a stem taking the particle after the whole WORD); a tier with no records
-    (CHAR, L-541) has kind none for every cross.  `slot` = the question's slot particle (form "slot") or None.  Picklable (the sweeps fork workers)."""
+    (CHAR, L-541) has kind none for every cross.  `slot` = the question's slot particle (form "slot") or None.  `order` (G3-k2, L-819): "eq_first" (default) | "qcount_first",
+    read by cycle._plan_read_grammar -- carried on the hook so that the read and the re-plan behind `read_via_standin` (and the layers' re-asks) use one order.
+    Picklable (the sweeps fork workers)."""
 
-    def __init__(self, tier: str, records: gr.Records, slot: Optional[str]) -> None:
-        self.tier, self.records, self.slot = tier, records, slot
+    def __init__(self, tier: str, records: gr.Records, slot: Optional[str], order: str = DEFAULT_FLAT_ORDER) -> None:
+        if order not in FLAT_ORDERS:
+            raise ValueError("order: %s" % " | ".join(FLAT_ORDERS))
+        self.tier, self.records, self.slot, self.order = tier, records, slot, order
 
     def kind(self, seed: str) -> gr.Kind:
         if self.tier in self.records.tiers():
@@ -204,21 +227,21 @@ def records_of(space: sp.Space) -> gr.Records:
     return gr.records_of_space(space, stem="whole_word")
 
 
-def tier_kw(gi: GrammarIntake, tier: str, records: gr.Records) -> dict:
+def tier_kw(gi: GrammarIntake, tier: str, records: gr.Records, order: str = DEFAULT_FLAT_ORDER) -> dict:
     """The keywords of cycle.ask_tier for one tier under grammar "on": the read hook for every tier; for RUN with stand-ins the extended unit list and the mark
     `standins` (L-802: the stand-ins select crosses and count in the read order, E_Q stays the original units')."""
-    kw: dict = {"grammar": ReadHook(tier, records, gi.slot)}
+    kw: dict = {"grammar": ReadHook(tier, records, gi.slot, order)}
     if tier == TIER and gi.standins:
         kw.update(units=gi.run_units, standins=gi.standins)
     return kw
 
 
-def reask_kw(gi: GrammarIntake, tiers: Sequence[str], records: gr.Records) -> Dict[str, dict]:
+def reask_kw(gi: GrammarIntake, tiers: Sequence[str], records: gr.Records, order: str = DEFAULT_FLAT_ORDER) -> Dict[str, dict]:
     """The keywords of the layers' re-asks (matryoshka.ask_layered(tier_kw=), feedback "down", L-807 / L-813): the same read hook as layer 0 for every tier, and for RUN with
     stand-ins the mark `standins`.  NOT `tier_kw`: a re-ask passes its own `units` (the question's plus what the upper layers found)."""
     out: Dict[str, dict] = {}
     for t in tiers:
-        kw: dict = {"grammar": ReadHook(t, records, gi.slot)}
+        kw: dict = {"grammar": ReadHook(t, records, gi.slot, order)}
         if t == TIER and gi.standins:
             kw["standins"] = gi.standins
         out[t] = kw

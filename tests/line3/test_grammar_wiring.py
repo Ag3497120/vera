@@ -7,13 +7,17 @@ marked and listed with their chance counts; a word that V2 drops, a known word, 
 stay the original units'.
 Part 3 (the flat read): the crosses read are chosen by the original units AND the stand-ins (V1), a full read grows only through crosses that hold a stand-in and no
 original unit, and only the entries of such crosses are marked `via_standin`; a question with no unknown word has the same entries on a full read, in every tier,
-with and without a slot; under a cap the read order is (original units held, stand-in units held), then the grammar kind of the cross (the slot first), then the
-order of T7b (group, E_Q) -- checked against an independent construction for every cap; a tie is one block, never split.
+with and without a slot; under a cap the read order is, by default (G3-k2, eq_first), T7b's (group, E_Q) -- G3-k3 (L-826): a cross whose SEED is a stand-in is in the group holds_query_unit, the original words' crosses (query_unit) come first -- and only inside an exact E_Q tie the original units held, the stand-in units
+held, the grammar kind of the cross (the slot first); `flat_order="qcount_first"` is G3-k's (units held first) -- both checked against an independent construction for every cap;
+equal on every key is one block, never split.
 Part 4 (the windows and the layers): windows that hold only stand-ins are candidates and are read after those that hold an original unit; their entries are marked;
 the layers' re-asks keep the stand-ins and the read hook.
 Review fixes (L-810..L-816): the layer-1 bundles are the read crosses, not every stand-in; `read_via_standin` is the exact diff of the read sets of the order with and without the
 stand-ins (flat and windows), next to `via_standin` (cross by placement, twins counted); the stem count lives outside `follow`; the marks of equal entries are by position.
 Part 5 (the combined list and the entrance): the `grammar` row of the header, `grammar_form` / `standins` in the answer, the mark in the text form, the CLI switch.
+Part 5a (G3-k3, L-826): the stand-in seeds' crosses in holds_query_unit under eq_first (qcount_first keeps G3-k's group); a toy where a stand-in seed has the higher E_Q and is read after the original word's cross.
+Part 5b (G3-k2, L-819..L-822): the eq_first order on the toy (an E_Q tie the count breaks, a non-tie it does not), the switch and its defaults, both marks in the ask text and the
+header counts, the CLI `--read-order`.
 Part 6 (defaults and bytes): grammar "off" is byte-identical in every structure, no new key appears; PYTHONHASHSEED 0 / 1 / 12345; no floating-point number.
 """
 import ast
@@ -203,9 +207,11 @@ def test_candidate_crosses_grow_only_through_standin_crosses(idx, space, ctx_):
     assert grew                                                                  # the toy has a question where the stand-ins add a cross
 
 
-def expected_blocks(idx, ts, ctx, slot, recs, tier="RUN"):
-    """The read order under a cap, constructed independently of cycle._plan_read_grammar: seeds that hold a query unit (original or stand-in), the key
-    (-originals held, -stand-ins held, grammar group, group query_unit < holds_query_unit, -E_Q), equal keys one block."""
+def expected_blocks(idx, ts, ctx, slot, recs, tier="RUN", order="eq_first"):
+    """The read order under a cap, constructed independently of cycle._plan_read_grammar: seeds that hold a query unit (original or stand-in), and the key
+    eq_first   (G3-k2, L-819; G3-k3, L-826: a stand-in seed is in holds_query_unit): (group query_unit < holds_query_unit, -E_Q, -originals held, -stand-ins held, grammar rank)  -- E_Q first, the counts and the kind only inside an exact E_Q tie
+    qcount_first (G3-k):       (-originals held, -stand-ins held, grammar rank, group, -E_Q)
+    equal keys = one block."""
     st, facts = idx.stores[tier], idx.facts[tier]
     q, sq = set(ctx.energy_units), set(ctx.standins) - set(ctx.energy_units)
     cand = []
@@ -213,23 +219,24 @@ def expected_blocks(idx, ts, ctx, slot, recs, tier="RUN"):
         u = units_of(st, s)
         if u & (q | sq):
             cand.append((s, len(u & q), len(u & sq)))
-    hook = W.ReadHook(tier, recs, slot)
+    hook = W.ReadHook(tier, recs, slot, order)
     rank = hook([c[0] for c in cand])
     rq = lambda u: facts.n[u] + sum(facts.npair(x, u) for x in ctx.energy_units)
     by = {}
     for s, no, ns in cand:
-        g = 0 if (s in q or s in sq) else 1
-        by.setdefault((-no, -ns, rank[s][0], g, -rq(s)), []).append(s)
+        g = 0 if (s in q or (s in sq and order != "eq_first")) else 1        # L-826: under eq_first a stand-in SEED is in holds_query_unit; qcount_first keeps G3-k's group
+        key = (g, -rq(s), -no, -ns, rank[s][0]) if order == "eq_first" else (-no, -ns, rank[s][0], g, -rq(s))
+        by.setdefault(key, []).append(s)
     return [tuple(sorted(by[k])) for k in sorted(by)], {k: v for k, v in by.items()}
 
 
-def _cases_of(space, ix, recs, tier):
+def _cases_of(space, ix, recs, tier, order="eq_first"):
     """(question, context, kw, slot) per question for one tier: RUN with the stand-ins; WORD (no stand-ins) cut like the tier cuts it, V2 applied."""
     from verantyx.line3.funcwords import default_filter
     out = []
     for q in UNK + KNOWN:
         gi = W.intake(space, q, ix)
-        kw = W.tier_kw(gi, tier, recs)
+        kw = W.tier_kw(gi, tier, recs, order)
         if tier == "RUN":
             units, marks = kw.get("units", gi.units), kw.get("standins", ())
         else:
@@ -239,15 +246,16 @@ def _cases_of(space, ix, recs, tier):
     return out
 
 
-def test_read_order_under_a_cap_is_count_then_kind_then_eq(idx, space, ctx_):
-    """Checks the cap / block / boundary / partial mechanics and the sort key against `expected_blocks`.  HONEST SCOPE (L-816): `expected_blocks` shares ReadHook and the E_Q
-    formula with the code, so it pins the key's STRUCTURE (which fields, in which order, ties as one block), not the meaning of the kind or of E_Q.  Run on RUN and on WORD."""
+@pytest.mark.parametrize("order", ["eq_first", "qcount_first"])
+def test_read_order_under_a_cap_is_the_key_of_the_order(idx, space, ctx_, order):
+    """Checks the cap / block / boundary / partial mechanics and the sort key of BOTH orders against `expected_blocks`.  HONEST SCOPE (L-816): `expected_blocks` shares ReadHook and the
+    E_Q formula with the code, so it pins the key's STRUCTURE (which fields, in which order, ties as one block), not the meaning of the kind or of E_Q.  Run on RUN and on WORD."""
     ix, recs = ctx_
     differs = ties = slots = 0
     for tier in ("RUN", "WORD"):
         ts, facts, st = space.tiers[tier], idx.facts[tier], idx.stores[tier]
-        for q, ctx, kw, slot in _cases_of(space, ix, recs, tier):
-            blocks, _by = expected_blocks(idx, ts, ctx, slot, recs, tier)
+        for q, ctx, kw, slot in _cases_of(space, ix, recs, tier, order):
+            blocks, _by = expected_blocks(idx, ts, ctx, slot, recs, tier, order)
             slots += slot is not None
             total = sum(len(b) for b in blocks)
             ties += any(len(b) > 1 for b in blocks)
@@ -263,21 +271,141 @@ def test_read_order_under_a_cap_is_count_then_kind_then_eq(idx, space, ctx_):
                 assert list(plan.read) == rd and plan.boundary == bnd               # whole blocks, the first that does not fit stops the read, a tie is not split
                 assert plan.cap == cap and plan.cap_total == total and plan.cap_unread == total - len(rd) and plan.partial == (total > len(rd))
                 assert plan.grammar is not None and len(plan.grammar) == len(plan.order_groups)
-                # the rows: originals held, stand-ins held, group reason, kind label -- non-increasing in the first two across the list
-                keys = [(r[0], r[1]) for r in plan.grammar]
-                assert keys == sorted(keys, reverse=True)
+                if order == "qcount_first":
+                    # the rows: originals held, stand-ins held, group reason, kind label -- non-increasing in the first two across the list
+                    keys = [(r[0], r[1]) for r in plan.grammar]
+                    assert keys == sorted(keys, reverse=True) and all(len(r) == 4 for r in plan.grammar)       # G3-k's rows are unchanged
+                else:
+                    assert all(len(r) == 5 for r in plan.grammar)                   # (originals, stand-ins, reason, kind label, E_Q)
             off = cy.plan_read(ts, facts, cy.make_context(ctx.query[:len(ctx.query) - len(ctx.standins)]), st, None, True, False, 2)
             on = cy.plan_read(ts, facts, ctx, st, None, True, False, 2, kw["grammar"])
             differs += off.read != on.read
-    assert differs and ties and slots                                            # not vacuous: the order differs from T7b's somewhere, there are ties and slots
+    assert ties and slots                                                         # not vacuous: there are ties and slots
+    assert differs or order == "eq_first"                                          # qcount_first differs from T7b's order somewhere (eq_first is T7b's order up to ties)
 
 
-def test_the_original_count_comes_first_and_a_slot_kind_breaks_only_a_tie(idx, space, ctx_):
+def test_eq_first_is_the_energy_order_with_the_counts_only_inside_an_exact_tie(idx, space, ctx_):
+    """The owner's 「E_Q が先、単位数は同点内」 (L-819): across the list the group (query_unit < holds_query_unit < shares_with_query) and E_Q are the order of T7b, E_Q never increases inside a
+    group; only between two blocks of EQUAL group and EQUAL E_Q the originals held (then the stand-ins held) decide, non-increasing; inside equal counts the grammar reason (match, particle, tied, none)."""
+    ix, recs = ctx_
+    ts, facts, st = space.tiers["RUN"], idx.facts["RUN"], idx.stores["RUN"]
+    order = {"match": 0, "particle": 1, "tied": 2, "none": 3}
+    gord = {"query_unit": 0, "holds_query_unit": 1, "shares_with_query": 2}
+    tie_broken = non_tie = 0
+    for q in UNK + KNOWN:
+        gi = W.intake(space, q, ix)
+        kw = W.tier_kw(gi, "RUN", recs)                                          # the default order
+        assert kw["grammar"].order == "eq_first"
+        ctx = cy.make_context(kw.get("units", gi.units), standins=kw.get("standins", ()))
+        plan = cy.plan_read(ts, facts, ctx, st, None, True, False, 1000, kw["grammar"])
+        rows = [(gord[g], r[4], r[0], r[1], r[2]) for (g, _s), r in zip(plan.order_groups, plan.grammar)]       # group, E_Q, originals, stand-ins, reason
+        for a, b in zip(rows, rows[1:]):
+            assert (a[0], -a[1]) <= (b[0], -b[1])                                # the group, then E_Q descending: T7b's order
+            if a[:2] == b[:2]:                                                   # an exact E_Q tie: the counts, then the stand-ins, then the kind
+                tie_broken += 1
+                assert (-a[2], -a[3], order[a[4]]) <= (-b[2], -b[3], order[b[4]])
+            else:
+                non_tie += 1
+        # the E_Q of a row is the value rq (independent formula)
+        for (g, ss), r in zip(plan.order_groups, plan.grammar):
+            for sd in ss:
+                assert r[4] == facts.n[sd] + sum(facts.npair(x, sd) for x in ctx.energy_units)
+        # the candidate set is the same under both orders and the same as the unordered full read
+        q1 = cy.plan_read(ts, facts, ctx, st, None, True, False, 1000, W.ReadHook("RUN", recs, gi.slot, "qcount_first"))
+        assert sorted(s for _g, ss in plan.order_groups for s in ss) == sorted(s for _g, ss in q1.order_groups for s in ss)
+    assert tie_broken and non_tie                                                # the toy has both an E_Q tie that the count breaks and a non-tie
+
+
+def test_eq_first_on_the_toy_tie_and_non_tie_by_hand(idx, space, ctx_):
+    """東京都庁の人口は何ですか (original 人口; stand-ins 東京, 東京タワー): the group holds_query_unit is E_Q order -- 東京 (6), 日本 (3, holds 0 originals) stands BEFORE 多い (E_Q 2,
+    1 original) -- a non-tie, E_Q decides although 多い holds more question units; 多い and 首都 are an exact E_Q tie (2) and the original count puts 多い first.  qcount_first reads 東京
+    first (G3-k's group: a stand-in seed is query_unit) and 多い right after 人口, before 東京タワー, 日本; under a cap of 4 crosses the two orders read different sets."""
+    ix, recs = ctx_
+    ts, facts, st = space.tiers["RUN"], idx.facts["RUN"], idx.stores["RUN"]
+    q = "東京都庁の人口は何ですか"
+    gi = W.intake(space, q, ix)
+    assert gi.standins == ("東京", "東京タワー") and gi.slot is None
+    plans = {}
+    for o in ("eq_first", "qcount_first"):
+        kw = W.tier_kw(gi, "RUN", recs, o)
+        ctx = cy.make_context(kw["units"], standins=kw["standins"])
+        plans[o] = cy.plan_read(ts, facts, ctx, st, None, True, False, 4, kw["grammar"])
+    flat = lambda p: [s for _g, ss in p.order_groups for s in ss]
+    assert flat(plans["eq_first"]) == ["人口", "東京", "日本", "多い", "首都", "東京タワー", "都市"]
+    assert flat(plans["qcount_first"]) == ["東京", "人口", "多い", "東京タワー", "日本", "都市", "首都"]
+    ef = plans["eq_first"]
+    eq = {s: r[4] for (_g, (s, *_r)), r in zip(ef.order_groups, ef.grammar)}
+    assert eq["東京"] == 6 and eq["日本"] == 3 and eq["多い"] == eq["首都"] == 2 and eq["東京タワー"] == 1       # the non-tie: 日本 (3) before 多い (2); the tie: 多い, 首都 (2)
+    held = {s: (r[0], r[1]) for (_g, (s, *_r)), r in zip(ef.order_groups, ef.grammar)}
+    assert held["多い"] == (1, 1) and held["首都"] == (0, 1) and held["日本"] == (0, 1)            # the count breaks the tie 多い > 首都; it does not lift 多い over 日本
+    assert ef.read == ("人口", "東京", "日本", "多い") and ef.boundary == 1 and ef.cap_unread == 3
+    assert plans["qcount_first"].read == ("東京", "人口", "多い", "東京タワー")
+    # the read sets differ, the candidates do not
+    assert set(plans["eq_first"].read) != set(plans["qcount_first"].read)
+    assert sorted(flat(plans["eq_first"])) == sorted(flat(plans["qcount_first"]))
+
+
+def test_a_standin_seed_is_read_after_the_original_words_crosses_whatever_its_energy(idx, space, ctx_):
+    """G3-k3 (L-826, owner 「代役の種は holds_query_unit の群へ」): under eq_first the crosses whose SEED is a stand-in are in the group holds_query_unit, so the cross of the original word
+    (group query_unit) is read first although the stand-in seed's E_Q is higher (東京都庁の人口は何ですか: 人口 E_Q 2, the stand-in seed 東京 E_Q 6); E_Q first stays inside each group (東京 6 before 日本 3
+    before 東京タワー 1, the other stand-in seed; both stand-in seeds sit among the other holders by E_Q); qcount_first keeps G3-k's group (a stand-in seed is query_unit).  The candidates
+    are the same, a cap of 1 reads the original word's cross only.  Every toy question with stand-ins."""
+    ix, recs = ctx_
+    ts, facts, st = space.tiers["RUN"], idx.facts["RUN"], idx.stores["RUN"]
+    seen_inversion = 0
+    for q in UNK + ["東京都庁と首都は何ですか", "日本海の東京タワーは何ですか", "東京と日本海は何ですか"]:
+        gi = W.intake(space, q, ix)
+        if not gi.standins:
+            continue
+        kw = W.tier_kw(gi, "RUN", recs)
+        ctx = cy.make_context(kw["units"], standins=kw["standins"])
+        orig, sq = set(ctx.energy_units), set(ctx.standins) - set(ctx.energy_units)
+        rq = lambda u: facts.n[u] + sum(facts.npair(x, u) for x in ctx.energy_units)
+        plan = cy.plan_read(ts, facts, ctx, st, None, True, False, 1000, kw["grammar"])
+        for g, ss in plan.order_groups:
+            for s in ss:
+                assert (g == "query_unit") == (s in orig), (q, s, g)                 # group membership: query_unit = the ORIGINAL words' crosses and nothing else
+                assert not (s in sq and g == "query_unit")
+        names = [g for g, _ in plan.order_groups]
+        assert names == sorted(names, key=("query_unit", "holds_query_unit", "shares_with_query").index)          # the groups in T7b's order
+        stand_seeds = [s for g, ss in plan.order_groups for s in ss if s in sq]
+        assert stand_seeds and all(g == "holds_query_unit" for g, ss in plan.order_groups if set(ss) & sq)
+        firsts = [s for g, ss in plan.order_groups if g == "query_unit" for s in ss]
+        flat = [s for _g, ss in plan.order_groups for s in ss]
+        for sd in stand_seeds:
+            assert all(flat.index(o) < flat.index(sd) for o in firsts)               # every original word's cross before every stand-in seed's cross
+            seen_inversion += any(rq(sd) > rq(o) for o in firsts)                    # ... also where the stand-in seed's E_Q is higher
+        for g in ("query_unit", "holds_query_unit"):
+            es = [r[4] for (gg, _s), r in zip(plan.order_groups, plan.grammar) if gg == g]
+            assert es == sorted(es, reverse=True)                                    # E_Q first inside each group (the counts and the kind only split an exact tie)
+        # the same candidates under qcount_first (which keeps G3-k's group, checked by hand below)
+        old = cy.plan_read(ts, facts, ctx, st, None, True, False, 1000, W.ReadHook("RUN", recs, gi.slot, "qcount_first"))
+        assert sorted(flat) == sorted(s for _g, ss in old.order_groups for s in ss)
+        if firsts:
+            one = cy.plan_read(ts, facts, ctx, st, None, True, False, len(firsts), kw["grammar"])
+            assert set(one.read) == set(firsts)                                      # the cap that fits the original words' crosses reads those and no stand-in seed
+    assert seen_inversion, "the toy never had a stand-in seed with a higher E_Q than an original word's cross"
+    # by hand: 東京都庁の人口は何ですか
+    gi = W.intake(space, "東京都庁の人口は何ですか", ix)
+    kw = W.tier_kw(gi, "RUN", recs)
+    ctx = cy.make_context(kw["units"], standins=kw["standins"])
+    plan = cy.plan_read(ts, facts, ctx, st, None, True, False, 2, kw["grammar"])
+    assert plan.read == ("人口", "東京") and plan.order_groups[0] == ("query_unit", ("人口",)) and plan.order_groups[1][0] == "holds_query_unit"
+    assert facts.n["東京"] + sum(facts.npair(x, "東京") for x in ctx.energy_units) == 6 > facts.n["人口"] + sum(facts.npair(x, "人口") for x in ctx.energy_units) == 2
+    one = cy.plan_read(ts, facts, ctx, st, None, True, False, 1, kw["grammar"])
+    assert one.read == ("人口",) and one.boundary == 1
+    # qcount_first keeps G3-k's group: the stand-in seed 東京 is query_unit
+    qk = W.tier_kw(gi, "RUN", recs, "qcount_first")
+    qp = cy.plan_read(ts, facts, cy.make_context(qk["units"], standins=qk["standins"]), st, None, True, False, 1000, qk["grammar"])
+    assert dict((s, g) for g, ss in qp.order_groups for s in ss)["東京"] == "query_unit"
+
+
+def test_the_original_count_comes_first_under_qcount_first_and_a_slot_kind_breaks_only_a_tie(idx, space, ctx_):
     ix, recs = ctx_
     ts = space.tiers["RUN"]
     for q in UNK + KNOWN:
         gi = W.intake(space, q, ix)
-        kw = W.tier_kw(gi, "RUN", recs)
+        kw = W.tier_kw(gi, "RUN", recs, "qcount_first")
         ctx = cy.make_context(kw.get("units", gi.units), standins=kw.get("standins", ()))
         plan = cy.plan_read(ts, idx.facts["RUN"], ctx, idx.stores["RUN"], None, True, False, 1000, kw["grammar"])
         no_ns = [(r[0], r[1]) for r in plan.grammar]
@@ -375,7 +503,8 @@ def test_via_standin_of_by_hand():
 RV_CASES = [("日本海の東京タワーは何ですか", n) for n in range(1, 7)] + [("東京と日本海は何ですか", n) for n in range(1, 7)] + [(q, n) for q in UNK for n in (1, 2, 3, 4, 6)]
 
 
-def test_read_via_standin_is_the_exact_diff_of_the_read_sets(idx, space, wi, ctx_):
+@pytest.mark.parametrize("flat_order", ["eq_first", "qcount_first"])
+def test_read_via_standin_is_the_exact_diff_of_the_read_sets(idx, space, wi, ctx_, flat_order):
     """L-811 (review fix 2): the entries of a cross / window that holds an ORIGINAL unit but was read only because the stand-ins decided the tie under the cap are marked
     `read_via_standin` (not `via_standin`).  The mark is the diff of two real plans: the one with the stand-ins and the one the SAME ordering makes without them."""
     import dataclasses
@@ -384,8 +513,8 @@ def test_read_via_standin_is_the_exact_diff_of_the_read_sets(idx, space, wi, ctx
     for q, n in RV_CASES:
         gi = W.intake(space, q, ix)
         oo_gi = dataclasses.replace(gi, words=(), standins=())
-        c = A.ask(idx, q, nodes=n, grammar="on", grammar_intake=gi)
-        oo = A.ask(idx, q, nodes=n, grammar="on", grammar_intake=oo_gi)            # the order alone: the run the ticket's "order-only" column is
+        c = A.ask(idx, q, nodes=n, grammar="on", grammar_intake=gi, flat_order=flat_order)
+        oo = A.ask(idx, q, nodes=n, grammar="on", grammar_intake=oo_gi, flat_order=flat_order)            # the order alone: the run the ticket's "order-only" column is
         o = c.outcome("RUN")
         assert o.result.plan.order_only_read == (oo.outcome("RUN").result.plan.read if gi.standins else None), (q, n)      # the diff's second term IS that run's read set
         assert oo.outcome("RUN").result.plan.order_only_read is None and not any(oo.outcome("RUN").read_via_standin)
@@ -405,7 +534,9 @@ def test_read_via_standin_is_the_exact_diff_of_the_read_sets(idx, space, wi, ctx
             assert e["read_via_standin"] == (e["window"]["n"] not in wset), (q, n)
             win_only += e["read_via_standin"] and not e["via_standin"]
         assert all(e["read_via_standin"] is False for e in fo.entries)
-    assert flat_only and win_only, "the toy never produced an entry read through the tie-break only: the mark would be untested"
+    # L-826: under eq_first the stand-ins reorder only inside an exact (group, E_Q, originals held) tie, which the toy never has between a read and an unread cross, so the flat mark has
+    # no occurrence there (the exact-diff identity above still holds for every entry); under qcount_first (G3-k's order) it occurs.  The windows have the mark under both.
+    assert win_only and (flat_only or flat_order == "eq_first"), "the toy never produced an entry read through the tie-break only: the mark would be untested"
     # grammar off: nothing named
     assert "read_via_standin" not in A.ask(idx, RV_CASES[0][0], nodes=1).to_bytes().decode("utf-8")
     # no cap: the plan without the stand-ins is the plan of the run without them, too (the stand-in-only crosses are the whole difference)
@@ -420,7 +551,7 @@ def test_the_two_marks_in_the_combined_list(idx, wi, space, ctx_):
     """The exact example of the review: 日本海の東京タワー at one cross -- the cross of 東京 holds the original 東京タワー and the stand-in 日本, the order alone would read 東京タワー."""
     ix, _ = ctx_
     q = "日本海の東京タワーは何ですか"
-    c = CB.ask_combined(idx, q, nodes=1, windows=wi, assembly=False, grammar="on")
+    c = CB.ask_combined(idx, q, nodes=1, windows=wi, assembly=False, grammar="on", flat_order="qcount_first")       # the example is G3-k's order's (L-811); eq_first has its own below
     a = c.answer_obj()
     (e,) = [x for x in a["entries"] if x["origins"] == ["flat/RUN"]]
     (m,) = e["members"]
@@ -445,7 +576,7 @@ def test_the_flat_answer_reports_the_form_and_the_standins(idx):
     assert a["grammar_form"]["form"] == "predicate" and a["grammar_form"]["standin_units"] == 2
     (s,) = a["standins"]
     assert s["word"] == "東京都庁" and s["units"] == ["東京", "東京タワー"] and s["provenance"] == "stand-in" and s["chance"].startswith("2/")
-    assert all("via_standin" in e for e in a["entries"]) and a["read"]["order"] == "qcount+grammar"
+    assert all("via_standin" in e for e in a["entries"]) and a["read"]["order"] == "eq+grammar"
     th = b.thought_obj()
     assert th["grammar"]["standins"][0]["unit_parts"][0][0] == "東京" and th["grammar"]["stem"] == "whole_word"
     assert th["tiers"]["RUN"]["cycle"]["standins"] == ["東京", "東京タワー"] and th["tiers"]["RUN"]["cycle"]["read"]["grammar_order"]
@@ -558,7 +689,8 @@ def test_layer1_bundles_are_the_read_crosses_and_not_every_standin(idx, space, c
         return lay
     monkeypatch.setattr(M.LayerStack, "layer1", spy)
     opts = M.LayerOptions(variants=("A",), granularity="compress", feedback="none", candidate="stable-seats-path", bounds=M.bounds_for(None, 1))
-    for n, read, expect in ((1, ("東京",), {"東京"}), (2, ("東京", "東京タワー"), {"東京", "東京タワー"})):
+    # (L-826: the stand-in seeds are group holds_query_unit, read by E_Q with the others: 東京 (6), 日本 (3), 多い / 首都 (2), 東京タワー (1) -- 日本 is no stand-in)
+    for n, read, expect in ((1, ("東京",), {"東京"}), (2, ("東京", "日本"), {"東京", "日本"})):
         seen.clear()
         c0 = A.ask(idx, q, nodes=n, grammar="on", grammar_intake=gi)
         r0 = c0.outcome("RUN")
@@ -572,8 +704,7 @@ def test_layer1_bundles_are_the_read_crosses_and_not_every_standin(idx, space, c
         assert seeds == frozenset(expect)                                       # the SET: the crosses read (+ the original query units, none here), nothing else
         assert words == frozenset(M.bundle_id(1, u) for u in expect)
         assert tl.choice["bundles_if_compress"] == len(set(read) | set(gi.units))      # n_cmp: the read crosses + the original query units (the unknown word itself is one; no stand-in)
-        if n == 1:
-            assert M.bundle_id(1, "東京タワー") not in words                      # the stand-in whose cross was NOT read
+        assert M.bundle_id(1, "東京タワー") not in words                          # the stand-in whose cross was NOT read (in neither case)
     # the original query units are still seeds (a question with a known word): the set is read crosses + originals + answer, minus nothing but the unread stand-ins
     q2 = "東京都庁の首都は何ですか"
     gi2 = W.intake(space, q2, ix)
@@ -615,8 +746,10 @@ def test_combined_with_grammar_on(idx, wi, ctx_):
     q = "東京都庁の人口は何ですか"
     c = CB.ask_combined(idx, q, effort=EFFORT, windows=wi, assembly=False, grammar="on")
     a = c.answer_obj()
-    h0 = a["header"][0]
+    h0 = dict(a["header"][0])
+    n_vs, n_rvs = h0.pop("via_standin"), h0.pop("read_via_standin")                 # G3-k2 (L-821): both marks counted over the list in the grammar row
     assert h0 == {"source": "grammar", "form": "predicate", "slot": None, "predicate": "人口", "standins": 2, "unknown_words": ["東京都庁"]}
+    assert n_vs == sum(1 for e in a["entries"] if "via_standin" in e["marks"]) and n_rvs == sum(1 for e in a["entries"] if "read_via_standin" in e["marks"])
     assert a["header"][1]["source"].startswith("flat/")
     assert a["grammar_form"]["form"] == "predicate" and a["standins"][0]["added"] == ["東京", "東京タワー"]
     assert c.config["grammar"]["on"] and c.thought_obj()["grammar"]["stem"] == "whole_word"
@@ -629,6 +762,8 @@ def test_combined_with_grammar_on(idx, wi, ctx_):
         assert ("via_standin" in e["marks"]) == all(m.get("via_standin") is True for m in e["members"])
     txt = CB.format_text(c)
     assert "grammar: 形 predicate" in txt and "東京都庁" in txt
+    assert "印の件数: via_standin %d 件・read_via_standin %d 件" % (n_vs, n_rvs) in txt           # both counts in the combined header's grammar row
+    assert c.config["grammar"]["flat_order"] == "eq_first"
     # the shared intake is the same as the one the call makes
     gi = W.intake(idx.space, q, ix)
     c2 = CB.ask_combined(idx, q, effort=EFFORT, windows=wi, assembly=False, grammar="on", grammar_intake=gi)
@@ -687,6 +822,108 @@ def test_cli_grammar_switch(tmp_path, data_file):
 
 
 # ---------------------------------------------------------------------------------------------------------------------------------
+# Part 5b (G3-k2, L-819..L-822): the flat order switch, both marks wherever entries are printed
+# ---------------------------------------------------------------------------------------------------------------------------------
+def test_the_flat_order_switch_and_its_defaults(idx, wi, ctx_):
+    ix, recs = ctx_
+    assert W.DEFAULT_FLAT_ORDER == "eq_first" and W.FLAT_ORDERS == ("eq_first", "qcount_first") == cy.READ_ORDERS_FLAT
+    assert W.flat_order_of(None) == "eq_first" and W.flat_order_of("qcount_first") == "qcount_first" and W.flat_order_of("eq_first") == "eq_first"
+    with pytest.raises(ValueError):
+        W.flat_order_of("grammar_first")                                         # a window order
+    with pytest.raises(ValueError):
+        W.ReadHook("RUN", recs, None, "nope")
+    assert W.ReadHook("RUN", recs, None).order == "eq_first"
+    gi = W.intake(idx.space, "東京都庁の人口は何ですか", ix)
+    assert W.tier_kw(gi, "RUN", recs)["grammar"].order == "eq_first" and W.tier_kw(gi, "RUN", recs, "qcount_first")["grammar"].order == "qcount_first"
+    assert all(v["grammar"].order == "eq_first" for v in W.reask_kw(gi, ["RUN", "WORD"], recs).values())
+    assert all(v["grammar"].order == "qcount_first" for v in W.reask_kw(gi, ["RUN", "WORD"], recs, "qcount_first").values())
+    # a hook without the attribute is eq_first (the default of the grammar-on path)
+    ts, facts, st = idx.space.tiers["RUN"], idx.facts["RUN"], idx.stores["RUN"]
+    kw = W.tier_kw(gi, "RUN", recs)
+    ctx = cy.make_context(kw["units"], standins=kw["standins"])
+    bare = lambda seeds: W.ReadHook("RUN", recs, gi.slot)(seeds)
+    assert cy.plan_read(ts, facts, ctx, st, None, True, False, 4, bare).order_groups == cy.plan_read(ts, facts, ctx, st, None, True, False, 4, kw["grammar"]).order_groups
+    # ask / combined: the default is eq_first, qcount_first is G3-k's, a bad value is an error
+    q = "東京都庁の人口は何ですか"
+    d = A.ask(idx, q, nodes=3, grammar="on")
+    e = A.ask(idx, q, nodes=3, grammar="on", flat_order="eq_first")
+    o = A.ask(idx, q, nodes=3, grammar="on", flat_order="qcount_first")
+    assert d.to_bytes() == e.to_bytes() and d.answer_obj()["read"]["order"] == "eq+grammar" and o.answer_obj()["read"]["order"] == "qcount+grammar"
+    assert d.outcome("RUN").result.plan.read != o.outcome("RUN").result.plan.read
+    with pytest.raises(ValueError):
+        A.ask(idx, q, nodes=3, grammar="on", flat_order="grammar_first")
+    cd = CB.ask_combined(idx, q, nodes=3, windows=wi, assembly=False, grammar="on")
+    ce = CB.ask_combined(idx, q, nodes=3, windows=wi, assembly=False, grammar="on", flat_order="eq_first")
+    cq = CB.ask_combined(idx, q, nodes=3, windows=wi, assembly=False, grammar="on", flat_order="qcount_first")
+    assert cd.to_bytes() == ce.to_bytes() and cq.config["grammar"]["flat_order"] == "qcount_first" and cq.to_bytes() != cd.to_bytes()
+    assert cd.config["window"]["read_order"] == cq.config["window"]["read_order"] == "qcount_first"        # the windows' order is not touched
+    # the re-plan behind read_via_standin uses the same order: every read_via_standin entry's cross is outside the same-order stand-in-free read set
+    plan = d.outcome("RUN").result.plan
+    kw_ = W.tier_kw(gi, "RUN", recs)
+    import dataclasses
+    oo = cy.plan_read(ts, facts, dataclasses.replace(cy.make_context(kw_["units"], standins=kw_["standins"]), standins=()), st, None, True, False, 3, kw_["grammar"])
+    assert plan.order_only_read == oo.read
+    # grammar "off" does not look at flat_order (the bytes of before)
+    assert A.ask(idx, q, nodes=3, flat_order="qcount_first").to_bytes() == A.ask(idx, q, nodes=3).to_bytes()
+
+
+def test_both_marks_in_the_ask_text_form(idx):
+    """G3-k2 (L-821): `via_standin` and `read_via_standin` are shown in the ask text form (the list lines and the 文法層 header count) as in the combined blocks; grammar off names neither."""
+    q = "日本海の東京タワーは何ですか"
+    c = A.ask(idx, q, nodes=1, grammar="on", flat_order="qcount_first")
+    a = c.answer_obj()
+    assert any(e["read_via_standin"] for e in a["entries"])
+    txt = A.format_text(c)
+    n_vs, n_rvs = sum(1 for e in a["entries"] if e["via_standin"]), sum(1 for e in a["entries"] if e["read_via_standin"])
+    assert "未知語の代役のみ %d 件 (via_standin) / 代役の並びで読んだ十字 %d 件 (read_via_standin)" % (n_vs, n_rvs) in txt and "平らな十字の読む順 qcount_first" in txt
+    lines = [l for l in txt.splitlines() if l.startswith("  [")]
+    if a["verdict"] == A.CHOICE:
+        assert len(lines) == len(a["entries"])
+        for l, e in zip(lines, a["entries"]):
+            assert ("【未知語の代役のみ】" in l) == e["via_standin"] and ("【代役の並びで読んだ十字】" in l) == e["read_via_standin"]
+    else:
+        assert "  印:【代役の並びで読んだ十字】" in txt or "  印:【未知語の代役のみ】【代役の並びで読んだ十字】" in txt
+    off = A.format_text(A.ask(idx, q, nodes=1))
+    assert "via_standin" not in off and "代役" not in off
+    # a multi-entry list shows the marks per line
+    m = A.ask(idx, "東京都庁の人口は何ですか", nodes=1000, grammar="on")
+    assert m.answer_obj()["verdict"] == A.CHOICE
+    lm = [l for l in A.format_text(m).splitlines() if l.startswith("  [")]
+    assert len(lm) == len(m.answer_obj()["entries"])
+    for l, e in zip(lm, m.answer_obj()["entries"]):
+        assert ("【未知語の代役のみ】" in l) == e["via_standin"] and ("【代役の並びで読んだ十字】" in l) == e["read_via_standin"]
+
+
+def test_cli_read_order_defaults(tmp_path, data_file):
+    cache = str(tmp_path / "c")
+    b = cli(["build", "--structure", "combined", "--data", data_file, "--cache", cache, "--level", "low"])
+    assert b.returncode == 0, b.stderr[-2000:]
+    base = ["ask", "--data", data_file, "--cache", cache, "--level", "low", "--question", "東京都庁の人口は何ですか", "--effort", EFFORT]
+    for st in (["--layers", "off"], ["--structure", "combined", "--assembly", "off"]):
+        dflt = cli(base + st + ["--grammar", "on", "--format", "json"])
+        eqf = cli(base + st + ["--grammar", "on", "--read-order", "eq_first", "--format", "json"])
+        qcf = cli(base + st + ["--grammar", "on", "--read-order", "qcount_first", "--format", "json", "--show-thought"])
+        assert dflt.returncode == eqf.returncode == qcf.returncode == 0, (dflt.stderr + eqf.stderr + qcf.stderr)[-2000:]
+        assert dflt.stdout == eqf.stdout                                          # default with --grammar on = eq_first
+        if st[0] == "--layers":
+            assert json.loads(dflt.stdout)["answer"]["read"]["order"] == "eq+grammar" and json.loads(qcf.stdout)["answer"]["read"]["order"] == "qcount+grammar"
+        else:
+            assert json.loads(dflt.stdout)["answer"]["header"][0]["via_standin"] >= 0
+            assert json.loads(qcf.stdout)["thought"]["config"]["grammar"]["flat_order"] == "qcount_first"
+    # grammar off: --read-order eq_first changes nothing; the windows' orders unchanged; eq_first is not a window order; grammar_first is not a flat order
+    off = cli(base + ["--layers", "off", "--format", "json"])
+    off_eq = cli(base + ["--layers", "off", "--read-order", "eq_first", "--format", "json"])
+    assert off.returncode == 0 and off.stdout == off_eq.stdout
+    sl = cli(base + ["--structure", "slide", "--read-order", "eq_first"])
+    assert sl.returncode == 2 and "eq_first" in sl.stderr
+    gf = cli(base + ["--layers", "off", "--grammar", "on", "--read-order", "grammar_first"])
+    assert gf.returncode == 2 and "window order" in gf.stderr
+    sd = cli(base + ["--structure", "slide", "--format", "json"])
+    sq = cli(base + ["--structure", "slide", "--read-order", "qcount_first", "--format", "json"])
+    assert sd.returncode == 0 and sd.stdout == sq.stdout                           # the slide default is still qcount_first
+
+
+# ---------------------------------------------------------------------------------------------------------------------------------
 # Part 6: defaults and bytes
 # ---------------------------------------------------------------------------------------------------------------------------------
 def test_grammar_off_is_byte_identical_and_names_nothing(idx, wi):
@@ -695,7 +932,7 @@ def test_grammar_off_is_byte_identical_and_names_nothing(idx, wi):
         o = A.ask(idx, q, effort=EFFORT, grammar="off")
         assert d.to_bytes() == o.to_bytes() and o.grammar is None
         s = d.to_bytes().decode("utf-8")
-        for key in ("grammar_order", "via_standin", "standins", "grammar_form", "qcount+grammar", "order_only_read", "stem_whole_word"):
+        for key in ("grammar_order", "via_standin", "standins", "grammar_form", "qcount+grammar", "eq+grammar", "order_only_read", "stem_whole_word"):
             assert key not in s
         dc = CB.ask_combined(idx, q, effort=EFFORT, windows=wi, assembly=False)
         oc = CB.ask_combined(idx, q, effort=EFFORT, windows=wi, assembly=False, grammar="off")
@@ -733,6 +970,7 @@ def test_bytes_do_not_depend_on_the_hash_seed(tmp_path):
         "    h.update(CB.ask_combined(idx, q, effort='fast', windows=wi, assembly=False, grammar='on').to_bytes())\n"
         "    h.update(CB.ask_combined(idx, q, effort='fast', windows=wi, assembly=True, grammar='on', window_evidence='plain').to_bytes())\n"
         "    h.update(W.intake(space, q).reading.to_bytes())\n"
+        "    h.update(repr([[(g, ss) for g, ss in A.ask(idx, q, nodes=n, grammar='on', flat_order=o).outcome('RUN').result.plan.order_groups] for n in (1, 2, 5) for o in ('eq_first', 'qcount_first')]).encode())\n"
         "print(h.hexdigest())\n" % ROOT)
     out = set()
     for seed in ("0", "1", "12345"):

@@ -828,24 +828,44 @@ def placement_units(p) -> set:
     return units
 
 
+READ_ORDERS_FLAT: Tuple[str, ...] = ("eq_first", "qcount_first")     # G3-k2 (L-819): the grammar-on order of the flat plane's crosses; eq_first is the default
+
+
 def _plan_read_grammar(seeds, keep, shared, held, q, sq, rq, grammar, read_cap) -> ReadPlan:
-    """G3-k (L-803): the read order under a cap with the grammar layer's group (see plan_read)."""
+    """G3-k (L-803) / G3-k2 (L-819): the read order under a cap with the grammar layer's group (see plan_read).  The order is `grammar.order`
+    (a hook without the attribute = "eq_first", the default of the grammar-on path)."""
+    order = getattr(grammar, "order", "eq_first")
+    if order not in READ_ORDERS_FLAT:
+        raise ValueError("flat read order: %s" % " | ".join(READ_ORDERS_FLAT))
     gorder = {"query_unit": 0, "holds_query_unit": 1, "shares_with_query": 2}
     rank = grammar(sorted(set(keep) | set(shared)))
     blocks: Dict[tuple, List[str]] = {}
     for s_ in keep:
         n_o, n_s = held[s_]
-        g = "query_unit" if s_ in q or s_ in sq else "holds_query_unit"
+        # G3-k3 (L-826): under eq_first a cross whose SEED is a stand-in is "a cross that holds a question unit", not "the question unit's own cross": group
+        # holds_query_unit, so the original words' crosses (group query_unit) are always read first.  qcount_first keeps G3-k's group (stand-in seed = query_unit).
+        g = "query_unit" if s_ in q or (s_ in sq and order != "eq_first") else "holds_query_unit"
         rk, reason, kl = rank[s_]
-        blocks.setdefault((-n_o, -n_s, rk, gorder[g], -rq(s_), g, reason, kl), []).append(s_)
+        if order == "eq_first":
+            # E_Q first, T7b's own order (the group, then E_Q descending); only inside an exact E_Q tie (integers: counts) the original units held,
+            # the stand-in units held, the grammar kind.  Equal on every field = one block.
+            blocks.setdefault((gorder[g], -rq(s_), -n_o, -n_s, rk, g, reason, kl), []).append(s_)
+        else:
+            blocks.setdefault((-n_o, -n_s, rk, gorder[g], -rq(s_), g, reason, kl), []).append(s_)
     for s_ in shared:
         rk, reason, kl = rank[s_]
-        blocks.setdefault((0, 0, rk, gorder["shares_with_query"], -rq(s_), "shares_with_query", reason, kl), []).append(s_)
+        if order == "eq_first":
+            blocks.setdefault((gorder["shares_with_query"], -rq(s_), 0, 0, rk, "shares_with_query", reason, kl), []).append(s_)
+        else:
+            blocks.setdefault((0, 0, rk, gorder["shares_with_query"], -rq(s_), "shares_with_query", reason, kl), []).append(s_)
     ordered: List[Tuple[str, Tuple[str, ...]]] = []
     rows: List[tuple] = []
     for k in sorted(blocks):
         ordered.append((k[5], tuple(sorted(blocks[k]))))
-        rows.append((-k[0], -k[1], k[6], k[7]))
+        if order == "eq_first":
+            rows.append((-k[2], -k[3], k[6], k[7], -k[1]))                   # (originals held, stand-ins held, group reason, kind label, E_Q)
+        else:
+            rows.append((-k[0], -k[1], k[6], k[7]))
     rd: List[str] = []
     bnd = 0
     for g, ss in ordered:
@@ -866,12 +886,16 @@ def plan_read(tier: TierSpace, facts: TierFacts, ctx: QueryContext,
     units, crosses holding a unit that shares a sentence with a query unit, the rest; inside a
     group by E_Q(seed) descending; equal values are read together or not at all.
 
-    `grammar` (G3-k, L-803; only with `query_crosses_only` and a `read_cap`): a callable seeds -> {seed: (rank, reason, kind label)} (the grammar
+    `grammar` (G3-k, L-803; G3-k2, L-819; only with `query_crosses_only` and a `read_cap`): a callable seeds -> {seed: (rank, reason, kind label)} (the grammar
     layer's read order of the candidate crosses by the kind of their centre word, supplied by verantyx.line3.wiring; this module imports nothing of
-    it).  The order of the crosses read under the cap becomes: (1) the number of ORIGINAL question units the cross holds, more first, then the
-    number of stand-in units (ctx.standins), more first -- the owner's 「問いの語を多く持つ窓を先に」 for crosses; (2) inside a tie of that
-    count the grammar group (rank: the question's slot kind first, then the ladder, tied kinds, none); (3) inside that the order of T7b (the
-    group query_unit / holds_query_unit / shares_with_query, then E_Q descending).  Equal on all keys = ONE block, read together or not at all.
+    it), with an attribute `order`:
+      "eq_first" (default, owner after G3-k: 「E_Q が先、単位数は同点内」): T7b's own order -- the group (query_unit, holds_query_unit, shares_with_query), then E_Q
+          descending (G3-k3, L-826, 「代役の種は holds_query_unit の群へ」: a cross whose SEED is a stand-in is in holds_query_unit, never in query_unit, so the
+          original words' crosses are read first; E_Q first stays inside each group) -- and ONLY inside an exact E_Q tie (integer counts) the number of ORIGINAL question units the cross holds (more first), then the number of
+          stand-in units (ctx.standins), then the grammar kind (rank: the question's slot kind first, then the ladder, tied kinds, none);
+      "qcount_first" (G3-k's order, kept): (1) the number of original question units held, then of stand-in units; (2) inside a tie of that count the grammar
+          group; (3) inside that the group of T7b, then E_Q descending.
+    Equal on all keys = ONE block, read together or not at all.
     The candidates (the crosses holding a query unit) and so the entries of a full read are unchanged: only the sequence."""
     q = set(ctx.energy_units)
     sq = set(ctx.standins) - q
@@ -1342,11 +1366,13 @@ class _OverlayPlacements:
 
 
 RAISE_LEVELS_DEFAULT = ("high", "max")
+STACK_REFUSED = "stack: closed cross not rebuilt"        # G4-c (L-G4-76): why a closed cross of a frozen stack is not rebuilt on demand
 
 
 def ask_tier(tier: TierSpace, question: str, placements, *, raise_budget: Optional[str] = "on_demand",
              raise_levels: Sequence[str] = RAISE_LEVELS_DEFAULT, weights=None,
-             group_insert: str = "whole", order: str = "forward", on_collapse: str = "stop", **kw) -> TierResult:
+             group_insert: str = "whole", order: str = "forward", on_collapse: str = "stop",
+             foundation: str = "off", adhesion=None, **kw) -> TierResult:
     """`_ask_tier_once` (all its keywords) plus T6y option `raise_budget="on_demand"` (L-171, owner:
     "問いで必要になったときだけ上げる"): the placement budget of a cross is raised only when a query needs
     it.  "Needs" = the question has no adopted state and a cross it read stopped by budget (stop ==
@@ -1356,7 +1382,13 @@ def ask_tier(tier: TierSpace, question: str, placements, *, raise_budget: Option
     rebuilt crosses in place of the stored ones, until a state is adopted or the levels run out.  What
     was raised is recorded in thought_obj()["variant"]["budget_raise"] (the stored placements are
     not changed).  T6z (owner): "on_demand" is the DEFAULT; `raise_budget=None` is exactly
-    `_ask_tier_once` (the previous default, byte-identical)."""
+    `_ask_tier_once` (the previous default, byte-identical).
+
+    G4-c (L-G4-76, L-G4-77; both default to the old behaviour byte for byte): a cross that comes from a FROZEN STACK (`Placement.from_stack`, L-G4-68) is never
+    rebuilt: the stack's flats are what the reader reads, and a rebuild would put a one-shot cross (quotient on, foundation off, group_insert "whole") in its
+    place.  Such a closed cross is refused, typed: `variant.budget_raise.refused = {"reason": STACK_REFUSED, "seeds": [...]}` (named only when something was
+    refused), the question is not asked again for it.  `foundation` / `adhesion` (G1-b wiring): a cross rebuilt for an index with the foundation on is
+    rebuilt WITH the seats and enters the re-ask through `contract_for_read` (the reader sees plain flats)."""
     res = _ask_tier_once(tier, question, placements, **kw)
     if raise_budget is None:
         return res
@@ -1369,8 +1401,11 @@ def ask_tier(tier: TierSpace, question: str, placements, *, raise_budget: Option
             raise ValueError("raise_levels: names of placement levels")
     steps: List[dict] = []
     repl: Dict[str, Placement] = {}
+    refused: set = set()
     cur = res
     w = weights
+    if foundation == "on" and adhesion is None:          # G4-c (L-G4-77): the seated weights of the store carry the tier's adhesion
+        adhesion = getattr(getattr(weights, "fnd", None), "adhesion", None)
     for lv in raise_levels:
         if cur.candidates:
             break
@@ -1380,14 +1415,20 @@ def ask_tier(tier: TierSpace, question: str, placements, *, raise_budget: Option
 
         limited = sorted(sd for sd in cur.plan.read
                          if repl.get(sd, placements.cross_for(sd)).stop == "budget" and lvl(sd) < lv_order.index(lv))
+        stacked = {sd for sd in limited if getattr(repl.get(sd, placements.cross_for(sd)), "from_stack", False)}
+        if stacked:                                      # G4-c (L-G4-76): a closed cross of a frozen stack is not rebuilt
+            refused |= stacked
+            limited = [sd for sd in limited if sd not in stacked]
         if not limited:
             break
-        w = w or pl.Weights(tier)
+        w = w or pl.Weights(tier, adhesion)
         rec = []
         for sd in limited:
             before = repl.get(sd, placements.cross_for(sd))
             nb = pl.build_cross(tier, sd, w, budget=pl.budget_level(lv), group_insert=group_insert, order=order,
-                                on_collapse=on_collapse)   # F1b (L-474), F1c (L-506)
+                                on_collapse=on_collapse, foundation=foundation, adhesion=adhesion)   # F1b (L-474), F1c (L-506), G4-c (L-G4-77)
+            if foundation == "on":
+                nb = pl.contract_for_read(nb)
             repl[sd] = nb
             rec.append({"seed": sd, "capacity_before": before.capacity, "capacity_after": nb.capacity,
                         "stop_after": nb.stop})
@@ -1400,6 +1441,10 @@ def ask_tier(tier: TierSpace, question: str, placements, *, raise_budget: Option
         info["group_insert"], info["order"] = group_insert, order
         if on_collapse != "stop":                        # F1c (L-507)
             info["on_collapse"] = on_collapse
+    if foundation == "on":                               # G4-c (L-G4-77): named only with the foundation on
+        info["foundation"] = "on"
+    if refused:                                          # G4-c (L-G4-76): named only when a stack cross was refused
+        info["refused"] = {"reason": STACK_REFUSED, "seeds": sorted(refused)}
     var = dict(cur.variant or {})
     var["budget_raise"] = info
     return replace(cur, variant=var)

@@ -47,6 +47,7 @@ from fractions import Fraction
 from typing import Dict, List, Mapping, Optional, Sequence, Tuple
 
 from verantyx.line3 import cycle as cy
+from verantyx.line3 import foundation as fd
 from verantyx.line3 import placement as pl
 from verantyx.line3 import readout as ro
 from verantyx.line3.space import TIERS, Space, build_space, load_jsonl
@@ -59,6 +60,13 @@ UNKNOWN_NO_PATH = ro.UNKNOWN_NO_PATH
 DEFAULT_LEVEL = "mid"                         # L-210: the level every S300 measurement of T5..T6ab used
 DEFAULT_BUDGET = cy.QueryBudget(64, 8)        # L-210: the query budget of the T6z / T6ab runs
 CACHE_FORMAT = "line3.placements.v1"
+CACHE_FORMAT_FOUNDATION = "line3.placements.foundation.v1"     # G4-c (L-G4-78): = experiments/line3/g4/gate1_build.py; a loader that does not know the foundation refuses it
+FOUNDATIONS = fd.FOUNDATIONS                  # G4-c: the switch of the placement API, "off" (default, every committed byte) | "on"
+STACK_REFUSED = cy.STACK_REFUSED              # G4-c (L-G4-76): the typed reason of a closed cross of a stack that is not rebuilt
+
+
+class StackRefused(ValueError):
+    """G4-c (L-G4-80, T-G4-11): what a frozen stack index refuses to do (effort "full", a seed with no cross, the windows).  A ValueError, so the command line prints it."""
 ON_COLLAPSES = ("stop", "skip")              # F1c (L-506): placement.build_cross(on_collapse=...); "stop" = L-463, the default
 GROUP_INSERTS = ("whole", "ordered")          # F1b (L-470): placement.build_cross(group_insert=...); "whole" = L-72, the default
 ORDERS = ("forward", "reverse")               # F1b: the recorded insertion order of a tied share-group (reverse = measurement probe)
@@ -133,24 +141,29 @@ def check_placement_options(group_insert: str = "whole", order: str = "forward",
     return group_insert, order
 
 
-def placement_key(group_insert: str = "whole", order: str = "forward", on_collapse: str = "stop") -> str:
+def placement_key(group_insert: str = "whole", order: str = "forward", on_collapse: str = "stop", foundation: str = "off") -> str:
     """F1b / L-471: the part of the cache key that the placement options make.  "" for the default (whole / forward):
     the file name and the pickle of every cache written before F1b stay valid; otherwise "ordered-forward" /
-    "ordered-reverse"; F1c (L-506): "-skip" is added for on_collapse="skip" (stop adds nothing: ordered caches stay valid)."""
+    "ordered-reverse"; F1c (L-506): "-skip" is added for on_collapse="skip" (stop adds nothing: ordered caches stay valid).
+    G4-c (L-G4-78, L-G1-7): with foundation="on", `foundation.placement_key_part` ("found-<sha12>" of the seats sha) is appended after "_"; "off" adds nothing."""
     group_insert, order = check_placement_options(group_insert, order, on_collapse)
-    return "" if group_insert == "whole" else "%s-%s%s" % (group_insert, order, "-skip" if on_collapse == "skip" else "")
+    base = "" if group_insert == "whole" else "%s-%s%s" % (group_insert, order, "-skip" if on_collapse == "skip" else "")
+    part = fd.placement_key_part(foundation)
+    return "_".join(x for x in (base, part) if x)
 
 
-def placement_obj(group_insert: str = "whole", order: str = "forward", on_collapse: str = "stop") -> dict:
+def placement_obj(group_insert: str = "whole", order: str = "forward", on_collapse: str = "stop", foundation: str = "off") -> dict:
     o = {"group_insert": group_insert, "order": order}
     if on_collapse != "stop":                            # F1c (L-507): only when not the default, F1b bytes unchanged
         o["on_collapse"] = on_collapse
+    if fd.check_foundation(foundation) == "on":          # G4-c (L-G4-78): only with the foundation on, so every off record is what it was
+        o["foundation"] = fd.seats_sha()
     return o
 
 
 def cache_path(cache_dir: str, data_sha: str, tier: str, level: str,
-               group_insert: str = "whole", order: str = "forward", on_collapse: str = "stop") -> str:
-    k = placement_key(group_insert, order, on_collapse)
+               group_insert: str = "whole", order: str = "forward", on_collapse: str = "stop", foundation: str = "off") -> str:
+    k = placement_key(group_insert, order, on_collapse, foundation)
     return os.path.join(cache_dir, "placements_%s_%s_%s%s.pkl" % (data_sha[:12], tier, level, "_" + k if k else ""))
 
 
@@ -164,26 +177,33 @@ def _work(seeds):
         t0 = time.time()
         out.append((s, pl.build_cross(t, s, w, budget=b, group_insert=_G.get("group_insert", "whole"),
                                       order=_G.get("order", "forward"),
-                                      on_collapse=_G.get("on_collapse", "stop")), time.time() - t0))
+                                      on_collapse=_G.get("on_collapse", "stop"),
+                                      foundation=_G.get("foundation", "off"), adhesion=_G.get("adhesion")), time.time() - t0))
     return out
 
 
 def precompute_tier(tier_space, level: str = DEFAULT_LEVEL, workers: int = 1, log=None,
-                    group_insert: str = "whole", order: str = "forward", on_collapse: str = "stop"):
+                    group_insert: str = "whole", order: str = "forward", on_collapse: str = "stop",
+                    foundation: str = "off", adhesion=None):
     """The cross of every unit of a tier at a budget level (L-211).  Returns (placements, secs per seed,
-    wall seconds).  The placements do not depend on the worker count (every cross is built alone)."""
+    wall seconds).  The placements do not depend on the worker count (every cross is built alone).
+    G4-c (L-G4-78): `foundation="on"` seats the foundation in every cross (needs the tier's `adhesion`; the placements are the full seated ones, the reader
+    sees them contracted through `_Store.cross_for`)."""
     check_placement_options(group_insert, order, on_collapse)
+    fd.check_foundation(foundation)
     b = pl.budget_level(level)
-    w = pl.Weights(tier_space)
+    w = pl.Weights(tier_space, adhesion)
     units = tier_space.units()
     t0 = time.time()
     res: Dict[str, pl.Placement] = {}
     secs: Dict[str, float] = {}
     if workers <= 1:
-        _G.update(tier=tier_space, w=w, budget=b, group_insert=group_insert, order=order, on_collapse=on_collapse)
+        _G.update(tier=tier_space, w=w, budget=b, group_insert=group_insert, order=order, on_collapse=on_collapse,
+                  foundation=foundation, adhesion=adhesion)
         parts = [_work([u]) for u in units]
     else:
-        _G.update(tier=tier_space, w=w, budget=b, group_insert=group_insert, order=order, on_collapse=on_collapse)
+        _G.update(tier=tier_space, w=w, budget=b, group_insert=group_insert, order=order, on_collapse=on_collapse,
+                  foundation=foundation, adhesion=adhesion)
         chunks = [units[i:i + 4] for i in range(0, len(units), 4)]
         ctx = mp.get_context("fork")
         with ctx.Pool(workers) as pool:
@@ -196,29 +216,46 @@ def precompute_tier(tier_space, level: str = DEFAULT_LEVEL, workers: int = 1, lo
 
 
 def save_placements(path: str, tier: str, level: str, data_sha: str, placements, secs, wall: float,
-                    group_insert: str = "whole", order: str = "forward", on_collapse: str = "stop") -> None:
+                    group_insert: str = "whole", order: str = "forward", on_collapse: str = "stop",
+                    foundation: str = "off", adhesion=None) -> None:
     check_placement_options(group_insert, order, on_collapse)
+    on = fd.check_foundation(foundation) == "on"
+    if on != (adhesion is not None):
+        raise ValueError("an adhesion goes with foundation='on' and only with it")
     tmp = path + ".part"
-    rec = {"format": CACHE_FORMAT, "data_sha256": data_sha, "tier": tier, "level": level,
+    rec = {"format": CACHE_FORMAT_FOUNDATION if on else CACHE_FORMAT, "data_sha256": data_sha, "tier": tier, "level": level,
            "placements": dict(placements), "secs": dict(secs), "wall_s": wall}
     if placement_key(group_insert, order, on_collapse):  # F1b: the default file is byte-for-byte what it was
         rec.update({"group_insert": group_insert, "order": order})
         if on_collapse != "stop":                        # F1c (L-506): an ordered+stop file is what F1b wrote
             rec["on_collapse"] = on_collapse
+    if on:                                               # G4-c (L-G4-78): as experiments/line3/g4/gate1_build.py writes it (group_insert / order always named there)
+        rec.update({"group_insert": group_insert, "order": order, "foundation": fd.seats_sha(), "adhesion_sha256": adhesion.sha256()})
     with open(tmp, "wb") as f:
         pickle.dump(rec, f, protocol=pickle.HIGHEST_PROTOCOL)
     os.replace(tmp, path)
 
 
 def load_placements(path: str, tier_space, tier: str, level: str, data_sha: str,
-                    group_insert: str = "whole", order: str = "forward", on_collapse: str = "stop") -> Dict[str, pl.Placement]:
+                    group_insert: str = "whole", order: str = "forward", on_collapse: str = "stop",
+                    foundation: str = "off", adhesion=None) -> Dict[str, pl.Placement]:
     """Load a cache file; refuses one that is for other data, another tier or level, a different unit set, or
-    (F1b, L-471) other placement options.  A file without the option keys is a whole / forward cache."""
+    (F1b, L-471) other placement options.  A file without the option keys is a whole / forward cache.
+    G4-c (L-G4-78): with foundation="on" the file has to be a foundation cache (format `line3.placements.foundation.v1`) of THIS seats sha (and, when the tier's `adhesion`
+    is given, of this adhesion table), every placement in it seated with it; with "off" a foundation file is refused (its format is not the plain one), as is a plain file
+    for "on"."""
     check_placement_options(group_insert, order, on_collapse)
+    on = fd.check_foundation(foundation) == "on"
     with open(path, "rb") as f:
         d = pickle.load(f)
-    if d.get("format") != CACHE_FORMAT or d["data_sha256"] != data_sha or d["tier"] != tier or d["level"] != level:
-        raise ValueError("placement cache %s is not for this data / tier / level" % path)
+    if d.get("format") != (CACHE_FORMAT_FOUNDATION if on else CACHE_FORMAT) or d["data_sha256"] != data_sha or d["tier"] != tier or d["level"] != level:
+        raise ValueError("placement cache %s is not for this data / tier / level / foundation (format %s, foundation=%s)" % (path, d.get("format"), foundation))
+    if on:
+        if d.get("foundation") != fd.seats_sha() or (adhesion is not None and d.get("adhesion_sha256") != adhesion.sha256()):
+            raise ValueError("placement cache %s was seated with another foundation / adhesion (seats_sha %s, not %s)" % (
+                path, str(d.get("foundation"))[:12], fd.seats_sha()[:12]))
+        if any(p.foundation != fd.seats_sha() for p in d["placements"].values()):
+            raise ValueError("placement cache %s holds a placement that is not seated with this foundation" % path)
     if (d.get("group_insert", "whole"), d.get("order", "forward"), d.get("on_collapse", "stop")) != \
             (group_insert, order, on_collapse):
         raise ValueError("placement cache %s was built with group_insert=%s order=%s on_collapse=%s, not group_insert=%s order=%s on_collapse=%s"
@@ -230,81 +267,199 @@ def load_placements(path: str, tier_space, tier: str, level: str, data_sha: str,
 
 
 class _Store:
-    """cross_for(seed): the loaded cross, else built on demand at the index's level (Placer, L-07)."""
+    """cross_for(seed): the loaded cross, else built on demand at the index's level (Placer, L-07).
+
+    G4-c (L-G4-79): `foundation` / `adhesion` seat the foundation in the crosses built on demand (the Placer's), and the reader's view of a seated cross is its
+    CONTRACTED form (`placement.contract_for_read`, memoised: the plain flats the reader always read, with the arm labels kept aside for display).  A view that
+    is already contracted (the stack's, `stack.as_placements`) and a placement without a foundation are returned as they are.  `on_demand=False` (a frozen stack,
+    T-G4-11): a seed with no cross RAISES `StackRefused`; no cross is ever built and no Placer exists.  (`self.on_demand` stays the counter of crosses built on
+    demand that the experiments read; the switch is `self.builds`.)"""
 
     def __init__(self, tier_space, level: str, loaded: Optional[Mapping[str, pl.Placement]] = None,
-                 group_insert: str = "whole", order: str = "forward", on_collapse: str = "stop") -> None:
+                 group_insert: str = "whole", order: str = "forward", on_collapse: str = "stop",
+                 foundation: str = "off", adhesion=None, on_demand: bool = True) -> None:
         self._loaded = dict(loaded or {})
         self.group_insert, self.order, self.on_collapse = group_insert, order, on_collapse
-        self.placer = pl.Placer(tier_space, pl.budget_level(level), group_insert=group_insert, order=order,
-                                on_collapse=on_collapse)
+        self.foundation, self.adhesion = fd.check_foundation(foundation), adhesion
+        self.builds = bool(on_demand)
+        if (self.foundation == "on") != (adhesion is not None):
+            raise ValueError("an adhesion goes with foundation='on' and only with it")
+        if self.builds:
+            self.placer = pl.Placer(tier_space, pl.budget_level(level), group_insert=group_insert, order=order,
+                                    on_collapse=on_collapse, foundation=foundation, adhesion=adhesion)
+            self._w = self.placer.w
+        else:
+            self.placer = None
+            self._w = pl.Weights(tier_space, adhesion)
+        self.tier_name = tier_space.name
+        self._view: Dict[str, pl.Placement] = {}
         self.on_demand = 0
 
     @property
     def w(self):
-        return self.placer.w
+        return self._w
 
     def cross_for(self, seed: str) -> pl.Placement:
+        v = self._view.get(seed)
+        if v is not None:
+            return v
         p = self._loaded.get(seed)
         if p is None:
+            if not self.builds:
+                raise StackRefused("tier %s has no cross for the seed %r in this frozen stack, and a stack builds none on demand (L-G4-80)" % (self.tier_name, seed))
             self.on_demand += 1
             p = self.placer.cross_for(seed)
+        if p.foundation is not None and not p.contracted:
+            p = self._view[seed] = pl.contract_for_read(p)
         return p
 
 
 class Index:
-    """The space with the stored placements of every requested tier."""
+    """The space with the stored placements of every requested tier.
+
+    G4-c: `foundation="on"` (L-G4-78, default "off" = every committed byte) seats the foundation in every cross: the adhesion table of each tier is computed ONCE
+    from the space (`foundation.adhesions_of_space`, or handed in as `adhesions=`), the crosses built on demand and by `precompute` are the seated ones, the cache key
+    gets `found-<sha12>`, and the reader sees the contracted views (`_Store.cross_for`).  `stack` (set by `from_stack` only) = the identity of the frozen stack step the
+    placements are views of (L-G4-79); such an index builds nothing (`_Store(on_demand=False)`) and refuses `effort="full"`."""
 
     def __init__(self, space: Space, data_sha: str = "", level: str = DEFAULT_LEVEL,
                  tiers: Sequence[str] = TIERS, loaded: Optional[Mapping[str, Mapping[str, pl.Placement]]] = None,
-                 *, group_insert: str = "whole", order: str = "forward", on_collapse: str = "stop") -> None:
+                 *, group_insert: str = "whole", order: str = "forward", on_collapse: str = "stop",
+                 foundation: str = "off", adhesions: Optional[Mapping[str, "fd.Adhesion"]] = None,
+                 stack: Optional[dict] = None) -> None:
         pl.budget_level(level)
         self.group_insert, self.order = check_placement_options(group_insert, order, on_collapse)     # F1b (L-470), F1c (L-506)
         self.on_collapse = on_collapse
+        self.foundation = fd.check_foundation(foundation)
         self.space, self.data_sha, self.level = space, data_sha, level
         self.cache_dir: Optional[str] = None             # G3-e: where from_jsonl read its caches (the window index of structure="slide" uses it)
         self.tiers = parse_tiers(tiers)
+        for t in self.tiers:
+            if t not in space.tiers:
+                raise ValueError("tier %s is not in this space (it holds %s)" % (t, ", ".join(space.tiers)))
+        self.stack = dict(stack) if stack is not None else None
+        self.stack_state = None                          # G4-c: the stack.StackState a from_stack index reads (None otherwise)
+        if self.foundation == "on":                      # G4-c (L-G4-78): once per index
+            self.adhesions = dict(adhesions) if adhesions is not None else fd.adhesions_of_space(space, self.tiers)
+            for t in self.tiers:
+                if t not in self.adhesions:
+                    raise ValueError("no adhesion for tier %s" % t)
+        else:
+            if adhesions:
+                raise ValueError("adhesions go with foundation='on' and only with it")
+            self.adhesions = {}
         self.facts = {t: cy.TierFacts(space.tiers[t]) for t in self.tiers}
         self.stores = {t: _Store(space.tiers[t], level, (loaded or {}).get(t), self.group_insert, self.order,
-                                 self.on_collapse)
+                                 self.on_collapse, self.foundation, self.adhesions.get(t), on_demand=self.stack is None)
                        for t in self.tiers}
 
     @property
     def placement_is_default(self) -> bool:
-        return self.group_insert == "whole" and self.order == "forward" and self.on_collapse == "stop"
+        return (self.group_insert == "whole" and self.order == "forward" and self.on_collapse == "stop"
+                and self.foundation == "off" and self.stack is None)
+
+    def placement_record(self) -> Optional[dict]:
+        """What `Combined.placement` names: None for the default; else the options (F1b/F1c), the foundation's seats sha (G4-c, L-G4-78) and, for a stack, its identity
+        (L-G4-79: structure "stack", step, state_sha256 per tier, seats_sha, order)."""
+        if self.placement_is_default:
+            return None
+        o = placement_obj(self.group_insert, self.order, self.on_collapse, self.foundation)
+        if self.stack is not None:
+            o.update({"structure": "stack", "step": self.stack["step"], "state_sha256": dict(self.stack["state_sha256"]),
+                      "seats_sha": self.stack["seats_sha"], "stack_order": self.stack["order"]})
+        return o
 
     @classmethod
     def from_jsonl(cls, path: str, cache_dir: Optional[str] = None, level: str = DEFAULT_LEVEL,
                    tiers: Sequence[str] = TIERS, *, group_insert: str = "whole", order: str = "forward",
-                   on_collapse: str = "stop") -> "Index":
+                   on_collapse: str = "stop", foundation: str = "off") -> "Index":
         check_placement_options(group_insert, order, on_collapse)
+        fd.check_foundation(foundation)
         sha = file_sha256(path)
         space = build_space(load_jsonl(path))
+        names = parse_tiers(tiers)
+        adhs = fd.adhesions_of_space(space, names) if foundation == "on" else {}
         loaded = {}
-        for t in parse_tiers(tiers):
+        for t in names:
             if cache_dir:
-                p = cache_path(cache_dir, sha, t, level, group_insert, order, on_collapse)    # F1b/F1c: the options are in the file name
+                p = cache_path(cache_dir, sha, t, level, group_insert, order, on_collapse, foundation)    # F1b/F1c/G4-c: the options are in the file name
                 if os.path.exists(p):
-                    loaded[t] = load_placements(p, space.tiers[t], t, level, sha, group_insert, order, on_collapse)
-        ix = cls(space, sha, level, tiers, loaded, group_insert=group_insert, order=order, on_collapse=on_collapse)
+                    loaded[t] = load_placements(p, space.tiers[t], t, level, sha, group_insert, order, on_collapse, foundation, adhs.get(t))
+        ix = cls(space, sha, level, names, loaded, group_insert=group_insert, order=order, on_collapse=on_collapse,
+                 foundation=foundation, adhesions=adhs or None)
         ix.cache_dir = cache_dir
+        return ix
+
+    @classmethod
+    def from_stack(cls, state_or_dir, tiers: Sequence[str] = TIERS, *, data=None, step: Optional[int] = None,
+                   foundation: str = "off", level: str = DEFAULT_LEVEL, order: str = "forward") -> "Index":
+        """G4-c (L-G4-79, docs/LINE3_G4_GROWTH_METER.md 6.2): the index over a FROZEN STACK step.  The placements are `stack.as_placements(state, tier)` (the
+        read views; runtime objects, never a pickle: the `from_stack` mark does not survive one, L-G4-68), the space is the prefix space of the state
+        (`build_space(rows, tiers=)`, a subset of the tiers builds only those), the store is `_Store(on_demand=False)`.
+        `state_or_dir` = a `stack.StackState`, or the directory a `stack.save` wrote (then `data` (a jsonl path or the documents) and `step` pick the snapshot: its key is
+        the sha of the first `step` documents, `step=None` = all of them; `foundation` / `level` / `order` name the sub-directory).  With a StackState `data` /
+        `step`, when given, only CHECK it.  Refused (StackError->StackRefused, a ValueError): a snapshot for another prefix / corpus, level, order, foundation or tier set,
+        a state whose identity does not recompute, a tier the state does not hold."""
+        from verantyx.line3 import stack as st
+        names = parse_tiers(tiers)
+        docs = None
+        if data is not None:
+            docs = st.load_docs(data) if isinstance(data, str) else [list(d) for d in data]
+        try:
+            if isinstance(state_or_dir, st.StackState):
+                state = state_or_dir
+                if step is not None and step != state.step:
+                    raise StackRefused("the state is step %d, not the step %d asked for" % (state.step, step))
+            else:
+                if docs is None:
+                    raise StackRefused("reading a stack directory needs the corpus (data=): the snapshot is keyed by the prefix sha")
+                k = len(docs) if step is None else step
+                if not 0 <= k <= len(docs):
+                    raise StackRefused("step %d is outside the corpus (%d articles)" % (k, len(docs)))
+                state = st.load(str(state_or_dir), st.prefix_sha256(docs[:k]), foundation, names, level, order)
+        except st.StackError as e:
+            raise StackRefused("stack: %s" % e) from e
+        if docs is not None and st.prefix_sha256(docs[:state.step]) != state.prefix_sha256:
+            raise StackRefused("stack: the corpus given is not the prefix this state was built on (step %d, prefix %s)" % (state.step, state.prefix_sha256[:12]))
+        for t in names:
+            if t not in state.tier_names:
+                raise StackRefused("stack: the state holds the tiers %s, not %s" % (",".join(state.tier_names), t))
+        rows = [json.loads(l) for doc in state.lines for l in doc]
+        space = build_space(rows, tiers=names)
+        loaded = {t: st.as_placements(state, t) for t in names}
+        adhs = {}
+        if state.foundation == "on":
+            for t in names:                              # the stack's own (memoised) adhesion; the space it was made on is equal to this one
+                ts, adh = st.tier_space(state, t)
+                if ts.sentence_units != space.tiers[t].sentence_units:
+                    raise StackRefused("stack: the prefix space of %s differs from the one the stack was built on" % t)
+                adhs[t] = adh
+        info = {"step": state.step, "state_sha256": {t: state.shas[t] for t in names}, "seats_sha": state.seats_sha, "order": state.order,
+                "prefix_sha256": state.prefix_sha256, "title_order_sha256": state.title_order_sha256, "level": state.level}
+        ix = cls(space, state.prefix_sha256, state.level, names, loaded, group_insert="ordered", order="forward", on_collapse="stop",
+                 foundation=state.foundation, adhesions=adhs or None, stack=info)
+        ix.stack_state = state
         return ix
 
     def precompute(self, cache_dir: Optional[str] = None, workers: int = 1, log=None) -> Dict[str, dict]:
         """Build the crosses of every unit of every tier (replacing what was loaded) and, with a cache
         directory, write them.  Returns {tier: {units, seconds_wall, seconds_cpu}}."""
+        if self.stack is not None:
+            raise StackRefused("a frozen stack index builds nothing (stack build writes the stack)")
         rep = {}
         for t in self.tiers:
             ts = self.space.tiers[t]
             placements, secs, wall = precompute_tier(ts, self.level, workers, group_insert=self.group_insert,
-                                                     order=self.order, on_collapse=self.on_collapse)
+                                                     order=self.order, on_collapse=self.on_collapse,
+                                                     foundation=self.foundation, adhesion=self.adhesions.get(t))
             self.stores[t]._loaded = dict(placements)
+            self.stores[t]._view = {}
             if cache_dir:
                 os.makedirs(cache_dir, exist_ok=True)
                 save_placements(cache_path(cache_dir, self.data_sha, t, self.level, self.group_insert, self.order,
-                                           self.on_collapse),
+                                           self.on_collapse, self.foundation),
                                 t, self.level, self.data_sha, placements, secs, wall, self.group_insert, self.order,
-                                self.on_collapse)
+                                self.on_collapse, self.foundation, self.adhesions.get(t))
             rep[t] = {"units": len(placements), "seconds_wall": round(wall, 2),
                       "seconds_cpu": round(sum(secs.values()), 2)}
             if log:
@@ -325,6 +480,7 @@ class TierOutcome:
     placement_order: Tuple[dict, ...] = ()   # F1b (L-473): the insertion order of every cross read, only when group_insert != "whole"
     via_standin: Optional[Tuple[bool, ...]] = None   # G3-k (L-805): per entry, True = it exists only through an unknown-word stand-in; None = grammar off
     read_via_standin: Optional[Tuple[bool, ...]] = None   # G3-k (L-811): per entry, True = every cross it came from would NOT have been read under the same cap and order without the stand-ins; None = grammar off
+    rebuild_refused: int = 0                 # G4-c (L-G4-76): closed crosses of a frozen stack that were NOT rebuilt although no state was adopted (0 outside a stack)
 
     @property
     def entries(self) -> Tuple[ro.AnswerEntry, ...]:
@@ -366,6 +522,8 @@ class Combined:
     assembled: Optional[dict] = None                     # F2 (L-485): granularity.assemble_combined(); None = option off
     placement: Optional[dict] = None                     # F1b (L-472): {group_insert, order} of the placements; None = the default (whole)
     grammar: Optional[dict] = None                       # G3-k (L-805): {"form", "standins", "full"} of the grammar intake; None = grammar off (the bytes of before)
+    stack: Optional[dict] = None                         # G4-c (L-G4-79): the identity of the frozen stack step that was read; None = not a stack (the bytes of before)
+    foundation_marks: Optional[dict] = None              # G4-c (L-G4-81): per entry, the relation label of the arm each answer unit sits on (display only); None = foundation off
 
     # ---- reference helpers ----
     def outcome(self, tier: str) -> TierOutcome:
@@ -411,7 +569,11 @@ class Combined:
              "partial": any(v["left_unread"] > 0 for v in per.values()), "per_tier": per,
              "rebuild_skipped": skipped}
         if self.grammar is not None:                     # G3-k (L-804): named only with the grammar on, so the default bytes are unchanged
-            o["order"] = "qcount+grammar"
+            o["order"] = "eq+grammar" if self.grammar.get("order", "qcount_first") == "eq_first" else "qcount+grammar"      # G3-k2 (L-819): the flat plane's order named
+        if self.stack is not None:                       # G4-c (L-G4-76, corrected L-G4-95): named only for a stack.  `partial` stays "unread by the cap"; the closed crosses the guard refused to rebuild
+            refused = {x.tier: x.rebuild_refused for x in self.outcomes if x.rebuild_refused}      # are carried in `rebuild_refused` and as a reason in `partial_reasons` (which can be non-empty while `partial` is false)
+            o["partial_reasons"] = (["node budget: crosses left unread"] if o["partial"] else []) + ([STACK_REFUSED] if refused else [])
+            o["rebuild_refused"] = {"reason": STACK_REFUSED, "per_tier": refused}
         return o
 
     def _locate(self, which: int) -> Tuple[TierOutcome, int]:
@@ -507,6 +669,10 @@ class Combined:
             th["placement"] = dict(self.placement)
         if self.grammar is not None:                     # G3-k
             th["grammar"] = self.grammar["full"]
+        if self.stack is not None:                       # G4-c (L-G4-79): the stack step that was read (the identity is also in `placement`)
+            th["stack"] = dict(self.stack)
+        if self.foundation_marks is not None:            # G4-c (L-G4-81): display only, never a candidate
+            th["foundation"] = self.foundation_marks
         return th
 
     def to_json_obj(self) -> dict:
@@ -556,6 +722,8 @@ def placement_kw(index: Index) -> dict:
     kw = {"group_insert": index.group_insert, "order": index.order}
     if index.on_collapse != "stop":                      # F1c (L-507)
         kw["on_collapse"] = index.on_collapse
+    if index.foundation == "on":                         # G4-c (L-G4-77): the rebuild is seated too (the adhesion comes from the store's weights)
+        kw["foundation"] = "on"
     return kw
 
 
@@ -589,7 +757,40 @@ def ask_tier_outcome(index: Index, tier: str, question: str, budget: cy.QueryBud
         if kw.get("raise_budget", "on_demand") is None or not lv:
             skipped = sum(1 for sd in res.plan.read if store.cross_for(sd).stop == "budget")
     po = () if index.placement_is_default else placement_order_records(store, res.plan.read)
-    return TierOutcome(tier, res, ans, (time.monotonic_ns() - t0) // 1000000, skipped, po)
+    refused = 0
+    if index.stack is not None and not res.candidates:   # G4-c (L-G4-76, corrected L-G4-95): only what ask_tier itself wrote as `budget_raise.refused` (the guard fired); at fast / standard nothing was ever going to be rebuilt, and that is `rebuild_skipped` (`skipped`), as for a one-shot index
+        refused = len(((res.variant or {}).get("budget_raise") or {}).get("refused", {}).get("seeds", ()))
+    return TierOutcome(tier, res, ans, (time.monotonic_ns() - t0) // 1000000, skipped, po, rebuild_refused=refused)
+
+
+def arm_marks(index: Index, c: Combined) -> dict:
+    """G4-c (L-G4-81, G1-b open point 4): for each shown entry, the RELATION LABEL (the particle) of the arm each of its words sits on in the cross(es) the entry was read
+    from (`Placement.arm_labels`, kept aside by `contract_for_read`; the centre carries the centre relation は).  DISPLAY ONLY: the labels are not units, never a
+    candidate, never in `words`, `entries`, the verdict or the order of anything.  A state's own arrangement is used when the cross has no twins; with twins (a quotient
+    one-shot build) every arrangement of the cross is.  {} entries for a cross without labels."""
+    out = []
+    for i, (tier, e) in enumerate(c.entries):
+        o = c.outcome(tier)
+        store = index.stores[tier]
+        marks: Dict[str, set] = {}
+        if o.answer is not None:
+            for si in e.origins:
+                ref = o.answer.states[si].ref
+                p = store.cross_for(ref.seed)
+                if p.arm_labels is None:
+                    continue
+                idx = [ref.member] if (not p.twin_sets and 0 <= ref.member < len(p.members)) else list(range(len(p.members)))
+                for mi in idx:
+                    for w in e.words:
+                        if p.members[mi][0] == w:
+                            marks.setdefault(w, set()).add(fd.DEFAULT_SPEC.centre)
+                    for lab in p.arm_labels[mi]:
+                        for part, seats in lab:
+                            for w in e.words:
+                                if w in seats:
+                                    marks.setdefault(w, set()).add(part)
+        out.append({"index": i, "tier": tier, "arms": {w: sorted(marks[w]) for w in sorted(marks)}})
+    return {"seats_sha": fd.seats_sha(), "display_only": True, "entries": out}
 
 
 STRUCTURES = ("flat", "slide", "combined")           # G3-e (L-654): the structure the question is asked over; flat = everything above; G3-g (L-726): combined = one labelled list of flat + layers + windows
@@ -598,7 +799,7 @@ STRUCTURES = ("flat", "slide", "combined")           # G3-e (L-654): the structu
 def ask(index: Index, question: str, tiers: Optional[Sequence[str]] = None,
         budget: cy.QueryBudget = DEFAULT_BUDGET, *, view: str = "all", effort: Optional[str] = None,
         nodes: Optional[int] = None, granularity: Optional[str] = None, structure: str = "flat", grammar: str = "off",
-        grammar_intake=None, **kw) -> Combined:
+        grammar_intake=None, flat_order: Optional[str] = None, **kw) -> Combined:
     """I-25: every requested tier is run (none is skipped because another one answered).  `view`: every tier's
     entries labelled (default) or the I-16 most stable tier only.  `effort` (fast | standard | full) or `nodes`
     (crosses per tier): the amount of inference; neither = the whole read (what T7 did).  A budget that leaves
@@ -612,17 +813,32 @@ def ask(index: Index, question: str, tiers: Optional[Sequence[str]] = None,
     is labelled by its origin (verantyx.line3.combined; `**kw` are combined.ask_combined's options, e.g. window_evidence="plain"|"window"|"both").
 
     `grammar="on"` (G3-k, opt-in; "off" = every committed byte): the unknown RUN words of the question get their stand-ins as ADDITIONAL, marked query units
-    (RUN tier) and the crosses read under the preset cap are ordered by the question units they hold first, then the grammar layer's kind of the cross
-    (the question's slot first), then E_Q (verantyx.line3.wiring; L-800..).  `grammar_intake` = a wiring.GrammarIntake made beforehand (combined shares one)."""
+    (RUN tier) and the crosses read under the preset cap are ordered by E_Q first and, only inside an exact E_Q tie, by the question units they hold and the grammar layer's
+    kind of the cross (the question's slot first) (`flat_order`, verantyx.line3.wiring; L-800.., L-819).  `grammar_intake` = a wiring.GrammarIntake made beforehand (combined shares one).
+    `flat_order` (G3-k2, L-819; only with grammar "on"): the order of the crosses read under the cap: None / "eq_first" (default; the owner's 「E_Q が先、単位数は同点内」: T7b's
+    energy order, the question units held and the grammar kind only inside an exact E_Q tie) | "qcount_first" (G3-k's: the question units held first).  Not a window order.
+
+    A FROZEN STACK index (`Index.from_stack`, G4-c, L-G4-79/77) is read exactly like any other, with these differences: effort "full" and structure "slide" are refused
+    (`StackRefused`, a ValueError); a closed cross is never rebuilt (cycle.ask_tier refuses it, typed, and the answer says so: `read.partial_reasons`,
+    `read.rebuild_refused`); structure "combined" reads flat and layers only, the windows are skipped with a header row."""
     if structure not in STRUCTURES:
         raise ValueError("structure: %s" % " | ".join(STRUCTURES))
     if grammar not in ("off", "on"):
         raise ValueError("grammar: off | on")
+    if index.stack is not None:                          # G4-c (L-G4-80, T-G4-11): what a frozen stack refuses
+        if structure == "slide":
+            raise StackRefused("structure='slide' needs a window cache, and a frozen stack has none (L-G4-80)")
+        if effort == "full":
+            raise StackRefused("effort='full' may rebuild a cross at a raised level, and a frozen stack rebuilds none (docs/LINE3_G4_GROWTH_METER.md 6.4): use fast, standard or nodes")
+    if grammar == "on" and not {"RUN", "WORD"} <= set(index.space.tiers):       # L-G4-97: RUN alone is not enough (wiring.context_of reads the WORD tier's records)
+        msg = "grammar='on' needs the RUN and WORD tiers (a space without both has no grammar records, L-G4-82)"
+        raise (StackRefused if index.stack is not None else ValueError)(msg)       # typed for a stack (a ValueError either way)
     if structure == "combined":
         if granularity:
             raise ValueError("structure='combined' has no granularity option (G3-g, L-726)")
         from verantyx.line3 import combined as CB
-        return CB.ask_combined(index, question, tiers, budget, view=view, effort=effort, nodes=nodes, grammar=grammar, grammar_intake=grammar_intake, **kw)
+        return CB.ask_combined(index, question, tiers, budget, view=view, effort=effort, nodes=nodes, grammar=grammar, grammar_intake=grammar_intake,
+                               **({"flat_order": flat_order} if flat_order is not None else {}), **kw)
     if grammar == "on" and structure != "flat":
         raise ValueError("grammar='on' is built for structure 'flat' and 'combined' (G3-k, L-806)")
     if structure == "slide":
@@ -645,24 +861,29 @@ def ask(index: Index, question: str, tiers: Optional[Sequence[str]] = None,
         else:
             kw["raise_budget"] = None
     gi = None
+    forder = None
     if grammar == "on":                                  # G3-k (L-801..L-805)
         from verantyx.line3 import wiring as W
+        forder = W.flat_order_of(flat_order)             # G3-k2 (L-819, L-820)
         _ix, recs = W.context_of(index)
         gi = grammar_intake if grammar_intake is not None else W.intake(index.space, question, _ix)
         orig = frozenset(gi.units)
         outs = []
         for t in names:
-            o = ask_tier_outcome(index, t, question, budget, **dict(kw, **W.tier_kw(gi, t, recs)))
+            o = ask_tier_outcome(index, t, question, budget, **dict(kw, **W.tier_kw(gi, t, recs, forder)))
             outs.append(replace(o, via_standin=W.via_standin_of(o.answer, orig, index.stores[t]) if t == W.TIER else tuple(False for _ in o.entries),
                                 read_via_standin=(W.read_via_standin_of(o.answer, o.result.plan.order_only_read) if t == W.TIER
                                                   else tuple(False for _ in o.entries))))
     else:
         outs = [ask_tier_outcome(index, t, question, budget, **kw) for t in names]
-    c = combine(question, outs, index.space, index.level, budget, view, name, cap, lv,
-                None if index.placement_is_default else placement_obj(index.group_insert, index.order, index.on_collapse))
+    c = combine(question, outs, index.space, index.level, budget, view, name, cap, lv, index.placement_record())
+    if index.stack is not None:                          # G4-c (L-G4-79)
+        c = replace(c, stack=dict(index.stack))
+    if index.foundation == "on":                         # G4-c (L-G4-81)
+        c = replace(c, foundation_marks=arm_marks(index, c))
     if gi is not None:
-        c = replace(c, grammar={"form": gi.grammar_form(), "standins": gi.standins_obj(),
-                                "full": {"form": gi.grammar_form(), "standins": gi.standins_obj(True), "reading": gi.reading.to_obj(),
+        c = replace(c, grammar={"form": gi.grammar_form(forder), "standins": gi.standins_obj(), "order": forder,
+                                "full": {"form": gi.grammar_form(forder), "order": forder, "standins": gi.standins_obj(True), "reading": gi.reading.to_obj(),
                                          "stem": "whole_word", "foundation_sha256": W.gr.foundation_sha()}})
     if granularity:                                      # F2 (L-485), opt-in: granularity.SCOPES, or True = the default scope
         from verantyx.line3 import granularity as gr
@@ -674,6 +895,14 @@ def ask(index: Index, question: str, tiers: Optional[Sequence[str]] = None,
 # --------------------------------------------------------------------------
 # text form for the command line
 # --------------------------------------------------------------------------
+MARKS_TEXT = (("via_standin", "【未知語の代役のみ】"), ("read_via_standin", "【代役の並びで読んだ十字】"))     # G3-k2 (L-821): both marks (the words of combined.MARK_TEXT)
+
+
+def _marks_text(e: dict) -> str:
+    """Both marks of an entry (named in the dict only with the grammar on, so the grammar-off text is unchanged)."""
+    return "".join(t for k, t in MARKS_TEXT if e.get(k))
+
+
 def format_text(c: Combined, show_thought: bool = False) -> str:
     a = c.answer_obj()
     L: List[str] = []
@@ -683,9 +912,13 @@ def format_text(c: Combined, show_thought: bool = False) -> str:
         L.append("文法層: 形 %s / slot %s / 述語 %s / 未知語の代役 %d 件 (%s)" % (
             gf["form"], gf["slot"] or "なし", gf["predicate"] or "なし", gf["standin_units"],
             ", ".join("%s: %d/%d" % (w["word"], w["n_standins"], w["pool"]) for w in c.grammar["standins"]) or "未知語なし"))
+        L.append("  印の件数 (一覧 %d 件): 未知語の代役のみ %d 件 (via_standin) / 代役の並びで読んだ十字 %d 件 (read_via_standin) / 平らな十字の読む順 %s" % (
+            a["listed"], sum(1 for e in a["entries"] if e["via_standin"]), sum(1 for e in a["entries"] if e["read_via_standin"]), c.grammar["order"]))
     if a["verdict"] == ANSWER:
         L.append("答え (%s): %s" % (a["answer"]["tier"], " / ".join(a["answer"]["path_words"])))
         L.append("  参考の中心: %s" % ", ".join(a["answer"]["reference_centres"]))
+        if a["entries"] and _marks_text(a["entries"][0]):                       # G3-k2 (L-821): the single entry's marks (grammar on only)
+            L.append("  印:%s" % _marks_text(a["entries"][0]))
     elif a["verdict"] == CHOICE:
         if a["view"] == "all":
             L.append("候補 %d 件（全段の候補を段の印つきで並べています。段どうしの票は足していません。選んでください）:" % a["listed"])
@@ -697,19 +930,23 @@ def format_text(c: Combined, show_thought: bool = False) -> str:
                 last = e["tier"]
                 L.append(" -- 段 %s: %d 件%s" % (e["tier"], a["per_tier_listed"][e["tier"]],
                                                "（最も安定な段）" if e["tier_is_most_stable"] else ""))
-            L.append("  [%d] (%s) %s  中心: %s  並べ方 %d  安定度 %s" % (
-                i, e["tier"], " / ".join(e["words"]), ", ".join(e["centres"]), e["arrangements"], e["stability"]))
+            L.append("  [%d] (%s)%s %s  中心: %s  並べ方 %d  安定度 %s" % (
+                i, e["tier"], _marks_text(e), " / ".join(e["words"]), ", ".join(e["centres"]), e["arrangements"], e["stability"]))
     else:
         L.append("答えなし: %s" % a["verdict"])
-    if rd["partial"]:
+    cap_partial = any(v["left_unread"] > 0 for v in rd["per_tier"].values())
+    if cap_partial:
         L.append("【部分読み】推論の量 %s（十字 %s 本まで/段）: %s" % (
             rd["effort"], rd["node_budget"],
             " ".join("%s=%d/%d 本読み・%d 本は未読" % (t, v["crosses_read"], v["would_read_in_full"], v["left_unread"])
                      for t, v in rd["per_tier"].items())))
-        L.append("  未読の十字に正解があるかもしれません。時間をかけた答え（--effort full）で読み直せます。")
+        L.append("  未読の十字に正解があるかもしれません。" + ("" if c.stack is not None else "時間をかけた答え（--effort full）で読み直せます。"))
+    if rd.get("rebuild_refused", {}).get("per_tier"):                           # G4-c (L-G4-76)
+        L.append("【積み】閉じた十字は作り直しません（%s）: %s" % (
+            rd["rebuild_refused"]["reason"], " ".join("%s=%d 本" % kv for kv in rd["rebuild_refused"]["per_tier"].items())))
     if rd["rebuild_skipped"]:
-        L.append("  配置の作り直しを省いた十字: %s（候補が出なかった段。--effort full なら作り直して再び読みます）" % " ".join(
-            "%s=%d 本" % (t, n) for t, n in rd["rebuild_skipped"].items()))
+        L.append("  配置の作り直しを省いた十字: %s（候補が出なかった段。%s）" % (" ".join("%s=%d 本" % (t, n) for t, n in rd["rebuild_skipped"].items()),
+                 "積みは作り直しません" if c.stack is not None else "--effort full なら作り直して再び読みます"))
     elif rd["effort"] is not None:
         L.append("推論の量 %s: 予算内で全て読みました（%s）" % (rd["effort"], " ".join(
             "%s=%d" % (t, v["crosses_read"]) for t, v in rd["per_tier"].items())))
@@ -717,6 +954,14 @@ def format_text(c: Combined, show_thought: bool = False) -> str:
         L.append("配置の入れ方: %s（同点の組は %s の順に 1 つずつ入れ、崩れたら%s）" % (
             c.placement["group_insert"], "文の語順の逆" if c.placement["order"] == "reverse" else "文の語順",
             "その 1 つだけ飛ばして続ける" if c.placement.get("on_collapse") == "skip" else "直前で止める"))
+        if c.placement.get("structure") == "stack":                             # G4-c (L-G4-79)
+            L.append("積み: 第 %d 段を読みました（記事 %d 本。段ごとの識別 %s）" % (
+                c.placement["step"], c.placement["step"], " ".join("%s=%s" % (t, h[:12]) for t, h in c.placement["state_sha256"].items())))
+    if c.foundation_marks is not None:                                          # G4-c (L-G4-81): the relation label of the arm, display only
+        marks = ["[%d](%s) %s" % (m["index"], m["tier"], " ".join("%s=%s" % (w, ",".join(ps)) for w, ps in m["arms"].items()))
+                 for m in c.foundation_marks["entries"] if m["arms"]]
+        if marks:
+            L.append("関係の札（基盤の席。表示のみで、候補にも順位にも使っていません）: " + " / ".join(marks))
     if c.assembled is not None:                          # F2 (L-486)
         from verantyx.line3 import granularity as gr
         L.extend(gr.format_lines(c.assembled))

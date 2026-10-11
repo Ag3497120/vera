@@ -1,0 +1,40 @@
+data fulllead_sents.jsonl sentences=592 sha=45efdaedb7ab  (full file sha 45efdaedb7ab)  seats_sha=a2083d453637
+adhesion built in 0.7s: {'RUN': (1914, 1714), 'WORD': (1707, 1296), 'CHAR': (1046, 528)}
+RUN done: on wall 1601.0s cpu 6387.8s
+WORD done: on wall 2908.7s cpu 11612.8s
+CHAR done: on wall 2356.8s cpu 9409.4s
+
+| variant / tier         |  cross |   stop | maxcls |  exhst |  mean cls | med cls | med sz |     cpu s |
+|------------------------|--------|--------|--------|--------|-----------|---------|--------|-----------|
+| ON  RUN                |   3653 |   2038 |   1918 |   1615 |    189.47 |     120 |      7 |   6387.83 |
+| OFF RUN (f1b)          |   3653 |   1914 |   1792 |   1739 |    379.53 |     270 |      9 |    3523.8 |
+| ON  WORD               |   3557 |   2542 |   2083 |   1015 |    211.52 |     120 |      9 |  11612.79 |
+| OFF WORD (f1b)         |   3557 |   2418 |   1953 |   1139 |    295.07 |     110 |     12 |   7909.11 |
+| ON  CHAR               |   1358 |    926 |    127 |    432 |     46.73 |     7.5 |   43.0 |   9409.44 |
+| OFF CHAR (f1b)         |   1358 |    989 |    148 |    369 |     52.32 |     9.0 |   38.0 |  10002.73 |
+
+| size at closure        |  cross | stop med | stop mean | all med | all mean |  cls>max | 1st>max x | 1st>max n |
+|------------------------|--------|---------|---------|---------|---------|----------|-----------|---------|
+| ON  RUN                |   3653 |     7.0 |    9.07 |       7 |    8.23 |        0 |         0 |      0  |
+| OFF RUN (f1b)          |   3653 |     9.0 |   10.18 |       9 |    8.66 |        0 |         0 |      0* |
+| ON  WORD               |   3557 |     9.0 |   12.18 |       9 |   11.86 |        0 |         0 |      0  |
+| OFF WORD (f1b)         |   3557 |    13.0 |    13.5 |      12 |   12.47 |        0 |         0 |      0* |
+| ON  CHAR               |   1358 |    56.0 |   65.12 |    43.0 |   54.04 |        0 |         0 |      0  |
+| OFF CHAR (f1b)         |   1358 |      49 |   57.83 |    38.0 |    49.2 |        0 |         0 |      0* |
+  stop med / mean = units seated (the six particles not counted) in the crosses that stopped by the budget; all = every cross; cls>max = crosses whose final held class holds more than max_class arrangements; 1st>max x / n = crosses / total kept settled classes above max_class (the first class built from the terminal arrangements is never checked against max_class, L-G4-47); * = derived from the kept steps (cache written before the counter existed)
+
+RUN final contracted (n, p) LOWER than OFF's in 1458 of 3653 crosses (higher in 593); of the 1608 crosses with the same size: lower in 9  [owner: the adhesion tie-break stays at every insertion step; this is the count the gate has to read]
+RUN budget-stopped in BOTH: 1710; ON stops smaller in 1123 (larger in 390); median size at stop ON 8.0 / OFF 9.0, mean ON 9.41 / OFF 10.24
+WORD final contracted (n, p) LOWER than OFF's in 1709 of 3557 crosses (higher in 813); of the 1145 crosses with the same size: lower in 106  [owner: the adhesion tie-break stays at every insertion step; this is the count the gate has to read]
+WORD budget-stopped in BOTH: 2210; ON stops smaller in 1269 (larger in 603); median size at stop ON 10.0 / OFF 13.0, mean ON 12.82 / OFF 13.6
+CHAR final contracted (n, p) LOWER than OFF's in 385 of 1358 crosses (higher in 708); of the 440 crosses with the same size: lower in 114  [owner: the adhesion tie-break stays at every insertion step; this is the count the gate has to read]
+CHAR budget-stopped in BOTH: 887; ON stops smaller in 214 (larger in 563); median size at stop ON 58 / OFF 50, mean ON 66.98 / OFF 60.33
+
+RUN on vs off (same data): {'contracted_np_differs': 2051, 'size_differs': 2045, 'stop_differs': 532, 'a_positive': 3418, 'same_size': 1608, 'same_size_np_differs': 9, 'same_size_class_equal': 1054, 'both_exhausted': 1411, 'both_exhausted_np_differs': 8, 'np_lower': 1458, 'np_higher': 593, 'same_size_np_lower': 9, 'both_budget_stopped': 1710, 'both_stopped_on_smaller': 1123, 'both_stopped_on_larger': 390, 'both_stopped_median_size_on': 8.0, 'both_stopped_median_size_off': 9.0, 'both_stopped_mean_size_on': 9.41, 'both_stopped_mean_size_off': 10.24}; reasons ON {'max_class': 1918, 'max_moves': 120} / OFF {'max_class': 1792, 'max_moves': 122}
+RUN verify_class_foundation: {'checked': 40, 'of': 3653, 'failed': [], 'key_differs_from_record': [], 'classes_checked_members': 24004, 'largest_class_checked': 960, 'with_twins': 0, 'swaps_tested': 1677470, 'secs': 77.9}
+WORD on vs off (same data): {'contracted_np_differs': 2522, 'size_differs': 2412, 'stop_differs': 540, 'a_positive': 3378, 'same_size': 1145, 'same_size_np_differs': 117, 'same_size_class_equal': 455, 'both_exhausted': 807, 'both_exhausted_np_differs': 75, 'np_lower': 1709, 'np_higher': 813, 'same_size_np_lower': 106, 'both_budget_stopped': 2210, 'both_stopped_on_smaller': 1269, 'both_stopped_on_larger': 603, 'both_stopped_median_size_on': 10.0, 'both_stopped_median_size_off': 13.0, 'both_stopped_mean_size_on': 12.82, 'both_stopped_mean_size_off': 13.6}; reasons ON {'max_class': 2083, 'max_moves': 459} / OFF {'max_class': 1953, 'max_moves': 465}
+WORD verify_class_foundation: {'checked': 40, 'of': 3557, 'failed': [], 'key_differs_from_record': [], 'classes_checked_members': 22979, 'largest_class_checked': 996, 'with_twins': 0, 'swaps_tested': 2527697, 'secs': 133.5}
+CHAR on vs off (same data): {'contracted_np_differs': 1093, 'size_differs': 918, 'stop_differs': 141, 'a_positive': 1351, 'same_size': 440, 'same_size_np_differs': 175, 'same_size_class_equal': 186, 'both_exhausted': 330, 'both_exhausted_np_differs': 129, 'np_lower': 385, 'np_higher': 708, 'same_size_np_lower': 114, 'both_budget_stopped': 887, 'both_stopped_on_smaller': 214, 'both_stopped_on_larger': 563, 'both_stopped_median_size_on': 58, 'both_stopped_median_size_off': 50, 'both_stopped_mean_size_on': 66.98, 'both_stopped_mean_size_off': 60.33}; reasons ON {'max_class': 127, 'max_moves': 799} / OFF {'max_class': 148, 'max_moves': 841}
+CHAR verify_class_foundation: {'checked': 40, 'of': 1358, 'failed': [], 'key_differs_from_record': [], 'classes_checked_members': 15742, 'largest_class_checked': 936, 'with_twins': 0, 'swaps_tested': 2445920, 'secs': 221.5}
+/Users/motonisihikoudai/vera-wiring/env/bin/python  --cache $D --workers 4     9761.95s user 34.89s system 395% cpu 41:20.16 total
+rc=0

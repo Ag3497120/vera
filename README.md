@@ -90,6 +90,21 @@ python -m pytest tests/line3 -q
 
 Sweeps run on GitHub Actions (`.github/workflows/line3-sweep.yml`): probe → per-tier caches → N shards → summary; the result files above were produced there.
 
+## The loom: the model's only output channel (new, 2026-10-11)
+
+The owner's current direction. An AI model is put in a sandbox where the **only** way to produce output is to operate Vera's structure: look up units in the corpus, add its own words (marked *constructed*), seat them on stereo crosses, link crosses into a thread, read, and `emit`. The read-out of the structure *is* the output. Every operation is a row of a hash-chained ledger; `vera loom replay` reproduces the output byte for byte and `verify` refuses any edited ledger.
+
+What exists (all merged, 526 tests at three hash seeds):
+
+- 18 operations as an MCP server (`vera loom mcp`); typed refusals; per-run caps; no undo.
+- The emit gate uses Vera's own placement key: a cross must be stable under (n, p, a), and a refusal names the swap that would fix it. 「日本が首都」 is refused, 「日本の首都」 passes. Modes `record_only` (constructed words refused) and `constructed_allowed` (passed through with their mark).
+- Worked example: 「東京は日本の首都です」 is three WORD crosses; in `record_only` the output is 「東京は日本の首都」 because です is not in the corpus.
+- A CODE tier: Python tokens looked up in a small fixture repo with `path:line:col`, one statement per cross, gates for parse / definition-first / imports / an allow-listed construct subset; the tests step runs the woven code under a macOS `sandbox-exec` profile (no network, no fork/exec, reads limited to the fixture copy and the runtime, writes to a scratch folder only), with an eight-property probe run inside the same sandbox as the gate.
+- Non-blocking typed notes `CONFLICT` / `UNANCHORED` / `NO_RECORD` appended after a read or emit.
+- Enforcement layers: subagent definitions whose only tools are the loom's (`.claude/agents/loom-weaver*.md`, `.mcp.json`), an API driver that forwards nothing but tool calls (tested with a fake client only — no API key here), process isolation, and the emit gate.
+
+What has **not** been done: **no real model has been run through the loom yet.** Every result in `experiments/line3/loom/baseline_scripted/` comes from deterministic scripts that were written knowing the answers; they prove the plumbing, not any capability. The code gates are not a safety wall (`import typing` then `typing.sys…` passes them; the OS sandbox is what contains it), and the fixture's tests are placeholders until held-out tests exist. Design: `docs/LINE3_LOOM_DESIGN.md`; operator steps: `docs/LOOM_SANDBOX.md`.
+
 ## How the project is run
 
 - The owner decides every meaning-level question personally; each decision is recorded verbatim in `ops/decisions/2026-10-06_line3_faithful_build.md`.

@@ -1,0 +1,35 @@
+{
+ "k": 34,
+ "prefix_sha256": "63286b2bc0f68f5222d688cb48619fd3896ca520a5e5e9e58fc9bae67cb81958",
+ "pythonhashseed": "1",
+ "wall_s": 1655.6,
+ "cpu_s": 1629.8,
+ "workers": 1,
+ "tiers": {
+  "RUN": {
+   "state_sha256_alone": "25177d20f8709d81402ccee7db21f4a7b71195ef1c48ab201cebb5db516ce2e6",
+   "state_sha256_snapshot": "25177d20f8709d81402ccee7db21f4a7b71195ef1c48ab201cebb5db516ce2e6",
+   "state_bytes_equal": true,
+   "ledger_equal": true,
+   "ledger_bytes": 511857,
+   "equal": true
+  },
+  "WORD": {
+   "state_sha256_alone": "9ddbaf4c46b35fd6e60d0475700cf61ce1f4ef863bb0a15035434f10f596f05a",
+   "state_sha256_snapshot": "9ddbaf4c46b35fd6e60d0475700cf61ce1f4ef863bb0a15035434f10f596f05a",
+   "state_bytes_equal": true,
+   "ledger_equal": true,
+   "ledger_bytes": 621757,
+   "equal": true
+  },
+  "CHAR": {
+   "state_sha256_alone": "c973137ffef02a6cedfedff7be797446fbe250aca8ba7a66374213e2610e6d9b",
+   "state_sha256_snapshot": "c973137ffef02a6cedfedff7be797446fbe250aca8ba7a66374213e2610e6d9b",
+   "state_bytes_equal": true,
+   "ledger_equal": true,
+   "ledger_bytes": 636502,
+   "equal": true
+  }
+ },
+ "equal": true
+}

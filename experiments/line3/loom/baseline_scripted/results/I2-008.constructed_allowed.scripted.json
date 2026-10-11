@@ -1,0 +1,171 @@
+{
+ "abandoned": [],
+ "annotated": [
+  {
+   "cid": "c1",
+   "kind": "record",
+   "prov": {
+    "n": 1,
+    "tier": "WORD"
+   },
+   "s": "カール",
+   "seat": "centre",
+   "tier": "WORD",
+   "uid": "u1"
+  },
+  {
+   "cid": "c2",
+   "join": {
+    "attested": [
+     23,
+     5,
+     13
+    ],
+    "prev": "u1"
+   },
+   "kind": "record",
+   "prov": {
+    "n": 1,
+    "tier": "WORD"
+   },
+   "s": "マルクス",
+   "seat": "centre",
+   "tier": "WORD",
+   "uid": "u2"
+  }
+ ],
+ "answer_view": {
+  "excess_chars": 0,
+  "hit_record_text": true,
+  "hits_text": true
+ },
+ "base": "I2-008",
+ "closing": {
+  "i": 12,
+  "op": "emit",
+  "status": "emitted",
+  "type": null
+ },
+ "control": false,
+ "control_note": null,
+ "declared_model": "scripted-weaver",
+ "driver": "scripted",
+ "footnotes": {
+  "hits_words": "hits_words (the gold inside ONE record unit; `score.hits_words`) is false by construction for every multi-unit answer (ハッシュ表, キューバの太陽, カールマルクス, 1981年); it is not a correctness column"
+ },
+ "free_text_dropped": {
+  "chars": 0,
+  "n": 0,
+  "sha256": []
+ },
+ "harness_meta": [
+  {
+   "driver": "scripted",
+   "requested_model": "scripted-weaver"
+  }
+ ],
+ "ledger": "experiments/line3/loom/baseline_scripted/runs/I2-008.constructed_allowed.scripted/ops.jsonl",
+ "ledger_head": "900a553d0cff0978eff43a14868541ac15a3eba44f35e9b8566d04d2f3b7a0e0",
+ "mode": "constructed_allowed",
+ "model_result": false,
+ "op_counts": {
+  "by_class": {
+   "emit_attempts": 1,
+   "lookups": 2,
+   "ops": 8,
+   "other": 1
+  },
+  "by_op": {
+   "add": 2,
+   "begin": 1,
+   "emit": 1,
+   "link": 2,
+   "lookup": 2,
+   "open_cross": 2,
+   "seat": 2
+  },
+  "emit_attempts": 1,
+  "model_rows": 12,
+  "rows": 13
+ },
+ "output_text": "カールマルクス",
+ "refusals": {},
+ "schema": "loom-result-1",
+ "score": {
+  "abstain_type": null,
+  "answer_line": null,
+  "base": "I2-008",
+  "chars": {
+   "constructed": 0,
+   "foundation": 0,
+   "layout": 0,
+   "record": 7
+  },
+  "control": false,
+  "correct": true,
+  "excess_chars": 0,
+  "hit_record_text": true,
+  "hits_text": true,
+  "hits_words": false,
+  "kind": "answerable",
+  "mode": "constructed_allowed",
+  "note": "",
+  "outcome": "emitted",
+  "output_sha": "bd3d6448b1473513178c6cf97dcd2908914f56bfdf8a94ebc47a34c93d19218c",
+  "replay_verified": true,
+  "share_permille": {
+   "constructed": 0,
+   "foundation": 0,
+   "layout": 0,
+   "record": 1000
+  },
+  "stability": [
+   {
+    "cid": "c1",
+    "improving": [],
+    "key": [
+     0,
+     0,
+     0
+    ],
+    "moves_tested": 0,
+    "status": "trivially_stable",
+    "tier": "WORD"
+   },
+   {
+    "cid": "c2",
+    "improving": [],
+    "key": [
+     0,
+     0,
+     0
+    ],
+    "moves_tested": 0,
+    "status": "trivially_stable",
+    "tier": "WORD"
+   }
+  ],
+  "status": "hit",
+  "task_id": "bank2/I2-008.constructed_allowed",
+  "text": "カールマルクス",
+  "verify_status": "OK"
+ },
+ "self_corrections": {
+  "counts": {
+   "plan_change_after_empty": 0,
+   "recovery_after_refusal": 0,
+   "refusals_recoverable": 0,
+   "unseat_swap_before_close": 0
+  },
+  "plan_change_after_empty": [],
+  "recovery_after_refusal": [],
+  "refusals_recoverable": 0,
+  "unseat_swap_before_close": []
+ },
+ "t_loom_34": "unchecked",
+ "task_id": "bank2/I2-008.constructed_allowed",
+ "wall": {
+  "driver_ns": 7746416,
+  "ledger_ns": 7967375
+ }
+}

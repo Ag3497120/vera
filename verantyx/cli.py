@@ -2323,14 +2323,38 @@ def cmd_line3(args) -> int:
     import sys
     from .line3 import ask as l3
 
-    try:
-        idx = l3.Index.from_jsonl(args.data, args.cache, args.level, args.tiers,
-                                  group_insert=getattr(args, "group_insert", "whole"), order=getattr(args, "order", "forward"),
-                                  on_collapse=getattr(args, "on_collapse", "stop"))
-    except (OSError, ValueError) as e:
-        print(f"line3: {e}", file=sys.stderr)
-        return 2
     structure = getattr(args, "structure", "flat")
+    foundation = getattr(args, "foundation", "off")
+    stack_dir = getattr(args, "stack", None)
+    if getattr(args, "step", None) is not None and not stack_dir:
+        print("line3: --step picks a step of a saved stack: it goes with --stack DIR", file=sys.stderr)
+        return 2
+    if foundation == "on" and structure == "slide":
+        print("line3: --foundation on seats the flat plane's crosses (--structure flat | combined); the windows do not use it (G4-c, L-G4-78)", file=sys.stderr)
+        return 2
+    if stack_dir:
+        # G4-c (L-G4-79, L-G4-80): read a saved step of a frozen stack (verantyx.line3.stack); nothing is built, nothing is cached, nothing is silently ignored
+        if args.l3_op != "ask":
+            print("line3: --stack is for `line3 ask`; the stack is written by stack.build / stack.save", file=sys.stderr)
+            return 2
+        if args.cache or getattr(args, "group_insert", "whole") != "whole" or getattr(args, "on_collapse", "stop") != "stop":
+            print("line3: --stack replaces --cache / --group-insert / --on-collapse (the stack's crosses are its own; its placement is ordered / forward / stop); "
+                  "--order forward|reverse names the stack's document order, --level its level, --foundation its sub-directory", file=sys.stderr)
+            return 2
+        try:
+            idx = l3.Index.from_stack(stack_dir, args.tiers, data=args.data, step=getattr(args, "step", None), foundation=foundation,
+                                      level=args.level, order=getattr(args, "order", "forward"))
+        except (OSError, ValueError) as e:
+            print(f"line3: {e}", file=sys.stderr)
+            return 2
+    else:
+        try:
+            idx = l3.Index.from_jsonl(args.data, args.cache, args.level, args.tiers,
+                                      group_insert=getattr(args, "group_insert", "whole"), order=getattr(args, "order", "forward"),
+                                      on_collapse=getattr(args, "on_collapse", "stop"), foundation=foundation)
+        except (OSError, ValueError) as e:
+            print(f"line3: {e}", file=sys.stderr)
+            return 2
     if args.l3_op == "build" and structure == "combined":
         # G3-g: both caches of the combined list, the flat placements and the window index (different files in the same directory)
         if not args.cache:
@@ -2394,6 +2418,16 @@ def cmd_line3(args) -> int:
     if structure == "slide" and getattr(args, "grammar", "off") == "on":
         print("line3: --grammar on is built for --structure flat and combined (G3-k, L-806)", file=sys.stderr)
         return 2
+    # G3-k2 (L-820): --read-order is the WINDOWS' order (qcount_first | grammar_first, default qcount_first) and, with --grammar on, the FLAT plane's (eq_first, the default, | qcount_first)
+    ro_arg = getattr(args, "read_order", None)
+    if structure == "slide" and ro_arg == "eq_first":
+        print("line3: --read-order eq_first is the flat plane's order (--grammar on); the windows' orders are qcount_first | grammar_first (G3-k2, L-820)", file=sys.stderr)
+        return 2
+    if structure == "flat" and getattr(args, "grammar", "off") == "on" and ro_arg == "grammar_first":
+        print("line3: --read-order grammar_first is a window order; the flat plane's are eq_first (default) | qcount_first (G3-k2, L-820)", file=sys.stderr)
+        return 2
+    win_order = ro_arg if ro_arg in ("qcount_first", "grammar_first") else "qcount_first"
+    flat_order = ro_arg if ro_arg in ("eq_first", "qcount_first") else None            # None = the default of the grammar-on path (eq_first)
     if structure == "combined" and (args.choose is not None or args.record or getattr(args, "granularity", None)
                                     or getattr(args, "view", "all") != "all" or getattr(args, "layers", "on") != "on"
                                     or getattr(args, "layer_candidate", "path") not in ("path", "stable-seats-path")
@@ -2409,7 +2443,7 @@ def cmd_line3(args) -> int:
             res = l3.ask(idx, args.question, effort=effort, nodes=nodes, structure="combined",
                          window_evidence=getattr(args, "window_evidence", "both"),
                          slide_members=getattr(args, "slide_members", None) or "representative",
-                         read_order=getattr(args, "read_order", "qcount_first"), z_deep=getattr(args, "z_deep", "order"),
+                         read_order=win_order, flat_order=flat_order, z_deep=getattr(args, "z_deep", "order"),
                          layer_variants={"both": ("A", "B"), "A": ("A",), "B": ("B",)}[args.query_pass],
                          layer_granularity=args.layer_granularity, merge=getattr(args, "merge", "none"),
                          assembly=getattr(args, "assembly", "on") == "on", grammar=getattr(args, "grammar", "off"))
@@ -2417,7 +2451,7 @@ def cmd_line3(args) -> int:
             # G3-e (opt-in): the question over the sliding windows (verantyx.line3.slide_query); effort / nodes count windows
             res = l3.ask(idx, args.question, effort=effort, nodes=nodes, structure="slide",
                          agreement=getattr(args, "agreement", "three"), members=getattr(args, "slide_members", None) or "all",
-                         answer_shape=getattr(args, "answer_shape", "unit"), read_order=getattr(args, "read_order", "qcount_first"),
+                         answer_shape=getattr(args, "answer_shape", "unit"), read_order=win_order,
                          z_deep=getattr(args, "z_deep", "order"))
         elif layered:
             # T8 (verantyx/line3/matryoshka.py): stack when the stability was lost at this question; layer 0 is unchanged
@@ -2434,12 +2468,13 @@ def cmd_line3(args) -> int:
                 from .line3 import wiring as l3w
                 gi = l3w.intake(idx.space, args.question, l3w.context_of(idx)[0])
                 base = l3.ask(idx, args.question, view=args.view, effort=effort, nodes=nodes, granularity=getattr(args, "granularity", None),
-                              grammar="on", grammar_intake=gi)
-                lkw["tier_kw"] = l3w.reask_kw(gi, [o.tier for o in base.outcomes], l3w.context_of(idx)[1])
+                              grammar="on", grammar_intake=gi, flat_order=flat_order)
+                lkw["tier_kw"] = l3w.reask_kw(gi, [o.tier for o in base.outcomes], l3w.context_of(idx)[1], l3w.flat_order_of(flat_order))
             res = l3m.ask_layered(idx, args.question, view=args.view, effort=effort, nodes=nodes, options=lopts, base=base, **lkw)
         else:
             res = l3.ask(idx, args.question, view=args.view, effort=effort, nodes=nodes,
-                         granularity=getattr(args, "granularity", None), grammar=getattr(args, "grammar", "off"))
+                         granularity=getattr(args, "granularity", None), grammar=getattr(args, "grammar", "off"),
+                         **({"flat_order": flat_order} if getattr(args, "grammar", "off") == "on" else {}))
     except ValueError as e:
         print(f"line3: {e}", file=sys.stderr)
         return 2
@@ -2470,6 +2505,96 @@ def cmd_line3(args) -> int:
     else:
         print(l3.format_text(res, args.show_thought))
     return 0
+
+
+def cmd_loom(args) -> int:
+    """`vera loom ...` (verantyx.loom): the model's only output channel is operating Vera's structure (docs/LINE3_LOOM_DESIGN.md).
+    mcp = the FastMCP server; replay / verify = the ledger of a run; note / close = the harness's rows; output = the L4 consumer;
+    demo = the scripted weaver's worked example.  Nothing else reaches this code."""
+    import hashlib
+    import json
+    import sys
+    from pathlib import Path
+    from .loom import ledger as lg
+    from .loom import mcp as lm
+
+    op = args.loom_op
+    if op == "mcp":
+        if args.isolated:                      # LOOM-d2: re-execute under sandbox-exec (verantyx/loom/isolate.py); the probe must pass first
+            from .loom import isolate
+            return isolate.serve_isolated(args.tasks, args.runs_dir, args.allow_root or (), args.stability)
+        return lm.serve(args.tasks, args.runs_dir, args.allow_root or (), args.stability)
+    if op == "replay":
+        rep = lg.replay(args.run_dir, args.corpus)
+        if args.out:
+            Path(args.out).write_bytes(b"".join(rep.lines))
+        if rep.status == "IDENTICAL":
+            print(rep.text if rep.text is not None else "")
+            print("REPLAY_IDENTICAL rows=%d" % rep.n_rows, file=sys.stderr)
+        elif rep.status == "DIFFERS":
+            print("REPLAY_DIFFERS i=%s field=%s" % (rep.first_diff["i"], rep.first_diff["field"]), file=sys.stderr)
+        else:
+            print("REPLAY_INPUTS_MISMATCH %s" % rep.mismatch, file=sys.stderr)
+        return rep.exit_code()
+    if op == "verify":
+        v = lg.verify(args.run_dir, args.head, args.corpus)
+        print(json.dumps(v, ensure_ascii=False, sort_keys=True))
+        return 0 if v["status"] == "OK" else 1
+    if op == "output":
+        o = lg.emitted_output(args.run_dir, args.head, args.corpus)
+        print(json.dumps(o, ensure_ascii=False, sort_keys=True))
+        return 0 if o["status"] == "emitted" else 1
+    if op == "note":
+        meta = {k: v for k, v in (("driver", args.driver), ("requested_model", args.requested_model),
+                                  ("agent_definition_sha", args.agent_definition_sha), ("response_model", args.response_model)) if v}
+        if meta:
+            lm.append_outside_row(args.run_dir, "harness", "harness_meta", meta)
+        if args.free_text_file:
+            raw = Path(args.free_text_file).read_bytes()
+            text = raw.decode("utf-8", errors="replace")
+            a = {"sha256": hashlib.sha256(raw).hexdigest(), "chars": len(text)}
+            if args.control:
+                a["text"] = text
+            lm.append_outside_row(args.run_dir, "harness", "free_text_control" if args.control else "free_text_dropped", a)
+        return 0
+    if op == "close":
+        led = lg.Ledger(args.run_dir)
+        rep = lg.replay(args.run_dir, None)
+        if not rep.identical or rep.run is None:
+            print("loom close: the run does not replay (%s)" % (rep.mismatch or rep.first_diff), file=sys.stderr)
+            return 2
+        if rep.run.state.closed is not None:
+            print("closed: %s" % json.dumps(rep.run.state.closed))
+            return 0
+        lm.append_outside_row(args.run_dir, "harness", "abandoned", {"reason": args.reason})
+        print("closed: abandoned")
+        return 0
+    if op == "demo":
+        from .loom.scripted import ScriptedWeaver, weave_tokyo
+        from .loom import read as lread
+        corpus = args.corpus
+        modes = (("constructed_allowed", "ca"), ("record_only", "ro")) if args.mode == "both" else \
+                ((args.mode, "ca" if args.mode == "constructed_allowed" else "ro"),)
+        tasks = [{"task_id": "demo/tokyo_" + sfx, "text": "東京・日本・首都を一文に織れ", "lang": "prose", "mode": m, "tiers": ["WORD"],
+                  "corpus": corpus} for m, sfx in modes]          # task ids = L-LOOM-25 (demo/tokyo_ca, demo/tokyo_ro); run folders demo_ca / demo_ro
+        srv = lm.LoomServer(tasks, args.runs_dir, (), args.stability)
+        rc = 0
+        for m, sfx in modes:
+            rid = "demo_" + sfx
+            w = ScriptedWeaver(srv, "demo/tokyo_" + sfx, "scripted-weaver", rid)
+            r = weave_tokyo(w)
+            print("[%s] %s" % (m, "emitted" if r.get("ok") else "refused"))
+            if r.get("ok"):
+                print("  text:      %s" % r["text"])
+                print("  marked:    %s" % lread.render_marked(r["annotated"]))
+                print("  annotated: %s" % lread.render_display(r["annotated"]))
+            else:
+                rc = 1
+                print("  %s" % json.dumps(r, ensure_ascii=False, sort_keys=True))
+            v = lg.verify(srv.run_dir(rid))
+            print("  verify:    %s rows=%s head=%s" % (v["status"], v["n"], v["head"]))
+        return rc
+    return 2
 
 
 def main(argv: Optional[list] = None) -> int:
@@ -3089,6 +3214,11 @@ def main(argv: Optional[list] = None) -> int:
                    help="F1b: with --group-insert ordered, forward = the sentence order (default); reverse = its exact reverse (a measurement probe)")
     p.add_argument("--on-collapse", dest="on_collapse", choices=["stop", "skip"], default="stop",
                    help="F1c (L-506): with --group-insert ordered, what a member that breaks the budget does. stop (default) = growth stops just before it (L-463); skip = only that member is left out (recorded) and the next member / group is tried (owner 2026-10-08). skip with --group-insert whole is refused. Part of the cache key and recorded in the answer and the thought")
+    p.add_argument("--foundation", choices=["off", "on"], default="off",
+                   help="G1-b wiring (G4-c, L-G4-78): off (default) = every committed byte. on = the foundation's six particle seats are fixed in the innermost ring of every cross (の に で と を が; は on the centre word), the key is (n, p, a) with the adhesion a, and the reader sees the contracted crosses; the cache file name gets found-<sha12> and a cache of another seats sha is refused. Not for --structure slide. With --stack: the sub-directory of the stack")
+    p.add_argument("--stack", default=None, metavar="DIR",
+                   help="ask (G4-c, L-G4-79): read a saved step of a frozen stack (stack.save) instead of a placement cache: the step is keyed by the sha of the first --step articles of --data (a corpus that is not that prefix is refused). Nothing is built on demand; --effort full and --structure slide are refused; --structure combined reads flat and layers only (no window cache). Replaces --cache; --order forward|reverse = the stack's document order")
+    p.add_argument("--step", type=int, default=None, help="ask --stack: how many articles of --data the saved step holds (default: all of them)")
     p.add_argument("--question", default=None, help="ask: the question")
     p.add_argument("--show-thought", dest="show_thought", action="store_true", help="ask: also show the thought (internal state; N-08, N-10)")
     p.add_argument("--format", choices=["text", "json"], default="text", help="ask: text (default) or json {answer, thought}")
@@ -3108,15 +3238,15 @@ def main(argv: Optional[list] = None) -> int:
     p.add_argument("--window-evidence", dest="window_evidence", choices=["plain", "window", "both"], default="both",
                    help="ask --structure combined (G3-g): the pair count the windows' flat reading takes on every edge. plain = the corpus count (the owner's 'like T10'); window = the window's label-blind sum of the slide counts (L-714, a variant, marked in the list); both (default) = the windows are read twice and both variants' candidates are listed, each with its origin")
     p.add_argument("--grammar", choices=["on", "off"], default="off",
-                   help="ask --structure flat|combined (G3-k, L-800..): off (default) = every committed byte. on = the owner's 「未知語の代役と文法層の読む順」: the unknown RUN words of the question get their stand-ins (WORD parts known to the corpus; CHAR parts when no WORD part is known) as ADDITIONAL query units of the RUN tier, marked provenance stand-in (they select the crosses to read and count in the read order; E_Q is the original units'; the answer lists them with their chance counts: stand-in units / RUN units of the corpus; entries that exist only through a stand-in carry via_standin); the crosses read under the --effort / --nodes cap are ordered by the question units they hold (originals first, then stand-ins), then the grammar layer's kind of the cross (the particle after its centre word, a stem taking the particle after the whole word; the question's slot first), then E_Q; ties are never split; the candidate set of a full read is unchanged; combined: also the windows (stand-ins as query units) and the layers (same query); the header has a grammar row (form, slot, predicate, stand-ins)")
+                   help="ask --structure flat|combined (G3-k, L-800..): off (default) = every committed byte. on = the owner's 「未知語の代役と文法層の読む順」: the unknown RUN words of the question get their stand-ins (WORD parts known to the corpus; CHAR parts when no WORD part is known) as ADDITIONAL query units of the RUN tier, marked provenance stand-in (they select the crosses to read and count in the read order; E_Q is the original units'; the answer lists them with their chance counts: stand-in units / RUN units of the corpus; entries that exist only through a stand-in carry via_standin); the crosses read under the --effort / --nodes cap are ordered by E_Q first (the energy order of the plain cap read) and, only inside an exact E_Q tie, by the original question units they hold, the stand-in units, then the grammar layer's kind of the cross (the particle after its centre word, a stem taking the particle after the whole word; the question's slot first) (--read-order eq_first, G3-k2; --read-order qcount_first = G3-k's order, the question units first); blocks equal on every key are never split; both marks via_standin and read_via_standin are shown; the candidate set of a full read is unchanged; combined: also the windows (stand-ins as query units) and the layers (same query); the header has a grammar row (form, slot, predicate, stand-ins)")
     p.add_argument("--merge", choices=["none", "word_set"], default="none",
                    help="ask --structure combined (G3-g2): none (default) = every candidate is its own entry, shown in per-origin blocks (flat RUN, WORD, CHAR, layers, window/plain, window/window-evidence), each block in its source's own order; equal word sets from different origins are NOT merged, only marked (also_in); the per-source typed abstentions come first. word_set = the G3-g form (equal word sets are one entry with all its origins), for comparison")
     p.add_argument("--assembly", choices=["on", "off"], default="on",
                    help="ask --structure combined (G3-j, L-780): on (default; combined is new, so no committed bytes change) = add the block flat/assembled: the F2 granularity assembly over the entries of the FLAT block (layer 0 only, scope all, no bridging over function words): the strings that units of different tiers (RUN / WORD / CHAR) of the flat entries make where they overlap or touch in one source sentence, each with its parts, tiers, per-character provenance and trace check; they are extra candidates in a block of their own, never merged with another block, and a single assembled string is a CHOICE, never an ANSWER; the header has a row for the block (listed N, or no assembly). off = the list, header and bytes of G3-i (no flat/assembled block)")
     p.add_argument("--answer-shape", dest="answer_shape", choices=["unit", "path"], default="unit",
                    help="ask --structure slide (G3-e2): what an agreeing axis shows. unit (default) = the end unit of the section walk (one word); path = the units of the walked section path on that axis, outer end to centre, with the provenance of every word. Whether an axis answers is the agreement's in both")
-    p.add_argument("--read-order", dest="read_order", choices=["qcount_first", "grammar_first"], default="qcount_first",
-                   help="ask --structure slide (G3-e2): the order of the candidate windows. qcount_first (default) = windows that hold more question units first, the grammar order (kind match, ladder) only inside a tie; grammar_first = the grammar order first, then the number of question units held (the order before G3-e2)")
+    p.add_argument("--read-order", dest="read_order", choices=["eq_first", "qcount_first", "grammar_first"], default=None,
+                   help="ask --structure slide (G3-e2): the order of the candidate windows. qcount_first (default) = windows that hold more question units first, the grammar order (kind match, ladder) only inside a tie; grammar_first = the grammar order first, then the number of question units held (the order before G3-e2). ask --structure flat|combined --grammar on (G3-k2, L-819): the order of the FLAT plane's crosses under the --effort / --nodes cap. eq_first (default with --grammar on; the owner's 「E_Q が先、単位数は同点内」) = the energy order of the plain cap read (the group, then E_Q descending) and only inside an exact E_Q tie the original question units held, then the stand-in units held, then the grammar kind; qcount_first = G3-k's order (the question units held first, E_Q last), kept for comparison. In combined the value also names the windows' order when it is a window order (qcount_first | grammar_first; eq_first = the windows' default qcount_first); grammar_first does not apply to the flat plane (flat: error; combined: the flat plane keeps eq_first). eq_first is not a window order (slide: error). Without --grammar on the flat plane has no such order (T7b's) and the option does nothing there")
     p.add_argument("--z-deep", dest="z_deep", choices=["slide", "order"], default="order",
                    help="line3 build/ask --structure slide|combined (G3-c4, default changed by G3-i / L-770): the evidence of a z-arm edge deeper than the innermost. order (default since G3-i, the owner's choice after G3-h) = the pair's word order in its sentences over the whole corpus, counted as an x arm does; slide = a slide edge (n_z, almost no evidence; the default through G3-h). A PLACEMENT switch: another slide spec, another window cache file (a cache built with the other value is not read; `line3 build --structure slide --z-deep slide` builds the former one). The other window defaults of G3-i (not options of this command): arm_cap budget, seat_empty_axis deny, padding one per article, centre_scope both, growth z_reserved, strict per-axis stability")
     p.add_argument("--choose", type=int, default=None, help="ask: the index of the candidate you pick; its memory record (with the tier) goes to stderr and --record")
@@ -3134,6 +3264,48 @@ def main(argv: Optional[list] = None) -> int:
     p.add_argument("--layer-feedback", dest="layer_feedback", choices=["none", "down"], default="none",
                    help="ask --layers on: down = re-read the lower layer with the upper layers' words until no layer changes (N-12)")
     p.set_defaults(fn=cmd_line3)
+
+    p = sub.add_parser("loom", help="the loom: the model's only output channel is operating Vera's structure (mcp | replay | verify | note | close | output | demo)")
+    p.set_defaults(store="")          # the loom reads no store and no user config: the sandbox is the corpus and the run folder
+    lsub = p.add_subparsers(dest="loom_op", required=True)
+    q = lsub.add_parser("mcp", help="the FastMCP stdio server `vera-loom` (the 18 operations)")
+    q.add_argument("--tasks", required=True, help="task bank jsonl ({task_id, text, lang, mode, tiers, corpus, ...}; never holds a gold)")
+    q.add_argument("--runs-dir", dest="runs_dir", required=True, help="the only folder the server writes: <runs-dir>/<run_id>/ops.jsonl")
+    q.add_argument("--allow-root", dest="allow_root", action="append", default=None, help="an extra folder the server may READ (repeatable)")
+    q.add_argument("--stability", choices=["strict_npa", "strict_np", "report"], default="strict_npa",
+                   help="OP-LOOM-1: strict_npa (default, the owner's choice: the full key (n, p, a)) | strict_np | report (annotation only)")
+    q.add_argument("--isolated", action="store_true",
+                   help="LOOM-d2: prove the OS profile (probe), then re-execute this server under sandbox-exec: no network, reads only the task bank / "
+                        "corpus / fixture / python / the loom source, writes only --runs-dir; exit 3 and no server when the probe does not pass")
+    q = lsub.add_parser("replay", help="re-execute a run's operations and compare the rows byte for byte (exit 0 identical, 1 differs, 2 inputs not reproduced)")
+    q.add_argument("run_dir")
+    q.add_argument("--out", default=None, help="write the replayed ops.jsonl here")
+    q.add_argument("--corpus", default=None, help="the corpus file (default: the path in the run's meta.json)")
+    q = lsub.add_parser("verify", help="the chain (OK / EMPTY / TAMPERED / TORN_TAIL / HEAD_MISMATCH) and then the replay (REPLAY_DIFFERS / REPLAY_INPUTS_MISMATCH)")
+    q.add_argument("run_dir")
+    q.add_argument("--head", default=None, help="the HEAD sha pinned outside the folder")
+    q.add_argument("--corpus", default=None)
+    q = lsub.add_parser("output", help="L4: print the verified emitted text of a run (nothing else of a run is output)")
+    q.add_argument("run_dir")
+    q.add_argument("--head", default=None)
+    q.add_argument("--corpus", default=None)
+    q = lsub.add_parser("note", help="the harness's rows: the model's final free text (only its sha256 and length are stored) and harness_meta")
+    q.add_argument("run_dir")
+    q.add_argument("--free-text-file", dest="free_text_file", default=None)
+    q.add_argument("--control", action="store_true", help="a control run: the text IS that run's output (free_text_control)")
+    q.add_argument("--driver", default=None, choices=["L1-subagent", "L2-api", "scripted"])
+    q.add_argument("--requested-model", dest="requested_model", default=None)
+    q.add_argument("--agent-definition-sha", dest="agent_definition_sha", default=None)
+    q.add_argument("--response-model", dest="response_model", default=None)
+    q = lsub.add_parser("close", help="append `abandoned` if the run was left open")
+    q.add_argument("run_dir")
+    q.add_argument("--reason", default="no_close")
+    q = lsub.add_parser("demo", help="the scripted weaver's worked example (design 3.5) in one or both modes")
+    q.add_argument("--corpus", required=True)
+    q.add_argument("--runs-dir", dest="runs_dir", required=True)
+    q.add_argument("--mode", choices=["both", "record_only", "constructed_allowed"], default="both")
+    q.add_argument("--stability", choices=["strict_npa", "strict_np", "report"], default="strict_npa")
+    p.set_defaults(fn=cmd_loom)
 
     args = ap.parse_args(argv)
     if getattr(args, "cmd", None) in ("read", "ask", "chat", "serve") and getattr(args, "layer", None):

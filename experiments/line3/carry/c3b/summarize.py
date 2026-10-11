@@ -32,6 +32,7 @@ for t, l in (("RUN", "low"), ("WORD", "low"), ("RUN", "mid"), ("WORD", "mid")):
     row("level-0 blacks with a pack centre", cen)
     row("P-1 failures / O-2 mismatches", lambda d: "%d / %d" % (len(d["frontier_coverage_failed_after_sentences"]), len(d["ledger_mismatches"])))
     row("time (CPU s, spy included)", lambda d: d["total_secs_cpu"])
-out = "| quantity | run | close (baseline) | defer |\n|---|---|---|---|\n" + "\n".join(lines) + "\n"
+NOTE = 'NOTE (2026-10-11, L-G4-72). The S300 tower measurements in this directory were taken under the OLD rule: `placement._settle` did not check the first class (the best-key terminals) against `max_class` (L-G4-47 / L-G4-50 changed that). Under the current code the WORD tower differs: on the 12-sentence S300 toy at level low, 146 of 370 events (a first class of 132 arrangements > max_class 63, kept before, is now a max_class rollback at event 131 and the black closes; RUN differs only in the `work` counts of 2 of 217 events). The effect on the S300 results is NOT measured (owner: 「規則を貫き、塔のピンを更新して C3 の記録に注記」, no re-measurement). The results/logs here are unchanged records of the old rule.\n' + "\n"
+out = NOTE + "| quantity | run | close (baseline) | defer |\n|---|---|---|---|\n" + "\n".join(lines) + "\n"
 open(os.path.join(D, "summary.md"), "w").write(out)
 print(out)

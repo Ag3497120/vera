@@ -1,0 +1,104 @@
+{
+ "abandoned": [
+  "control_free_text"
+ ],
+ "annotated": null,
+ "answer_view": {
+  "excess_chars": null,
+  "hit_record_text": null,
+  "hits_text": null
+ },
+ "base": "UF-001",
+ "closing": null,
+ "control": true,
+ "control_note": "FREE-TEXT CONTROL: no loom; the answer line of the final text is the output; for comparison with the loom only. SCRIPTED: the text is the script's own words (SPEC in harness.py), WRITTEN WITH THE GOLD KNOWN; its hit is not a measurement of anything (a harness check only)",
+ "declared_model": "scripted-weaver",
+ "driver": "scripted",
+ "footnotes": {
+  "hits_words": "hits_words (the gold inside ONE record unit; `score.hits_words`) is false by construction for every multi-unit answer (ハッシュ表, キューバの太陽, カールマルクス, 1981年); it is not a correctness column"
+ },
+ "free_text_dropped": {
+  "chars": 0,
+  "n": 0,
+  "sha256": []
+ },
+ "harness_meta": [
+  {
+   "driver": "scripted",
+   "requested_model": "scripted-weaver"
+  }
+ ],
+ "ledger": "experiments/line3/loom/baseline_scripted/runs/UF-001.free_text.scripted/ops.jsonl",
+ "ledger_head": "e12f474b6a66081ee986fb52669f08fa77a0cc0f2ae97cca4b6284e8cfd092a5",
+ "mode": "free_text",
+ "model_result": false,
+ "op_counts": {
+  "by_class": {
+   "lookups": 2,
+   "other": 1
+  },
+  "by_op": {
+   "begin": 1,
+   "lookup": 2
+  },
+  "emit_attempts": 0,
+  "model_rows": 3,
+  "rows": 6
+ },
+ "output_text": "不明",
+ "refusals": {},
+ "schema": "loom-result-1",
+ "score": {
+  "abstain_type": "不明",
+  "answer_line": "不明",
+  "base": "UF-001",
+  "chars": {
+   "constructed": 0,
+   "foundation": 0,
+   "layout": 0,
+   "record": 0
+  },
+  "control": true,
+  "correct": true,
+  "excess_chars": null,
+  "hit_record_text": null,
+  "hits_text": null,
+  "hits_words": null,
+  "kind": "unans",
+  "mode": "free_text",
+  "note": "CONTROL (free text, no loom): the answer line IS the output; for comparison with the loom only",
+  "outcome": "abstained",
+  "output_sha": null,
+  "replay_verified": true,
+  "share_permille": {},
+  "stability": null,
+  "status": "abstained_correct",
+  "task_id": "bank2/UF-001.free_text",
+  "text": "不明",
+  "verify_status": "OK"
+ },
+ "self_corrections": {
+  "counts": {
+   "plan_change_after_empty": 1,
+   "recovery_after_refusal": 0,
+   "refusals_recoverable": 0,
+   "unseat_swap_before_close": 0
+  },
+  "plan_change_after_empty": [
+   {
+    "i": 2,
+    "next_i": 3,
+    "next_op": "lookup"
+   }
+  ],
+  "recovery_after_refusal": [],
+  "refusals_recoverable": 0,
+  "unseat_swap_before_close": []
+ },
+ "t_loom_34": "unchecked",
+ "task_id": "bank2/UF-001.free_text",
+ "wall": {
+  "driver_ns": 1132000,
+  "ledger_ns": 2261125
+ }
+}

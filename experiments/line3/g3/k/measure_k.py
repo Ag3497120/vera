@@ -22,6 +22,8 @@ ap.add_argument("--cache", required=True)
 ap.add_argument("--grammar", choices=["on", "off"], required=True)
 ap.add_argument("--standins", choices=["on", "off"], default="on",
                 help="with --grammar on: off = the ORDER ONLY (the intake is made, then its stand-ins are dropped: form, slot and the read order stay, no unit is added) -- attribution run")
+ap.add_argument("--flat-order", dest="flat_order", choices=["eq_first", "qcount_first"], default="qcount_first",
+                help="with --grammar on (G3-k2, L-819): the flat plane's read order. DEFAULT HERE = qcount_first so that the G3-k records are reproducible with the old command lines; the G3-k2 runs pass --flat-order eq_first (the library default)")
 ap.add_argument("--bank", choices=["bank3", "bank2"], default="bank3")
 ap.add_argument("--corpus", default="fulllead")
 ap.add_argument("--workers", type=int, default=1)
@@ -64,9 +66,11 @@ def _do(row):
         from verantyx.line3 import wiring as W
         gi = W.intake(G["idx"].space, question, W.context_of(G["idx"])[0])
         extra["grammar_intake"] = dataclasses.replace(gi, words=(), standins=())
+    if ARGS.grammar == "on":
+        extra["flat_order"] = ARGS.flat_order
     c = A.ask(G["idx"], question, structure="combined", grammar=ARGS.grammar, **extra, **kw)          # every other option = the committed default
     ms = int((time.monotonic() - t0) * 1000)
-    return {"id": qid, "kind": kind, "question": question, "gold": gold, "preset": PRESET, "grammar": ARGS.grammar, "standins": ARGS.standins, "ms": ms, "verdict": c.verdict,
+    return {"id": qid, "kind": kind, "question": question, "gold": gold, "preset": PRESET, "grammar": ARGS.grammar, "standins": ARGS.standins, "flat_order": ARGS.flat_order if ARGS.grammar == "on" else None, "ms": ms, "verdict": c.verdict,
             "answer": c.answer_obj(), "agreement": c.agreement(), "config": dict(c.config), "head": G["head"], "pid": os.getpid(),
             "load1": round(os.getloadavg()[0], 2)}
 
@@ -86,7 +90,7 @@ def _read_valid(path):
                 r = json.loads(l)
             except ValueError:
                 continue                                     # a line cut by a kill
-            if "error" not in r and r.get("preset") == PRESET and r.get("grammar") == ARGS.grammar and r.get("standins", "on") == ARGS.standins:
+            if "error" not in r and r.get("preset") == PRESET and r.get("grammar") == ARGS.grammar and r.get("standins", "on") == ARGS.standins and (ARGS.grammar != "on" or r.get("flat_order", "qcount_first") == ARGS.flat_order):
                 keep.append(r)
     return keep
 
@@ -128,7 +132,7 @@ if __name__ == "__main__":
         code[n] = hashlib.sha256(open(os.path.join(ROOT, "verantyx/line3", n + ".py"), "rb").read()).hexdigest()
     with open(OUT + ".meta.json", "w", encoding="utf-8") as f:
         json.dump({"argv": sys.argv, "head": G["head"], "cache": CACHE, "cache_files": sorted(os.listdir(CACHE)), "data": DATA, "bank": BANK,
-                   "grammar": ARGS.grammar, "started": time.strftime("%Y-%m-%d %H:%M:%S"), "resumed_ids": len(done), "pyhashseed": os.environ.get("PYTHONHASHSEED"),
+                   "grammar": ARGS.grammar, "flat_order": ARGS.flat_order if ARGS.grammar == "on" else None, "started": time.strftime("%Y-%m-%d %H:%M:%S"), "resumed_ids": len(done), "pyhashseed": os.environ.get("PYTHONHASHSEED"),
                    "python": sys.version.split()[0], "window_corpus_sha256": wi.space.sha256(), "window_z_deep": wi.z_deep,
                    "window_slide_spec_sha256": wi.slide.spec.sha256(), "window_place_spec_sha256": wi.spec.sha256(), "code_sha256": code,
                    "ids": [r[0] for r in rows]}, f, indent=1, default=str)

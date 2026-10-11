@@ -1,0 +1,18 @@
+{
+  "mcpServers": {
+    "vera-loom": {
+      "type": "stdio",
+      "command": "/Users/motonisihikoudai/vera-wiring/env/bin/python",
+      "args": [
+        "-m", "verantyx.cli", "loom", "mcp",
+        "--tasks", "experiments/line3/loom/tasks_bank2.jsonl",
+        "--runs-dir", "experiments/line3/loom/runs", "--isolated"
+      ],
+      "env": {
+        "PYTHONPATH": ".",
+        "PYTHONHASHSEED": "0",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      }
+    }
+  }
+}

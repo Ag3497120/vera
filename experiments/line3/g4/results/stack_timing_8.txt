@@ -1,0 +1,28 @@
+# stack_timing.py, first 8 articles of fulllead (20 sentences), RUN, level mid, 2 workers, PYTHONHASHSEED=0, python 3.11 on the Pro under other load (load1 shown)
+# foundation on:
+articles=8 tiers=RUN level=mid foundation=on workers=2  load1=62.27294921875
+step  sent units   wall_s    cpu_s | per tier: crosses open/grow/narrow/closed(step) closed(total)
+   1     3    24     29.5     22.7 | RUN 24 24/0/0/21 (0) 21
+   2     3    20      3.7      3.1 | RUN 44 20/0/0/1 (0) 22
+   3     6    66    101.2     70.8 | RUN 110 66/0/0/61 (0) 83
+   4     1     9     20.6     11.9 | RUN 119 9/0/0/1 (0) 84
+   5     1     5      0.2      0.3 | RUN 124 5/0/0/0 (0) 84
+   6     3    45    113.3     78.1 | RUN 169 45/2/1/39 (17) 123
+   7     1     8      2.6      2.1 | RUN 177 8/0/0/8 (0) 131
+   8     2     8      3.4      2.8 | RUN 185 8/0/0/6 (0) 137
+TOTAL wall 274.5 s  cpu 191.8 s  sentences 20  per document: wall 34.3 s cpu 24.0 s  per sentence: wall 13.7 s cpu 9.6 s
+state_sha256 RUN=8c0415f8ce2b6421
+
+# foundation off (diagnostic):
+articles=8 tiers=RUN level=mid foundation=off workers=2  load1=27.74658203125
+step  sent units   wall_s    cpu_s | per tier: crosses open/grow/narrow/closed(step) closed(total)
+   1     3    24     38.0     40.7 | RUN 24 24/0/0/14 (0) 14
+   2     3    20     14.1     14.8 | RUN 44 20/0/0/1 (0) 15
+   3     6    66    143.2    157.5 | RUN 110 66/1/1/56 (9) 71
+   4     1     9     24.0     25.0 | RUN 119 9/0/0/9 (0) 80
+   5     1     5      0.1      0.1 | RUN 124 5/0/0/0 (0) 80
+   6     3    45     90.8     98.7 | RUN 169 45/2/1/47 (10) 127
+   7     1     8      4.7      4.7 | RUN 177 8/0/0/0 (0) 127
+   8     2     8      2.1      2.0 | RUN 185 8/2/2/2 (10) 129
+TOTAL wall 317.1 s  cpu 343.5 s  sentences 20  per document: wall 39.6 s cpu 42.9 s  per sentence: wall 15.9 s cpu 17.2 s
+state_sha256 RUN=c481a58590c4d3f8

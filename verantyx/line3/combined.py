@@ -71,10 +71,14 @@ ASSEMBLY_SCOPE = GR.DEFAULT_SCOPE                                     # "all" (F
 WINDOW_PLAIN = "window/plain"
 WINDOW_EVID = "window/window-evidence"
 MERGES: Tuple[str, ...] = ("none", "word_set")                        # G3-g2 (L-740): none = every candidate its own entry (default); word_set = G3-g's one entry per word set
+UNKNOWN_STACK_NO_WINDOWS = "UNKNOWN_STACK_NO_WINDOWS"                 # G4-c (L-G4-83): the typed answer-less row of a window source that a frozen stack does not read
+STACK_NO_WINDOWS_TEXT = "stack: the windows need a window cache and a frozen stack has none; flat and layers only"
 MARK_WINDOW_EVIDENCE = "window_evidence_variant"                     # L-723: the mark of an entry that the window-evidence variant (L-714) gives
 MARK_STANDIN = "via_standin"                                          # G3-k (L-808): the mark of an entry every member of which exists only through an unknown-word stand-in
 MARK_READ_STANDIN = "read_via_standin"                                # G3-k (L-811): every member comes from a cross / window that the same order would not have read under the cap without the stand-ins
-MARK_TEXT = {MARK_WINDOW_EVIDENCE: "【窓の証拠の変種】", MARK_STANDIN: "【未知語の代役のみ】", MARK_READ_STANDIN: "【代役の並びで読んだ十字・窓】"}
+MARK_OUTSIDE_STACK = "outside_stack"                                    # G4-c (L-G4-99): an entry of the layers over a frozen stack: its crosses are one-shot builds outside the stack
+MARK_TEXT = {MARK_WINDOW_EVIDENCE: "【窓の証拠の変種】", MARK_STANDIN: "【未知語の代役のみ】", MARK_READ_STANDIN: "【代役の並びで読んだ十字・窓】",
+             MARK_OUTSIDE_STACK: "【積みの外】"}
 LAYER_VARIANTS: Tuple[str, ...] = ("A",)                              # T10's measured ssp: variant A, compress, no feedback
 LAYER_GRANULARITY = "compress"
 LAYER_CANDIDATE = "stable-seats-path"
@@ -214,6 +218,8 @@ class Entry:
             mk += (MARK_STANDIN,)
         if self.members and all(m.detail.get("read_via_standin") is True for m in self.members):     # G3-k (L-811): a flat via_standin entry shows both (a cross with no original unit is no candidate without the stand-ins); a window entry can be via_standin through a member that holds only a stand-in in a window both orders read
             mk += (MARK_READ_STANDIN,)
+        if self.members and all(m.detail.get("outside_stack") is True for m in self.members):     # G4-c (L-G4-99): only over a frozen stack (the key is absent otherwise)
+            mk += (MARK_OUTSIDE_STACK,)
         return mk
 
     @property
@@ -381,7 +387,11 @@ class CombinedAnswer:
             for a in abst:
                 c[a["kind"]] = c.get(a["kind"], 0) + 1
             return {k: c[k] for k in sorted(c)}
-        rows: List[dict] = [dict(self.grammar["header"])] if self.grammar is not None else []      # G3-k (L-808): the grammar row stands first
+        rows: List[dict] = []
+        if self.grammar is not None:                                             # G3-k (L-808): the grammar row stands first; G3-k2 (L-821): both marks counted over the list
+            rows.append({**self.grammar["header"],
+                         MARK_STANDIN: sum(1 for e in self.entries if MARK_STANDIN in e.marks),
+                         MARK_READ_STANDIN: sum(1 for e in self.entries if MARK_READ_STANDIN in e.marks)})
         for s in self.sources:
             if s.name == FLAT:
                 tiers = sorted({c.origin.split("/")[1] for c in s.cands} | {a["tier"] for a in s.abstentions if "tier" in a}, key=TIERS.index)
@@ -398,6 +408,9 @@ class CombinedAnswer:
             else:
                 n = len(s.cands)
                 rows.append({"source": s.name, "listed": n, "kind": None if n else s.verdict, "kinds": counts(s.abstentions)})
+                if s.name == LAYERS and s.read.get("outside_stack"):                  # G4-c (L-G4-99): the header says the layers are not the stack's
+                    rows[-1]["layers_oneshot"] = True
+                    rows[-1]["bundle_builds_total"] = s.read["outside_stack"]["bundle_builds_total"]
         return rows
 
     def blocks(self) -> List[dict]:
@@ -595,7 +608,8 @@ def layers_source(lc: M.LayeredCombined) -> Source:
             for e in r.entries:
                 cands.append(Cand(layer_origin(tl.tier, e.layer, e.variant), tuple(e.words), tuple(e.centres), e.stability, e.arrangements,
                                   tuple(e.source_sids), e.word_sources, bool(r.trace["ok"]),
-                                  {"tier": tl.tier, "layer": e.layer, "variant": e.variant, "bundles": list(e.bundles), "candidate": e.mode or "path"}))
+                                  {"tier": tl.tier, "layer": e.layer, "variant": e.variant, "bundles": list(e.bundles), "candidate": e.mode or "path",
+                                   **({"outside_stack": True} if lc.outside_stack is not None else {})}))
     if cands:
         verdict = ANSWER if len(cands) == 1 else CHOICE
     elif not lc.stacked:
@@ -603,6 +617,8 @@ def layers_source(lc: M.LayeredCombined) -> Source:
     else:
         verdict = next((r.verdict for tl in lc.layers for r in tl.runs), UNKNOWN_NO_STATE)
     read = {"stacked": lc.stacked, "partial": partial, "per_tier": per_tier}
+    if lc.outside_stack is not None:                                   # G4-c (L-G4-99)
+        read["outside_stack"] = dict(lc.outside_stack)
     return Source(LAYERS, verdict, tuple(cands), tuple(abst), read,
                   {"ok": (all(tr_ok) if tr_ok else None), "words_checked": words_checked},
                   lc.thought_obj()["layers"])
@@ -682,7 +698,7 @@ def _frac(s: Optional[str]) -> Optional[Fraction]:
 def ask_combined(index, question: str, tiers: Optional[Sequence[str]] = None, budget: cy.QueryBudget = A.DEFAULT_BUDGET, *,
                  view: str = "all", effort: Optional[str] = None, nodes: Optional[int] = None, window_evidence: str = "both",
                  windows: Optional[SQ.WindowIndex] = None, slide_members: str = SLIDE_MEMBERS, read_order: str = "qcount_first",
-                 layer_variants: Sequence[str] = LAYER_VARIANTS, layer_granularity: str = LAYER_GRANULARITY, z_deep: Optional[str] = None,
+                 flat_order: Optional[str] = None, layer_variants: Sequence[str] = LAYER_VARIANTS, layer_granularity: str = LAYER_GRANULARITY, z_deep: Optional[str] = None,
                  cache_dir: Optional[str] = None, workers: int = 1, place_kw: Optional[Mapping] = None, trace: bool = True, merge: str = "none",
                  assembly: bool = True, grammar: str = "off", grammar_intake=None) -> CombinedAnswer:
     """`structure="combined"` (G3-g, opt-in): the flat cross (ask.ask, `tiers` and `budget` as there), the layers (stable-seats-path, variants
@@ -694,10 +710,14 @@ def ask_combined(index, question: str, tiers: Optional[Sequence[str]] = None, bu
     `assembly` (G3-j, default True; this structure is new, so the default changes no committed bytes): add the block flat/assembled, the F2 assembly of the flat
     entries (assembled_source); False = the list, header and bytes of G3-i.
     `grammar` (G3-k, L-800..L-808; "off" = every committed byte): "on" = the question intake with the unknown-word stand-ins is made ONCE (wiring.intake) and shared by the
-    flat cross (stand-ins as additional, marked query units of the RUN tier; the crosses read under the cap ordered by the question units held, then the grammar
-    kind, then E_Q), the layers (the re-asks keep the same query and mark) and the windows (windows that hold only stand-ins are read after the others); the header gets a
-    `grammar` row, the answer `grammar_form` and `standins` (with their chance counts), entries that exist only through a stand-in the mark `via_standin`.
-    `grammar_intake` = a wiring.GrammarIntake made beforehand."""
+    flat cross (stand-ins as additional, marked query units of the RUN tier; the crosses read under the cap in the order `flat_order`: eq_first = E_Q first, the question units held
+    and the grammar kind only inside an exact E_Q tie [default, G3-k2]; qcount_first = the question units held first, then the grammar kind, then E_Q [G3-k]), the layers (the re-asks keep the same query and mark) and the windows (windows that hold only stand-ins are read after the others); the header gets a
+    `grammar` row, the answer `grammar_form` and `standins` (with their chance counts), entries that exist only through a stand-in the mark `via_standin`, entries from a cross / window read only because of the stand-ins `read_via_standin` (G3-k2: both are
+    counted in the grammar row).
+    `grammar_intake` = a wiring.GrammarIntake made beforehand.
+    `flat_order` (G3-k2, L-819; only with grammar "on"): the order of the flat cross's crosses under the cap, None / "eq_first" (default: E_Q first, the question units held and the grammar
+    kind only inside an exact E_Q tie) | "qcount_first" (G3-k's).  `read_order` stays the WINDOWS' order (qcount_first | grammar_first, unchanged).  The layers' re-asks and the
+    `read_via_standin` re-plans use the same flat order."""
     if grammar not in ("off", "on"):
         raise ValueError("grammar: off | on")
     if merge not in MERGES:
@@ -710,38 +730,49 @@ def ask_combined(index, question: str, tiers: Optional[Sequence[str]] = None, bu
         raise ValueError("slide_members: %s" % " | ".join(SQ.MEMBERS))
     t0 = time.monotonic_ns()
     gi = None
+    forder = None
     if grammar == "on":
         from verantyx.line3 import wiring as W
+        forder = W.flat_order_of(flat_order)
         gi = grammar_intake if grammar_intake is not None else W.intake(index.space, question, W.context_of(index)[0])
-    c0 = A.ask(index, question, tiers, budget, view="all", effort=effort, nodes=nodes, **({"grammar": "on", "grammar_intake": gi} if gi is not None else {}))
+    c0 = A.ask(index, question, tiers, budget, view="all", effort=effort, nodes=nodes, **({"grammar": "on", "grammar_intake": gi, "flat_order": forder} if gi is not None else {}))
     opts = M.LayerOptions(variants=tuple(layer_variants), granularity=layer_granularity, feedback="none", candidate=LAYER_CANDIDATE,
                           bounds=M.bounds_for(effort, nodes))
     lc = M.ask_layered(index, question, tiers, budget, options=opts, view="all", effort=effort, nodes=nodes, base=c0,
-                       **({"tier_kw": W.reask_kw(gi, [o.tier for o in c0.outcomes], W.context_of(index)[1])} if gi is not None else {}))
-    wi = windows if windows is not None else SQ.window_index_for(index, cache_dir=cache_dir, workers=workers, place_kw=place_kw,
-                                                                 z_deep=z_deep or SL.DEFAULT_Z_DEEP)
+                       **({"tier_kw": W.reask_kw(gi, [o.tier for o in c0.outcomes], W.context_of(index)[1], forder)} if gi is not None else {}))
     evs = ("plain", "window") if window_evidence == "both" else (window_evidence,)
-    fas = [(ev, SF.ask_flat(wi, question, effort=effort, nodes=nodes, members=slide_members, read_order=read_order, evidence=ev,
-                            word_sources=True, **({"grammar": "on", "grammar_intake": gi} if gi is not None else {}))) for ev in evs]
+    stacked = getattr(index, "stack", None) is not None
+    if stacked:                                          # G4-c (L-G4-83): a frozen stack has no window cache and builds none: the window sources are named, empty, typed
+        wi = None
+        wsrcs = [window_source_of(ev, [], [], UNKNOWN_STACK_NO_WINDOWS, {"partial": False, "skipped": STACK_NO_WINDOWS_TEXT}) for ev in evs]
+    else:
+        wi = windows if windows is not None else SQ.window_index_for(index, cache_dir=cache_dir, workers=workers, place_kw=place_kw,
+                                                                     z_deep=z_deep or SL.DEFAULT_Z_DEEP)
+        fas = [(ev, SF.ask_flat(wi, question, effort=effort, nodes=nodes, members=slide_members, read_order=read_order, evidence=ev,
+                                word_sources=True, **({"grammar": "on", "grammar_intake": gi} if gi is not None else {}))) for ev in evs]
+        wsrcs = [window_source(fa, ev) for ev, fa in fas]
     fsrc = flat_source(c0, index if trace else None)
-    srcs = [fsrc, layers_source(lc)] + [window_source(fa, ev) for ev, fa in fas]
+    srcs = [fsrc, layers_source(lc)] + wsrcs
     if assembly:
         srcs.append(assembled_source(fsrc, index.space))
     name, cap, _lv = A.resolve_effort(effort, nodes)
     cfg = {"effort": name, "node_budget": cap, "flat": {"tiers": [o.tier for o in c0.outcomes], "level": index.level},
            "layers": {"variants": list(opts.variants), "granularity": opts.granularity, "feedback": opts.feedback, "candidate": opts.candidate},
-           "window": {"evidence": list(evs), "members": slide_members, "read_order": read_order, "z_deep": wi.z_deep,
-                      "corpus_sha256": wi.space.sha256(), "slide_spec_sha256": wi.slide.spec.sha256(), "place_spec_sha256": wi.spec.sha256()}}
+           "window": ({"evidence": list(evs), "members": slide_members, "read_order": read_order, "z_deep": wi.z_deep,
+                       "corpus_sha256": wi.space.sha256(), "slide_spec_sha256": wi.slide.spec.sha256(), "place_spec_sha256": wi.spec.sha256()}
+                      if not stacked else {"evidence": list(evs), "skipped": STACK_NO_WINDOWS_TEXT})}
+    if stacked:
+        cfg["stack"] = dict(index.stack)
     if c0.placement is not None:
         cfg["flat"]["placement"] = dict(c0.placement)
     if assembly:
         cfg["assembly"] = {"on": True, "scope": ASSEMBLY_SCOPE, "bridge": False, "layer": 0}
     gobj = None
     if gi is not None:
-        cfg["grammar"] = {"on": True, "stem": "whole_word", "flat_order": "question units held, grammar kind, E_Q", "layers": "inherit the query; order unchanged",
+        cfg["grammar"] = {"on": True, "stem": "whole_word", "flat_order": forder, "flat_order_text": W._order_text(forder, False), "layers": "inherit the query; order unchanged",
                           "windows": "question units held (stand-ins second), grammar kind"}
-        gobj = {"form": gi.grammar_form(), "standins": gi.standins_obj(), "header": gi.header_row(),
-                "full": {"form": gi.grammar_form(), "standins": gi.standins_obj(True), "reading": gi.reading.to_obj(), "stem": "whole_word",
+        gobj = {"form": gi.grammar_form(forder), "standins": gi.standins_obj(), "header": gi.header_row(),
+                "full": {"form": gi.grammar_form(forder), "order": forder, "standins": gi.standins_obj(True), "reading": gi.reading.to_obj(), "stem": "whole_word",
                          "foundation_sha256": W.gr.foundation_sha()}}
     sent = _sentence_map(index, srcs)
     return combine(question, srcs, sent, config=cfg, effort=name, ms=(time.monotonic_ns() - t0) // 1000000, merge=merge, grammar=gobj)
@@ -764,17 +795,23 @@ def format_text(c: CombinedAnswer, show_thought: bool = False) -> str:
     L: List[str] = ["出所ごとの状況（候補の件数、または答えなしの種類）:"]
     for h in a["header"]:
         if h["source"] == "grammar":                                             # G3-k (L-808)
-            L.append("  grammar: 形 %s / slot %s / 述語 %s / 未知語の代役 %d 件（%s）" % (h["form"], h["slot"] or "なし", h["predicate"] or "なし", h["standins"],
-                                                                                   ", ".join(h["unknown_words"]) or "未知語なし"))
+            L.append("  grammar: 形 %s / slot %s / 述語 %s / 未知語の代役 %d 件（%s）/ 印の件数: %s %d 件・%s %d 件" % (
+                h["form"], h["slot"] or "なし", h["predicate"] or "なし", h["standins"], ", ".join(h["unknown_words"]) or "未知語なし",
+                MARK_STANDIN, h[MARK_STANDIN], MARK_READ_STANDIN, h[MARK_READ_STANDIN]))
             continue
         if h["source"] == ASSEMBLED:
             L.append("  %s: %s" % (h["source"], "つなげた文字列 %d 件（平らな十字の候補の単位を同じ文でつなげたもの）" % h["listed"] if h["listed"] else "つなげた文字列なし (%s)" % h["kind"]))
+            continue
+        if h["kind"] == UNKNOWN_STACK_NO_WINDOWS:                                 # G4-c (L-G4-83)
+            L.append("  %s: 読みません（%s）" % (h["source"], STACK_NO_WINDOWS_TEXT))
             continue
         extra = ""
         if h["kinds"] and h["listed"]:
             extra = "（ほかに答えなしの部分（走り・窓）: %s）" % ", ".join("%s=%d" % kv for kv in h["kinds"].items())
         elif h["kinds"] and len(h["kinds"]) > 1:
             extra = "（内訳: %s）" % ", ".join("%s=%d" % kv for kv in h["kinds"].items())
+        if h.get("layers_oneshot"):                                              # G4-c (L-G4-99)
+            extra += "【積みの外: 上の層の十字は積みの十字ではなく一回きりの配置・この問いで作った十字 %d 本】" % h["bundle_builds_total"]
         L.append("  %s: %s%s" % (h["source"], "候補 %d 件" % h["listed"] if h["listed"] else "答えなし %s" % h["kind"], extra))
     if a["verdict"] == ANSWER:
         L.append("答え (%s): %s" % (", ".join(a["answer"]["origins"]), " / ".join(a["answer"]["path_words"])))
