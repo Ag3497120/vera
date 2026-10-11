@@ -104,8 +104,9 @@ def test_mcp_json_names_the_server_and_its_inputs():
     s = _mcp_config()
     assert list(json.load(open(os.path.join(ROOT, ".mcp.json")))["mcpServers"]) == ["vera-loom"]
     assert s["args"][:4] == ["-m", "verantyx.cli", "loom", "mcp"]
-    opts = dict(zip(s["args"][4::2], s["args"][5::2]))
-    assert set(opts) == {"--tasks", "--runs-dir"}
+    assert s["args"][-1] == "--isolated"                              # LOOM-d2 (L-LOOM-93, 119): the server runs under the OS profile, after the probe
+    opts = dict(zip(s["args"][4:-1:2], s["args"][5:-1:2]))
+    assert set(opts) == {"--tasks", "--runs-dir"} and s["args"].count("--isolated") == 1
     assert opts["--tasks"] == "experiments/line3/loom/tasks_bank2.jsonl" and os.path.isfile(os.path.join(ROOT, opts["--tasks"]))
     assert s["env"]["PYTHONPATH"] == "."
 
@@ -886,7 +887,7 @@ def test_the_defaults_keep_the_scripted_baseline_apart_from_the_operator_folders
     assert H.BASELINE_RUNS == os.path.join(LOOM_X, "baseline_scripted", "runs") and H.RUNS_DIR == os.path.join(LOOM_X, "runs")
     # .mcp.json serves the operator folder, and no scripted run is in it
     cfg = json.load(open(os.path.join(ROOT, ".mcp.json"), encoding="utf-8"))
-    assert cfg["mcpServers"]["vera-loom"]["args"][-1] == "experiments/line3/loom/runs"
+    assert cfg["mcpServers"]["vera-loom"]["args"][-2:] == ["experiments/line3/loom/runs", "--isolated"]
     if os.path.isdir(H.RUNS_DIR):
         for d in os.listdir(H.RUNS_DIR):
             assert not d.endswith(".scripted"), d

@@ -2520,6 +2520,9 @@ def cmd_loom(args) -> int:
 
     op = args.loom_op
     if op == "mcp":
+        if args.isolated:                      # LOOM-d2: re-execute under sandbox-exec (verantyx/loom/isolate.py); the probe must pass first
+            from .loom import isolate
+            return isolate.serve_isolated(args.tasks, args.runs_dir, args.allow_root or (), args.stability)
         return lm.serve(args.tasks, args.runs_dir, args.allow_root or (), args.stability)
     if op == "replay":
         rep = lg.replay(args.run_dir, args.corpus)
@@ -3271,6 +3274,9 @@ def main(argv: Optional[list] = None) -> int:
     q.add_argument("--allow-root", dest="allow_root", action="append", default=None, help="an extra folder the server may READ (repeatable)")
     q.add_argument("--stability", choices=["strict_npa", "strict_np", "report"], default="strict_npa",
                    help="OP-LOOM-1: strict_npa (default, the owner's choice: the full key (n, p, a)) | strict_np | report (annotation only)")
+    q.add_argument("--isolated", action="store_true",
+                   help="LOOM-d2: prove the OS profile (probe), then re-execute this server under sandbox-exec: no network, reads only the task bank / "
+                        "corpus / fixture / python / the loom source, writes only --runs-dir; exit 3 and no server when the probe does not pass")
     q = lsub.add_parser("replay", help="re-execute a run's operations and compare the rows byte for byte (exit 0 identical, 1 differs, 2 inputs not reproduced)")
     q.add_argument("run_dir")
     q.add_argument("--out", default=None, help="write the replayed ops.jsonl here")

@@ -6,7 +6,7 @@
       "args": [
         "-m", "verantyx.cli", "loom", "mcp",
         "--tasks", "experiments/line3/loom/tasks_bank2.jsonl",
-        "--runs-dir", "experiments/line3/loom/runs"
+        "--runs-dir", "experiments/line3/loom/runs", "--isolated"
       ],
       "env": {
         "PYTHONPATH": ".",

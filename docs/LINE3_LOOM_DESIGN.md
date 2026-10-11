@@ -391,8 +391,10 @@ Project files (created by LOOM-d, committed after review; a **Claude Code restar
 // .mcp.json
 {"mcpServers": {"vera-loom": {"command": "/Users/motonisihikoudai/vera-wiring/env/bin/python",
   "args": ["-m", "verantyx.cli", "loom", "mcp", "--tasks", "experiments/line3/loom/tasks_bank2.jsonl",
-           "--runs-dir", "experiments/line3/loom/runs"], "env": {"PYTHONPATH": "."}}}}
+           "--runs-dir", "experiments/line3/loom/runs", "--isolated"], "env": {"PYTHONPATH": "."}}}}
 ```
+
+`--isolated` (LOOM-d2, L-LOOM-93, 119): the server proves the `sandbox-exec` profile with a probe and re-executes itself inside it; the file in the repository also carries `PYTHONHASHSEED=0` and `PYTHONDONTWRITEBYTECODE=1` in `env`.
 
 ### 9.2 The subagent definitions
 

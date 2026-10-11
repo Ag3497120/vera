@@ -1,0 +1,76 @@
+;; tools/loom_isolation_profile.sb -- the OS wall of the loom (LOOM-d2, docs/LINE3_LOOM_DESIGN.md 7.1 L3, L-LOOM-85..)
+;;
+;; Applied by verantyx/loom/isolate.py through `sandbox-exec -f <this file> -D NAME=value ... <python> ...`.  The file is STATIC: every path
+;; arrives as a parameter, so the sha256 of these bytes (isolate.profile_sha) names the rule set and the parameters name the places.
+;;
+;;   RT0..RT19      the python runtime that may be READ (venv, the framework it links, site-packages, the dylibs the extension modules link,
+;;                  the symlinks on the way to the interpreter)
+;;   READ0..READ15  what the job may READ: the fixture copy / the corpus + task bank + the loom source (MCP server)
+;;   LIST0..LIST3   folders whose entries may be LISTED (not read): the repo root, because the import system lists a sys.path entry
+;;   WRITE0..WRITE3 the only places the job may WRITE (tests step: <tmp>/scratch; MCP server: the runs dir)
+;;   EXEC0, EXEC1   the interpreter that may be exec'd (real paths: the kernel resolves symlinks before the check; the framework's bin/python3.11
+;;                  re-executes Resources/Python.app/Contents/MacOS/Python, so that is EXEC1; an unused slot is NOPLACE)
+;;   NOPLACE        a path nothing lives under; unused slots point at it
+;;
+;; What is NOT here is the point: no `network*` rule (denied by default and denied again below, unix sockets included), no `process-fork`,
+;; no `process-exec` of anything but EXEC0, no `file-read*` of $HOME, no `file-write*` outside WRITE0..3 (and /dev/null), no `mach-lookup`
+;; of a service (so no Directory Services, no keychain, no launchd), no `file-read-metadata` outside the roots and their ancestors,
+;; and NO `sysctl-read` (L-LOOM-114): an `(allow sysctl-read)` here once let a sandboxed process read, through KERN_PROCARGS2, the full
+;; ARGUMENTS AND ENVIRONMENT of its parent and of any other same-user process (API tokens included) and, through KERN_PROC_ALL, the process
+;; table.  Python starts without it (os.uname(), os.cpu_count(), `import ctypes`, `platform` fail with EPERM inside).  The probe pins this
+;; (property `sysctl_procargs_blocked`).
+(version 1)
+(deny default)
+(deny network*)
+
+(allow process-exec (literal (param "EXEC0")) (literal (param "EXEC1")))
+(allow signal (target self))
+
+;; what a python process reads to start at all (dyld cache, system libraries, locale and time-zone tables, the cryptex that holds the cache)
+(allow file-read*
+    (literal "/")
+    (literal "/dev/null") (literal "/dev/urandom") (literal "/dev/random")
+    (subpath "/usr/lib")
+    (subpath "/usr/share")
+    (subpath "/System/Library")
+    (subpath "/System/Volumes/Preboot/Cryptexes/OS")
+    (subpath "/private/var/db/dyld")
+    (subpath "/private/var/db/timezone")
+    (literal "/private/etc/localtime"))
+
+;; the python runtime and the job's read roots
+(allow file-read*
+    (subpath (param "RT0"))  (subpath (param "RT1"))  (subpath (param "RT2"))  (subpath (param "RT3"))
+    (subpath (param "RT4"))  (subpath (param "RT5"))  (subpath (param "RT6"))  (subpath (param "RT7"))
+    (subpath (param "RT8"))  (subpath (param "RT9"))  (subpath (param "RT10"))  (subpath (param "RT11"))
+    (subpath (param "RT12"))  (subpath (param "RT13"))  (subpath (param "RT14"))  (subpath (param "RT15"))
+    (subpath (param "RT16"))  (subpath (param "RT17"))  (subpath (param "RT18"))  (subpath (param "RT19"))
+    (subpath (param "READ0"))  (subpath (param "READ1"))  (subpath (param "READ2"))  (subpath (param "READ3"))
+    (subpath (param "READ4"))  (subpath (param "READ5"))  (subpath (param "READ6"))  (subpath (param "READ7"))
+    (subpath (param "READ8"))  (subpath (param "READ9"))  (subpath (param "READ10")) (subpath (param "READ11"))
+    (subpath (param "READ12")) (subpath (param "READ13")) (subpath (param "READ14")) (subpath (param "READ15"))
+    (subpath (param "WRITE0")) (subpath (param "WRITE1")) (subpath (param "WRITE2")) (subpath (param "WRITE3")))
+
+;; folders whose NAMES may be listed (not their files' contents): the import system lists a sys.path entry before it opens anything in it
+(allow file-read-data
+    (literal (param "LIST0")) (literal (param "LIST1")) (literal (param "LIST2")) (literal (param "LIST3")))
+
+;; stat() of a path component on the way to an allowed root (the roots' ANCESTORS: metadata only, never contents) and of the roots themselves
+(allow file-read-metadata
+    (path-ancestors (param "RT0"))  (path-ancestors (param "RT1"))  (path-ancestors (param "RT2"))  (path-ancestors (param "RT3"))
+    (path-ancestors (param "RT4"))  (path-ancestors (param "RT5"))  (path-ancestors (param "RT6"))  (path-ancestors (param "RT7"))
+    (path-ancestors (param "RT8"))  (path-ancestors (param "RT9"))  (path-ancestors (param "RT10"))  (path-ancestors (param "RT11"))
+    (path-ancestors (param "RT12"))  (path-ancestors (param "RT13"))  (path-ancestors (param "RT14"))  (path-ancestors (param "RT15"))
+    (path-ancestors (param "RT16"))  (path-ancestors (param "RT17"))  (path-ancestors (param "RT18"))  (path-ancestors (param "RT19"))
+    (path-ancestors (param "READ0"))  (path-ancestors (param "READ1"))  (path-ancestors (param "READ2"))  (path-ancestors (param "READ3"))
+    (path-ancestors (param "READ4"))  (path-ancestors (param "READ5"))  (path-ancestors (param "READ6"))  (path-ancestors (param "READ7"))
+    (path-ancestors (param "READ8"))  (path-ancestors (param "READ9"))  (path-ancestors (param "READ10")) (path-ancestors (param "READ11"))
+    (path-ancestors (param "READ12")) (path-ancestors (param "READ13")) (path-ancestors (param "READ14")) (path-ancestors (param "READ15"))
+    (path-ancestors (param "WRITE0")) (path-ancestors (param "WRITE1")) (path-ancestors (param "WRITE2")) (path-ancestors (param "WRITE3"))
+    (path-ancestors (param "LIST0")) (path-ancestors (param "LIST1")) (path-ancestors (param "LIST2")) (path-ancestors (param "LIST3"))
+    (path-ancestors (param "EXEC0")) (path-ancestors (param "EXEC1")))
+
+;; the only writes
+(allow file-write*
+    (literal "/dev/null")
+    (subpath (param "WRITE0")) (subpath (param "WRITE1")) (subpath (param "WRITE2")) (subpath (param "WRITE3")))

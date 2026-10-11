@@ -87,6 +87,7 @@ class LoomServer:
         self.nonce = nonce                                  # L-LOOM-45: None = reproducible ids (scripted runs); the MCP door passes os.urandom
         self.max_begins = max_begins
         self.n_begins = 0
+        self.isolation: Optional[str] = None                # LOOM-d2 (L-LOOM-118): the profile sha the launcher declared, or None (not isolated)
         self.tasks: Dict[str, dict] = {}
         files = []
         for t in tasks:
@@ -156,7 +157,9 @@ class LoomServer:
                 return refusal(bad["refusal"], bad["detail"])
         run = Run(corpus, task, model, rid, self.stability, index)
         led = lg.Ledger(rdir)
-        meta = {"corpus": str(Path(task["corpus"]).resolve()), "task_id": task_id}
+        meta = {"corpus": str(Path(task["corpus"]).resolve()), "task_id": task_id, "isolated": self.isolation is not None}
+        if self.isolation is not None:
+            meta["isolation_profile_sha"] = self.isolation
         if index is not None:
             meta["fixture"] = str(Path(task["fixture"]).resolve())
         led.create(meta)
@@ -166,7 +169,7 @@ class LoomServer:
             run.advance(row)
         self.runs[rid] = _Entry(run, led)
         self.n_begins += 1
-        return body["result"]
+        return dict(body["result"], isolated=self.isolation is not None)    # NOT in the stored row 0: the chain must replay the same on any machine
 
     def _entry(self, run_id) -> Optional[_Entry]:
         if not isinstance(run_id, str):
@@ -260,6 +263,22 @@ def _append_pending_note(run: Run, lk) -> None:
     run.advance(lk.append(run.step(notelib.NOTE_ACTOR, notelib.NOTE_OP, {})))
 
 
+def isolation_claim() -> Optional[str]:
+    """LOOM-d2 (L-LOOM-118): `vera loom mcp --isolated` re-executes the server under sandbox-exec with LOOM_ISOLATED=<profile sha> in a cleared
+    environment.  This is the one place that READS it.  The claim is a declaration of the launcher, corroborated here by the one cheap witness
+    that needs no network and no process module: under the profile /etc/passwd cannot be opened.  A set variable with a readable /etc/passwd is
+    not believed (None).  It is not a proof (the probe ran before the exec, not from inside this process); it makes a run made under
+    `--isolated` distinguishable from one that was not (LOOM-i)."""
+    claim = os.environ.get("LOOM_ISOLATED", "")
+    if not claim or not re.fullmatch(r"[0-9a-f]{64}", claim):
+        return None
+    try:
+        with open("/etc/passwd", "rb"):
+            return None
+    except OSError:
+        return claim
+
+
 def append_outside_row(run_dir, actor: str, op: str, args: dict, loader: lg.Loader = lg.default_loader) -> dict:
     """The CLI's door for harness / human rows (`vera loom note`, `close`): rebuild the run from its own ledger, check that it replays
     identically, step it, append.  Raises LedgerError if the run does not reproduce."""
@@ -288,6 +307,7 @@ def build(tasks_path, runs_dir, allow_roots: Iterable = (), stability: str = DEF
         print('MCP SDK not installed. Run:  pip install "mcp[cli]"')
         return None
     server = LoomServer.from_file(tasks_path, runs_dir, allow_roots, stability)
+    server.isolation = isolation_claim()
     server.nonce = nonce if nonce is not None else os.urandom(16).hex()      # L-LOOM-45: a weaver cannot compute another weaver's run id
     mcp = FastMCP("vera-loom")
     mcp.loom_server = server

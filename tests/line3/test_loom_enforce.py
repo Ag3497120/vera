@@ -198,9 +198,15 @@ FORBIDDEN_MODULES = {"socket", "ssl", "urllib", "http", "requests", "subprocess"
                      "ctypes", "webbrowser"}
 
 
+# LOOM-d2 (L-LOOM-87, REVISES T-LOOM-32): the package has exactly ONE module that starts a process - isolate.py, the OS wall itself.  It may import
+# `subprocess` and call os.execve / os.unlink; it may import no network module; no other module of the package imports it or `subprocess`.
+PROCESS_MODULE = "isolate.py"
+PROCESS_ONLY = {"subprocess"}
+
+
 def test_the_loom_package_imports_no_network_and_no_process_module():
     files = sorted(f for f in os.listdir(LOOM) if f.endswith(".py"))
-    assert {"state.py", "ops.py", "read.py", "code.py", "ledger.py", "mcp.py", "scripted.py", "corpus.py"} <= set(files)
+    assert {"state.py", "ops.py", "read.py", "code.py", "ledger.py", "mcp.py", "scripted.py", "corpus.py", PROCESS_MODULE} <= set(files)
     for fn in files:
         tree = ast.parse(open(os.path.join(LOOM, fn), encoding="utf-8").read())
         for n in ast.walk(tree):
@@ -210,14 +216,42 @@ def test_the_loom_package_imports_no_network_and_no_process_module():
             elif isinstance(n, ast.ImportFrom) and n.module:
                 mods = [n.module]
             for m in mods:
-                assert m.split(".")[0] not in FORBIDDEN_MODULES, "%s imports %s" % (fn, m)
+                top = m.split(".")[0]
+                if fn == PROCESS_MODULE and top in PROCESS_ONLY:
+                    continue
+                assert top not in FORBIDDEN_MODULES, "%s imports %s" % (fn, m)
             if isinstance(n, ast.Call):
                 f = n.func
                 if isinstance(f, ast.Name) and f.id in ("eval", "exec", "__import__", "compile"):
                     raise AssertionError("%s calls %s" % (fn, f.id))
                 if isinstance(f, ast.Attribute) and isinstance(f.value, ast.Name) and f.value.id == "os" and f.attr in (
                         "system", "popen", "execv", "execve", "execl", "execvp", "spawnl", "spawnv", "fork", "kill", "remove", "unlink", "rmdir", "rename"):
+                    if fn == PROCESS_MODULE and f.attr in ("execve", "unlink", "killpg"):
+                        continue
                     raise AssertionError("%s calls os.%s" % (fn, f.attr))
+
+
+def test_isolate_is_the_only_process_module_and_nothing_else_of_the_loom_imports_it():
+    for fn in sorted(f for f in os.listdir(LOOM) if f.endswith(".py")):
+        src = open(os.path.join(LOOM, fn), encoding="utf-8").read()
+        tree = ast.parse(src)
+        names = set()
+        for n in ast.walk(tree):
+            if isinstance(n, ast.Import):
+                names |= {a.name.split(".")[0] for a in n.names}
+            elif isinstance(n, ast.ImportFrom):
+                names |= {(n.module or "").split(".")[0]} | {a.name for a in n.names}
+                if n.module and n.module.endswith("isolate"):
+                    names.add("isolate")
+        if fn == PROCESS_MODULE:
+            assert "subprocess" in names
+        else:
+            assert not (names & {"subprocess", "isolate"}), "%s imports %s" % (fn, names & {"subprocess", "isolate"})
+    # the CLI reaches it lazily, inside `--isolated` only
+    cli = open(os.path.join(ROOT, "verantyx", "cli.py"), encoding="utf-8").read()
+    assert "from .loom import isolate" in cli and cli.count("loom import isolate") == 1
+    top = [ln for ln in cli.splitlines() if ln.startswith("from .loom") or ln.startswith("import ")]
+    assert not any("isolate" in ln for ln in top)
 
 
 def test_only_the_ledger_and_the_server_touch_files():

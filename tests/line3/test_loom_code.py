@@ -550,11 +550,20 @@ def test_the_attest_row_is_exact_and_carries_no_path_or_time(k_results):
     rows = [json.loads(l) for l in open(os.path.join(r["run_dir"], "ops.jsonl"), encoding="utf-8")]
     a = rows[-1]
     assert a["op"] == "attest" and a["actor"] == "harness" and a["result"] == {"ok": True}
-    assert a["args"] == {"kind": "tests", "tests": ["tests/test_k1.py", "tests/test_ops.py"], "target": "calc/ops.py",
-                         "code_index_sha": json.loads(open(os.path.join(r["run_dir"], "ops.jsonl"), encoding="utf-8").readline())["result"]["header"]["code_index_sha"],
-                         "tests_sha": a["args"]["tests_sha"], "driver": "scripted", "isolation_token": None,
-                         "text_sha": hashlib.sha256(EXPECT_TEXT[("K1", "reference")].encode()).hexdigest(), "exit_code": 0}
+    args = dict(a["args"])
+    isolation = args.pop("isolation")                                                          # LOOM-d2 (L-LOOM-86): the proof of the sandbox
+    assert args == {"kind": "tests", "tests": ["tests/test_k1.py", "tests/test_ops.py"], "target": "calc/ops.py",
+                    "code_index_sha": json.loads(open(os.path.join(r["run_dir"], "ops.jsonl"), encoding="utf-8").readline())["result"]["header"]["code_index_sha"],
+                    "tests_sha": a["args"]["tests_sha"], "driver": "scripted", "isolation_token": None,
+                    "text_sha": hashlib.sha256(EXPECT_TEXT[("K1", "reference")].encode()).hexdigest(), "exit_code": 0,
+                    "outcome": "passed", "pytest_result": {"collected": 4, "failed": 0, "exitstatus": 0}, "expected_min": 4}       # L-LOOM-116
     assert len(a["args"]["tests_sha"]) == 64
+    assert isolation["mechanism"] == "sandbox-exec" and isolation["network"] == "denied" and len(isolation["profile_sha"]) == 64
+    assert isolation["probe"]["status"] == "passed" and all(isolation["probe"]["properties"].values()) and len(isolation["probe"]["properties"]) == 8
+    assert set(isolation["probe"]) == {"status", "properties"}                                  # L-LOOM-117: no machine-dependent evidence in the hashed row
+    blob = json.dumps(a["args"], ensure_ascii=False)
+    for frag in ("/Users/", "/private/", "/var/folders", "/tmp", "loom_code_", "loom_decoy"):
+        assert frag not in blob, frag
 
 
 def test_the_fixture_is_red_for_the_new_functions_and_green_for_the_old_ones():
@@ -764,66 +773,81 @@ def no_process(monkeypatch):
 
 
 @pytest.mark.parametrize("text,construct", sorted(PROBES.items(), key=lambda kv: kv[0]))
-def test_each_probe_never_reaches_a_process_through_the_loom_and_the_harness(tmp_path, monkeypatch, text, construct):
-    no_process(monkeypatch)
-    w, em, d = run_text(tmp_path, text)
-    if construct is not None:                                      # refused at emit: no output, nothing to test
+def test_each_probe_is_refused_at_emit_or_runs_only_inside_the_os_sandbox(tmp_path, monkeypatch, text, construct):
+    if construct is not None:                                      # refused at emit: no output, nothing to test, no process
+        no_process(monkeypatch)
+        w, em, d = run_text(tmp_path, text)
         assert em["ok"] is False and em["refusal"] == "unsupported_construct", em
         assert harness.test_emitted_run(d) == {"status": "no_output"}
         assert harness.test_emitted_run(d, driver="scripted") == {"status": "no_output"}
-    else:                                                          # passes every gate: the harness is the only wall
+        rows = [json.loads(l) for l in open(os.path.join(d, "ops.jsonl"), encoding="utf-8")]
+        assert not any(x["op"] == "attest" for x in rows)           # nothing was attested, nothing was run
+    else:                                                          # passes every gate: the OS sandbox is the wall (LOOM-d2), the harness runs it
+        w, em, d = run_text(tmp_path, text)
         assert em["ok"] is True, em
-        r = harness.test_emitted_run(d)
-        assert r["status"] == "isolation_required" and r["driver"] == "model"
-    rows = [json.loads(l) for l in open(os.path.join(d, "ops.jsonl"), encoding="utf-8")]
-    assert not any(x["op"] == "attest" for x in rows)               # nothing was attested, nothing was run
+        r = harness.test_emitted_run(d)                            # a "model" driver, no token: sandboxed all the same
+        assert r["status"] == "tested" and r["isolation"]["mechanism"] == "sandbox-exec" and r["isolation"]["probe"]["status"] == "passed"
+        rows = [json.loads(l) for l in open(os.path.join(d, "ops.jsonl"), encoding="utf-8")]
+        assert rows[-1]["op"] == "attest" and rows[-1]["args"]["driver"] == "model" and rows[-1]["args"]["isolation"]["mechanism"] == "sandbox-exec"
 
 
-def test_a_model_weave_runs_only_with_an_isolation_token_and_the_row_says_so(tmp_path, monkeypatch):
+def test_a_model_weave_runs_sandboxed_without_a_token_and_a_token_never_lowers_a_passing_probe(tmp_path, monkeypatch):
     srv = code_server(tmp_path)
     w = begun(srv, "K1", "iso")
     sc.weave_k(w, "K1")                                             # a K1 weave by a "model" (the harness is not told it is scripted)
     d = str(srv.run_dir("iso"))
-    no_process(monkeypatch)
-    assert harness.test_emitted_run(d)["status"] == "isolation_required"
-    assert harness.test_emitted_run(d, driver="model")["status"] == "isolation_required"
     for bad in ("", "x", "has space", "a;b", "a" * 65, "-lead", 7):
         assert harness.test_emitted_run(d, isolation_token=bad)["status"] == "isolation_token_invalid", bad
-    monkeypatch.undo()
-    res = harness.test_emitted_run(d, isolation_token="vm-test-1")
-    assert res["status"] == "tested" and res["exit_code"] == 0
+    res = harness.test_emitted_run(d)                               # no token, driver "model": NOT refused any more (L-LOOM-85)
+    assert res["status"] == "tested" and res["exit_code"] == 0 and res["isolation"]["mechanism"] == "sandbox-exec"
+    res = harness.test_emitted_run(d, isolation_token="vm-test-1")  # a token with a passing probe: still the OS sandbox, the token only recorded
+    assert res["status"] == "tested" and res["isolation"]["mechanism"] == "sandbox-exec"
     rows = [json.loads(l) for l in open(os.path.join(d, "ops.jsonl"), encoding="utf-8")]
     a = rows[-1]
     assert a["op"] == "attest" and a["args"]["driver"] == "model" and a["args"]["isolation_token"] == "vm-test-1"
+    assert a["args"]["isolation"]["mechanism"] == "sandbox-exec" and not a["args"]["isolation"].get("override")
     assert lg.verify(d)["status"] == "OK"
 
 
-def test_the_cli_refuses_without_the_flag_and_runs_with_it(tmp_path, monkeypatch, capsys):
+def test_the_cli_runs_every_driver_sandboxed_and_the_flag_is_only_an_override(tmp_path, monkeypatch, capsys):
     srv = code_server(tmp_path)
     w = begun(srv, "K1", "cli")
     sc.weave_k(w, "K1")
     d = str(srv.run_dir("cli"))
-    no_process(monkeypatch)
-    assert harness.main(["test", d]) == 2
+    assert harness.main(["test", d]) == 0                           # no flag: the probe passes, the run is sandboxed
     out = json.loads(capsys.readouterr().out)
-    assert out["status"] == "isolation_required"
-    monkeypatch.undo()
+    assert out["status"] == "tested" and out["exit_code"] == 0 and "tail" not in out and out["isolation"]["mechanism"] == "sandbox-exec"
     assert harness.main(["test", d, "--isolation-confirmed", "vm-cli-1"]) == 0
     out = json.loads(capsys.readouterr().out)
-    assert out["status"] == "tested" and out["exit_code"] == 0 and "tail" not in out
+    assert out["status"] == "tested" and out["isolation"]["mechanism"] == "sandbox-exec"          # the flag did not lower the sandbox
+    assert harness.main(["probe"]) == 0
+    probe = json.loads(capsys.readouterr().out)
+    assert probe["status"] == "passed" and probe["mechanism"] == "sandbox-exec" and len(probe["profile_sha"]) == 64
 
 
-def test_the_process_gets_no_stdin_a_60_s_timeout_and_the_names_after_a_double_dash(monkeypatch):
+def test_the_process_gets_no_stdin_a_60_s_timeout_a_cleared_env_and_the_names_after_a_double_dash(monkeypatch):
+    from verantyx.loom import isolate as iso
     seen = {}
 
-    def fake(argv, **kw):
+    def fake_probe(policy, fixture_file, write_dir, limits=iso.Limits(), **kw):
+        return iso.ProbeResult("passed", profile_sha=iso.profile_sha(), properties={k: True for k in iso.PROPERTIES})
+
+    def fake_popen(argv, **kw):
         seen.update(kw, argv=argv)
-        return _subprocess.CompletedProcess(argv, 0, "", "")
-    monkeypatch.setattr(_subprocess, "run", fake)
-    r = harness.run_pytest(FIXTURE, "calc/ops.py", "", ["tests/test_ops.py"])
-    assert r["exit_code"] == 0 and harness.TIMEOUT_S == 60 and seen["timeout"] == 60 and seen["stdin"] is _subprocess.DEVNULL
-    assert seen["argv"][-2:] == ["--", "tests/test_ops.py"]
-    assert seen["env"]["HOME"] != os.environ.get("HOME") and "PYTHONPATH" in seen["env"]
+        raise RuntimeError("stop here")
+    monkeypatch.setattr(iso, "probe", fake_probe)
+    monkeypatch.setattr(iso.subprocess, "Popen", fake_popen)
+    with pytest.raises(RuntimeError, match="stop here"):
+        harness.run_pytest(FIXTURE, "calc/ops.py", "", ["tests/test_ops.py"])
+    assert harness.TIMEOUT_S == 60 and seen["stdin"] is _subprocess.DEVNULL
+    argv = seen["argv"]
+    assert argv[0] == iso.SANDBOX_EXEC and argv[1:3] == ["-f", str(iso.PROFILE_PATH)]          # through sandbox-exec, with the one static profile
+    i = argv.index("-c")
+    assert argv[i - 3:i] == ["-s", "-S", "-P"]                                                    # no user site, no site.py, no cwd on sys.path
+    cfg = json.loads(argv[i + 2])
+    assert cfg["kind"] == "pytest" and cfg["args"][-2:] == ["--", "tests/test_ops.py"] and ("RLIMIT_CPU", 50) in [tuple(x) for x in cfg["rlimits"]]
+    assert set(seen["env"]) == {"PATH", "HOME", "TMPDIR", "USER", "LOGNAME", "PYTHONHASHSEED", "PYTHONDONTWRITEBYTECODE", "PYTEST_DISABLE_PLUGIN_AUTOLOAD"}
+    assert seen["env"]["PATH"] == "/usr/bin:/bin" and seen["env"]["HOME"] != os.environ.get("HOME") and "PYTHONPATH" not in seen["env"]
 
 
 # -- D2: what was tested ---------------------------------------------------------------------------------------------------
