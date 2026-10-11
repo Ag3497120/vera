@@ -487,11 +487,17 @@ def test_c2_stream_is_unchanged_when_the_tower_hooks_are_unused():
 
 
 # ---------------------------------------------------------------- C3b: pack_overflow = "close" (default) | "defer"
-# sha256 of Ledger / to_bytes of the S300 head (12 sentences, low) computed with the C3 code at HEAD b730efb
-HEAD_SHA = {"RUN": ("112382d093a4b0b90850c4668f848da028e845c338eb81286e20e9cd6873aeef",
-                    "d54957a981ce85ec3081251e1c3cc167dd66db15f2168d847b4e4e33d5a773e4"),
-            "WORD": ("e1be2257b5c004f74d3bf5b07462fd56b2e8eccf347596d86dab94575f311ead",
-                     "0667462f6642432f3ee53c794355a7d1ecc0022df6f11e8bd29144ada7657420")}
+# sha256 of Ledger / to_bytes of the S300 head (12 sentences, low).
+# Re-pinned 2026-10-11 (owner 「規則を貫き、塔のピンを更新して C3 の記録に注記」, ops/decisions/2026-10-06_line3_faithful_build.md,
+# newest section; L-G4-50 / L-G4-72): `placement._settle` now checks the FIRST class (the best-key terminals) against
+# max_class. The C3 code at HEAD b730efb (pre-ecbbe2ac `_settle`) gave RUN 112382d0.../d54957a9... and
+# WORD e1be2257.../0667462f...; re-derived with that `_settle`, and the change is exactly: RUN two rollbacks (`work`
+# states/moves only, 2 of 217 events), WORD one admit at event 131 (a first class of 132 > max_class 63 that the old
+# code kept) now a max_class rollback, after which the black closes (146 of 370 events differ).
+HEAD_SHA = {"RUN": ("7996812b1afe59b4d6b4c1c31e73eb468cfbf391666d19a8c776f1d717531703",
+                    "5b286546f48b89f19f2b6fc0297d1a1316f4498fc603822f83bfd2afaf028192"),
+            "WORD": ("222af57906e9b8360a62cf7f913d1dc65d825015e543eca350f6a3e7cb712e4c",
+                     "990aa0a83939052b5906b2e90e2378ef1c67c4384c592e7bce669eb4235ab41c")}
 TINY = pl.Budget(max_states=16)          # the S300 head of 40 sentences then has non-empty-black pack overflows
 
 
