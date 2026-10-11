@@ -1,0 +1,264 @@
+{
+ "all_equal": true,
+ "arm": "C",
+ "config": {
+  "code_sha256": "fcf0b10355ca125e430f3959119c855b23cd251a212d3bd357a9ebce9c5601da",
+  "effort": "fast",
+  "grammar": "off",
+  "level": "mid",
+  "site": "on"
+ },
+ "n": 8,
+ "results": [
+  {
+   "entries_equal": true,
+   "id": "I2-001",
+   "listed_now": 141,
+   "listed_t10": 141,
+   "read_counts": {
+    "CHAR": {
+     "crosses_read": 4,
+     "left_unread": 826,
+     "would_read_in_full": 830
+    },
+    "RUN": {
+     "crosses_read": 4,
+     "left_unread": 17,
+     "would_read_in_full": 21
+    },
+    "WORD": {
+     "crosses_read": 4,
+     "left_unread": 36,
+     "would_read_in_full": 40
+    }
+   },
+   "read_counts_equal": true,
+   "tier_verdicts": {
+    "CHAR": "UNKNOWN_NO_FIXED_POINT",
+    "RUN": "CHOICE",
+    "WORD": "CHOICE"
+   },
+   "tier_verdicts_equal": true,
+   "verdict_equal": true
+  },
+  {
+   "entries_equal": true,
+   "id": "I2-012",
+   "listed_now": 26,
+   "listed_t10": 26,
+   "read_counts": {
+    "CHAR": {
+     "crosses_read": 4,
+     "left_unread": 257,
+     "would_read_in_full": 261
+    },
+    "RUN": {
+     "crosses_read": 4,
+     "left_unread": 97,
+     "would_read_in_full": 101
+    },
+    "WORD": {
+     "crosses_read": 4,
+     "left_unread": 89,
+     "would_read_in_full": 93
+    }
+   },
+   "read_counts_equal": true,
+   "tier_verdicts": {
+    "CHAR": "ANSWER",
+    "RUN": "CHOICE",
+    "WORD": "CHOICE"
+   },
+   "tier_verdicts_equal": true,
+   "verdict_equal": true
+  },
+  {
+   "entries_equal": true,
+   "id": "I2-023",
+   "listed_now": 4,
+   "listed_t10": 4,
+   "read_counts": {
+    "CHAR": {
+     "crosses_read": 4,
+     "left_unread": 304,
+     "would_read_in_full": 308
+    },
+    "RUN": {
+     "crosses_read": 4,
+     "left_unread": 20,
+     "would_read_in_full": 24
+    },
+    "WORD": {
+     "crosses_read": 3,
+     "left_unread": 128,
+     "would_read_in_full": 131
+    }
+   },
+   "read_counts_equal": true,
+   "tier_verdicts": {
+    "CHAR": "UNKNOWN_NO_FIXED_POINT",
+    "RUN": "CHOICE",
+    "WORD": "ANSWER"
+   },
+   "tier_verdicts_equal": true,
+   "verdict_equal": true
+  },
+  {
+   "entries_equal": true,
+   "id": "I2-034",
+   "listed_now": 6,
+   "listed_t10": 6,
+   "read_counts": {
+    "CHAR": {
+     "crosses_read": 4,
+     "left_unread": 861,
+     "would_read_in_full": 865
+    },
+    "RUN": {
+     "crosses_read": 4,
+     "left_unread": 15,
+     "would_read_in_full": 19
+    },
+    "WORD": {
+     "crosses_read": 4,
+     "left_unread": 635,
+     "would_read_in_full": 639
+    }
+   },
+   "read_counts_equal": true,
+   "tier_verdicts": {
+    "CHAR": "UNKNOWN_NO_FIXED_POINT",
+    "RUN": "CHOICE",
+    "WORD": "UNKNOWN_NO_FIXED_POINT"
+   },
+   "tier_verdicts_equal": true,
+   "verdict_equal": true
+  },
+  {
+   "entries_equal": true,
+   "id": "I2-045",
+   "listed_now": 27,
+   "listed_t10": 27,
+   "read_counts": {
+    "CHAR": {
+     "crosses_read": 4,
+     "left_unread": 855,
+     "would_read_in_full": 859
+    },
+    "RUN": {
+     "crosses_read": 4,
+     "left_unread": 87,
+     "would_read_in_full": 91
+    },
+    "WORD": {
+     "crosses_read": 4,
+     "left_unread": 115,
+     "would_read_in_full": 119
+    }
+   },
+   "read_counts_equal": true,
+   "tier_verdicts": {
+    "CHAR": "UNKNOWN_NO_FIXED_POINT",
+    "RUN": "CHOICE",
+    "WORD": "CHOICE"
+   },
+   "tier_verdicts_equal": true,
+   "verdict_equal": true
+  },
+  {
+   "entries_equal": true,
+   "id": "R2-I007",
+   "listed_now": 9,
+   "listed_t10": 9,
+   "read_counts": {
+    "CHAR": {
+     "crosses_read": 4,
+     "left_unread": 349,
+     "would_read_in_full": 353
+    },
+    "RUN": {
+     "crosses_read": 4,
+     "left_unread": 6,
+     "would_read_in_full": 10
+    },
+    "WORD": {
+     "crosses_read": 4,
+     "left_unread": 63,
+     "would_read_in_full": 67
+    }
+   },
+   "read_counts_equal": true,
+   "tier_verdicts": {
+    "CHAR": "UNKNOWN_NO_FIXED_POINT",
+    "RUN": "AMBIGUOUS",
+    "WORD": "CHOICE"
+   },
+   "tier_verdicts_equal": true,
+   "verdict_equal": true
+  },
+  {
+   "entries_equal": true,
+   "id": "R2-I018",
+   "listed_now": 4,
+   "listed_t10": 4,
+   "read_counts": {
+    "CHAR": {
+     "crosses_read": 4,
+     "left_unread": 791,
+     "would_read_in_full": 795
+    },
+    "RUN": {
+     "crosses_read": 4,
+     "left_unread": 103,
+     "would_read_in_full": 107
+    },
+    "WORD": {
+     "crosses_read": 4,
+     "left_unread": 1160,
+     "would_read_in_full": 1164
+    }
+   },
+   "read_counts_equal": true,
+   "tier_verdicts": {
+    "CHAR": "UNKNOWN_NO_FIXED_POINT",
+    "RUN": "CHOICE",
+    "WORD": "ANSWER"
+   },
+   "tier_verdicts_equal": true,
+   "verdict_equal": true
+  },
+  {
+   "entries_equal": true,
+   "id": "UF-004",
+   "listed_now": 5,
+   "listed_t10": 5,
+   "read_counts": {
+    "CHAR": {
+     "crosses_read": 4,
+     "left_unread": 909,
+     "would_read_in_full": 913
+    },
+    "RUN": {
+     "crosses_read": 1,
+     "left_unread": 7,
+     "would_read_in_full": 8
+    },
+    "WORD": {
+     "crosses_read": 4,
+     "left_unread": 201,
+     "would_read_in_full": 205
+    }
+   },
+   "read_counts_equal": true,
+   "tier_verdicts": {
+    "CHAR": "UNKNOWN_NO_FIXED_POINT",
+    "RUN": "AMBIGUOUS",
+    "WORD": "CHOICE"
+   },
+   "tier_verdicts_equal": true,
+   "verdict_equal": true
+  }
+ ],
+ "source": "wt/line3/experiments/line3/t10/results/ask_fulllead_fast_ordered-stop.jsonl",
+ "step": 300
+}
