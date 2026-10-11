@@ -636,6 +636,9 @@ Order: a → b → c → d → (e, f, h in parallel) → g → i → j → k. LO
 
 ## 13. Scope and notes
 
+- **Positioning (owner, 2026-10-11, recorded in ops/decisions):** the loom is not a replacement for the LLM. It is the LLM's organ of speech — the LLM holds the intent, Vera decides the form, the evidence and the record. Constructed units are the LLM's own words, passed through with their mark. The only cost the loom adds is latency and op count, which is an implementation matter (batch seating, batch linking); it is not a limit on expression. Demand is therefore every place an LLM is used where provenance and replay are required, not a separate niche.
+- The owner's three questions (§0.1) are answered: OP-LOOM-1 (a) full key, OP-LOOM-2 (a) Python tokens, OP-LOOM-3 (a) が を と で に の then the centre.
+
 - Not in scope: nesting crosses (L-LOOM-04), a code foundation (OP-LOOM-2 (c)), the reader's evidence gate (named in §10.1 as a possible follow-up), CHAR adhesion for prose crosses (`foundation.ATTACH_RULES` has `char_next`; a CHAR prose cross uses it as is), any change to G4's paused direction.
 - Nothing here changes a committed byte of the line-3 reader. The loom is a new package and a new CLI sub-command.
 - The owner's three questions are at the top (§0.1). Every result produced before they are answered is labelled with the default used.
