@@ -1,0 +1,30 @@
+{
+ "from": 13,
+ "to": 18,
+ "pythonhashseed": "1",
+ "wall_s": 191.6,
+ "tiers": {
+  "RUN": {
+   "state_sha256_extended": "bd0baddc91d7df8be256edaf894a5ab4380f428e46cd8f252034d82a851e1612",
+   "state_sha256_snapshot": "bd0baddc91d7df8be256edaf894a5ab4380f428e46cd8f252034d82a851e1612",
+   "state_bytes_equal": true,
+   "ledger_equal": true,
+   "equal": true
+  },
+  "WORD": {
+   "state_sha256_extended": "6bc89156d41f007a764c76b3379694005145eda4dd21d46d9225325fa3ae9a3d",
+   "state_sha256_snapshot": "6bc89156d41f007a764c76b3379694005145eda4dd21d46d9225325fa3ae9a3d",
+   "state_bytes_equal": true,
+   "ledger_equal": true,
+   "equal": true
+  },
+  "CHAR": {
+   "state_sha256_extended": "3895e18c8ddf39eb532a40f2d2c0373085d294c635b26a4d1683661faf5c4b22",
+   "state_sha256_snapshot": "3895e18c8ddf39eb532a40f2d2c0373085d294c635b26a4d1683661faf5c4b22",
+   "state_bytes_equal": true,
+   "ledger_equal": true,
+   "equal": true
+  }
+ },
+ "equal": true
+}
