@@ -261,7 +261,11 @@ def make_anthropic_client():
         import anthropic
     except ImportError as e:
         raise HarnessError("the `anthropic` SDK is not installed (pip install anthropic); the L2 driver is tested with a fake client only") from e
-    return anthropic.Anthropic()
+    from verantyx.loom.keyring import resolve_api_key
+    key = resolve_api_key()
+    if not key:
+        raise HarnessError("no API key: set ANTHROPIC_API_KEY or run `python tools/vera_api_key.py set` (macOS Keychain)")
+    return anthropic.Anthropic(api_key=key)
 
 
 def mcp_tool_objects(bank_path: str, runs_dir: str) -> List[Any]:
