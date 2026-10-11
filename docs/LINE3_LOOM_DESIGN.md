@@ -641,6 +641,8 @@ Three layers, never mixed: (1) structural PREVENTION — typed refusals already 
 
 ## 13. Scope and notes
 
+- **L-LOOM-121 (owner, 2026-10-11):** the code tests step runs on the Pro under `sandbox-exec` with the probe as the gate; the Air is an optional second witness (§9.4's "on the Air" is superseded).
+
 - **Positioning (owner, 2026-10-11, recorded in ops/decisions):** the loom is not a replacement for the LLM. It is the LLM's organ of speech — the LLM holds the intent, Vera decides the form, the evidence and the record. Constructed units are the LLM's own words, passed through with their mark. The only cost the loom adds is latency and op count, which is an implementation matter (batch seating, batch linking); it is not a limit on expression. Demand is therefore every place an LLM is used where provenance and replay are required, not a separate niche.
 - The owner's three questions (§0.1) are answered: OP-LOOM-1 (a) full key, OP-LOOM-2 (a) Python tokens, OP-LOOM-3 (a) が を と で に の then the centre.
 
