@@ -534,8 +534,9 @@ def _flat_sort_key(f: Flat) -> Tuple[Tuple[str, ...], ...]:
     return (_leg_key(f),)
 
 
-def _scan_seated(w: Weights, s: Flat, L: int) -> Tuple[List[Flat], List[Flat], int]:
-    """_scan on a seated cross (G1-b): a swap that touches a foundation seat is not a move (OP-G1-4); the key is (n, p, a)."""
+def _scan_seated(w: Weights, s: Flat, L: int, fixed: frozenset = frozenset()) -> Tuple[List[Flat], List[Flat], int]:
+    """_scan on a seated cross (G1-b): a swap that touches a foundation seat is not a move (OP-G1-4); the key is (n, p, a).
+    `fixed` (G4-b, L-G4-52): units whose seats are frozen -- a swap that touches a seat holding one of them is not a move either."""
     lay = _flayout(L)
     best = ZERO3
     best_moves: List[Tuple[int, int]] = []
@@ -549,6 +550,8 @@ def _scan_seated(w: Weights, s: Flat, L: int) -> Tuple[List[Flat], List[Flat], i
             j = data[y]
             if s[i] == s[j]:
                 continue
+            if fixed and (s[i] in fixed or s[j] in fixed):
+                continue                  # G4-b (L-G4-52): a frozen seat does not move
             if i == CENTER_IDX and s[j] is None:
                 continue                  # L-77: an empty centre is not an arrangement
             tested += 1
@@ -565,11 +568,13 @@ def _scan_seated(w: Weights, s: Flat, L: int) -> Tuple[List[Flat], List[Flat], i
     return improved, sorted(equal, key=_flat_sort_key), tested
 
 
-def _scan(w: Weights, s: Flat, L: int) -> Tuple[List[Flat], List[Flat], int]:
+def _scan(w: Weights, s: Flat, L: int, fixed: frozenset = frozenset()) -> Tuple[List[Flat], List[Flat], int]:
     """All single seat swaps of `s`.  Returns (results of the best improving moves,
-    results of the equal-key moves giving a different arrangement, moves tested)."""
+    results of the equal-key moves giving a different arrangement, moves tested).
+    `fixed` (G4-b, L-G4-52; default empty = the code that was here before): units whose seats are frozen; a swap that touches a seat
+    holding one of them is not a move."""
     if w.fnd is not None:
-        return _scan_seated(w, s, L)
+        return _scan_seated(w, s, L, fixed)
     lay = _layout(L)
     best = ZERO2
     best_moves: List[Tuple[int, int]] = []
@@ -579,6 +584,8 @@ def _scan(w: Weights, s: Flat, L: int) -> Tuple[List[Flat], List[Flat], int]:
         for j in range(i + 1, lay.n):
             if s[i] == s[j]:
                 continue
+            if fixed and (s[i] in fixed or s[j] in fixed):
+                continue                  # G4-b (L-G4-52): a frozen seat does not move
             if i == CENTER_IDX and s[j] is None:
                 continue                  # L-77: an empty centre is not an arrangement
             tested += 1
@@ -604,8 +611,9 @@ class ClassResult:
     moves_tested: int
 
 
-def _settle(w: Weights, starts: Iterable[Flat], L: int, work: _Work, budget: Budget) -> Tuple[Flat, ...]:
-    """L-71.  Raises _Over."""
+def _settle(w: Weights, starts: Iterable[Flat], L: int, work: _Work, budget: Budget,
+            fixed: frozenset = frozenset()) -> Tuple[Flat, ...]:
+    """L-71.  Raises _Over.  `fixed` (G4-b, L-G4-52): frozen units -- no swap touches a seat that holds one (the frozen stack)."""
     cur = sorted({canon(s, L) for s in starts}, key=_flat_sort_key)
     while True:
         seen: Dict[Flat, None] = {}
@@ -618,7 +626,7 @@ def _settle(w: Weights, starts: Iterable[Flat], L: int, work: _Work, budget: Bud
                     continue
                 seen[s] = None
                 work.tick()
-                improved, _eq, t = _scan(w, s, L)
+                improved, _eq, t = _scan(w, s, L, fixed)
                 work.moves(t)
                 if not improved:
                     terminals[s] = None
@@ -638,7 +646,7 @@ def _settle(w: Weights, starts: Iterable[Flat], L: int, work: _Work, budget: Bud
             s = queue[qi]
             qi += 1
             work.tick()
-            improved, eq, t = _scan(w, s, L)
+            improved, eq, t = _scan(w, s, L, fixed)
             work.moves(t)
             for x in improved:
                 escapes[x] = None
@@ -952,6 +960,10 @@ class Placement:
         default=None, compare=False, repr=False)   # only on a contract_for_read view: arm_labels[i] = the distinct labellings merged into members[i];
                                                    # a labelling = (particle, the data seats of that arm outer -> inner) for the six particles in ladder order
     first_class_over_max: int = 0      # kept settled classes (the seed's, one per kept batch) holding more than budget.max_class arrangements (a verification quantity: 0 since _settle holds the first class to max_class, L-G4-47)
+    # G4-b review (L-G4-68): True on a view made by stack.read_view.  Not part of ==, repr or the JSON.  A reader that would REBUILD a cross
+    # (cycle.ask_tier's default raise_budget="on_demand" does, for stop == "budget") must not do it for a stack view: the rebuild would use
+    # build_cross's defaults (quotient on, foundation off), not the stack's frozen flats.  G4-c owns the guard; this is the flag it checks.
+    from_stack: bool = dataclasses.field(default=False, compare=False, repr=False)
 
     @property
     def centre(self) -> Optional[str]:
