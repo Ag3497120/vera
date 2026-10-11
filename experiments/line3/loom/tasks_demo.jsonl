@@ -1,0 +1,2 @@
+{"task_id":"demo/tokyo_ca","text":"「東京」「日本」「首都」を一文に織れ（構成した語を許す）","lang":"prose","mode":"constructed_allowed","tiers":["WORD"],"corpus":"experiments/line3/bank2/data/fulllead_sents.jsonl"}
+{"task_id":"demo/tokyo_ro","text":"「東京」「日本」「首都」を一文に織れ（コーパスの語だけ）","lang":"prose","mode":"record_only","tiers":["WORD"],"corpus":"experiments/line3/bank2/data/fulllead_sents.jsonl"}
