@@ -38,6 +38,7 @@ from typing import Callable, Dict, List, Optional, Tuple
 from verantyx.ledger_events import GENESIS, LedgerError, canonical
 from verantyx.loom import LOOM_VERSION
 from verantyx.loom import fixture as fx
+from verantyx.loom import notes as notelib
 from verantyx.loom.corpus import Corpus
 from verantyx.loom.ops import Run, normalize_task
 
@@ -262,6 +263,8 @@ class ReplayResult:
         self.text: Optional[str] = None           # the emitted text of the (re-derived) run, if any
         self.run: Optional[Run] = None
         self.n_rows = 0
+        self.pending_note = False                 # LOOM-notes: the LAST row is a read / emit whose notes are due and its note row is not (yet) there
+        self.notes_stale: List[int] = []          # LOOM-notes: the note rows recorded under another notes version, accepted as recorded
 
     @property
     def identical(self) -> bool:
@@ -271,7 +274,8 @@ class ReplayResult:
         return {"IDENTICAL": 0, "DIFFERS": 1, "INPUTS": 2}[self.status]
 
     def to_obj(self) -> dict:
-        return {"status": self.status, "mismatch": self.mismatch, "first_diff": self.first_diff, "rows": self.n_rows, "text": self.text}
+        return {"status": self.status, "mismatch": self.mismatch, "first_diff": self.first_diff, "rows": self.n_rows, "text": self.text,
+                "pending_note": self.pending_note, "notes_stale": list(self.notes_stale)}
 
 
 def default_loader(path: str) -> bytes:
@@ -353,6 +357,15 @@ def replay(run_dir, corpus_path: Optional[str] = None, loader: Loader = default_
         out.status, out.mismatch = "INPUTS", mm
         return out
     out.run = run
+    run.replaying = True
+    try:
+        _replay_rows(out, run, rows, lines, unterminated)
+    finally:
+        run.replaying = False
+    return out
+
+
+def _replay_rows(out: ReplayResult, run: Run, rows: List[dict], lines: List[bytes], unterminated: bool) -> None:
     prev = GENESIS
     for idx, orig in enumerate(rows):
         try:
@@ -364,19 +377,26 @@ def replay(run_dir, corpus_path: Optional[str] = None, loader: Loader = default_
             row = seal(idx, prev, body)
         except Exception:                                  # a recorded row the code can no longer execute is a difference, not a crash
             out.status, out.first_diff = "DIFFERS", {"i": idx, "field": "exception"}
-            return out
+            return
         out.lines.append(line_of(row))
         if row != orig:
             out.status, out.first_diff = "DIFFERS", {"i": idx, "field": _first_diff(orig, row)}
-            return out
+            return
         if line_of(row) != lines[idx] + b"\n" or (unterminated and idx == len(lines) - 1):
             out.status, out.first_diff = "DIFFERS", {"i": idx, "field": "bytes"}      # L-LOOM-43: the same dict, other bytes
-            return out
+            return
+        if row["actor"] == notelib.NOTE_ACTOR and row["op"] == notelib.NOTE_OP and row["args"].get("nv") != notelib.NOTES_VERSION:
+            out.notes_stale.append(idx)
         run.advance(row)
         prev = row["sha"]
         if row["op"] == "emit" and row["result"].get("ok") and row["actor"] == "model":
             out.text = row["result"]["text"]
-    return out
+        if run.notes_due() and not (idx + 1 < len(rows) and rows[idx + 1].get("actor") == notelib.NOTE_ACTOR and rows[idx + 1].get("op") == notelib.NOTE_OP):
+            if idx + 1 == len(rows):
+                out.pending_note = True        # LOOM-notes (L-LOOM-105): the last row, a crash between two appends: the run is intact, the repair is the append
+                return
+            out.status, out.first_diff = "DIFFERS", {"i": idx + 1, "field": "note_missing"}      # mid-ledger: a read / emit with notes is followed by its row
+            return
 
 
 def verify(run_dir, head: Optional[str] = None, corpus_path: Optional[str] = None, loader: Loader = default_loader) -> dict:

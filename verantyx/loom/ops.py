@@ -30,6 +30,7 @@ from verantyx.ledger_events import GENESIS, args_sha256, redact_obj
 from verantyx.line3 import foundation as fd
 from verantyx.loom import LOOM_VERSION
 from verantyx.loom import code as codelib
+from verantyx.loom import notes as notelib
 from verantyx.loom import read as rd
 from verantyx.loom.code import CodeIndex
 from verantyx.loom.corpus import Corpus
@@ -42,7 +43,8 @@ HARNESS_OPS: Tuple[str, ...] = ("abandoned", "free_text_dropped", "free_text_con
 HUMAN_OPS: Tuple[str, ...] = ("grade",)
 LOOP_OPS: Tuple[str, ...] = ("attest", "audit_verdict", "stacked")                  # design 6.1 / 11: rows appended by later tickets
 ALL_OPS: Tuple[str, ...] = MODEL_OPS + HARNESS_OPS + HUMAN_OPS + LOOP_OPS
-ACTORS: Tuple[str, ...] = ("model", "harness", "human")
+LOOM_OPS: Tuple[str, ...] = (notelib.NOTE_OP,)                                      # LOOM-notes: rows the loom itself writes (actor "loom")
+ACTORS: Tuple[str, ...] = ("model", "harness", "human", notelib.NOTE_ACTOR)
 
 STATE_CHANGING: Tuple[str, ...] = ("add", "open_cross", "seat", "seat_run", "unseat", "swap", "extend", "topic", "set_depth", "link", "unlink")
 CLASS_OF: Dict[str, str] = dict({op: "ops" for op in STATE_CHANGING},
@@ -222,6 +224,10 @@ class Run:
         self.state = LoomState(self.lang)
         self.i = 0                         # the index of the next row
         self.head = GENESIS                # the sha of the last row
+        # LOOM-notes: NOT part of the hashed state.  Rebuilt by step() on live calls and on replay alike, so both see the same history.
+        self.lookup_log: List[Tuple[int, str, bool]] = []      # (row index, NFC text, matches empty) of every ok model `lookup`
+        self._prev: Optional[Tuple[str, str, bool]] = None      # (actor, op, ok) of the row stepped last
+        self.replaying = False             # set by ledger.replay only: a recorded note row of another notes version is accepted as recorded
 
     # -- header (design 3.1) ------------------------------------------------------------------------------------------
     def header(self) -> dict:
@@ -254,9 +260,20 @@ class Run:
         args_sha256, args_chars}); the live call computes them itself."""
         if actor not in ACTORS:
             raise ValueError("actor must be one of %s" % (ACTORS,))
-        if actor == "model":
-            return self._model_step(op, args, replay_extra)
-        return self._outside_step(actor, op, args)
+        i = self.i
+        body = self._model_step(op, args, replay_extra) if actor == "model" else self._outside_step(actor, op, args)
+        res = body["result"]
+        if actor == "model" and op == "lookup" and res.get("ok") is True:
+            self.lookup_log.append((i, notelib.nfc(args["text"]), res.get("matches") == []))
+        self._prev = (actor, op, res.get("ok") is True)
+        return body
+
+    def notes_due(self) -> List[dict]:
+        """LOOM-notes: the notes the row stepped LAST calls for: [] unless it was an ok model `read` / `emit`.  A non-empty answer means a
+        `loom_note` row (actor "loom") must follow that row: the server appends it, and replay requires it (unless that row is the last one: L-LOOM-105)."""
+        if self._prev is None or self._prev[0] != "model" or self._prev[1] not in notelib.NOTE_AFTER_OPS or not self._prev[2]:
+            return []
+        return notelib.compute(self)
 
     def _guard_blocked(self, op: str, args: Any) -> Optional[str]:
         """L-LOOM-44: the calls no class cap counts are counted here, and beyond their cap a call is refused `cap_exceeded` and stored as
@@ -325,9 +342,27 @@ class Run:
 
     def _outside_step(self, actor: str, op: str, args: dict) -> dict:
         """Rows of the harness and the human (and, later, the loops).  They never go through the model's caps."""
-        ok = (actor == "harness" and (op in HARNESS_OPS or op in LOOP_OPS)) or (actor == "human" and op in HUMAN_OPS)
+        ok = (actor == "harness" and (op in HARNESS_OPS or op in LOOP_OPS)) or (actor == "human" and op in HUMAN_OPS) \
+            or (actor == notelib.NOTE_ACTOR and op in LOOM_OPS)
         if not ok:
             raise ValueError("op %r is not a row of actor %r" % (op, actor))
+        if actor == notelib.NOTE_ACTOR:
+            # the loom's own row.  Its content is DERIVED (the args of a live call are ignored), so a forged note row cannot replay as itself.
+            if self.replaying and args.get("nv") != notelib.NOTES_VERSION:
+                # recorded under another definition of the notes (L-LOOM-106): accepted AS RECORDED when its shape is right; the replay reports
+                # it (`notes_stale`) instead of comparing it with what the current definitions would say
+                prev = self._prev
+                if prev is None or prev[0] != "model" or prev[1] not in notelib.NOTE_AFTER_OPS or not prev[2] \
+                        or not set(args) <= {"after", "of", "notes", "nv"} or not {"after", "of", "notes"} <= set(args) \
+                        or args["after"] != self.i - 1 or args["of"] != prev[1] or not isinstance(args["notes"], list) \
+                        or not isinstance(args.get("nv", ""), str):
+                    raise ValueError("note: a recorded note row of another version has the wrong shape")
+                return {"actor": actor, "op": op, "args": args, "result": {"ok": True}, "state_sha": self.state.sha()}
+            notes = self.notes_due()
+            if not notes:
+                raise ValueError("note: no notes are due after the previous row")
+            return {"actor": actor, "op": op, "args": {"after": self.i - 1, "of": self._prev[1], "notes": notes, "nv": notelib.NOTES_VERSION},
+                    "result": {"ok": True}, "state_sha": self.state.sha()}
         args = dict(args)
         if op == "abandoned":
             _need(args, {"reason": str}, op)

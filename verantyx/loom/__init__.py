@@ -11,5 +11,6 @@ none of them.  Everything is exact (int / Fraction), deterministic and independe
   ledger   rows, the chain, append under flock, verify, replay, emitted_output (the L4 consumer)
   mcp      LoomServer (runs, sandbox, one ledger per run) and the FastMCP wrapper `vera loom mcp`
   scripted the deterministic scripted weaver (a fake model that issues operations)
+  notes    LOOM-notes: the typed notes CONFLICT / UNANCHORED / NO_RECORD (a pass that points and lets pass) and the self-correction metrics
 """
 LOOM_VERSION = "loom.v1"

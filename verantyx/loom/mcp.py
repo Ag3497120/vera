@@ -26,6 +26,7 @@ from typing import Any, Dict, Iterable, List, Optional
 from verantyx.ledger_events import LedgerError, canonical, redact
 from verantyx.loom import fixture as fx
 from verantyx.loom import ledger as lg
+from verantyx.loom import notes as notelib
 from verantyx.loom.ledger import SandboxError
 from verantyx.loom.corpus import Corpus
 from verantyx.loom.ops import MODEL_OPS, Run, check_task_against_index, normalize_task, refusal
@@ -181,9 +182,19 @@ class LoomServer:
             return None
         return self._reload(run_id, lg.Ledger(rdir))
 
-    def _reload(self, run_id: str, led: lg.Ledger) -> Optional[_Entry]:
-        """Rebuild a run from its own ledger (a restarted server, or rows appended by another process)."""
+    def _reload(self, run_id: str, led: lg.Ledger, lk=None) -> Optional[_Entry]:
+        """Rebuild a run from its own ledger (a restarted server, or rows appended by another process).  `lk` = the append lock when the
+        caller already holds it.  A ledger whose last row is a read / emit with notes due but no note row (a crash between the two appends,
+        L-LOOM-105) is repaired here: the note row is appended first, so the repaired file is the file that never crashed."""
         rep = lg.replay(led.dir, loader=self._loader)
+        if rep.identical and rep.run is not None and rep.pending_note:
+            if lk is not None:
+                _append_pending_note(rep.run, lk)
+            else:
+                with led.locked() as lk2:
+                    rep = lg.replay(led.dir, loader=self._loader)                 # again, under the lock: another process may have repaired it
+                    if rep.identical and rep.run is not None and rep.pending_note:
+                        _append_pending_note(rep.run, lk2)
         if not rep.identical or rep.run is None:
             raise LedgerError("RUN_NOT_REPRODUCIBLE", "%s: %s %s" % (run_id, rep.status, rep.mismatch or rep.first_diff))
         e = _Entry(rep.run, led)
@@ -216,11 +227,25 @@ class LoomServer:
         with e.ledger.locked() as lk:
             n, prev = lk.tail()
             if n != e.run.i or prev != e.run.head:           # someone else appended (the harness CLI): rebuild from the file
-                e = self._reload(e.run.run_id, e.ledger)
+                e = self._reload(e.run.run_id, e.ledger, lk)
             body = e.run.step(actor, op, args)
-            row = lk.append(body, time.monotonic_ns() - e.t0)
+            try:
+                row = lk.append(body, time.monotonic_ns() - e.t0)
+            except BaseException:
+                self.runs.pop(e.run.run_id, None)             # the in-memory run is ahead of the file: the next call rebuilds it from the file
+                raise
             e.run.advance(row)
-        return body["result"]
+            result = body["result"]
+            notes = e.run.notes_due() if actor == "model" else []
+            if notes:                                         # LOOM-notes: a row of its own AFTER the read / emit row; that row is unchanged
+                try:
+                    nrow = lk.append(e.run.step(notelib.NOTE_ACTOR, notelib.NOTE_OP, {}), time.monotonic_ns() - e.t0)
+                except BaseException:                         # the read / emit row is stored, its note row is not: rebuild (and repair) on the next call
+                    self.runs.pop(e.run.run_id, None)
+                    raise
+                e.run.advance(nrow)
+                result = dict(result, notes=notes)             # a copy: the stored row and the replayed row never hold the notes
+        return result
 
     def closed(self, run_id: str) -> Optional[List[str]]:
         e = self._entry(run_id)
@@ -228,6 +253,11 @@ class LoomServer:
 
     def run_dir(self, run_id: str) -> Path:
         return self.sandbox.run_dir(run_id)
+
+
+def _append_pending_note(run: Run, lk) -> None:
+    """Append the note row a stored read / emit is owed (replay found it last, notes due, no note row) and advance the run past it."""
+    run.advance(lk.append(run.step(notelib.NOTE_ACTOR, notelib.NOTE_OP, {})))
 
 
 def append_outside_row(run_dir, actor: str, op: str, args: dict, loader: lg.Loader = lg.default_loader) -> dict:
@@ -238,6 +268,8 @@ def append_outside_row(run_dir, actor: str, op: str, args: dict, loader: lg.Load
         rep = lg.replay(run_dir, loader=loader)
         if not rep.identical or rep.run is None:
             raise LedgerError("RUN_NOT_REPRODUCIBLE", "%s %s" % (rep.status, rep.mismatch or rep.first_diff))
+        if rep.pending_note:                                   # L-LOOM-105: a crash between a read / emit and its note row: the repair comes first
+            _append_pending_note(rep.run, lk)
         body = rep.run.step(actor, op, json.loads(canonical(args)))
         n, prev = lk.tail()
         if n != rep.run.i or prev != rep.run.head:
@@ -344,12 +376,12 @@ def build(tasks_path, runs_dir, allow_roots: Iterable = (), stability: str = DEF
 
     @mcp.tool()
     def read(run_id: str) -> str:
-        """Dry run of emit: returns the text the thread reads as, the annotated segments, every refusal emit would give, and the stability of each cross. Nothing closes."""
+        """Dry run of emit: returns the text the thread reads as, the annotated segments, every refusal emit would give, and the stability of each cross. Nothing closes. `notes` may list structural observations (CONFLICT, UNANCHORED, NO_RECORD); they never block."""
         return out("read", {"run_id": run_id})
 
     @mcp.tool()
     def emit(run_id: str) -> str:
-        """Fix the output: the text the thread reads as. Refused with every reason if the structure is not sound (unstable cross, unlinked cross, empty centre, ...)."""
+        """Fix the output: the text the thread reads as. Refused with every reason if the structure is not sound (unstable cross, unlinked cross, empty centre, ...). A successful emit may carry `notes` (CONFLICT, UNANCHORED, NO_RECORD); they never block."""
         return out("emit", {"run_id": run_id})
 
     @mcp.tool()
