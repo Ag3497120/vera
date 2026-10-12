@@ -34,6 +34,7 @@ from types import SimpleNamespace
 from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple
 
 from verantyx.line3 import space as sp
+from verantyx.loom import evidence
 from verantyx.loom import notes as notelib
 from verantyx.loom import read as rd
 from verantyx.loom.state import AXES, SPEC, LoomCross, canonical, fmt_seat
@@ -196,8 +197,9 @@ def sentence_clause(corpus_t, sid: int, crosses: Sequence[dict]) -> Optional[dic
 
 
 def norm_answer(s: str) -> str:
-    """NFKC + casefold + no whitespace / 「・」 (MEM-c replaces this by evidence.strip_ignore when the gate is merged)."""
-    return "".join(ch for ch in unicodedata.normalize("NFKC", s).casefold() if not ch.isspace() and ch not in "・·")
+    """NFKC + casefold + `evidence.strip_ignore` (L-MEM-11, MEM-c): the gate's own ignorable characters (spaces, the brackets 「」『』, quotes, 「・」) are not part of an
+    answer.  Stripping is applied AFTER the NFKC / casefold so that a full-width variant of an ignorable character is ignored too."""
+    return evidence.strip_ignore(unicodedata.normalize("NFKC", s).casefold())
 
 
 def answer_groups(answers: Sequence[Answer]) -> Tuple[Dict[int, Dict[str, str]], List[List[int]]]:

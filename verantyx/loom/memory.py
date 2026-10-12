@@ -23,7 +23,9 @@ THE WRITE (L-MEM-03..05, 16, 18)
   5. provenance per unit: `history_n` = postings of the surface in C_<t, `origin` = new iff history_n == 0 (the model supplied a word the structure lacked).
   6. the notes (memnotes.py): REVERSAL / NEW_RELATION / UNANCHORED from the HISTORY KEY (C_<t only), CONFLICT touching this write, SAME_QUESTION through the pluggable
      `self_question` hook; they never block (L-MEM-09), travel in the result and in a `loom_note` row after the write row.
-`recall` (the evidence gate over the memory) is MEM-c: its name is reserved and refused `recall_unavailable` until the gate is merged.
+`recall` (MEM-c, memrecall.py): the evidence gate over the whole memory, verdicts ANSWER / CHOICE / NONE; available in a session whose begin row records an
+evidence version (the gate hook `gate.evidence.v2`), otherwise refused `recall_unavailable` exactly as before (so every MEM-a/b ledger replays unchanged).
+THE HOOK (MEM-c, L-MEM-29): `begin(self_question=DEFAULT)` -- DEFAULT is the gate hook for a new store; `None` = no hook; `StubSelfQuestion()` keeps the stub for tests.
 """
 from __future__ import annotations
 
@@ -41,12 +43,15 @@ from typing import Any, Dict, List, Optional, Sequence, Tuple
 
 from verantyx.ledger_events import GENESIS, args_sha256, redact, redact_obj
 from verantyx.loom import ledger as lg
+from verantyx.loom import evidence
 from verantyx.loom import memnotes as mn
+from verantyx.loom import memrecall as mr
 from verantyx.loom import notes as notelib
 from verantyx.loom import ops
 from verantyx.loom import read as rd
 from verantyx.loom.corpus import Corpus
 from verantyx.loom.memguard import (MEM_KINDS, STORE_ID_RX, check_memory_rows, make_source, parse_source)
+from verantyx.loom.memrecall import GateSelfQuestion
 from verantyx.loom.ops import Run, refusal
 from verantyx.loom.state import ARG_STR_CAP, ARGS_CHARS_CAP, GUARD_CAPS, LoomState, Refuse, canonical, sha256_text
 
@@ -66,9 +71,38 @@ MEM_RULES: Dict[str, Any] = {
              "nothing: rephrase it. Shape: 「X の Y は A」 and short chains; two case particles before one head are refused.",
     "frozen": "Every cross a write made is frozen: " + " ".join(FROZEN_OPS) + " -> memory_frozen. add / open_cross / seat / emit are not tools of a memory session.",
     "history": "A write is judged against the sentences BEFORE it, never against itself (REVERSAL / NEW_RELATION / UNANCHORED); notes never block.",
-    "recall": "reserved (MEM-c): recall_unavailable until the evidence gate is merged.",
+    "recall": "reserved (MEM-c): recall_unavailable until the evidence gate is merged.",     # a session WITHOUT an evidence version (stub / no hook): byte-identical to MEM-a/b
     "close": "commit closes the session; an uncommitted session is not part of the memory.",
 }
+MEM_RULES_GATE: Dict[str, Any] = dict(MEM_RULES, recall="recall(question) asks the evidence gate (scope clause, " + mr.RECALL_VERSION + ") of the WHOLE memory: ANSWER (one "
+                                      "group), CHOICE (two or more: contested facts stay listed, nothing is retracted or ranked), NONE (no sentence passes: the codes say why).")
+
+
+class _Sentinel:
+    def __init__(self, name: str) -> None:
+        self.name = name
+
+    def __repr__(self) -> str:
+        return self.name
+
+
+DEFAULT = _Sentinel("DEFAULT")              # self_question=DEFAULT: the default hook of a new store (the gate)
+FROM_HEADER = _Sentinel("FROM_HEADER")      # replay / verify: each session with the hook its own begin row names (the registry below)
+HOOKS: Dict[str, Any] = {mn.StubSelfQuestion.id: mn.StubSelfQuestion, GateSelfQuestion.id: GateSelfQuestion}     # the hook code, by recorded id
+DEFAULT_HOOK_FACTORY = GateSelfQuestion      # a callable returning the default hook (or None); tests that need the pre-MEM-c behaviour replace it (monkeypatch)
+
+
+def resolve_hook(spec: Any, header_id: Optional[str] = None) -> Optional[mn.SelfQuestionFn]:
+    """DEFAULT -> the default hook; FROM_HEADER -> the registry entry of `header_id` (None for 'none' or an unknown id: replay then reports the mismatch);
+    anything else (a hook, or None = no hook) as given."""
+    if spec is DEFAULT:
+        return DEFAULT_HOOK_FACTORY()
+    if spec is FROM_HEADER:
+        f = HOOKS.get(header_id) if isinstance(header_id, str) else None
+        return None if f is None else f()
+    return spec
+
+
 _MODEL_RX = re.compile(r"^[^\x00-\x1f\x7f]{1,64}$")
 _RUN_RX = re.compile(r"^s[0-9]{4,}$")
 STORE_FILES = ("sessions", "memory.jsonl", "HEAD", ".lock")
@@ -148,6 +182,10 @@ class MemRun(Run):
         self.kind_policy, self.contradiction_policy, self.unseatable_policy = kind_policy, contradiction_policy, unseatable_policy
         self.hook = self_question
         self.hook_id = mn.hook_id(self_question)
+        ev_v = getattr(self_question, "evidence_version", None)           # MEM-c: the evidence version the hook (and `recall`) read with; None = no gate in this session
+        if ev_v is not None and ev_v not in evidence.EVIDENCE_VERSIONS:
+            raise ValueError("a hook's evidence_version must be one of %s (or None)" % (evidence.EVIDENCE_VERSIONS,))
+        self.evidence_version: Optional[str] = ev_v
         self.rows: List[dict] = []                     # H: the memory rows (earlier sessions + this one)
         self.rows0 = 0                                 # |H| when the session began
         self.corpus_cur: Corpus = self.corpus          # C over the whole of H (self.corpus is C_t only while a weave runs)
@@ -198,13 +236,14 @@ class MemRun(Run):
             h = super().header()
             h.update({"mem_version": MEM_VERSION, "store_id": self.store_id, "session_no": self.session_no, "store_head_before": self.store_head_before,
                       "memory_sha_before": mem_sha(self.rows), "sessions_before": self.session_no - 1, "sentences_before": len(self.rows),
-                      "evidence_version": None, "notes_profile": mn.MEM_NOTES_VERSION, "caps": MEM_VERSION, "kind_policy": self.kind_policy,
+                      "evidence_version": self.evidence_version, "notes_profile": mn.MEM_NOTES_VERSION, "caps": MEM_VERSION, "kind_policy": self.kind_policy,
                       "contradiction_policy": self.contradiction_policy, "unseatable_policy": self.unseatable_policy, "self_question": self.hook_id})
             self._begin_header = h
         return self._begin_header
 
     def begin_body(self) -> dict:
-        res = {"ok": True, "run_id": self.run_id, "mode": "memory", "task": ops.task_view(self.task, self.caps), "rules": MEM_RULES, "header": self.header()}
+        res = {"ok": True, "run_id": self.run_id, "mode": "memory", "task": ops.task_view(self.task, self.caps),
+               "rules": MEM_RULES if self.evidence_version is None else MEM_RULES_GATE, "header": self.header()}
         return {"actor": "model", "op": "begin", "args": {"task_id": self.task["task_id"], "model": self.model}, "result": res, "state_sha": self.mem_state_sha()}
 
     def mem_state_sha(self) -> str:
@@ -365,9 +404,23 @@ def h_write(run: MemRun, a: dict, i: int) -> dict:
     return res
 
 
+RECALL_UNAVAILABLE = {"ticket": "MEM-c", "reason": "the evidence gate is not merged into line3; recall over the memory is MEM-c"}      # bytes as MEM-a/b recorded them
+
+
 def h_recall(run: MemRun, a: dict, i: int) -> dict:
-    ops._args(a, {"question": (str, True)})
-    raise Refuse("recall_unavailable", {"ticket": "MEM-c", "reason": "the evidence gate is not merged into line3; recall over the memory is MEM-c"})
+    """recall(question): the evidence gate over the WHOLE memory (every committed sentence of every session and this one's), `memrecall.recall`.  It reads
+    `run.corpus_cur` -- the memory corpus the session already holds (no corpus is built, no file is read) -- after the memory guard.  A session whose begin row records no
+    evidence version (stub / no hook) refuses exactly as MEM-a/b did."""
+    a = ops._args(a, {"question": (str, True)})
+    q = unicodedata.normalize("NFC", a["question"])
+    if run.evidence_version is None:
+        raise Refuse("recall_unavailable", dict(RECALL_UNAVAILABLE))
+    if not 1 <= len(q) <= ARG_STR_CAP or any(unicodedata.category(ch) in ("Cc", "Zl", "Zp") for ch in q):
+        raise Refuse("bad_question", {"reason": "1 to %d characters, no newline / NUL / control character" % ARG_STR_CAP})
+    check_memory_rows(run.rows)
+    res = mr.recall(run.corpus_cur, q, run.evidence_version)
+    res.update(ok=True, text=q)
+    return res
 
 
 def h_lookup(run: MemRun, a: dict, i: int) -> dict:
@@ -544,9 +597,11 @@ class MemStore:
 
     # -- sessions -----------------------------------------------------------------------------------------------------
     def begin(self, model: str, *, kind_policy: Optional[str] = None, contradiction_policy: str = "a", unseatable_policy: str = "a",
-              self_question: Optional[mn.SelfQuestionFn] = None) -> "MemSession":
+              self_question: Any = DEFAULT) -> "MemSession":
         """Open a memory session: the store's lock, the cheap verification, the carried state, the `begin` row (L-MEM-18).  Raises `Refuse` (store_locked,
-        store_unverified, bad_model_id, policy_mismatch, ...).  The defaults are the owner's choices: OP-MEM-1 (a), OP-MEM-2 (a), OP-MEM-3 (a)."""
+        store_unverified, bad_model_id, policy_mismatch, ...).  The defaults are the owner's choices: OP-MEM-1 (a), OP-MEM-2 (a), OP-MEM-3 (a).
+        `self_question`: DEFAULT = the gate hook `gate.evidence.v2` (MEM-c, L-MEM-29); `StubSelfQuestion()` the stub; None no hook (no SAME_QUESTION, no recall)."""
+        self_question = resolve_hook(self_question)
         if not isinstance(model, str) or not _MODEL_RX.match(model) or redact(model)[1]:
             raise Refuse("bad_model_id", {"reason": "1 to 64 printable characters, no secret-shaped text"})
         self.path.mkdir(parents=True, exist_ok=True)
@@ -588,10 +643,10 @@ class MemStore:
         sessions.append({"run_id": run.run_id, "session_no": run.session_no, "head": run.head, "rows": run.i, "sentences_after": len(run.rows)})
         return self._write_state(sessions, run.rows, run.kind_policy)
 
-    def verify(self, self_question: Optional[mn.SelfQuestionFn] = None) -> dict:
+    def verify(self, self_question: Any = DEFAULT) -> dict:
         return verify_store(self.path, self_question)
 
-    def replay(self, self_question: Optional[mn.SelfQuestionFn] = None) -> "MemReplay":
+    def replay(self, self_question: Any = DEFAULT) -> "MemReplay":
         return replay_store(self.path, self_question)
 
 
@@ -691,10 +746,11 @@ class MemReplay:
 _HEADER_OPT_KEYS = ("kind_policy", "contradiction_policy", "unseatable_policy")
 
 
-def replay_store(path, self_question: Optional[mn.SelfQuestionFn] = None) -> MemReplay:
+def replay_store(path, self_question: Any = DEFAULT) -> MemReplay:
     """`mem replay`: re-execute every listed session, in order, against an empty M0 (each session starts from the H the earlier ones re-derived, not from
     memory.jsonl) and require every row, every byte, the HEAD and memory.jsonl to be reproduced.  `self_question` must be the hook the sessions were recorded
-    with (its `id` is in the begin header; a mismatch is INPUTS `self_question_mismatch`)."""
+    with (its `id` is in the begin header; a mismatch is INPUTS `self_question_mismatch`).  DEFAULT = the default hook of a new store (so a store recorded with the
+    stub replays under `StubSelfQuestion()` or `FROM_HEADER`, and is INPUTS under the default); FROM_HEADER = each session with the registry hook its begin row names."""
     out = MemReplay()
     store = MemStore(path)
     try:
@@ -725,11 +781,12 @@ def replay_store(path, self_question: Optional[mn.SelfQuestionFn] = None) -> Mem
         if r0.get("op") != "begin" or hdr.get("mem_version") != MEM_VERSION or hdr.get("caps") != MEM_VERSION or res0["task"].get("caps") != CAPS_MEM_V1:
             out.status, out.mismatch = "INPUTS", "mem_version_unknown"
             return out
-        if hdr.get("self_question") != mn.hook_id(self_question):
+        hook = resolve_hook(self_question, hdr.get("self_question"))
+        if hdr.get("self_question") != mn.hook_id(hook):
             out.status, out.mismatch = "INPUTS", "self_question_mismatch"
             return out
         try:
-            run = MemRun(hdr["store_id"], hdr["session_no"], run_id, model, store_head_before=before, self_question=self_question, **opts)
+            run = MemRun(hdr["store_id"], hdr["session_no"], run_id, model, store_head_before=before, self_question=hook, **opts)
             run.carry(H)
         except Refuse:
             out.status, out.first_diff = "DIFFERS", {"session": e["run_id"], "i": 0, "field": "carry"}
@@ -797,7 +854,7 @@ def _replay_rows(out: MemReplay, run: MemRun, run_id: str, rows: List[dict], lin
     return True
 
 
-def verify_store(path, self_question: Optional[mn.SelfQuestionFn] = None) -> dict:
+def verify_store(path, self_question: Any = DEFAULT) -> dict:
     """`mem verify`: every listed session's chain (TAMPERED), the derived memory against memory.jsonl and the HEAD (STORE_UNVERIFIED), then the replay
     (REPLAY_DIFFERS / REPLAY_INPUTS_MISMATCH).  {"status": "OK" | "EMPTY" | ..., ...}"""
     store = MemStore(path)
@@ -845,12 +902,15 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     ap = argparse.ArgumentParser(prog="python -m verantyx.loom.memory", description="the memory store of the loom (MEM-a)")
     ap.add_argument("cmd", choices=("verify", "replay", "status", "events"))
     ap.add_argument("--store", required=True, help="the store directory (required; there is no default path)")
+    ap.add_argument("--hook", default="default", choices=("default", "header") + tuple(sorted(HOOKS)) + (mn.NO_HOOK,),
+                    help="verify / replay: the self-question hook to replay with (default = the default hook of a new store; header = each session's recorded id)")
     ns = ap.parse_args(list(sys.argv[1:] if argv is None else argv))
+    hook = {"default": DEFAULT, "header": FROM_HEADER, mn.NO_HOOK: None}.get(ns.hook) if ns.hook in ("default", "header", mn.NO_HOOK) else HOOKS[ns.hook]()
     if ns.cmd == "verify":
-        res = verify_store(ns.store)
+        res = verify_store(ns.store, hook)
         code = 0 if res["status"] in ("OK", "EMPTY") else 1
     elif ns.cmd == "replay":
-        res = replay_store(ns.store).to_obj()
+        res = replay_store(ns.store, hook).to_obj()
         code = {"IDENTICAL": 0, "DIFFERS": 1, "INPUTS": 2}[res["status"]]
     elif ns.cmd == "events":
         res, code = store_events(ns.store), 0

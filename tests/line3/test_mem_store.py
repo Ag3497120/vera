@@ -33,7 +33,7 @@ def test_empty_corpus_has_no_unit_pr1():
 def test_first_session_starts_from_nothing(tmp_path):
     st = new_store(tmp_path)
     assert st.head() is None
-    s = st.begin("test-model")
+    s = st.begin("test-model", self_question=None)                      # MEM-c: the default of a new store is the gate hook (test_mem_recall.py); None = no hook
     b = ledger_rows(s)[0]
     h = b["result"]["header"]
     assert (h["mem_version"], h["session_no"], h["sessions_before"], h["sentences_before"]) == ("mem.v1", 1, 0, 0)
@@ -59,8 +59,9 @@ def test_first_write_is_trivially_stable_and_nothing_counted_fires(tmp_path):
     assert ev["detections"]["headline"] == 0 and ev["units"] == {"new": 3, "record": 0}
 
 
-def test_recall_is_reserved_for_the_gate(tmp_path):
-    s = session(tmp_path)
+def test_recall_is_reserved_without_an_evidence_version(tmp_path):
+    """MEM-a/b's behaviour, kept for a session whose begin row records no evidence version (no hook, or the stub): the real recall is in test_mem_recall.py."""
+    s = session(tmp_path, self_question=None)
     r = s.call("recall", {"question": "田中の担当は何ですか"})
     assert r["ok"] is False and r["refusal"] == "recall_unavailable" and r["detail"]["ticket"] == "MEM-c"
 
