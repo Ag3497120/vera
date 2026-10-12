@@ -164,11 +164,10 @@ def hook_id(fn: Optional[SelfQuestionFn]) -> str:
     return hid
 
 
-def sentence_clause(corpus_t, sid: int, crosses: Sequence[dict]) -> Optional[dict]:
-    """The clause 「[X の] Y は A」 of a woven sentence (L-MEM-10): a topic cross T immediately followed, in the same weave, by a cross N, where T holds no arm unit
-    other than on +x (の).  `crosses` = the `crosses` of the weave_span result (the units are consecutive in sentence order: one or two per cross).
-    {"cid", "question", "subject": [units], "answer": [the units after T]} or None.  The question is the LITERAL substring of the sentence from T's first
-    unit to T's は (so punctuation stays) + 「何ですか」."""
+def clause_geometry(corpus_t, sid: int, crosses: Sequence[dict]) -> Optional[dict]:
+    """Where the clause of `sentence_clause` sits in the sentence as written: {"j" (index of the topic cross T in `crosses`), "first" (index of T's first unit in the
+    sentence), "centre" (index of T's centre unit), "start" (character offset of T's first unit), "end" (offset just after T's は)}, or None.  The one place the clause is
+    cut (`sentence_clause` and MEM-d's topic expansion both read it)."""
     idx = corpus_t.spans()
     sps = idx.spans("WORD", sid)
     text = idx.text(sid)
@@ -191,9 +190,27 @@ def sentence_clause(corpus_t, sid: int, crosses: Sequence[dict]) -> Optional[dic
         k = gap.find(SPEC.centre)
         if k < 0:
             continue
-        end = sps[centre][1] + k + 1
-        return {"cid": c["cid"], "question": text[sps[first][0]:end] + QUESTION_TAIL, "subject": units[first:centre + 1], "answer": units[nxt:]}
+        return {"j": j, "first": first, "centre": centre, "next": nxt, "start": sps[first][0], "end": sps[centre][1] + k + 1}
     return None
+
+
+def sentence_clause(corpus_t, sid: int, crosses: Sequence[dict], start: Optional[int] = None) -> Optional[dict]:
+    """The clause 「[X の] Y は A」 of a woven sentence (L-MEM-10): a topic cross T immediately followed, in the same weave, by a cross N, where T holds no arm unit
+    other than on +x (の).  `crosses` = the `crosses` of the weave_span result (the units are consecutive in sentence order: one or two per cross).
+    {"cid", "question", "subject": [units], "answer": [the units after T]} or None.  The question is the LITERAL substring of the sentence from T's first
+    unit to T's は (so punctuation stays) + 「何ですか」.  `start` (MEM-d): a sentence stored with a DECLARED TOPIC in front of its clause starts the question at the topic (the
+    character offset the row records as `topic_at`), not at the first WORD unit of the clause: a compound topic (認証機能 = 認証 + 機能) is asked whole, 「認証機能の締め切りは何ですか」."""
+    g = clause_geometry(corpus_t, sid, crosses)
+    if g is None:
+        return None
+    text = corpus_t.spans().text(sid)
+    units = list(corpus_t.tier("WORD").sentence_units[sid])
+    return {"cid": crosses[g["j"]]["cid"], "question": text[g["start"] if start is None else start:g["end"]] + QUESTION_TAIL, "subject": units[g["first"]:g["centre"] + 1], "answer": units[g["next"]:]}
+
+
+def subject_less(crosses: Sequence[dict], geometry: dict) -> bool:
+    """MEM-d (owner 2026-10-13 「主語の無い文」): the clause's topic cross holds no unit but its centre -- 「締め切りは金曜」, no 「X の」 before the Y."""
+    return not crosses[geometry["j"]]["seated"]
 
 
 def norm_answer(s: str) -> str:
@@ -271,7 +288,8 @@ def same_question_note(question: str, answers: Sequence[Answer], t: int, rows_af
                 if n not in ans or len(d) > len(ans[n]):
                     ans[n] = d
         variants.append({"answers": [ans[n] for n in sorted(ans, key=lambda n: (-len(n), n))],
-                         "occurrences": [{"sid": s, "source": rows_after[s]["source"]} for s in comp]})
+                         "occurrences": [dict({"sid": s, "source": rows_after[s]["source"]}, **({"turn": rows_after[s]["turn"]} if "turn" in rows_after[s] else {}))
+                                         for s in comp]})
     return {"type": SAME_QUESTION, "question": question, "cid": cid, "variants": variants}
 
 
@@ -294,7 +312,8 @@ def shape_notes(text: str, crosses: Sequence[dict], n_units: int) -> List[dict]:
 # ------------------------------------------------------------------------------------------------------------
 def compute_write_notes(*, t: int, row: dict, rows_before: Sequence[dict], rows_after: Sequence[dict], corpus_key: Any, corpus_before: Any, corpus_after: Any,
                         state, linked: Sequence[LoomCross], new_crosses: Sequence[LoomCross], weave: dict, contradiction_policy: str,
-                        self_question: Optional[SelfQuestionFn]) -> Tuple[List[dict], dict]:
+                        self_question: Optional[SelfQuestionFn], superseded: Optional[Dict[int, dict]] = None,
+                        clause_start: Optional[int] = None) -> Tuple[List[dict], dict]:
     """The notes of the write of sentence t, in the loom's note order, and {"keys": [...], "clause": ... | None}.
 
     `corpus_key` is C_<t as the KEY reads it (= `corpus_before` for OP-MEM-1 (a)/(b); under (c) the rows of the current session are relabelled so they give
@@ -305,10 +324,13 @@ def compute_write_notes(*, t: int, row: dict, rows_before: Sequence[dict], rows_
     found += key_notes(view, keys)
     found += unanchored_notes(view, new_crosses)
     found += conflict_notes(view, linked, [c.cid for c in new_crosses])
-    clause = sentence_clause(corpus_after, t, weave["crosses"])
+    clause = sentence_clause(corpus_after, t, weave["crosses"], clause_start)
     if clause is not None and contradiction_policy in ("a", "c") and self_question is not None:
         mem = MemoryBefore(t=t, row=row, rows_before=tuple(rows_before), rows_after=tuple(rows_after), corpus_before=corpus_before, corpus_after=corpus_after)
-        sq = same_question_note(clause["question"], list(self_question(clause["question"], mem)), t, rows_after, clause["cid"])
+        answers = list(self_question(clause["question"], mem))
+        if superseded:                                  # MEM-d: a sentence the model replaced is history, not a statement that still contests (SAME_QUESTION is made of live ones)
+            answers = [a for a in answers if a.sid not in superseded]
+        sq = same_question_note(clause["question"], answers, t, rows_after, clause["cid"])
         if sq is not None and sq["type"] == SELF_QUESTION_UNREADABLE and getattr(self_question, "subject_guard", False):       # MEM-c2: say when the guard (not the gate) refused it
             why = self_question.unreadable_reason(clause["question"], mem)
             if why:
@@ -451,11 +473,49 @@ def session_events(rows: Sequence[dict], contradiction_policy: str = "a", unseat
     shape = len(reseats) - content
     counted_notes = sum(n_notes[t] for t in counted)
     headline = counted_notes + content + (shape if unseatable_policy == "b" else 0)
-    return {"notes": n_notes, "counted": {t: n_notes[t] for t in counted}, "unseatable": {"total": sum(reasons.values()), "by_reason": dict(sorted(reasons.items()))},
-            "refused": dict(sorted(refused.items())), "reseats": reseats, "units": {"new": new_u, "record": rec_u},
-            "detections": {"notes": counted_notes, "reseat_content": content, "headline": headline},
-            "cost": {"unseatable": sum(reasons.values()), "reseat_shape": shape, "unreadable": n_notes[SELF_QUESTION_UNREADABLE]},
-            "policy": {"contradiction": contradiction_policy, "unseatable": unseatable_policy}}
+    out = {"notes": n_notes, "counted": {t: n_notes[t] for t in counted}, "unseatable": {"total": sum(reasons.values()), "by_reason": dict(sorted(reasons.items()))},
+           "refused": dict(sorted(refused.items())), "reseats": reseats, "units": {"new": new_u, "record": rec_u},
+           "detections": {"notes": counted_notes, "reseat_content": content, "headline": headline},
+           "cost": {"unseatable": sum(reasons.values()), "reseat_shape": shape, "unreadable": n_notes[SELF_QUESTION_UNREADABLE]},
+           "policy": {"contradiction": contradiction_policy, "unseatable": unseatable_policy}}
+    out.update(op_counts(ops))
+    return out
+
+
+def op_counts(ops: Sequence[dict]) -> dict:
+    """MEM-d: what the model did with the structure's new operations and what writing in the structure's form cost it, from the model rows alone.
+      rewrites   {"refused": writes the structure could not seat (`span_inexpressible`), "rewritten": of those, the ones a later ok write rephrased (a RESEAT whose trigger is
+                 the refusal, L-MEM-27), "unrewritten": the rest}.  Owner 2026-10-13 「書き直しは費用として数える」: the cost of the form, never a detection.
+      topics     {"declared": ok `declare_topic` rows, "refused": n, "expanded": ok writes stored with the topic as their implicit subject}
+      supersedes {"ok": n, "sentences": sentences marked, "refused": {refusal: n}}
+      reports    {"ok": n, "refused": n}   (the `report` tool: what the model noticed, mechanically)
+    Absent keys are zeros: a ledger of a session before MEM-d has none of these ops."""
+    rewritten = 0
+    # a refused write is "rewritten" iff a RESEAT (session_events) pairs it; recomputed here so op_counts needs only the model rows
+    seat_refused = [k for k, r in enumerate(ops) if r["op"] == "write" and r["result"].get("ok") is not True and r["result"].get("refusal") == "span_inexpressible"]
+    for k in seat_refused:
+        u1 = {u for u in _units_of_write(ops[k]) if len(u) >= MIN_OVERLAP_CHARS}
+        for w in ops[k + 1:k + 1 + RESEAT_WINDOW]:
+            if w["op"] != "write" or w["result"].get("ok") is not True or w["args"].get("text") == ops[k]["args"].get("text"):
+                continue
+            if u1 & {u for u in _units_of_write(w) if len(u) >= MIN_OVERLAP_CHARS}:
+                rewritten += 1
+                break
+    topics_ok = sum(1 for r in ops if r["op"] == "declare_topic" and r["result"].get("ok") is True)
+    topics_bad = sum(1 for r in ops if r["op"] == "declare_topic" and r["result"].get("ok") is not True)
+    expanded = sum(1 for r in ops if r["op"] == "write" and r["result"].get("ok") is True and "implicit_topic" in r["result"])
+    sup_ok = [r for r in ops if r["op"] == "supersede" and r["result"].get("ok") is True]
+    sup_ref: Dict[str, int] = {}
+    for r in ops:
+        if r["op"] == "supersede" and r["result"].get("ok") is not True:
+            sup_ref[r["result"]["refusal"]] = sup_ref.get(r["result"]["refusal"], 0) + 1
+    rep_ok = sum(1 for r in ops if r["op"] == "report" and r["result"].get("ok") is True)
+    rep_bad = sum(1 for r in ops if r["op"] == "report" and r["result"].get("ok") is not True)
+    refused = len(seat_refused)
+    return {"rewrites": {"refused": refused, "rewritten": rewritten, "unrewritten": refused - rewritten},
+            "topics": {"declared": topics_ok, "refused": topics_bad, "expanded": expanded},
+            "supersedes": {"ok": len(sup_ok), "sentences": sum(len(r["result"]["superseded"]) for r in sup_ok), "refused": dict(sorted(sup_ref.items()))},
+            "reports": {"ok": rep_ok, "refused": rep_bad}}
 
 
 # ------------------------------------------------------------------------------------------------------------

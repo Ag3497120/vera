@@ -153,7 +153,8 @@ def test_the_agent_files_hold_only_loom_tools(live_tool_names):
     # no built-in tool name in any allow-list
     for fn in os.listdir(H.AGENTS_DIR):
         m, _ = H.parse_agent_file(os.path.join(H.AGENTS_DIR, fn))
-        assert not {t for t in m["tools"] if not t.startswith("mcp__vera-loom__")}
+        prefix = "mcp__vera-mem__" if fn.startswith("mem-") else "mcp__vera-loom__"          # MEM-d: the memory meter's agents hold the vera-mem tools only (tests/line3/test_mem_doors.py pins each list)
+        assert m["tools"] and not {t for t in m["tools"] if not t.startswith(prefix)}
         text = open(os.path.join(H.AGENTS_DIR, fn), encoding="utf-8").read()
         assert not any(k in text.split("\n---\n")[0] for k in ("Bash", "Read,", "Write", "Edit", "WebFetch", "Agent,", "Grep", "Glob"))
 

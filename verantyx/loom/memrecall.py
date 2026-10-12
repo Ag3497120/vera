@@ -217,11 +217,52 @@ def cut_entries(corpus: Any, cut: Sequence[Pass]) -> List[dict]:
     return out
 
 
-def recall(corpus: Any, question: str, version: str = RECALL_VERSION, prefilter: bool = True, subject_guard: bool = False) -> dict:
+def analyse(corpus: Any, question: str, version: str = RECALL_VERSION, prefilter: bool = True, subject_guard: bool = False) -> dict:
+    """The judgement of one question WITHOUT any supersession: `judge_memory`'s result + {"sets": {sid: {norm: display}}, "comps": [[sid, ...]], "by_sid": {sid: [Pass]}}.
+    `recall` and `supersede` (MEM-d) are both made of it, so the groups a supersede names are exactly the groups a recall shows."""
+    j = judge_memory(corpus, question, version, prefilter, subject_guard)
+    sets, comps = mn.answer_groups(as_answers(j["passes"]))
+    by_sid: Dict[int, List[Pass]] = {}
+    for p in j["passes"]:
+        by_sid.setdefault(p.sid, []).append(p)
+    return dict(j, sets=sets, comps=comps, by_sid=by_sid)
+
+
+def _group(corpus: Any, sids: Sequence[int], sets: Dict[int, Dict[str, str]], by_sid: Dict[int, List[Pass]], by: Optional[Dict[int, dict]] = None,
+           turns: Optional[Dict[int, str]] = None) -> dict:
+    """One answer group over the given sentences of a component: {"text", "answers" [longest first], "occurrences" [sid order]}.  With `by` (the supersede record of each
+    sid) every occurrence also says who replaced it (history)."""
+    occ: List[dict] = []
+    shown: Dict[str, str] = {}
+    for sid in sids:
+        src = corpus.sentence(sid)["source"]
+        _, session, _, role = parse_source(src)
+        for norm, display in sets[sid].items():
+            best = max((p for p in by_sid[sid] if mn.norm_answer(p.answer) == norm and p.answer == display), key=lambda p: (p.i1 - p.i0, -p.i0))
+            o = {"sid": sid, "source": src, "session": session, "role": role, "answer": display, "span": [best.i0, best.i1], "clause": best.clause}
+            if turns and sid in turns:                                 # MEM-d: the turn id the sentence was written at (a mem.v2 write through a door), so a report can cite it
+                o["turn"] = turns[sid]
+            if by is not None:
+                o["superseded_by"] = {"sid": by[sid]["by"], "reason": by[sid]["reason"], "session": by[sid]["session"]}
+            occ.append(o)
+            if norm not in shown or len(display) > len(shown[norm]):
+                shown[norm] = display
+    occ.sort(key=lambda o: (o["sid"], o["span"][0], o["span"][1]))
+    names = [shown[n] for n in sorted(shown, key=lambda n: (-len(n), n))]
+    return {"text": names[0], "answers": names, "occurrences": occ}
+
+
+def recall(corpus: Any, question: str, version: str = RECALL_VERSION, prefilter: bool = True, subject_guard: bool = False,
+           superseded: Optional[Dict[int, dict]] = None, turns: Optional[Dict[int, str]] = None) -> dict:
     """The verdict of one question over the whole memory `corpus`.  {"verdict", "question", "evidence", "scope", "sentences", "candidates", "judged", "answers": [group],
     ("codes", "issues", "looked_for" for NONE)} where a group = {"text", "answers": [display, longest first], "occurrences": [{"sid", "source", "session", "role", "answer",
-    "span", "clause"}] in sid order}."""
-    j = judge_memory(corpus, question, version, prefilter, subject_guard)
+    "span", "clause"}] in sid order}.
+
+    `superseded` (MEM-d, owner 2026-10-13 「更新と矛盾」): {sid: {"by": sid, "reason", "session"}} -- the sentences a model replaced by an explicit `supersede`.  Without it (None or
+    empty: every store before MEM-d) nothing below changes.  With it: the verdict is made of the LIVE sentences only (a component whose sentences are all superseded is
+    HISTORY): one live group = ANSWER (the newest as the model resolved it), two or more = CHOICE (still unresolved); the superseded sentences are LISTED under `history`
+    (groups of occurrences that each say `superseded_by`), never dropped.  Nothing is ranked by order: a sentence is superseded only because the model said so."""
+    j = analyse(corpus, question, version, prefilter, subject_guard)
     qu: ev.QuestionUnits = j["qu"]
     out: Dict[str, Any] = {"verdict": "NONE", "question": qu.to_obj(RECALL_SCOPE, version), "evidence": version, "scope": RECALL_SCOPE,
                            "sentences": j["sentences"], "candidates": len(j["candidates"]), "judged": j["judged"], "answers": []}
@@ -235,26 +276,24 @@ def recall(corpus: Any, question: str, version: str = RECALL_VERSION, prefilter:
         return out
     if cut:
         out["issues"] = ["subject_cut"]
-    answers = as_answers(j["passes"])
-    sets, comps = mn.answer_groups(answers)
-    by_sid: Dict[int, List[Pass]] = {}
-    for p in j["passes"]:
-        by_sid.setdefault(p.sid, []).append(p)
-    groups = []
+    sets, comps, by_sid = j["sets"], j["comps"], j["by_sid"]
+    if not superseded or not any(s in superseded for comp in comps for s in comp):
+        groups = [_group(corpus, comp, sets, by_sid, None, turns) for comp in comps]
+        out["answers"] = groups
+        out["verdict"] = "ANSWER" if len(groups) == 1 else "CHOICE"
+        return out
+    live, hist = [], []
     for comp in comps:
-        occ: List[dict] = []
-        shown: Dict[str, str] = {}
-        for sid in comp:
-            src = corpus.sentence(sid)["source"]
-            _, session, _, role = parse_source(src)
-            for norm, display in sets[sid].items():
-                best = max((p for p in by_sid[sid] if mn.norm_answer(p.answer) == norm and p.answer == display), key=lambda p: (p.i1 - p.i0, -p.i0))
-                occ.append({"sid": sid, "source": src, "session": session, "role": role, "answer": display, "span": [best.i0, best.i1], "clause": best.clause})
-                if norm not in shown or len(display) > len(shown[norm]):
-                    shown[norm] = display
-        occ.sort(key=lambda o: (o["sid"], o["span"][0], o["span"][1]))
-        names = [shown[n] for n in sorted(shown, key=lambda n: (-len(n), n))]
-        groups.append({"text": names[0], "answers": names, "occurrences": occ})
-    out["answers"] = groups
-    out["verdict"] = "ANSWER" if len(groups) == 1 else "CHOICE"
+        lv = [s for s in comp if s not in superseded]
+        old = [s for s in comp if s in superseded]
+        if lv:
+            live.append(_group(corpus, lv, sets, by_sid, None, turns))
+        if old:
+            hist.append(_group(corpus, old, sets, by_sid, superseded, turns))
+    if not live:                                                       # every sentence that answers this question is superseded (by an answer to ANOTHER question): nothing is hidden
+        live = [_group(corpus, comp, sets, by_sid, None, turns) for comp in comps]
+        out["superseded_all"] = True
+    out["answers"] = live
+    out["verdict"] = "ANSWER" if len(live) == 1 else "CHOICE"
+    out["history"] = hist
     return out

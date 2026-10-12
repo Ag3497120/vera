@@ -237,6 +237,9 @@ def _args(a: dict, spec: Dict[str, Tuple[Any, bool]]) -> dict:
 # the run
 # ------------------------------------------------------------------------------------------------------------
 class Run:
+    EXTRA_OPS: Tuple[str, ...] = ()                    # MEM-d: model ops a SUBCLASS adds to MODEL_OPS (the answer run's `recall`); none for the ordinary loom
+    ABSTAIN: Tuple[str, ...] = ABSTAIN_TYPES           # MEM-d: the abstain types a run accepts (the answer run adds `contested`)
+
     def __init__(self, corpus: Corpus, task: dict, model: str, run_id: str, stability_mode: str = rd.DEFAULT_STABILITY,
                  code_index: Optional[CodeIndex] = None, caps: Optional[Dict[str, int]] = None, notes_version: Optional[str] = None,
                  evidence: Optional[Tuple[str, str]] = None) -> None:
@@ -338,7 +341,7 @@ class Run:
         if st.closed is not None:
             return "closed_calls" if st.guards["closed_calls"] >= GUARD_CAPS["closed_calls"] else None
         if op == "abstain" and st.guards["abstain_refused"] >= GUARD_CAPS["abstain_refused"]:
-            valid = isinstance(args, dict) and set(args) == {"type"} and args["type"] in ABSTAIN_TYPES
+            valid = isinstance(args, dict) and set(args) == {"type"} and args["type"] in self.ABSTAIN
             return None if valid else "abstain_refused"
         return None
 
@@ -377,7 +380,7 @@ class Run:
                 raise Refuse("args_too_large", {"chars": extra["args_chars"], "limit": ARGS_CHARS_CAP, "string_limit": ARG_STR_CAP})
             if n:
                 raise Refuse("secret_shaped_unit", {"redacted": n})
-            result = HANDLERS[op](self, args, self.i)
+            result = self._handler(op)(self, args, self.i)
         except Refuse as r:
             result = refusal(r.type, r.detail)
             if op == "abstain" and r.type not in ("run_closed", "cap_exceeded"):
@@ -388,7 +391,11 @@ class Run:
 
     def _executable(self, op: Any) -> bool:
         """A model op the run executes: a tool (MODEL_OPS), or a LEGACY op while a recorded ledger is being replayed (never on a live call)."""
-        return isinstance(op, str) and (op in MODEL_OPS or (self.replaying and op in LEGACY_OPS))
+        return isinstance(op, str) and (op in MODEL_OPS or op in self.EXTRA_OPS or (self.replaying and op in LEGACY_OPS))
+
+    def _handler(self, op: str):
+        """The handler of an executable op (MEM-d: a subclass may override it for its EXTRA_OPS and for the ops whose rule it changes)."""
+        return HANDLERS[op]
 
     def _precheck(self, op: str) -> None:
         st = self.state
@@ -1007,8 +1014,8 @@ def h_emit(run: Run, a: dict, i: int) -> dict:
 
 def h_abstain(run: Run, a: dict, i: int) -> dict:
     a = _args(a, {"type": (str, True)})
-    if a["type"] not in ABSTAIN_TYPES:
-        raise Refuse("bad_type", {"type": a["type"][:32], "allowed": list(ABSTAIN_TYPES)})      # L-LOOM-44: never echo more than 32 chars
+    if a["type"] not in run.ABSTAIN:
+        raise Refuse("bad_type", {"type": a["type"][:32], "allowed": list(run.ABSTAIN)})      # L-LOOM-44: never echo more than 32 chars
     run.state.closed = ["abstained", a["type"]]
     return {"ok": True, "status": "abstained", "type": a["type"]}
 
