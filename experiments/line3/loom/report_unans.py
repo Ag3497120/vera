@@ -37,7 +37,7 @@ def _load(name: str, fname: str):
 S = _load("loom_score", "score.py")
 MODES = ("record_only", "constructed_allowed", "free_text", "no_tools")
 LOOM_MODES = ("record_only", "constructed_allowed")
-OWNER_NAMED = ("not_a_record", "constructed_forbidden", "unstable_cross")       # the refusal types the owner named for route (1)
+OWNER_NAMED = ("not_a_record", "constructed_forbidden", "unstable_cross", "no_evidence")       # the refusal types the owner named for route (1); no_evidence since LOOM-evidence (L-LOOM-188)
 
 
 def med(xs: List[int]) -> str:
@@ -75,7 +75,8 @@ def collect(bank_path: str, runs: str, results: str) -> List[dict]:
         out.append({"base": base, "mode": label, "missing": False, "question": row["text"], "status": rs.status, "outcome": rs.outcome, "verified": rs.verify_status == "OK" and rs.replay_verified,
                     "layer": rs.stop_layer, "L": rs.layer or {}, "text": rs.text, "answer_line": rs.answer_line, "control": rs.control, "kind": rs.kind,
                     "usage": dr.get("usage") or {}, "ended": dr.get("ended"), "wall_ns": (res.get("wall") or {}).get("driver_ns"),
-                    "abstain_type": rs.abstain_type, "turns": dr.get("turns"), "empty_thread_reads": et})
+                    "abstain_type": rs.abstain_type, "turns": dr.get("turns"), "empty_thread_reads": et, "hit_exact": rs.hit_exact, "hit_cited": rs.hit_cited,
+                    "ops_total": (rs.facts or {}).get("model_rows")})
     return out
 
 

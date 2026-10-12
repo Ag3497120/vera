@@ -48,7 +48,7 @@ def toy_tasks(toy):
 
 
 def srv_of(toy, tmp_path, **kw):
-    return LoomServer(toy_tasks(toy), str(tmp_path / "runs"), (), **kw)
+    return LoomServer(toy_tasks(toy), str(tmp_path / "runs"), (), **dict({"evidence": "off"}, **kw))
 
 
 def started(toy, tmp_path, task_id="toy/ca", run_id="r1", **kw):

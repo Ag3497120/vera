@@ -64,7 +64,7 @@ def toy_tasks(toy):
 
 
 def srv_of(toy, tmp_path, **kw):
-    return LoomServer(toy_tasks(toy), str(tmp_path / "runs"), (), **kw)
+    return LoomServer(toy_tasks(toy), str(tmp_path / "runs"), (), **dict({"evidence": "off"}, **kw))
 
 
 def started(toy, tmp_path, task_id="toy/ro", run_id="r1", **kw):
@@ -104,7 +104,7 @@ def shape(srv, w):
 def test_the_nihon_no_shuto_chain_from_東京は日本の首都です(toy, tmp_path):
     srv, w = started(toy, tmp_path)
     r = span(w, 0, "日本", "首都")
-    assert r["ok"] and r["wv"] == "weave_span.v2" and (r["sid"], r["tier"], r["from"], r["to"]) == (0, "WORD", 1, 2)
+    assert r["ok"] and r["wv"] == "weave_span.v3" and (r["sid"], r["tier"], r["from"], r["to"]) == (0, "WORD", 1, 2)
     assert r["text"] == "日本の首都" and r["thread"] == ["c1"]
     [c] = r["crosses"]
     assert c["cid"] == "c1" and c["L"] == 2 and c["topic"] is False and c["centre"]["surface"] == "首都"
@@ -500,7 +500,7 @@ def test_one_op_one_row_with_the_derived_crosses_in_the_row_and_the_ops_cap_coun
     assert after["counters"]["ops"] == before["counters"]["ops"] + 1 and (after["counters"]["lookups"], after["counters"]["reads"]) == (0, 0)
     rs = rows(tmp_path / "runs" / "r1")
     assert len(rs) == n_rows + 2 and rs[-2]["op"] == "weave_span" and rs[-2]["actor"] == "model"       # + the status row after it
-    assert rs[-2]["args"] == {"from": 0, "sid": 0, "tier": "WORD", "to": 2, "wv": "weave_span.v2"}       # the rule version is in the args
+    assert rs[-2]["args"] == {"from": 0, "sid": 0, "tier": "WORD", "to": 2, "wv": "weave_span.v3"}       # the rule version is in the args
     assert rs[-2]["result"]["crosses"] == r["crosses"]                                                    # the derived crosses and seats are IN the row
     cap = CAPS["prose"]["ops"]
     srv2, w2 = started(toy, tmp_path / "b", "toy/ro")
@@ -578,7 +578,7 @@ def test_the_i2_025_stretch_is_refused_unstable_with_no_swap_offered(tmp_path):
     w = lweaver(srv, "p/ro", "r1")
     assert "アメリカを「青」" in w.call("read_sentence", sid=143)["text"]
     r = w.call("weave_span", sid=143, tier="WORD", **{"from": "アメリカ", "to": "青"})
-    assert r["ok"] and r["text"] == "アメリカを青" and r["wv"] == "weave_span.v2"
+    assert r["ok"] and r["text"] == "アメリカを青" and r["wv"] == "weave_span.v3"
     rd_ = w.call("read")
     assert rd_["text"] == "アメリカを青"
     ref = rd_["refusals"]
@@ -670,12 +670,12 @@ def test_a_weave_span_row_names_its_rule_version_and_a_model_may_name_it_too(toy
     srv, w = started(toy, tmp_path)
     r = span(w, 0, 1, 2)
     r2 = w.call("weave_span", sid=0, tier="WORD", wv="weave_span.v1", **{"from": 1, "to": 2})
-    assert r["ok"] and r2["ok"] and r["wv"] == WEAVE_SPAN_WV == "weave_span.v2" and r2["wv"] == "weave_span.v1"
+    assert r["ok"] and r2["ok"] and r["wv"] == WEAVE_SPAN_WV == "weave_span.v3" and r2["wv"] == "weave_span.v1"
     rs = [x for x in rows(tmp_path / "runs" / "r1") if x["op"] == "weave_span"]
-    assert [x["args"]["wv"] for x in rs] == ["weave_span.v2", "weave_span.v1"] and {k: v for k, v in rs[0]["args"].items() if k != "wv"} == {k: v for k, v in rs[1]["args"].items() if k != "wv"}
+    assert [x["args"]["wv"] for x in rs] == ["weave_span.v3", "weave_span.v1"] and {k: v for k, v in rs[0]["args"].items() if k != "wv"} == {k: v for k, v in rs[1]["args"].items() if k != "wv"}
     # a refused weave_span is stamped too (the stamp is on the row, whatever the result)
     refused(span(w, 9999, 0, 1), "unknown_sid")
-    assert rows(tmp_path / "runs" / "r1")[-1]["args"]["wv"] == "weave_span.v2"
+    assert rows(tmp_path / "runs" / "r1")[-1]["args"]["wv"] == "weave_span.v3"
     assert lg.verify(tmp_path / "runs" / "r1", corpus_path=toy)["status"] == "OK"       # v1 and v2 rows replay in one ledger
 
 
@@ -688,12 +688,12 @@ def test_a_later_rule_never_turns_an_old_ledger_into_replay_differs(toy, tmp_pat
     assert lg.verify(d, corpus_path=toy)["status"] == "OK"
     old = (d / "ops.jsonl").read_bytes()
 
-    def v3(run, sid, tier, f, t):                                                  # a different rule: it would give another result for every call
+    def v4(run, sid, tier, f, t):                                                  # a different rule: it would give another result for every call
         raise opsmod.Refuse("bad_span", {"reason": "v3 says no"})
-    monkeypatch.setitem(opsmod.WEAVE_SPAN_RULES, "weave_span.v3", v3)
-    monkeypatch.setattr(opsmod, "WEAVE_SPAN_WV", "weave_span.v3")                  # the current rule moved on
+    monkeypatch.setitem(opsmod.WEAVE_SPAN_RULES, "weave_span.v4", v4)
+    monkeypatch.setattr(opsmod, "WEAVE_SPAN_WV", "weave_span.v4")                  # the current rule moved on
     rep = lg.replay(d, toy)
-    assert rep.status == "IDENTICAL" and b"".join(rep.lines) == old               # the old rows name v2 and are replayed by v2
+    assert rep.status == "IDENTICAL" and b"".join(rep.lines) == old               # the old rows name v3 and are replayed by v3
     assert lg.verify(d, corpus_path=toy)["status"] == "OK"
     # a NEW run is stamped with the new rule and replays by it
     srv2 = srv_of(toy, tmp_path / "new")
@@ -701,7 +701,7 @@ def test_a_later_rule_never_turns_an_old_ledger_into_replay_differs(toy, tmp_pat
     w2.begin()
     r = span(w2, 0, 0, 2)
     assert r["refusal"] == "bad_span"
-    assert rows(tmp_path / "new" / "runs" / "n1")[-1]["args"]["wv"] == "weave_span.v3"
+    assert rows(tmp_path / "new" / "runs" / "n1")[-1]["args"]["wv"] == "weave_span.v4"
     assert lg.verify(tmp_path / "new" / "runs" / "n1", corpus_path=toy)["status"] == "OK"
     # a row that names a rule this code does not have is not obeyed
     refused(w2.call("weave_span", sid=0, tier="WORD", wv="weave_span.v7", **{"from": 0, "to": 1}), "bad_args")
@@ -712,7 +712,7 @@ def test_a_later_rule_never_turns_an_old_ledger_into_replay_differs(toy, tmp_pat
 # ---------------------------------------------------------------------------------------------------------------
 def echo_started(toy, tmp_path, text, notes=None, mode="record_only"):
     t = {"task_id": "toy/q", "text": text, "lang": "prose", "mode": mode, "tiers": ["RUN", "WORD", "CHAR"], "corpus": toy}
-    srv = LoomServer([t], str(tmp_path / "runs"), (), **({} if notes is None else {"notes": notes}))
+    srv = LoomServer([t], str(tmp_path / "runs"), (), **dict({"evidence": "off"}, **({} if notes is None else {"notes": notes})))
     w = ScriptedWeaver(srv, "toy/q", "test-weaver", "r1")
     assert w.begin()["ok"]
     return srv, w
@@ -1023,7 +1023,7 @@ def test_the_door_maps_first_and_last_to_the_stored_from_and_to_and_refuses_both
     srv, w = started(toy, tmp_path)
     r = w.call("weave_span", sid=0, tier="WORD", first="日本", last="首都")
     assert r["ok"] and r["text"] == "日本の首都" and (r["from"], r["to"]) == (1, 2)
-    assert [x for x in rows(tmp_path / "runs" / "r1") if x["op"] == "weave_span"][0]["args"] == {"from": "日本", "sid": 0, "tier": "WORD", "to": "首都", "wv": "weave_span.v2"}
+    assert [x for x in rows(tmp_path / "runs" / "r1") if x["op"] == "weave_span"][0]["args"] == {"from": "日本", "sid": 0, "tier": "WORD", "to": "首都", "wv": "weave_span.v3"}
     n = len(rows(tmp_path / "runs" / "r1"))
     for kw in ({"first": "日本", "from": "日本", "last": "首都"}, {"first": "日本", "last": "首都", "to": "首都"}):
         refused(w.call("weave_span", sid=0, tier="WORD", **kw), "bad_args")
@@ -1037,7 +1037,7 @@ def test_the_door_maps_first_and_last_to_the_stored_from_and_to_and_refuses_both
 def test_the_mcp_tools_are_listed_with_first_and_last_and_a_call_goes_through(toy, tmp_path):
     bank = tmp_path / "bank.jsonl"
     bank.write_text("".join(json.dumps(t) + "\n" for t in toy_tasks(toy)), encoding="utf-8")
-    m = lm.build(str(bank), str(tmp_path / "runs"))
+    m = lm.build(str(bank), str(tmp_path / "runs"), evidence="off")
     tools = {t.name: t for t in asyncio.run(m.list_tools())}
     assert list(tools) == list(MODEL_OPS) and len(tools) == 20 and "weave_sentence" not in tools
     t = tools["weave_span"]
@@ -1057,7 +1057,7 @@ def test_the_mcp_tools_are_listed_with_first_and_last_and_a_call_goes_through(to
         return json.loads(content[0].text)
     out = asyncio.run(call("weave_span", {"run_id": rid, "sid": 0, "tier": "WORD", "first": "日本", "last": "首都"}))
     assert out["ok"] and out["text"] == "日本の首都" and rows(tmp_path / "runs" / rid)[-1]["op"] == "weave_span"
-    assert rows(tmp_path / "runs" / rid)[-1]["args"] == {"from": "日本", "sid": 0, "tier": "WORD", "to": "首都", "wv": "weave_span.v2"}
+    assert rows(tmp_path / "runs" / rid)[-1]["args"] == {"from": "日本", "sid": 0, "tier": "WORD", "to": "首都", "wv": "weave_span.v3"}
     out = asyncio.run(call("drop", {"run_id": rid, "cid": "c1"}))
     assert out["ok"] and [u["surface"] for u in out["removed"]] == ["首都", "日本"]
     with pytest.raises(Exception):
@@ -1067,7 +1067,7 @@ def test_the_mcp_tools_are_listed_with_first_and_last_and_a_call_goes_through(to
 def test_the_api_driver_offers_the_tools_runs_a_span_weave_and_counts_usage(toy, tmp_path):
     bank = tmp_path / "bank.jsonl"
     bank.write_text("".join(json.dumps(t) + "\n" for t in toy_tasks(toy)), encoding="utf-8")
-    m = lm.build(str(bank), str(tmp_path / "runs"))
+    m = lm.build(str(bank), str(tmp_path / "runs"), evidence="off")
     tools = drv.api_tools(asyncio.run(m.list_tools()))
     names = [t["name"] for t in tools]
     assert "weave_span" in names and "drop" in names and "weave_sentence" not in names and "begin" not in names and names[-1] == "done" and len(names) == 20
@@ -1090,7 +1090,7 @@ def test_the_api_driver_offers_the_tools_runs_a_span_weave_and_counts_usage(toy,
     assert res.to_obj()["usage"] == {"calls": 2, "input_tokens": 200, "output_tokens": 14, "cache_read_input_tokens": 0, "cache_creation_input_tokens": 0}
     assert rows(tmp_path / "runs" / rid)[-1]["result"]["text"] == "日本の首都"
     ws_row = [r for r in rows(tmp_path / "runs" / rid) if r["op"] == "weave_span"][0]
-    assert ws_row["args"] == {"from": "日本", "sid": 0, "tier": "WORD", "to": "首都", "wv": "weave_span.v2"}       # the ledger stores from / to (L-LOOM-145)
+    assert ws_row["args"] == {"from": "日本", "sid": 0, "tier": "WORD", "to": "首都", "wv": "weave_span.v3"}       # the ledger stores from / to (L-LOOM-145)
     assert drv.MAX_TURNS["prose"] == 160
 
 
@@ -1105,9 +1105,10 @@ def test_the_agent_files_name_the_tools_and_only_the_constructed_prompt_says_to_
         assert "without quotation marks" in body
         assert "WORD FOR WORD" in body
         assert "NEVER weave a word that appears in the question" in body and "SHORTEST span that answers" in body      # L-LOOM-147
-        assert "1975 + 年" in body and "no swap is offered for it" in body and "do not rearrange the quoted words" in body   # one-unit examples; L-LOOM-146
-    assert 'add(run_id, text, kind="constructed")' in ca and "does NOT mean give up" in ca and "Abstaining is for questions the corpus cannot answer" in ca
-    assert "YOUR OWN words" in ca
+        assert "1820 + 年" in body and "no swap is offered for it" in body and "do not rearrange the quoted words" in body   # one-unit examples; L-LOOM-146
+        assert "1975" not in body and "Use `add` and `seat` by hand" not in body and "build the answer by hand" not in body and "How to weave by hand" not in body and "`begin` returned" in body       # LOOM-evidence (L-LOOM-189): no hand-building advice
+    assert 'add(run_id, text, kind="constructed")' in ca and "constructed_unit" in ca and "YOUR OWN words" in ca            # the mode exists, and the prompt says the gate refuses its units
+    assert "does NOT mean give up" not in ca
     # record_only stays strict: no instruction to add constructed words, no 'instead as constructed'
     assert "YOUR OWN words" not in ro and "does NOT mean give up" not in ro and "constructed_forbidden" in ro and "abstain; do not approximate" in ro
 

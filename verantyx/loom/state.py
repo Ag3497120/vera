@@ -138,7 +138,7 @@ class Unit:
 # ------------------------------------------------------------------------------------------------------------
 class LoomCross:
     """geometry.Cross + {cid, tier, lang, topic, depth, linked}.  Cells: uid | foundation token | None."""
-    __slots__ = ("cid", "tier", "lang", "L", "depth", "topic", "linked", "centre", "arms", "span")
+    __slots__ = ("cid", "tier", "lang", "L", "depth", "topic", "linked", "centre", "arms", "span", "quote")
 
     def __init__(self, cid: str, tier: str, lang: str, L: int, depth: int = 0) -> None:
         self.cid = cid
@@ -151,6 +151,8 @@ class LoomCross:
         self.centre: Optional[str] = None
         self.span: Optional[int] = None                    # LOOM-span (L-LOOM-146): the sid of the corpus sentence this cross quotes, while it is still exactly what
         #                                                    `weave_span.v2` made (any seat / topic change clears it).  NOT in to_obj: it is derived by replay, never hashed.
+        self.quote: Optional[Tuple[int, int, str, int, int]] = None      # LOOM-evidence (L-LOOM-183): (w, sid, tier, i0, i1) of the `weave_span.v3` that made this cross, while nobody has
+        #                                                    changed it (cleared exactly where `span` is).  NOT in to_obj: derived by replay from the row, never hashed.
         self.arms: List[List[Optional[str]]] = [[None] * L for _ in AXES]
         if lang == PROSE:
             for ai, p in enumerate(SPEC.arms):
@@ -281,12 +283,14 @@ class LoomState:
     # -- seating primitives (callers validate first) ---------------------------------------------------------------
     def place(self, cross: LoomCross, arm: Optional[str], k: Optional[int], uid: str) -> None:
         cross.span = None                                  # no longer exactly the quoted stretch (weave_span.v2 sets it again AFTER it has placed)
+        cross.quote = None
         cross.put(arm, k, uid)
         self.units[uid].seated = [cross.cid, fmt_seat(arm, k)]
 
     def lift(self, cross: LoomCross, arm: Optional[str], k: Optional[int]) -> str:
         uid = cross.get(arm, k)
         cross.span = None
+        cross.quote = None
         cross.put(arm, k, None)
         self.units[uid].seated = None
         return uid
@@ -294,6 +298,7 @@ class LoomState:
     def swap(self, cross: LoomCross, a: Tuple[Optional[str], Optional[int]], b: Tuple[Optional[str], Optional[int]]) -> None:
         va, vb = cross.get(*a), cross.get(*b)
         cross.span = None
+        cross.quote = None
         cross.put(a[0], a[1], vb)
         cross.put(b[0], b[1], va)
         if vb is not None:

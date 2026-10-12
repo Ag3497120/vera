@@ -316,6 +316,22 @@ def _is_close(r: dict) -> bool:
     return r["op"] in ("emit", "abstain") and r["result"].get("ok") is True and r["result"].get("status") in ("emitted", "abstained")
 
 
+EVIDENCE_CONTENT_CODES = ("answer_not_word_aligned", "question_form_open", "question_has_no_subject", "no_subject", "wrong_arm", "no_slot_head", "not_copular",
+                          "answer_holds_question_unit")      # the codes that say the SENTENCE does not answer the question (the others, not_quoted / constructed_unit, say how the thread was built)
+
+
+def evidence_codes_of(res: dict) -> set:
+    """The set {"no_evidence:<code>", ...} a refused `emit` result (detail.refusals) carries; {"no_evidence"} if it carries none (an old shape)."""
+    out = set()
+    for ref in (res.get("detail") or {}).get("refusals") or []:
+        if ref.get("type") == "no_evidence":
+            for w in ref.get("weaves") or []:
+                out.update("no_evidence:" + c for c in w.get("codes") or [])
+            for c in ref.get("crosses") or []:
+                out.add("no_evidence:" + c.get("code", "?"))
+    return out or {"no_evidence"}
+
+
 def layer_report(rows: Sequence[dict], control: Optional[str] = None) -> dict:
     """THE STOP LAYER of one run, and the counts it rests on, from the ledger rows alone (nothing is passed in out of band except whether the task is a control).
 
@@ -338,6 +354,9 @@ def layer_report(rows: Sequence[dict], control: Optional[str] = None) -> dict:
     counts = {"lookups": 0, "empty_lookups": 0, "read_sentences": 0, "reads": 0, "weave_attempts": 0, "emit_attempts": 0, "refusals": 0}
     refusals: Dict[str, int] = {}
     struct: Dict[str, int] = {}
+    read_refusals: Dict[str, int] = {}      # LOOM-evidence: the refusals a DRY RUN (`read`, an ok call) showed the model before the run closed (not a refused op, so not in `struct`)
+    read_codes: Dict[str, int] = {}
+    codes: Dict[str, int] = {}              # LOOM-evidence (L-LOOM-188): the structural refusals BY CODE: a `no_evidence` emit refusal contributes one entry per distinct code it carries
     for r in upto:
         op = r["op"]
         res = r["result"]
@@ -349,6 +368,14 @@ def layer_report(rows: Sequence[dict], control: Optional[str] = None) -> dict:
             counts["read_sentences"] += 1
         elif op == "read":
             counts["reads"] += 1
+            if res.get("ok") is True:
+                for ref in res.get("refusals") or []:
+                    if ref.get("type") == "empty_thread":
+                        continue
+                    read_refusals[ref.get("type", "?")] = read_refusals.get(ref.get("type", "?"), 0) + 1
+                    if ref.get("type") == "no_evidence":
+                        for c in evidence_codes_of({"detail": {"refusals": [ref]}}):
+                            read_codes[c] = read_codes.get(c, 0) + 1
         elif op == "emit":
             counts["emit_attempts"] += 1
         elif op in WEAVE_ATTEMPT_OPS:
@@ -359,9 +386,13 @@ def layer_report(rows: Sequence[dict], control: Optional[str] = None) -> dict:
             refusals[typ] = refusals.get(typ, 0) + 1
             if op in BUILD_OPS and typ not in _NON_RECOVERABLE:
                 struct[typ] = struct.get(typ, 0) + 1
+                seen = evidence_codes_of(res) if typ == "no_evidence" else {typ}
+                for c in seen:
+                    codes[c] = codes.get(c, 0) + 1
     attempts = counts["weave_attempts"] + counts["emit_attempts"]
     out: Dict[str, Any] = dict(counts, build_attempts=attempts, refusal_types=dict(sorted(refusals.items())),
-                               struct_refusals=dict(sorted(struct.items())), struct_refusals_total=sum(struct.values()))
+                               struct_refusals=dict(sorted(struct.items())), struct_refusals_total=sum(struct.values()), struct_codes=dict(sorted(codes.items())),
+                               read_refusals=dict(sorted(read_refusals.items())), read_codes=dict(sorted(read_codes.items())))
     emit = next((r for r in model if r["op"] == "emit" and r["result"].get("ok") is True and r["result"].get("status") == "emitted"), None)
     abstain = next((r for r in model if r["op"] == "abstain" and r["result"].get("ok") is True and r["result"].get("status") == "abstained"), None)
     detail = ""

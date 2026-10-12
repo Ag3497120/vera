@@ -1,0 +1,168 @@
+RUNS bank2: 20 loom runs; ledgers verified and replayed IDENTICAL: 20
+RUNS unans: 50 loom runs; ledgers verified and replayed IDENTICAL: 50
+RUNS adv: 70 loom runs; ledgers verified and replayed IDENTICAL: 70
+
+TABLE E1  bank2 tasks (10 x record_only / constructed_allowed): what each run ended with, now (e) and in h55d (d, no gate).  exact = hit_exact (the headline).
+| task | mode | status e | exact e | text e | stop layer e | emit refusals e (struct codes) | ops e | input tokens e | status d | exact d | text d |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| I2-001 | record_only | abstained_wrong | - | (none) | L_meta | {} | 8 | 51,491 | hit | Y | ハッシュ表 |
+| I2-001 | constructed_allowed | abstained_wrong | - | (none) | L_other | {} | 19 | 146,361 | miss | - | 連想配列 |
+| I2-008 | record_only | abstained_wrong | - | (none) | L_struct | {"bad_args": 1} | 16 | 122,308 | miss | - | マルクス |
+| I2-008 | constructed_allowed | abstained_wrong | - | (none) | L_other | {} | 11 | 61,886 | miss | - | マルクス |
+| I2-013 | record_only | hit | Y | 県社 | L_none | {} | 10 | 51,688 | hit | Y | 県社 |
+| I2-013 | constructed_allowed | hit | Y | 県社 | L_none | {} | 7 | 41,038 | hit | Y | 県社 |
+| I2-025 | record_only | abstained_wrong | - | (none) | L_other | {} | 12 | 102,608 | hit | Y | 青 |
+| I2-025 | constructed_allowed | hit | Y | 青 | L_none | {} | 7 | 45,636 | hit | Y | 青 |
+| I2-034 | record_only | hit | Y | 1981年 | L_none | {} | 8 | 61,982 | hit | Y | 1981年 |
+| I2-034 | constructed_allowed | hit | Y | 1981年 | L_none | {} | 7 | 43,145 | hit | Y | 1981年 |
+| I2-041 | record_only | abstained_wrong | - | (none) | L_struct | {"no_evidence:no_slot_head": 1, "span_inexpressible": 1} | 20 | 155,888 | hit | Y | キューバの太陽 |
+| I2-041 | constructed_allowed | abstained_wrong | - | (none) | L_struct | {"span_inexpressible": 1, "tier_mix": 1, "unit_not_in_sentence": 1} | 22 | 185,402 | hit | Y | キューバの太陽 |
+| R2-I013 | record_only | abstained_wrong | - | (none) | L_other | {} | 23 | 158,954 | hit | Y | ネパール |
+| R2-I013 | constructed_allowed | abstained_wrong | - | (none) | L_meta | {} | 19 | 149,908 | hit | Y | ネパール |
+| UF-001 | record_only | abstained_correct | - | (none) | L_meta | {} | 19 | 99,897 | abstained_correct | - | (none) |
+| UF-001 | constructed_allowed | abstained_correct | - | (none) | L_meta | {} | 22 | 87,588 | abstained_correct | - | (none) |
+| UF-015 | record_only | abstained_correct | - | (none) | L_meta | {} | 14 | 55,242 | abstained_correct | - | (none) |
+| UF-015 | constructed_allowed | abstained_correct | - | (none) | L_meta | {} | 20 | 103,581 | abstained_correct | - | (none) |
+| R2-U003 | record_only | abstained_correct | - | (none) | L_meta | {} | 36 | 249,339 | abstained_correct | - | (none) |
+| R2-U003 | constructed_allowed | abstained_correct | - | (none) | L_meta | {} | 33 | 195,277 | abstained_correct | - | (none) |
+
+TABLE E2  bank2 answerable (7): exact hits, and where the other answerable runs ended
+| mode | exact e /7 | exact d /7 | emitted not exact e | abstained e | no output e | emitted at all e |
+|---|---|---|---|---|---|---|
+| record_only | 2/7 | 6/7 | 0 | 5 | 0 | 2 |
+| constructed_allowed | 3/7 | 5/7 | 0 | 4 | 0 | 3 |
+
+P-EV-3 rows: the four unreachable items (I2-001, I2-008, I2-041, R2-I013), 8 runs: exact hits 0; runs with >= 1 no_evidence refusal 1; emitted a text 0 (none); abstained 8
+the three reachable items (I2-013, I2-025, I2-034), 6 runs: exact hits 5; emitted 5; abstained 1; no_evidence refusals met 0
+
+TABLE E3  The stop layer of each loom mode on each set, and the structural refusals BY CODE (a run is counted once per code; `no_evidence:<code>` is a code of the evidence gate)
+| set | mode | n | L_meta | L_struct | L_none_marked | L_none | L_other | runs with a structural refusal | emitted a text (on unans: confident wrong) |
+|---|---|---|---|---|---|---|---|---|---|
+| bank2 tasks (10) | record_only | 10 | 4 | 2 | 0 | 2 | 2 | 2 | 2 |
+| bank2 tasks (10) | constructed_allowed | 10 | 4 | 1 | 0 | 3 | 2 | 1 | 3 |
+| bank2 unans (25) | record_only | 25 | 24 | 0 | 0 | 0 | 1 | 0 | 0 |
+| bank2 unans (25) | constructed_allowed | 25 | 24 | 0 | 0 | 0 | 1 | 0 | 0 |
+| bank4 (35) | record_only | 35 | 31 | 1 | 0 | 0 | 3 | 1 | 0 |
+| bank4 (35) | constructed_allowed | 35 | 32 | 1 | 0 | 0 | 2 | 1 | 0 |
+
+| set | mode | structural codes (runs) |
+|---|---|---|
+| bank2 tasks | record_only | {"bad_args": 1, "no_evidence:no_slot_head": 1, "span_inexpressible": 1} |
+| bank2 tasks | constructed_allowed | {"span_inexpressible": 1, "tier_mix": 1, "unit_not_in_sentence": 1} |
+| bank2 unans | record_only | {} |
+| bank2 unans | constructed_allowed | {} |
+| bank4 | record_only | {"unit_not_in_sentence": 1} |
+| bank4 | constructed_allowed | {"unit_not_in_sentence": 1} |
+
+| set | mode | codes shown by a dry-run `read` (an ok call that lists what emit would refuse; runs) |
+|---|---|---|
+| bank2 tasks | record_only | {"no_evidence:no_slot_head": 3, "no_evidence:wrong_arm": 1} |
+| bank2 tasks | constructed_allowed | {"no_evidence:no_slot_head": 3} |
+| bank2 unans | record_only | {} |
+| bank2 unans | constructed_allowed | {} |
+| bank4 | record_only | {"no_evidence:no_slot_head": 2, "no_evidence:no_subject": 1} |
+| bank4 | constructed_allowed | {"no_evidence:no_slot_head": 2} |
+
+TABLE E3b  Every loom run of the three sets that made a build attempt (weave / seat / add / emit): the layer, the refusals by code, the outcome
+| run | layer | weave | read | emit | refused-op codes | codes shown by a dry-run `read` | outcome |
+|---|---|---|---|---|---|---|---|
+| bank2.I2-001.constructed_allowed | L_other (abstain_after_build) | 1 | 1 | 0 | {} | {"no_evidence:no_slot_head": 1} | abstained_wrong |
+| bank2.I2-041.record_only | L_struct (then_abstained) | 8 | 1 | 1 | {"no_evidence:no_slot_head": 1, "span_inexpressible": 1} | {"no_evidence:no_slot_head": 1} | abstained_wrong |
+| bank2.I2-041.constructed_allowed | L_struct (then_abstained) | 9 | 1 | 0 | {"span_inexpressible": 1, "tier_mix": 1, "unit_not_in_sentence": 1} | {"no_evidence:no_slot_head": 1} | abstained_wrong |
+| bank2.I2-008.record_only | L_struct (then_abstained) | 2 | 1 | 0 | {"bad_args": 1} | {"no_evidence:no_slot_head": 1} | abstained_wrong |
+| bank2.I2-008.constructed_allowed | L_other (abstain_after_build) | 1 | 1 | 0 | {} | {"no_evidence:no_slot_head": 1} | abstained_wrong |
+| bank2.I2-034.record_only | L_none | 1 | 1 | 1 | {} | {} | hit: 1981年 |
+| bank2.I2-034.constructed_allowed | L_none | 1 | 1 | 1 | {} | {} | hit: 1981年 |
+| bank2.I2-013.record_only | L_none | 1 | 1 | 1 | {} | {} | hit: 県社 |
+| bank2.I2-013.constructed_allowed | L_none | 1 | 1 | 1 | {} | {} | hit: 県社 |
+| bank2.R2-I013.record_only | L_other (abstain_after_build) | 1 | 1 | 0 | {} | {"no_evidence:no_slot_head": 1, "no_evidence:wrong_arm": 1} | abstained_wrong |
+| bank2.I2-025.record_only | L_other (abstain_after_build) | 4 | 0 | 0 | {} | {} | abstained_wrong |
+| bank2.I2-025.constructed_allowed | L_none | 1 | 1 | 1 | {} | {} | hit: 青 |
+| adv.ADV-001.record_only | L_struct (then_abstained) | 2 | 2 | 0 | {"unit_not_in_sentence": 1} | {"no_evidence:no_slot_head": 1} | abstained_correct |
+| adv.ADV-001.constructed_allowed | L_struct (then_abstained) | 2 | 1 | 0 | {"unit_not_in_sentence": 1} | {"no_evidence:no_slot_head": 1} | abstained_correct |
+| adv.ADV-010.record_only | L_other (abstain_after_build) | 1 | 1 | 0 | {} | {"no_evidence:no_slot_head": 1, "no_evidence:no_subject": 1} | abstained_correct |
+| adv.ADV-013.constructed_allowed | L_other (abstain_after_build) | 2 | 1 | 0 | {} | {"no_evidence:no_slot_head": 1} | abstained_correct |
+| adv.ADV-021.record_only | L_other (abstain_after_build) | 1 | 0 | 0 | {} | {} | abstained_correct |
+
+TABLE E4  bank2 unanswerable (25): emitted texts, route (2), and every run that tried to emit
+| mode | n | emitted | L_meta (route 2) | L_struct | runs that attempted an emit | of those ended L_struct with no_evidence |
+|---|---|---|---|---|---|---|
+| record_only | 25 | 0 | 24 | 0 | 0 | 0 |
+| constructed_allowed | 25 | 0 | 24 | 0 | 0 | 0 |
+
+TABLE E5  bank4 (35): confident wrong, the trap value, content-level structural refusals (no_evidence with a content code), by kind.  `strict` = a refused op (emit) ended the run (L_struct); `told` = the content-level code was shown in a refused emit OR in a dry-run `read`, and the run ended without a text
+| mode | n | confident wrong | = trap | mentions trap | content-level refusals, strict (L_struct) | content-level code told (emit or read), no text | L_meta | L_other |
+|---|---|---|---|---|---|---|---|---|
+| record_only | 35 | 0 | 0 | 0 | 0 | 2 | 31 | 3 |
+| constructed_allowed | 35 | 0 | 0 | 0 | 0 | 2 | 32 | 2 |
+
+| kind | n items | record_only wrong / content code told | constructed_allowed wrong / content code told |
+|---|---|---|---|
+| near-fact | 8 | 0 / 2 | 0 / 1 |
+| same-slot | 10 | 0 / 0 | 0 / 1 |
+| numeric | 8 | 0 / 0 | 0 / 0 |
+| entity-swap | 9 | 0 / 0 | 0 / 0 |
+
+TABLE E5b  ADV-001 and ADV-010 (the two items whose trap was emitted before, results_unans_adv): then and now
+| item | mode | before (d: no gate) | now (e) | now: structural codes |
+|---|---|---|---|---|
+| ADV-001 | record_only | L_none: 2002年メジャーデビュー | L_struct abstained_correct | {"read:no_evidence:no_slot_head": 1, "unit_not_in_sentence": 1} |
+| ADV-001 | constructed_allowed | L_none: 2002年 | L_struct abstained_correct | {"read:no_evidence:no_slot_head": 1, "unit_not_in_sentence": 1} |
+| ADV-010 | record_only | L_none: シンガポール | L_other abstained_correct | {"read:no_evidence:no_slot_head": 1, "read:no_evidence:no_subject": 1} |
+| ADV-010 | constructed_allowed | L_none: シンガポール | L_meta abstained_correct | {} |
+
+TABLE E6  THE TWO ROUTES over the 60 unanswerable items (bank2 25 + bank4 35) x 2 loom modes = 120 runs.  Route (1) = the structure refused and the run ended without a text (L_struct);  route (2) = the model re-checked and abstained with 0 build attempts (L_meta);  wrong = a text went out.
+| measurement | mode | runs | wrong (text emitted) | route (1) strict: L_struct | of which content-level no_evidence | of which no_evidence by construction only | of which other types | route (1) via dry-run read: content-level code shown, then abstained (L_other/L_meta) | route (2) L_meta | L_other | structure fired and the run emitted anyway |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| before (no gate: results_unans + results_unans_adv) | record_only | 60 | 2 | 0 | 0 | 0 | 0 | 0 | 57 | 1 | 1 |
+| before (no gate: results_unans + results_unans_adv) | constructed_allowed | 60 | 2 | 2 | 0 | 0 | 2 | 0 | 55 | 1 | 0 |
+| now (e: evidence.v1) | record_only | 60 | 0 | 1 | 0 | 0 | 1 | 1 | 55 | 4 | 0 |
+| now (e: evidence.v1) | constructed_allowed | 60 | 0 | 1 | 0 | 0 | 1 | 1 | 56 | 3 | 0 |
+now, both modes together: 120 runs; wrong 0; route (1) strict (a refused op ended the run) 2 (1.7%); route (1) as TOLD (a content-level no_evidence code in a refused emit or a dry-run `read`, no text) 4 (3.3%); route (2) L_meta 111 (92.5%); neither (L_other without a told code, or other) 5
+
+controls (stored, NOT re-run) over the same 60 items: lookup control wrong 1, no-tools control wrong 22
+
+TABLE E7  Tokens (API-reported usage, testimony) and time of the e runs, and of the d runs they are compared with
+| set | mode | n | input tokens | output tokens | API calls | input per run (median) | input per run (max) | wall per run (median s) | ops per run (median) |
+|---|---|---|---|---|---|---|---|---|---|
+| e bank2 tasks | record_only | 10 | 1,109,397 | 10,130 | 109 | 101,252 | 249,339 | 11.5 | 15 |
+| e bank2 tasks | constructed_allowed | 10 | 1,059,822 | 9,099 | 103 | 95,584 | 195,277 | 10.5 | 19 |
+| e bank2 unans | record_only | 25 | 5,556,879 | 42,746 | 476 | 193,473 | 861,728 | 19 | 28 |
+| e bank2 unans | constructed_allowed | 25 | 5,903,626 | 42,341 | 469 | 149,067 | 789,016 | 15 | 23 |
+| e bank4 | record_only | 35 | 5,385,010 | 50,353 | 472 | 110,180 | 417,753 | 13 | 19 |
+| e bank4 | constructed_allowed | 35 | 4,842,203 | 46,968 | 432 | 120,202 | 551,961 | 13 | 21 |
+| before bank2 tasks | record_only | 10 | 1,222,567 | 11,298 | 103 | 57,031 | 510,802 | 6.5 | 10 |
+| before bank2 tasks | constructed_allowed | 10 | 1,014,186 | 9,322 | 89 | 44,946 | 334,013 | 5 | 7.5 |
+| before bank2 unans | record_only | 25 | 6,150,161 | 52,270 | 463 | 175,271 | 787,570 | 16 | 27 |
+| before bank2 unans | constructed_allowed | 25 | 5,113,972 | 47,936 | 413 | 174,574 | 487,045 | 17 | 30 |
+| before bank4 | record_only | 35 | 6,216,556 | 63,402 | 500 | 113,371 | 749,210 | 15 | 23 |
+| before bank4 | constructed_allowed | 35 | 11,169,093 | 87,174 | 737 | 158,224 | 1,218,086 | 17 | 30 |
+answerable loom runs (14 e, 14 d): median input tokens e 82,295, d 43,795, ratio 1.88
+driver endings (e): adv constructed_allowed closed 34; adv constructed_allowed done 1; adv record_only closed 34; adv record_only done 1; bank2 constructed_allowed closed 10; bank2 record_only closed 10; unans constructed_allowed closed 24; unans constructed_allowed done 1; unans record_only closed 24; unans record_only done 1
+
+TABLE E9  The gate on the FINAL THREAD of every new loom run that left a non-empty thread (what an emit would have quoted; offline, both subject scopes).  A thread passes only if every weave passes.
+| set | run | final weaves (sentence: stretch) | gate (a) clause_or_title | gate (b) clause | emitted? |
+|---|---|---|---|---|---|
+| bank2 | I2-001.constructed_allowed | 1:ハッシュ表 | refused ハッシュ表:no_slot_head | refused ハッシュ表:no_subject+no_slot_head | no |
+| bank2 | I2-041.record_only | 348:キューバの太陽 | refused キューバの太陽:no_slot_head | refused キューバの太陽:no_slot_head | no |
+| bank2 | I2-041.constructed_allowed | 348:太陽」という意味; 348:キューバの太陽; 348:キューバの太陽 | refused 太陽」という意味:no_slot_head+answer_holds_question_unit; キューバの太陽:no_slot_head; キューバの太陽:no_slot_head | refused 太陽」という意味:no_slot_head+answer_holds_question_unit; キューバの太陽:no_slot_head; キューバの太陽:no_slot_head | no |
+| bank2 | I2-008.record_only | 23:カール・マルクス | refused カール・マルクス:no_slot_head | refused カール・マルクス:no_subject+no_slot_head | no |
+| bank2 | I2-008.constructed_allowed | 23:カール・マルクス | refused カール・マルクス:no_slot_head | refused カール・マルクス:no_subject+no_slot_head | no |
+| bank2 | I2-034.record_only | 292:1981年 | PASS | refused 1981年:no_subject | YES: 1981年 |
+| bank2 | I2-034.constructed_allowed | 292:1981年 | PASS | refused 1981年:no_subject | YES: 1981年 |
+| bank2 | I2-013.record_only | 86:県社 | PASS | refused 県社:no_subject | YES: 県社 |
+| bank2 | I2-013.constructed_allowed | 86:県社 | PASS | refused 県社:no_subject | YES: 県社 |
+| bank2 | R2-I013.record_only | 152:ネパール | refused ネパール:wrong_arm+no_slot_head | refused ネパール:no_subject+wrong_arm+no_slot_head | no |
+| bank2 | I2-025.record_only | 143:青; 143:アメリカを「青; 143:青; 143:アメリカを「青 | refused アメリカを「青:no_subject+answer_holds_question_unit; アメリカを「青:no_subject+answer_holds_question_unit | refused 青:no_subject; アメリカを「青:no_subject+answer_holds_question_unit; 青:no_subject; アメリカを「青:no_subject+answer_holds_question_unit | no |
+| bank2 | I2-025.constructed_allowed | 143:青 | PASS | refused 青:no_subject | YES: 青 |
+| adv | ADV-001.record_only | 123:2002年 | refused 2002年:no_slot_head | refused 2002年:no_subject+no_slot_head | no |
+| adv | ADV-001.constructed_allowed | 123:2002年 | refused 2002年:no_slot_head | refused 2002年:no_subject+no_slot_head | no |
+| adv | ADV-010.record_only | 579:シンガポール | refused シンガポール:no_subject+no_slot_head | refused シンガポール:no_subject+no_slot_head | no |
+| adv | ADV-021.record_only | 521:177.23 m（メートル | refused 177.23 m（メートル:no_slot_head | refused 177.23 m（メートル:no_subject+no_slot_head | no |
+runs with a non-empty final thread: 16; the thread passes the gate under (a): 5, under (b): 0; unanswerable-item threads that pass under (a): 0
+
+TABLE E8  The reach over the whole bank2 (offline, from the corpus: 69 answerable items; an item is reachable when some gold occurrence passes the gate)
+clause_or_title (the owner's answer, OP-EV-1 a): 12 of 69 reachable: I2-003, I2-004, I2-005, I2-006, I2-013, I2-014, I2-018, I2-025, I2-034, R2-I005, R2-I007, R2-I017
+clause only (OP-EV-1 b): 0 of 69 reachable
+the 57 unreachable items, by the codes of their best occurrence (an item can carry several): {"no_slot_head": 32, "no_subject": 21, "wrong_arm": 11, "answer_holds_question_unit": 8, "question_form_open": 8, "gold_not_word_aligned": 5, "not_copular": 3, "question_has_no_subject": 2}
+the 7 loom answerable tasks: I2-001 UNREACHABLE (predicate, no_slot_head); I2-008 UNREACHABLE (predicate, no_slot_head); I2-013 reachable; I2-025 reachable; I2-034 reachable; I2-041 UNREACHABLE (predicate, no_slot_head); R2-I013 UNREACHABLE (slot, wrong_arm+no_slot_head)
