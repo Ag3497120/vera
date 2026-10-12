@@ -31,6 +31,7 @@ from verantyx.loom import notes as notelib
 from verantyx.loom.ledger import SandboxError
 from verantyx.loom import paths
 from verantyx.loom.corpus import Corpus
+from verantyx.loom.memguard import holds_memory_rows
 from verantyx.loom.ops import MODEL_OPS, Run, check_task_against_index, normalize_task, refusal
 from verantyx.loom.read import DEFAULT_STABILITY, STABILITY_MODES
 from verantyx.loom.state import CAPS_PROFILES, CURRENT_CAPS
@@ -159,9 +160,12 @@ class LoomServer:
             return refusal("bad_model_id", {"reason": "1 to 64 printable characters, no secret-shaped text"})
         task = self.tasks[task_id]
         try:
-            corpus = Corpus.load(self.sandbox.read_bytes(task["corpus"]))
+            data = self.sandbox.read_bytes(task["corpus"])
         except SandboxError:
             return refusal("path_outside_sandbox", {})
+        if holds_memory_rows(data):                           # MEM-a (L-MEM-02): a base corpus never holds the model's memory (a `mem:` row)
+            return refusal("memory_in_base", {})
+        corpus = Corpus.load(data)
         rid = run_id if run_id is not None else self._derive_run_id(task_id, model, corpus.corpus_sha)
         try:
             rdir = self.sandbox.run_dir(rid)

@@ -43,6 +43,7 @@ from verantyx.loom import fixture as fx
 from verantyx.loom import notes as notelib
 from verantyx.loom import paths
 from verantyx.loom.corpus import Corpus
+from verantyx.loom.memguard import holds_memory_rows
 from verantyx.loom.ops import Run, normalize_task
 from verantyx.loom.state import caps_profile_of
 
@@ -366,6 +367,9 @@ def replay(run_dir, corpus_path: Optional[str] = None, loader: Loader = default_
         data, err = _resolve_corpus(loader, meta, recorded_header.get("corpus_sha"))
     if data is None:
         out.status, out.mismatch = "INPUTS", err
+        return out
+    if holds_memory_rows(data):                                  # MEM-a (L-MEM-02): a loom run's corpus never holds a `mem:` row
+        out.status, out.mismatch = "INPUTS", "memory_in_base"
         return out
     corpus = Corpus.load(data)
     index = None
