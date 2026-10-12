@@ -87,12 +87,12 @@ class _Entry:
 class LoomServer:
     def __init__(self, tasks: Iterable[dict], runs_dir, allow_roots: Iterable = (), stability: str = DEFAULT_STABILITY,
                  nonce: Optional[str] = None, max_begins: int = MAX_BEGINS, caps: str = CURRENT_CAPS, notes: str = notelib.NOTES_VERSION,
-                 evidence: str = "v1", subject_scope: str = evl.DEFAULT_SCOPE) -> None:
+                 evidence: str = "v2", subject_scope: str = evl.DEFAULT_SCOPE) -> None:
         """`notes`: the notes definitions NEW runs of this server get (notes.v1 = CONFLICT / UNANCHORED / NO_RECORD, notes.v2 = + QUESTION_ECHO; L-LOOM-147).  It is
         written into each run's `begin` row (v1 writes nothing, as before).  `caps`: the cap profile NEW runs of this server get (state.CAPS_PROFILES: "v1" = the first measurement's numbers, "v2" = the current
         ones; L-LOOM-122).  It is written into each run's `begin` row; a run reloaded from its ledger keeps the profile it was recorded with.
-        `evidence`: the reader's evidence gate NEW prose runs of this server get (LOOM-evidence, L-LOOM-170): "v1" (evidence.v1, the default) or "off" (no gate: the demo and the
-        hand-built tests).  `subject_scope`: OP-EV-1, "clause_or_title" (owner: yes, the article title may stand in for the subject) or "clause".  Both are written into each
+        `evidence`: the reader's evidence gate NEW prose runs of this server get (LOOM-evidence, L-LOOM-170): "v2" (evidence.v2, the default: the reviewed rules), "v1" (evidence.v1, the first build) or
+        "off" (no gate: the demo and the hand-built tests).  `subject_scope`: OP-EV-1, "clause_or_title" (owner: yes, the article title may stand in for the subject) or "clause".  Both are written into each
         prose run's `begin` row; a run reloaded from its ledger keeps the profile it was recorded with."""
         if stability not in STABILITY_MODES:
             raise ValueError("stability must be one of %s" % (STABILITY_MODES,))
@@ -102,11 +102,11 @@ class LoomServer:
         if notes not in notelib.NOTES_VERSIONS:
             raise ValueError("notes must be one of %s" % (notelib.NOTES_VERSIONS,))
         self.notes_profile = notes
-        if evidence not in ("v1", "off"):
-            raise ValueError("evidence must be 'v1' or 'off'")
+        if evidence not in ("v1", "v2", "off"):
+            raise ValueError("evidence must be 'v1', 'v2' or 'off'")
         if subject_scope not in evl.SUBJECT_SCOPES:
             raise ValueError("subject_scope must be one of %s" % (evl.SUBJECT_SCOPES,))
-        self.evidence_profile: Optional[tuple] = None if evidence == "off" else (evl.EVIDENCE_V1, subject_scope)
+        self.evidence_profile: Optional[tuple] = None if evidence == "off" else (evl.PROFILE_NAMES[evidence], subject_scope)
         self.stability = stability
         self.nonce = nonce                                  # L-LOOM-45: None = reproducible ids (scripted runs); the MCP door passes os.urandom
         self.max_begins = max_begins
@@ -129,7 +129,7 @@ class LoomServer:
 
     @classmethod
     def from_file(cls, tasks_path, runs_dir, allow_roots: Iterable = (), stability: str = DEFAULT_STABILITY, caps: str = CURRENT_CAPS,
-                  evidence: str = "v1", subject_scope: str = evl.DEFAULT_SCOPE) -> "LoomServer":
+                  evidence: str = "v2", subject_scope: str = evl.DEFAULT_SCOPE) -> "LoomServer":
         """The task bank is read once, here, before any tool call (an operator file: it holds no gold)."""
         rows = [json.loads(ln) for ln in Path(tasks_path).read_text(encoding="utf-8").splitlines() if ln.strip()]
         return cls(rows, runs_dir, allow_roots, stability, caps=caps, evidence=evidence, subject_scope=subject_scope)
@@ -332,7 +332,7 @@ def append_outside_row(run_dir, actor: str, op: str, args: dict, loader: lg.Load
 # the FastMCP wrapper
 # ------------------------------------------------------------------------------------------------------------
 def build(tasks_path, runs_dir, allow_roots: Iterable = (), stability: str = DEFAULT_STABILITY, nonce: Optional[str] = None, caps: str = CURRENT_CAPS,
-          evidence: str = "v1", subject_scope: str = evl.DEFAULT_SCOPE):
+          evidence: str = "v2", subject_scope: str = evl.DEFAULT_SCOPE):
     """The FastMCP server `vera-loom` WITHOUT running it (None if the SDK is missing).  `mcp.loom_server` is the LoomServer behind it."""
     try:
         from mcp.server.fastmcp import FastMCP
@@ -464,7 +464,7 @@ def build(tasks_path, runs_dir, allow_roots: Iterable = (), stability: str = DEF
     return mcp
 
 
-def serve(tasks_path, runs_dir, allow_roots: Iterable = (), stability: str = DEFAULT_STABILITY, evidence: str = "v1", subject_scope: str = evl.DEFAULT_SCOPE) -> int:
+def serve(tasks_path, runs_dir, allow_roots: Iterable = (), stability: str = DEFAULT_STABILITY, evidence: str = "v2", subject_scope: str = evl.DEFAULT_SCOPE) -> int:
     mcp = build(tasks_path, runs_dir, allow_roots, stability, evidence=evidence, subject_scope=subject_scope)
     if mcp is None:
         return 2

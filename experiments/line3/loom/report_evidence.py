@@ -369,10 +369,185 @@ def tables() -> str:
     return "\n".join(out) + "\n"
 
 
+# ------------------------------------------------------------------------------------------------------------------------------------------------
+# REPORT_v2tables.md (the review of 2026-10-12): route (1) as THE FINAL THREAD re-judged offline by the gate; the v2 rule on the same ledgers; the offline sweep
+# ------------------------------------------------------------------------------------------------------------------------------------------------
+V1, V2 = "evidence.v1", "evidence.v2"
+SETS = (("bank2", "runs_h55e", "results_h55e", "tasks_bank2.jsonl"), ("unans", "runs_unans_e", "results_unans_e", "tasks_unans.jsonl"),
+        ("adv", "runs_unans_adv_e", "results_unans_adv_e", "tasks_unans_adv.jsonl"))
+
+
+def _final(r: dict) -> dict:
+    return r["L"].get("final_thread") or {}
+
+
+def _fails(r: dict, ver: str) -> bool:
+    """The run emitted no text and the thread it ended with, replayed offline, fails the gate under rule version `ver`."""
+    v = (_final(r).get("verdicts") or {}).get(ver) or {}
+    return r["text"] is None and bool(v.get("fails")) and _final(r).get("held", 0) > 0
+
+
+def _how(r: dict) -> str:
+    """strict = a refused `emit` carried no_evidence; shown = a dry-run `read` listed no_evidence (no refused emit); unseen = the model never asked."""
+    if any(k.startswith("no_evidence") for k in codes_of(r)):
+        return "strict"
+    if any(k.startswith("no_evidence") for k in read_codes_of(r)) or "no_evidence" in r["L"].get("read_refusals", {}):
+        return "shown"
+    return "unseen"
+
+
+def route_table(rr: List[dict], title: str) -> List[str]:
+    out = ["", "**%s**" % title, "",
+           "| mode | rule | runs | wrong text | route (1) final-thread | = strict (refused emit) | + shown (dry-run read) | + unseen | content-level among route (1) | route (2) L_meta | "
+           "no text, not route (1) or (2) | (old) L_struct | (old) told |",
+           "|---|---|---|---|---|---|---|---|---|---|---|---|---|"]
+    for m in LOOM:
+        xs = [r for r in rr if r["mode"] == m]
+        for ver in (V1, V2):
+            r1 = [r for r in xs if _fails(r, ver)]
+            how = Counter(_how(r) for r in r1)
+            cl = [r for r in r1 if any(c.split(":", 1)[-1] in CONTENT for c in ((_final(r)["verdicts"][ver] or {}).get("codes") or []))]
+            rest = [r for r in xs if r["text"] is None and r["layer"] != "L_meta" and not _fails(r, ver)]
+            out.append("| %s | %s | %d | %d | %d | %d | %d | %d | %d | %d | %d | %d | %d |" % (
+                m, ver, len(xs), sum(1 for r in xs if r["text"] is not None), len(r1), how["strict"], how["shown"], how["unseen"], len(cl),
+                sum(1 for r in xs if r["layer"] == "L_meta"), len(rest), sum(1 for r in xs if r["layer"] == "L_struct"), sum(1 for r in xs if r["text"] is None and spoke_content(r))))
+    return out
+
+
+def route_runs(rr: List[dict]) -> List[str]:
+    out = ["", "| run | rule v1 (recorded): final thread | rule v2: final thread | how the model met it | outcome |", "|---|---|---|---|---|"]
+    for r in rr:
+        if r["text"] is None and (_fails(r, V1) or _fails(r, V2)):
+            v = _final(r)["verdicts"]
+            out.append("| %s.%s | %s | %s | %s | %s |" % (r["base"], r["mode"], ("FAILS " + ",".join(v[V1]["codes"])) if v[V1]["fails"] else "passes",
+                                                         ("FAILS " + ",".join(v[V2]["codes"])) if v[V2]["fails"] else "passes", _how(r), r["layer"] + " / " + r["status"]))
+    return out
+
+
+def answerable_table(rr: List[dict]) -> List[str]:
+    out = ["", "| run | status | text | final thread under v1 (recorded) | final thread under v2 |", "|---|---|---|---|---|"]
+    for r in rr:
+        if r["base"] in ANSWERABLE:
+            v = (_final(r).get("verdicts") or {})
+            f = lambda ver: "(no thread)" if not _final(r).get("held") else ("FAILS " + ",".join(v[ver]["codes"]) if v[ver]["fails"] else "passes")
+            out.append("| %s.%s | %s | %s | %s | %s |" % (r["base"], r["mode"], r["status"], r["text"] or "(none)", f(V1), f(V2)))
+    return out
+
+
+def offline_sweep() -> dict:
+    """The corpus probe of the review: every stretch of at most 10 WORD units of every sentence, per question, judged under the title scope.  (reach list, wrong-admitting
+    list, only-wrong list) over the 69 answerable bank2 items under v1 and v2; the number of unanswerable items (of 60) with any passing stretch under v2."""
+    import unicodedata
+    from verantyx.loom import evidence as ev
+    from verantyx.loom.corpus import Corpus
+    corpus = Corpus.load(open(os.path.join(ROOT, "experiments/line3/bank2/data/fulllead_sents.jsonl"), "rb").read())
+    norm = lambda x: "".join(ch for ch in unicodedata.normalize("NFKC", x).casefold() if not ch.isspace() and ch != "\u30fb")
+    ans = [r for r in csv.DictReader(open(os.path.join(ROOT, "experiments/line3/bank2/bank2.tsv"), encoding="utf-8"), delimiter="\t") if r["kind"] == "intra2" and r["corpus"] == "fulllead"]
+
+    def stretches(q, versions):
+        qu = ev.question_units(q)
+        res = {v: [] for v in versions}
+        for sid in range(corpus.n_sentences):
+            v_ = ev.view_of(corpus, sid)
+            n = len(v_.units)
+            for i in range(n):
+                for j in range(i, min(n, i + 10)):
+                    for ver in versions:
+                        jq = ev.judge_quote(corpus, qu, ev.SCOPE_TITLE, sid, "WORD", i, j, ver)
+                        if not jq["codes"]:
+                            res[ver].append(jq["answer"])
+        return res
+    out = {V1: {"reach": [], "wrong": [], "only_wrong": []}, V2: {"reach": [], "wrong": [], "only_wrong": []}}
+    for r in ans:
+        golds = [norm(g) for g in r["gold"].split("|")]
+        res = stretches(r["question"], (V1, V2))
+        for ver in (V1, V2):
+            right = any(norm(t) in golds for t in res[ver])
+            wrong = any(norm(t) not in golds for t in res[ver])
+            if right:
+                out[ver]["reach"].append(r["#id"])
+            if wrong:
+                out[ver]["wrong"].append(r["#id"])
+                if not right:
+                    out[ver]["only_wrong"].append(r["#id"])
+    tasks = {}
+    for f in ("tasks_bank2.jsonl", "tasks_unans.jsonl", "tasks_unans_adv.jsonl"):
+        for ln in open(d(f), encoding="utf-8"):
+            if ln.strip():
+                x = json.loads(ln)
+                if not x.get("control"):
+                    tasks.setdefault(x.get("bank2_id") or x["base"], x["text"])
+    unans_ids = [r["#id"] for r in csv.DictReader(open(os.path.join(ROOT, "experiments/line3/bank2/bank2.tsv"), encoding="utf-8"), delimiter="\t")
+                 if r["kind"] == "unans" and r["corpus"] == "fulllead"] + [b for b in tasks if b.startswith("ADV-")]
+    bases = [b for b in tasks if b not in ANSWERABLE and (b in unans_ids or b.startswith(("UF-", "R2-U")))]
+    out["unans_admitted_v2"] = [b for b in bases if stretches(tasks[b], (V2,))[V2]]
+    out["unans_n"] = len(bases)
+    return out
+
+
+def v2tables(with_sweep: bool = True) -> Dict[str, str]:
+    new, _old = collect_all()
+    bad = [(k, r["base"], r["mode"]) for k in new for r in loom_only(new[k]) if not r["verified"]]
+    head = ["# LOOM-evidence, after the review (2026-10-12): the tables recomputed with the rule evidence.v2 and the third definition of route (1)", "",
+            "Route (1) = the run emitted NO text and the thread it ENDED with, replayed offline from its ledger (`score.final_thread_gate`: `ledger.replay`, then `evidence.gate`), "
+            "fails the gate.  Sub-columns: **strict** = a refused `emit` carried `no_evidence`; **shown** = no refused emit, but a dry-run `read` listed `no_evidence`; **unseen** = the "
+            "model never asked.  The 140 ledgers carry evidence.v1 and replay IDENTICAL under it; the same final threads are also judged under evidence.v2 (column `rule`).  Ledgers "
+            "verified and replayed IDENTICAL: %s.  (old) = the two earlier counts of REPORT_TABLES.txt: L_struct (a refused op ended the run) and told (a content code shown by a "
+            "refused emit or a dry-run read)." % ("all %d" % sum(len(loom_only(new[k])) for k in new) if not bad else "NOT ALL: %s" % bad), ""]
+    res: Dict[str, List[str]] = {}
+    for key, runs, results, _tasks in SETS:
+        res[results] = list(head)
+    # bank2 tasks
+    b2 = loom_only(new["bank2"])
+    res["results_h55e"] += ["## The 10 bank2 tasks (7 answerable, 3 unanswerable)", ""] + answerable_table(b2)
+    res["results_h55e"] += ["", "Under v2 only 県社 (I2-013, both modes) would still be emitted: 青 (no slot head: 何色と ends the question) and 1981年 (設立 is outside the clause) are refused."]
+    res["results_h55e"] += route_table([r for r in b2 if r["base"] in BANK2_UNANS], "the 3 unanswerable bank2 tasks (UF-001, UF-015, R2-U003), recorded rule v1 and v2")
+    res["results_h55e"] += route_runs([r for r in b2 if r["base"] in BANK2_UNANS])
+    # the unanswerable sets
+    un, adv = loom_only(new["unans"]), loom_only(new["adv"])
+    res["results_unans_e"] += ["## The 25 unanswerable bank2 items x 2 loom modes", ""] + route_table(un, "bank2 unans (25 items, 50 runs)") + route_runs(un)
+    res["results_unans_adv_e"] += ["## The 35 bank4 items x 2 loom modes", ""] + route_table(adv, "bank4 (35 items, 70 runs)") + route_runs(adv)
+    both = un + adv
+    comb = ["", "## The two sets together: 60 unanswerable items x 2 loom modes = 120 runs", ""] + route_table(both, "bank2 unans + bank4 (60 items, 120 runs)")
+    tot = lambda ver: [r for r in both if _fails(r, ver)]
+    for ver in (V1, V2):
+        t = tot(ver)
+        c = Counter(_how(r) for r in t)
+        comb.append("")
+        comb.append("rule %s, both modes: %d of %d runs (%.1f%%) are route (1) by the final thread: strict %d, shown %d, unseen %d; route (2) L_meta %d (%.1f%%); wrong text %d." % (
+            ver, len(t), len(both), 100.0 * len(t) / len(both), c["strict"], c["shown"], c["unseen"], sum(1 for r in both if r["layer"] == "L_meta"),
+            100.0 * sum(1 for r in both if r["layer"] == "L_meta") / len(both), sum(1 for r in both if r["text"] is not None)))
+    res["results_unans_adv_e"] += comb
+    res["results_unans_e"] += ["", "(the two sets together, 120 runs, are tabled in results_unans_adv_e/REPORT_v2tables.md)"]
+    if with_sweep:
+        sw = offline_sweep()
+        sweep = ["", "## Offline: the corpus probe (every stretch of at most 10 WORD units of every sentence, title scope; 69 answerable bank2 items, 60 unanswerable)", "",
+                 "| rule | answerable items reachable (some passing stretch is a gold alternative) | items admitting at least one WRONG stretch | of which admit ONLY wrong stretches |", "|---|---|---|---|"]
+        for ver in (V1, V2):
+            sweep.append("| %s | %d / 69 | %d / 69 | %d |" % (ver, len(sw[ver]["reach"]), len(sw[ver]["wrong"]), len(sw[ver]["only_wrong"])))
+        sweep += ["", "reachable under v1: %s" % ", ".join(sw[V1]["reach"]), "reachable under v2: %s" % ", ".join(sw[V2]["reach"]),
+                  "wrong-admitting under v1: %s" % ", ".join(sw[V1]["wrong"]), "wrong-admitting under v2: %s" % (", ".join(sw[V2]["wrong"]) or "none"),
+                  "unanswerable items with any passing stretch under v2: %d of %d%s" % (len(sw["unans_admitted_v2"]), sw["unans_n"], (" (" + ", ".join(sw["unans_admitted_v2"]) + ")") if sw["unans_admitted_v2"] else "")]
+        res["results_h55e"] += sweep
+    return {k: "\n".join(v) + "\n" for k, v in res.items()}
+
+
 def main(argv: Optional[List[str]] = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--write", action="store_true", help="write results_h55e/REPORT_TABLES.txt (never overwritten)")
+    ap.add_argument("--v2tables", action="store_true", help="print the v2 / final-thread tables (REPORT_v2tables.md of the three result folders)")
+    ap.add_argument("--v2write", action="store_true", help="with --v2tables: write results_*/REPORT_v2tables.md (never overwritten)")
+    ap.add_argument("--no-sweep", action="store_true", help="with --v2tables: skip the offline corpus probe (about 4 minutes)")
     a = ap.parse_args(argv)
+    if a.v2tables:
+        texts = v2tables(not a.no_sweep)
+        for k, v in texts.items():
+            print("=" * 30, k)
+            print(v)
+            if a.v2write:
+                with open(d(k, "REPORT_v2tables.md"), "x", encoding="utf-8") as f:
+                    f.write(v)
+        return 0
     text = tables()
     print(text)
     if a.write:

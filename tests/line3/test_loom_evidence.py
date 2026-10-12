@@ -67,6 +67,13 @@ def texts():
     return out
 
 
+def jq1(*args, **kw):
+    """`evidence.judge_quote` under evidence.v1 (the rules of the first build): the pins of T-EV-01..15 below are v1's, and the 140 stored measurement ledgers carry v1.
+    The tests of evidence.v2 (T-EV-16..) call `ev.judge_quote` itself (its default is the latest version)."""
+    kw.setdefault("version", ev.EVIDENCE_V1)
+    return ev.judge_quote(*args, **kw)
+
+
 def bank2_rows():
     return list(csv.DictReader(open(BANK2_TSV, encoding="utf-8"), delimiter="\t"))
 
@@ -311,7 +318,7 @@ def test_t_ev_05_the_bank4_trap_values_are_refused(corpus):
             aligned[r["kind"]] += 1
         for sid, i0, i1 in occ:
             for scope in SCOPES:
-                j = ev.judge_quote(corpus, qu, scope, sid, "WORD", i0, i1)
+                j = jq1(corpus, qu, scope, sid, "WORD", i0, i1)
                 assert j["codes"], (r["#id"], r["trap"], sid, scope)
     assert aligned == {"near-fact": 8, "same-slot": 8, "numeric": 8, "entity-swap": 9} and sum(aligned.values()) == 33
 
@@ -326,7 +333,7 @@ def test_t_ev_06_the_reach_over_the_whole_bank2_is_12_of_69_and_0_without_the_ti
         qu = ev.question_units(r["question"])
         occ = [o for alt in r["gold"].split("|") for o in occurrences(corpus, alt)]
         for scope in SCOPES:
-            if any(not ev.judge_quote(corpus, qu, scope, sid, "WORD", i0, i1)["codes"] for sid, i0, i1 in occ):
+            if any(not jq1(corpus, qu, scope, sid, "WORD", i0, i1)["codes"] for sid, i0, i1 in occ):
                 reach[scope].append(r["#id"])
     assert n == 69
     assert reach[ev.SCOPE_TITLE] == ["I2-003", "I2-004", "I2-005", "I2-006", "I2-013", "I2-014", "I2-018", "I2-025", "I2-034", "R2-I005", "R2-I007", "R2-I017"]
@@ -346,7 +353,7 @@ def test_t_ev_06_no_single_unit_of_the_corpus_passes_for_an_unanswerable_questio
             for sid in range(corpus.n_sentences):
                 v = ev.view_of(corpus, sid)
                 for k in range(len(v.units)):
-                    if not ev.judge_quote(corpus, qu, scope, sid, "WORD", k, k)["codes"]:
+                    if not jq1(corpus, qu, scope, sid, "WORD", k, k)["codes"]:
                         hit.append((v.units[k], sid))
             if b in bases:
                 assert hit == [], (scope, b, hit[:3])
@@ -563,32 +570,32 @@ def test_t_ev_11_the_answer_holds_no_word_of_the_question(corpus, texts):
     qu = ev.question_units(texts["I2-013"])
     sid = 86
     v = ev.view_of(corpus, sid)
-    j = ev.judge_quote(corpus, qu, ev.SCOPE_TITLE, sid, "WORD", 0, 3)              # 旧社格は県社
+    j = jq1(corpus, qu, ev.SCOPE_TITLE, sid, "WORD", 0, 3)              # 旧社格は県社
     assert "answer_holds_question_unit" in j["codes"] and j["messages"][-1].startswith("the answer contains 「")
-    j = ev.judge_quote(corpus, ev.question_units(texts["I2-025"]), ev.SCOPE_TITLE, 143, "WORD", 2, 3)             # アメリカを青
+    j = jq1(corpus, ev.question_units(texts["I2-025"]), ev.SCOPE_TITLE, 143, "WORD", 2, 3)             # アメリカを青
     assert j["codes"][-1] == "answer_holds_question_unit" and j["messages"][-1] == "the answer contains 「アメリカ」, a word of the question; quote only what answers"
     sid_hash = occurrences(corpus, "ハッシュ表")[0][0]
-    j = ev.judge_quote(corpus, ev.question_units(texts["I2-001"]), ev.SCOPE_TITLE, sid_hash, "WORD", *occurrences(corpus, "ハッシュ表")[0][1:])
+    j = jq1(corpus, ev.question_units(texts["I2-001"]), ev.SCOPE_TITLE, sid_hash, "WORD", *occurrences(corpus, "ハッシュ表")[0][1:])
     assert "answer_holds_question_unit" not in j["codes"] and j["codes"] == ["no_slot_head"]          # ハッシュ is not a unit of the question: ハッシュテーブル is
-    j = ev.judge_quote(corpus, ev.question_units(texts["I2-034"]), ev.SCOPE_TITLE, 292, "WORD", 0, 1)
+    j = jq1(corpus, ev.question_units(texts["I2-034"]), ev.SCOPE_TITLE, 292, "WORD", 0, 1)
     assert j["codes"] == []
 
 
 def test_t_ev_11_a_stretch_that_is_not_on_word_boundaries_and_an_open_question(corpus, texts):
-    j = ev.judge_quote(corpus, ev.question_units(texts["I2-034"]), ev.SCOPE_TITLE, 292, "RUN", 0, 0)             # the RUN unit 「1981年に」 holds a particle
+    j = jq1(corpus, ev.question_units(texts["I2-034"]), ev.SCOPE_TITLE, 292, "RUN", 0, 0)             # the RUN unit 「1981年に」 holds a particle
     assert j["codes"] == ["answer_not_word_aligned"] and j["messages"][0].startswith("the stretch 「1981年に」 does not begin and end on words of sentence 292")
-    j = ev.judge_quote(corpus, ev.question_units(texts["ADV-028"]), ev.SCOPE_TITLE, 292, "WORD", 0, 1)
+    j = jq1(corpus, ev.question_units(texts["ADV-028"]), ev.SCOPE_TITLE, 292, "WORD", 0, 1)
     assert "question_form_open" in j["codes"] and "has no particle after its question word" in j["messages"][0]
-    j = ev.judge_quote(corpus, ev.question_units("イギリスをどう塗りましたか"), ev.SCOPE_TITLE, 143, "WORD", 3, 3)
+    j = jq1(corpus, ev.question_units("イギリスをどう塗りましたか"), ev.SCOPE_TITLE, 143, "WORD", 3, 3)
     assert "question_form_open" in j["codes"]
 
 
 def test_t_ev_11_the_coordinators_example_needs_both_subject_words(corpus):
     qu = ev.question_units("レッド計画ではイギリスを何色としていましたか")
     assert qu.subject == ("レッド計画", "イギリス") and qu.particle == "と"
-    j = ev.judge_quote(corpus, qu, ev.SCOPE_TITLE, 143, "WORD", 3, 3)               # 青: アメリカを「青」と -- イギリス is not in its clause
+    j = jq1(corpus, qu, ev.SCOPE_TITLE, 143, "WORD", 3, 3)               # 青: アメリカを「青」と -- イギリス is not in its clause
     assert j["codes"] == ["no_subject"] and "「イギリス」" in j["messages"][0] and "「アメリカを「青」と色分け」" in j["messages"][0]
-    j = ev.judge_quote(corpus, qu, ev.SCOPE_TITLE, 143, "WORD", 1, 1)               # 赤: the subject is there but 、 follows
+    j = jq1(corpus, qu, ev.SCOPE_TITLE, 143, "WORD", 1, 1)               # 赤: the subject is there but 、 follows
     assert j["codes"] == ["wrong_arm"]
 
 
@@ -606,10 +613,11 @@ for f in ("tasks_bank2.jsonl", "tasks_unans.jsonl", "tasks_unans_adv.jsonl"):
         r = json.loads(ln)
         out.append(ev.question_units(r["text"]).to_obj("clause_or_title"))
 qu = ev.question_units("千葉神社の旧社格は何ですか")
-for sid, a0, a1 in ((86, 0, 3), (86, 2, 3), (292, 0, 1), (143, 3, 3), (579, 19, 19)):
+for sid, a0, a1 in ((86, 0, 3), (86, 2, 3), (86, 2, 2), (292, 0, 1), (292, 1, 1), (143, 3, 3), (579, 19, 19), (254, 0, 5), (188, 2, 10)):
     for scope in ("clause_or_title", "clause"):
-        out.append(ev.judge_quote(corpus, ev.question_units("サンゴーカメラは何年に設立されましたか"), scope, sid, "WORD", a0, a1))
-        out.append(ev.judge_quote(corpus, qu, scope, sid, "WORD", a0, a1))
+        for ver in ("evidence.v1", "evidence.v2"):
+            out.append(ev.judge_quote(corpus, ev.question_units("サンゴーカメラは何年に設立されましたか"), scope, sid, "WORD", a0, a1, ver))
+            out.append(ev.judge_quote(corpus, qu, scope, sid, "WORD", a0, a1, ver))
 print(hashlib.sha256(json.dumps(out, sort_keys=True, ensure_ascii=False).encode()).hexdigest())
 '''
 
@@ -635,12 +643,12 @@ def test_t_ev_13_the_slot_arm_is_an_attachment_of_the_readers_records(corpus):
         end = v.spans[a1][1]
         atts = [a for a in recs.attachments if a.sid == sid and a.tier == "WORD" and a.end == end]
         assert [a.particle for a in atts] == [p]
-    j = ev.judge_quote(corpus, ev.question_units("サンゴーカメラは何年に設立されましたか"), ev.SCOPE_TITLE, 292, "WORD", 0, 1)
+    j = jq1(corpus, ev.question_units("サンゴーカメラは何年に設立されましたか"), ev.SCOPE_TITLE, 292, "WORD", 0, 1)
     assert j["evidence"]["slot"]["particle"] == "に"
     # a wrong arm is also what the records say: 青 is followed by と, so the question that asks for the word before を refuses it
     atts = [a for a in recs.attachments if a.sid == 143 and a.tier == "WORD" and a.unit == "青"]
     assert [a.particle for a in atts] == ["と"]
-    j = ev.judge_quote(corpus, ev.question_units("レッド計画ではアメリカを何を作りましたか"), ev.SCOPE_TITLE, 143, "WORD", 3, 3)
+    j = jq1(corpus, ev.question_units("レッド計画ではアメリカを何を作りましたか"), ev.SCOPE_TITLE, 143, "WORD", 3, 3)
     assert "wrong_arm" in j["codes"]
 
 
@@ -670,21 +678,23 @@ def test_t_ev_15_code_tasks_have_no_profile_and_a_bare_run_has_none(tmp_path):
 
 def test_t_ev_15_the_server_defaults_are_the_gate_with_the_title(tmp_path, tasks):
     srv = LoomServer(list(tasks.values()), str(tmp_path / "runs"))
-    assert srv.evidence_profile == ("evidence.v1", "clause_or_title")
+    assert srv.evidence_profile == ("evidence.v2", "clause_or_title")                       # evidence.v2 since the review (L-LOOM-191..)
+    assert LoomServer(list(tasks.values()), str(tmp_path / "r1"), evidence="v1").evidence_profile == ("evidence.v1", "clause_or_title")
     with pytest.raises(ValueError):
-        LoomServer(list(tasks.values()), str(tmp_path / "r2"), evidence="v2")
+        LoomServer(list(tasks.values()), str(tmp_path / "r2"), evidence="v3")
     with pytest.raises(ValueError):
         LoomServer(list(tasks.values()), str(tmp_path / "r3"), subject_scope="title")
 
 
-def test_t_ev_15_the_examples_in_the_agent_prompts_pass_the_gate(tmp_path):
+@pytest.mark.parametrize("ver", ["v1", "v2"])
+def test_t_ev_15_the_examples_in_the_agent_prompts_pass_the_gate(tmp_path, ver):
     sents = ["青葉堂の旧称は松風庵。", "青葉堂は1820年に建てられた。", "青葉堂は緑町にある。"]
     p = tmp_path / "toy.jsonl"
     p.write_text("".join(json.dumps({"sha": hashlib.sha256(s.encode()).hexdigest(), "title": "青葉堂", "sent": s, "source": "青葉堂#%d" % i}, ensure_ascii=False) + "\n"
                          for i, s in enumerate(sents)), encoding="utf-8")
     tks = [{"task_id": "t/%d" % i, "text": q, "lang": "prose", "mode": "record_only", "tiers": ["RUN", "WORD", "CHAR"], "corpus": str(p)}
            for i, q in enumerate(["青葉堂の旧称は何ですか", "青葉堂は何年に建てられましたか"])]
-    srv = LoomServer(tks, str(tmp_path / "runs"), evidence="v1", subject_scope="clause")             # the strictest scope: no title needed
+    srv = LoomServer(tks, str(tmp_path / "runs"), evidence=ver, subject_scope="clause")             # the strictest scope: no title needed
     srv.begin("t/0", "m", "e0")
     assert srv.call("weave_span", {"run_id": "e0", "sid": 0, "tier": "RUN", "first": "松風庵", "last": "松風庵"})["ok"]
     e = srv.call("emit", {"run_id": "e0"})
@@ -766,3 +776,327 @@ def test_run_bank_and_harness_flags_choose_the_gate(tmp_path):
     client, (rs, path, obj) = _api(tmp_path, H, "ADV-010", "record_only", script, "tasks_unans_adv.jsonl", evidence="off")
     assert rs.status == "answered_unans" and rs.text == "シンガポール"                      # evidence off = the gate of before: the trap value goes out
     assert "evidence_profile" not in rows(tmp_path / "runs" / "ADV-010.record_only.api")[0]["result"]
+
+
+# ===============================================================================================================
+# evidence.v2 (the review of 2026-10-12; L-LOOM-191..): T-EV-16..20
+# ===============================================================================================================
+V1, V2 = ev.EVIDENCE_V1, ev.EVIDENCE_V2
+REACH_V1 = ["I2-003", "I2-004", "I2-005", "I2-006", "I2-013", "I2-014", "I2-018", "I2-025", "I2-034", "R2-I005", "R2-I007", "R2-I017"]
+REACH_V2 = ["I2-003", "I2-004", "I2-005", "I2-006", "I2-013", "I2-014", "I2-018", "R2-I005", "R2-I007", "R2-I017"]     # I2-025 (no slot head) and I2-034 (設立 outside the clause) are lost
+
+
+def _norm(x):
+    import unicodedata
+    return "".join(ch for ch in unicodedata.normalize("NFKC", x).casefold() if not ch.isspace() and ch != "・")
+
+
+def _probe(corpus, q, sid, i0, i1, version):
+    """(answer, codes) of the stretch WORD units i0..i1 of sentence `sid` for the question text `q`, under the title scope."""
+    j = ev.judge_quote(corpus, ev.question_units(q), ev.SCOPE_TITLE, sid, "WORD", i0, i1, version)
+    return j["answer"], j["codes"]
+
+
+def _expect_word_units(corpus, sid, text):
+    v = ev.view_of(corpus, sid)
+    assert v.text == text, v.text
+    return v
+
+
+# ---- T-EV-16: F1, a predicate question with no subject word is refused (reach cost 0) ---------------------------------------------------------------
+def test_t_ev_16_a_predicate_question_with_no_subject_is_refused_in_v2_and_the_two_probes(corpus):
+    _expect_word_units(corpus, 399, "通称はPSE (ピー・エス・イー) 。")
+    q = "IEEE 488の通称は何ですか"                                       # the subject IEEE 488 comes out empty: the cut has Y = 通称 and no X
+    assert ev.question_units(q).form == "predicate" and ev.question_units(q).subject == ()
+    assert _probe(corpus, q, 399, 1, 1, V1) == ("PSE", [])              # v1: any 「通称は A」 anywhere passes -- パリ経済学校#1 answers a question about IEEE 488
+    assert _probe(corpus, q, 399, 1, 1, V2) == ("PSE", ["question_has_no_subject"])
+    j = ev.judge_quote(corpus, ev.question_units(q), ev.SCOPE_TITLE, 399, "WORD", 1, 1, V2)
+    assert j["messages"] == ["the question 「IEEE 488の通称は何ですか」 has no subject word, so a sentence cannot be tied to it"]
+    q = "駅番号は何ですか"                                               # JR-Y13 of 川原石駅 (the model's text was 「JRY13」: weave_span writes letters only)
+    assert ev.question_units(q).subject == ()
+    assert _probe(corpus, q, 19, 2, 4, V1) == ("JR-Y13", [])
+    assert _probe(corpus, q, 19, 2, 4, V2) == ("JR-Y13", ["question_has_no_subject"])
+    assert _probe(corpus, "川原石駅の駅番号は何ですか", 19, 2, 4, V2) == ("JR-Y13", [])          # with its subject the same quote passes
+
+
+def test_t_ev_16_the_two_probes_through_the_server_v1_emits_and_v2_refuses(tmp_path):
+    from loom_common import task as ltask
+    tks = [ltask("p/ieee", "record_only", text="IEEE 488の通称は何ですか"), ltask("p/eki", "record_only", text="駅番号は何ですか")]
+    for ver, ok in (("v1", True), ("v2", False)):
+        srv = LoomServer(tks, str(tmp_path / ("runs_" + ver)), (), evidence=ver)
+        srv.begin("p/ieee", "m", "a")
+        assert srv.call("weave_span", {"run_id": "a", "sid": 399, "tier": "WORD", "first": "PSE", "last": "PSE"})["ok"]
+        e = srv.call("emit", {"run_id": "a"})
+        assert e["ok"] is ok and (e["text"] == "PSE" if ok else e["refusal"] == "no_evidence")
+        srv.begin("p/eki", "m", "b")
+        assert srv.call("weave_span", {"run_id": "b", "sid": 19, "tier": "WORD", "first": "JR", "last": "13"})["ok"]
+        e = srv.call("emit", {"run_id": "b"})
+        assert e["ok"] is ok and (e["text"] == "JRY13" if ok else _refused_evidence(e)["weaves"][0]["codes"] == ["question_has_no_subject"])
+        assert lg.verify(tmp_path / ("runs_" + ver) / "b")["replay"]["status"] == "IDENTICAL"
+
+
+# ---- T-EV-17: F2, the answer is a whole word / phrase -----------------------------------------------------------------------------------------------
+def test_t_ev_17_pieces_of_a_word_are_refused_in_v2_and_were_admitted_in_v1(corpus):
+    probes = [("川原石駅の駅番号は何ですか", 19, 2, 2, "JR"), ("千葉神社の旧社格は何ですか", 86, 2, 2, "県"),
+              ("水戸東照宮は一般に何と呼ばれていますか", 122, 6, 6, "さん"), ("サンゴーカメラは何年に設立されましたか", 292, 1, 1, "年"),
+              ("中之嶽神社では日本武尊のほか、祭神は何柱ですか", 190, 1, 1, "日本"), ("数河高原はどの気候区分に属しますか", 254, 5, 5, "気候")]
+    for q, sid, i0, i1, piece in probes:
+        a1, c1 = _probe(corpus, q, sid, i0, i1, V1)
+        a2, c2 = _probe(corpus, q, sid, i0, i1, V2)
+        assert a1 == a2 == piece
+        assert "answer_glued" not in c1 and "answer_glued" in c2, (piece, c1, c2)
+    j = ev.judge_quote(corpus, ev.question_units("中之嶽神社では日本武尊のほか、祭神は何柱ですか"), ev.SCOPE_TITLE, 190, "WORD", 1, 1, V2)
+    assert j["messages"][0] == "the stretch 「日本」 of sentence 190 is glued to a neighbouring word (it is a piece of 「日本武尊外16柱」); quote the whole word, or the whole phrase, that answers"
+
+
+def test_t_ev_17_the_whole_word_or_phrase_still_passes(corpus):
+    assert _probe(corpus, "千葉神社の旧社格は何ですか", 86, 2, 3, V2) == ("県社", [])
+    assert _probe(corpus, "水戸東照宮は一般に何と呼ばれていますか", 122, 5, 6, V2) == ("権現さん", [])
+    assert _probe(corpus, "数河高原はどの気候区分に属しますか", 254, 2, 5, V2) == ("日本海側気候", [])
+    assert _probe(corpus, "川原石駅の駅番号は何ですか", 19, 2, 4, V2) == ("JR-Y13", [])                  # 「-」 joins the pieces of one token; it is not a break
+    assert _probe(corpus, "ソル・クバーノというカクテル名はどういう意味ですか", 348, 5, 6, V2)[1][:1] != ["answer_crosses_break"]       # キューバの太陽: the genitive の is inside a phrase
+
+
+def test_t_ev_17_an_answer_does_not_cross_a_break_or_a_particle(corpus):
+    q = "数河高原はどの気候区分に属しますか"                              # 「気象条件は日本海側気候」 (the review's probe): the topic particle は is inside the stretch
+    assert _probe(corpus, q, 254, 0, 5, V1) == ("気象条件は日本海側気候", [])
+    a, c = _probe(corpus, q, 254, 0, 5, V2)
+    assert c == ["answer_crosses_break"]
+    j = ev.judge_quote(corpus, ev.question_units(q), ev.SCOPE_TITLE, 254, "WORD", 0, 5, V2)
+    assert j["messages"] == ["the stretch 「気象条件は日本海側気候」 of sentence 254 crosses 「は」: an answer is one phrase, not a stretch over a comma, a bracket or a particle"]
+    q = "和歌山バスではサウスウェーブ号を何線と案内していますか"             # a multi-word answer across 「、」: it widened its own clause to both sides
+    a1, c1 = _probe(corpus, q, 188, 2, 10, V1)
+    assert a1 == "和歌山千葉線」、京成バス千葉イーストでは「和歌山線" and c1 == []
+    assert "answer_crosses_break" in _probe(corpus, q, 188, 2, 10, V2)[1]
+    a, c = _probe(corpus, "レッド計画ではアメリカを何色としていましたか", 142, 8, 13, V2)           # across 「、」 and 「（」
+    assert a == "合衆国が定めた、イギリス（大英帝国" and "answer_crosses_break" in c
+
+
+def test_t_ev_17_the_clause_reads_a_stack_of_particles_such_as_tomo_in_v2(corpus):
+    v = ev.view_of(corpus, 188)
+    assert v.gap(10) == "」とも" and not ev.connective("」とも") and ev.connective("」とも", True)
+    assert ev.clause_bounds(v, 9, 10) == (5, 10) and ev.clause_bounds(v, 9, 10, True) == (5, 11)
+    q = "サウスウェーブ号は、京成バス千葉イーストでは何線と案内されていますか"
+    assert _probe(corpus, q, 188, 9, 10, V1) == ("和歌山線", [])
+    assert _probe(corpus, q, 188, 9, 10, V2) == ("和歌山線", [])
+
+
+# ---- T-EV-18: the slot head is read in the CLAUSE (owner 2026-10-12) --------------------------------------------------------------------------------
+def test_t_ev_18_the_slot_head_must_be_in_the_clause_and_none_is_refused(corpus):
+    q = "サンゴーカメラは何年に設立されましたか"
+    assert _probe(corpus, q, 292, 0, 1, V1) == ("1981年", [])                                 # v1: 設立 anywhere in the sentence
+    a, c = _probe(corpus, q, 292, 0, 1, V2)
+    assert (a, c) == ("1981年", ["no_slot_head"])                                              # v2: 設立 is after 「として」, outside the clause
+    j = ev.judge_quote(corpus, ev.question_units(q), ev.SCOPE_TITLE, 292, "WORD", 0, 1, V2)
+    assert j["messages"] == ["the question's predicate 「設立」 is not in the clause 「1981年に永豊企業株式会社のカメラ事業部門」 of sentence 292: this clause does not say what is asked"]
+    q = "レッド計画ではアメリカを何色としていましたか"                     # a slot question with NO head (何色と + the end): v1 skipped the check, v2 refuses
+    assert ev.question_units(q).slot_head is None
+    assert _probe(corpus, q, 143, 3, 3, V1) == ("青", [])
+    a, c = _probe(corpus, q, 143, 3, 3, V2)
+    assert (a, c) == ("青", ["no_slot_head"])
+    j = ev.judge_quote(corpus, ev.question_units(q), ev.SCOPE_TITLE, 143, "WORD", 3, 3, V2)
+    assert j["messages"] == ["the question 「レッド計画ではアメリカを何色としていましたか」 has no predicate word after its question word, so no clause can be tied to what it asks"]
+
+
+# ---- T-EV-19: F3, exactly one answer ------------------------------------------------------------------------------------------------------------------
+def test_t_ev_19_two_passing_quotes_are_multiple_answers_in_v2_and_were_joined_in_v1(tmp_path, tasks):
+    for ver, expect_ok in (("v1", True), ("v2", False)):
+        srv = server(tmp_path, tasks, evidence=ver, name="m_" + ver)
+        srv.begin("bank2/I2-013.record_only", "t", "m1")
+        for _ in range(2):                                                                                              # the same passing quote twice
+            assert srv.call("weave_span", {"run_id": "m1", "sid": 86, "tier": "RUN", "first": "県社", "last": "県社"})["ok"]
+        r = srv.call("read", {"run_id": "m1"})
+        e = srv.call("emit", {"run_id": "m1"})
+        if expect_ok:
+            assert e["ok"] and e["text"] == "県社県社" and len(e["evidence"]) == 2                                          # v1 emitted two answers as one text
+        else:
+            assert len(r["evidence"]) == 2 and e["ok"] is False and e["refusal"] == "no_evidence"
+            [ref] = [x for x in e["detail"]["refusals"] if x["type"] == "no_evidence"]
+            assert ref["weaves"] == [] and [c["code"] for c in ref["crosses"]] == ["multiple_answers"] and ref["crosses"][0]["cid"] == "c2"
+            assert ref["cross_messages"] == ["the thread holds 2 quotes that each read as an answer (「県社」、「県社」); emit exactly one"]
+            drop = srv.call("drop", {"run_id": "m1", "cid": "c2"})
+            assert drop["ok"]
+            e2 = srv.call("emit", {"run_id": "m1"})
+            assert e2["ok"] and e2["text"] == "県社"                                                                          # one answer left: it passes
+        assert lg.verify(tmp_path / ("m_" + ver) / "m1")["replay"]["status"] == "IDENTICAL"
+
+
+def test_t_ev_19_the_reviewers_1981_plus_year_case_is_now_two_refusals_not_a_text(tmp_path, tasks):
+    srv = server(tmp_path, tasks, evidence="v2")
+    srv.begin("bank2/I2-034.record_only", "t", "y1")
+    assert srv.call("weave_span", {"run_id": "y1", "sid": 292, "tier": "WORD", "first": "1981", "last": "年"})["ok"]
+    assert srv.call("weave_span", {"run_id": "y1", "sid": 292, "tier": "WORD", "first": "年", "last": "年"})["ok"]
+    e = srv.call("emit", {"run_id": "y1"})
+    assert e["ok"] is False
+    assert sorted(set(c for _, cs in weave_codes(e) for c in cs)) == ["answer_glued", "no_slot_head"]
+
+
+# ---- T-EV-20: the rule version, the begin row, the old ledgers ----------------------------------------------------------------------------------------
+def test_t_ev_20_a_v2_run_records_v2_and_a_v1_run_keeps_the_v1_begin_row(tmp_path, tasks):
+    from verantyx.loom.ops import EVIDENCE_RULE, EVIDENCE_RULE_V2
+    s1, s2 = server(tmp_path, tasks, evidence="v1", name="v1"), server(tmp_path, tasks, evidence="v2", name="v2")
+    b1, b2 = s1.begin("bank2/I2-013.record_only", "t", "x"), s2.begin("bank2/I2-013.record_only", "t", "x")
+    assert b1["evidence_profile"]["version"] == "evidence.v1" and b1["question"]["evidence"] == "evidence.v1" and b1["rules"]["evidence"] == EVIDENCE_RULE
+    assert b2["evidence_profile"]["version"] == "evidence.v2" and b2["question"]["evidence"] == "evidence.v2" and b2["rules"]["evidence"] == EVIDENCE_RULE_V2
+    assert EVIDENCE_RULE_V2.startswith(EVIDENCE_RULE) and "whole word or phrase" in EVIDENCE_RULE_V2
+    assert {k: v for k, v in b1["question"].items() if k != "evidence"} == {k: v for k, v in b2["question"].items() if k != "evidence"}        # the cut itself is the same
+    for name in ("v1", "v2"):
+        assert lg.verify(tmp_path / name / "x")["status"] == "OK"
+
+
+def test_t_ev_20_a_ledger_cannot_change_its_rule_version_and_replays_under_the_recorded_one(tmp_path, tasks):
+    srv = server(tmp_path, tasks, evidence="v2", name="rv")
+    b, e = _scripted_i2_013(srv, "q1")
+    assert e["ok"] and e["ev"] == "evidence.v2" and e["text"] == "県社"
+    d = tmp_path / "rv" / "q1"
+    assert lg.verify(d)["replay"]["status"] == "IDENTICAL"
+    _reseal(d, lambda rs: rs[0]["result"]["evidence_profile"].update(version="evidence.v1"))
+    assert lg.verify(d)["status"] == "REPLAY_DIFFERS"                                           # rules.evidence, question.evidence and every emit's `ev` are v2's
+
+
+def test_t_ev_20_v1_decisions_are_unchanged_on_the_h55d_final_threads(tmp_path, tasks):
+    """v1 still admits I2-013 / I2-025 / I2-034 (6 runs); v2 admits only I2-013 (2 runs): 青 has no slot head, 1981年's 設立 is outside its clause."""
+    passed = {V1: [], V2: []}
+    for ver in (V1, V2):
+        srv = server(tmp_path, tasks, ev.SCOPE_TITLE, evidence="v1" if ver == V1 else "v2", name="h_" + ver)
+        for mode in ("record_only", "constructed_allowed"):
+            for base in ANSWERABLE_LOOM:
+                tid, text, weaves = stored_final_thread(os.path.join(LOOMX, "runs_h55d", "%s.%s.api" % (base, mode)))
+                res = reweave(srv, tid, "%s_%s" % (base, mode), weaves)
+                if not weave_codes(res) and res["refusals"] == []:
+                    passed[ver].append((base, mode))
+    assert sorted(set(b for b, _ in passed[V1])) == ["I2-013", "I2-025", "I2-034"] and len(passed[V1]) == 6
+    assert passed[V2] == [("I2-013", "record_only"), ("I2-013", "constructed_allowed")]
+
+
+# ---- T-EV-21: the reach and the admission sweeps over multi-word stretches -------------------------------------------------------------------------------
+@pytest.fixture(scope="module")
+def sweep10(corpus, texts):
+    """For 69 answerable + 60 unanswerable questions: every stretch of at most 10 WORD units of every sentence of the corpus that passes the gate (title scope: the more
+    permissive scope; a stretch that passes under 'clause' passes under 'clause_or_title').  {id: {version: [(sid, i0, i1, text)]}}.  About 2 minutes."""
+    import unicodedata  # noqa: F401
+    unans = [r["#id"] for r in bank2_rows() if r["kind"] == "unans" and r["corpus"] == "fulllead"] + [r["#id"] for r in bank4_rows()]
+    bases = [b for b in texts if b not in ANSWERABLE_LOOM and (b in unans or b.startswith(("UF-", "R2-U")))]
+    items = {("ans", r["#id"]): (r["question"], [_norm(a) for a in r["gold"].split("|")]) for r in bank2_rows() if r["kind"] == "intra2" and r["corpus"] == "fulllead"}
+    items.update({("unans", b): (texts[b], []) for b in bases})
+    out = {}
+    for key, (q, golds) in items.items():
+        qu = ev.question_units(q)
+        res = {V1: [], V2: []}
+        for sid in range(corpus.n_sentences):
+            v = ev.view_of(corpus, sid)
+            n = len(v.units)
+            for i in range(n):
+                for j in range(i, min(n, i + 10)):
+                    for ver in ((V2,) if key[0] == "unans" else (V1, V2)):
+                        jq_ = ev.judge_quote(corpus, qu, ev.SCOPE_TITLE, sid, "WORD", i, j, ver)
+                        if not jq_["codes"]:
+                            res[ver].append((sid, i, j, jq_["answer"]))
+        out[key] = dict(res, golds=golds)
+    assert len(bases) == 60
+    return out
+
+
+def test_t_ev_21_no_stretch_of_up_to_ten_words_passes_for_an_unanswerable_question_in_v2(sweep10):
+    un = {k: v for k, v in sweep10.items() if k[0] == "unans"}
+    assert len(un) == 60
+    assert {k: v[V2][:3] for k, v in un.items() if v[V2]} == {}
+
+
+def test_t_ev_21_the_answerable_items_admit_no_wrong_stretch_in_v2_and_the_reach_is_10_of_69(sweep10):
+    ans = {k[1]: v for k, v in sweep10.items() if k[0] == "ans"}
+    assert len(ans) == 69
+
+    def sets(ver):
+        right = [k for k, v in ans.items() if any(_norm(t) in v["golds"] for _, _, _, t in v[ver])]
+        wrong = [k for k, v in ans.items() if any(_norm(t) not in v["golds"] for _, _, _, t in v[ver])]
+        only_wrong = [k for k in wrong if k not in right]
+        return right, wrong, only_wrong
+    r1, w1, o1 = sets(V1)
+    assert r1 == REACH_V1
+    assert (len(w1), len(o1)) == (21, 9)                      # v1: 21 of 69 answerable items admit at least one wrong stretch (the review counted 20), 9 admit only wrong ones
+    r2, w2, o2 = sets(V2)
+    assert r2 == REACH_V2 and w2 == [] and o2 == []           # v2: none, at the price of 2 of the 12 reachable items (the owner accepted 12 -> 10)
+
+
+# ---- T-EV-22: a gated smoke test (the legacy loom tests run with evidence "off") ----------------------------------------------------------------------
+@pytest.mark.parametrize("ver", ["v1", "v2"])
+def test_t_ev_22_a_gated_run_keeps_its_notes_caps_and_stability(tmp_path, ver):
+    sents = ["青葉堂の旧称は松風庵。", "青葉堂は1820年に建てられた。", "青葉堂は緑町にある。"]
+    p = tmp_path / "toy.jsonl"
+    p.write_text("".join(json.dumps({"sha": hashlib.sha256(s.encode()).hexdigest(), "title": "青葉堂", "sent": s, "source": "青葉堂#%d" % i}, ensure_ascii=False) + "\n"
+                         for i, s in enumerate(sents)), encoding="utf-8")
+    tk = {"task_id": "t/0", "text": "青葉堂の旧称は何ですか", "lang": "prose", "mode": "record_only", "tiers": ["RUN", "WORD", "CHAR"], "corpus": str(p)}
+    srv = LoomServer([tk], str(tmp_path / "runs"), (), evidence=ver, caps="v1")                # strict_npa by default; the v1 caps (30 lookups) are the small ones
+    b = srv.begin("t/0", "m", "g1")
+    assert b["evidence_profile"]["version"] == "evidence." + ver and b["task"]["caps"]["lookups"] == 30 and srv.stability == "strict_npa"
+    # notes: a QUESTION_ECHO note points at a quoted unit that is a word of the question, never blocks, never changes the text
+    w1 = srv.call("weave_span", {"run_id": "g1", "sid": 0, "tier": "RUN", "first": "旧称", "last": "旧称"})
+    assert w1["ok"] and [n["type"] for n in w1["notes"]] == ["QUESTION_ECHO"] and w1["notes"][0]["unit"] == "旧称"
+    assert srv.call("weave_span", {"run_id": "g1", "sid": 0, "tier": "RUN", "first": "松風庵", "last": "松風庵"})["ok"]
+    r = srv.call("read", {"run_id": "g1"})
+    assert r["text"] == "旧称松風庵" and [n["type"] for n in r["notes"]] == ["QUESTION_ECHO"]
+    assert [x["type"] for x in r["refusals"]] == ["no_evidence"] and r["refusals"][0]["weaves"][0]["answer"] == "旧称"
+    assert [e["w"] for e in r["evidence"]] == [2] and r["evidence"][0]["copula"] == "Y は A"
+    assert [s["status"] for s in r["stability"]] == ["trivially_stable", "trivially_stable"]            # the key gate runs under the evidence gate
+    assert srv.call("emit", {"run_id": "g1"})["refusal"] == "no_evidence"
+    # dropping the echo leaves one passing quote: it is emitted, with its stability, without the dropped cross's note
+    assert srv.call("drop", {"run_id": "g1", "cid": "c1"})["ok"]
+    e = srv.call("emit", {"run_id": "g1"})
+    assert e["ok"] and e["text"] == "松風庵" and e["ev"] == "evidence." + ver and "notes" not in e and [s["cid"] for s in e["stability"]] == ["c2"]
+    rs = rows(tmp_path / "runs" / "g1")
+    assert [r_["op"] for r_ in rs if r_["actor"] == "loom"].count("loom_note") >= 2                       # the note rows are in the chain and replay
+    v = lg.verify(tmp_path / "runs" / "g1")
+    assert v["status"] == "OK" and v["replay"]["status"] == "IDENTICAL"
+    # the caps: 30 lookups, the 31st is refused, in a gated run
+    srv.begin("t/0", "m", "g2")
+    for _ in range(30):
+        assert srv.call("lookup", {"run_id": "g2", "text": "青葉堂", "tier": "any"})["ok"]
+    x = srv.call("lookup", {"run_id": "g2", "text": "青葉堂", "tier": "any"})
+    assert x["ok"] is False and x["refusal"] == "lookup_cap" and x["detail"] == {"limit": 30}
+    v2 = lg.verify(tmp_path / "runs" / "g2")
+    assert v2["status"] == "OK" and v2["replay"]["status"] == "IDENTICAL"
+
+
+# ---- T-EV-23: route (1) as the final thread re-judged offline (score.final_thread_gate / layer_report) -----------------------------------------------------
+def _score():
+    import importlib.util
+    name = "loom_score_for_evidence"
+    if name not in sys.modules:
+        spec = importlib.util.spec_from_file_location(name, os.path.join(LOOMX, "score.py"))
+        mod = importlib.util.module_from_spec(spec)
+        sys.modules[name] = mod
+        spec.loader.exec_module(mod)
+    return sys.modules[name]
+
+
+def _layer(run_dir):
+    S = _score()
+    final = S.final_thread_gate(run_dir, versions=S.FINAL_GATE_VERSIONS)
+    return S.layer_report(rows(run_dir), None, final), final
+
+
+def test_t_ev_23_route_one_is_the_final_thread_failing_the_gate_with_no_text(tmp_path):
+    adv, ans = os.path.join(LOOMX, "runs_unans_adv_e"), os.path.join(LOOMX, "runs_h55e")
+    L, f = _layer(os.path.join(adv, "ADV-001.record_only.api"))                          # a refused dry-run read, then no_record: shown
+    assert f["profile"] == ["evidence.v1", "clause_or_title"] and f["held"] == 2 and f["verdicts"]["evidence.v1"]["fails"] and f["verdicts"]["evidence.v2"]["fails"]
+    assert L["route1_final"] is True and L["route1_final_how"] == "shown" and L["stop_layer"] == "L_struct"
+    L, f = _layer(os.path.join(adv, "ADV-021.record_only.api"))                          # a thread that fails, never read, never emitted: unseen (and v2 finds more wrong with it)
+    assert L["route1_final"] is True and L["route1_final_how"] == "unseen" and L["stop_layer"] == "L_other"
+    assert f["verdicts"]["evidence.v1"]["codes"] == ["no_evidence:no_slot_head"]
+    assert f["verdicts"]["evidence.v2"]["codes"] == ["no_evidence:answer_crosses_break", "no_evidence:answer_glued", "no_evidence:no_slot_head"]
+    L, f = _layer(os.path.join(adv, "ADV-013.constructed_allowed.api"))                  # told by a dry-run read, then dropped the thread: the final thread is empty
+    assert f["held"] == 0 and L["route1_final"] is False and "route1_final_how" not in L and L["read_codes"] == {"no_evidence:no_slot_head": 1}
+    L, f = _layer(os.path.join(ans, "I2-034.record_only.api"))                           # emitted a text: never route (1); v2 would refuse its thread
+    assert L["route1_final"] is False and f["verdicts"]["evidence.v1"]["fails"] is False and f["verdicts"]["evidence.v2"]["codes"] == ["no_evidence:no_slot_head"]
+
+
+def test_t_ev_23_a_run_without_a_gate_and_a_layer_report_without_a_final_thread_are_as_before():
+    S = _score()
+    old = os.path.join(LOOMX, "runs_unans_adv", "ADV-010.record_only.api")
+    assert S.final_thread_gate(old, versions=S.FINAL_GATE_VERSIONS) is None
+    L = S.layer_report(rows(old), None)
+    assert "final_thread" not in L and "route1_final" not in L
+    assert L == S.layer_report(rows(old), None, None)
+    for c in ("answer_glued", "answer_crosses_break", "multiple_answers"):
+        assert c in S.EVIDENCE_CONTENT_CODES and c in ev.CODES

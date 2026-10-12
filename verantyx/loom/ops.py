@@ -90,6 +90,10 @@ EVIDENCE_RULE = ("A prose answer is a quotation: only an unchanged weave_span qu
                  "subject words of the question (`question.subject`; or the sentence's article title), must not contain a word of the question, and has to be attached "
                  "as the question asks (`question.slot`: the particle after the answer and the head word `question.slot.head`; or, for a question 「XのYは何」, read as "
                  "「Y は A」 / 「A は … Y」). A refusal `no_evidence` names what is missing; a sentence that only mentions the topic is not an answer.")
+# evidence.v2 (L-LOOM-191..): the same rules + the extent of the answer + one answer.  evidence.v1 runs keep the text above (it is hashed in their begin row).
+EVIDENCE_RULE_V2 = (EVIDENCE_RULE + " Quote one stretch that is a whole word or phrase of the sentence: not a piece glued to a neighbouring word, not a stretch across a comma, a "
+                    "bracket or a particle (は を に で が と も); and exactly one such quote may stand in the thread. A question with no subject word cannot be answered.")
+EVIDENCE_RULES = {evl.EVIDENCE_V1: EVIDENCE_RULE, evl.EVIDENCE_V2: EVIDENCE_RULE_V2}
 
 
 # ------------------------------------------------------------------------------------------------------------
@@ -295,9 +299,9 @@ class Run:
         if self.notes_version != notelib.NOTES_V1:          # notes.v1 runs (every ledger before L-LOOM-147) have no such key: their begin rows are as they were
             res["notes_profile"] = self.notes_version
         if self.evidence is not None:                       # LOOM-evidence: no such keys in a run without the gate (every ledger before it), so those rows are as they were
-            res["rules"] = dict(RULES, evidence=EVIDENCE_RULE)
+            res["rules"] = dict(RULES, evidence=EVIDENCE_RULES[self.evidence[0]])
             res["evidence_profile"] = {"version": self.evidence[0], "subject_scope": self.evidence[1]}
-            res["question"] = self.question_units.to_obj(self.evidence[1])      # read-only, recomputed by the loom (L-LOOM-185): a forged row cannot replay
+            res["question"] = self.question_units.to_obj(self.evidence[1], self.evidence[0])      # read-only, recomputed by the loom (L-LOOM-185): a forged row cannot replay
         return {"actor": "model", "op": "begin", "args": {"task_id": self.task["task_id"], "model": self.model}, "result": res,
                 "state_sha": self.state.sha()}
 

@@ -29,20 +29,26 @@ from verantyx.line3.funcwords import is_function_unit
 from verantyx.line3.granularity import _raw_spans
 
 EVIDENCE_V1 = "evidence.v1"
-EVIDENCE_VERSIONS: Tuple[str, ...] = (EVIDENCE_V1,)
+EVIDENCE_V2 = "evidence.v2"                                    # the review's fixes (L-LOOM-191..): a subject-less predicate question is refused, the answer's extent is checked, one answer only
+EVIDENCE_VERSIONS: Tuple[str, ...] = (EVIDENCE_V1, EVIDENCE_V2)
+EVIDENCE_LATEST = EVIDENCE_V2                                  # the rule NEW prose runs get; a ledger replays under the version its begin row recorded
+PROFILE_NAMES: Dict[str, str] = {"v1": EVIDENCE_V1, "v2": EVIDENCE_V2}     # the server / CLI spelling -> the rule version
 SCOPE_TITLE, SCOPE_CLAUSE = "clause_or_title", "clause"
 SUBJECT_SCOPES: Tuple[str, ...] = (SCOPE_TITLE, SCOPE_CLAUSE)
 DEFAULT_SCOPE = SCOPE_TITLE                                    # L-LOOM-190: until the owner answers OP-EV-1 otherwise (he said yes: 2026-10-12)
 
 CODES: Tuple[str, ...] = ("not_quoted", "constructed_unit", "answer_not_word_aligned", "question_form_open", "question_has_no_subject", "no_subject",
-                          "wrong_arm", "no_slot_head", "not_copular", "answer_holds_question_unit")
+                          "wrong_arm", "no_slot_head", "not_copular", "answer_holds_question_unit",
+                          "answer_glued", "answer_crosses_break", "multiple_answers")          # the last three are evidence.v2 only
 IGNORE = frozenset("「」『』“”\"'・· 　\t")                  # L-LOOM-177
 P7 = gm.P7
 ARMS = ("の", "に", "で", "と", "を", "が")                        # the six arm particles (は is the centre relation)
 CONN_PARTICLES = frozenset(P7) | {"も"}
+JOINERS = frozenset("-‐‑–—−,.:/+")                                # evidence.v2: punctuation that joins the pieces of one token (JR-Y13, 73,921, 1.5, 12:30): not a break
 FORM_SLOT, FORM_PREDICATE, FORM_OPEN = "slot", "predicate", "open"
 
 
+@lru_cache(maxsize=1 << 18)
 def strip_ignore(s: str) -> str:
     return "".join(ch for ch in s if ch not in IGNORE)
 
@@ -70,9 +76,9 @@ class QuestionUnits:
     subject_level: Optional[str]                 # x_chain | topic | ga | case | None
     units: Tuple[str, ...]                       # the echo set (L-LOOM-181)
 
-    def to_obj(self, scope: Optional[str] = None) -> dict:
-        """The `question` object of `begin` (L-LOOM-185)."""
-        return {"evidence": EVIDENCE_V1, "subject_scope": scope, "form": self.form,
+    def to_obj(self, scope: Optional[str] = None, version: str = EVIDENCE_V1) -> dict:
+        """The `question` object of `begin` (L-LOOM-185); `version` is the rule version of the run (the cut itself is the same in v1 and v2)."""
+        return {"evidence": version, "subject_scope": scope, "form": self.form,
                 "slot": {"phrase": self.slot_phrase, "particle": self.particle, "noun": self.slot_noun, "head": self.slot_head, "fallback": self.fallback},
                 "y": self.y, "y_forms": list(self.y_forms), "subject": list(self.subject), "subject_level": self.subject_level, "units": list(self.units)}
 
@@ -241,7 +247,7 @@ def view_of(corpus, sid: int) -> SentenceView:
 
 
 @lru_cache(maxsize=None)
-def connective(gap: str) -> bool:
+def connective(gap: str, stacked: bool = False) -> bool:
     """§4.2 step 3: a gap that does not break the clause: nothing (after the ignorable characters), 「は、」, or a stack of the particles は の に で と を が も
     (the first one of the seven) without a 「、」."""
     g = strip_ignore(gap)
@@ -249,17 +255,19 @@ def connective(gap: str) -> bool:
         return True
     if "、" in g:
         return False
+    if stacked and g[0] in P7 and all(ch in CONN_PARTICLES for ch in g):         # evidence.v2: 「とも」 「でも」 「をも」 are stacks of the particles too (words_of reads them as ONE function word)
+        return True
     toks = gm.words_of(g)
     if "".join(t[0] for t in toks) != g:
         return False
     return bool(toks) and toks[0][0] in P7 and all(t[0] in CONN_PARTICLES for t in toks)
 
 
-def clause_bounds(v: SentenceView, a0: int, a1: int) -> Tuple[int, int]:
+def clause_bounds(v: SentenceView, a0: int, a1: int, stacked: bool = False) -> Tuple[int, int]:
     lo, hi = a0, a1
-    while lo > 0 and connective(v.gap(lo - 1)):
+    while lo > 0 and connective(v.gap(lo - 1), stacked):
         lo -= 1
-    while hi < len(v.units) - 1 and connective(v.gap(hi)):
+    while hi < len(v.units) - 1 and connective(v.gap(hi), stacked):
         hi += 1
     return lo, hi
 
@@ -290,6 +298,7 @@ def _read_in(surfs: Sequence[str], gap, lo: int, hi: int, s: str, avoid: Optiona
     return out
 
 
+@lru_cache(maxsize=None)
 def _title_reader(title: str):
     ws = gm.words_of(title)
     surfs = [w[0] for w in ws]
@@ -328,6 +337,14 @@ def _m_head(h: str, sid: int) -> str:
     return "sentence %d does not contain 「%s」, the question's predicate" % (sid, h)
 
 
+def _m_head_clause(h: str, cl: str, sid: int) -> str:
+    return "the question's predicate 「%s」 is not in the clause 「%s」 of sentence %d: this clause does not say what is asked" % (h, cl, sid)
+
+
+def _m_head_none(q: str) -> str:
+    return "the question 「%s」 has no predicate word after its question word, so no clause can be tied to what it asks" % q
+
+
 def _m_item(y: str, cl: str) -> str:
     return "the asked item 「%s」 is not in the clause 「%s」: this sentence does not state what is asked" % (y, cl)
 
@@ -340,6 +357,18 @@ def _m_echo(u: str) -> str:
     return "the answer contains 「%s」, a word of the question; quote only what answers" % u
 
 
+def _m_glued(ans: str, whole: str, sid: int) -> str:
+    return "the stretch 「%s」 of sentence %d is glued to a neighbouring word (it is a piece of 「%s」); quote the whole word, or the whole phrase, that answers" % (ans, sid, whole)
+
+
+def _m_break(ans: str, gap: str, sid: int) -> str:
+    return "the stretch 「%s」 of sentence %d crosses 「%s」: an answer is one phrase, not a stretch over a comma, a bracket or a particle" % (ans, sid, gap)
+
+
+def _m_multiple(answers: Sequence[str]) -> str:
+    return "the thread holds %d quotes that each read as an answer (%s); emit exactly one" % (len(answers), "、".join("「%s」" % a for a in answers))
+
+
 def _m_not_quoted(cid: str) -> str:
     return "cross %s is not an unchanged weave_span quote: only a quoted stretch of a corpus sentence can be emitted" % cid
 
@@ -349,11 +378,41 @@ def _m_constructed(uid: str, cid: str) -> str:
 
 
 # ------------------------------------------------------------------------------------------------------------
+# the answer's extent (evidence.v2, F2)
+# ------------------------------------------------------------------------------------------------------------
+def joined(gap: str) -> bool:
+    """Two WORD units of the sentence that touch (nothing between them after the ignorable characters) or are joined only by joiner punctuation (「-」 「,」 「.」 ...)
+    are pieces of ONE token."""
+    g = strip_ignore(gap)
+    return all(ch in JOINERS for ch in g)
+
+
+def inner_ok(gap: str) -> bool:
+    """A gap that may lie INSIDE an answer: a join, or the genitive 「の」 (キューバの太陽).  Any other gap (は を に で が と も, 「、」, a bracket, a word) is a break."""
+    return joined(gap) or strip_ignore(gap) == "の"
+
+
+def whole_word_of(v: "SentenceView", a0: int, a1: int) -> str:
+    """The maximal run of touching / joined WORD units around units a0..a1 of the sentence (what the answer is a piece of)."""
+    lo, hi = a0, a1
+    while lo > 0 and joined(v.gap(lo - 1)):
+        lo -= 1
+    while hi < len(v.units) - 1 and joined(v.gap(hi)):
+        hi += 1
+    return clause_text(v, lo, hi)
+
+
+# ------------------------------------------------------------------------------------------------------------
 # judging one quotation (§5, per weave)
 # ------------------------------------------------------------------------------------------------------------
-def judge_quote(corpus, qu: QuestionUnits, scope: str, sid: int, tier: str, i0: int, i1: int) -> dict:
+def judge_quote(corpus, qu: QuestionUnits, scope: str, sid: int, tier: str, i0: int, i1: int, version: str = EVIDENCE_LATEST) -> dict:
     """The gate for ONE quoted stretch (tier `tier`, units i0..i1 of sentence `sid`).  {"codes": [...], "messages": [...], "failures": [{"code", "message"}],
-    "answer", "clause", "evidence": {...} | None}.  All checks run; every failing code is listed (E-1 failing leaves only E-2: there is no clause to read)."""
+    "answer", "clause", "evidence": {...} | None}.  All checks run; every failing code is listed (E-1 failing leaves only E-2: there is no clause to read).
+    `version` is the rule version (evidence.v1: the rules of the first build; evidence.v2: + F1 a predicate question with no subject is refused, F2 the answer is a
+    whole word / phrase: not glued to a neighbouring word, no break inside)."""
+    if version not in EVIDENCE_VERSIONS:
+        raise ValueError("version must be one of %s" % (EVIDENCE_VERSIONS,))
+    v2 = version != EVIDENCE_V1
     v = view_of(corpus, sid)
     sps = corpus.spans().spans(tier, sid)
     cs, ce = sps[i0][0], sps[i1][1]
@@ -373,7 +432,13 @@ def judge_quote(corpus, qu: QuestionUnits, scope: str, sid: int, tier: str, i0: 
     out = {"answer": answer, "clause": None, "sid": sid, "source": v.source}
     if not aligned:
         return _done(out, fails, None)
-    lo, hi = clause_bounds(v, a0, a1)
+    if v2:                                                                              # F2: the extent of the answer
+        if (a0 > 0 and joined(v.gap(a0 - 1))) or (a1 < len(v.units) - 1 and joined(v.gap(a1))):
+            fail("answer_glued", _m_glued(answer, whole_word_of(v, a0, a1), sid))
+        brk = next((v.gap(k) for k in range(a0, a1) if not inner_ok(v.gap(k))), None)
+        if brk is not None:
+            fail("answer_crosses_break", _m_break(answer, strip_ignore(brk) or brk, sid))
+    lo, hi = clause_bounds(v, a0, a1, v2)
     cl = clause_text(v, lo, hi)
     out["clause"] = cl
     surfs, gap = v.units, v.gap
@@ -381,7 +446,7 @@ def judge_quote(corpus, qu: QuestionUnits, scope: str, sid: int, tier: str, i0: 
     title_scope = scope == SCOPE_TITLE
     # E-3
     subj_ev: List[dict] = []
-    if qu.form == FORM_SLOT and not qu.subject:
+    if not qu.subject and (qu.form == FORM_SLOT or (v2 and qu.form == FORM_PREDICATE)):       # F1 (v2): a predicate question with no subject word is tied to no sentence either
         fail("question_has_no_subject", _m_no_subject_at_all(qu.text))
     for s in qu.subject:
         if _read_in(surfs, gap, lo, hi, s, avoid):
@@ -403,8 +468,13 @@ def judge_quote(corpus, qu: QuestionUnits, scope: str, sid: int, tier: str, i0: 
         else:
             from verantyx.loom.state import AXES, SPEC
             slot_ev = {"particle": p, "arm": AXES[list(SPEC.arms).index(p)] if p in SPEC.arms else None}
-        if qu.slot_head is not None and qu.slot_head not in v.unit_set:                  # E-5s
-            fail("no_slot_head", _m_head(qu.slot_head, sid))
+        if not v2:                                                                       # E-5s
+            if qu.slot_head is not None and qu.slot_head not in v.unit_set:
+                fail("no_slot_head", _m_head(qu.slot_head, sid))
+        elif qu.slot_head is None:                                                       # v2 (owner 2026-10-12): the head is required, and read in the CLAUSE; none = refuse
+            fail("no_slot_head", _m_head_none(qu.text))
+        elif not _read_in(surfs, gap, lo, hi, qu.slot_head, avoid):
+            fail("no_slot_head", _m_head_clause(qu.slot_head, cl, sid))
     elif qu.form == FORM_PREDICATE:
         reads: List[Tuple[str, int, int]] = []
         for f_ in qu.y_forms:
@@ -473,7 +543,7 @@ def gate(run) -> dict:
     """{"refusal": the `no_evidence` refusal dict | None, "evidence": [one entry per passing weave]} for a prose run with an evidence profile."""
     st = run.state
     qu = run.question_units
-    scope = run.evidence[1]
+    version, scope = run.evidence
     held = [st.crosses[c] for c in st.thread if st.crosses[c].uids()]
     if not held:
         return {"refusal": None, "evidence": []}
@@ -491,16 +561,22 @@ def gate(run) -> dict:
                 cross_messages.append(_m_constructed(uid, c.cid))
     weaves: List[dict] = []
     evidence: List[dict] = []
+    answers: List[str] = []
     for w in sorted(intact):
         wv = intact[w]
         if not any(st.crosses[c].uids() for c in wv["cids"]):
             continue
-        j = judge_quote(run.corpus, qu, scope, wv["sid"], wv["tier"], wv["i0"], wv["i1"])
+        j = judge_quote(run.corpus, qu, scope, wv["sid"], wv["tier"], wv["i0"], wv["i1"], version)
         if j["codes"]:
             weaves.append({"w": w, "cids": list(wv["cids"]), "sid": j["sid"], "source": j["source"], "tier": wv["tier"], "answer": j["answer"], "clause": j["clause"],
                            "codes": j["codes"], "messages": j["messages"]})
         else:
             evidence.append(dict(j["evidence"], w=w))
+            answers.append(j["answer"])
+    if version != EVIDENCE_V1 and len(evidence) > 1:                                   # F3 (v2): ONE answer; several are not joined into one text
+        for e in evidence[1:]:
+            crosses.append({"cid": intact[e["w"]]["cids"][0], "code": "multiple_answers"})
+            cross_messages.append(_m_multiple(answers))
     if not weaves and not crosses:
         return {"refusal": None, "evidence": evidence}
     return {"refusal": {"type": "no_evidence", "weaves": weaves, "crosses": crosses, "cross_messages": cross_messages}, "evidence": evidence}
