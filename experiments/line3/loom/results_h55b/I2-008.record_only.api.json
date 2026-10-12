@@ -1,0 +1,213 @@
+{
+ "abandoned": [],
+ "annotated": null,
+ "answer_view": {
+  "excess_chars": null,
+  "hit_record_text": null,
+  "hits_text": null
+ },
+ "base": "I2-008",
+ "closing": {
+  "i": 37,
+  "op": "abstain",
+  "status": "abstained",
+  "type": "cannot_weave"
+ },
+ "control": false,
+ "control_note": null,
+ "declared_model": "claude-haiku-5-5",
+ "driver": "api",
+ "driver_report": {
+  "calls_skipped_after_close": 0,
+  "control_text_chars": null,
+  "ended": "closed",
+  "error": null,
+  "response_models": [
+   "claude-haiku-5-5"
+  ],
+  "stop_reasons": [
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use"
+  ],
+  "system_prompt_sha256": "1a109feef5bb88bea43d964f47d3e83a81dcbbca18b3f0671a0d563a0678e90d",
+  "text_blocks_dropped": 0,
+  "thinking_dropped": {
+   "chars": 0,
+   "n": 0,
+   "sha256": []
+  },
+  "tool_calls": 36,
+  "tool_choice": {
+   "type": "any"
+  },
+  "tool_less_turns": 0,
+  "tools": [
+   "lookup",
+   "read_sentence",
+   "add",
+   "open_cross",
+   "seat",
+   "seat_run",
+   "weave_sentence",
+   "unseat",
+   "swap",
+   "extend",
+   "topic",
+   "set_depth",
+   "link",
+   "unlink",
+   "read",
+   "emit",
+   "abstain",
+   "status",
+   "done"
+  ],
+  "turns": 27,
+  "usage": {
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 0,
+   "calls": 27,
+   "input_tokens": 375905,
+   "output_tokens": 1922
+  }
+ },
+ "footnotes": {
+  "hits_words": "hits_words (the gold inside ONE record unit; `score.hits_words`) is false by construction for every multi-unit answer (ハッシュ表, キューバの太陽, カールマルクス, 1981年); it is not a correctness column"
+ },
+ "free_text_dropped": {
+  "chars": 0,
+  "n": 0,
+  "sha256": []
+ },
+ "harness_meta": [
+  {
+   "agent_definition_sha": "1a109feef5bb88bea43d964f47d3e83a81dcbbca18b3f0671a0d563a0678e90d",
+   "driver": "L2-api",
+   "requested_model": "claude-haiku-5-5"
+  },
+  {
+   "response_model": "claude-haiku-5-5"
+  }
+ ],
+ "ledger": "experiments/line3/loom/runs_h55b/I2-008.record_only.api/ops.jsonl",
+ "ledger_head": "f36a2f423c810f05532a369ba04c5df205507b6c1e047c0f0a34ec505777cc6f",
+ "mode": "record_only",
+ "model_result": true,
+ "op_counts": {
+  "by_class": {
+   "emit_attempts": 2,
+   "lookups": 14,
+   "ops": 12,
+   "other": 7,
+   "reads": 2
+  },
+  "by_op": {
+   "abstain": 1,
+   "begin": 1,
+   "emit": 2,
+   "lookup": 10,
+   "read": 2,
+   "read_sentence": 4,
+   "status": 5,
+   "unlink": 6,
+   "weave_sentence": 6
+  },
+  "emit_attempts": 2,
+  "model_rows": 37,
+  "rows": 39
+ },
+ "output_text": null,
+ "refusals": {
+  "not_linked": 1,
+  "unlinked_cross": 2
+ },
+ "schema": "loom-result-1",
+ "score": {
+  "abstain_type": "cannot_weave",
+  "answer_line": null,
+  "base": "I2-008",
+  "chars": {},
+  "control": false,
+  "correct": false,
+  "excess_chars": null,
+  "hit_record_text": null,
+  "hits_text": null,
+  "hits_words": null,
+  "kind": "answerable",
+  "mode": "record_only",
+  "note": "an answerable question was abstained",
+  "outcome": "abstained",
+  "output_sha": null,
+  "replay_verified": true,
+  "share_permille": {},
+  "stability": null,
+  "status": "abstained_wrong",
+  "task_id": "bank2/I2-008.record_only",
+  "text": null,
+  "verify_status": "OK"
+ },
+ "self_corrections": {
+  "counts": {
+   "plan_change_after_empty": 4,
+   "recovery_after_refusal": 0,
+   "refusals_recoverable": 3,
+   "unseat_swap_before_close": 0
+  },
+  "plan_change_after_empty": [
+   {
+    "i": 3,
+    "next_i": 4,
+    "next_op": "read_sentence"
+   },
+   {
+    "i": 5,
+    "next_i": 6,
+    "next_op": "lookup"
+   },
+   {
+    "i": 6,
+    "next_i": 7,
+    "next_op": "lookup"
+   },
+   {
+    "i": 19,
+    "next_i": 20,
+    "next_op": "lookup"
+   }
+  ],
+  "recovery_after_refusal": [],
+  "refusals_recoverable": 3,
+  "unseat_swap_before_close": []
+ },
+ "t_loom_34": "unchecked",
+ "task_id": "bank2/I2-008.record_only",
+ "wall": {
+  "driver_ns": 26426015083,
+  "ledger_ns": 26425910375
+ }
+}

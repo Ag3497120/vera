@@ -41,6 +41,7 @@ from verantyx.loom import fixture as fx
 from verantyx.loom import notes as notelib
 from verantyx.loom.corpus import Corpus
 from verantyx.loom.ops import Run, normalize_task
+from verantyx.loom.state import caps_profile_of
 
 ROW_KEYS = frozenset(("v", "i", "actor", "op", "args", "result", "state_sha", "prev", "sha"))
 ROW_KEYS_REDACTED = ROW_KEYS | {"redacted", "args_sha256"}
@@ -351,7 +352,15 @@ def replay(run_dir, corpus_path: Optional[str] = None, loader: Loader = default_
         except (OSError, ValueError):
             out.status, out.mismatch = "INPUTS", "fixture_unreadable"
             return out
-    run = Run(corpus, task, model, run_id, stability, index)
+    recorded_caps = res0["task"].get("caps")                    # L-LOOM-122: a run replays with the caps ITS begin row recorded (one of the known profiles)
+    if caps_profile_of(task["lang"], recorded_caps) is None:
+        out.status, out.mismatch = "INPUTS", "caps_unknown"
+        return out
+    recorded_notes = res0.get("notes_profile", notelib.NOTES_V1)       # L-LOOM-147: absent = notes.v1 (every ledger made before the echo note)
+    if recorded_notes not in notelib.NOTES_VERSIONS:
+        out.status, out.mismatch = "INPUTS", "notes_profile_unknown"
+        return out
+    run = Run(corpus, task, model, run_id, stability, index, recorded_caps, recorded_notes)
     mm = header_mismatch(recorded_header, run.header())
     if mm is not None:
         out.status, out.mismatch = "INPUTS", mm
@@ -385,7 +394,7 @@ def _replay_rows(out: ReplayResult, run: Run, rows: List[dict], lines: List[byte
         if line_of(row) != lines[idx] + b"\n" or (unterminated and idx == len(lines) - 1):
             out.status, out.first_diff = "DIFFERS", {"i": idx, "field": "bytes"}      # L-LOOM-43: the same dict, other bytes
             return
-        if row["actor"] == notelib.NOTE_ACTOR and row["op"] == notelib.NOTE_OP and row["args"].get("nv") != notelib.NOTES_VERSION:
+        if row["actor"] == notelib.NOTE_ACTOR and row["op"] == notelib.NOTE_OP and row["args"].get("nv") != run.notes_version:
             out.notes_stale.append(idx)
         run.advance(row)
         prev = row["sha"]

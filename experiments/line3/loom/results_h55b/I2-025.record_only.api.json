@@ -1,0 +1,277 @@
+{
+ "abandoned": [],
+ "annotated": [
+  {
+   "adhesion": {
+    "n": 1,
+    "particle": "を"
+   },
+   "cid": "c1",
+   "kind": "record",
+   "prov": {
+    "n": 5,
+    "tier": "WORD"
+   },
+   "s": "イギリス",
+   "seat": "+z:2",
+   "tier": "WORD",
+   "uid": "u1"
+  },
+  {
+   "adhesion": {
+    "n": 1,
+    "particle": "を"
+   },
+   "cid": "c1",
+   "join": {
+    "attested": null,
+    "prev": "u1"
+   },
+   "kind": "record",
+   "prov": {
+    "n": 12,
+    "tier": "WORD"
+   },
+   "s": "アメリカ",
+   "seat": "+z:3",
+   "tier": "WORD",
+   "uid": "u3"
+  },
+  {
+   "cid": "c1",
+   "kind": "foundation",
+   "prov": {
+    "arm": "+z",
+    "kind": "foundation",
+    "ratio": "21/377",
+    "seats_sha": "a2083d4536377ac0b8381db5df6d0ba6ebcc6d20ec5d16f80f34f74fa802a5d7"
+   },
+   "s": "を",
+   "seat": "+z:4"
+  },
+  {
+   "cid": "c1",
+   "kind": "record",
+   "prov": {
+    "n": 1,
+    "tier": "WORD"
+   },
+   "s": "青",
+   "seat": "centre",
+   "tier": "WORD",
+   "uid": "u4"
+  }
+ ],
+ "answer_view": {
+  "excess_chars": 9,
+  "hit_record_text": true,
+  "hits_text": true
+ },
+ "base": "I2-025",
+ "closing": {
+  "i": 12,
+  "op": "emit",
+  "status": "emitted",
+  "type": null
+ },
+ "control": false,
+ "control_note": null,
+ "declared_model": "claude-haiku-5-5",
+ "driver": "api",
+ "driver_report": {
+  "calls_skipped_after_close": 0,
+  "control_text_chars": null,
+  "ended": "closed",
+  "error": null,
+  "response_models": [
+   "claude-haiku-5-5"
+  ],
+  "stop_reasons": [
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use"
+  ],
+  "system_prompt_sha256": "1a109feef5bb88bea43d964f47d3e83a81dcbbca18b3f0671a0d563a0678e90d",
+  "text_blocks_dropped": 0,
+  "thinking_dropped": {
+   "chars": 0,
+   "n": 0,
+   "sha256": []
+  },
+  "tool_calls": 11,
+  "tool_choice": {
+   "type": "any"
+  },
+  "tool_less_turns": 0,
+  "tools": [
+   "lookup",
+   "read_sentence",
+   "add",
+   "open_cross",
+   "seat",
+   "seat_run",
+   "weave_sentence",
+   "unseat",
+   "swap",
+   "extend",
+   "topic",
+   "set_depth",
+   "link",
+   "unlink",
+   "read",
+   "emit",
+   "abstain",
+   "status",
+   "done"
+  ],
+  "turns": 6,
+  "usage": {
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 0,
+   "calls": 6,
+   "input_tokens": 55698,
+   "output_tokens": 637
+  }
+ },
+ "footnotes": {
+  "hits_words": "hits_words (the gold inside ONE record unit; `score.hits_words`) is false by construction for every multi-unit answer (ハッシュ表, キューバの太陽, カールマルクス, 1981年); it is not a correctness column"
+ },
+ "free_text_dropped": {
+  "chars": 0,
+  "n": 0,
+  "sha256": []
+ },
+ "harness_meta": [
+  {
+   "agent_definition_sha": "1a109feef5bb88bea43d964f47d3e83a81dcbbca18b3f0671a0d563a0678e90d",
+   "driver": "L2-api",
+   "requested_model": "claude-haiku-5-5"
+  },
+  {
+   "response_model": "claude-haiku-5-5"
+  }
+ ],
+ "ledger": "experiments/line3/loom/runs_h55b/I2-025.record_only.api/ops.jsonl",
+ "ledger_head": "fabbd4051c96c72b12c38fdbbebd4b899bec7dc4d313c948ada084a462581f81",
+ "mode": "record_only",
+ "model_result": true,
+ "op_counts": {
+  "by_class": {
+   "emit_attempts": 1,
+   "lookups": 3,
+   "ops": 6,
+   "other": 1,
+   "reads": 1
+  },
+  "by_op": {
+   "begin": 1,
+   "emit": 1,
+   "lookup": 2,
+   "read": 1,
+   "read_sentence": 1,
+   "unseat": 5,
+   "weave_sentence": 1
+  },
+  "emit_attempts": 1,
+  "model_rows": 12,
+  "rows": 14
+ },
+ "output_text": "イギリスアメリカを青",
+ "refusals": {},
+ "schema": "loom-result-1",
+ "score": {
+  "abstain_type": null,
+  "answer_line": null,
+  "base": "I2-025",
+  "chars": {
+   "constructed": 0,
+   "foundation": 1,
+   "layout": 0,
+   "record": 9
+  },
+  "control": false,
+  "correct": true,
+  "excess_chars": 9,
+  "hit_record_text": true,
+  "hits_text": true,
+  "hits_words": true,
+  "kind": "answerable",
+  "mode": "record_only",
+  "note": "",
+  "outcome": "emitted",
+  "output_sha": "71db5b298e641ad3e74f8e6b2bb6f671d5c887ea74c260cff67118af975ec657",
+  "replay_verified": true,
+  "share_permille": {
+   "constructed": 0,
+   "foundation": 100,
+   "layout": 0,
+   "record": 900
+  },
+  "stability": [
+   {
+    "cid": "c1",
+    "improving": [],
+    "key": [
+     3,
+     2,
+     42
+    ],
+    "moves_tested": 47,
+    "status": "stable",
+    "tier": "WORD"
+   }
+  ],
+  "status": "hit",
+  "task_id": "bank2/I2-025.record_only",
+  "text": "イギリスアメリカを青",
+  "verify_status": "OK"
+ },
+ "self_corrections": {
+  "counts": {
+   "plan_change_after_empty": 1,
+   "recovery_after_refusal": 0,
+   "refusals_recoverable": 0,
+   "unseat_swap_before_close": 5
+  },
+  "plan_change_after_empty": [
+   {
+    "i": 2,
+    "next_i": 3,
+    "next_op": "lookup"
+   }
+  ],
+  "recovery_after_refusal": [],
+  "refusals_recoverable": 0,
+  "unseat_swap_before_close": [
+   {
+    "i": 6,
+    "op": "unseat"
+   },
+   {
+    "i": 7,
+    "op": "unseat"
+   },
+   {
+    "i": 8,
+    "op": "unseat"
+   },
+   {
+    "i": 9,
+    "op": "unseat"
+   },
+   {
+    "i": 10,
+    "op": "unseat"
+   }
+  ]
+ },
+ "t_loom_34": "unchecked",
+ "task_id": "bank2/I2-025.record_only",
+ "wall": {
+  "driver_ns": 6585630250,
+  "ledger_ns": 6585561167
+ }
+}

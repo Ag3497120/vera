@@ -1,0 +1,237 @@
+{
+ "abandoned": [],
+ "annotated": [
+  {
+   "cid": "c1",
+   "kind": "record",
+   "prov": {
+    "n": 2,
+    "tier": "WORD"
+   },
+   "s": "1981",
+   "seat": "centre",
+   "tier": "WORD",
+   "uid": "u1"
+  },
+  {
+   "cid": "c2",
+   "join": {
+    "attested": [
+     110,
+     0,
+     5
+    ],
+    "prev": "u1"
+   },
+   "kind": "record",
+   "prov": {
+    "n": 90,
+    "tier": "WORD"
+   },
+   "s": "年",
+   "seat": "centre",
+   "tier": "WORD",
+   "uid": "u2"
+  }
+ ],
+ "answer_view": {
+  "excess_chars": 0,
+  "hit_cited": false,
+  "hit_exact": true,
+  "hit_record_text": true,
+  "hits_text": true
+ },
+ "base": "I2-034",
+ "closing": {
+  "i": 7,
+  "op": "emit",
+  "status": "emitted",
+  "type": null
+ },
+ "control": false,
+ "control_note": null,
+ "declared_model": "claude-haiku-5-5",
+ "driver": "api",
+ "driver_report": {
+  "calls_skipped_after_close": 0,
+  "control_text_chars": null,
+  "ended": "closed",
+  "error": null,
+  "response_models": [
+   "claude-haiku-5-5"
+  ],
+  "stop_reasons": [
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use"
+  ],
+  "system_prompt_sha256": "3b7b4a488c9a4a1a4c873d0c9433e9b09dbc164a9518fc2afa432222638ce281",
+  "text_blocks_dropped": 0,
+  "thinking_dropped": {
+   "chars": 0,
+   "n": 0,
+   "sha256": []
+  },
+  "tool_calls": 6,
+  "tool_choice": {
+   "type": "any"
+  },
+  "tool_less_turns": 0,
+  "tools": [
+   "lookup",
+   "read_sentence",
+   "add",
+   "open_cross",
+   "seat",
+   "seat_run",
+   "weave_span",
+   "unseat",
+   "swap",
+   "extend",
+   "topic",
+   "set_depth",
+   "link",
+   "unlink",
+   "drop",
+   "read",
+   "emit",
+   "abstain",
+   "status",
+   "done"
+  ],
+  "turns": 5,
+  "usage": {
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 0,
+   "calls": 5,
+   "input_tokens": 44005,
+   "output_tokens": 309
+  }
+ },
+ "footnotes": {
+  "hits_words": "hits_words (the gold inside ONE record unit; `score.hits_words`) is false by construction for every multi-unit answer (ハッシュ表, キューバの太陽, カールマルクス, 1981年); it is not a correctness column"
+ },
+ "free_text_dropped": {
+  "chars": 0,
+  "n": 0,
+  "sha256": []
+ },
+ "harness_meta": [
+  {
+   "agent_definition_sha": "3b7b4a488c9a4a1a4c873d0c9433e9b09dbc164a9518fc2afa432222638ce281",
+   "driver": "L2-api",
+   "requested_model": "claude-haiku-5-5"
+  },
+  {
+   "response_model": "claude-haiku-5-5"
+  }
+ ],
+ "ledger": "experiments/line3/loom/runs_h55d/I2-034.record_only.api/ops.jsonl",
+ "ledger_head": "ad249b8ac23474a98ce0f27e6a85d7ccfad41b66d01f2601218548db3780559c",
+ "mode": "record_only",
+ "model_result": true,
+ "op_counts": {
+  "by_class": {
+   "emit_attempts": 1,
+   "lookups": 3,
+   "ops": 1,
+   "other": 1,
+   "reads": 1
+  },
+  "by_op": {
+   "begin": 1,
+   "emit": 1,
+   "lookup": 2,
+   "read": 1,
+   "read_sentence": 1,
+   "weave_span": 1
+  },
+  "emit_attempts": 1,
+  "model_rows": 7,
+  "rows": 9
+ },
+ "output_text": "1981年",
+ "refusals": {},
+ "schema": "loom-result-1",
+ "score": {
+  "abstain_type": null,
+  "answer_line": null,
+  "base": "I2-034",
+  "chars": {
+   "constructed": 0,
+   "foundation": 0,
+   "layout": 0,
+   "record": 5
+  },
+  "control": false,
+  "correct": true,
+  "excess_chars": 0,
+  "hit_cited": false,
+  "hit_exact": true,
+  "hit_record_text": true,
+  "hits_text": true,
+  "hits_words": false,
+  "kind": "answerable",
+  "mode": "record_only",
+  "note": "",
+  "outcome": "emitted",
+  "output_sha": "61fa2cbd2fab97548a815d620484c96fdc328eb98f61a641efb6410892277532",
+  "replay_verified": true,
+  "share_permille": {
+   "constructed": 0,
+   "foundation": 0,
+   "layout": 0,
+   "record": 1000
+  },
+  "stability": [
+   {
+    "cid": "c1",
+    "improving": [],
+    "key": [
+     0,
+     0,
+     0
+    ],
+    "moves_tested": 0,
+    "status": "trivially_stable",
+    "tier": "WORD"
+   },
+   {
+    "cid": "c2",
+    "improving": [],
+    "key": [
+     0,
+     0,
+     0
+    ],
+    "moves_tested": 0,
+    "status": "trivially_stable",
+    "tier": "WORD"
+   }
+  ],
+  "status": "hit",
+  "task_id": "bank2/I2-034.record_only",
+  "text": "1981年",
+  "verify_status": "OK"
+ },
+ "self_corrections": {
+  "counts": {
+   "plan_change_after_empty": 0,
+   "recovery_after_refusal": 0,
+   "refusals_recoverable": 0,
+   "unseat_swap_before_close": 0
+  },
+  "plan_change_after_empty": [],
+  "recovery_after_refusal": [],
+  "refusals_recoverable": 0,
+  "unseat_swap_before_close": []
+ },
+ "t_loom_34": "unchecked",
+ "task_id": "bank2/I2-034.record_only",
+ "wall": {
+  "driver_ns": 5747166500,
+  "ledger_ns": 5747299708
+ }
+}

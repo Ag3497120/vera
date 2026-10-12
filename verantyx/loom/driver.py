@@ -1,7 +1,7 @@
 """LOOM-f: the L2 API driver (docs/LINE3_LOOM_DESIGN.md 7.1 L2, 7.2, 7.3, 9.3).  A manual tool-use loop in which the model's ONLY path to
 anything is a tool call on the loom.
 
-WHAT THE DRIVER FORWARDS.  Its `tools` are the loom tools (the 17 after `begin`; the harness has begun the run) plus `done` and nothing else.
+WHAT THE DRIVER FORWARDS.  Its `tools` are the loom tools (the 19 after `begin`; the harness has begun the run) plus `done` and nothing else.
 Every `tool_use` block of an assistant turn is executed in block order against `LoomServer.call` (one ledger row each) with the driver's own
 `run_id` (a `run_id` the model passes is overwritten: it cannot reach another run), and all results go back in ONE user message.  Every `text`
 block of every assistant turn is DROPPED from the output path: its sha256 and length become one `free_text_dropped` row, and the text is
@@ -38,7 +38,9 @@ from dataclasses import dataclass, field
 from types import SimpleNamespace
 from typing import Any, Dict, Iterable, List, Optional, Sequence, Tuple
 
-MAX_TURNS = {"prose": 60, "code": 200}
+# L-LOOM-127 (LOOM-batch): prose 60 -> 160.  With the prose lookup cap at 100, 60 turns would end a run before its lookups did (the first
+# measurement's I2-025 record_only ended at exactly 60).  A turn may carry several calls; the caps, not this, are what bounds a run.
+MAX_TURNS = {"prose": 160, "code": 200}
 NO_TOOL_LIMIT = 3
 MAX_TOKENS = 4096
 REMINDER = ("Your last turn had no tool call. Text is discarded. Continue only by calling a tool: build the structure and call emit, "
@@ -117,11 +119,13 @@ class DriverResult:
     control_text: Optional[str] = None
     error: Optional[str] = None
     tool_choice: Optional[dict] = None
+    usage: Dict[str, int] = field(default_factory=lambda: {"calls": 0, "input_tokens": 0, "output_tokens": 0,
+                                                            "cache_read_input_tokens": 0, "cache_creation_input_tokens": 0})   # what the API reports; testimony
 
     def to_obj(self) -> dict:
         return {k: getattr(self, k) for k in ("ended", "turns", "tool_calls", "text_blocks_dropped", "thinking_dropped", "calls_skipped_after_close",
                                               "tool_less_turns", "response_models",
-                                              "stop_reasons", "error", "tool_choice")} | {"control_text_chars": None if self.control_text is None else len(self.control_text)}
+                                              "stop_reasons", "error", "tool_choice", "usage")} | {"control_text_chars": None if self.control_text is None else len(self.control_text)}
 
 
 def first_message(begin_result: dict) -> str:
@@ -170,6 +174,12 @@ def run_episode(client: Any, server: Any, run_id: str, model: str, system: str, 
             abandon("api_error")
             return res
         res.turns += 1
+        res.usage["calls"] += 1
+        us = _get(resp, "usage")
+        for k in ("input_tokens", "output_tokens", "cache_read_input_tokens", "cache_creation_input_tokens"):
+            v = _get(us, k) if us is not None else None
+            if isinstance(v, int) and not isinstance(v, bool):
+                res.usage[k] += v
         content = list(_get(resp, "content", []) or [])
         res.stop_reasons.append(str(_get(resp, "stop_reason", "")))
         rm = _get(resp, "model")

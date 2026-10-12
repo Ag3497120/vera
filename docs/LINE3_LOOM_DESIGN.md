@@ -222,12 +222,14 @@ The server is named `vera-loom`. Claude Code exposes the tools as `mcp__vera-loo
 | `open_cross` | `run_id, tier, L: int, depth: int = 0 (code)` | `{cid, seats: [...], foundation: {arm: particle}}` | `bad_L`, `cross_cap` |
 | `seat` | `run_id, cid, seat: "centre" \| "+x:0" …, uid` | `{cid, seat, uid}` | `seat_occupied`, `seat_is_foundation`, `seat_out_of_range`, `unit_already_seated`, `tier_mismatch` |
 | `seat_run` | `run_id, cid, arm: "+x" …, uids: [str]` | the seats filled, in reading order | the same as `seat`, plus `arm_too_short` |
+| `weave_span` (LOOM-span, L-LOOM-130..) | `run_id, sid: int, tier: RUN\|WORD\|CHAR, first: str, last: str` (the ledger stores them as `from` / `to`: L-LOOM-145) | **One op (replaces `weave_sentence`).** The stretch of corpus sentence `sid` from unit `first` to unit `last` (included; each a unit surface exactly as `read_sentence` lists it for the tier: `first` the first such unit, `last` the first such unit at or after `first`. The handler also takes an int, an index into that list, from a programmatic caller; the MCP schema offers strings only, because with `int | str` Haiku 5.5 sent quoted units and digit strings and 20 of the 21 calls of the first h55c attempt were refused) becomes a **chain of crosses whose read-out is that stretch word for word**, made in one op, linked at the end of the thread. Between two neighbouring units the sentence has a gap (its letters only; punctuation, quotes, spaces and 「・」 are not letters: the loom writes none of them; the T9 normaliser drops only whitespace and 「・」, L-LOOM-144): **""** (the units touch: ハッシュ+表, カール・マルクス, 1981+年) — each is a one-unit cross, linked in order; **an arm particle の に で と を が** — head-final: the unit goes on that particle's arm (`<arm>:0` of an `L = 2` cross) of the cross whose **centre is the very next unit**; **は** — the unit is the centre of a cross marked topic; **anything else** (という, として, とも …) is a word the loom cannot write. A cross is therefore (at most one arm unit) + centre (+ は): never two units on one arm (one particle per arm), never a unit on a centre before it. Two arm-particle gaps in a row (日本の大学の学生, 東京で日本の首都) would need the middle unit to be an arm unit and a centre: refused. Record units only, made for the stretch only (uid and provenance exactly as `add` gives them). Returns `{wv, sid, tier, from, to, text, crosses: [{cid, L, centre: {uid, surface}, seated: [{seat, uid, surface, particle}], topic}], thread}`: **only the stretch** (no units of the rest of the sentence, no read-out: `read` is counted and shows it). The row's args carry `wv: "weave_span.v2"` (the rule version, stamped by the loom; a later rule is a new version, and a ledger replays by the rule it names; v2 = v1 + the crosses remember the sentence they quote, and `unstable_cross` of such a cross offers no swap: L-LOOM-146). Notes (§12.2 LOOM-notes) run after an ok `weave_span` (a `loom_note` row follows the weave row). `weave_sentence` (LOOM-batch, L-LOOM-123..126) is **not a tool any more**: a live call is `unknown_tool`; its code runs only while a recorded ledger is replayed, so the runs of `runs_h55b` still verify | `not_prose`, `tier_not_in_task`, `unknown_sid`, `unit_not_in_sentence`, `span_out_of_range`, `bad_span`, `tier_mix`, `span_inexpressible` (`gap_is_not_a_particle`, `nested_particle_chain`), `cross_cap`, `bad_args` |
 | `unseat` | `run_id, cid, seat` | `{uid}` (back in the pool) | `seat_empty`, `seat_is_foundation` |
 | `swap` | `run_id, cid, seat_a, seat_b` | `{cid}` | `seat_is_foundation`, `seat_out_of_range`, `same_seat` |
 | `extend` | `run_id, cid, L2` | `{cid, L}` | `bad_L` |
 | `topic` | `run_id, cid, on: bool` | — | `not_prose` |
 | `set_depth` | `run_id, cid, depth: 0..8` | — | `not_code` |
 | `link` / `unlink` | `run_id, cid, pos?` | `{thread}` | `already_linked`, `not_linked` |
+| `drop` (LOOM-span) | `run_id, cid` | `{cid, removed: [{uid, surface}], thread}`: the whole cross and the units seated in it are removed (not returned to the pool); the cross leaves the thread. A uid / cid is never made again (the state hash gains `made` only after a drop) | `unknown_cid` |
 | `read` | `run_id` | `{text, annotated, refusals: [...], stability: [...]}`. This is the emit check as a dry run (nothing closes) | `read_cap` |
 | `emit` | `run_id` | §3.7 | `emit_cap`, all §3.7 refusals |
 | `abstain` | `run_id, type` | `{status: "abstained", type}` | `bad_type` |
@@ -237,12 +239,14 @@ The server is named `vera-loom`. Claude Code exposes the tools as `mcp__vera-loo
 
 | cap | prose | code |
 |---|---|---|
-| state-changing ops (add … link/unlink) per run | 120 | 400 |
-| lookup + read_sentence | 30 | 60 |
+| state-changing ops (add … link/unlink, `weave_span`, `drop`) per run | 120 → **200** (v2, LOOM-batch) | 400 |
+| lookup + read_sentence | 30 → **100** (v2, LOOM-batch) | 60 |
 | read (dry run) | 20 | 40 |
 | emit attempts | 5 | 8 |
 | constructed units per run | 12 | 60 |
 | chars per constructed unit | 8 | 40 (and exactly one token) |
+
+**Cap profiles (LOOM-batch, L-LOOM-122).** The caps of a run are written into its `begin` row, so they are a profile with a name: `v1` = the numbers above before LOOM-batch (the first real-model measurement, `runs_h55`, and every older ledger), `v2` = a new run's numbers (prose lookups 100, prose ops 200; everything else as in `v1`). Replay uses the profile the `begin` row recorded and refuses a cap set that is none of the known profiles (`INPUTS caps_unknown`). `vera loom demo` keeps `v1` (its HEADs are pinned).
 
 When a cap is reached, further calls of that class are refused with the cap's type. `emit`, `abstain` and `status` are never capped, except `emit` by its own attempt cap. After the last emit attempt is refused, the only remaining closing operation is `abstain`. If the model stops without closing, the harness appends `abandoned` (§6.1).
 
@@ -461,16 +465,16 @@ The orchestrating session starts a run with `Agent(subagent_type="vera-loom-weav
 | UF-015 | unans | — | correct = `abstain` | abstain / abstain |
 | R2-U003 | unans | — | correct = `abstain` | abstain / weave a number |
 
-**Measures per run**: gold hit with the t9 scorer (`scorer.hits_text`) on `text`; **and** `hits_words` on the record surfaces only, plus the excess length (characters beyond the gold), because a long text can hit by substring (the OP-F2-5 caveat); the number of ops by class; the refusals by type; the record / constructed / foundation share of `text`; the time (from `timing.jsonl`); verify OK. Unans: correct = abstained.
+**Measures per run**: gold hit with the t9 scorer on `text`: **`hit_exact` (the headline, from 2026-10-12: the normalised text EQUALS a normalised gold alternative)**, `hit_cited` (a longer text that holds the gold counts only if it appears word for word in a sentence the ledger cites: an ok `read_sentence` / `lookup` result), and, as secondary columns, `hits_text` (the old substring rule) and the excess length (characters beyond the gold), because a long text can hit by substring (the OP-F2-5 caveat); `hits_words` on the record surfaces only; the number of ops by class; the refusals by type; the record / constructed / foundation share of `text`; the time (from `timing.jsonl`); verify OK. Unans: correct = abstained. (Until 2026-10-12 the headline was `hits_text`; the first two measurements are scored again under the exact rule in `results_h55/rescore_h55.md` and `results_h55b/rescore_h55b.md`.)
 
-**Control** (C1): Haiku via `vera-loom-control` with the same lookup tools and a free-text answer, scored with `hits_text` on the answer line; for unans, correct = 「不明」.
+**Control** (C1): Haiku via `vera-loom-control` with the same lookup tools and a free-text answer, scored on the answer line (`hit_exact` since 2026-10-12, `hits_text` as a secondary column); for unans, correct = 「不明」.
 
-**Predictions** (P-LOOM-1 … 6):
+**Predictions** (P-LOOM-1 … 6). **Dated note, 2026-10-12 (LOOM-span, owner decision 「正規化後の完全一致を見出しに、部分一致は副欄」): P-LOOM-1, P-LOOM-2 and P-LOOM-4 are about EXACT hits (`hit_exact`) from now on, not `hits_text`.** The numbers below are the predictions as written on 2026-10-11 (when "hit" meant a substring hit); a measurement is judged against them with the exact rule, and `hit_cited` is reported beside it, never counted as a hit of the headline. (h55 and h55b under the old rule: P1 4/7 and 3/7, P2 2/7 and 2/7, P4 6/7 and 7/7; under the exact rule: P1 1/7 and 0/7, P2 0/7 and 1/7, P4 5/7 and 7/7.)
 
-1. Answerable, record_only: 7/7 hits, of which ≥ 5 on the first emit attempt.
-2. Answerable, constructed_allowed: 7/7; constructed share of `text` ≤ 20 % in median.
+1. Answerable, record_only: 7/7 exact hits (`hit_exact`), of which ≥ 5 on the first emit attempt.
+2. Answerable, constructed_allowed: 7/7 exact hits; constructed share of `text` ≤ 20 % in median.
 3. Unans: record_only abstains 3/3; constructed_allowed abstains ≤ 2/3. **The loom's main measurable effect is on unans**: record_only removes the model's unsupported answers.
-4. Control C1: answerable 7/7, unans 「不明」 ≥ 2/3.
+4. Control C1: answerable 7/7 exact hits (the answer line), unans 「不明」 ≥ 2/3.
 5. Ops per answerable run: median 8–20; at least one typed refusal in ≥ 5/14 answerable runs (mostly `not_a_record`, `tier_mismatch`); `unstable_cross` in ≤ 2/14 (single-cross answers are trivially stable).
 6. Wall time per run: 2–4 × the control's.
 
@@ -511,7 +515,7 @@ The order is fixed: **loom → loop 1 → loop 2 → loop 3**. Each loop consume
 
 ### 11.2 Loop 2: growth (passing outputs are stacked onto the frozen stack)
 
-- **What counts as PASS** (decided here, as the coordinator asked; L-LOOM-20): prose — a human `grade: pass` from the grading window **and** no attest mismatch. Code — every gate passed **and** the tests passed (an `attest` record) **and** no mismatch. **A scorer hit alone never counts**: `hits_text` is a substring rule, and a long text can hit it (§10.1).
+- **What counts as PASS** (decided here, as the coordinator asked; L-LOOM-20): prose — a human `grade: pass` from the grading window **and** no attest mismatch. Code — every gate passed **and** the tests passed (an `attest` record) **and** no mismatch. **A scorer hit alone never counts**: `hits_text` is a substring rule, and a long text can hit it; the headline `hit_exact` is the strict one (§10.1).
 - **What is stacked**: a passing run becomes one document for `verantyx/line3/stack.py` (`extend(state, doc)`). The document's rows are `{"sent": <text>, "source": "loom:<run_id>#<output_sha12>"}`. **Constructed segments are replaced by 「、」 before stacking** (L-LOOM-21). 「、」 is a character no tier makes a unit (L-32), so constructed text can never become a posting. Without this, a constructed word stacked once would come back as a record (laundering). The replaced spans and their constructed provenance are stored in the stack ledger row (`stacked {run_id, constructed_spans}`). `space.KINDS` is closed (L-40) and is **not** extended. The provenance is in `source` and in the stack ledger; extending KINDS would change provenance typing, which only the owner may do (§11.3).
 - **Which stack**: a separate stack directory, `fulllead` 300 articles as its prefix (the G4-b build), then the passing woven documents in the order of their grades. The fulllead-only stack is the **no-stacking control**.
 - **Meter**: G4's own: 現れる / 残る / 壊れる (G4 §7.4) and the 2×2 headline (G4 §7.3), per step, on the bank2 questions and on the woven tasks' questions, against the control.
@@ -580,7 +584,7 @@ The loom imports `geometry`, `foundation`, `placement` (only `seated_key`, `exte
 Order: a → b → c → d → (e, f, h in parallel) → g → i → j → k. LOOM-c needs OP-LOOM-1; LOOM-e needs OP-LOOM-2; LOOM-b needs OP-LOOM-3. All three may be prototyped on the recommended default, labelled as such.
 
 #### LOOM-notes (added 2026-10-11, owner question on 気づき)
-Three layers, never mixed: (1) structural PREVENTION — typed refusals already in the core (definition-first, parse gate, unstable key, constructed in record_only); (2) structural NOTES that do not block — a thread-wide consistency pass at `read`/`emit` producing typed annotations in the `annotated` output and the ledger: `CONFLICT` (two crosses with the same centre whose arm contents contradict within the thread, e.g. 首都 ← 東京 vs 首都 ← 大阪), `UNANCHORED` (a constructed unit seated on an arm whose particle the corpus evidence contradicts), `NO_RECORD` (a lookup returned nothing and the model fell back to a constructed unit at that position); same type family as attest's record/testimony/conflict; (3) the model's own NOTICING — not guaranteed by the structure, only made observable: the ledger exposes self-corrections (unseat/swap before emit, a plan change after an empty lookup, recovery after a refusal). Meter columns for (3): self-correction count and kinds, recovery rate after refusals, against the free-text control. Effort: notes 1 d, meter columns 0.5 d.
+Three layers, never mixed: (1) structural PREVENTION — typed refusals already in the core (definition-first, parse gate, unstable key, constructed in record_only); (2) structural NOTES that do not block — a thread-wide consistency pass at `read`/`emit` producing typed annotations in the `annotated` output and the ledger: `CONFLICT` (two crosses with the same centre whose arm contents contradict within the thread, e.g. 首都 ← 東京 vs 首都 ← 大阪), `UNANCHORED` (a constructed unit seated on an arm whose particle the corpus evidence contradicts), `NO_RECORD` (a lookup returned nothing and the model fell back to a constructed unit at that position); and, in runs whose begin row names `notes.v2` (L-LOOM-147), `QUESTION_ECHO` (a prose thread unit of 2 or more characters that is itself a word of the question); same type family as attest's record/testimony/conflict; (3) the model's own NOTICING — not guaranteed by the structure, only made observable: the ledger exposes self-corrections (unseat/swap before emit, a plan change after an empty lookup, recovery after a refusal). Meter columns for (3): self-correction count and kinds, recovery rate after refusals, against the free-text control. Effort: notes 1 d, meter columns 0.5 d.
 
 ### 12.3 Local decisions fixed by this design (L-LOOM-nn; the implementer copies them into LINE3_LOCAL_DECISIONS `## LOOM`)
 

@@ -1,0 +1,343 @@
+{
+ "abandoned": [],
+ "annotated": [
+  {
+   "adhesion": {
+    "n": 2,
+    "particle": "の"
+   },
+   "cid": "c1",
+   "kind": "record",
+   "prov": {
+    "n": 3,
+    "tier": "RUN"
+   },
+   "s": "キューバ",
+   "seat": "+x:0",
+   "tier": "RUN",
+   "uid": "u1"
+  },
+  {
+   "cid": "c1",
+   "kind": "foundation",
+   "prov": {
+    "arm": "+x",
+    "kind": "foundation",
+    "ratio": "144/377",
+    "seats_sha": "a2083d4536377ac0b8381db5df6d0ba6ebcc6d20ec5d16f80f34f74fa802a5d7"
+   },
+   "s": "の",
+   "seat": "+x:1"
+  },
+  {
+   "cid": "c1",
+   "kind": "record",
+   "prov": {
+    "n": 2,
+    "tier": "RUN"
+   },
+   "s": "太陽",
+   "seat": "centre",
+   "tier": "RUN",
+   "uid": "u2"
+  },
+  {
+   "cid": "c2",
+   "join": {
+    "attested": null,
+    "prev": "u2"
+   },
+   "kind": "record",
+   "prov": {
+    "n": 2,
+    "tier": "RUN"
+   },
+   "s": "カクテル",
+   "seat": "centre",
+   "tier": "RUN",
+   "uid": "u3"
+  },
+  {
+   "cid": "c3",
+   "join": {
+    "attested": null,
+    "prev": "u3"
+   },
+   "kind": "record",
+   "prov": {
+    "n": 6,
+    "tier": "RUN"
+   },
+   "s": "という",
+   "seat": "centre",
+   "tier": "RUN",
+   "uid": "u4"
+  },
+  {
+   "cid": "c4",
+   "join": {
+    "attested": [
+     333,
+     12,
+     17
+    ],
+    "prev": "u4"
+   },
+   "kind": "record",
+   "prov": {
+    "n": 9,
+    "tier": "RUN"
+   },
+   "s": "意味",
+   "seat": "centre",
+   "tier": "RUN",
+   "uid": "u5"
+  }
+ ],
+ "answer_view": {
+  "excess_chars": 9,
+  "hit_cited": false,
+  "hit_exact": false,
+  "hit_record_text": true,
+  "hits_text": true
+ },
+ "base": "I2-041",
+ "closing": {
+  "i": 15,
+  "op": "emit",
+  "status": "emitted",
+  "type": null
+ },
+ "control": false,
+ "control_note": null,
+ "declared_model": "claude-haiku-5-5",
+ "driver": "api",
+ "driver_report": {
+  "calls_skipped_after_close": 0,
+  "control_text_chars": null,
+  "ended": "closed",
+  "error": null,
+  "response_models": [
+   "claude-haiku-5-5"
+  ],
+  "stop_reasons": [
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use"
+  ],
+  "system_prompt_sha256": "a16037a8f62a65403c344b5a233d410bc43d0c2c9a878a61dec3499599564087",
+  "text_blocks_dropped": 0,
+  "thinking_dropped": {
+   "chars": 0,
+   "n": 0,
+   "sha256": []
+  },
+  "tool_calls": 14,
+  "tool_choice": {
+   "type": "any"
+  },
+  "tool_less_turns": 0,
+  "tools": [
+   "lookup",
+   "read_sentence",
+   "add",
+   "open_cross",
+   "seat",
+   "seat_run",
+   "weave_span",
+   "unseat",
+   "swap",
+   "extend",
+   "topic",
+   "set_depth",
+   "link",
+   "unlink",
+   "drop",
+   "read",
+   "emit",
+   "abstain",
+   "status",
+   "done"
+  ],
+  "turns": 12,
+  "usage": {
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 0,
+   "calls": 12,
+   "input_tokens": 117485,
+   "output_tokens": 925
+  }
+ },
+ "footnotes": {
+  "hits_words": "hits_words (the gold inside ONE record unit; `score.hits_words`) is false by construction for every multi-unit answer (ハッシュ表, キューバの太陽, カールマルクス, 1981年); it is not a correctness column"
+ },
+ "free_text_dropped": {
+  "chars": 0,
+  "n": 0,
+  "sha256": []
+ },
+ "harness_meta": [
+  {
+   "agent_definition_sha": "a16037a8f62a65403c344b5a233d410bc43d0c2c9a878a61dec3499599564087",
+   "driver": "L2-api",
+   "requested_model": "claude-haiku-5-5"
+  },
+  {
+   "response_model": "claude-haiku-5-5"
+  }
+ ],
+ "ledger": "experiments/line3/loom/runs_h55c/I2-041.constructed_allowed.api/ops.jsonl",
+ "ledger_head": "55caea00fc28dfd6cf1c5922df9d306bb20c3f1caeb7a49d437a8265acc04357",
+ "mode": "constructed_allowed",
+ "model_result": true,
+ "op_counts": {
+  "by_class": {
+   "emit_attempts": 1,
+   "lookups": 4,
+   "ops": 6,
+   "other": 2,
+   "reads": 2
+  },
+  "by_op": {
+   "begin": 1,
+   "emit": 1,
+   "lookup": 2,
+   "read": 2,
+   "read_sentence": 2,
+   "status": 1,
+   "weave_span": 6
+  },
+  "emit_attempts": 1,
+  "model_rows": 15,
+  "rows": 17
+ },
+ "output_text": "キューバの太陽カクテルという意味",
+ "refusals": {
+  "unit_not_in_sentence": 2
+ },
+ "schema": "loom-result-1",
+ "score": {
+  "abstain_type": null,
+  "answer_line": null,
+  "base": "I2-041",
+  "chars": {
+   "constructed": 0,
+   "foundation": 1,
+   "layout": 0,
+   "record": 15
+  },
+  "control": false,
+  "correct": false,
+  "excess_chars": 9,
+  "hit_cited": false,
+  "hit_exact": false,
+  "hit_record_text": true,
+  "hits_text": true,
+  "hits_words": false,
+  "kind": "answerable",
+  "mode": "constructed_allowed",
+  "note": "",
+  "outcome": "emitted",
+  "output_sha": "c66a164520b853bae28646fc730dce43e4cbfb6978d4ed0e291e9cb707c3416b",
+  "replay_verified": true,
+  "share_permille": {
+   "constructed": 0,
+   "foundation": 62,
+   "layout": 0,
+   "record": 937
+  },
+  "stability": [
+   {
+    "cid": "c1",
+    "improving": [],
+    "key": [
+     1,
+     1,
+     288
+    ],
+    "moves_tested": 6,
+    "status": "stable",
+    "tier": "RUN"
+   },
+   {
+    "cid": "c2",
+    "improving": [],
+    "key": [
+     0,
+     0,
+     0
+    ],
+    "moves_tested": 0,
+    "status": "trivially_stable",
+    "tier": "RUN"
+   },
+   {
+    "cid": "c3",
+    "improving": [],
+    "key": [
+     0,
+     0,
+     0
+    ],
+    "moves_tested": 0,
+    "status": "trivially_stable",
+    "tier": "RUN"
+   },
+   {
+    "cid": "c4",
+    "improving": [],
+    "key": [
+     0,
+     0,
+     0
+    ],
+    "moves_tested": 0,
+    "status": "trivially_stable",
+    "tier": "RUN"
+   }
+  ],
+  "status": "miss",
+  "task_id": "bank2/I2-041.constructed_allowed",
+  "text": "キューバの太陽カクテルという意味",
+  "verify_status": "OK"
+ },
+ "self_corrections": {
+  "counts": {
+   "plan_change_after_empty": 1,
+   "recovery_after_refusal": 1,
+   "refusals_recoverable": 2,
+   "unseat_swap_before_close": 0
+  },
+  "plan_change_after_empty": [
+   {
+    "i": 2,
+    "next_i": 3,
+    "next_op": "lookup"
+   }
+  ],
+  "recovery_after_refusal": [
+   {
+    "i": 5,
+    "op": "weave_span",
+    "refusal": "unit_not_in_sentence"
+   }
+  ],
+  "refusals_recoverable": 2,
+  "unseat_swap_before_close": []
+ },
+ "t_loom_34": "unchecked",
+ "task_id": "bank2/I2-041.constructed_allowed",
+ "wall": {
+  "driver_ns": 12217907875,
+  "ledger_ns": 12217553708
+ }
+}

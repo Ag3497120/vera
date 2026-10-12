@@ -2577,7 +2577,8 @@ def cmd_loom(args) -> int:
                 ((args.mode, "ca" if args.mode == "constructed_allowed" else "ro"),)
         tasks = [{"task_id": "demo/tokyo_" + sfx, "text": "東京・日本・首都を一文に織れ", "lang": "prose", "mode": m, "tiers": ["WORD"],
                   "corpus": corpus} for m, sfx in modes]          # task ids = L-LOOM-25 (demo/tokyo_ca, demo/tokyo_ro); run folders demo_ca / demo_ro
-        srv = lm.LoomServer(tasks, args.runs_dir, (), args.stability)
+        # L-LOOM-122: the demo is the pinned worked example of design 3.5; its bytes (HEADs) were recorded under the cap profile v1, so it keeps it
+        srv = lm.LoomServer(tasks, args.runs_dir, (), args.stability, caps="v1", notes="notes.v1")
         rc = 0
         for m, sfx in modes:
             rid = "demo_" + sfx
@@ -3268,7 +3269,7 @@ def main(argv: Optional[list] = None) -> int:
     p = sub.add_parser("loom", help="the loom: the model's only output channel is operating Vera's structure (mcp | replay | verify | note | close | output | demo)")
     p.set_defaults(store="")          # the loom reads no store and no user config: the sandbox is the corpus and the run folder
     lsub = p.add_subparsers(dest="loom_op", required=True)
-    q = lsub.add_parser("mcp", help="the FastMCP stdio server `vera-loom` (the 18 operations)")
+    q = lsub.add_parser("mcp", help="the FastMCP stdio server `vera-loom` (the 20 operations)")
     q.add_argument("--tasks", required=True, help="task bank jsonl ({task_id, text, lang, mode, tiers, corpus, ...}; never holds a gold)")
     q.add_argument("--runs-dir", dest="runs_dir", required=True, help="the only folder the server writes: <runs-dir>/<run_id>/ops.jsonl")
     q.add_argument("--allow-root", dest="allow_root", action="append", default=None, help="an extra folder the server may READ (repeatable)")

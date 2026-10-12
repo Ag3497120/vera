@@ -6,16 +6,23 @@ function as `vera loom output`); free text, lookups, reads, statuses and refused
 `"control": "free_text"`; no loom, free-text answer; design 9.3 / 10.1) is the one place where free text IS the output: its text is the last
 `free_text_control` row of a verified ledger.  Every result of a control run says `control: true` and its mode is `free_text`.
 
-THE RULE (T9, experiments/line3/t9/scorer.py, loaded, not copied).  Gold alternatives are separated by `|`; a candidate holds the gold when a
-normalised gold alternative is a substring of the normalised text of ONE word of the entry (NFKC, casefold, no whitespace, no 「・」, digits).
-A loom output is ONE candidate word (the text of the emit row), so the primary hit is `hits_text(gold, text)`.  Three stricter views are
-reported beside it and never replace it (the OP-F2-5 caveat: a long text can hit by substring):
+THE RULE (T9, experiments/line3/t9/scorer.py, loaded, not copied; the headline changed on 2026-10-12, LOOM-span, owner decision).  Gold alternatives are
+separated by `|`; every text is normalised the T9 way (NFKC, casefold, no whitespace, no 「・」, digits).  A loom output is ONE candidate text (the text of the
+emit row).
+    hit_exact         THE HEADLINE.  The normalised answer text EQUALS a normalised gold alternative.  `status` hit / miss and `correct` follow it.
+    hit_cited         a LONGER text (it holds a gold alternative but is not equal to one) counts only if it appears word for word (LETTERS ONLY on both
+                      sides, as a substring: L-LOOM-143) in a corpus sentence THE LEDGER CITES: a sentence in the result of an ok `read_sentence` or `lookup` row of the run.
+                      A quotation of what the run itself read; never a hit of the headline.  False when hit_exact is true.
+    hits_text         SECONDARY.  The old substring rule: a normalised gold alternative is a substring of the normalised text.
+    excess_chars      SECONDARY.  Normalised characters of the text beyond the shortest gold alternative it contains.
+  Three stricter views are reported beside them and never replace them (the OP-F2-5 caveat: a long text can hit by substring):
     hits_words        the gold inside ONE record unit's surface (`hits_words(gold, record surfaces)`)
     hit_record_text   the gold inside the concatenation of the record and foundation segments only (the constructed words removed)
-    excess_chars      normalised characters of the text beyond the shortest matching gold alternative
+Before 2026-10-12 the headline was hits_text (the first two measurements, results_h55 and results_h55b, were scored that way); `rescore_h55.md` and
+`rescore_h55b.md` give them again under the exact rule (their JSON files are append-only and untouched).
 Unanswerable questions (`unans`): correct = abstained (a control: the answer line starts with 「不明」).
-A CONTROL is scored on its ANSWER LINE only (first non-empty NFKC line, `answer_line`): `hits_text` and `excess_chars` look at that line, and so does the
-abstention test; the rest of its message is kept in `text` and scored nowhere (L-LOOM-59).
+A CONTROL is scored on its ANSWER LINE only (first non-empty NFKC line, `answer_line`): `hit_exact`, `hits_text` and `excess_chars` look at that line, and so
+does the abstention test; the rest of its message is kept in `text` and scored nowhere (L-LOOM-59).
 
 Nothing here reads a gold from the task bank the MCP server serves (tasks_bank2.jsonl holds none); the gold comes from bank2.tsv, read here.
 No float anywhere: shares are integer permille of the characters of the text.
@@ -36,8 +43,9 @@ ROOT = os.path.dirname(os.path.dirname(os.path.dirname(HERE)))
 if ROOT not in sys.path:
     sys.path.insert(0, ROOT)
 
+from verantyx.line3 import space as sp                                         # noqa: E402
 from verantyx.loom import ledger as lg                                         # noqa: E402
-from verantyx.loom.ops import CLASS_OF, MODEL_OPS                              # noqa: E402
+from verantyx.loom.ops import CLASS_OF, LEGACY_OPS, MODEL_OPS                  # noqa: E402
 
 BANK2_TSV = os.path.join(ROOT, "experiments/line3/bank2/bank2.tsv")
 T9_SCORER = os.path.join(ROOT, "experiments/line3/t9/scorer.py")
@@ -131,10 +139,32 @@ def share_permille(chars: Dict[str, int]) -> Dict[str, int]:
     return {k: (0 if total == 0 else (1000 * v) // total) for k, v in chars.items()}
 
 
-def answer_view(gold: str, text: str, annotated: Optional[Sequence[dict]]) -> dict:
-    """The T9 rule on a text (+ its annotation, if any)."""
-    out: Dict[str, Any] = {"hits_text": t9.hits_text(gold, text), "excess_chars": excess_chars(gold, text),
-                           "hits_words": None, "hit_record_text": None}
+def hit_exact(gold: str, text: str) -> bool:
+    """The headline: the normalised text IS a normalised gold alternative."""
+    return t9.norm(text) in t9.golds(gold)
+
+
+def letters_only(x: str) -> str:
+    """The comparison form of `hit_cited` (L-LOOM-143): `t9.norm`, then only the characters `space._has_letter` calls letters.  The T9 normaliser drops
+    whitespace and 「・」 and nothing else, so 「アメリカを「青」」 keeps its quotation marks there; the loom's `weave_span` writes none of them (its gaps are
+    letters only), so a text it wove is compared with the corpus sentence on the same footing: letters on both sides."""
+    return "".join(ch for ch in t9.norm(x) if sp._has_letter(ch))
+
+
+def hit_cited(gold: str, text: str, cited: Optional[Sequence[str]]) -> bool:
+    """A longer text (it holds a gold alternative, it is not equal to one) that appears word for word in a sentence the ledger cites.  "Word for word" is
+    judged on LETTERS ONLY on both sides (`letters_only`: punctuation, quotes, brackets, hyphens and 「・」 are not compared), the same footing as the loom's
+    own `weave_span` read-out (L-LOOM-143)."""
+    if cited is None or hit_exact(gold, text) or not t9.hits_text(gold, text):
+        return False
+    t = letters_only(text)
+    return bool(t) and any(t in letters_only(c) for c in cited)
+
+
+def answer_view(gold: str, text: str, annotated: Optional[Sequence[dict]], cited: Optional[Sequence[str]] = None) -> dict:
+    """The T9 rule on a text (+ its annotation, if any; + the sentences the ledger cites)."""
+    out: Dict[str, Any] = {"hit_exact": hit_exact(gold, text), "hit_cited": hit_cited(gold, text, cited), "hits_text": t9.hits_text(gold, text),
+                           "excess_chars": excess_chars(gold, text), "hits_words": None, "hit_record_text": None}
     if annotated is not None:
         recs = [s["s"] for s in annotated if s["kind"] == "record"]
         out["hits_words"] = t9.hits_words(gold, recs)
@@ -191,13 +221,36 @@ def self_corrections(rows: Sequence[dict]) -> dict:
                 out["plan_change_after_empty"].append({"i": r["i"], "next_i": nxt["i"], "next_op": nxt["op"]})
     for k, r in enumerate(model):
         res = r["result"]
-        if res.get("ok") is False and res.get("refusal") not in _NON_RECOVERABLE and r["op"] in MODEL_OPS:
+        if res.get("ok") is False and res.get("refusal") not in _NON_RECOVERABLE and r["op"] in MODEL_OPS + LEGACY_OPS:
             out["refusals_recoverable"] += 1
             if any(q["op"] == r["op"] and q["result"].get("ok") is True for q in model[k + 1:]):
                 out["recovery_after_refusal"].append({"i": r["i"], "op": r["op"], "refusal": res.get("refusal")})
     out["counts"] = {"unseat_swap_before_close": len(out["unseat_swap_before_close"]),
                      "plan_change_after_empty": len(out["plan_change_after_empty"]),
                      "recovery_after_refusal": len(out["recovery_after_refusal"]), "refusals_recoverable": out["refusals_recoverable"]}
+    return out
+
+
+def cited_sentences(rows: Sequence[dict]) -> List[str]:
+    """The corpus sentences a run CITES (LOOM-span scoring): the `text` of every sentence in the result of an ok model `read_sentence` row and in the
+    `matches[*].sentences` of an ok model `lookup` row, in ledger order, without repeats.  Rows of a ledger that has already verified."""
+    out: List[str] = []
+    seen = set()
+
+    def add(t: Any) -> None:
+        if isinstance(t, str) and t not in seen:
+            seen.add(t)
+            out.append(t)
+
+    for r in rows:
+        if r.get("actor") != "model" or r["result"].get("ok") is not True:
+            continue
+        if r["op"] == "read_sentence":
+            add(r["result"].get("text"))
+        elif r["op"] == "lookup":
+            for m in r["result"].get("matches") or []:
+                for sen in m.get("sentences") or []:
+                    add(sen.get("text") if isinstance(sen, dict) else None)
     return out
 
 
@@ -262,7 +315,9 @@ class RunScore:
     text: Optional[str] = None
     output_sha: Optional[str] = None
     abstain_type: Optional[str] = None
-    hits_text: Optional[bool] = None
+    hit_exact: Optional[bool] = None            # THE HEADLINE (2026-10-12): the normalised text equals a normalised gold alternative
+    hit_cited: Optional[bool] = None            # a longer text that holds the gold AND appears word for word in a sentence the ledger cites
+    hits_text: Optional[bool] = None            # secondary: the old substring rule (the headline before 2026-10-12)
     hits_words: Optional[bool] = None
     hit_record_text: Optional[bool] = None
     excess_chars: Optional[int] = None
@@ -276,6 +331,11 @@ class RunScore:
 
     def to_obj(self) -> dict:
         return asdict(self)
+
+
+def _rows_of(run_dir: str) -> List[dict]:
+    lines, _ = lg.read_lines(run_dir)
+    return [json.loads(ln) for ln in lines]
 
 
 def _closing_row(run_dir: str) -> Tuple[Optional[dict], Optional[dict]]:
@@ -339,10 +399,10 @@ def score_run(run_dir: str, bank_rows: Dict[str, dict], gold_tbl: Dict[str, dict
             return RunScore(status="unscored", correct=None, note="no gold for this task (a demo task)", **common)
         if tf.kind == "unans":
             return RunScore(status="answered_unans", correct=False, note="an unanswerable question was answered with an output", **common)
-        view = answer_view(tf.gold, text, ann)
-        ok = view["hits_text"]
-        return RunScore(status="hit" if ok else "miss", correct=ok, hits_text=view["hits_text"], hits_words=view["hits_words"],
-                        hit_record_text=view["hit_record_text"], excess_chars=view["excess_chars"], **common)
+        view = answer_view(tf.gold, text, ann, cited_sentences(_rows_of(run_dir)))
+        ok = view["hit_exact"]
+        return RunScore(status="hit" if ok else "miss", correct=ok, hit_exact=view["hit_exact"], hit_cited=view["hit_cited"], hits_text=view["hits_text"],
+                        hits_words=view["hits_words"], hit_record_text=view["hit_record_text"], excess_chars=view["excess_chars"], **common)
     if abstain is not None:
         typ = abstain["result"]["type"]
         if tf.kind == "unans":
@@ -373,9 +433,10 @@ def _score_control(run_dir: str, tf: TaskFacts, base: dict) -> RunScore:
         return RunScore(status="unscored", outcome="emitted", correct=None, note=note, **common)
     if tf.kind == "unans":
         return RunScore(status="answered_unans", outcome="emitted", correct=False, note=note, **common)
-    view = answer_view(tf.gold, line, None)                                  # the ANSWER LINE is scored, not the whole message (L-LOOM-59)
-    ok = view["hits_text"]
-    return RunScore(status="hit" if ok else "miss", outcome="emitted", correct=ok, hits_text=ok, excess_chars=view["excess_chars"], note=note, **common)
+    view = answer_view(tf.gold, line, None, cited_sentences(_rows_of(run_dir)))              # the ANSWER LINE is scored, not the whole message (L-LOOM-59)
+    ok = view["hit_exact"]
+    return RunScore(status="hit" if ok else "miss", outcome="emitted", correct=ok, hit_exact=ok, hit_cited=view["hit_cited"], hits_text=view["hits_text"],
+                    excess_chars=view["excess_chars"], note=note, **common)
 
 
 def _task_id_unverified(run_dir: str) -> Optional[str]:
