@@ -28,6 +28,7 @@ from verantyx.loom import fixture as fx
 from verantyx.loom import ledger as lg
 from verantyx.loom import notes as notelib
 from verantyx.loom.ledger import SandboxError
+from verantyx.loom import paths
 from verantyx.loom.corpus import Corpus
 from verantyx.loom.ops import MODEL_OPS, Run, check_task_against_index, normalize_task, refusal
 from verantyx.loom.read import DEFAULT_STABILITY, STABILITY_MODES
@@ -170,11 +171,11 @@ class LoomServer:
                 return refusal(bad["refusal"], bad["detail"])
         run = Run(corpus, task, model, rid, self.stability, index, CAPS_PROFILES[self.caps_profile][task["lang"]], self.notes_profile)
         led = lg.Ledger(rdir)
-        meta = {"corpus": str(Path(task["corpus"]).resolve()), "task_id": task_id, "isolated": self.isolation is not None}
+        meta = {"corpus": paths.rel_to_root(task["corpus"]), "corpus_sha": corpus.corpus_sha, "task_id": task_id, "isolated": self.isolation is not None}      # LOOM-path: relative to the repo root
         if self.isolation is not None:
             meta["isolation_profile_sha"] = self.isolation
         if index is not None:
-            meta["fixture"] = str(Path(task["fixture"]).resolve())
+            meta["fixture"] = paths.rel_to_root(task["fixture"])
         led.create(meta)
         with led.locked() as lk:
             body = run.begin_body()

@@ -50,6 +50,7 @@ from typing import Callable, Dict, List, Optional
 from verantyx.loom import fixture as fx
 from verantyx.loom import isolate as iso
 from verantyx.loom import ledger as lg
+from verantyx.loom import paths
 from verantyx.loom.mcp import LoomServer, append_outside_row
 from verantyx.loom.scripted import ScriptedWeaver
 
@@ -229,7 +230,7 @@ def what_the_run_names(run_dir) -> Optional[dict]:
     try:
         res = json.loads(lines[0])["result"]
         task, header = res["task"], res["header"]
-        fixture = lg.Ledger(run_dir).read_meta().get("fixture")
+        fixture = paths.fixture_path(lg.Ledger(run_dir).read_meta().get("fixture"))
         target = (task.get("target") or {}).get("file")
         tests = task.get("tests")
         sha = header.get("code_index_sha")
