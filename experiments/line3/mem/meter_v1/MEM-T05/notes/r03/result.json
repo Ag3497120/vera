@@ -1,0 +1,1925 @@
+{
+ "answers": [
+  {
+   "answer": {
+    "kind": "value",
+    "values": [
+     "火曜"
+    ]
+   },
+   "episode": {
+    "calls_skipped_after_close": 0,
+    "control_text_chars": null,
+    "ended": "closed",
+    "error": null,
+    "response_models": [
+     "claude-haiku-5-5"
+    ],
+    "stop_reasons": [
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use"
+    ],
+    "text_blocks_dropped": 0,
+    "thinking_dropped": {
+     "chars": 0,
+     "n": 0,
+     "sha256": []
+    },
+    "tool_calls": 5,
+    "tool_choice": {
+     "type": "any"
+    },
+    "tool_less_turns": 0,
+    "turns": 5,
+    "usage": {
+     "cache_creation_input_tokens": 0,
+     "cache_read_input_tokens": 0,
+     "calls": 5,
+     "input_tokens": 22542,
+     "output_tokens": 229
+    }
+   },
+   "gold": "火曜",
+   "hit": true,
+   "index": 7,
+   "kind": "plain",
+   "ledger": "store/answers/a0001",
+   "output": {
+    "output_sha": "378022e847940728d4e6113e5cb11b2fc8c8bf9bde75e02d3b18f8ea2ade2574",
+    "recalls": [
+     {
+      "answers": [],
+      "question": "救護班説明の締切は何曜日ですか",
+      "verdict": "NONE"
+     }
+    ],
+    "status": "emitted",
+    "text": "火曜"
+   },
+   "q": "救護班説明の締切は何曜日ですか？",
+   "run_id": "a0001"
+  },
+  {
+   "answer": {
+    "kind": "value",
+    "values": [
+     "950円"
+    ]
+   },
+   "episode": {
+    "calls_skipped_after_close": 0,
+    "control_text_chars": null,
+    "ended": "closed",
+    "error": null,
+    "response_models": [
+     "claude-haiku-5-5"
+    ],
+    "stop_reasons": [
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use"
+    ],
+    "text_blocks_dropped": 0,
+    "thinking_dropped": {
+     "chars": 0,
+     "n": 0,
+     "sha256": []
+    },
+    "tool_calls": 5,
+    "tool_choice": {
+     "type": "any"
+    },
+    "tool_less_turns": 0,
+    "turns": 4,
+    "usage": {
+     "cache_creation_input_tokens": 0,
+     "cache_read_input_tokens": 0,
+     "calls": 4,
+     "input_tokens": 18156,
+     "output_tokens": 253
+    }
+   },
+   "gold": "矛盾: 850円 と 950円",
+   "hit": false,
+   "index": 3,
+   "kind": "contradicted",
+   "ledger": "store/answers/a0002",
+   "output": {
+    "output_sha": "3fdbb82f77b59cdc54e33e6b29c2ce2a8185c4c3db4004095872618bb0540bf2",
+    "recalls": [
+     {
+      "answers": [
+       [
+        "950円"
+       ]
+      ],
+      "question": "弁当の単価は何ですか",
+      "verdict": "ANSWER"
+     }
+    ],
+    "status": "emitted",
+    "text": "950円"
+   },
+   "q": "弁当の単価はいくらですか？",
+   "run_id": "a0002"
+  },
+  {
+   "answer": {
+    "kind": "value",
+    "values": [
+     "大阪市民ギャラリー"
+    ]
+   },
+   "episode": {
+    "calls_skipped_after_close": 0,
+    "control_text_chars": null,
+    "ended": "closed",
+    "error": null,
+    "response_models": [
+     "claude-haiku-5-5"
+    ],
+    "stop_reasons": [
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use"
+    ],
+    "text_blocks_dropped": 0,
+    "thinking_dropped": {
+     "chars": 0,
+     "n": 0,
+     "sha256": []
+    },
+    "tool_calls": 5,
+    "tool_choice": {
+     "type": "any"
+    },
+    "tool_less_turns": 0,
+    "turns": 4,
+    "usage": {
+     "cache_creation_input_tokens": 0,
+     "cache_read_input_tokens": 0,
+     "calls": 4,
+     "input_tokens": 18092,
+     "output_tokens": 235
+    }
+   },
+   "gold": "大阪市民ギャラリー",
+   "hit": true,
+   "index": 8,
+   "kind": "plain",
+   "ledger": "store/answers/a0003",
+   "output": {
+    "output_sha": "673dcae20c07194f9175bccfb712cfecbc5bb8fb75df7dde82d93fb337812644",
+    "recalls": [
+     {
+      "answers": [
+       [
+        "大阪市民ギャラリー"
+       ]
+      ],
+      "question": "展示見学の場所は何ですか",
+      "verdict": "ANSWER"
+     }
+    ],
+    "status": "emitted",
+    "text": "大阪市民ギャラリー"
+   },
+   "q": "展示見学の場所はどこですか？",
+   "run_id": "a0003"
+  },
+  {
+   "answer": {
+    "kind": "value",
+    "values": [
+     "中央公園"
+    ]
+   },
+   "episode": {
+    "calls_skipped_after_close": 0,
+    "control_text_chars": null,
+    "ended": "closed",
+    "error": null,
+    "response_models": [
+     "claude-haiku-5-5"
+    ],
+    "stop_reasons": [
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use"
+    ],
+    "text_blocks_dropped": 0,
+    "thinking_dropped": {
+     "chars": 0,
+     "n": 0,
+     "sha256": []
+    },
+    "tool_calls": 8,
+    "tool_choice": {
+     "type": "any"
+    },
+    "tool_less_turns": 0,
+    "turns": 7,
+    "usage": {
+     "cache_creation_input_tokens": 0,
+     "cache_read_input_tokens": 0,
+     "calls": 7,
+     "input_tokens": 38018,
+     "output_tokens": 376
+    }
+   },
+   "gold": "矛盾: 南運動場 と 中央公園",
+   "hit": false,
+   "index": 2,
+   "kind": "contradicted",
+   "ledger": "store/answers/a0004",
+   "output": {
+    "output_sha": "dc83884c71cae42b6ec18d8ee22e6462118ef8f74fc5e3b7db6e75bda9fe4023",
+    "recalls": [
+     {
+      "answers": [],
+      "question": "避難訓練の場所は何ですか",
+      "verdict": "NONE"
+     },
+     {
+      "answers": [],
+      "question": "避難訓練の場所はどこですか",
+      "verdict": "NONE"
+     },
+     {
+      "answers": [
+       [
+        "中央公園"
+       ]
+      ],
+      "question": "地域防災フォーラムの避難訓練場所は何ですか",
+      "verdict": "ANSWER"
+     }
+    ],
+    "status": "emitted",
+    "text": "中央公園"
+   },
+   "q": "避難訓練の場所はどこですか？",
+   "run_id": "a0004"
+  },
+  {
+   "answer": {
+    "kind": "none",
+    "values": []
+   },
+   "episode": {
+    "calls_skipped_after_close": 0,
+    "control_text_chars": null,
+    "ended": "closed",
+    "error": null,
+    "response_models": [
+     "claude-haiku-5-5"
+    ],
+    "stop_reasons": [
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use"
+    ],
+    "text_blocks_dropped": 0,
+    "thinking_dropped": {
+     "chars": 0,
+     "n": 0,
+     "sha256": []
+    },
+    "tool_calls": 19,
+    "tool_choice": {
+     "type": "any"
+    },
+    "tool_less_turns": 0,
+    "turns": 14,
+    "usage": {
+     "cache_creation_input_tokens": 0,
+     "cache_read_input_tokens": 0,
+     "calls": 14,
+     "input_tokens": 88671,
+     "output_tokens": 1004
+    }
+   },
+   "gold": "13:30",
+   "hit": null,
+   "index": 4,
+   "kind": "updated",
+   "ledger": "store/answers/a0005",
+   "output": {
+    "recalls": [
+     {
+      "answers": [],
+      "question": "入場開始の時間は何時ですか",
+      "verdict": "NONE"
+     },
+     {
+      "answers": [],
+      "question": "入場開始は何時ですか",
+      "verdict": "NONE"
+     },
+     {
+      "answers": [
+       [
+        "13:30"
+       ]
+      ],
+      "question": "地域防災フォーラムの入場開始は何時ですか",
+      "verdict": "ANSWER"
+     }
+    ],
+    "status": "abstained",
+    "type": "cannot_weave"
+   },
+   "q": "入場開始は何時ですか？",
+   "run_id": "a0005"
+  },
+  {
+   "answer": {
+    "kind": "contested",
+    "values": [
+     "藤田",
+     "野口",
+     "宮本",
+     "黒田"
+    ]
+   },
+   "episode": {
+    "calls_skipped_after_close": 0,
+    "control_text_chars": null,
+    "ended": "closed",
+    "error": null,
+    "response_models": [
+     "claude-haiku-5-5"
+    ],
+    "stop_reasons": [
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use"
+    ],
+    "text_blocks_dropped": 0,
+    "thinking_dropped": {
+     "chars": 0,
+     "n": 0,
+     "sha256": []
+    },
+    "tool_calls": 7,
+    "tool_choice": {
+     "type": "any"
+    },
+    "tool_less_turns": 0,
+    "turns": 6,
+    "usage": {
+     "cache_creation_input_tokens": 0,
+     "cache_read_input_tokens": 0,
+     "calls": 6,
+     "input_tokens": 29232,
+     "output_tokens": 336
+    }
+   },
+   "gold": "矛盾: 藤田 と 野口",
+   "hit": false,
+   "index": 0,
+   "kind": "contradicted",
+   "ledger": "store/answers/a0006",
+   "output": {
+    "recalls": [
+     {
+      "answers": [],
+      "question": "司会担当は誰ですか",
+      "verdict": "NONE"
+     },
+     {
+      "answers": [],
+      "question": "司会担当の担当は何ですか",
+      "verdict": "NONE"
+     },
+     {
+      "answers": [
+       [
+        "藤田"
+       ],
+       [
+        "野口"
+       ],
+       [
+        "宮本"
+       ],
+       [
+        "黒田"
+       ]
+      ],
+      "question": "地域防災フォーラムの司会担当は誰ですか",
+      "verdict": "CHOICE"
+     }
+    ],
+    "status": "abstained",
+    "type": "contested"
+   },
+   "q": "司会担当は誰ですか？",
+   "run_id": "a0006"
+  },
+  {
+   "answer": {
+    "kind": "none",
+    "values": []
+   },
+   "episode": {
+    "calls_skipped_after_close": 0,
+    "control_text_chars": null,
+    "ended": "closed",
+    "error": null,
+    "response_models": [
+     "claude-haiku-5-5"
+    ],
+    "stop_reasons": [
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use"
+    ],
+    "text_blocks_dropped": 0,
+    "thinking_dropped": {
+     "chars": 0,
+     "n": 0,
+     "sha256": []
+    },
+    "tool_calls": 7,
+    "tool_choice": {
+     "type": "any"
+    },
+    "tool_less_turns": 0,
+    "turns": 6,
+    "usage": {
+     "cache_creation_input_tokens": 0,
+     "cache_read_input_tokens": 0,
+     "calls": 6,
+     "input_tokens": 27694,
+     "output_tokens": 360
+    }
+   },
+   "gold": "v6",
+   "hit": null,
+   "index": 6,
+   "kind": "updated",
+   "ledger": "store/answers/a0007",
+   "output": {
+    "recalls": [
+     {
+      "answers": [],
+      "question": "案内チラシの版は何ですか",
+      "verdict": "NONE"
+     },
+     {
+      "answers": [],
+      "question": "案内チラシの版は何ですか？",
+      "verdict": "NONE"
+     },
+     {
+      "answers": [],
+      "question": "案内チラシの版は何ですか",
+      "verdict": "NONE"
+     },
+     {
+      "answers": [],
+      "question": "案内チラシの版は何か",
+      "verdict": "NONE"
+     }
+    ],
+    "status": "abstained",
+    "type": "no_record"
+   },
+   "q": "案内チラシの版は何ですか？",
+   "run_id": "a0007"
+  },
+  {
+   "answer": {
+    "kind": "value",
+    "values": [
+     "500円"
+    ]
+   },
+   "episode": {
+    "calls_skipped_after_close": 0,
+    "control_text_chars": null,
+    "ended": "closed",
+    "error": null,
+    "response_models": [
+     "claude-haiku-5-5"
+    ],
+    "stop_reasons": [
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use"
+    ],
+    "text_blocks_dropped": 0,
+    "thinking_dropped": {
+     "chars": 0,
+     "n": 0,
+     "sha256": []
+    },
+    "tool_calls": 4,
+    "tool_choice": {
+     "type": "any"
+    },
+    "tool_less_turns": 0,
+    "turns": 4,
+    "usage": {
+     "cache_creation_input_tokens": 0,
+     "cache_read_input_tokens": 0,
+     "calls": 4,
+     "input_tokens": 17157,
+     "output_tokens": 207
+    }
+   },
+   "gold": "500円",
+   "hit": true,
+   "index": 9,
+   "kind": "plain",
+   "ledger": "store/answers/a0008",
+   "output": {
+    "output_sha": "ab0a8b4215db6b5d17f11a52c6dd9a19aa444c12e5e817c2b8233da445acd341",
+    "recalls": [
+     {
+      "answers": [
+       [
+        "500円"
+       ]
+      ],
+      "question": "資料袋の単価は何ですか",
+      "verdict": "ANSWER"
+     }
+    ],
+    "status": "emitted",
+    "text": "500円"
+   },
+   "q": "資料袋の単価はいくらですか？",
+   "run_id": "a0008"
+  },
+  {
+   "answer": {
+    "kind": "value",
+    "values": [
+     "5万円"
+    ]
+   },
+   "episode": {
+    "calls_skipped_after_close": 0,
+    "control_text_chars": null,
+    "ended": "closed",
+    "error": null,
+    "response_models": [
+     "claude-haiku-5-5"
+    ],
+    "stop_reasons": [
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use"
+    ],
+    "text_blocks_dropped": 0,
+    "thinking_dropped": {
+     "chars": 0,
+     "n": 0,
+     "sha256": []
+    },
+    "tool_calls": 4,
+    "tool_choice": {
+     "type": "any"
+    },
+    "tool_less_turns": 0,
+    "turns": 4,
+    "usage": {
+     "cache_creation_input_tokens": 0,
+     "cache_read_input_tokens": 0,
+     "calls": 4,
+     "input_tokens": 17232,
+     "output_tokens": 207
+    }
+   },
+   "gold": "5万円",
+   "hit": true,
+   "index": 5,
+   "kind": "updated",
+   "ledger": "store/answers/a0009",
+   "output": {
+    "output_sha": "396c9ed0c7640d36a316b30b10fedf6903faa0b07b10faffc6b2d43beb9b0573",
+    "recalls": [
+     {
+      "answers": [
+       [
+        "5万円"
+       ]
+      ],
+      "question": "会場保険の上限は何ですか",
+      "verdict": "ANSWER"
+     }
+    ],
+    "status": "emitted",
+    "text": "5万円"
+   },
+   "q": "会場保険の上限はいくらですか？",
+   "run_id": "a0009"
+  },
+  {
+   "answer": {
+    "kind": "contested",
+    "values": [
+     "藤田",
+     "野口",
+     "宮本",
+     "黒田"
+    ]
+   },
+   "episode": {
+    "calls_skipped_after_close": 0,
+    "control_text_chars": null,
+    "ended": "closed",
+    "error": null,
+    "response_models": [
+     "claude-haiku-5-5"
+    ],
+    "stop_reasons": [
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use"
+    ],
+    "text_blocks_dropped": 0,
+    "thinking_dropped": {
+     "chars": 0,
+     "n": 0,
+     "sha256": []
+    },
+    "tool_calls": 7,
+    "tool_choice": {
+     "type": "any"
+    },
+    "tool_less_turns": 0,
+    "turns": 6,
+    "usage": {
+     "cache_creation_input_tokens": 0,
+     "cache_read_input_tokens": 0,
+     "calls": 6,
+     "input_tokens": 29129,
+     "output_tokens": 387
+    }
+   },
+   "gold": "矛盾: 宮本 と 黒田",
+   "hit": false,
+   "index": 1,
+   "kind": "contradicted",
+   "ledger": "store/answers/a0010",
+   "output": {
+    "recalls": [
+     {
+      "answers": [],
+      "question": "登壇者紹介の担当者は誰ですか",
+      "verdict": "NONE"
+     },
+     {
+      "answers": [],
+      "question": "登壇者紹介の担当者は何ですか",
+      "verdict": "NONE"
+     },
+     {
+      "answers": [],
+      "question": "登壇者紹介の担当は何ですか",
+      "verdict": "NONE"
+     },
+     {
+      "answers": [
+       [
+        "藤田"
+       ],
+       [
+        "野口"
+       ],
+       [
+        "宮本"
+       ],
+       [
+        "黒田"
+       ]
+      ],
+      "question": "地域防災フォーラムの登壇者紹介担当は何ですか",
+      "verdict": "CHOICE"
+     }
+    ],
+    "status": "abstained",
+    "type": "contested"
+   },
+   "q": "登壇者紹介の担当者は誰ですか？",
+   "run_id": "a0010"
+  }
+ ],
+ "arm": "notes",
+ "arm_label": "A2",
+ "cost": {
+  "api_calls": 145,
+  "input_tokens": 2353859,
+  "output_tokens": 10829,
+  "refused_writes": 3,
+  "rewrites": 3,
+  "text_blocks_dropped": 0,
+  "tool_calls": 194,
+  "turns_without_report": 0
+ },
+ "ended": "story_complete",
+ "false_pairs": [],
+ "model": "claude-haiku-5-5",
+ "noticed": [
+  {
+   "fact": "司会担当",
+   "kind": "contradiction",
+   "noticed": true,
+   "pairs": [
+    [
+     "1-1",
+     "1-2"
+    ]
+   ],
+   "plant": 0
+  },
+  {
+   "fact": "登壇者紹介担当",
+   "kind": "contradiction",
+   "noticed": true,
+   "pairs": [
+    [
+     "1-3",
+     "1-4"
+    ]
+   ],
+   "plant": 1
+  },
+  {
+   "fact": "避難訓練場所",
+   "kind": "contradiction",
+   "noticed": false,
+   "pairs": [],
+   "plant": 2
+  },
+  {
+   "fact": "基調講演者の到着予定",
+   "kind": "contradiction",
+   "noticed": true,
+   "pairs": [
+    [
+     "1-6",
+     "3-1"
+    ]
+   ],
+   "plant": 3
+  },
+  {
+   "fact": "弁当の単価",
+   "kind": "contradiction",
+   "noticed": false,
+   "pairs": [],
+   "plant": 4
+  },
+  {
+   "fact": "来賓席数",
+   "kind": "contradiction",
+   "noticed": false,
+   "pairs": [],
+   "plant": 5
+  },
+  {
+   "fact": "入場開始時刻",
+   "kind": "update",
+   "noticed": false,
+   "pairs": [],
+   "plant": 6
+  },
+  {
+   "fact": "会場保険上限",
+   "kind": "update",
+   "noticed": false,
+   "pairs": [],
+   "plant": 7
+  },
+  {
+   "fact": "案内チラシ版",
+   "kind": "update",
+   "noticed": false,
+   "pairs": [],
+   "plant": 8
+  },
+  {
+   "fact": "救護班説明と通訳ブリーフィングの締切",
+   "kind": "list_trap",
+   "noticed": false,
+   "pairs": [],
+   "plant": 9
+  },
+  {
+   "fact": "会場と展示見学の場所",
+   "kind": "list_trap",
+   "noticed": false,
+   "pairs": [],
+   "plant": 10
+  },
+  {
+   "fact": "椅子と舞台の定員",
+   "kind": "list_trap",
+   "noticed": false,
+   "pairs": [],
+   "plant": 11
+  },
+  {
+   "fact": "会場案内図と当日配布資料の版",
+   "kind": "list_trap",
+   "noticed": false,
+   "pairs": [],
+   "plant": 12
+  },
+  {
+   "fact": "連絡用無線",
+   "kind": "repeat",
+   "noticed": false,
+   "pairs": [],
+   "plant": 13
+  },
+  {
+   "fact": "共有ルート図",
+   "kind": "repeat",
+   "noticed": false,
+   "pairs": [],
+   "plant": 14
+  },
+  {
+   "fact": "会場図作成と経路確認の依存順",
+   "kind": "reversal",
+   "noticed": true,
+   "pairs": [
+    [
+     "3-3",
+     "3-9"
+    ]
+   ],
+   "plant": 15
+  },
+  {
+   "fact": "警備配置確認と避難訓練実施の依存順",
+   "kind": "reversal",
+   "noticed": true,
+   "pairs": [
+    [
+     "3-4",
+     "3-10"
+    ]
+   ],
+   "plant": 16
+  }
+ ],
+ "question_order": [
+  7,
+  3,
+  8,
+  2,
+  4,
+  0,
+  6,
+  9,
+  5,
+  1
+ ],
+ "repeat": 3,
+ "reports": {
+  "pairs": [
+   [
+    "1-1",
+    "1-2"
+   ],
+   [
+    "1-3",
+    "1-4"
+   ],
+   [
+    "1-6",
+    "3-1"
+   ],
+   [
+    "3-3",
+    "3-9"
+   ],
+   [
+    "3-4",
+    "3-10"
+   ]
+  ]
+ },
+ "schema": "mem-run-1",
+ "sessions": [
+  {
+   "committed": true,
+   "events": {
+    "cost": {
+     "reseat_shape": 12,
+     "unreadable": 5,
+     "unseatable": 3
+    },
+    "counted": {
+     "REVERSAL": 10,
+     "SAME_QUESTION": 6
+    },
+    "detections": {
+     "headline": 16,
+     "notes": 16,
+     "reseat_content": 0
+    },
+    "notes": {
+     "CONFLICT": 1,
+     "IDENTIFIER_FLATTENED": 1,
+     "NEW_RELATION": 0,
+     "NO_RELATION_SEATED": 0,
+     "REVERSAL": 10,
+     "SAME_QUESTION": 6,
+     "SELF_QUESTION_UNREADABLE": 5,
+     "UNANCHORED": 0
+    },
+    "policy": {
+     "contradiction": "a",
+     "unseatable": "a"
+    },
+    "refused": {
+     "span_inexpressible": 3
+    },
+    "reports": {
+     "ok": 8,
+     "refused": 0
+    },
+    "reseats": [
+     {
+      "kind": "shape",
+      "to_i": 6,
+      "trigger": "span_inexpressible",
+      "trigger_i": 3
+     },
+     {
+      "kind": "shape",
+      "to_i": 6,
+      "trigger": "span_inexpressible",
+      "trigger_i": 4
+     },
+     {
+      "kind": "shape",
+      "to_i": 6,
+      "trigger": "span_inexpressible",
+      "trigger_i": 5
+     },
+     {
+      "kind": "shape",
+      "to_i": 13,
+      "trigger": "REVERSAL",
+      "trigger_i": 10
+     },
+     {
+      "kind": "shape",
+      "to_i": 15,
+      "trigger": "REVERSAL",
+      "trigger_i": 13
+     },
+     {
+      "kind": "shape",
+      "to_i": 19,
+      "trigger": "REVERSAL",
+      "trigger_i": 17
+     },
+     {
+      "kind": "shape",
+      "to_i": 22,
+      "trigger": "REVERSAL",
+      "trigger_i": 19
+     },
+     {
+      "kind": "shape",
+      "to_i": 24,
+      "trigger": "REVERSAL",
+      "trigger_i": 22
+     },
+     {
+      "kind": "shape",
+      "to_i": 29,
+      "trigger": "REVERSAL",
+      "trigger_i": 27
+     },
+     {
+      "kind": "shape",
+      "to_i": 32,
+      "trigger": "REVERSAL",
+      "trigger_i": 29
+     },
+     {
+      "kind": "shape",
+      "to_i": 40,
+      "trigger": "REVERSAL",
+      "trigger_i": 36
+     },
+     {
+      "kind": "shape",
+      "to_i": 43,
+      "trigger": "REVERSAL",
+      "trigger_i": 40
+     }
+    ],
+    "rewrites": {
+     "refused": 3,
+     "rewritten": 3,
+     "unrewritten": 0
+    },
+    "supersedes": {
+     "ok": 1,
+     "refused": {
+      "bad_args": 1
+     },
+     "sentences": 1
+    },
+    "topics": {
+     "declared": 1,
+     "expanded": 12,
+     "refused": 0
+    },
+    "units": {
+     "new": 56,
+     "record": 100
+    },
+    "unseatable": {
+     "by_reason": {
+      "gap_is_not_a_particle": 3
+     },
+     "total": 3
+    }
+   },
+   "ledger": "store/sessions/s0001",
+   "reports": [
+    {
+     "bugs": [],
+     "contradictions": [],
+     "i": 8,
+     "turn": "1-1"
+    },
+    {
+     "bugs": [],
+     "contradictions": [
+      [
+       "1-1",
+       "1-2"
+      ]
+     ],
+     "i": 12,
+     "turn": "1-2"
+    },
+    {
+     "bugs": [],
+     "contradictions": [],
+     "i": 16,
+     "turn": "1-3"
+    },
+    {
+     "bugs": [],
+     "contradictions": [
+      [
+       "1-3",
+       "1-4"
+      ]
+     ],
+     "i": 21,
+     "turn": "1-4"
+    },
+    {
+     "bugs": [],
+     "contradictions": [],
+     "i": 26,
+     "turn": "1-5"
+    },
+    {
+     "bugs": [],
+     "contradictions": [],
+     "i": 31,
+     "turn": "1-6"
+    },
+    {
+     "bugs": [],
+     "contradictions": [],
+     "i": 38,
+     "turn": "1-7"
+    },
+    {
+     "bugs": [],
+     "contradictions": [],
+     "i": 46,
+     "turn": "1-8"
+    }
+   ],
+   "run_id": "s0001",
+   "session": 1,
+   "story": {
+    "api_calls": 24,
+    "calls_skipped_after_report": 0,
+    "ended": "complete",
+    "error": null,
+    "response_models": [
+     "claude-haiku-5-5"
+    ],
+    "stop_reasons": [
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use"
+    ],
+    "text_blocks_dropped": 0,
+    "thinking_dropped": {
+     "chars": 0,
+     "n": 0,
+     "sha256": []
+    },
+    "tool_calls": 33,
+    "tool_choice": {
+     "type": "any"
+    },
+    "turns": [
+     {
+      "calls": 7,
+      "ended": "report",
+      "report": {
+       "bugs": [],
+       "contradictions": []
+      },
+      "turn": "1-1"
+     },
+     {
+      "calls": 3,
+      "ended": "report",
+      "report": {
+       "bugs": [],
+       "contradictions": [
+        [
+         "1-1",
+         "1-2"
+        ]
+       ]
+      },
+      "turn": "1-2"
+     },
+     {
+      "calls": 3,
+      "ended": "report",
+      "report": {
+       "bugs": [],
+       "contradictions": []
+      },
+      "turn": "1-3"
+     },
+     {
+      "calls": 3,
+      "ended": "report",
+      "report": {
+       "bugs": [],
+       "contradictions": [
+        [
+         "1-3",
+         "1-4"
+        ]
+       ]
+      },
+      "turn": "1-4"
+     },
+     {
+      "calls": 3,
+      "ended": "report",
+      "report": {
+       "bugs": [],
+       "contradictions": []
+      },
+      "turn": "1-5"
+     },
+     {
+      "calls": 3,
+      "ended": "report",
+      "report": {
+       "bugs": [],
+       "contradictions": []
+      },
+      "turn": "1-6"
+     },
+     {
+      "calls": 4,
+      "ended": "report",
+      "report": {
+       "bugs": [],
+       "contradictions": []
+      },
+      "turn": "1-7"
+     },
+     {
+      "calls": 7,
+      "ended": "report",
+      "report": {
+       "bugs": [],
+       "contradictions": []
+      },
+      "turn": "1-8"
+     }
+    ],
+    "usage": {
+     "cache_creation_input_tokens": 0,
+     "cache_read_input_tokens": 0,
+     "calls": 24,
+     "input_tokens": 611796,
+     "output_tokens": 2017
+    }
+   },
+   "turns_without_report": []
+  },
+  {
+   "committed": true,
+   "events": {
+    "cost": {
+     "reseat_shape": 2,
+     "unreadable": 6,
+     "unseatable": 0
+    },
+    "counted": {
+     "REVERSAL": 0,
+     "SAME_QUESTION": 3
+    },
+    "detections": {
+     "headline": 3,
+     "notes": 3,
+     "reseat_content": 0
+    },
+    "notes": {
+     "CONFLICT": 7,
+     "IDENTIFIER_FLATTENED": 0,
+     "NEW_RELATION": 0,
+     "NO_RELATION_SEATED": 0,
+     "REVERSAL": 0,
+     "SAME_QUESTION": 3,
+     "SELF_QUESTION_UNREADABLE": 6,
+     "UNANCHORED": 0
+    },
+    "policy": {
+     "contradiction": "a",
+     "unseatable": "a"
+    },
+    "refused": {},
+    "reports": {
+     "ok": 8,
+     "refused": 0
+    },
+    "reseats": [
+     {
+      "kind": "shape",
+      "to_i": 10,
+      "trigger": "SAME_QUESTION",
+      "trigger_i": 8
+     },
+     {
+      "kind": "shape",
+      "to_i": 27,
+      "trigger": "SAME_QUESTION",
+      "trigger_i": 25
+     }
+    ],
+    "rewrites": {
+     "refused": 0,
+     "rewritten": 0,
+     "unrewritten": 0
+    },
+    "supersedes": {
+     "ok": 2,
+     "refused": {},
+     "sentences": 2
+    },
+    "topics": {
+     "declared": 1,
+     "expanded": 6,
+     "refused": 0
+    },
+    "units": {
+     "new": 43,
+     "record": 53
+    },
+    "unseatable": {
+     "by_reason": {},
+     "total": 0
+    }
+   },
+   "ledger": "store/sessions/s0002",
+   "reports": [
+    {
+     "bugs": [],
+     "contradictions": [],
+     "i": 13,
+     "turn": "2-1"
+    },
+    {
+     "bugs": [],
+     "contradictions": [],
+     "i": 22,
+     "turn": "2-2"
+    },
+    {
+     "bugs": [],
+     "contradictions": [],
+     "i": 33,
+     "turn": "2-3"
+    },
+    {
+     "bugs": [],
+     "contradictions": [],
+     "i": 39,
+     "turn": "2-4"
+    },
+    {
+     "bugs": [],
+     "contradictions": [],
+     "i": 43,
+     "turn": "2-5"
+    },
+    {
+     "bugs": [],
+     "contradictions": [],
+     "i": 47,
+     "turn": "2-6"
+    },
+    {
+     "bugs": [],
+     "contradictions": [],
+     "i": 54,
+     "turn": "2-7"
+    },
+    {
+     "bugs": [],
+     "contradictions": [],
+     "i": 57,
+     "turn": "2-8"
+    }
+   ],
+   "run_id": "s0002",
+   "session": 2,
+   "story": {
+    "api_calls": 32,
+    "calls_skipped_after_report": 0,
+    "ended": "complete",
+    "error": null,
+    "response_models": [
+     "claude-haiku-5-5"
+    ],
+    "stop_reasons": [
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use"
+    ],
+    "text_blocks_dropped": 0,
+    "thinking_dropped": {
+     "chars": 0,
+     "n": 0,
+     "sha256": []
+    },
+    "tool_calls": 47,
+    "tool_choice": {
+     "type": "any"
+    },
+    "turns": [
+     {
+      "calls": 11,
+      "ended": "report",
+      "report": {
+       "bugs": [],
+       "contradictions": []
+      },
+      "turn": "2-1"
+     },
+     {
+      "calls": 7,
+      "ended": "report",
+      "report": {
+       "bugs": [],
+       "contradictions": []
+      },
+      "turn": "2-2"
+     },
+     {
+      "calls": 8,
+      "ended": "report",
+      "report": {
+       "bugs": [],
+       "contradictions": []
+      },
+      "turn": "2-3"
+     },
+     {
+      "calls": 5,
+      "ended": "report",
+      "report": {
+       "bugs": [],
+       "contradictions": []
+      },
+      "turn": "2-4"
+     },
+     {
+      "calls": 3,
+      "ended": "report",
+      "report": {
+       "bugs": [],
+       "contradictions": []
+      },
+      "turn": "2-5"
+     },
+     {
+      "calls": 3,
+      "ended": "report",
+      "report": {
+       "bugs": [],
+       "contradictions": []
+      },
+      "turn": "2-6"
+     },
+     {
+      "calls": 7,
+      "ended": "report",
+      "report": {
+       "bugs": [],
+       "contradictions": []
+      },
+      "turn": "2-7"
+     },
+     {
+      "calls": 3,
+      "ended": "report",
+      "report": {
+       "bugs": [],
+       "contradictions": []
+      },
+      "turn": "2-8"
+     }
+    ],
+    "usage": {
+     "cache_creation_input_tokens": 0,
+     "cache_read_input_tokens": 0,
+     "calls": 32,
+     "input_tokens": 703084,
+     "output_tokens": 2649
+    }
+   },
+   "turns_without_report": []
+  },
+  {
+   "committed": true,
+   "events": {
+    "cost": {
+     "reseat_shape": 4,
+     "unreadable": 11,
+     "unseatable": 0
+    },
+    "counted": {
+     "REVERSAL": 5,
+     "SAME_QUESTION": 1
+    },
+    "detections": {
+     "headline": 6,
+     "notes": 6,
+     "reseat_content": 0
+    },
+    "notes": {
+     "CONFLICT": 5,
+     "IDENTIFIER_FLATTENED": 1,
+     "NEW_RELATION": 2,
+     "NO_RELATION_SEATED": 0,
+     "REVERSAL": 5,
+     "SAME_QUESTION": 1,
+     "SELF_QUESTION_UNREADABLE": 11,
+     "UNANCHORED": 0
+    },
+    "policy": {
+     "contradiction": "a",
+     "unseatable": "a"
+    },
+    "refused": {},
+    "reports": {
+     "ok": 10,
+     "refused": 0
+    },
+    "reseats": [
+     {
+      "kind": "shape",
+      "to_i": 43,
+      "trigger": "REVERSAL",
+      "trigger_i": 41
+     },
+     {
+      "kind": "shape",
+      "to_i": 47,
+      "trigger": "REVERSAL",
+      "trigger_i": 43
+     },
+     {
+      "kind": "shape",
+      "to_i": 51,
+      "trigger": "REVERSAL",
+      "trigger_i": 47
+     },
+     {
+      "kind": "shape",
+      "to_i": 55,
+      "trigger": "REVERSAL",
+      "trigger_i": 51
+     }
+    ],
+    "rewrites": {
+     "refused": 0,
+     "rewritten": 0,
+     "unrewritten": 0
+    },
+    "supersedes": {
+     "ok": 0,
+     "refused": {
+      "same_group": 1
+     },
+     "sentences": 0
+    },
+    "topics": {
+     "declared": 1,
+     "expanded": 4,
+     "refused": 0
+    },
+    "units": {
+     "new": 22,
+     "record": 118
+    },
+    "unseatable": {
+     "by_reason": {},
+     "total": 0
+    }
+   },
+   "ledger": "store/sessions/s0003",
+   "reports": [
+    {
+     "bugs": [],
+     "contradictions": [
+      [
+       "1-6",
+       "3-1"
+      ]
+     ],
+     "i": 11,
+     "turn": "3-1"
+    },
+    {
+     "bugs": [],
+     "contradictions": [],
+     "i": 18,
+     "turn": "3-2"
+    },
+    {
+     "bugs": [],
+     "contradictions": [],
+     "i": 23,
+     "turn": "3-3"
+    },
+    {
+     "bugs": [],
+     "contradictions": [],
+     "i": 27,
+     "turn": "3-4"
+    },
+    {
+     "bugs": [],
+     "contradictions": [],
+     "i": 31,
+     "turn": "3-5"
+    },
+    {
+     "bugs": [],
+     "contradictions": [],
+     "i": 38,
+     "turn": "3-6"
+    },
+    {
+     "bugs": [],
+     "contradictions": [],
+     "i": 45,
+     "turn": "3-7"
+    },
+    {
+     "bugs": [],
+     "contradictions": [],
+     "i": 49,
+     "turn": "3-8"
+    },
+    {
+     "bugs": [],
+     "contradictions": [
+      [
+       "3-3",
+       "3-9"
+      ]
+     ],
+     "i": 53,
+     "turn": "3-9"
+    },
+    {
+     "bugs": [],
+     "contradictions": [
+      [
+       "3-4",
+       "3-10"
+      ]
+     ],
+     "i": 57,
+     "turn": "3-10"
+    }
+   ],
+   "run_id": "s0003",
+   "session": 3,
+   "story": {
+    "api_calls": 29,
+    "calls_skipped_after_report": 0,
+    "ended": "complete",
+    "error": null,
+    "response_models": [
+     "claude-haiku-5-5"
+    ],
+    "stop_reasons": [
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use",
+     "tool_use"
+    ],
+    "text_blocks_dropped": 0,
+    "thinking_dropped": {
+     "chars": 0,
+     "n": 0,
+     "sha256": []
+    },
+    "tool_calls": 43,
+    "tool_choice": {
+     "type": "any"
+    },
+    "turns": [
+     {
+      "calls": 9,
+      "ended": "report",
+      "report": {
+       "bugs": [],
+       "contradictions": [
+        [
+         "1-6",
+         "3-1"
+        ]
+       ]
+      },
+      "turn": "3-1"
+     },
+     {
+      "calls": 5,
+      "ended": "report",
+      "report": {
+       "bugs": [],
+       "contradictions": []
+      },
+      "turn": "3-2"
+     },
+     {
+      "calls": 4,
+      "ended": "report",
+      "report": {
+       "bugs": [],
+       "contradictions": []
+      },
+      "turn": "3-3"
+     },
+     {
+      "calls": 3,
+      "ended": "report",
+      "report": {
+       "bugs": [],
+       "contradictions": []
+      },
+      "turn": "3-4"
+     },
+     {
+      "calls": 3,
+      "ended": "report",
+      "report": {
+       "bugs": [],
+       "contradictions": []
+      },
+      "turn": "3-5"
+     },
+     {
+      "calls": 5,
+      "ended": "report",
+      "report": {
+       "bugs": [],
+       "contradictions": []
+      },
+      "turn": "3-6"
+     },
+     {
+      "calls": 5,
+      "ended": "report",
+      "report": {
+       "bugs": [],
+       "contradictions": []
+      },
+      "turn": "3-7"
+     },
+     {
+      "calls": 3,
+      "ended": "report",
+      "report": {
+       "bugs": [],
+       "contradictions": []
+      },
+      "turn": "3-8"
+     },
+     {
+      "calls": 3,
+      "ended": "report",
+      "report": {
+       "bugs": [],
+       "contradictions": [
+        [
+         "3-3",
+         "3-9"
+        ]
+       ]
+      },
+      "turn": "3-9"
+     },
+     {
+      "calls": 3,
+      "ended": "report",
+      "report": {
+       "bugs": [],
+       "contradictions": [
+        [
+         "3-4",
+         "3-10"
+        ]
+       ]
+      },
+      "turn": "3-10"
+     }
+    ],
+    "usage": {
+     "cache_creation_input_tokens": 0,
+     "cache_read_input_tokens": 0,
+     "calls": 29,
+     "input_tokens": 733056,
+     "output_tokens": 2569
+    }
+   },
+   "turns_without_report": []
+  }
+ ],
+ "snapshot": {
+  "name": "memory_f7e2486d60a5.jsonl",
+  "sentences": 46,
+  "sha256": "f7e2486d60a511240f19989ea8cf32281c9d2b8e638b1f2cf69d6fa79336526b",
+  "superseded": 3
+ },
+ "store": {
+  "sentences": 46,
+  "sessions": 3,
+  "verify": "OK"
+ },
+ "system_prompt_sha256": {
+  "question": "c29b92c9861107064394aca92cf24c396c17d3f09cc6c2a3a1b7633544586f50",
+  "story": "7ef0ede35a63d1d415077cd689649774c51bbb477552b1d6ae54c8b640ef29a9"
+ },
+ "task_id": "MEM-T05",
+ "tool_choice": {
+  "type": "any"
+ },
+ "tools": {
+  "question": [
+   "recall",
+   "lookup",
+   "read_sentence",
+   "weave_span",
+   "drop",
+   "read",
+   "emit",
+   "abstain",
+   "status"
+  ],
+  "story": [
+   "write",
+   "declare_topic",
+   "supersede",
+   "recall",
+   "read_sentence",
+   "report",
+   "status"
+  ]
+ },
+ "wall": {
+  "run_ns": 143311199292
+ }
+}
