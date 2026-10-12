@@ -309,6 +309,10 @@ def compute_write_notes(*, t: int, row: dict, rows_before: Sequence[dict], rows_
     if clause is not None and contradiction_policy in ("a", "c") and self_question is not None:
         mem = MemoryBefore(t=t, row=row, rows_before=tuple(rows_before), rows_after=tuple(rows_after), corpus_before=corpus_before, corpus_after=corpus_after)
         sq = same_question_note(clause["question"], list(self_question(clause["question"], mem)), t, rows_after, clause["cid"])
+        if sq is not None and sq["type"] == SELF_QUESTION_UNREADABLE and getattr(self_question, "subject_guard", False):       # MEM-c2: say when the guard (not the gate) refused it
+            why = self_question.unreadable_reason(clause["question"], mem)
+            if why:
+                sq["reason"] = why
         if sq is not None:
             sq.update(_pos=0, _arm=0)
             found.append(sq)

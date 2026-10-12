@@ -130,7 +130,7 @@ def test_pr5_shapes_pinned(tmp_path):
 
 
 def test_identifier_and_no_relation_informations(tmp_path):
-    s = session(tmp_path)
+    s = session(tmp_path, self_question=None)                          # the informations are the notes under test; the default hook also marks fmt_num's cut subject UNREADABLE (MEM-c2)
     r = s.write("fmt_numの戻り値は文字列")
     assert [n["type"] for n in r["notes"]] == ["IDENTIFIER_FLATTENED"] and r["notes"][0]["identifiers"] == ["fmt_num"] and r["notes"][0]["read_as"] == ["fmtnum"]
     assert r["notes"][0]["counted"] is False

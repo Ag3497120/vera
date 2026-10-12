@@ -21,7 +21,8 @@ from verantyx.loom.corpus import Corpus
 from verantyx.loom.state import Refuse
 from mem_common import PROBE_REVERSAL, ROOT, STUB, ledger_rows, new_store, notes_of, session, write_all
 
-GATE = mr.GateSelfQuestion()
+GATE = mr.GateSelfQuestion()                  # gate.evidence.v2 (MEM-c): the hook of the stores written before the whole-subject guard; they replay with exactly this behaviour
+SUBJ = mr.GateSubjectSelfQuestion()           # gate.evidence.v2+subject (MEM-c2): the default of a new store
 PR4 = ["田中の担当は認証", "認証の期限は金曜", "田中の担当は決済", "決済の期限は月曜", "会議は東京で開く", "サーバーのポートは8080", "会議は大阪で行う", "サーバーのポートは9090"]
 
 
@@ -48,12 +49,18 @@ def pr4(tmp_path):
 
 
 # -- the default hook, the header ----------------------------------------------------------------------------------------------------------
-def test_the_default_hook_of_a_new_store_is_the_gate(tmp_path):
+def test_the_default_hook_of_a_new_store_is_the_gate_with_the_subject_guard(tmp_path):
     s = session(tmp_path)
     h = ledger_rows(s)[0]["result"]["header"]
-    assert (h["self_question"], h["evidence_version"]) == ("gate.evidence.v2", "evidence.v2")
-    assert s.run.hook_id == GATE.id == mr.GATE_HOOK_ID and s.run.evidence_version == GATE.evidence_version == ev.EVIDENCE_V2
+    assert (h["self_question"], h["evidence_version"]) == ("gate.evidence.v2+subject", "evidence.v2")
+    assert s.run.hook_id == SUBJ.id == mr.GATE_SUBJECT_HOOK_ID and s.run.evidence_version == SUBJ.evidence_version == ev.EVIDENCE_V2 and SUBJ.subject_guard is True
+    assert GATE.id == mr.GATE_HOOK_ID == "gate.evidence.v2" and GATE.subject_guard is False and GATE.evidence_version == ev.EVIDENCE_V2
+    assert set(mem.HOOKS) == {"stub.v1", "gate.evidence.v2", "gate.evidence.v2+subject"}
     assert "evidence.v2" in ledger_rows(s)[0]["result"]["rules"]["recall"]
+    # the old gate hook is still selectable and records its own id
+    s1 = session(tmp_path, "oldgate", self_question=GATE)
+    h1 = ledger_rows(s1)[0]["result"]["header"]
+    assert (h1["self_question"], h1["evidence_version"]) == ("gate.evidence.v2", "evidence.v2")
     # no hook / the stub: no evidence version in the header, the MEM-a/b header and rules, recall refused as before
     s2 = session(tmp_path, "nohook", self_question=None)
     h2 = ledger_rows(s2)[0]["result"]
@@ -171,26 +178,46 @@ def test_pr7_an_enumeration_loses_items_known_limit(tmp_path):
     assert by_type(w, "SELF_QUESTION_UNREADABLE") == []
 
 
+CUT_SUBJECTS = ["fmt_numの戻り値は文字列", "担当者の名前は佐藤", "ops.pyの責任は書き込み", "add関数の引数は2つ"]          # the word cut shortened the subject (fmt|num, 担当|者, ops|.|py, add|関数)
+CUT_QUESTIONS = {"fmt_numの戻り値は文字列": "numの戻り値は何ですか", "担当者の名前は佐藤": "者の名前は何ですか", "ops.pyの責任は書き込み": "pyの責任は何ですか", "add関数の引数は2つ": "関数の引数は何ですか"}
+
+
 def test_pr7_readable_and_unreadable_clauses(tmp_path):
-    """The 13 clauses of Pr7 and more, each alone in a fresh memory: the self-question asked of the sentence itself (the clause cut of MEM-b) is read back by the gate
-    or reported SELF_QUESTION_UNREADABLE.  Pinned as measured (docs MEM-c, what the gate cannot read in memory)."""
+    """The 19 clauses of Pr7 and more, each alone in a fresh memory (the default hook = the gate + the whole-subject guard): the self-question asked of the sentence itself
+    (the clause cut of MEM-b) is read back by the gate, or reported SELF_QUESTION_UNREADABLE.  Pinned as measured (docs MEM-c, MEM-c2): 10 readable by the sentence's own
+    subject, 4 unreadable because the word cut shortened the subject (reason `subject_cut`), 5 unreadable because the gate cannot read the clause."""
     readable = {"田中の担当は認証": ["認証"], "サーバーのポートは8080": ["8080"], "認証の期限は金曜": ["金曜"], "今日の作業はK3の修正": ["K3の修正"], "mulの引数はaとb": ["a"],
-                "fmt_numの戻り値は文字列": ["文字列"], "会議の場所は東京": ["東京"], "予算の上限は100万円": ["100万円"], "担当者の名前は佐藤": ["佐藤"],
-                "テストの結果は成功": ["成功"], "リリースの日付は10月15日": ["10月15日"], "ops.pyの責任は書き込み": ["書き込み"], "add関数の引数は2つ": ["2"],
+                "会議の場所は東京": ["東京"], "予算の上限は100万円": ["100万円"], "テストの結果は成功": ["成功"], "リリースの日付は10月15日": ["10月15日"],
                 "Pythonのバージョンは3.11": ["3.11"]}
     unreadable = ["K3の原因はimportの欠落", "次の手順は計測", "締め切りは金曜", "Airのコア数は4", "会議は東京で行う"]
-    for k, text in enumerate(list(readable) + unreadable):
+    for k, text in enumerate(list(readable) + CUT_SUBJECTS + unreadable):
         s = new_store(tmp_path, "p%d" % k).begin("m")
         w = s.write(text)
         assert w["ok"], (text, w)
+        un = by_type(w, "SELF_QUESTION_UNREADABLE")
         if text in readable:
-            assert by_type(w, "SELF_QUESTION_UNREADABLE") == [], text
+            assert un == [], text
             r = recall(s, w["clause"]["question"])
             assert r["verdict"] == "ANSWER" and r["answers"][0]["answers"] == readable[text], (text, r["answers"])
+        elif text in CUT_SUBJECTS:
+            assert w["clause"]["question"] == CUT_QUESTIONS[text]
+            assert len(un) == 1 and un[0]["counted"] is False and un[0]["reason"] == "subject_cut", text            # the gate could read it; the guard refused it
+            r = recall(s, w["clause"]["question"])
+            assert r["verdict"] == "NONE" and r["answers"] == [] and r["issues"] == ["subject_cut"] and [c["sid"] for c in r["subject_cut"]] == [0], text
         else:
-            assert len(by_type(w, "SELF_QUESTION_UNREADABLE")) == 1 and by_type(w, "SELF_QUESTION_UNREADABLE")[0]["counted"] is False, text
-            assert recall(s, w["clause"]["question"])["verdict"] == "NONE", text
-    assert len(readable) == 14 and len(unreadable) == 5
+            assert len(un) == 1 and un[0]["counted"] is False and "reason" not in un[0], text                       # the gate itself cannot read it: no reason is claimed
+            assert recall(s, w["clause"]["question"])["verdict"] == "NONE" and "subject_cut" not in recall(s, w["clause"]["question"]), text
+    assert len(readable) == 10 and len(CUT_SUBJECTS) == 4 and len(unreadable) == 5
+
+
+def test_pr7_the_old_gate_hook_still_reads_the_four_cut_subjects(tmp_path):
+    """`gate.evidence.v2` (no guard) is unchanged: the four cut-subject sentences are READ (as shorter questions) -- the behaviour the stores written with it replay."""
+    for k, text in enumerate(CUT_SUBJECTS):
+        s = new_store(tmp_path, "o%d" % k).begin("m", self_question=GATE)
+        w = s.write(text)
+        assert by_type(w, "SELF_QUESTION_UNREADABLE") == [], text
+        r = recall(s, w["clause"]["question"])
+        assert r["verdict"] == "ANSWER" and "subject_cut" not in r and "issues" not in r, text
 
 
 # -- the stub beside the gate: the probe table of the report ------------------------------------------------------------------------------------------------
@@ -200,8 +227,8 @@ PROBES = [("田中の担当 認証/決済", ["田中の担当は認証", "田中
           ("同じ事実を2回", ["田中の担当は認証", "田中の担当は認証"], False)]
 
 
-@pytest.mark.parametrize("hook", [STUB, GATE], ids=["stub.v1", "gate.evidence.v2"])
-def test_same_question_fires_on_the_planted_contradictions_both_hooks(tmp_path, hook):
+@pytest.mark.parametrize("hook", [STUB, GATE, SUBJ], ids=["stub.v1", "gate.evidence.v2", "gate.evidence.v2+subject"])
+def test_same_question_fires_on_the_planted_contradictions_all_hooks(tmp_path, hook):
     for k, (label, sents, fires) in enumerate(PROBES):
         s = new_store(tmp_path, "%s%d" % (hook.id, k)).begin("m", self_question=hook)
         got = [by_type(s.write(x), "SAME_QUESTION") for x in sents]
@@ -217,9 +244,10 @@ def test_the_gate_and_the_stub_agree_on_the_probes_and_reversal_is_unaffected(tm
     seq = ["認証の前提は決済", "田中の担当は認証", "会議は東京で行う", PROBE_REVERSAL, "田中の担当は決済", "サーバーのポートは8080", "研修は東京で行う", "東京の天気は晴れ",
            "サーバーのポートは9090", "認証の期限は金曜", "決済の期限は月曜"]
     res = {}
-    for hook in (STUB, GATE):
+    for hook in (STUB, GATE, SUBJ):
         s = new_store(tmp_path, hook.id).begin("m", self_question=hook)
         res[hook.id] = [s.write(x) for x in seq]
+    assert [[n for n in r.get("notes", [])] for r in res["gate.evidence.v2"]] == [[n for n in r.get("notes", [])] for r in res["gate.evidence.v2+subject"]]     # nothing in this story has a cut subject
     other = lambda r: [n for n in r.get("notes", []) if n["type"] not in ("SAME_QUESTION", "SELF_QUESTION_UNREADABLE")]
     for a, b in zip(res["stub.v1"], res["gate.evidence.v2"]):
         assert other(a) == other(b) and a["keys"] == b["keys"] and a["crosses"] == b["crosses"] and a["marked"] == b["marked"]
@@ -229,7 +257,7 @@ def test_the_gate_and_the_stub_agree_on_the_probes_and_reversal_is_unaffected(tm
     assert len(rev) == 1 and rev[0]["counted"] is True and rev[0]["key"] == [1, 0, 233]
     # UNREADABLE differs: the stub answers any 「<subject>は…」 sentence literally, the gate needs a copular clause 「Y は A」
     unr = {h: [i for i, r in enumerate(rs) if by_type(r, "SELF_QUESTION_UNREADABLE")] for h, rs in res.items()}
-    assert unr == {"stub.v1": [], "gate.evidence.v2": [2, 6]}                                    # 「会議は東京で行う」 「研修は東京で行う」: the stub reads them literally, the gate cannot
+    assert unr == {"stub.v1": [], "gate.evidence.v2": [2, 6], "gate.evidence.v2+subject": [2, 6]}                                    # 「会議は東京で行う」 「研修は東京で行う」: the stub reads them literally, the gate cannot
 
 
 def test_same_question_across_sessions_and_recall_over_the_whole_memory(tmp_path):
@@ -427,11 +455,11 @@ def test_known_limit_subjectless_clause_is_unreadable_and_says_why(tmp_path):
     assert [n["type"] for n in w2["notes"]] == ["SELF_QUESTION_UNREADABLE"] and s.events()["detections"]["notes"] == 0 and s.events()["cost"]["unreadable"] == 2
 
 
-def test_known_limit_cut_identifier_is_read_as_a_shorter_question_and_over_merges(tmp_path):
-    """The clause cut starts at the first WORD UNIT, and the unit filter drops a short Latin prefix (fmt_, int_, K, add): 「fmt_numの戻り値は…」 asks 「numの戻り値は何ですか」.
-    The gate reads that fine -- so two DIFFERENT functions, fmt_num and int_num, are one question (a false SAME_QUESTION), and the model's own identifier question
-    finds nothing.  This is the clause cut's limit (MEM-b), not the gate's; pinned so that a fix is a deliberate change."""
-    s = session(tmp_path)
+def test_old_gate_hook_reads_a_cut_identifier_as_a_shorter_question_and_over_merges(tmp_path):
+    """PINNED FOR REPLAY (hook `gate.evidence.v2`, no guard; stores written with it replay with exactly this behaviour).  The clause cut starts at the first WORD UNIT, and
+    the unit filter drops a short Latin prefix (fmt_, int_, K, add): 「fmt_numの戻り値は…」 asks 「numの戻り値は何ですか」.  The gate reads that fine -- so two DIFFERENT
+    functions, fmt_num and int_num, are one question (a false SAME_QUESTION).  MEM-c2 fixes it in the NEW hook (the next test), not here."""
+    s = new_store(tmp_path, "old").begin("m", self_question=GATE)
     w1 = s.write("fmt_numの戻り値は文字列")
     assert w1["clause"]["question"] == "numの戻り値は何ですか" and by_type(w1, "SAME_QUESTION") == [] and by_type(w1, "SELF_QUESTION_UNREADABLE") == []
     w2 = s.write("int_numの戻り値は整数")
@@ -439,13 +467,108 @@ def test_known_limit_cut_identifier_is_read_as_a_shorter_question_and_over_merge
     assert len(sq) == 1 and [v["answers"] for v in sq[0]["variants"]] == [["文字列"], ["整数"]]             # a false alarm: two functions
     assert recall(s, "numの戻り値は何ですか")["verdict"] == "CHOICE"
     for q in ("fmt_numの戻り値は何ですか", "fmtnumの戻り値は何ですか", "int_numの戻り値は何ですか"):
-        r = recall(s, q)
-        assert r["verdict"] == "NONE", q                                                               # the typed identifier cannot be read as a subject
-    s2 = new_store(tmp_path, "k3").begin("m")
+        assert recall(s, q)["verdict"] == "NONE", q                                                    # the typed identifier cannot be read as a subject
+    s2 = new_store(tmp_path, "k3").begin("m", self_question=GATE)
     w = s2.write("K3の原因はimportの欠落")
-    assert w["clause"]["question"] == "3の原因は何ですか" and [n["type"] for n in w["notes"]] == ["SELF_QUESTION_UNREADABLE"]
+    assert w["clause"]["question"] == "3の原因は何ですか" and [n["type"] for n in w["notes"]] == ["SELF_QUESTION_UNREADABLE"] and "reason" not in w["notes"][0]
     r = recall(s2, "K3の原因は何ですか")                                 # typed whole, the gate reads it
     assert r["verdict"] == "ANSWER" and groups(r) == [(["importの欠落"], [0])]
+
+
+CUT_PAIRS = [("fmt_numの戻り値は文字列", "int_numの戻り値は整数"), ("add関数の引数は2つ", "sub関数の引数は3つ"), ("担当者の名前は佐藤", "責任者の名前は鈴木"),
+             ("ops.pyの責任は書き込み", "cli.pyの責任は入力"), ("K3の担当は田中", "K3の担当は鈴木")]
+TRUE_PAIRS = [("田中の担当は認証", "田中の担当は決済"), ("サーバーのポートは8080", "サーバーのポートは9090"), ("会議の場所は東京", "会議の場所は大阪"),
+              ("今日の作業はK3の修正", "今日の作業はK3のテスト"), ("Pythonのバージョンは3.11", "Pythonのバージョンは3.12"), ("mulの引数はaとb", "mulの引数はcとd"),
+              ("メモ、田中の担当は認証", "メモ、田中の担当は決済")]
+
+
+def pair_notes(tmp_path, tag, hook, a, b):
+    s = new_store(tmp_path, tag).begin("m", self_question=hook)
+    return s, by_type(s.write(a), "SAME_QUESTION"), s.write(b)
+
+
+def test_the_subject_guard_turns_cut_subjects_unreadable_never_same_question(tmp_path):
+    """The owner's rule (2026-10-12): the question's subject must equal the sentence's WHOLE subject; cut short = UNREADABLE (counted as coverage, never a detection)."""
+    for k, (a, b) in enumerate(CUT_PAIRS):
+        for tag, hook, fires in (("old", GATE, k < 4), ("new", SUBJ, False)):                          # K3の担当 was already unreadable under the old hook
+            s, sq_a, wb = pair_notes(tmp_path, "c%d%s" % (k, tag), hook, a, b)
+            assert sq_a == [] and (len(by_type(wb, "SAME_QUESTION")) == 1) is fires, (a, b, tag)
+            if tag == "new":
+                un = by_type(wb, "SELF_QUESTION_UNREADABLE")
+                assert len(un) == 1 and un[0]["counted"] is False and s.events()["detections"]["notes"] == 0 and s.events()["cost"]["unreadable"] == 2, (a, b)
+                assert un[0].get("reason") == ("subject_cut" if k < 4 else None), (a, b)                # K3: the gate itself cannot read 「3の原因…」, so no reason is claimed
+
+
+def test_the_subject_guard_keeps_the_true_same_question_probes(tmp_path):
+    for k, (a, b) in enumerate(TRUE_PAIRS):
+        for tag, hook in (("old", GATE), ("new", SUBJ)):
+            s, sq_a, wb = pair_notes(tmp_path, "t%d%s" % (k, tag), hook, a, b)
+            sq = by_type(wb, "SAME_QUESTION")
+            assert sq_a == [] and len(sq) == 1 and sq[0]["counted"] is True and by_type(wb, "SELF_QUESTION_UNREADABLE") == [], (a, b, tag)
+    s, _, wb = pair_notes(tmp_path, "pair-same", SUBJ, "田中の担当は認証", "田中の担当は認証")
+    assert by_type(wb, "SAME_QUESTION") == []                                                          # the same fact twice is no contradiction
+
+
+def test_the_guard_also_refuses_a_longer_written_subject_known_cost(tmp_path):
+    """KNOWN COST (choose missed detection over false detection): a subject that merely HAS a prefix before the question (新サーバー, 昨日田中, 東京の田中 ...) is a longer subject
+    as written, so it is unreadable too -- even when both sentences have the same prefix (a true contradiction is missed)."""
+    for a, b in (("新サーバーのポートは8080", "新サーバーのポートは9090"), ("昨日田中の担当は認証", "昨日田中の担当は決済"), ("ログイン画面の背景は青", "ログイン画面の背景は赤")):
+        s, sq_a, wb = pair_notes(tmp_path, "x" + a[:2], SUBJ, a, b)
+        assert sq_a == [] and by_type(wb, "SAME_QUESTION") == [] and by_type(wb, "SELF_QUESTION_UNREADABLE")[0]["reason"] == "subject_cut", (a, b)
+        _, _, wo = pair_notes(tmp_path, "y" + a[:2], GATE, a, b)
+        assert len(by_type(wo, "SAME_QUESTION")) == 1, (a, b)                                          # the old hook did detect these: the true detections the guard loses
+
+
+def test_a_cut_sentence_never_joins_a_later_question(tmp_path):
+    """The guard is on every answer, not only on sentence t's: an earlier cut sentence is not an occurrence of a later (whole-subject) question, and the other way round."""
+    s = new_store(tmp_path, "mix").begin("m")
+    assert by_type(s.write("fmt_numの戻り値は文字列"), "SELF_QUESTION_UNREADABLE")
+    w = s.write("numの戻り値は整数")                                    # whole subject `num`: readable, and NOT contradicted by fmt_num's answer
+    assert by_type(w, "SAME_QUESTION") == [] and by_type(w, "SELF_QUESTION_UNREADABLE") == []
+    r = recall(s, "numの戻り値は何ですか")
+    assert r["verdict"] == "ANSWER" and groups(r) == [(["整数"], [1])]                                  # ANSWER from the whole-subject sentence; the cut one is listed, not merged
+    assert r["issues"] == ["subject_cut"] and r["subject_cut"] == [{"sid": 0, "source": "mem:t/1#0", "session": 1, "role": "model", "answers": ["文字列"], "clause": "numの戻り値は文字列"}]
+    old = new_store(tmp_path, "mixold").begin("m", self_question=GATE)
+    old.write("fmt_numの戻り値は文字列")
+    assert len(by_type(old.write("numの戻り値は整数"), "SAME_QUESTION")) == 1                           # the old hook merged them
+
+
+def test_recall_with_a_cut_subject_is_none_with_issue_subject_cut(tmp_path):
+    s = session(tmp_path)
+    s.write("fmt_numの戻り値は文字列")
+    s.write("int_numの戻り値は整数")
+    r = recall(s, "numの戻り値は何ですか")
+    assert r["verdict"] == "NONE" and r["answers"] == [] and r["issues"] == ["subject_cut"]
+    assert [(c["sid"], c["answers"], c["clause"]) for c in r["subject_cut"]] == [(0, ["文字列"], "numの戻り値は文字列"), (1, ["整数"], "numの戻り値は整数")]
+    assert r["candidates"] == 2 and r["sentences"] == 2 and r["judged"] > 0                           # the sentences were found and judged; the guard refused them
+    # a result without a cut has none of the new keys (the shape of every earlier recall)
+    s2 = session(tmp_path, "plain")
+    s2.write("田中の担当は認証")
+    r2 = recall(s2, "田中の担当は何ですか")
+    assert "subject_cut" not in r2 and "issues" not in r2 and r2["verdict"] == "ANSWER"
+    # the no-guard hook's sessions never get the new keys either
+    s3 = new_store(tmp_path, "old").begin("m", self_question=GATE)
+    s3.write("fmt_numの戻り値は文字列")
+    r3 = recall(s3, "numの戻り値は何ですか")
+    assert r3["verdict"] == "ANSWER" and "subject_cut" not in r3 and "issues" not in r3
+
+
+def test_mid_token_rule():
+    f = mr.mid_token
+    assert [f("fmt_numの", 4), f("担当者の", 2), f("ops.pyの", 4), f("add関数の", 3), f("K3の", 1), f("新サーバーの", 1), f("v-2の", 2), f("a・bの", 2)] == [True] * 8
+    assert [f("田中の担当は", 0), f("メモ、田中の", 3), f("a 田中の", 2), f("a。田中の", 2), f("a\n田中の", 2), f("「田中", 1)] == [False] * 6
+    assert f("", 0) is False
+
+
+def test_the_guard_changes_nothing_but_the_hook_answers(tmp_path):
+    """On a story without a cut subject the two gate hooks write the same rows, key for key (only the begin row's hook id differs); the guard never touches a key or a weave."""
+    seq = [x for p in TRUE_PAIRS for x in p] + ["認証の前提は決済", "決済の前提は認証", "会議は東京で行う", "東京の天気は晴れ"]
+    rows = {}
+    for hook in (GATE, SUBJ):
+        s = new_store(tmp_path, "r" + hook.id).begin("m", self_question=hook)
+        write_all(s, seq)
+        rows[hook.id] = [{k: v for k, v in r.items() if k not in ("sha", "prev")} for r in ledger_rows(s)[1:]]
+    assert rows["gate.evidence.v2"] == rows["gate.evidence.v2+subject"]
 
 
 # -- replay, verify, the chain of sessions -----------------------------------------------------------------------------------------------------------------
@@ -466,25 +589,30 @@ def run_story(tmp_path, name, hook, recalls=True):
     return st
 
 
-def test_gate_store_replays_byte_for_byte_with_recall_rows(tmp_path):
-    st = run_story(tmp_path, "g", GATE)
-    v = st.verify()
+@pytest.mark.parametrize("hook", [GATE, SUBJ], ids=["gate.evidence.v2", "gate.evidence.v2+subject"])
+def test_gate_store_replays_byte_for_byte_with_recall_rows(tmp_path, hook):
+    st = run_story(tmp_path, "g", hook)
+    v = st.verify(hook)
     assert v["status"] == "OK" and v["sessions"] == 3 and v["sentences"] == 13 and v["replay"]["status"] == "IDENTICAL"
-    assert st.replay().identical and st.replay(GATE).identical and st.replay(mem.FROM_HEADER).identical
+    assert st.replay(hook).identical and st.replay(mem.FROM_HEADER).identical
     rows = ledger_rows(os.path.join(st.sessions_dir, "s0003"))
     assert [r["result"]["verdict"] for r in rows if r["op"] == "recall"] == ["CHOICE", "CHOICE", "ANSWER", "ANSWER"]          # 田中の担当, ポート, 認証の期限, 鈴木の担当 (written in session 3)
     h = rows[0]["result"]["header"]
-    assert (h["self_question"], h["evidence_version"]) == ("gate.evidence.v2", "evidence.v2")
-    # the hook is code, recorded by id: another hook (or none) cannot replay it
-    for other in (STUB, None):
+    assert (h["self_question"], h["evidence_version"]) == (hook.id, "evidence.v2")
+    # the hook is code, recorded by id: another hook (or none) cannot replay it -- the old gate hook and the guarded one are two hooks
+    for other in (STUB, None, GATE if hook is SUBJ else SUBJ):
         rep = st.replay(other)
         assert rep.status == "INPUTS" and rep.mismatch == "self_question_mismatch"
     assert st.verify(STUB)["status"] == "REPLAY_INPUTS_MISMATCH"
+    # the default hook of a NEW store is the guarded gate: it replays the new stores and not the old ones (those replay under their own id or FROM_HEADER)
+    assert (st.replay().status == "IDENTICAL") is (hook is SUBJ)
+    assert mem.main(["verify", "--store", str(st.path), "--hook", "header"]) == 0
+    assert mem.main(["verify", "--store", str(st.path), "--hook", hook.id]) == 0
 
 
 def test_a_forged_recall_row_is_replay_differs(tmp_path):
     """A recall row whose result says something the gate does not produce (a sha-valid chain): the replay finds it, at that row."""
-    st = run_story(tmp_path, "forge", GATE)
+    st = run_story(tmp_path, "forge", SUBJ)
     d = os.path.join(st.sessions_dir, "s0003")
     rows = ledger_rows(d)
     i = next(k for k, r in enumerate(rows) if r["op"] == "recall" and r["result"]["verdict"] == "CHOICE")
@@ -523,12 +651,16 @@ def test_a_store_may_change_its_hook_between_sessions(tmp_path):
     s = st.begin("m", self_question=STUB)
     s.write("田中の担当は認証")
     s.commit()
-    s = st.begin("m")                                                    # the default: the gate
+    s = st.begin("m")                                                    # the default: the gate with the subject guard
     s.write("田中の担当は決済")
     assert recall(s, "田中の担当は何ですか")["verdict"] == "CHOICE"
     s.commit()
+    s = st.begin("m", self_question=GATE)                                # ... and back to the gate without it
+    s.write("田中の担当は承認")
+    s.commit()
     assert st.verify(mem.FROM_HEADER)["status"] == "OK"
-    assert st.verify(STUB)["status"] == "REPLAY_INPUTS_MISMATCH" and st.verify(GATE)["status"] == "REPLAY_INPUTS_MISMATCH"
+    assert [r["result"]["header"]["self_question"] for r in (ledger_rows(os.path.join(st.sessions_dir, d))[0] for d in ("s0001", "s0002", "s0003"))] == ["stub.v1", SUBJ.id, GATE.id]
+    assert all(st.verify(h)["status"] == "REPLAY_INPUTS_MISMATCH" for h in (STUB, GATE, SUBJ))
 
 
 # byte identity with the ledgers MEM-a/b wrote: the digest of the 3-session story under the stub / no hook, computed with the code of 63c715f2 (before MEM-c)
@@ -557,13 +689,40 @@ def test_mem_ab_ledgers_are_byte_identical(tmp_path, name, hook):
     assert digest_of(st) == GOLDEN_MEM_AB[name]
 
 
+# byte identity of the stores written with the OLD gate hook (`gate.evidence.v2`, no guard): digests computed with the code of b4b8d93c (before MEM-c2) -- the stores replay, and
+# this code writes the same bytes (ledgers, memory.jsonl, HEAD) incl. recall rows, the false SAME_QUESTION of the cut subjects, and recall's merged answer
+GOLDEN_GATE_V2 = {"story": "334eabfab691862842c80bb0c4ef42caf985040dae6256b59d9dcc3846f26c6c", "cut": "e925b0163283c59e92a7d5e74aeae931d557fc139ec484aa505a4fca374e013f"}
+_STORIES_GOLDEN = {"story": _STORY_AB,
+                   "cut": [["fmt_numの戻り値は文字列", "田中の担当は認証", "add関数の引数は2つ"], ["int_numの戻り値は整数", "sub関数の引数は3つ", "numの戻り値は真偽", "田中の担当は決済"],
+                           ["担当者の名前は佐藤", "責任者の名前は鈴木", "新サーバーのポートは8080", "サーバーのポートは9090"]]}
+_QS_GOLDEN = ("田中の担当は何ですか", "numの戻り値は何ですか", "fmt_numの戻り値は何ですか", "関数の引数は何ですか", "者の名前は何ですか", "サーバーのポートは何ですか")
+
+
+@pytest.mark.parametrize("name", ["story", "cut"])
+def test_old_gate_hook_stores_are_byte_identical_and_replay(tmp_path, name):
+    st = new_store(tmp_path, "gold" + name)
+    for sents in _STORIES_GOLDEN[name]:
+        s = st.begin("test-model", self_question=GATE)
+        write_all(s, sents)
+        for q in _QS_GOLDEN:
+            s.call("recall", {"question": q})
+        assert s.commit()["ok"]
+    assert digest_of(st) == GOLDEN_GATE_V2[name]
+    assert st.verify(mem.FROM_HEADER)["status"] == "OK" and st.verify(GATE)["status"] == "OK"
+    if name == "cut":                                                    # what the old hook wrote: the merged answer and the false alarm, as recorded
+        rows = ledger_rows(os.path.join(st.sessions_dir, "s0003"))
+        merged = [r["result"] for r in rows if r["op"] == "recall" and r["args"]["question"] == "numの戻り値は何ですか"]
+        assert merged[0]["verdict"] == "CHOICE" and "subject_cut" not in merged[0]
+
+
 # -- determinism ----------------------------------------------------------------------------------------------------------------------------------------------------
 _SCRIPT = r"""
 import sys, hashlib, os, json, pathlib
 sys.path.insert(0, os.path.join(%(root)r, "tests", "line3"))
-from test_mem_recall import run_story, GATE, digest_of
-st = run_story(pathlib.Path(sys.argv[1]), "det", GATE)
-print(digest_of(st), st.verify()["status"], hashlib.sha256(json.dumps(st.rows(), sort_keys=True).encode()).hexdigest()[:8])
+from test_mem_recall import run_story, GATE, SUBJ, digest_of
+for h in (GATE, SUBJ):
+    st = run_story(pathlib.Path(sys.argv[1]), "det" + h.id, h)
+    print(digest_of(st), st.verify(h)["status"], hashlib.sha256(json.dumps(st.rows(), sort_keys=True).encode()).hexdigest()[:8])
 """
 
 
@@ -574,7 +733,7 @@ def test_gate_store_bytes_do_not_depend_on_the_hash_seed(tmp_path):
         out = subprocess.run([py, "-c", _SCRIPT % {"root": ROOT}, str(tmp_path / seed)], env=dict(os.environ, PYTHONHASHSEED=seed, PYTHONPATH=ROOT),
                              capture_output=True, text=True, timeout=600)
         assert out.returncode == 0, out.stderr
-        digest, status, rows = out.stdout.split()
-        assert status == "OK"
-        seen.add((digest, rows))
+        lines = [ln.split() for ln in out.stdout.strip().splitlines()]
+        assert len(lines) == 2 and all(ln[1] == "OK" for ln in lines)
+        seen.add(tuple((ln[0], ln[2]) for ln in lines))
     assert len(seen) == 1
