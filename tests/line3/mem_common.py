@@ -53,3 +53,23 @@ def ledger_rows(sess_or_dir):
     d = d.dir if d is not None else sess_or_dir
     with open(os.path.join(str(d), "ops.jsonl"), encoding="utf-8") as f:
         return [json.loads(ln) for ln in f if ln.strip()]
+
+
+# ---- MEM-d (mem.v2 sessions, the answer run, the doors) ---------------------------------------------------------------------------------------
+from verantyx.loom import memory as _mem
+
+V2 = _mem.PROFILE_V2
+
+
+def session_v2(tmp_path, name="mem", **kw):
+    """A mem.v2 session of a new store (the default gate hook): declare_topic / supersede / report exist, writes may carry a turn."""
+    return new_store(tmp_path, name).begin("test-model", profile=V2, **kw)
+
+
+def store_v2(tmp_path, name="mem"):
+    return new_store(tmp_path, name)
+
+
+def refusal_of(res):
+    assert res["ok"] is False, res
+    return res["refusal"]

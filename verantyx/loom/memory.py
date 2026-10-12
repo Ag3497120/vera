@@ -27,6 +27,11 @@ THE WRITE (L-MEM-03..05, 16, 18)
 evidence version (the gate hook `gate.evidence.v2`), otherwise refused `recall_unavailable` exactly as before (so every MEM-a/b ledger replays unchanged).
 THE HOOK (MEM-c, L-MEM-29): `begin(self_question=DEFAULT)` -- DEFAULT is the gate hook for a new store; `None` = no hook; `StubSelfQuestion()` keeps the stub for tests.
 MEM-c2: DEFAULT is now `gate.evidence.v2+subject` (the gate + the whole-subject guard); stores written with `gate.evidence.v2` replay with `FROM_HEADER` / `GateSelfQuestion()`.
+MEM-d (owner 2026-10-13, 「記憶の計器の前の決定」): the PROFILE `mem.v2` of a session (`begin(profile=PROFILE_V2)`, recorded as `header.mem_profile`; a session without it is `mem.v1`
+and replays exactly as before): the rules text guides the model to write 「X の Y は A」 (a sentence that does not seat is refused and the model rewrites; the rewrites are a cost
+column, `memnotes.op_counts`), `declare_topic(text)` (a subject-less sentence is stored as 「<topic>の…」 and self-questioned with it; the expansion is in the row), `supersede`
+(the model resolves a contested group explicitly; recall answers with the newest and lists the old as history, nothing is deleted) and `report` (what the model noticed in a
+turn, mechanically).  The structure, the gate and the clause cut are not changed: the expanded sentence is an ordinary sentence of the memory.
 """
 from __future__ import annotations
 
@@ -63,7 +68,17 @@ ROLES: Tuple[str, ...] = ("model", "user")
 CROSS_UNCAPPED = 1 << 30                                   # L-MEM-14: no cross cap across sessions (a session's writes are capped instead)
 CAPS_MEM_V1: Dict[str, int] = {"writes": 60, "recalls": 60, "lookups": 60, "ops": 300, "reads": 0, "emit_attempts": 0, "constructed": 0, "unit_chars": 8,
                                "max_L": 2, "crosses": CROSS_UNCAPPED, "max_depth": 0}
+PROFILE_V1, PROFILE_V2 = "mem.v1", "mem.v2"
+PROFILES: Tuple[str, ...] = (PROFILE_V1, PROFILE_V2)
+DEFAULT_PROFILE = PROFILE_V1                     # the API default: every store and test before MEM-d. The meter's doors (memdoor) ask for PROFILE_V2.
+CAPS_MEM_V2: Dict[str, int] = dict(CAPS_MEM_V1, topics=8, supersedes=30, reports=60)
 TOOLS: Tuple[str, ...] = ("write", "recall", "lookup", "read_sentence", "status", "commit")         # the memory session's tools (begin is the store's door)
+V2_OPS: Tuple[str, ...] = ("declare_topic", "supersede", "report")                                 # MEM-d: the ops a `mem.v2` session adds
+TOPIC_MAX_CHARS = 24
+TOPIC_PARTICLE = "の"
+REASON_MAX_CHARS = 40
+TURN_RX = re.compile(r"^([1-9][0-9]?)-([1-9][0-9]{0,2})$")        # a turn id "<session>-<message>", 1-based (the harness names every message so)
+REPORT_MAX_PAIRS, REPORT_MAX_BUGS = 10, 5
 FROZEN_OPS: Tuple[str, ...] = ("unseat", "swap", "extend", "topic", "set_depth", "link", "unlink", "drop")
 OPS_CLASS: Tuple[str, ...] = ("write",) + FROZEN_OPS         # the calls the `ops` cap counts
 MEM_RULES: Dict[str, Any] = {
@@ -75,8 +90,32 @@ MEM_RULES: Dict[str, Any] = {
     "recall": "reserved (MEM-c): recall_unavailable until the evidence gate is merged.",     # a session WITHOUT an evidence version (stub / no hook): byte-identical to MEM-a/b
     "close": "commit closes the session; an uncommitted session is not part of the memory.",
 }
+def caps_of(profile: str) -> Dict[str, int]:
+    return CAPS_MEM_V2 if profile == PROFILE_V2 else CAPS_MEM_V1
+
+
+def tools_of(profile: str) -> Tuple[str, ...]:
+    return TOOLS + V2_OPS if profile == PROFILE_V2 else TOOLS
+
+
 MEM_RULES_GATE: Dict[str, Any] = dict(MEM_RULES, recall="recall(question) asks the evidence gate (scope clause, " + mr.RECALL_VERSION + ") of the WHOLE memory: ANSWER (one "
                                       "group), CHOICE (two or more: contested facts stay listed, nothing is retracted or ranked), NONE (no sentence passes: the codes say why).")
+
+
+MEM_RULES_V2: Dict[str, Any] = dict(
+    MEM_RULES_GATE,
+    write="write(text, role) weaves the WHOLE sentence into the memory (at most 64 characters). A sentence the structure cannot seat is refused (span_inexpressible) and stores "
+          "nothing: rewrite it in the form below and call write again. Every rewrite is counted as cost.",
+    form="Write every fact as 「X の Y は A」: X the WHOLE subject (the thing: 広報, 備品, 山本さんのチーム), Y what you are asked about (担当, 期限, ポート, 会場), A a noun phrase "
+         "(山本, 水曜, 10.0.0.5, 大阪). One fact per sentence, a noun at the end, no verb, no chain of が を で に before it. Example: 「備品の期限は水曜」, not 「備品は水曜までに揃える」.",
+    topic="declare_topic(text) at the start of the session: what it is about (a noun phrase, at most 24 characters, no particle at the end). A sentence you write with no subject "
+          "(「締め切りは水曜」) is stored as 「<topic>の締め切りは水曜」 and the result says so (implicit_topic). Declare it again when the subject changes.",
+    supersede="A write that answers a question differently from an earlier sentence shows a SAME_QUESTION note (always). If the later statement REPLACES the earlier one (an explicit change, "
+              "a postponement, a move), call supersede(new_sid, old_sid or old_answer, reason): recall then answers with the newest and lists the old ones as history (nothing is deleted). "
+              "A real contradiction (no sign that one replaces the other) is left alone: recall shows CHOICE. A supersede that does not name an existing contested group is refused with a reason.",
+    report="report(contradictions, bugs) ends EVERY turn: contradictions = pairs of turn ids (\"1-3\" = session 1, message 3) whose statements disagree, [] if none; bugs = [] here.",
+    recall="recall(question) asks the evidence gate (scope clause, " + mr.RECALL_VERSION + ") of the WHOLE memory: ANSWER (one group), CHOICE (two or more: contested facts stay listed, "
+           "nothing is ranked), NONE (no sentence passes: the codes say why). Superseded sentences are returned under `history`, not as the answer.")
 
 
 class _Sentinel:
@@ -113,7 +152,12 @@ STORE_FILES = ("sessions", "memory.jsonl", "HEAD", ".lock")
 # H as bytes
 # ------------------------------------------------------------------------------------------------------------
 def row_line(row: dict) -> str:
-    return canonical({"kind": row.get("kind", "base"), "sent": row["sent"], "source": row["source"]}) + "\n"
+    d = {"kind": row.get("kind", "base"), "sent": row["sent"], "source": row["source"]}
+    if "topic_at" in row:                  # MEM-d: where the declared topic was put in front of the clause (only a row that was expanded has it; every other row is as it was)
+        d["topic_at"] = row["topic_at"]
+    if "turn" in row:                      # MEM-d: the turn id the door told the session ("1-3"): only a mem.v2 write that was given one has it
+        d["turn"] = row["turn"]
+    return canonical(d) + "\n"
 
 
 def rows_bytes(rows: Sequence[dict]) -> bytes:
@@ -165,7 +209,10 @@ class MemRun(Run):
     only refuse; every other loom op is `unknown_tool`.  Never emits."""
 
     def __init__(self, store_id: str, session_no: int, run_id: str, model: str, *, store_head_before: str = GENESIS, kind_policy: str = "a",
-                 contradiction_policy: str = "a", unseatable_policy: str = "a", self_question: Optional[mn.SelfQuestionFn] = None) -> None:
+                 contradiction_policy: str = "a", unseatable_policy: str = "a", self_question: Optional[mn.SelfQuestionFn] = None,
+                 profile: str = PROFILE_V1) -> None:
+        if profile not in PROFILES:
+            raise Refuse("bad_policy", {"policy": "profile", "value": profile, "allowed": list(PROFILES)})
         if kind_policy not in KIND_POLICIES:
             raise Refuse("bad_policy", {"policy": "kind", "value": kind_policy, "allowed": list(KIND_POLICIES)})
         if contradiction_policy not in mn.CONTRADICTION_POLICIES:
@@ -177,7 +224,8 @@ class MemRun(Run):
             raise Refuse("bad_store_id", {"store_id": store_id[:32]})
         task = {"task_id": MEM_TASK_ID, "text": "memory session", "lang": "prose", "mode": "record_only", "tiers": ["WORD"]}
         super().__init__(Corpus(b""), task, model, run_id, "report", None, None, "notes.v1")
-        self.caps = dict(CAPS_MEM_V1)
+        self.profile = profile
+        self.caps = dict(caps_of(profile))
         self.store_id, self.session_no = store_id, session_no
         self.store_head_before = store_head_before
         self.kind_policy, self.contradiction_policy, self.unseatable_policy = kind_policy, contradiction_policy, unseatable_policy
@@ -192,12 +240,17 @@ class MemRun(Run):
         self.corpus_cur: Corpus = self.corpus          # C over the whole of H (self.corpus is C_t only while a weave runs)
         self.session_written = 0                       # ok writes of this session (the `#i` of the source)
         self.counts: Dict[str, int] = {"writes": 0, "recalls": 0}
+        self.counts2: Dict[str, int] = {"topics": 0, "supersedes": 0, "reports": 0}      # MEM-d (mem.v2 only), kept apart so that a mem.v1 session's counts are exactly the MEM-a..c ones
+        self.topic: Optional[str] = None               # MEM-d (mem.v2): the declared topic of THIS session (not carried: a new session declares its own)
+        self.superseded: Dict[int, dict] = {}          # MEM-d: {sid: {"by", "reason", "session"}} -- carried from the ledgers of the earlier sessions, extended by `supersede`
+        self.starts: Dict[int, int] = {}               # MEM-d: {sid: topic_at} of the sentences stored with a declared topic (from the rows, so it survives the session)
+        self.shapes: Dict[int, List[dict]] = {}        # MEM-d: per sentence the woven crosses' shape (cid, topic, seat names): what `sentence_clause` reads, for `supersede`
         self.tally: Dict[str, Any] = {"notes": {t: 0 for t in mn.NOTE_TYPES}, "refused": {}}
         self._pending: List[dict] = []
         self._begin_header: Optional[dict] = None
 
     # -- the carried state (the frozen-stack fold) ------------------------------------------------------------------
-    def carry(self, rows: Sequence[dict]) -> None:
+    def carry(self, rows: Sequence[dict], superseded: Optional[Dict[int, dict]] = None) -> None:
         """Weave every earlier sentence, in order, against its own prefix corpus: the cumulative state of the sessions before (a pure function of H).  The same code
         path as a live write minus the notes; a row that no longer weaves means the store is not what it says (`store_unverified`)."""
         rows = list(rows)
@@ -209,12 +262,18 @@ class MemRun(Run):
             except Refuse as r:
                 raise Refuse("store_unverified", {"reason": "carried_sentence_does_not_weave", "sid": t, "refusal": r.type})
             prev = c_t
+            if "topic_at" in rows[t]:
+                self.starts[t] = rows[t]["topic_at"]
+        sup = {int(k): dict(v) for k, v in (superseded or {}).items()}
+        if any(not 0 <= k < len(rows) or not 0 <= v["by"] < len(rows) for k, v in sup.items()):
+            raise Refuse("store_unverified", {"reason": "supersede_names_no_sentence"})
+        self.superseded = sup
         self.rows = rows
         self.rows0 = len(rows)
         self.corpus = self.corpus_cur = prev
         self._begin_header = None
 
-    def _weave_row(self, t: int, c_before: Corpus, c_t: Corpus) -> dict:
+    def _weave_row(self, t: int, c_before: Corpus, c_t: Corpus, record: bool = True) -> dict:
         units = c_t.tier("WORD").sentence_units[t]
         if not units:
             raise Refuse("no_unit", {})
@@ -223,6 +282,8 @@ class MemRun(Run):
             wv = ops.h_weave_span(self, {"sid": t, "tier": "WORD", "from": 0, "to": len(units) - 1}, self.i)
         finally:
             self.corpus = self.corpus_cur
+        if record:
+            self.shapes[t] = [{"cid": c["cid"], "topic": c["topic"], "seated": [{"seat": s["seat"]} for s in c["seated"]]} for c in wv["crosses"]]
         for c in wv["crosses"]:                                          # sentence order: the arm unit, then the centre (L-MEM-16)
             for uid in [s["uid"] for s in c["seated"]] + [c["centre"]["uid"]]:
                 u = self.state.units[uid]
@@ -230,6 +291,15 @@ class MemRun(Run):
                 u.prov["history_n"] = hist
                 u.prov["origin"] = "record" if hist else "new"
         return wv
+
+    def turns(self) -> Dict[int, str]:
+        """{sid: turn id} of the sentences that were written with one (mem.v2 through a door that knows the turn); {} otherwise."""
+        return {k: r["turn"] for k, r in enumerate(self.rows) if "turn" in r}
+
+    def clause_of(self, sid: int) -> Optional[dict]:
+        """The clause 「[X の] Y は A」 of sentence `sid` as the self-question cuts it (None: no clause), from the shape of its weave."""
+        shape = self.shapes.get(sid)
+        return None if shape is None else mn.sentence_clause(self.corpus_cur, sid, shape, self.starts.get(sid))
 
     # -- header / begin -------------------------------------------------------------------------------------------------
     def header(self) -> dict:
@@ -239,18 +309,28 @@ class MemRun(Run):
                       "memory_sha_before": mem_sha(self.rows), "sessions_before": self.session_no - 1, "sentences_before": len(self.rows),
                       "evidence_version": self.evidence_version, "notes_profile": mn.MEM_NOTES_VERSION, "caps": MEM_VERSION, "kind_policy": self.kind_policy,
                       "contradiction_policy": self.contradiction_policy, "unseatable_policy": self.unseatable_policy, "self_question": self.hook_id})
+            if self.profile == PROFILE_V2:                    # absent in a mem.v1 header: every earlier begin row is as it was
+                h["mem_profile"] = self.profile
             self._begin_header = h
         return self._begin_header
 
     def begin_body(self) -> dict:
-        res = {"ok": True, "run_id": self.run_id, "mode": "memory", "task": ops.task_view(self.task, self.caps),
-               "rules": MEM_RULES if self.evidence_version is None else MEM_RULES_GATE, "header": self.header()}
+        rules = MEM_RULES if self.evidence_version is None else MEM_RULES_GATE
+        if self.profile == PROFILE_V2:
+            rules = MEM_RULES_V2 if self.evidence_version is not None else dict(MEM_RULES_V2, recall=MEM_RULES["recall"])
+        res = {"ok": True, "run_id": self.run_id, "mode": "memory", "task": ops.task_view(self.task, self.caps), "rules": rules, "header": self.header()}
+        if self.profile == PROFILE_V2:
+            res["tools"] = list(tools_of(self.profile))
         return {"actor": "model", "op": "begin", "args": {"task_id": self.task["task_id"], "model": self.model}, "result": res, "state_sha": self.mem_state_sha()}
 
     def mem_state_sha(self) -> str:
         """The state after a row: the loom state (units, crosses, thread, counters, guards) + the memory (|H|, its sha, the write / recall counts)."""
-        return sha256_text(canonical({"loom": self.state.to_obj(), "mem": {"sentences": len(self.rows), "memory_sha": mem_sha(self.rows),
-                                                                           "writes": self.counts["writes"], "recalls": self.counts["recalls"]}}))
+        mem = {"sentences": len(self.rows), "memory_sha": mem_sha(self.rows), "writes": self.counts["writes"], "recalls": self.counts["recalls"]}
+        if self.profile == PROFILE_V2:                         # MEM-d: what a mem.v2 session adds to its state; absent for mem.v1, so those hashes are as they were
+            mem["v2"] = {"topic": self.topic, **self.counts2}
+        if self.superseded:
+            mem["superseded"] = [[k, v["by"], v["session"], v["reason"]] for k, v in sorted(self.superseded.items())]
+        return sha256_text(canonical({"loom": self.state.to_obj(), "mem": mem}))
 
     # -- one call = one body ---------------------------------------------------------------------------------------------
     def notes_due(self) -> List[dict]:
@@ -259,7 +339,7 @@ class MemRun(Run):
         return list(self._pending)
 
     def _executable(self, op: Any) -> bool:
-        return isinstance(op, str) and (op in TOOLS or op in FROZEN_OPS)
+        return isinstance(op, str) and (op in TOOLS or op in FROZEN_OPS or (self.profile == PROFILE_V2 and op in V2_OPS))
 
     def _precheck(self, op: str) -> None:
         st = self.state
@@ -270,6 +350,9 @@ class MemRun(Run):
             raise Refuse("write_cap", {"limit": self.caps["writes"]})
         if op == "recall" and self.counts["recalls"] >= self.caps["recalls"]:
             raise Refuse("recall_cap", {"limit": self.caps["recalls"]})
+        for v2op, cnt, refusal_name in (("declare_topic", "topics", "topic_cap"), ("supersede", "supersedes", "supersede_cap"), ("report", "reports", "report_cap")):
+            if op == v2op and self.counts2[cnt] >= self.caps[cnt]:
+                raise Refuse(refusal_name, {"limit": self.caps[cnt]})
         if op in OPS_CLASS and st.counters["ops"] >= self.caps["ops"]:
             raise Refuse("ops_cap", {"limit": self.caps["ops"]})
         if op in ("lookup", "read_sentence") and st.counters["lookups"] >= self.caps["lookups"]:
@@ -278,6 +361,12 @@ class MemRun(Run):
             self.counts["writes"] += 1
         if op == "recall":
             self.counts["recalls"] += 1
+        if op == "declare_topic":
+            self.counts2["topics"] += 1
+        if op == "supersede":
+            self.counts2["supersedes"] += 1
+        if op == "report":
+            self.counts2["reports"] += 1
         if op in OPS_CLASS:
             st.counters["ops"] += 1
         if op in ("lookup", "read_sentence"):
@@ -357,7 +446,10 @@ def _marked(wv_crosses: Sequence[dict], new_uids: set) -> str:
 
 
 def h_write(run: MemRun, a: dict, i: int) -> dict:
-    a = ops._args(a, {"text": (str, True), "role": (str, False)})
+    a = ops._args(a, {"text": (str, True), "role": (str, False), **({"turn": (str, False)} if run.profile == PROFILE_V2 else {})})
+    turn = a.get("turn")
+    if turn is not None and not TURN_RX.match(turn):
+        raise Refuse("bad_turn", {"turn": turn[:16]})
     role = a.get("role", "model")
     if role not in ROLES:
         raise Refuse("bad_args", {"field": "role", "reason": "one of %s" % (list(ROLES),)})
@@ -365,7 +457,16 @@ def h_write(run: MemRun, a: dict, i: int) -> dict:
     if not 1 <= len(text) <= ARG_STR_CAP or any(unicodedata.category(ch) in ("Cc", "Zl", "Zp") for ch in text):
         raise Refuse("bad_sentence", {"reason": "1 to %d characters, no newline / NUL / control character" % ARG_STR_CAP})
     t = len(run.rows)
+    implicit: Optional[dict] = None
+    if run.profile == PROFILE_V2 and run.topic is not None:           # MEM-d: a subject-less sentence is stored with the declared topic as its subject
+        implicit = _expand_with_topic(run, t, text, role)
+        if implicit is not None:
+            text = implicit["stored"]
     row = {"kind": kind_of(run.kind_policy), "sent": text, "source": make_source(run.store_id, run.session_no, run.session_written, role)}
+    if implicit is not None:
+        row["topic_at"] = implicit["at"]
+    if turn is not None:
+        row["turn"] = turn
     rows_after = run.rows + [row]
     c_before = run.corpus_cur
     c_t = build_corpus(rows_after)
@@ -375,13 +476,15 @@ def h_write(run: MemRun, a: dict, i: int) -> dict:
     run.rows = rows_after
     run.corpus_cur = run.corpus = c_t
     run.session_written += 1
+    if implicit is not None:
+        run.starts[t] = implicit["at"]
     st = run.state
     new_crosses = [st.crosses[c["cid"]] for c in wv["crosses"]]
     linked = [st.crosses[cid] for cid in st.thread]
     c_key = c_before if run.kind_policy != "c" else build_corpus(_key_rows(rows_before, "c", run.session_no))
     notes, extra = mn.compute_write_notes(t=t, row=row, rows_before=rows_before, rows_after=rows_after, corpus_key=c_key, corpus_before=c_before, corpus_after=c_t,
                                           state=st, linked=linked, new_crosses=new_crosses, weave=wv, contradiction_policy=run.contradiction_policy,
-                                          self_question=run.hook)
+                                          self_question=run.hook, superseded=run.superseded or None, clause_start=None if implicit is None else implicit["at"])
     run._pending = notes
     for n in notes:
         run.tally["notes"][n["type"]] += 1
@@ -400,9 +503,38 @@ def h_write(run: MemRun, a: dict, i: int) -> dict:
     res = {"ok": True, "sid": t, "source": row["source"], "kind": row["kind"], "role": role, "text": text, "tier": "WORD", "from": wv["from"], "to": wv["to"],
            "crosses": wv["crosses"], "units": units, "readback": {"text": read_back, "same": read_back == wv["text"]}, "marked": _marked(wv["crosses"], new_uids),
            "history": {"sentences": t, "corpus_sha": c_key.corpus_sha}, "keys": extra["keys"], "clause": extra["clause"], "thread_length": len(st.thread)}
+    if implicit is not None:
+        res["implicit_topic"] = {"topic": run.topic, "at": implicit["at"], "written": implicit["written"]}
+    if turn is not None:
+        res["turn"] = turn
     if notes:
         res["notes"] = notes
     return res
+
+
+def _expand_with_topic(run: MemRun, t: int, text: str, role: str) -> Optional[dict]:
+    """MEM-d (owner 2026-10-13 「主語の無い文」): is the sentence SUBJECT-LESS (its clause is 「Y は A」 with no 「X の」 before the Y)?  Then the topic goes in front of the
+    clause: 「締め切りは金曜」 -> 「<topic>の締め切りは金曜」 (inserted where the clause starts, at the beginning of the written token it sits in, so a lead-in such as 「メモ、」 stays), and THAT sentence is what the memory stores and the
+    gate reads, with its ordinary self-question 「<topic>の締め切りは何ですか」.  The probe weaves the written sentence into a throw-away state (the run's own state, units and weave
+    counter are untouched); None = not subject-less, no clause, or it does not weave (the real write then judges the sentence as written, refusal included)."""
+    row0 = {"kind": kind_of(run.kind_policy), "sent": text, "source": make_source(run.store_id, run.session_no, run.session_written, role)}
+    c0 = build_corpus(run.rows + [row0])
+    saved = (run.state, len(run.weaves), run._nweaves)
+    run.state = LoomState("prose")
+    try:
+        wv0 = run._weave_row(t, run.corpus_cur, c0, record=False)
+    except Refuse:
+        return None
+    finally:
+        run.state, nw, run._nweaves = saved
+        del run.weaves[nw:]
+    g = mn.clause_geometry(c0, t, wv0["crosses"])
+    if g is None or not mn.subject_less(wv0["crosses"], g):
+        return None
+    at = g["start"]
+    while at > 0 and mr.mid_token(text, at):           # the clause starts inside a written token (新規|締め切り): the topic goes before the WHOLE token, the subject stays whole (MEM-c2 rule)
+        at -= 1
+    return {"stored": text[:at] + run.topic + TOPIC_PARTICLE + text[at:], "at": at, "written": text}
 
 
 RECALL_UNAVAILABLE = {"ticket": "MEM-c", "reason": "the evidence gate is not merged into line3; recall over the memory is MEM-c"}      # bytes as MEM-a/b recorded them
@@ -419,7 +551,8 @@ def h_recall(run: MemRun, a: dict, i: int) -> dict:
     if not 1 <= len(q) <= ARG_STR_CAP or any(unicodedata.category(ch) in ("Cc", "Zl", "Zp") for ch in q):
         raise Refuse("bad_question", {"reason": "1 to %d characters, no newline / NUL / control character" % ARG_STR_CAP})
     check_memory_rows(run.rows)
-    res = mr.recall(run.corpus_cur, q, run.evidence_version, subject_guard=bool(getattr(run.hook, "subject_guard", False)))
+    res = mr.recall(run.corpus_cur, q, run.evidence_version, subject_guard=bool(getattr(run.hook, "subject_guard", False)), superseded=run.superseded or None,
+                    turns=run.turns() or None)
     res.update(ok=True, text=q)
     return res
 
@@ -435,11 +568,15 @@ def h_read_sentence(run: MemRun, a: dict, i: int) -> dict:
 def h_status(run: MemRun, a: dict, i: int) -> dict:
     ops._args(a, {})
     st = run.state
-    return {"ok": True, "run_id": run.run_id, "store_id": run.store_id, "session_no": run.session_no, "closed": None if st.closed is None else list(st.closed),
+    res = {"ok": True, "run_id": run.run_id, "store_id": run.store_id, "session_no": run.session_no, "closed": None if st.closed is None else list(st.closed),
             "sentences_before": run.rows0, "sentences": len(run.rows), "written": run.session_written, "units": len(st.units), "crosses": len(st.crosses),
             "thread_length": len(st.thread), "counters": dict(st.counters), "writes": run.counts["writes"], "recalls": run.counts["recalls"],
             "caps": dict(run.caps), "notes": dict(run.tally["notes"]), "refused_writes": dict(sorted(run.tally["refused"].items())), "guards": dict(st.guards),
             "memory_sha": mem_sha(run.rows), "ledger_head": run.head}
+    if run.profile == PROFILE_V2:
+        res.update(profile=run.profile, topic=run.topic, topics=run.counts2["topics"], supersedes=run.counts2["supersedes"], reports=run.counts2["reports"],
+                   superseded=len(run.superseded))
+    return res
 
 
 def h_commit(run: MemRun, a: dict, i: int) -> dict:
@@ -448,6 +585,126 @@ def h_commit(run: MemRun, a: dict, i: int) -> dict:
     run.state.closed = ["committed", sha]
     return {"ok": True, "status": "committed", "memory_sha": sha, "sentences": len(run.rows), "new_sentences": len(run.rows) - run.rows0,
             "session_no": run.session_no, "sessions_after": run.session_no}
+
+
+def _plain_text(s: str, field: str, lo: int, hi: int, refusal_name: str) -> str:
+    t = unicodedata.normalize("NFC", s)
+    if not lo <= len(t) <= hi or any(unicodedata.category(ch) in ("Cc", "Zl", "Zp") for ch in t) or t != t.strip():
+        raise Refuse(refusal_name, {"field": field, "reason": "%d to %d characters, no newline / control character, no space at either end" % (lo, hi)})
+    return t
+
+
+def h_declare_topic(run: MemRun, a: dict, i: int) -> dict:
+    """MEM-d: the session's topic (a ledger row).  A noun phrase of at most 24 characters with at least one WORD unit, not ending in a particle (the expansion adds の).  May be
+    declared again (the newest applies from then on; each is a row); `at_start` says whether nothing was written yet."""
+    a = ops._args(a, {"text": (str, True)})
+    t = _plain_text(a["text"], "text", 1, TOPIC_MAX_CHARS, "bad_topic")
+    if t[-1] in "のはがをにでともへ" or any(ch in t for ch in "。、．，"):
+        raise Refuse("bad_topic", {"field": "text", "reason": "a noun phrase: no particle at the end (the structure adds の), no 。 or 、"})
+    units = mn.word_units(t)
+    if not units:
+        raise Refuse("bad_topic", {"field": "text", "reason": "no word unit"})
+    prev = run.topic
+    run.topic = t
+    return {"ok": True, "topic": t, "units": units, "previous": prev, "at_start": run.session_written == 0, "form": "%sの<Y>は<A>" % t}
+
+
+def h_supersede(run: MemRun, a: dict, i: int) -> dict:
+    """MEM-d (owner 2026-10-13 「更新と矛盾」): the model resolves a CONTESTED group explicitly.  supersede(new_sid, reason, old_sid | old_answer, question?) marks every live sentence
+    of the OLD answer group (the component of `old_sid`, or the one that holds the answer text `old_answer`) as superseded by `new_sid`; the new group must be a different component
+    of the SAME question (`question`, default the self-question of sentence `new_sid`).  Nothing is deleted: recall answers with the live group and lists the old one under
+    `history`.  One row.  Typed refusals, all before anything changes: supersede_unavailable, bad_args, bad_reason, bad_question, unknown_sid, no_self_question, not_an_answer
+    {which}, new_superseded, unknown_answer, same_group, already_superseded."""
+    a = ops._args(a, {"new_sid": (int, True), "reason": (str, True), "old_sid": (int, False), "old_answer": (str, False), "question": (str, False)})
+    if run.evidence_version is None:
+        raise Refuse("supersede_unavailable", {"reason": "this session has no evidence gate: nothing defines a contested group"})
+    if ("old_sid" in a) == ("old_answer" in a):
+        raise Refuse("bad_args", {"field": "old_sid", "reason": "give exactly one of old_sid / old_answer"})
+    reason = _plain_text(a["reason"], "reason", 1, REASON_MAX_CHARS, "bad_reason")
+    n = len(run.rows)
+    new_sid = a["new_sid"]
+    if not 0 <= new_sid < n:
+        raise Refuse("unknown_sid", {"sid": new_sid, "n": n, "which": "new"})
+    if "old_sid" in a and not 0 <= a["old_sid"] < n:
+        raise Refuse("unknown_sid", {"sid": a["old_sid"], "n": n, "which": "old"})
+    if "question" in a:
+        question = _plain_text(a["question"], "question", 1, ARG_STR_CAP, "bad_question")
+    else:
+        g = run.clause_of(new_sid)
+        if g is None:
+            raise Refuse("no_self_question", {"sid": new_sid, "reason": "the sentence has no clause 「Y は A」; give `question`"})
+        question = g["question"]
+    guard = bool(getattr(run.hook, "subject_guard", False))
+    j = mr.analyse(run.corpus_cur, question, run.evidence_version, True, guard)
+    comps, sets = j["comps"], j["sets"]
+    of = {s: k for k, comp in enumerate(comps) for s in comp}
+    if new_sid not in of:
+        raise Refuse("not_an_answer", {"which": "new", "sid": new_sid, "question": question})
+    if new_sid in run.superseded:
+        raise Refuse("new_superseded", {"sid": new_sid, "by": run.superseded[new_sid]["by"]})
+    if "old_sid" in a:
+        old_sid = a["old_sid"]
+        if old_sid not in of:
+            raise Refuse("not_an_answer", {"which": "old", "sid": old_sid, "question": question})
+        old_k = of[old_sid]
+    else:
+        norm = mn.norm_answer(a["old_answer"])
+        hits = [k for k, comp in enumerate(comps) if any(norm in sets[s] for s in comp)]
+        if not norm or not hits:
+            shown = sorted({d for comp in comps for s in comp for d in sets[s].values()})[:8]
+            raise Refuse("unknown_answer", {"answer": a["old_answer"][:32], "question": question, "answers": shown})
+        old_k = hits[0]                                  # an answer text lies in ONE component (two that share it would be one)
+    if old_k == of[new_sid]:
+        raise Refuse("same_group", {"new_sid": new_sid, "question": question, "reason": "old and new are one answer group: nothing is contested"})
+    targets = [s for s in comps[old_k] if s not in run.superseded]
+    if not targets:
+        raise Refuse("already_superseded", {"sids": comps[old_k], "question": question})
+    for s in targets:
+        run.superseded[s] = {"by": new_sid, "reason": reason, "session": run.session_no}
+    after = mr.recall(run.corpus_cur, question, run.evidence_version, True, guard, run.superseded, run.turns() or None)
+    return {"ok": True, "question": question, "new_sid": new_sid, "reason": reason, "session": run.session_no,
+            "superseded": [dict({"sid": s, "source": run.rows[s]["source"], "answers": list(sets[s].values())}, **({"turn": run.rows[s]["turn"]} if "turn" in run.rows[s] else {}))
+                           for s in targets],
+            "verdict_after": after["verdict"], "answers_after": [g["text"] for g in after["answers"]],
+            "history": [{"sid": o["sid"], "answer": o["answer"], "superseded_by": o["superseded_by"]} for g in after.get("history", []) for o in g["occurrences"]]}
+
+
+def h_report(run: MemRun, a: dict, i: int) -> dict:
+    """MEM-d: the closed record of what the model NOTICED in a turn (`report_result`).  `turn` is supplied by the door (the harness knows which message it just delivered; the
+    model never types it)."""
+    return report_result(ops._args(a, {"turn": (str, True), "contradictions": (list, True), "bugs": (list, False)}))
+
+
+def report_result(a: dict) -> dict:
+    """The one definition of a `report` (the memory session and the baseline arms share it, so "what the model noticed" is the same closed format in every arm):
+    contradictions = up to 10 pairs of turn ids "<session>-<message>" (1-based, distinct, none later than `turn`), bugs = up to 5 short strings.  There is no free-text field:
+    whether a pair was found is a lookup, not a judgement.  Normalised: each pair sorted, no duplicate pair, the list sorted."""
+    m = TURN_RX.match(a["turn"])
+    if not m:
+        raise Refuse("bad_turn", {"turn": a["turn"][:16]})
+    now = (int(m.group(1)), int(m.group(2)))
+    cs = a["contradictions"]
+    if len(cs) > REPORT_MAX_PAIRS:
+        raise Refuse("bad_report", {"field": "contradictions", "reason": "at most %d pairs" % REPORT_MAX_PAIRS})
+    pairs = []
+    for c in cs:
+        if not (isinstance(c, list) and len(c) == 2 and all(isinstance(x, str) for x in c)):
+            raise Refuse("bad_report", {"field": "contradictions", "reason": "each is a pair of turn ids [\"1-3\", \"2-5\"]"})
+        ms = [TURN_RX.match(x) for x in c]
+        if not all(ms):
+            raise Refuse("bad_report", {"field": "contradictions", "reason": "a turn id is \"<session>-<message>\", 1-based"})
+        ids = sorted((int(x.group(1)), int(x.group(2))) for x in ms)
+        if ids[0] == ids[1]:
+            raise Refuse("bad_report", {"field": "contradictions", "reason": "a pair names two different turns"})
+        if ids[1] > now:
+            raise Refuse("future_turn", {"turn": a["turn"], "id": "%d-%d" % ids[1]})
+        pair = ["%d-%d" % ids[0], "%d-%d" % ids[1]]
+        if pair not in pairs:
+            pairs.append(pair)
+    bugs = a.get("bugs", [])
+    if len(bugs) > REPORT_MAX_BUGS or not all(isinstance(b, str) and 1 <= len(b) <= ARG_STR_CAP for b in bugs):
+        raise Refuse("bad_report", {"field": "bugs", "reason": "at most %d strings of 1 to %d characters" % (REPORT_MAX_BUGS, ARG_STR_CAP)})
+    return {"ok": True, "turn": a["turn"], "contradictions": sorted(pairs), "bugs": list(bugs)}
 
 
 def _frozen_handler(op: str):
@@ -461,7 +718,8 @@ def _frozen_handler(op: str):
     return h
 
 
-_HANDLERS = {"write": h_write, "recall": h_recall, "lookup": h_lookup, "read_sentence": h_read_sentence, "status": h_status, "commit": h_commit}
+_HANDLERS = {"write": h_write, "recall": h_recall, "lookup": h_lookup, "read_sentence": h_read_sentence, "status": h_status, "commit": h_commit,
+             "declare_topic": h_declare_topic, "supersede": h_supersede, "report": h_report}
 _HANDLERS.update({op: _frozen_handler(op) for op in FROZEN_OPS})
 
 
@@ -490,8 +748,26 @@ def session_memory_rows(run_dir) -> Tuple[List[dict], bool, Optional[dict]]:
         if r["actor"] == "model" and r["op"] == "write" and r["result"].get("ok") is True:
             res = r["result"]
             out.append({"kind": res["kind"], "sent": res["text"], "source": res["source"]})
+            if "implicit_topic" in res:
+                out[-1]["topic_at"] = res["implicit_topic"]["at"]
+            if "turn" in res:
+                out[-1]["turn"] = res["turn"]
         committed = (k == len(lines) - 1 and r["actor"] == "model" and r["op"] == "commit" and r["result"].get("ok") is True)
     return out, committed, begin
+
+
+def session_supersedes(run_dir) -> Dict[int, dict]:
+    """MEM-d: {sid: {"by", "reason", "session"}} -- what the ok `supersede` rows of a session ledger marked, in order (a later row never un-marks).  Read from the chain-verified
+    ledger; the store's HEAD / memory.jsonl hold nothing of it (the ledger is the single source of truth)."""
+    lines, _ = lg.read_raw_lines(run_dir)
+    out: Dict[int, dict] = {}
+    for ln in lines:
+        r = lg._parse_line(ln)
+        if r["actor"] == "model" and r["op"] == "supersede" and r["result"].get("ok") is True:
+            res = r["result"]
+            for x in res["superseded"]:
+                out[x["sid"]] = {"by": res["new_sid"], "reason": res["reason"], "session": res["session"]}
+    return out
 
 
 class MemStore:
@@ -598,10 +874,11 @@ class MemStore:
 
     # -- sessions -----------------------------------------------------------------------------------------------------
     def begin(self, model: str, *, kind_policy: Optional[str] = None, contradiction_policy: str = "a", unseatable_policy: str = "a",
-              self_question: Any = DEFAULT) -> "MemSession":
+              self_question: Any = DEFAULT, profile: str = DEFAULT_PROFILE) -> "MemSession":
         """Open a memory session: the store's lock, the cheap verification, the carried state, the `begin` row (L-MEM-18).  Raises `Refuse` (store_locked,
         store_unverified, bad_model_id, policy_mismatch, ...).  The defaults are the owner's choices: OP-MEM-1 (a), OP-MEM-2 (a), OP-MEM-3 (a).
-        `self_question`: DEFAULT = the gate hook `gate.evidence.v2` (MEM-c, L-MEM-29); `StubSelfQuestion()` the stub; None no hook (no SAME_QUESTION, no recall)."""
+        `self_question`: DEFAULT = the gate hook `gate.evidence.v2` (MEM-c, L-MEM-29); `StubSelfQuestion()` the stub; None no hook (no SAME_QUESTION, no recall).
+        `profile` (MEM-d): `mem.v1` (the default of this API: no topic / supersede / report, the MEM-a..c begin row) or `mem.v2` (the meter's profile, recorded in the header)."""
         self_question = resolve_hook(self_question)
         if not isinstance(model, str) or not _MODEL_RX.match(model) or redact(model)[1]:
             raise Refuse("bad_model_id", {"reason": "1 to 64 printable characters, no secret-shaped text"})
@@ -624,8 +901,11 @@ class MemStore:
                 k += 1
             run_id = "s%04d" % k
             run = MemRun(self.store_id, n_sess + 1, run_id, model, store_head_before=head_sha(head), kind_policy=policy,
-                         contradiction_policy=contradiction_policy, unseatable_policy=unseatable_policy, self_question=self_question)
-            run.carry(rows)
+                         contradiction_policy=contradiction_policy, unseatable_policy=unseatable_policy, self_question=self_question, profile=profile)
+            sup: Dict[int, dict] = {}
+            for e in (head["sessions"] if head else []):
+                sup.update(session_supersedes(self.sessions_dir / e["run_id"]))
+            run.carry(rows, sup)
             led = lg.Ledger(self.sessions_dir / run_id)
             led.create({"store": self.store_id, "mode": "memory", "session_no": n_sess + 1})
             with led.locked() as lk:
@@ -685,6 +965,16 @@ class MemSession:
 
     def write(self, text: str, role: str = "model") -> dict:
         return self.call("write", {"text": text, "role": role} if role != "model" else {"text": text})
+
+    def harness(self, op: str, args: dict) -> dict:
+        """A row that is not the model's (`free_text_dropped`, `harness_meta`, `abandoned`): the driver's.  Same ledger, same chain, not counted against any cap."""
+        if self._fd is None:
+            raise RuntimeError("the session is closed")
+        with self.ledger.locked() as lk:
+            body = self.run.step("harness", op, args)
+            row = lk.append(body, time.monotonic_ns() - self.t0)
+            self.run.advance(row)
+        return body["result"]
 
     def status(self) -> dict:
         return self.call("status", {})
@@ -764,6 +1054,7 @@ def replay_store(path, self_question: Any = DEFAULT) -> MemReplay:
             pass
         return out
     H: List[dict] = []
+    S: Dict[int, dict] = {}                   # what the earlier sessions' supersede ops marked, as RE-derived by this replay
     sessions: List[dict] = []
     before = GENESIS
     for e in head["sessions"]:
@@ -779,7 +1070,11 @@ def replay_store(path, self_question: Any = DEFAULT) -> MemReplay:
         except Exception:
             out.status, out.first_diff = "DIFFERS", {"session": e["run_id"], "i": 0, "field": "result"}
             return out
-        if r0.get("op") != "begin" or hdr.get("mem_version") != MEM_VERSION or hdr.get("caps") != MEM_VERSION or res0["task"].get("caps") != CAPS_MEM_V1:
+        profile = hdr.get("mem_profile", PROFILE_V1)
+        if profile not in PROFILES:
+            out.status, out.mismatch = "INPUTS", "mem_profile_unknown"
+            return out
+        if r0.get("op") != "begin" or hdr.get("mem_version") != MEM_VERSION or hdr.get("caps") != MEM_VERSION or res0["task"].get("caps") != caps_of(profile):
             out.status, out.mismatch = "INPUTS", "mem_version_unknown"
             return out
         hook = resolve_hook(self_question, hdr.get("self_question"))
@@ -787,15 +1082,15 @@ def replay_store(path, self_question: Any = DEFAULT) -> MemReplay:
             out.status, out.mismatch = "INPUTS", "self_question_mismatch"
             return out
         try:
-            run = MemRun(hdr["store_id"], hdr["session_no"], run_id, model, store_head_before=before, self_question=hook, **opts)
-            run.carry(H)
+            run = MemRun(hdr["store_id"], hdr["session_no"], run_id, model, store_head_before=before, self_question=hook, profile=profile, **opts)
+            run.carry(H, S)
         except Refuse:
             out.status, out.first_diff = "DIFFERS", {"session": e["run_id"], "i": 0, "field": "carry"}
             return out
         mm = lg.header_mismatch(hdr, run.header())
         if mm is None:
             for k in ("mem_version", "store_id", "session_no", "store_head_before", "memory_sha_before", "sessions_before", "sentences_before", "evidence_version",
-                      "notes_profile", "caps", "kind_policy", "contradiction_policy", "unseatable_policy", "self_question", "stability_mode", "declared_model"):
+                      "notes_profile", "caps", "kind_policy", "contradiction_policy", "unseatable_policy", "self_question", "stability_mode", "declared_model", "mem_profile"):
                 if hdr.get(k) != run.header().get(k):
                     mm = "header_" + k
                     break
@@ -808,6 +1103,7 @@ def replay_store(path, self_question: Any = DEFAULT) -> MemReplay:
             out.status, out.first_diff = "DIFFERS", {"session": e["run_id"], "i": len(rows) - 1, "field": "commit_missing"}
             return out
         H = list(run.rows)
+        S = dict(run.superseded)
         ent = {"run_id": e["run_id"], "session_no": run.session_no, "head": rows[-1]["sha"], "rows": len(rows), "sentences_after": len(H)}
         if ent != e:
             out.status, out.first_diff = "DIFFERS", {"session": e["run_id"], "i": None, "field": "head_entry"}
