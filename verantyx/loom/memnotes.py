@@ -1,0 +1,475 @@
+"""MEM-b: the history key and the notes of a memory write (docs/LINE3_LOOM_MEMORY_DESIGN.md 3.3, 4.2 step 7, 9.2 L-MEM-06..10, 19, 20).
+
+THE HISTORY RULE (G4 【条件 2】, L-MEM-06).  The write of sentence t is judged against the sentences BEFORE t, never against itself:
+  C_t   = Corpus(bytes(H[0..t]))      the sentence included: the weave reads it
+  C_<t  = Corpus(bytes(H[0..t-1]))    the history: the KEY and UNANCHORED read it
+so a sentence never confirms itself.  `read.stability_of` is called UNCHANGED with an object whose `corpus` is C_<t (`history_view`): the counts n and p
+(sentence co-occurrence and word order, placement.Weights) and the adhesion adj(v, particle) are the structure's own history of the memory space.
+
+THE NOTES (profile `mem.v1`, L-MEM-08; none of them blocks a write: L-MEM-09)
+  REVERSAL      the cross is UNSTABLE under (n, p) alone (`strict_np`): the history holds this pair of words in the OTHER order (the only (n, p)-improving swap
+                of a cross of at most one arm unit is centre <-> arm unit).  Needs the pair written at least once before.  COUNTED.
+  NEW_RELATION  unstable under (n, p, a) and NOT under (n, p): only the adhesion term improves, i.e. a unit has adhesion in the history to another arm
+                particle and none to this one.  Information (a legitimate sentence says it as often as a wrong one).
+  UNANCHORED    the loom's UNANCHORED re-read against C_<t, for the units of this write only (floor of two sentences).  Information.
+  CONFLICT      the loom's `conflicts_prose` over the cumulative thread, reported only when a variant includes a cross of this write.  Meaning in memory:
+                one head with different modifiers on one relation, i.e. mostly an enumeration (認証の期限 / 決済の期限).  Counted only under OP-MEM-2 (b)/(c).
+  SAME_QUESTION OP-MEM-2 (a): on each clause 「[X の] Y は A」 the structure asks ITSELF 「[X の] Y は何ですか」 through a PLUGGABLE `self_question(question,
+                memory)` (the evidence gate of MEM-c plugs in here; a stub stands in until then) and finds two or more distinct answer groups.  COUNTED.
+  SELF_QUESTION_UNREADABLE  the hook returned no answer for sentence t's own clause (the gate cannot read the model's own clause): a coverage count, never a detection.
+  IDENTIFIER_FLATTENED (L-MEM-19) / NO_RELATION_SEATED (L-MEM-20): information.
+Every note is a plain JSON-able dict; the list is sorted (type order, thread position, arm order, canonical form), nothing depends on a dict / set order.
+
+THE EVENTS read from the LEDGER only (like `notes.self_corrections`): UNSEATABLE (a write refused `span_inexpressible`: a SHAPE event, OP-MEM-3) and RESEAT (a
+refused or noted write followed within the next 3 model ops of the session by an ok write that shares a WORD unit of two or more characters): `content` iff
+what made the model rephrase was a counted CONTENT note and the new write changes the answer set of that question / the order of that pair, else `shape` (cost).
+`session_events(rows, ...)` is that reading; it never looks at the memory, only at the rows.
+"""
+from __future__ import annotations
+
+import re
+import unicodedata
+from dataclasses import dataclass
+from types import SimpleNamespace
+from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple
+
+from verantyx.line3 import space as sp
+from verantyx.loom import notes as notelib
+from verantyx.loom import read as rd
+from verantyx.loom.state import AXES, SPEC, LoomCross, canonical, fmt_seat
+
+MEM_NOTES_VERSION = "mem.v1"
+CONFLICT, UNANCHORED = notelib.CONFLICT, notelib.UNANCHORED
+REVERSAL, NEW_RELATION, SAME_QUESTION = "REVERSAL", "NEW_RELATION", "SAME_QUESTION"
+SELF_QUESTION_UNREADABLE, IDENTIFIER_FLATTENED, NO_RELATION_SEATED = "SELF_QUESTION_UNREADABLE", "IDENTIFIER_FLATTENED", "NO_RELATION_SEATED"
+NOTE_TYPES: Tuple[str, ...] = (CONFLICT, UNANCHORED, REVERSAL, NEW_RELATION, SAME_QUESTION, SELF_QUESTION_UNREADABLE, IDENTIFIER_FLATTENED, NO_RELATION_SEATED)
+NOTE_OP, NOTE_ACTOR = notelib.NOTE_OP, notelib.NOTE_ACTOR
+SHAPE = "SHAPE"                        # the event class of a refused `span_inexpressible` write (a ledger event, not a note row)
+EVENT_CLASSES: Tuple[str, ...] = NOTE_TYPES + (SHAPE,)           # the `mem.v1` profile: the five of the design + the three informations; SHAPE read from the refusals
+
+# OP-MEM-2: which note types are COUNTED as structural detections.  (a) the new reading, (b) the existing arm CONFLICT only, (c) both.
+CONTRADICTION_POLICIES: Tuple[str, ...] = ("a", "b", "c")
+COUNTED_BY_POLICY: Dict[str, Tuple[str, ...]] = {"a": (SAME_QUESTION, REVERSAL), "b": (CONFLICT, REVERSAL), "c": (SAME_QUESTION, CONFLICT, REVERSAL)}
+# OP-MEM-3: (a) only content RESEATs are structural detections, shape RESEATs are cost; (b) every refused-then-rephrased write counts (the headline only).
+UNSEATABLE_POLICIES: Tuple[str, ...] = ("a", "b")
+RESEAT_WINDOW = 3                      # L-MEM-07: the next 3 model ops of the same session
+MIN_OVERLAP_CHARS = 2                  # L-MEM-07: one shared WORD unit of at least two characters
+QUESTION_TAIL = "何ですか"             # L-MEM-10
+ARM_PARTICLES = tuple(SPEC.arms)
+_IDENT_RX = re.compile(r"[A-Za-z0-9]+(?:[_.][A-Za-z0-9]+)+")
+
+
+def counted_types(contradiction_policy: str) -> Tuple[str, ...]:
+    return COUNTED_BY_POLICY[contradiction_policy]
+
+
+# ------------------------------------------------------------------------------------------------------------
+# the history key (L-MEM-06, L-MEM-07)
+# ------------------------------------------------------------------------------------------------------------
+def history_view(corpus_before, state) -> SimpleNamespace:
+    """What `read.stability_of` / `notes.unanchored` need of a run: `.corpus` and `.state`.  `corpus_before` is C_<t."""
+    return SimpleNamespace(corpus=corpus_before, state=state)
+
+
+def _arm_units(state, cross: LoomCross) -> List[dict]:
+    out = []
+    for ax in rd.ARM_ORDER:
+        arm = cross.arms[AXES.index(ax)]
+        for k in range(0, cross.inner_k + 1):
+            if arm[k] is not None:
+                out.append({"seat": fmt_seat(ax, k), "unit": state.units[arm[k]].surface, "particle": SPEC.arm_of_axis(ax)})
+    return out
+
+
+def history_keys(view, crosses: Sequence[LoomCross]) -> List[dict]:
+    """The two stability readings of each new cross against the history: [{cid, centre, np: entry, npa: entry}] (an entry = read.stability_of's)."""
+    out = []
+    for c in crosses:
+        if c.centre is None:
+            continue
+        out.append({"cid": c.cid, "centre": view.state.units[c.centre].surface,
+                    "np": rd.stability_of(view, c, "strict_np"), "npa": rd.stability_of(view, c, "strict_npa")})
+    return out
+
+
+def key_notes(view, keys: Sequence[dict], pos0: int = 0) -> List[dict]:
+    """REVERSAL / NEW_RELATION from `history_keys` (L-MEM-07).  trivially_stable (no history, or none of the unit in it) says nothing."""
+    out: List[dict] = []
+    for pos, k in enumerate(keys):
+        cross = view.state.crosses[k["cid"]]
+        e_np, e_npa = k["np"], k["npa"]
+        if e_np["status"] == "unstable":
+            typ, e = REVERSAL, e_np
+        elif e_npa["status"] == "unstable":
+            typ, e = NEW_RELATION, e_npa
+        else:
+            continue
+        out.append({"type": typ, "cid": k["cid"], "centre": k["centre"], "units": _arm_units(view.state, cross), "key": list(e["key"]),
+                    "best_key": list(e["best_key"]), "swaps": [list(s) for s in e["best_swaps"]], "improving": [list(i) for i in e["improving"]],
+                    "_pos": pos0 + pos, "_arm": 0})
+    return out
+
+
+def unanchored_notes(view, crosses: Sequence[LoomCross]) -> List[dict]:
+    return [dict(n) for n in notelib.unanchored(view, list(crosses))]
+
+
+def conflict_notes(view, linked: Sequence[LoomCross], new_cids: Sequence[str]) -> List[dict]:
+    """The loom's CONFLICT/arm_contents over the cumulative thread, kept only when a variant includes a cross of this write (L-MEM-08)."""
+    mine = set(new_cids)
+    out = []
+    for n in notelib.conflicts_prose(view, list(linked)):
+        if any(cid in mine for v in n["variants"] for cid in v["cids"]):
+            out.append(n)
+    return out
+
+
+# ------------------------------------------------------------------------------------------------------------
+# the clause and the self-question (L-MEM-10) -- the hook for MEM-c
+# ------------------------------------------------------------------------------------------------------------
+@dataclass(frozen=True)
+class Answer:
+    """One answer the hook found: the sentence `sid` of the memory it stands in, its text, and (optional) the unit stretch (i0, i1) of that sentence.  A stretch
+    contained in another stretch of the same sentence is dropped by the detection (one statement, L-MEM-11)."""
+    sid: int
+    text: str
+    span: Optional[Tuple[int, int]] = None
+
+
+@dataclass(frozen=True)
+class MemoryBefore:
+    """What the hook is given.  `rows_before` / `corpus_before` are the memory BEFORE sentence t (H[0..t-1], C_<t); `row` is sentence t and `rows_after` /
+    `corpus_after` the memory with it (H[0..t], C_t: the corpus the evidence gate reads, L-MEM-12).  The hook must return the answers of `question`
+    over H[0..t]; sentence t's own answers have to be among them, or the detection reports SELF_QUESTION_UNREADABLE."""
+    t: int
+    row: dict
+    rows_before: Tuple[dict, ...]
+    rows_after: Tuple[dict, ...]
+    corpus_before: Any
+    corpus_after: Any
+
+
+SelfQuestionFn = Callable[[str, MemoryBefore], Sequence[Answer]]
+NO_HOOK = "none"
+
+
+def hook_id(fn: Optional[SelfQuestionFn]) -> str:
+    """The name a ledger records for the hook (`header.self_question`).  A hook must have an `id` attribute; replay needs the same id."""
+    if fn is None:
+        return NO_HOOK
+    hid = getattr(fn, "id", None)
+    if not isinstance(hid, str) or not hid or hid == NO_HOOK:
+        raise ValueError("a self_question hook needs a non-empty str attribute `id` (not %r)" % (NO_HOOK,))
+    return hid
+
+
+def sentence_clause(corpus_t, sid: int, crosses: Sequence[dict]) -> Optional[dict]:
+    """The clause 「[X の] Y は A」 of a woven sentence (L-MEM-10): a topic cross T immediately followed, in the same weave, by a cross N, where T holds no arm unit
+    other than on +x (の).  `crosses` = the `crosses` of the weave_span result (the units are consecutive in sentence order: one or two per cross).
+    {"cid", "question", "subject": [units], "answer": [the units after T]} or None.  The question is the LITERAL substring of the sentence from T's first
+    unit to T's は (so punctuation stays) + 「何ですか」."""
+    idx = corpus_t.spans()
+    sps = idx.spans("WORD", sid)
+    text = idx.text(sid)
+    units = list(corpus_t.tier("WORD").sentence_units[sid])
+    ranges: List[Tuple[int, int]] = []
+    pos = 0
+    for c in crosses:
+        size = 1 + len(c["seated"])
+        ranges.append((pos, pos + size - 1))
+        pos += size
+    if pos != len(units):
+        return None
+    for j in range(len(crosses) - 1):
+        c = crosses[j]
+        if not c["topic"] or any(s["seat"] != "+x:0" for s in c["seated"]):
+            continue
+        first, centre = ranges[j]
+        nxt = ranges[j + 1][0]
+        gap = text[sps[centre][1]:sps[nxt][0]]
+        k = gap.find(SPEC.centre)
+        if k < 0:
+            continue
+        end = sps[centre][1] + k + 1
+        return {"cid": c["cid"], "question": text[sps[first][0]:end] + QUESTION_TAIL, "subject": units[first:centre + 1], "answer": units[nxt:]}
+    return None
+
+
+def norm_answer(s: str) -> str:
+    """NFKC + casefold + no whitespace / 「・」 (MEM-c replaces this by evidence.strip_ignore when the gate is merged)."""
+    return "".join(ch for ch in unicodedata.normalize("NFKC", s).casefold() if not ch.isspace() and ch not in "・·")
+
+
+def answer_groups(answers: Sequence[Answer]) -> Tuple[Dict[int, Dict[str, str]], List[List[int]]]:
+    """({sid: {norm: display}} of each sentence's MAXIMAL answers, the components).  A stretch contained in another of the same sentence (by span when both
+    have one, else by the normalised text) is dropped: one sentence is one statement (O: 「今日の作業はK3の修正」 passes {K3, K3の修正}).  Two sentences AGREE
+    iff their answer sets intersect; the components are the connected groups of 'agree' (union-find in sid order), each a sorted list of sids, ordered by
+    their smallest sid."""
+    per: Dict[int, List[Answer]] = {}
+    for a in answers:
+        per.setdefault(a.sid, []).append(a)
+    sets: Dict[int, Dict[str, str]] = {}
+    for sid in sorted(per):
+        keep: Dict[str, str] = {}
+        items = per[sid]
+        for a in items:
+            na = norm_answer(a.text)
+            if not na:
+                continue
+            inside = False
+            for b in items:
+                if b is a:
+                    continue
+                nb = norm_answer(b.text)
+                if a.span is not None and b.span is not None:
+                    contained = b.span[0] <= a.span[0] and a.span[1] <= b.span[1] and a.span != b.span
+                else:
+                    contained = na != nb and na in nb
+                if contained:
+                    inside = True
+                    break
+            if not inside and (na not in keep or len(a.text) > len(keep[na])):
+                keep[na] = a.text
+        if keep:
+            sets[sid] = keep
+    sids = sorted(sets)
+    parent = {s: s for s in sids}
+
+    def find(x: int) -> int:
+        while parent[x] != x:
+            parent[x] = parent[parent[x]]
+            x = parent[x]
+        return x
+
+    for i, a in enumerate(sids):
+        for b in sids[i + 1:]:
+            if set(sets[a]) & set(sets[b]):
+                ra, rb = find(a), find(b)
+                if ra != rb:
+                    parent[max(ra, rb)] = min(ra, rb)
+    comps: Dict[int, List[int]] = {}
+    for s in sids:
+        comps.setdefault(find(s), []).append(s)
+    return sets, [sorted(v) for _, v in sorted(comps.items())]
+
+
+def same_question_note(question: str, answers: Sequence[Answer], t: int, rows_after: Sequence[dict], cid: str) -> Optional[dict]:
+    """The note for one self-question (L-MEM-11 verdicts): CHOICE (>= 2 components) with sentence t among the occurrences -> SAME_QUESTION; sentence t with
+    no answer -> SELF_QUESTION_UNREADABLE; ANSWER / NONE -> None.  A tie abstains: nothing is ranked, the variants are listed in sid order."""
+    sets, comps = answer_groups(answers)
+    if t not in sets:
+        return {"type": SELF_QUESTION_UNREADABLE, "question": question, "cid": cid}
+    if len(comps) < 2:
+        return None
+    variants = []
+    for comp in comps:
+        ans: Dict[str, str] = {}
+        for s in comp:
+            for n, d in sets[s].items():
+                if n not in ans or len(d) > len(ans[n]):
+                    ans[n] = d
+        variants.append({"answers": [ans[n] for n in sorted(ans, key=lambda n: (-len(n), n))],
+                         "occurrences": [{"sid": s, "source": rows_after[s]["source"]} for s in comp]})
+    return {"type": SAME_QUESTION, "question": question, "cid": cid, "variants": variants}
+
+
+# ------------------------------------------------------------------------------------------------------------
+# informations (L-MEM-19, L-MEM-20)
+# ------------------------------------------------------------------------------------------------------------
+def shape_notes(text: str, crosses: Sequence[dict], n_units: int) -> List[dict]:
+    out: List[dict] = []
+    idents = sorted(set(_IDENT_RX.findall(text)))
+    if idents:
+        out.append({"type": IDENTIFIER_FLATTENED, "identifiers": idents,
+                    "read_as": [re.sub(r"[_.]", "", i) for i in idents], "_pos": 0, "_arm": 0})
+    if n_units >= 3 and not any(c["seated"] or c["topic"] for c in crosses):
+        out.append({"type": NO_RELATION_SEATED, "units": n_units, "_pos": 0, "_arm": 0})
+    return out
+
+
+# ------------------------------------------------------------------------------------------------------------
+# one write: every note (MEM-b assembly)
+# ------------------------------------------------------------------------------------------------------------
+def compute_write_notes(*, t: int, row: dict, rows_before: Sequence[dict], rows_after: Sequence[dict], corpus_key: Any, corpus_before: Any, corpus_after: Any,
+                        state, linked: Sequence[LoomCross], new_crosses: Sequence[LoomCross], weave: dict, contradiction_policy: str,
+                        self_question: Optional[SelfQuestionFn]) -> Tuple[List[dict], dict]:
+    """The notes of the write of sentence t, in the loom's note order, and {"keys": [...], "clause": ... | None}.
+
+    `corpus_key` is C_<t as the KEY reads it (= `corpus_before` for OP-MEM-1 (a)/(b); under (c) the rows of the current session are relabelled so they give
+    no adhesion).  Nothing here reads `corpus_after` for a KEY: it is only handed to the self-question hook (the gate's corpus) and to the clause cut."""
+    view = history_view(corpus_key, state)
+    keys = history_keys(view, new_crosses)
+    found: List[dict] = []
+    found += key_notes(view, keys)
+    found += unanchored_notes(view, new_crosses)
+    found += conflict_notes(view, linked, [c.cid for c in new_crosses])
+    clause = sentence_clause(corpus_after, t, weave["crosses"])
+    if clause is not None and contradiction_policy in ("a", "c") and self_question is not None:
+        mem = MemoryBefore(t=t, row=row, rows_before=tuple(rows_before), rows_after=tuple(rows_after), corpus_before=corpus_before, corpus_after=corpus_after)
+        sq = same_question_note(clause["question"], list(self_question(clause["question"], mem)), t, rows_after, clause["cid"])
+        if sq is not None:
+            sq.update(_pos=0, _arm=0)
+            found.append(sq)
+    found += shape_notes(row["sent"], weave["crosses"], len(corpus_after.tier("WORD").sentence_units[t]))
+    counted = counted_types(contradiction_policy)
+    found.sort(key=lambda n: (NOTE_TYPES.index(n["type"]), n["_pos"], n["_arm"], canonical({k: v for k, v in n.items() if not k.startswith("_")})))
+    notes = []
+    for n in found:
+        d = {k: v for k, v in n.items() if not k.startswith("_")}
+        d["counted"] = d["type"] in counted
+        notes.append(d)
+    return notes, {"keys": [{"cid": k["cid"], "centre": k["centre"], "np": _key_view(k["np"]), "npa": _key_view(k["npa"])} for k in keys], "clause": clause}
+
+
+def _key_view(e: dict) -> dict:
+    return {"status": e["status"], "key": e["key"], "improving": e["improving"]}
+
+
+# ------------------------------------------------------------------------------------------------------------
+# events read from the ledger (OP-MEM-3)
+# ------------------------------------------------------------------------------------------------------------
+def word_units(text: str) -> List[str]:
+    """The WORD units of a sentence text on its own (default unit filter): the units of a REFUSED write, which the ledger holds only as text."""
+    t = sp.build_tier("WORD", [sp.strip_attribution(text)])
+    return list(t.sentence_units[0])
+
+
+def _model_ops(rows: Sequence[dict]) -> List[dict]:
+    return [r for r in rows if r["actor"] == "model" and r["op"] != "begin"]
+
+
+def _notes_after(rows: Sequence[dict]) -> Dict[int, List[dict]]:
+    """row index -> the notes of the loom_note row that follows it directly."""
+    out: Dict[int, List[dict]] = {}
+    for k, r in enumerate(rows):
+        if r["actor"] == NOTE_ACTOR and r["op"] == NOTE_OP and k > 0:
+            out[rows[k - 1]["i"]] = r["args"]["notes"]
+    return out
+
+
+def _units_of_write(r: dict) -> List[str]:
+    res = r["result"]
+    if res.get("ok") is True:
+        return [u["surface"] for u in res["units"]]
+    return word_units(r["args"].get("text", ""))
+
+
+def _cross_pairs(res: dict) -> List[Tuple[Tuple[str, ...], str]]:
+    """[(arm unit surfaces, centre surface)] of an ok write's crosses."""
+    return [(tuple(s["surface"] for s in c["seated"]), c["centre"]["surface"]) for c in res["crosses"]]
+
+
+def _content_changed(trigger_note: dict, w1: dict, w2: dict) -> bool:
+    """Does the ok write w2 change what the counted note on w1 is about?  SAME_QUESTION: w2 asks the same question with another answer unit set.  REVERSAL: w2
+    holds both words of the pair in the other order (the flagged order is gone and the reverse is there).  CONFLICT (arm): w2 has a cross with the same centre
+    and a different arm content.  Anything else (a shape rephrase, an identical sentence is not even a RESEAT): not content."""
+    typ = trigger_note["type"]
+    r1, r2 = w1["result"], w2["result"]
+    if typ == SAME_QUESTION:
+        c1, c2 = r1.get("clause"), r2.get("clause")
+        return bool(c1 and c2 and c2["question"] == trigger_note["question"] and set(c2["answer"]) != set(c1["answer"]))
+    if typ == REVERSAL:
+        arm = tuple(u["unit"] for u in trigger_note["units"])
+        pairs2 = _cross_pairs(r2)
+        flagged = (arm, trigger_note["centre"])
+        reverse = ((trigger_note["centre"],), arm[0] if arm else "")
+        return flagged not in pairs2 and reverse in pairs2
+    if typ == CONFLICT:
+        mine = [p for p in _cross_pairs(r1) if p[1] == trigger_note["centre"]]
+        theirs = [p for p in _cross_pairs(r2) if p[1] == trigger_note["centre"]]
+        return bool(mine and theirs and all(p not in mine for p in theirs))
+    return False
+
+
+def session_events(rows: Sequence[dict], contradiction_policy: str = "a", unseatable_policy: str = "a") -> dict:
+    """Everything a session's ledger says about the structure, from the rows alone:
+      notes          {type: count} over the ok writes' note rows;  counted {type: count} for the types the policy counts
+      unseatable     {"total", "by_reason": {reason: n}}  (writes refused `span_inexpressible`)
+      refused        {refusal type: n} for every refused write
+      reseats        [{"trigger_i", "trigger", "to_i", "kind": content | shape}]   (each trigger pairs with its FIRST matching ok write)
+      units          {"new", "record"} over the ok writes (origin new = the model supplied the word)
+      detections     {"notes": counted notes, "reseat_content": n, "headline": ...}   cost: {"unseatable", "reseat_shape", "unreadable"}
+    A RESEAT needs: a trigger (a refused span_inexpressible write, or an ok write with a COUNTED note) and, in the next RESEAT_WINDOW model ops, an ok write
+    with a different text that shares a WORD unit of >= MIN_OVERLAP_CHARS characters.  The headline is OP-MEM-3's: (a) notes + content RESEATs, (b) + shape."""
+    counted = counted_types(contradiction_policy)
+    notes_by_row = _notes_after(rows)
+    ops = _model_ops(rows)
+    n_notes = {t: 0 for t in NOTE_TYPES}
+    refused: Dict[str, int] = {}
+    reasons: Dict[str, int] = {}
+    new_u = rec_u = 0
+    for r in ops:
+        if r["op"] != "write":
+            continue
+        res = r["result"]
+        if res.get("ok") is True:
+            for u in res["units"]:
+                if u["origin"] == "new":
+                    new_u += 1
+                else:
+                    rec_u += 1
+            for n in notes_by_row.get(r["i"], []):
+                n_notes[n["type"]] += 1
+        else:
+            refused[res["refusal"]] = refused.get(res["refusal"], 0) + 1
+            if res["refusal"] == "span_inexpressible":
+                reasons[res["detail"].get("reason", "")] = reasons.get(res["detail"].get("reason", ""), 0) + 1
+    reseats: List[dict] = []
+    for k, r in enumerate(ops):
+        if r["op"] != "write":
+            continue
+        res = r["result"]
+        trig: Optional[dict] = None
+        if res.get("ok") is not True:
+            if res["refusal"] != "span_inexpressible":
+                continue
+        else:
+            trig_notes = [n for n in notes_by_row.get(r["i"], []) if n["type"] in counted]
+            if not trig_notes:
+                continue
+        u1 = {u for u in _units_of_write(r) if len(u) >= MIN_OVERLAP_CHARS}
+        for w in ops[k + 1:k + 1 + RESEAT_WINDOW]:
+            if w["op"] != "write" or w["result"].get("ok") is not True:
+                continue
+            if w["args"].get("text") == r["args"].get("text"):
+                continue
+            if not (u1 & {u for u in _units_of_write(w) if len(u) >= MIN_OVERLAP_CHARS}):
+                continue
+            kind = "shape"
+            if res.get("ok") is True:
+                if any(_content_changed(n, r, w) for n in trig_notes):
+                    kind = "content"
+            reseats.append({"trigger_i": r["i"], "trigger": "span_inexpressible" if res.get("ok") is not True else trig_notes[0]["type"], "to_i": w["i"], "kind": kind})
+            break
+    content = sum(1 for x in reseats if x["kind"] == "content")
+    shape = len(reseats) - content
+    counted_notes = sum(n_notes[t] for t in counted)
+    headline = counted_notes + content + (shape if unseatable_policy == "b" else 0)
+    return {"notes": n_notes, "counted": {t: n_notes[t] for t in counted}, "unseatable": {"total": sum(reasons.values()), "by_reason": dict(sorted(reasons.items()))},
+            "refused": dict(sorted(refused.items())), "reseats": reseats, "units": {"new": new_u, "record": rec_u},
+            "detections": {"notes": counted_notes, "reseat_content": content, "headline": headline},
+            "cost": {"unseatable": sum(reasons.values()), "reseat_shape": shape, "unreadable": n_notes[SELF_QUESTION_UNREADABLE]},
+            "policy": {"contradiction": contradiction_policy, "unseatable": unseatable_policy}}
+
+
+# ------------------------------------------------------------------------------------------------------------
+# the stand-in hook (until the evidence gate is merged: MEM-c)
+# ------------------------------------------------------------------------------------------------------------
+class StubSelfQuestion:
+    """A literal reader of 「<subject>は何ですか」: every memory sentence that starts with 「<subject>は」 answers with the rest of the sentence.  It is NOT the gate (no
+    word alignment, no clause cut, no copula rule); it exists so that the SAME_QUESTION detection (answer groups, components, the note) can be built and tested
+    before MEM-c plugs `evidence.judge_quote` in.  The hook contract is the same: it answers over H[0..t], sentence t included."""
+    id = "stub.v1"
+
+    def __call__(self, question: str, mem: MemoryBefore) -> List[Answer]:
+        if not question.endswith("は" + QUESTION_TAIL):
+            return []
+        subject = question[:-len("は" + QUESTION_TAIL)]
+        out: List[Answer] = []
+        for sid, r in enumerate(mem.rows_after):
+            text = r["sent"]
+            if text.startswith(subject + "は"):
+                ans = text[len(subject) + 1:].rstrip("。")
+                if ans:
+                    out.append(Answer(sid, ans))
+        return out
