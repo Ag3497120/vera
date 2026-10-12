@@ -45,7 +45,7 @@ if ROOT not in sys.path:
 
 from verantyx.line3 import space as sp                                         # noqa: E402
 from verantyx.loom import ledger as lg                                         # noqa: E402
-from verantyx.loom.ops import CLASS_OF, LEGACY_OPS, MODEL_OPS                  # noqa: E402
+from verantyx.loom.ops import CLASS_OF, LEGACY_OPS, MODEL_OPS, STATE_CHANGING  # noqa: E402
 
 BANK2_TSV = os.path.join(ROOT, "experiments/line3/bank2/bank2.tsv")
 T9_SCORER = os.path.join(ROOT, "experiments/line3/t9/scorer.py")
@@ -54,6 +54,9 @@ STATUSES = ("hit", "miss", "abstained_correct", "abstained_wrong", "answered_una
 OUTCOMES = ("emitted", "abstained", "no_output", "not_verified")
 KINDS = ("record", "constructed", "foundation", "layout")
 CONTROL = "free_text"
+NO_TOOLS = "no_tools"                       # LOOM-control (L-LOOM-150): the control with NO tools at all (a plain messages call)
+CONTROLS = (CONTROL, NO_TOOLS)              # the `control` value of a task row / the `mode` label of a control run
+LAYERS = ("L_meta", "L_struct", "L_none_marked", "L_none", "L_other")    # LOOM-control: which layer ended a run (see `layer_report`)
 
 
 def _load_scorer():
@@ -106,15 +109,20 @@ class TaskFacts:
 
     @staticmethod
     def of(row: dict, gold_tbl: Dict[str, dict]) -> "TaskFacts":
-        control = row.get("control") == CONTROL
+        control = row.get("control") in CONTROLS
         base = row.get("base") or row["task_id"].replace("/", "_")
         g = gold_tbl.get(row.get("bank2_id") or "")
+        declared = row.get("kind")                      # LOOM-control: a bank row may DECLARE `"kind": "unans"` (the ADV-nnn items are not in bank2.tsv);
+        if declared not in (None, "unans"):             # `normalize_task` drops the key, the model never sees it, and it holds no gold
+            raise ValueError("task %r: kind must be \"unans\" when present, not %r" % (row["task_id"], declared))
         if g is None:
-            kind, gold = "none", ""
+            kind, gold = ("unans", "") if declared == "unans" else ("none", "")
         else:
             kind = "unans" if g["kind"] == "unans" else "answerable"
             gold = g["gold"]
-        return TaskFacts(row["task_id"], base, CONTROL if control else row["mode"], control, kind, gold)
+            if declared == "unans" and kind != "unans":
+                raise ValueError("task %r declares kind unans, bank2.tsv says %r" % (row["task_id"], g["kind"]))
+        return TaskFacts(row["task_id"], base, row["control"] if control else row["mode"], control, kind, gold)
 
 
 # ------------------------------------------------------------------------------------------------------------
@@ -298,6 +306,96 @@ def run_facts(run_dir: str) -> dict:
 
 
 # ------------------------------------------------------------------------------------------------------------
+# LOOM-control: which LAYER ended a run (L-LOOM-151).  Read from the rows of a verified ledger and nothing else.
+# ------------------------------------------------------------------------------------------------------------
+BUILD_OPS = tuple(STATE_CHANGING) + ("emit",)               # every model op that tries to put something into the thread or out of the loom
+WEAVE_ATTEMPT_OPS = tuple(STATE_CHANGING)                   # ... without the emit (counted apart)
+
+
+def _is_close(r: dict) -> bool:
+    return r["op"] in ("emit", "abstain") and r["result"].get("ok") is True and r["result"].get("status") in ("emitted", "abstained")
+
+
+def layer_report(rows: Sequence[dict], control: Optional[str] = None) -> dict:
+    """THE STOP LAYER of one run, and the counts it rests on, from the ledger rows alone (nothing is passed in out of band except whether the task is a control).
+
+      L_meta         the run ended in an abstention (a loom `abstain`; a control: the answer line 「不明」) and the model made 0 build attempts (no weave / seat / add /
+                     open_cross / link / ... / emit row, accepted or refused): the model's OWN re-check (route 2).
+      L_struct       at least one build op (any state-changing op or an emit) was REFUSED by the loom for a structural reason (not a cap, not run_closed, not
+                     unknown_tool: `_NON_RECOVERABLE`), and the run then abstained or produced no output: the structure refused (route 1).  `struct_refusals` lists the types.
+      L_none_marked  the run emitted a text that contains a constructed unit (constructed_allowed only; the text is marked, not stopped).
+      L_none         the run emitted a text with only record / foundation / layout units, or a control ANSWERED.
+      L_other        none of the four: an abstention after build ops that were all accepted (`abstain_after_build`), or no output without a structural refusal
+                     (`no_output_no_refusal`: a cap, max_turns, an API error, 'done').  Reported, never folded into L_meta.
+
+    A refusal that came BEFORE an emit does not make the run L_struct (it emitted: L_none / L_none_marked) but is listed in `struct_refusals_before_emit`:
+    the structure fired and the run went on to answer.  `control` is None for a loom run, else the control label (free_text / no_tools): a control answered is
+    L_none, a control 「不明」 is L_meta (no build op exists in a control).  Counts are of MODEL rows up to and including the closing row (all rows if it never closed).
+    """
+    model = [r for r in rows if r["actor"] == "model"]
+    end_i = next((r["i"] for r in model if _is_close(r)), None)
+    upto = [r for r in model if end_i is None or r["i"] <= end_i]
+    counts = {"lookups": 0, "empty_lookups": 0, "read_sentences": 0, "reads": 0, "weave_attempts": 0, "emit_attempts": 0, "refusals": 0}
+    refusals: Dict[str, int] = {}
+    struct: Dict[str, int] = {}
+    for r in upto:
+        op = r["op"]
+        res = r["result"]
+        if op == "lookup":
+            counts["lookups"] += 1
+            if res.get("ok") is True and res.get("matches") == []:
+                counts["empty_lookups"] += 1
+        elif op == "read_sentence":
+            counts["read_sentences"] += 1
+        elif op == "read":
+            counts["reads"] += 1
+        elif op == "emit":
+            counts["emit_attempts"] += 1
+        elif op in WEAVE_ATTEMPT_OPS:
+            counts["weave_attempts"] += 1
+        if res.get("ok") is False:
+            typ = str(res.get("refusal", "?"))
+            counts["refusals"] += 1
+            refusals[typ] = refusals.get(typ, 0) + 1
+            if op in BUILD_OPS and typ not in _NON_RECOVERABLE:
+                struct[typ] = struct.get(typ, 0) + 1
+    attempts = counts["weave_attempts"] + counts["emit_attempts"]
+    out: Dict[str, Any] = dict(counts, build_attempts=attempts, refusal_types=dict(sorted(refusals.items())),
+                               struct_refusals=dict(sorted(struct.items())), struct_refusals_total=sum(struct.values()))
+    emit = next((r for r in model if r["op"] == "emit" and r["result"].get("ok") is True and r["result"].get("status") == "emitted"), None)
+    abstain = next((r for r in model if r["op"] == "abstain" and r["result"].get("ok") is True and r["result"].get("status") == "abstained"), None)
+    detail = ""
+    if control is not None:
+        txt = None
+        for r in rows:
+            if r["op"] == "free_text_control":
+                txt = r["args"]["text"]
+        if txt is None:
+            layer, outcome, detail = "L_other", "no_output", "control_no_text"
+        elif control_abstains(txt):
+            layer, outcome = "L_meta", "不明"
+        else:
+            layer, outcome = "L_none", "answered"
+        out["control_outcome"] = outcome
+    elif emit is not None:
+        marked = any(seg.get("kind") == "constructed" for seg in (emit["result"].get("annotated") or []))
+        layer, detail = ("L_none_marked", "constructed_unit_in_text") if marked else ("L_none", "")
+        out["struct_refusals_before_emit"] = out["struct_refusals_total"]
+    elif out["struct_refusals_total"] >= 1:
+        layer = "L_struct"
+        detail = "then_abstained" if abstain is not None else "then_no_output"
+    elif abstain is not None and attempts == 0:
+        layer = "L_meta"
+    elif abstain is not None:
+        layer, detail = "L_other", "abstain_after_build"
+    else:
+        layer, detail = "L_other", "no_output_no_refusal"
+    out["stop_layer"] = layer
+    out["stop_layer_detail"] = detail
+    return out
+
+
+# ------------------------------------------------------------------------------------------------------------
 # the typed result
 # ------------------------------------------------------------------------------------------------------------
 @dataclass(frozen=True)
@@ -325,6 +423,8 @@ class RunScore:
     share_permille: Dict[str, int] = field(default_factory=dict)
     annotated: Optional[List[dict]] = None
     answer_line: Optional[str] = None           # a control only: the line that was scored (L-LOOM-59); `text` is the whole final message
+    stop_layer: Optional[str] = None            # LOOM-control: one of LAYERS (see `layer_report`); None when the run did not verify
+    layer: Optional[dict] = None                # LOOM-control: the counts the layer rests on (lookups, empty lookups, reads, weave attempts, refusals by type)
     stability: Optional[list] = None
     facts: Optional[dict] = None
     note: str = ""
@@ -380,8 +480,9 @@ def score_run(run_dir: str, bank_rows: Dict[str, dict], gold_tbl: Dict[str, dict
         raise KeyError("task %r is not in the bank" % facts["task_id"])
     tf = TaskFacts.of(row, gold_tbl)
     replay_ok = v.get("replay", {}).get("status") == "IDENTICAL"
+    lay = layer_report(_rows_of(run_dir), tf.mode if tf.control else None)
     base = dict(task_id=tf.task_id, base=tf.base, mode=tf.mode, control=tf.control, kind=tf.kind, verify_status="OK", replay_verified=replay_ok,
-                facts=facts)
+                facts=facts, stop_layer=lay["stop_layer"], layer=lay)
     if tf.control:
         return _score_control(run_dir, tf, base)
     out = lg.emitted_output(run_dir, head, corpus_path, loader)
@@ -417,7 +518,8 @@ def score_run(run_dir: str, bank_rows: Dict[str, dict], gold_tbl: Dict[str, dict
 
 def _score_control(run_dir: str, tf: TaskFacts, base: dict) -> RunScore:
     text = _last_control_text(run_dir)
-    note = "CONTROL (free text, no loom): the answer line IS the output; for comparison with the loom only"
+    note = ("CONTROL (free text, no loom): the answer line IS the output; for comparison with the loom only" if tf.mode == CONTROL else
+            "CONTROL (no tools at all, a plain messages call): the answer line IS the output; for comparison with the loom only")
     if text is None:
         return RunScore(status="no_output", outcome="no_output", correct=None if tf.kind == "none" else False, note=note + "; no free_text_control row", **base)
     chars = {"record": 0, "constructed": 0, "foundation": 0, "layout": 0}

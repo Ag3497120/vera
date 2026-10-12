@@ -87,6 +87,12 @@ DRIVERS = ("scripted", "api", "subagent")
 META_DRIVER = {"scripted": "scripted", "api": "L2-api", "subagent": "L1-subagent"}
 AGENT_OF_MODE = {"record_only": "loom-weaver-record-only", "constructed_allowed": "loom-weaver", "free_text": "loom-control"}
 DEFAULT_API_MODEL = "claude-haiku-4-5"
+# LOOM-control (L-LOOM-150): the fourth condition.  NO tools at all: a plain `messages.create` with no `tools` and no `tool_choice`.  The prompt is a constant (there is
+# no agent file: the subagent driver cannot be offered "no tools" the same way), and its sha256 is the `agent_definition_sha` of the run.
+NO_TOOLS_SYSTEM = ("You answer a factual question about Japanese encyclopedia articles. You have no tools and no documents: you answer from what you already know.\n"
+                   "Your reply must be ONE line: the answer, as short as it can be. If you do not know the answer or cannot answer it reliably, the line is exactly: 不明\n"
+                   "No explanation, no second line.")
+NO_TOOLS_MAX_TOKENS = 1024
 API_DRIVER_NOTE = ("\n\n(Driver note: the run has already been begun for you. Skip the `begin` step; its result is in the first message. "
                    "Never pass run_id. When you are finished call `done`.)\n")
 API_CONTROL_NOTE = "\n\n(Driver note: the run has already been begun for you. Skip the `begin` step; its result is in the first message.)\n"
@@ -138,7 +144,7 @@ def abs_row(row: dict) -> dict:
 
 
 def label_of(row: dict) -> str:
-    return score.CONTROL if row.get("control") == score.CONTROL else row["mode"]
+    return row["control"] if row.get("control") in score.CONTROLS else row["mode"]
 
 
 def base_of(row: dict) -> str:
@@ -233,6 +239,8 @@ def weave_spec(w: ScriptedWeaver, spec: tuple) -> dict:
 def drive_scripted(srv: LoomServer, row: dict, run_id: str, begin_result: dict, model: str) -> dict:
     label = label_of(row)
     base = row.get("bank2_id")
+    if label == score.NO_TOOLS:
+        raise HarnessError("the no_tools control has the api driver only", "no_tools_api_only")
     w = _Begun(srv, row["task_id"], model, run_id, begin_result)
     if label == score.CONTROL:
         spec = SPEC.get(base or "")
@@ -280,14 +288,63 @@ def mcp_tool_objects(bank_path: str, runs_dir: str) -> List[Any]:
 
 
 def system_prompt(label: str) -> str:
+    if label == score.NO_TOOLS:
+        return NO_TOOLS_SYSTEM
     _, body = parse_agent_file(agent_file(label))
     return body + (API_CONTROL_NOTE if label == score.CONTROL else API_DRIVER_NOTE)
+
+
+def drive_no_tools(row: dict, model: str, client: Any, extra: Optional[dict] = None) -> dict:
+    """The `no_tools` control (L-LOOM-150): ONE `messages.create` call with the question as the user message, NO `tools` and NO `tool_choice` key at all.  The text
+    blocks of the reply are the answer (`control_text`); thinking blocks are counted apart (hash + length), as in `driver.run_episode`.  Nothing is written to the
+    ledger here (the run was begun by the caller, the answer is stored as `free_text_control` by `run`); an API error ends the episode `api_error` with no text."""
+    res = drv.DriverResult()
+    res.tool_choice = None
+    sysp = system_prompt(score.NO_TOOLS)
+    kw = dict(model=model, max_tokens=NO_TOOLS_MAX_TOKENS, system=sysp, messages=[{"role": "user", "content": row["text"]}])
+    if extra:
+        kw.update(extra)
+    try:
+        resp = client.messages.create(**kw)
+    except Exception as e:                                                    # noqa: BLE001  the harness must always leave a closed ledger
+        res.ended, res.error = "api_error", "%s: %s" % (type(e).__name__, str(e)[:300])
+        res.control_text = None
+    else:
+        res.turns = 1
+        res.usage["calls"] = 1
+        us = drv._get(resp, "usage")
+        for k in ("input_tokens", "output_tokens", "cache_read_input_tokens", "cache_creation_input_tokens"):
+            v = drv._get(us, k) if us is not None else None
+            if isinstance(v, int) and not isinstance(v, bool):
+                res.usage[k] += v
+        content = list(drv._get(resp, "content", []) or [])
+        res.stop_reasons.append(str(drv._get(resp, "stop_reason", "")))
+        rm = drv._get(resp, "model")
+        if rm:
+            res.response_models.append(rm)
+        texts = [drv._get(b, "text", "") or "" for b in content if drv._get(b, "type") == "text"]
+        for b in content:
+            if drv._get(b, "type") in ("thinking", "redacted_thinking"):
+                body = drv._get(b, "thinking") if drv._get(b, "type") == "thinking" else drv._get(b, "data")
+                body = body if isinstance(body, str) else ""
+                res.thinking_dropped["n"] += 1
+                res.thinking_dropped["chars"] += len(body)
+                res.thinking_dropped["sha256"].append(drv._sha(body))
+        res.ended, res.control_text = "control_answer", "\n".join(texts)
+    rep = res.to_obj()
+    rep["system_prompt_sha256"] = hashlib.sha256(sysp.encode("utf-8")).hexdigest()
+    rep["tools"] = []
+    rep["request_keys"] = sorted(kw)
+    out = {"driver_report": rep, "response_models": res.response_models, "system_prompt_sha256": rep["system_prompt_sha256"]}
+    if res.control_text is not None:
+        out["control_text"] = res.control_text
+    return out
 
 
 def drive_api(srv: LoomServer, row: dict, run_id: str, begin_result: dict, model: str, client: Any, mcp_tools: Sequence[Any],
               extra: Optional[dict] = None) -> dict:
     label = label_of(row)
-    control = label == score.CONTROL
+    control = label == score.CONTROL                       # the no_tools control is driven by `drive_no_tools`, not here
     choice, strict = drv.tool_choice_for(model)
     tools = drv.api_tools(mcp_tools, strict, control)
     sysp = system_prompt(label)
@@ -316,7 +373,8 @@ def result_object(rs: "score.RunScore", driver: str, run_dir: str, extra: Option
     ann = s.pop("annotated")
     cnote = None
     if rs.control:
-        cnote = "FREE-TEXT CONTROL: no loom; the answer line of the final text is the output; for comparison with the loom only"
+        cnote = ("FREE-TEXT CONTROL: no loom; the answer line of the final text is the output; for comparison with the loom only" if rs.mode == score.CONTROL else
+                 "NO-TOOLS CONTROL: no loom, no tools at all; the answer line of the final text is the output; for comparison with the loom only")
         if driver == "scripted":
             cnote += ". " + SCRIPTED_NOTE
     obj = {
@@ -377,9 +435,16 @@ def score_folder(run_dir: str, driver: str, bank: Dict[str, dict], gold: Dict[st
 def prepare(row: dict, driver: str, model: Optional[str] = None) -> dict:
     """What the operator (or the harness) does for this task.  Writes nothing."""
     label = label_of(row)
+    if label == score.NO_TOOLS:
+        if driver != "api":
+            raise HarnessError("the no_tools control has the api driver only (a plain messages call with no tools)", "no_tools_api_only")
+        return {"task_id": row["task_id"], "mode": label, "driver": driver, "text": row["text"], "agent": None,
+                "agent_definition_sha256": hashlib.sha256(NO_TOOLS_SYSTEM.encode("utf-8")).hexdigest(), "control": True,
+                "command": "python experiments/line3/loom/harness.py run --task %s --mode no_tools --driver api --model %s" % (
+                    row.get("bank2_id") or row["task_id"], model or DEFAULT_API_MODEL)}
     agent = AGENT_OF_MODE[label]
     out = {"task_id": row["task_id"], "mode": label, "driver": driver, "text": row["text"], "agent": agent,
-           "agent_definition_sha256": agent_definition_sha(label), "control": label == score.CONTROL}
+           "agent_definition_sha256": agent_definition_sha(label), "control": label in score.CONTROLS}
     if driver == "subagent":
         out["agent_call"] = {"tool": "Agent", "subagent_type": agent, "model": model or "haiku", "prompt": "task_id: %s" % row["task_id"]}
         out["after"] = [
@@ -405,6 +470,8 @@ def run(row: dict, driver: str, *, bank_path: str, bank: Dict[str, dict], gold: 
         raise HarnessError("the subagent driver is run by the operator through the Claude Code Agent tool (the harness cannot call it): see "
                            "`prepare --driver subagent`, then `note`, `close`, `score RUN_DIR`")
     label = label_of(row)
+    if label == score.NO_TOOLS and driver != "api":
+        raise HarnessError("the no_tools control has the api driver only (a plain messages call with no tools)", "no_tools_api_only")
     rpath = results_path(results_dir, row, driver, tag)
     if os.path.exists(rpath):
         raise HarnessError("results file exists (never overwritten): %s" % rpath)
@@ -413,7 +480,7 @@ def run(row: dict, driver: str, *, bank_path: str, bank: Dict[str, dict], gold: 
         model = model or DEFAULT_API_MODEL
         if client is None:
             client = make_anthropic_client()
-        if mcp_tools is None:
+        if mcp_tools is None and label != score.NO_TOOLS:                # the no_tools control is offered no tool, so it needs none built
             mcp_tools = mcp_tool_objects(bank_path, runs_dir)
     else:
         model = model or "scripted-weaver"
@@ -429,19 +496,19 @@ def run(row: dict, driver: str, *, bank_path: str, bank: Dict[str, dict], gold: 
     if driver == "scripted":
         rep = drive_scripted(srv, row, name, b, model)
     elif driver == "api":
-        rep = drive_api(srv, row, name, b, model, client, mcp_tools, extra_api)
+        rep = drive_no_tools(row, model, client, extra_api) if label == score.NO_TOOLS else drive_api(srv, row, name, b, model, client, mcp_tools, extra_api)
         if rep.get("response_models"):
             srv.harness(name, "harness_meta", {"response_model": rep["response_models"][0]})
     else:
         raise HarnessError("unknown driver %r" % driver)
     wall = time.monotonic_ns() - t0
     control_text = rep.pop("control_text", None)
-    if label == score.CONTROL:
+    if label in score.CONTROLS:
         if control_text is not None:
             raw = control_text.encode("utf-8")
             srv.harness(name, "free_text_control", {"sha256": hashlib.sha256(raw).hexdigest(), "chars": len(control_text), "text": control_text})
     if srv.closed(name) is None:                                   # every ledger ends closed; a control never emits, its close is `abandoned control_free_text`
-        srv.harness(name, "abandoned", {"reason": "control_free_text" if label == score.CONTROL else "no_close"})
+        srv.harness(name, "abandoned", {"reason": "control_free_text" if label in score.CONTROLS else "no_close"})
     extra = {"wall_driver_ns": wall}
     if rep:
         extra["driver_report"] = rep.get("driver_report", rep)
@@ -631,6 +698,8 @@ def note_ex(run_dir: Optional[str], free_text_file: Optional[str], control: bool
     if row is None:
         raise HarnessError("row 0 of %s names task %r, which is not in the bank" % (run_dir, task_id), "task_not_in_bank")
     label = label_of(row)
+    if label == score.NO_TOOLS:
+        raise HarnessError("%s is a no_tools run: the api driver only, nothing to note" % run_dir, "no_tools_api_only")
     is_control = label == score.CONTROL
     expected_agent = AGENT_OF_MODE[label]
     if control and not is_control:
@@ -764,7 +833,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     p = sub.add_parser("list", help="the tasks of the bank")
     p = sub.add_parser("prepare")
     p.add_argument("--task", required=True)
-    p.add_argument("--mode", default=None, help="record_only | constructed_allowed | free_text")
+    p.add_argument("--mode", default=None, help="record_only | constructed_allowed | free_text | no_tools (the no_tools control: api driver only)")
     p.add_argument("--driver", choices=DRIVERS, default="subagent")
     p.add_argument("--model", default=None)
     p = sub.add_parser("run")

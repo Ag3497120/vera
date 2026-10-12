@@ -1,0 +1,160 @@
+{
+ "abandoned": [
+  "control_free_text"
+ ],
+ "annotated": null,
+ "answer_view": {
+  "excess_chars": null,
+  "hit_cited": null,
+  "hit_exact": null,
+  "hit_record_text": null,
+  "hits_text": null
+ },
+ "base": "R2-U004",
+ "closing": null,
+ "control": true,
+ "control_note": "NO-TOOLS CONTROL: no loom, no tools at all; the answer line of the final text is the output; for comparison with the loom only",
+ "declared_model": "claude-haiku-5-5",
+ "driver": "api",
+ "driver_report": {
+  "calls_skipped_after_close": 0,
+  "control_text_chars": 2,
+  "ended": "control_answer",
+  "error": null,
+  "request_keys": [
+   "max_tokens",
+   "messages",
+   "model",
+   "system"
+  ],
+  "response_models": [
+   "claude-haiku-5-5"
+  ],
+  "stop_reasons": [
+   "end_turn"
+  ],
+  "system_prompt_sha256": "c8a271ced92ac84e26956f9f78186b9e69518252e953cce64069439e072448fb",
+  "text_blocks_dropped": 0,
+  "thinking_dropped": {
+   "chars": 0,
+   "n": 1,
+   "sha256": [
+    "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+   ]
+  },
+  "tool_calls": 0,
+  "tool_choice": null,
+  "tool_less_turns": 0,
+  "tools": [],
+  "turns": 1,
+  "usage": {
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 0,
+   "calls": 1,
+   "input_tokens": 135,
+   "output_tokens": 523
+  }
+ },
+ "footnotes": {
+  "hits_words": "hits_words (the gold inside ONE record unit; `score.hits_words`) is false by construction for every multi-unit answer (ハッシュ表, キューバの太陽, カールマルクス, 1981年); it is not a correctness column"
+ },
+ "free_text_dropped": {
+  "chars": 0,
+  "n": 0,
+  "sha256": []
+ },
+ "harness_meta": [
+  {
+   "agent_definition_sha": "c8a271ced92ac84e26956f9f78186b9e69518252e953cce64069439e072448fb",
+   "driver": "L2-api",
+   "requested_model": "claude-haiku-5-5"
+  },
+  {
+   "response_model": "claude-haiku-5-5"
+  }
+ ],
+ "ledger": "experiments/line3/loom/runs_unans/R2-U004.no_tools.api/ops.jsonl",
+ "ledger_head": "a0db353c6beacf211f12bc7ca2347a7d624148bf5dd47668288175481936c803",
+ "mode": "no_tools",
+ "model_result": true,
+ "op_counts": {
+  "by_class": {
+   "other": 1
+  },
+  "by_op": {
+   "begin": 1
+  },
+  "emit_attempts": 0,
+  "model_rows": 1,
+  "rows": 5
+ },
+ "output_text": "不明",
+ "refusals": {},
+ "schema": "loom-result-1",
+ "score": {
+  "abstain_type": "不明",
+  "answer_line": "不明",
+  "base": "R2-U004",
+  "chars": {
+   "constructed": 0,
+   "foundation": 0,
+   "layout": 0,
+   "record": 0
+  },
+  "control": true,
+  "correct": true,
+  "excess_chars": null,
+  "hit_cited": null,
+  "hit_exact": null,
+  "hit_record_text": null,
+  "hits_text": null,
+  "hits_words": null,
+  "kind": "unans",
+  "layer": {
+   "build_attempts": 0,
+   "control_outcome": "不明",
+   "emit_attempts": 0,
+   "empty_lookups": 0,
+   "lookups": 0,
+   "read_sentences": 0,
+   "reads": 0,
+   "refusal_types": {},
+   "refusals": 0,
+   "stop_layer": "L_meta",
+   "stop_layer_detail": "",
+   "struct_refusals": {},
+   "struct_refusals_total": 0,
+   "weave_attempts": 0
+  },
+  "mode": "no_tools",
+  "note": "CONTROL (no tools at all, a plain messages call): the answer line IS the output; for comparison with the loom only",
+  "outcome": "abstained",
+  "output_sha": null,
+  "replay_verified": true,
+  "share_permille": {},
+  "stability": null,
+  "status": "abstained_correct",
+  "stop_layer": "L_meta",
+  "task_id": "bank2/R2-U004.no_tools",
+  "text": "不明",
+  "verify_status": "OK"
+ },
+ "self_corrections": {
+  "counts": {
+   "plan_change_after_empty": 0,
+   "recovery_after_refusal": 0,
+   "refusals_recoverable": 0,
+   "unseat_swap_before_close": 0
+  },
+  "plan_change_after_empty": [],
+  "recovery_after_refusal": [],
+  "refusals_recoverable": 0,
+  "unseat_swap_before_close": []
+ },
+ "t_loom_34": "unchecked",
+ "task_id": "bank2/R2-U004.no_tools",
+ "wall": {
+  "driver_ns": 3288880375,
+  "ledger_ns": 3290734250
+ }
+}

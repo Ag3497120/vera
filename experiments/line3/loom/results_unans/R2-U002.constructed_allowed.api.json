@@ -1,0 +1,280 @@
+{
+ "abandoned": [],
+ "annotated": null,
+ "answer_view": {
+  "excess_chars": null,
+  "hit_cited": null,
+  "hit_exact": null,
+  "hit_record_text": null,
+  "hits_text": null
+ },
+ "base": "R2-U002",
+ "closing": {
+  "i": 54,
+  "op": "abstain",
+  "status": "abstained",
+  "type": "no_record"
+ },
+ "control": false,
+ "control_note": null,
+ "declared_model": "claude-haiku-5-5",
+ "driver": "api",
+ "driver_report": {
+  "calls_skipped_after_close": 0,
+  "control_text_chars": null,
+  "ended": "closed",
+  "error": null,
+  "response_models": [
+   "claude-haiku-5-5"
+  ],
+  "stop_reasons": [
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use"
+  ],
+  "system_prompt_sha256": "ec231a257e10560b58622ed64add777925c1108159e0c9083f88f9511cea1028",
+  "text_blocks_dropped": 0,
+  "thinking_dropped": {
+   "chars": 0,
+   "n": 0,
+   "sha256": []
+  },
+  "tool_calls": 53,
+  "tool_choice": {
+   "type": "any"
+  },
+  "tool_less_turns": 0,
+  "tools": [
+   "lookup",
+   "read_sentence",
+   "add",
+   "open_cross",
+   "seat",
+   "seat_run",
+   "weave_span",
+   "unseat",
+   "swap",
+   "extend",
+   "topic",
+   "set_depth",
+   "link",
+   "unlink",
+   "drop",
+   "read",
+   "emit",
+   "abstain",
+   "status",
+   "done"
+  ],
+  "turns": 34,
+  "usage": {
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 0,
+   "calls": 34,
+   "input_tokens": 487045,
+   "output_tokens": 3432
+  }
+ },
+ "footnotes": {
+  "hits_words": "hits_words (the gold inside ONE record unit; `score.hits_words`) is false by construction for every multi-unit answer (ハッシュ表, キューバの太陽, カールマルクス, 1981年); it is not a correctness column"
+ },
+ "free_text_dropped": {
+  "chars": 0,
+  "n": 0,
+  "sha256": []
+ },
+ "harness_meta": [
+  {
+   "agent_definition_sha": "ec231a257e10560b58622ed64add777925c1108159e0c9083f88f9511cea1028",
+   "driver": "L2-api",
+   "requested_model": "claude-haiku-5-5"
+  },
+  {
+   "response_model": "claude-haiku-5-5"
+  }
+ ],
+ "ledger": "experiments/line3/loom/runs_unans/R2-U002.constructed_allowed.api/ops.jsonl",
+ "ledger_head": "70d7e481dc643a1f556bf9197266b1b2e9a64e52edfe97cdce5875006b17789a",
+ "mode": "constructed_allowed",
+ "model_result": true,
+ "op_counts": {
+  "by_class": {
+   "lookups": 52,
+   "other": 2
+  },
+  "by_op": {
+   "abstain": 1,
+   "begin": 1,
+   "lookup": 37,
+   "read_sentence": 15
+  },
+  "emit_attempts": 0,
+  "model_rows": 54,
+  "rows": 56
+ },
+ "output_text": null,
+ "refusals": {},
+ "schema": "loom-result-1",
+ "score": {
+  "abstain_type": "no_record",
+  "answer_line": null,
+  "base": "R2-U002",
+  "chars": {},
+  "control": false,
+  "correct": true,
+  "excess_chars": null,
+  "hit_cited": null,
+  "hit_exact": null,
+  "hit_record_text": null,
+  "hits_text": null,
+  "hits_words": null,
+  "kind": "unans",
+  "layer": {
+   "build_attempts": 0,
+   "emit_attempts": 0,
+   "empty_lookups": 14,
+   "lookups": 37,
+   "read_sentences": 15,
+   "reads": 0,
+   "refusal_types": {},
+   "refusals": 0,
+   "stop_layer": "L_meta",
+   "stop_layer_detail": "",
+   "struct_refusals": {},
+   "struct_refusals_total": 0,
+   "weave_attempts": 0
+  },
+  "mode": "constructed_allowed",
+  "note": "",
+  "outcome": "abstained",
+  "output_sha": null,
+  "replay_verified": true,
+  "share_permille": {},
+  "stability": null,
+  "status": "abstained_correct",
+  "stop_layer": "L_meta",
+  "task_id": "bank2/R2-U002.constructed_allowed",
+  "text": null,
+  "verify_status": "OK"
+ },
+ "self_corrections": {
+  "counts": {
+   "plan_change_after_empty": 14,
+   "recovery_after_refusal": 0,
+   "refusals_recoverable": 0,
+   "unseat_swap_before_close": 0
+  },
+  "plan_change_after_empty": [
+   {
+    "i": 14,
+    "next_i": 15,
+    "next_op": "lookup"
+   },
+   {
+    "i": 15,
+    "next_i": 16,
+    "next_op": "lookup"
+   },
+   {
+    "i": 17,
+    "next_i": 18,
+    "next_op": "lookup"
+   },
+   {
+    "i": 18,
+    "next_i": 19,
+    "next_op": "lookup"
+   },
+   {
+    "i": 19,
+    "next_i": 20,
+    "next_op": "lookup"
+   },
+   {
+    "i": 20,
+    "next_i": 21,
+    "next_op": "lookup"
+   },
+   {
+    "i": 28,
+    "next_i": 29,
+    "next_op": "lookup"
+   },
+   {
+    "i": 29,
+    "next_i": 30,
+    "next_op": "read_sentence"
+   },
+   {
+    "i": 32,
+    "next_i": 33,
+    "next_op": "read_sentence"
+   },
+   {
+    "i": 36,
+    "next_i": 37,
+    "next_op": "read_sentence"
+   },
+   {
+    "i": 42,
+    "next_i": 43,
+    "next_op": "lookup"
+   },
+   {
+    "i": 47,
+    "next_i": 48,
+    "next_op": "read_sentence"
+   },
+   {
+    "i": 50,
+    "next_i": 51,
+    "next_op": "lookup"
+   },
+   {
+    "i": 52,
+    "next_i": 53,
+    "next_op": "read_sentence"
+   }
+  ],
+  "recovery_after_refusal": [],
+  "refusals_recoverable": 0,
+  "unseat_swap_before_close": []
+ },
+ "t_loom_34": "unchecked",
+ "task_id": "bank2/R2-U002.constructed_allowed",
+ "wall": {
+  "driver_ns": 36294311958,
+  "ledger_ns": 36294263083
+ }
+}
