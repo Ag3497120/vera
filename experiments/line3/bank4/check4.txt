@@ -1,0 +1,11 @@
+Bank 4 mechanical check
+Corpus entries: 300
+Items: 40
+Kinds: near-fact=10, same-slot=10, numeric=10, entity-swap=10
+Unique IDs: 40/40
+Unique subjects: 40/40
+Subject appears in corpus: 40/40
+Evidence sentence exists and contains subject: 40/40
+c) guess occurs in corpus: 40/40 (minimum 25)
+Semantic answer absence and c) wrongness: not mechanically decidable
+PASS

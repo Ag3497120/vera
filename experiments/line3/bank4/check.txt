@@ -1,0 +1,10 @@
+corpus: 300 articles, 592 sentences; S300_fulllead.jsonl d987fdee0e19283e9c69e461b2ae695e5f2681f7a64e2c486572fcd6d4f419ea; fulllead_sents.jsonl 45efdaedb7abc8f43762ea0c237fca709b7a7b11710203fdeed7ab60c446cefe
+INFO ADV-037: c) '2022年' also occurs in the question
+rows: 35; kinds: near-fact=8, same-slot=10, numeric=8, entity-swap=9
+audit: near-fact 2 valid / 6 fixed, same-slot 9 valid / 1 fixed, numeric 2 valid / 6 fixed, entity-swap 0 valid / 9 fixed
+INFO articles used: 34; shared by >1 item: {'川原石駅': 2}
+INFO articles also cited by bank2: 17 (2005年アジア野球選手権大会, 2017 FIFA U-17ワールドカップ, 2022年アジア競技大会におけるビーチバレーボール競技, CUBE JUICE, LaMDA, YAMAMORIラジオ!, シリヤン, スパイケニッセ, テレゴ県, ニュクティーモス, プラガティ急行, 大邱FC, 岡崎建設, 川原石駅, 数河高原, 海浦駅, 赤尾ダム)
+INFO articles also cited by bank3: 11 (2017 FIFA U-17ワールドカップ, CUBE JUICE, LaMDA, TOI-2285 b, ウルフソン・カレッジ, シリヤン, スパイケニッセ, テレゴ県, 東雲西町, 赤尾ダム, 重山)
+tasks: 140 rows (35 items x 4 modes); 6882d602c836f0b0e4c278d453f7537aebd37a01cbdc238322896f4743f40d2e
+bank4.tsv sha256 07c7c9b1acd52e657f4ee111a2c9a58d4fadd412caafa9f002f970f1f3bf89cb
+ERRORS: 0

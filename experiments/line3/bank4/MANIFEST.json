@@ -1,0 +1,74 @@
+{
+  "intake": {
+    "recorded_at": "2026-10-12",
+    "note": "intake record: sha256 of bank4.tsv recorded before any Vera system reads it; no Vera system has read this bank before intake (no reader, loom or other Vera system was run on it during authoring or audit)"
+  },
+  "bank": {
+    "path": "bank4.tsv",
+    "sha256": "07c7c9b1acd52e657f4ee111a2c9a58d4fadd412caafa9f002f970f1f3bf89cb",
+    "rows": 35,
+    "kinds": {
+      "near-fact": 8,
+      "same-slot": 10,
+      "numeric": 8,
+      "entity-swap": 9
+    },
+    "answerable": 0,
+    "gold": "empty for every row (all unanswerable)",
+    "audit": {
+      "valid": 13,
+      "fixed": 22,
+      "dropped": 5
+    },
+    "author_original": {
+      "path": "vera-impl/bank2-author/out/bank4.tsv",
+      "sha256": "e23c553e01f63d28b53c9219a1d2994df7b99e82d7222907a851285babe67c87",
+      "rows": 40
+    }
+  },
+  "loom_tasks": {
+    "path": "../loom/tasks_unans_adv.jsonl",
+    "sha256": "6882d602c836f0b0e4c278d453f7537aebd37a01cbdc238322896f4743f40d2e",
+    "rows": 140,
+    "modes": [
+      "record_only",
+      "constructed_allowed",
+      "free_text",
+      "no_tools"
+    ],
+    "gold_key": false
+  },
+  "corpora": {
+    "fulllead": {
+      "path": "../data/S300_fulllead.jsonl",
+      "sha256": "d987fdee0e19283e9c69e461b2ae695e5f2681f7a64e2c486572fcd6d4f419ea",
+      "equals_author_copy": true,
+      "author_copy": "vera-impl/bank2-author/S300_fulllead.jsonl"
+    },
+    "fulllead_sents": {
+      "path": "../bank2/data/fulllead_sents.jsonl",
+      "sha256": "45efdaedb7abc8f43762ea0c237fca709b7a7b11710203fdeed7ab60c446cefe",
+      "note": "not byte-identical to S300_fulllead.jsonl: it is its sentence split (592 sentences; concatenation per title equals the 300 lead texts; source = title#i, 0-based over the 「。」 split) — verified by check_bank4.py"
+    }
+  },
+  "author_files": {
+    "check4.py": {
+      "sha256": "8cc9835f1bf1406407b789d4a8a6e561a238ec8024468c1960f2a00f795a93c6",
+      "copied": true
+    },
+    "check4.txt": {
+      "sha256": "a9fe1cf773eab40d3061bacc86f0ea0c696adb381e43f2f66b944b7f6bb83ea2",
+      "copied": true
+    },
+    "README4.md": {
+      "sha256": "57e92447accadd6f06a2759a6b268a64c0f37464e20ec67b6a5c7140ff136c6d",
+      "copied": false
+    }
+  },
+  "provenance": {
+    "author": "codex gpt-6-luna (saw only the corpus, never Vera code or results), 1 round, 40 items",
+    "auditor": "Claude Opus 5.5",
+    "audit": "AUDIT4.md",
+    "date": "2026-10-12"
+  }
+}
