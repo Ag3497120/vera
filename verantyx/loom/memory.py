@@ -26,6 +26,7 @@ THE WRITE (L-MEM-03..05, 16, 18)
 `recall` (MEM-c, memrecall.py): the evidence gate over the whole memory, verdicts ANSWER / CHOICE / NONE; available in a session whose begin row records an
 evidence version (the gate hook `gate.evidence.v2`), otherwise refused `recall_unavailable` exactly as before (so every MEM-a/b ledger replays unchanged).
 THE HOOK (MEM-c, L-MEM-29): `begin(self_question=DEFAULT)` -- DEFAULT is the gate hook for a new store; `None` = no hook; `StubSelfQuestion()` keeps the stub for tests.
+MEM-c2: DEFAULT is now `gate.evidence.v2+subject` (the gate + the whole-subject guard); stores written with `gate.evidence.v2` replay with `FROM_HEADER` / `GateSelfQuestion()`.
 """
 from __future__ import annotations
 
@@ -51,7 +52,7 @@ from verantyx.loom import ops
 from verantyx.loom import read as rd
 from verantyx.loom.corpus import Corpus
 from verantyx.loom.memguard import (MEM_KINDS, STORE_ID_RX, check_memory_rows, make_source, parse_source)
-from verantyx.loom.memrecall import GateSelfQuestion
+from verantyx.loom.memrecall import GateSelfQuestion, GateSubjectSelfQuestion
 from verantyx.loom.ops import Run, refusal
 from verantyx.loom.state import ARG_STR_CAP, ARGS_CHARS_CAP, GUARD_CAPS, LoomState, Refuse, canonical, sha256_text
 
@@ -88,8 +89,8 @@ class _Sentinel:
 
 DEFAULT = _Sentinel("DEFAULT")              # self_question=DEFAULT: the default hook of a new store (the gate)
 FROM_HEADER = _Sentinel("FROM_HEADER")      # replay / verify: each session with the hook its own begin row names (the registry below)
-HOOKS: Dict[str, Any] = {mn.StubSelfQuestion.id: mn.StubSelfQuestion, GateSelfQuestion.id: GateSelfQuestion}     # the hook code, by recorded id
-DEFAULT_HOOK_FACTORY = GateSelfQuestion      # a callable returning the default hook (or None); tests that need the pre-MEM-c behaviour replace it (monkeypatch)
+HOOKS: Dict[str, Any] = {mn.StubSelfQuestion.id: mn.StubSelfQuestion, GateSelfQuestion.id: GateSelfQuestion, GateSubjectSelfQuestion.id: GateSubjectSelfQuestion}     # the hook code, by recorded id
+DEFAULT_HOOK_FACTORY = GateSubjectSelfQuestion      # a callable returning the default hook (or None); tests that need the pre-MEM-c behaviour replace it (monkeypatch)
 
 
 def resolve_hook(spec: Any, header_id: Optional[str] = None) -> Optional[mn.SelfQuestionFn]:
@@ -418,7 +419,7 @@ def h_recall(run: MemRun, a: dict, i: int) -> dict:
     if not 1 <= len(q) <= ARG_STR_CAP or any(unicodedata.category(ch) in ("Cc", "Zl", "Zp") for ch in q):
         raise Refuse("bad_question", {"reason": "1 to %d characters, no newline / NUL / control character" % ARG_STR_CAP})
     check_memory_rows(run.rows)
-    res = mr.recall(run.corpus_cur, q, run.evidence_version)
+    res = mr.recall(run.corpus_cur, q, run.evidence_version, subject_guard=bool(getattr(run.hook, "subject_guard", False)))
     res.update(ok=True, text=q)
     return res
 
