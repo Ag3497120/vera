@@ -246,7 +246,7 @@ def test_a_changed_corpus_is_REPLAY_INPUTS_MISMATCH_and_a_missing_one_is_unresol
     assert lg.replay(d).identical                                                      # LOOM-path: no meta.json at all, the recorded sha is found in the registry of shipped corpora
     toy = tmp_path / "toy.jsonl"
     toy.write_text(json.dumps({"sha": "0" * 64, "title": "t", "sent": "東京は日本の首都です。", "source": "t0#0"}, ensure_ascii=False) + "\n", encoding="utf-8")
-    srv2 = LoomServer([dict(TASKS[0], corpus=str(toy))], str(tmp_path / "runs2"), (), "strict_npa")
+    srv2 = LoomServer([dict(TASKS[0], corpus=str(toy))], str(tmp_path / "runs2"), (), "strict_npa", evidence="off")
     w2 = ScriptedWeaver(srv2, "demo/tokyo_ca", "m", "t1")
     w2.begin()
     (tmp_path / "runs2" / "t1" / "meta.json").unlink()

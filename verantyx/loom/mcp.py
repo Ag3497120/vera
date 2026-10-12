@@ -24,6 +24,7 @@ from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional, Union
 
 from verantyx.ledger_events import LedgerError, canonical, redact
+from verantyx.loom import evidence as evl
 from verantyx.loom import fixture as fx
 from verantyx.loom import ledger as lg
 from verantyx.loom import notes as notelib
@@ -85,10 +86,14 @@ class _Entry:
 
 class LoomServer:
     def __init__(self, tasks: Iterable[dict], runs_dir, allow_roots: Iterable = (), stability: str = DEFAULT_STABILITY,
-                 nonce: Optional[str] = None, max_begins: int = MAX_BEGINS, caps: str = CURRENT_CAPS, notes: str = notelib.NOTES_VERSION) -> None:
+                 nonce: Optional[str] = None, max_begins: int = MAX_BEGINS, caps: str = CURRENT_CAPS, notes: str = notelib.NOTES_VERSION,
+                 evidence: str = "v2", subject_scope: str = evl.DEFAULT_SCOPE) -> None:
         """`notes`: the notes definitions NEW runs of this server get (notes.v1 = CONFLICT / UNANCHORED / NO_RECORD, notes.v2 = + QUESTION_ECHO; L-LOOM-147).  It is
         written into each run's `begin` row (v1 writes nothing, as before).  `caps`: the cap profile NEW runs of this server get (state.CAPS_PROFILES: "v1" = the first measurement's numbers, "v2" = the current
-        ones; L-LOOM-122).  It is written into each run's `begin` row; a run reloaded from its ledger keeps the profile it was recorded with."""
+        ones; L-LOOM-122).  It is written into each run's `begin` row; a run reloaded from its ledger keeps the profile it was recorded with.
+        `evidence`: the reader's evidence gate NEW prose runs of this server get (LOOM-evidence, L-LOOM-170): "v2" (evidence.v2, the default: the reviewed rules), "v1" (evidence.v1, the first build) or
+        "off" (no gate: the demo and the hand-built tests).  `subject_scope`: OP-EV-1, "clause_or_title" (owner: yes, the article title may stand in for the subject) or "clause".  Both are written into each
+        prose run's `begin` row; a run reloaded from its ledger keeps the profile it was recorded with."""
         if stability not in STABILITY_MODES:
             raise ValueError("stability must be one of %s" % (STABILITY_MODES,))
         if caps not in CAPS_PROFILES:
@@ -97,6 +102,11 @@ class LoomServer:
         if notes not in notelib.NOTES_VERSIONS:
             raise ValueError("notes must be one of %s" % (notelib.NOTES_VERSIONS,))
         self.notes_profile = notes
+        if evidence not in ("v1", "v2", "off"):
+            raise ValueError("evidence must be 'v1', 'v2' or 'off'")
+        if subject_scope not in evl.SUBJECT_SCOPES:
+            raise ValueError("subject_scope must be one of %s" % (evl.SUBJECT_SCOPES,))
+        self.evidence_profile: Optional[tuple] = None if evidence == "off" else (evl.PROFILE_NAMES[evidence], subject_scope)
         self.stability = stability
         self.nonce = nonce                                  # L-LOOM-45: None = reproducible ids (scripted runs); the MCP door passes os.urandom
         self.max_begins = max_begins
@@ -118,10 +128,11 @@ class LoomServer:
         self._seq = 0
 
     @classmethod
-    def from_file(cls, tasks_path, runs_dir, allow_roots: Iterable = (), stability: str = DEFAULT_STABILITY, caps: str = CURRENT_CAPS) -> "LoomServer":
+    def from_file(cls, tasks_path, runs_dir, allow_roots: Iterable = (), stability: str = DEFAULT_STABILITY, caps: str = CURRENT_CAPS,
+                  evidence: str = "v2", subject_scope: str = evl.DEFAULT_SCOPE) -> "LoomServer":
         """The task bank is read once, here, before any tool call (an operator file: it holds no gold)."""
         rows = [json.loads(ln) for ln in Path(tasks_path).read_text(encoding="utf-8").splitlines() if ln.strip()]
-        return cls(rows, runs_dir, allow_roots, stability, caps=caps)
+        return cls(rows, runs_dir, allow_roots, stability, caps=caps, evidence=evidence, subject_scope=subject_scope)
 
     tool_names = MODEL_OPS
 
@@ -169,7 +180,8 @@ class LoomServer:
             bad = check_task_against_index(task, index)       # L-LOOM-80: the target file / explicit context names must exist in the fixture
             if bad is not None:
                 return refusal(bad["refusal"], bad["detail"])
-        run = Run(corpus, task, model, rid, self.stability, index, CAPS_PROFILES[self.caps_profile][task["lang"]], self.notes_profile)
+        run = Run(corpus, task, model, rid, self.stability, index, CAPS_PROFILES[self.caps_profile][task["lang"]], self.notes_profile,
+                  self.evidence_profile if task["lang"] == "prose" else None)
         led = lg.Ledger(rdir)
         meta = {"corpus": paths.rel_to_root(task["corpus"]), "corpus_sha": corpus.corpus_sha, "task_id": task_id, "isolated": self.isolation is not None}      # LOOM-path: relative to the repo root
         if self.isolation is not None:
@@ -319,14 +331,15 @@ def append_outside_row(run_dir, actor: str, op: str, args: dict, loader: lg.Load
 # ------------------------------------------------------------------------------------------------------------
 # the FastMCP wrapper
 # ------------------------------------------------------------------------------------------------------------
-def build(tasks_path, runs_dir, allow_roots: Iterable = (), stability: str = DEFAULT_STABILITY, nonce: Optional[str] = None, caps: str = CURRENT_CAPS):
+def build(tasks_path, runs_dir, allow_roots: Iterable = (), stability: str = DEFAULT_STABILITY, nonce: Optional[str] = None, caps: str = CURRENT_CAPS,
+          evidence: str = "v2", subject_scope: str = evl.DEFAULT_SCOPE):
     """The FastMCP server `vera-loom` WITHOUT running it (None if the SDK is missing).  `mcp.loom_server` is the LoomServer behind it."""
     try:
         from mcp.server.fastmcp import FastMCP
     except ImportError:
         print('MCP SDK not installed. Run:  pip install "mcp[cli]"')
         return None
-    server = LoomServer.from_file(tasks_path, runs_dir, allow_roots, stability, caps)
+    server = LoomServer.from_file(tasks_path, runs_dir, allow_roots, stability, caps, evidence, subject_scope)
     server.isolation = isolation_claim()
     server.nonce = nonce if nonce is not None else os.urandom(16).hex()      # L-LOOM-45: a weaver cannot compute another weaver's run id
     mcp = FastMCP("vera-loom")
@@ -378,7 +391,7 @@ def build(tasks_path, runs_dir, allow_roots: Iterable = (), stability: str = DEF
 
     @mcp.tool()
     def weave_span(run_id: str, sid: int, tier: str, first: str, last: str) -> str:
-        """SPAN WEAVING in one call. Give a corpus sentence id you have read (read_sentence), a tier (RUN|WORD|CHAR) and the stretch you want, from the unit `first` to the unit `last` (both included), each written exactly as read_sentence lists that unit for the tier (plain text, no quotation marks; `last` is searched from `first` on). The loom makes record units for exactly those units and builds the chain of crosses whose read-out is that stretch WORD FOR WORD, linked at the end of the thread: a unit followed by one of の に で と を が goes on that particle's arm of the cross whose centre is the very next unit; units that touch each other become one-unit crosses in order; a unit followed by は is a topic centre. If the stretch is not expressible (a word the loom cannot write between two units, such as という or として, or a chain like AのBのC that needs one unit as both a centre and an arm unit) it is refused as span_inexpressible and nothing changes; weave a smaller stretch or build the rest by hand. Returns the crosses and seats it made and the text of the stretch (not the rest of the sentence). Record units only; one operation. Use `drop` to throw a cross away."""
+        """SPAN WEAVING in one call. Give a corpus sentence id you have read (read_sentence), a tier (RUN|WORD|CHAR) and the stretch you want, from the unit `first` to the unit `last` (both included), each written exactly as read_sentence lists that unit for the tier (plain text, no quotation marks; `last` is searched from `first` on). The loom makes record units for exactly those units and builds the chain of crosses whose read-out is that stretch WORD FOR WORD, linked at the end of the thread: a unit followed by one of の に で と を が goes on that particle's arm of the cross whose centre is the very next unit; units that touch each other become one-unit crosses in order; a unit followed by は is a topic centre. If the stretch is not expressible (a word the loom cannot write between two units, such as という or として, or a chain like AのBのC that needs one unit as both a centre and an arm unit) it is refused as span_inexpressible and nothing changes; weave a smaller stretch. Returns the crosses and seats it made and the text of the stretch (not the rest of the sentence). Record units only; one operation. Use `drop` to throw a cross away."""
         # STRINGS ONLY in the schema: with `int | str` (anyOf) Haiku 5.5 sent every value as a string, 9 of 21 calls with the unit in literal quotation marks and
         # 11 with an index as a digit string, and 20 of the 21 were refused (results_h55c0_aborted, L-LOOM-133).  The handler still takes an int (an index into
         # read_sentence's unit list) from a programmatic caller.  `first` / `last` are the model's names; the LEDGER stores `from` / `to` (L-LOOM-145): the
@@ -435,7 +448,7 @@ def build(tasks_path, runs_dir, allow_roots: Iterable = (), stability: str = DEF
 
     @mcp.tool()
     def emit(run_id: str) -> str:
-        """Fix the output: the text the thread reads as. Refused with every reason if the structure is not sound (unstable cross, unlinked cross, empty centre, ...). A successful emit may carry `notes` (CONFLICT, UNANCHORED, NO_RECORD, QUESTION_ECHO: a unit that is a word of the question); they never block."""
+        """Fix the output: the text the thread reads as. Refused with every reason if the structure is not sound (unstable cross, unlinked cross, empty centre, no_evidence, ...). A successful emit may carry `notes` (CONFLICT, UNANCHORED, NO_RECORD, QUESTION_ECHO: a unit that is a word of the question); they never block."""
         return out("emit", {"run_id": run_id})
 
     @mcp.tool()
@@ -451,8 +464,8 @@ def build(tasks_path, runs_dir, allow_roots: Iterable = (), stability: str = DEF
     return mcp
 
 
-def serve(tasks_path, runs_dir, allow_roots: Iterable = (), stability: str = DEFAULT_STABILITY) -> int:
-    mcp = build(tasks_path, runs_dir, allow_roots, stability)
+def serve(tasks_path, runs_dir, allow_roots: Iterable = (), stability: str = DEFAULT_STABILITY, evidence: str = "v2", subject_scope: str = evl.DEFAULT_SCOPE) -> int:
+    mcp = build(tasks_path, runs_dir, allow_roots, stability, evidence=evidence, subject_scope=subject_scope)
     if mcp is None:
         return 2
     mcp.run()

@@ -27,8 +27,9 @@ TASKS = [
 ]
 
 
-def server(tmp_path, stability="strict_npa", tasks=None):
-    return LoomServer(tasks if tasks is not None else TASKS, str(tmp_path / "runs"), (), stability)
+def server(tmp_path, stability="strict_npa", tasks=None, evidence="off", **kw):
+    """evidence="off" by default: the older loom tests build their threads by hand (no evidence gate, the profile every ledger before LOOM-evidence has); the evidence tests pass "v1"."""
+    return LoomServer(tasks if tasks is not None else TASKS, str(tmp_path / "runs"), (), stability, evidence=evidence, **kw)
 
 
 def weaver(srv, task_id="prose/ca", run_id=None, model="test-weaver"):

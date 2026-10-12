@@ -1,0 +1,6 @@
+{
+ "corpus": "experiments/line3/bank2/data/fulllead_sents.jsonl",
+ "corpus_sha": "45efdaedb7abc8f43762ea0c237fca709b7a7b11710203fdeed7ab60c446cefe",
+ "isolated": false,
+ "task_id": "bank2/I2-008.constructed_allowed"
+}

@@ -7,6 +7,11 @@ ledgers `runs_h55c`, `runs_h55d`, `runs_unans`, `runs_unans_adv` (read and re-pa
 product code and pins the same numbers as tests (§11.3). `vera-impl/hidden` was not opened. No network.
 Implementation: Claude Sonnet. Review: Claude Opus. Held-out tests: codex.
 
+> **Status after the review (2026-10-12).** The rules of this document are **evidence.v1**. The review's fixes and the owner's decision on the slot head form
+> **evidence.v2** (§12; L-LOOM-191..): a predicate question with no subject is refused, the answer must be a whole word or phrase, exactly one answer, the slot head
+> is read in the clause. New prose runs get v2; the 140 measurement ledgers carry v1 and replay under it. Notes marked **[after review]** below correct statements of this
+> document in place; the original text is kept.
+
 ---
 
 ## 0. How to read this document
@@ -117,6 +122,10 @@ Where the 57 unreachable answerable golds fail under (a), counted per item on it
 The gate is a unit-level relevance test: it passes when the sentence uses the question's own words for the asked relation (「駅番号はJR-Y13」 for 「駅番号は何ですか」)
 and refuses paraphrase (「ハッシュ表ともいう」 for 「別名」, 「愛知県出身」 for 「出身地」). That is its cost, stated before measuring.
 
+> **[after review]** The histogram above (`no_subject` 15, `answer_holds_question_unit` 7) is the design probe's. The product code counts `no_subject` 21 and
+> `answer_holds_question_unit` 8 over the same 57 items (REPORT_TABLES.txt E8, REPORT.md): the design does not state which occurrence of an item counts when it has
+> several, the implementation takes the occurrence with the fewest codes. Neither is a defect; the two lists are of different "best occurrences". The reach (12 / 69) is the same.
+
 ---
 
 ## 3. The question's units (QU)
@@ -214,9 +223,9 @@ else `constructed_unit` (that uid). Each intact weave is then judged on its own 
 |---|---|---|---|
 | E-1 | `answer_not_word_aligned` | §4.2 step 2 | the stretch 「A」 does not begin and end on words of sentence N |
 | E-2 | `question_form_open` | form = open | the question 「Q」 has no particle after its question word and no 「〜は何」 head, so no answer can be read from a sentence for it |
-| E-3 | `question_has_no_subject` / `no_subject` | form slot and subject = []; or some subject run is read neither in the clause nor (scope clause_or_title) in the title. Form predicate with subject = [] skips E-3 (Y stands for it) | the subject 「S」 of the question is not in the clause 「C」 of sentence N (nor in its article title 「T」) |
+| E-3 | `question_has_no_subject` / `no_subject` | form slot and subject = []; or some subject run is read neither in the clause nor (scope clause_or_title) in the title. Form predicate with subject = [] skips E-3 (Y stands for it) **[after review: this skip was the defect; evidence.v1 only. evidence.v2 refuses `question_has_no_subject` for a predicate question too, L-LOOM-192]** | the subject 「S」 of the question is not in the clause 「C」 of sentence N (nor in its article title 「T」) |
 | E-4s | `wrong_arm` | form slot and `follower(words_of(sentence), end of WORD a1, "whole_word")` is not ("particle", p) | the answer 「A」 is followed by 「g」 in sentence N; the question asks for the word before 「p」 (「slot phrase+p」) |
-| E-5s | `no_slot_head` | form slot, the slot head h exists and no WORD unit of sentence N equals h | sentence N does not contain 「h」, the question's predicate |
+| E-5s | `no_slot_head` | form slot, the slot head h exists and no WORD unit of sentence N equals h **[after review: evidence.v2 reads h in the CLAUSE, outside the answer, and refuses when h is None, L-LOOM-195]** | sentence N does not contain 「h」, the question's predicate |
 | E-4p | `no_slot_head` | form predicate and no Y form is read in the clause | the asked item 「Y」 is not in the clause 「C」: this sentence does not state what is asked |
 | E-5p | `not_copular` | form predicate, Y is read at [y0, y1], but neither (P1) gap(y1) is は or は、 and a0 = y1 + 1 (「Y は A」) nor (P2) gap(a1) is は or は、, y0 > a1 and every gap between a1+1 and y1 is an arm particle or empty (「A は … Y」) | the answer 「A」 is not read as 「Y は A」 or 「A は … Y」 in the clause 「C」 |
 | E-6 | `answer_holds_question_unit` | a question unit (§3.1 step 9) is read inside [a0, a1] (same reading as §4.3, restricted to the answer) | the answer contains 「u」, a word of the question; quote only what answers |
@@ -272,6 +281,10 @@ Consequence, stated for the owner: **in prose, constructed_allowed can emit exac
 working crosses (they leave rows and notes), but never reach an emitted text. "Constructed words as non-answer connectors" (です, 。) is NOT opened: a connector
 cross after an evidenced answer could carry content (「2002年」 + a constructed 「1月22日」 would pass), and a closed list of harmless connectors would be a meaning
 choice. Code tasks are untouched (the gate is prose-only, L-LOOM-186).
+
+> **[after review]** Said plainly: **under the gate record_only and constructed_allowed are the same condition for prose.** Both emit exactly the same texts; a constructed
+> unit is `no_evidence/constructed_unit` in both. The two mode labels and the two task rows are kept (both stay measured, owner 2026-10-12) and neither the mode table
+> nor the code was changed. A measured difference between the two modes on prose is run-to-run variation of the model, not the mode.
 
 ### 7.4 Notes (QUESTION_ECHO)
 
@@ -364,6 +377,16 @@ Stronger (O): for all 60 unanswerable items of bank2 + bank4, NO single WORD uni
 the model weaves. Precision on answerable questions is not guaranteed: I2-041 admits 「Sol」 (the predicate cut takes 「カクテル名は、Sol」 as 「Y は A」); a model that
 emits it gets a wrong answer through the gate.
 
+> **[after review, 2026-10-12] Correction.** The paragraph above is true of SINGLE units only, and "precision … is not guaranteed" understated it. Over all stretches of
+> at most 10 WORD units (the corpus probe, title scope; T-EV-21), under **evidence.v1**: **20 of the 69 answerable bank2 items admit at least one wrong stretch**, 8 of
+> them admit only wrong ones (the review's count; the product probe, which takes a stretch to be right iff its normalised text is a gold alternative, finds 21 and 9: one item more, whose
+> cause is not identified; the review's stretch bound or its test of 'wrong' may differ) — pieces of a word (JR, 県, さん, 年, 日本 from 日本武尊), over-long stretches (気象条件は日本海側気候), stretches over a clause break
+> (和歌山千葉線」、京成バス…), and answers to a question with no subject (「IEEE 488の通称」 → PSE of パリ経済学校; 「駅番号は何ですか」 → JR-Y13 of 川原石駅). The unanswerable
+> side holds for stretches too: 0 of 60 items admit any stretch of at most 10 words under evidence.v2.
+> Under **evidence.v2** the same probe finds: after the two fixes F1 + F2 alone, 6 of 69 items admit a wrong stretch (5 only wrong), reach 12 of 69; after the owner's slot-head
+> decision (L-LOOM-195) **0 of 69** items admit a wrong stretch, reach **10 of 69** (I2-025: 何色と has no head; I2-034: 設立 is outside the clause 「1981年に…事業部門」). The
+> reach is 9 of 69 if 「とも」-type particle stacks are not read as connective (R2-I005 would be lost with them): L-LOOM-196.
+
 ---
 
 ## 9. Predictions (written before any measurement; P-EV-n)
@@ -424,8 +447,8 @@ retry on the right stretch) or the prompt, and the ledger shows which.
 | 172 | の-slot: 「どこの N q」 / 「どの N q」 cut with の → effective particle q, slot noun N |
 | 173 | Forms slot / predicate / open; open is always refused (`question_form_open`) |
 | 174 | Y forms = WORD-boundary suffixes of Y starting at a content word, ≥ 2 characters |
-| 175 | S-runs from the RUN cut with the default filter (= the reader's query units), merged when touching; subject = outermost の-chain element (predicate), else ALL runs of the first non-empty level topic / が / case; every subject run must be read |
-| 176 | Slot head = the content WORD after the effective particle; checked as a unit anywhere in the quoted sentence (sentence level, not clause level) |
+| 175 | S-runs from the RUN cut with the default filter (= the reader's query units), merged when touching; subject = outermost の-chain element (predicate), else ALL runs of the first non-empty level topic / が / case; every subject run must be read **[after review: 「a predicate question skips the subject check」 is evidence.v1 only; v2 refuses it, L-LOOM-192]** |
+| 176 | Slot head = the content WORD after the effective particle; checked as a unit anywhere in the quoted sentence (sentence level, not clause level) **[after review: evidence.v1 only. v2: read in the clause, none = refuse, L-LOOM-195]** |
 | 177 | IGNORE set; connective gaps (empty, 「は、」, or a P7(+も) stack without 、); the clause on WORD; the evidence cross = `grammar_cross` of the clause window |
 | 178 | Reading a run: touching WORD units disjoint from the answer; in the title by `words_of(title)` |
 | 179 | Slot arm = `grammar.follower(words_of(sentence), end of the answer's last WORD, "whole_word")` is the effective particle |
@@ -450,7 +473,7 @@ retry on the right stretch) or the prompt, and the ledger shows which.
 | 03 | the 14 h55d answerable final threads replayed into a v3 run under both scopes → the verdicts of §8.1 (3 + 3 pass under (a), 0 under (b)) |
 | 04 | ADV-001 ×2 / ADV-010 ×2 final threads → the codes and message strings of §8.2 |
 | 05 | the bank4 trap table: 33 aligned traps refused, by kind 8/8/8/9 |
-| 06 | the admission sweep (slow mark): for the 60 unanswerable questions no single WORD unit of the corpus passes, under both scopes; for the 7 answerable loom tasks the admitted single units are exactly I2-013 {県}, I2-025 {青}, I2-034 {年}, I2-041 {Sol} under (a) and I2-041 {Sol} under (b) |
+| 06 | the admission sweep (about 25 s, evidence.v1 pins): for the 60 unanswerable questions no single WORD unit of the corpus passes, under both scopes; for the 7 answerable loom tasks the admitted single units are exactly I2-013 {県}, I2-025 {青}, I2-034 {年}, I2-041 {Sol} under (a) and I2-041 {Sol} under (b). **[after review] + the multi-word sweep (T-EV-21, about 2.5 min): every stretch of at most 10 WORD units of every sentence, 60 unanswerable questions: 0 of 60 admit any under evidence.v2; 69 answerable: the wrong-admitting items under v1 (21; the review: 20) and under v2 (0), and the reach lists (12 -> 10).** |
 | 07 | every stored ledger (h55..h55d, unans, unans_adv, code) still verifies and replays IDENTICAL (no profile = no gate) |
 | 08 | a new scripted v1 run: `begin` has `question` and `evidence_profile`; replay IDENTICAL; a forged `question` in the row → REPLAY_DIFFERS; unknown profile → INPUTS |
 | 09 | constructed unit in a thread → `no_evidence/constructed_unit` in both modes; hand-seated record cross → `not_quoted`; drop / unseat / swap of one cross of a weave → `not_quoted` for the weave |
@@ -461,6 +484,35 @@ retry on the right stretch) or the prompt, and the ledger shows which.
 | 14 | the RUN cut of step 6 equals `wiring.intake(space, q).units` filtered by the same content predicate, on every bank question |
 | 15 | code tasks K1–K5 unaffected; `test_no_gold_in_the_agent_prompts` passes; the new prompt examples pass the gate |
 
+| 16 | **[after review]** F1: `IEEE 488の通称は何ですか` → PSE (パリ経済学校#1) and `駅番号は何ですか` → JR-Y13 (川原石駅): v1 admits, v2 `question_has_no_subject`; through the server v1 emits, v2 refuses; the same quote with its subject passes |
+| 17 | F2: pieces of a word (JR, 県, さん, 年, 日本, 気候) → `answer_glued`; 気象条件は日本海側気候 and the stretch over 「、」 / 「（」 → `answer_crosses_break`; whole words / phrases (県社, 権現さん, 日本海側気候, JR-Y13, キューバの太陽) pass; 「とも」 is a particle stack in the v2 clause |
+| 18 | slot head in the clause: 1981年 (設立 outside) and 青 (no head) → `no_slot_head` in v2, passing in v1; the messages |
+| 19 | F3: two passing quotes → `multiple_answers` (v1 emitted 「県社県社」); dropping one lets the other go; 1981年 + 年 is now two refusals |
+| 20 | versions: begin row v1 / v2 (rules text, `question.evidence`), a forged version → REPLAY_DIFFERS, the h55d final threads: v1 6 pass, v2 2 pass (I2-013) |
+| 21 | the multi-word sweeps (see row 06) |
+| 22 | gated smoke test (v1 and v2): QUESTION_ECHO notes, caps (lookup_cap at 30), stability entries, note rows replay |
+| 23 | route (1) as the final thread re-judged offline (`score.final_thread_gate`, `layer_report(final=)`): ADV-001 shown, ADV-021 unseen, ADV-013 empty thread, I2-034 emitted; a no-gate run has none |
+
 ### 11.4 Residual owner question
 
 **OP-EV-1** (§0.1) only. The cost of §2.4 / §10.1 is reported, not asked: it follows from the owner's rule and is what the re-measurement is for.
+
+---
+
+## 12. evidence.v2 (the review of 2026-10-12; L-LOOM-191..)
+
+`evidence.v2` = v1 + the changes below, each a rule change and therefore a new version (L-LOOM-170); the 140 ledgers of the measurement carry v1 and replay under it,
+new runs get v2 (`--evidence v2`, the default; `v1` and `off` remain).
+
+| change | rule (v2 only) | code |
+|---|---|---|
+| F1 | a predicate question whose subject is empty is `question_has_no_subject` (v1 skipped E-3 for it) | `question_has_no_subject` |
+| F2a | the answer is not glued: the gap before its first WORD unit and the gap after its last one must not be empty (after IGNORE) or only joiner punctuation (`- ‐ ‑ – — − , . : / +`). A WORD unit of this corpus is often a piece of a word (日本 / 武尊), so "whole word" = the maximal run of touching or joined units | `answer_glued` (the message names the whole word) |
+| F2b | no gap INSIDE the answer other than empty, joiner punctuation or 「の」: a bracket, 「、」, a word, a particle は を に で が と も is a break. (Stricter than "a clause break" in the sense of 4.2, which let 「気象条件は日本海側気候」 through: は is connective.) | `answer_crosses_break` |
+| F3 | at most one passing weave stands in the thread; the second and later passing weaves are listed in `crosses` | `multiple_answers` |
+| S | the slot head is read in the CLAUSE of the answer (outside the answer); a slot question with no head is refused (owner 2026-10-12, defect 2) | `no_slot_head` |
+| C | the clause reads a gap of only particle characters, the first one of は の に で と を が (「とも」 「でも」 「をも」), as connective; `words_of` reads 「とも」 as one function word, so the v1 clause stopped there | (clause bounds) |
+
+Measured (T-EV-16..21, from the corpus): reach 12 -> 10 of 69; answerable items admitting a wrong stretch 20 (review; 21 by the product probe) -> 0; unanswerable 0 of 60;
+of the stored emitted texts, 県社 x2 would still pass, 青 and 1981年 x2 would be refused. The agent prompts are NOT changed for v2: the refusals carry the codes and messages,
+and the begin `rules.evidence` text names the extent and the single answer.

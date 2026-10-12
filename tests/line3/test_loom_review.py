@@ -195,7 +195,7 @@ def test_calls_after_the_run_is_closed_are_capped(tmp_path):
     srv.harness("c", "free_text_dropped", {"sha256": "0" * 64, "chars": 3})               # the harness's rows are not capped
     assert lg.verify(d)["status"] == "OK"
     # a restarted server rebuilds the same state, guards included
-    srv2 = LoomServer(TASKS, str(tmp_path / "runs"))
+    srv2 = LoomServer(TASKS, str(tmp_path / "runs"), evidence="off")
     assert srv2.closed("c") == ["abstained", "unknown"] and srv2.runs["c"].run.state.guards == {"abstain_refused": 0, "closed_calls": 20}
 
 
@@ -208,7 +208,7 @@ def test_the_guards_are_in_the_state_sha(tmp_path):
 
 
 def test_begin_is_capped_per_server_and_a_refused_begin_leaves_no_folder(tmp_path):
-    srv = LoomServer(TASKS, str(tmp_path / "runs"), max_begins=3)
+    srv = LoomServer(TASKS, str(tmp_path / "runs"), max_begins=3, evidence="off")
     ids = [srv.call("begin", {"task_id": "prose/ca", "model": "m"})["run_id"] for _ in range(3)]
     assert len(set(ids)) == 3
     r = srv.call("begin", {"task_id": "prose/ca", "model": "m"})
@@ -235,13 +235,13 @@ def test_an_oversize_call_after_a_secret_is_not_double_stored(tmp_path):
 # ---------------------------------------------------------------------------------------------------------------
 def test_run_ids_are_reproducible_without_a_nonce_and_not_with_one(tmp_path):
     ident = {"task_id": "prose/ca", "model": "m", "corpus_sha": None, "seq": 0}
-    a = LoomServer(TASKS, str(tmp_path / "a"))
+    a = LoomServer(TASKS, str(tmp_path / "a"), evidence="off")
     ra = a.call("begin", {"task_id": "prose/ca", "model": "m"})["run_id"]
     ident["corpus_sha"] = a.runs[ra].run.corpus.corpus_sha
     assert ra == hashlib.sha256(canonical(ident).encode("utf-8")).hexdigest()[:12]            # the old formula, byte for byte
-    b = LoomServer(TASKS, str(tmp_path / "b"), nonce="n1")
-    c = LoomServer(TASKS, str(tmp_path / "c"), nonce="n2")
-    d = LoomServer(TASKS, str(tmp_path / "d"), nonce="n1")
+    b = LoomServer(TASKS, str(tmp_path / "b"), nonce="n1", evidence="off")
+    c = LoomServer(TASKS, str(tmp_path / "c"), nonce="n2", evidence="off")
+    d = LoomServer(TASKS, str(tmp_path / "d"), nonce="n1", evidence="off")
     rb, rc, rd = (s.call("begin", {"task_id": "prose/ca", "model": "m"})["run_id"] for s in (b, c, d))
     assert len({ra, rb, rc}) == 3 and rb == rd                                                 # the nonce is the only difference
 
@@ -274,7 +274,7 @@ def test_the_mcp_server_mixes_in_a_per_process_nonce_and_a_guessed_id_reaches_no
 
 
 def test_a_run_with_a_nonce_id_replays_byte_for_byte_under_another_nonce(tmp_path):
-    a = LoomServer(TASKS, str(tmp_path / "runs"), nonce="first")
+    a = LoomServer(TASKS, str(tmp_path / "runs"), nonce="first", evidence="off")
     w = ScriptedWeaver(a, "demo/tokyo_ca", "claude-haiku-4-5")
     assert weave_tokyo(w)["ok"]
     rid = w.run_id
@@ -282,7 +282,7 @@ def test_a_run_with_a_nonce_id_replays_byte_for_byte_under_another_nonce(tmp_pat
     assert lg.verify(d)["status"] == "OK"
     rep = lg.replay(d)
     assert rep.identical and rep.run.run_id == rid and b"".join(rep.lines) == (d / "ops.jsonl").read_bytes()    # run_id is read from row 0
-    b = LoomServer(TASKS, str(tmp_path / "runs"), nonce="second")
+    b = LoomServer(TASKS, str(tmp_path / "runs"), nonce="second", evidence="off")
     assert b.closed(rid) == a.closed(rid)                                                       # a restarted server with another nonce reloads it
     assert b.call("status", {"run_id": rid})["refusal"] == "run_closed"                          # reachable by its id, and closed as recorded
 
@@ -354,7 +354,7 @@ def test_replay_with_a_loader_outside_the_sandbox_is_a_typed_input_mismatch_not_
     sb = Sandbox(tmp_path / "runs", [], [])
     assert lg.replay(d, loader=sb.read_bytes).mismatch == "corpus_outside_sandbox"
     # and a live server whose run cannot reload says so with a LedgerError
-    other = LoomServer([task("x", tiers=["WORD"])], str(tmp_path / "runs"))
+    other = LoomServer([task("x", tiers=["WORD"])], str(tmp_path / "runs"), evidence="off")
     other.sandbox.read_files.clear()
     with pytest.raises(LedgerError):
         other.call("status", {"run_id": "r1"})

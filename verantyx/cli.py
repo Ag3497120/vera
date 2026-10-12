@@ -2522,8 +2522,8 @@ def cmd_loom(args) -> int:
     if op == "mcp":
         if args.isolated:                      # LOOM-d2: re-execute under sandbox-exec (verantyx/loom/isolate.py); the probe must pass first
             from .loom import isolate
-            return isolate.serve_isolated(args.tasks, args.runs_dir, args.allow_root or (), args.stability)
-        return lm.serve(args.tasks, args.runs_dir, args.allow_root or (), args.stability)
+            return isolate.serve_isolated(args.tasks, args.runs_dir, args.allow_root or (), args.stability, args.evidence, args.subject_scope)
+        return lm.serve(args.tasks, args.runs_dir, args.allow_root or (), args.stability, args.evidence, args.subject_scope)
     if op == "replay":
         rep = lg.replay(args.run_dir, args.corpus)
         if args.out:
@@ -2578,7 +2578,7 @@ def cmd_loom(args) -> int:
         tasks = [{"task_id": "demo/tokyo_" + sfx, "text": "東京・日本・首都を一文に織れ", "lang": "prose", "mode": m, "tiers": ["WORD"],
                   "corpus": corpus} for m, sfx in modes]          # task ids = L-LOOM-25 (demo/tokyo_ca, demo/tokyo_ro); run folders demo_ca / demo_ro
         # L-LOOM-122: the demo is the pinned worked example of design 3.5; its bytes (HEADs) were recorded under the cap profile v1, so it keeps it
-        srv = lm.LoomServer(tasks, args.runs_dir, (), args.stability, caps="v1", notes="notes.v1")
+        srv = lm.LoomServer(tasks, args.runs_dir, (), args.stability, caps="v1", notes="notes.v1", evidence="off")          # hand-built crosses: no evidence gate (bytes unchanged)
         rc = 0
         for m, sfx in modes:
             rid = "demo_" + sfx
@@ -3275,6 +3275,12 @@ def main(argv: Optional[list] = None) -> int:
     q.add_argument("--allow-root", dest="allow_root", action="append", default=None, help="an extra folder the server may READ (repeatable)")
     q.add_argument("--stability", choices=["strict_npa", "strict_np", "report"], default="strict_npa",
                    help="OP-LOOM-1: strict_npa (default, the owner's choice: the full key (n, p, a)) | strict_np | report (annotation only)")
+    q.add_argument("--evidence", choices=["v1", "v2", "off"], default="v2",
+                   help="LOOM-evidence: the reader's evidence gate NEW prose runs get (v2 = evidence.v2, the default: only an unchanged weave_span quote that the loom reads as an "
+                        "answer to the question can be emitted, as one whole word or phrase; v1 = the first build's rules; off = no gate). A run's begin row records it; replay "
+                        "uses the recorded profile")
+    q.add_argument("--subject-scope", dest="subject_scope", choices=["clause_or_title", "clause"], default="clause_or_title",
+                   help="OP-EV-1: clause_or_title (the owner's answer: the quoted sentence's article title may stand in for a subject word) | clause")
     q.add_argument("--isolated", action="store_true",
                    help="LOOM-d2: prove the OS profile (probe), then re-execute this server under sandbox-exec: no network, reads only the task bank / "
                         "corpus / fixture / python / the loom source, writes only --runs-dir; exit 3 and no server when the probe does not pass")

@@ -46,7 +46,7 @@ def _copy_with_meta(src, dst, meta):
 
 def _fresh(tmp_path, corpus=CORPUS):
     tasks = [dict(TASKS[0], corpus=corpus)]
-    srv = LoomServer(tasks, str(tmp_path / "runs"), (), "strict_npa")
+    srv = LoomServer(tasks, str(tmp_path / "runs"), (), "strict_npa", evidence="off")
     w = ScriptedWeaver(srv, "demo/tokyo_ca", "claude-haiku-4-5", "r1")
     assert weave_tokyo(w)["ok"]
     return srv, tmp_path / "runs" / "r1"
@@ -69,14 +69,14 @@ def test_a_new_runs_relative_path_is_resolved_against_the_repo_root_not_the_work
     assert lg.replay(d).identical and lg.verify(d)["status"] == "OK"
     sb = Sandbox(tmp_path / "runs2", [CORPUS], [])                                              # and through a sandbox that lists the corpus by its absolute path
     assert lg.replay(d, loader=sb.read_bytes).identical
-    srv2 = LoomServer(TASKS, str(tmp_path / "runs"), (), "strict_npa")                           # a restarted server reloads the run (replays it, no --corpus)
+    srv2 = LoomServer(TASKS, str(tmp_path / "runs"), (), "strict_npa", evidence="off")                           # a restarted server reloads the run (replays it, no --corpus)
     assert srv2.call("status", {"run_id": "r1"})
 
 
 def test_a_corpus_outside_the_repo_root_keeps_its_absolute_path_and_the_sha(tmp_path):
     toy = tmp_path / "toy.jsonl"
     toy.write_text(json.dumps({"sha": "0" * 64, "title": "t", "sent": "東京は日本の首都です。", "source": "t0#0"}, ensure_ascii=False) + "\n", encoding="utf-8")
-    srv = LoomServer([dict(TASKS[0], corpus=str(toy))], str(tmp_path / "runs"), (), "strict_npa")
+    srv = LoomServer([dict(TASKS[0], corpus=str(toy))], str(tmp_path / "runs"), (), "strict_npa", evidence="off")
     ScriptedWeaver(srv, "demo/tokyo_ca", "m", "t1").begin()
     meta = json.load(open(str(tmp_path / "runs" / "t1" / "meta.json"), encoding="utf-8"))
     assert meta["corpus"] == str(toy.resolve()) and len(meta["corpus_sha"]) == 64
@@ -142,7 +142,7 @@ def test_an_existing_pointer_to_another_file_is_a_sha_mismatch_and_an_explicit_p
 def test_corpus_unresolved_only_when_nothing_matches_the_sha(tmp_path):
     toy = tmp_path / "toy.jsonl"
     toy.write_text(json.dumps({"sha": "0" * 64, "title": "t", "sent": "東京は日本の首都です。", "source": "t0#0"}, ensure_ascii=False) + "\n", encoding="utf-8")
-    srv = LoomServer([dict(TASKS[0], corpus=str(toy))], str(tmp_path / "runs"), (), "strict_npa")
+    srv = LoomServer([dict(TASKS[0], corpus=str(toy))], str(tmp_path / "runs"), (), "strict_npa", evidence="off")
     ScriptedWeaver(srv, "demo/tokyo_ca", "m", "t1").begin()
     d = tmp_path / "runs" / "t1"
     (d / "meta.json").write_text(json.dumps({"corpus": DEAD}), encoding="utf-8")

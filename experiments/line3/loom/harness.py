@@ -464,8 +464,11 @@ def prepare(row: dict, driver: str, model: Optional[str] = None) -> dict:
 
 
 def run(row: dict, driver: str, *, bank_path: str, bank: Dict[str, dict], gold: Dict[str, dict], runs_dir: str, results_dir: str, model: Optional[str] = None,
-        client: Any = None, mcp_tools: Optional[Sequence[Any]] = None, tag: str = "", extra_api: Optional[dict] = None) -> tuple:
-    """begin -> harness_meta -> driver -> free text -> abandoned -> verify -> output -> score -> results file.  Returns (RunScore, results path, object)."""
+        client: Any = None, mcp_tools: Optional[Sequence[Any]] = None, tag: str = "", extra_api: Optional[dict] = None, evidence: Optional[str] = None,
+        subject_scope: str = "clause_or_title") -> tuple:
+    """begin -> harness_meta -> driver -> free text -> abandoned -> verify -> output -> score -> results file.  Returns (RunScore, results path, object).
+    `evidence` (LOOM-evidence, L-LOOM-170): the evidence gate of a NEW prose run, "v2", "v1" or "off"; None = "v2" for the api driver and "off" for the scripted one (its
+    gold-informed scripts build crosses by hand and are not a measurement).  `subject_scope`: OP-EV-1."""
     if driver == "subagent":
         raise HarnessError("the subagent driver is run by the operator through the Claude Code Agent tool (the harness cannot call it): see "
                            "`prepare --driver subagent`, then `note`, `close`, `score RUN_DIR`")
@@ -484,7 +487,7 @@ def run(row: dict, driver: str, *, bank_path: str, bank: Dict[str, dict], gold: 
             mcp_tools = mcp_tool_objects(bank_path, runs_dir)
     else:
         model = model or "scripted-weaver"
-    srv = LoomServer([abs_row(row)], runs_dir)
+    srv = LoomServer([abs_row(row)], runs_dir, evidence=evidence if evidence is not None else ("v2" if driver == "api" else "off"), subject_scope=subject_scope)
     b = srv.begin(row["task_id"], model, name)
     if not b.get("ok"):
         raise HarnessError("begin refused: %s" % json.dumps(b, ensure_ascii=False, sort_keys=True))

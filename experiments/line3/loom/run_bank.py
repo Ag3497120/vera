@@ -2,6 +2,7 @@
 
   python experiments/line3/loom/run_bank.py --bank experiments/line3/loom/tasks_unans.jsonl --runs-dir RUNS --results-dir RESULTS --model claude-haiku-5-5
   (the adversarial bank: the same command with --bank experiments/line3/loom/tasks_unans_adv.jsonl and other folders)
+  (LOOM-evidence: --modes record_only,constructed_allowed runs the loom modes only; --evidence v1|v2|off and --subject-scope clause_or_title|clause pick the gate)
 
 The order is the bank's order.  A task whose results file exists is SKIPPED (a restart continues; nothing is overwritten).  A run that raises is logged and the loop
 goes on (its half-written folder stays where it is).  The real client and the tool objects are made once.  The API key comes from the Keychain through
@@ -37,6 +38,9 @@ def main(argv=None) -> int:
     ap.add_argument("--modes", default=None, help="comma-separated labels to run (default: all of the bank)")
     ap.add_argument("--only", default=None, help="comma-separated bank2 ids / bases to run (default: all)")
     ap.add_argument("--driver", default="api", choices=("api",))
+    ap.add_argument("--evidence", default="v2", choices=("v1", "v2", "off"), help="LOOM-evidence: the reader's evidence gate of the loom runs (default v2; controls have no loom)")
+    ap.add_argument("--subject-scope", dest="subject_scope", default="clause_or_title", choices=("clause_or_title", "clause"),
+                    help="OP-EV-1: the sentence's article title may stand in for a subject word (the owner's answer: yes)")
     a = ap.parse_args(argv)
     bank = S.load_bank(a.bank)
     gold = S.load_gold()
@@ -55,7 +59,7 @@ def main(argv=None) -> int:
         t0 = time.monotonic()
         try:
             rs, path, obj = H.run(row, "api", bank_path=a.bank, bank=bank, gold=gold, runs_dir=a.runs_dir, results_dir=a.results_dir, model=a.model,
-                                  client=client, mcp_tools=mcp_tools)
+                                  client=client, mcp_tools=mcp_tools, evidence=a.evidence, subject_scope=a.subject_scope)
         except Exception as e:                                              # noqa: BLE001  one bad run must not stop the batch; it is logged, not hidden
             n_fail += 1
             print("FAILED %-44s %s: %s" % (row["task_id"], type(e).__name__, str(e)[:200]), flush=True)

@@ -312,11 +312,63 @@ BUILD_OPS = tuple(STATE_CHANGING) + ("emit",)               # every model op tha
 WEAVE_ATTEMPT_OPS = tuple(STATE_CHANGING)                   # ... without the emit (counted apart)
 
 
+FINAL_GATE_VERSIONS = ("evidence.v1", "evidence.v2")        # the rule versions the final thread of a gated run is also judged under (the run's own recorded version first)
+
+
 def _is_close(r: dict) -> bool:
     return r["op"] in ("emit", "abstain") and r["result"].get("ok") is True and r["result"].get("status") in ("emitted", "abstained")
 
 
-def layer_report(rows: Sequence[dict], control: Optional[str] = None) -> dict:
+EVIDENCE_CONTENT_CODES = ("answer_not_word_aligned", "question_form_open", "question_has_no_subject", "no_subject", "wrong_arm", "no_slot_head", "not_copular",
+                          "answer_holds_question_unit", "answer_glued", "answer_crosses_break", "multiple_answers")      # the codes that say the SENTENCE does not answer the question (the others, not_quoted / constructed_unit, say how the thread was built)
+
+
+def evidence_codes_of(res: dict) -> set:
+    """The set {"no_evidence:<code>", ...} a refused `emit` result (detail.refusals) carries; {"no_evidence"} if it carries none (an old shape)."""
+    out = set()
+    for ref in (res.get("detail") or {}).get("refusals") or []:
+        if ref.get("type") == "no_evidence":
+            for w in ref.get("weaves") or []:
+                out.update("no_evidence:" + c for c in w.get("codes") or [])
+            for c in ref.get("crosses") or []:
+                out.add("no_evidence:" + c.get("code", "?"))
+    return out or {"no_evidence"}
+
+
+def final_thread_gate(run_dir: str, corpus_path: Optional[str] = None, loader=lg.default_loader, versions: Sequence[str] = ()) -> Optional[dict]:
+    """LOOM-evidence, the review's third definition of route (1): the gate on the FINAL THREAD of a gated prose run, REPLAYED offline (nothing is passed in out of band: the
+    run is rebuilt from its ledger, `ledger.replay`, and `evidence.gate` is asked about the thread it ends with, whether or not the run ever emitted or read).
+    None when the run has no evidence profile (no gate: every ledger before LOOM-evidence), is not a prose run, or does not replay IDENTICAL.
+    {"profile": [version, scope], "held": the crosses of the thread that hold a unit, "verdicts": {version: {"fails", "codes", "passing"}}}: the verdict under the RECORDED
+    rule version and under every other version of `versions` (the same thread, the same question cut).  `held` = 0 is an empty thread: there is nothing to fail."""
+    from verantyx.loom import evidence as evl
+    first = _rows_of(run_dir)[:1]
+    if not first or "evidence_profile" not in (first[0].get("result") or {}):           # no gate: nothing to replay (a cheap look at row 0)
+        return None
+    rep = lg.replay(run_dir, corpus_path, loader)
+    run = rep.run
+    if rep.status != "IDENTICAL" or run is None or run.evidence is None:
+        return None
+    st = run.state
+    held = sum(1 for c in st.thread if st.crosses[c].uids())
+    recorded = run.evidence
+    out: Dict[str, Any] = {"profile": list(recorded), "held": held, "verdicts": {}}
+    try:
+        for ver in [recorded[0]] + [v for v in versions if v != recorded[0]]:
+            run.evidence = (ver, recorded[1])
+            g = evl.gate(run)
+            codes: List[str] = []
+            if g["refusal"] is not None:
+                for w in g["refusal"]["weaves"]:
+                    codes += ["no_evidence:" + c for c in w["codes"]]
+                codes += ["no_evidence:" + c["code"] for c in g["refusal"]["crosses"]]
+            out["verdicts"][ver] = {"fails": held > 0 and g["refusal"] is not None, "codes": sorted(set(codes)), "passing": len(g["evidence"])}
+    finally:
+        run.evidence = recorded
+    return out
+
+
+def layer_report(rows: Sequence[dict], control: Optional[str] = None, final: Optional[dict] = None) -> dict:
     """THE STOP LAYER of one run, and the counts it rests on, from the ledger rows alone (nothing is passed in out of band except whether the task is a control).
 
       L_meta         the run ended in an abstention (a loom `abstain`; a control: the answer line 「不明」) and the model made 0 build attempts (no weave / seat / add /
@@ -338,6 +390,9 @@ def layer_report(rows: Sequence[dict], control: Optional[str] = None) -> dict:
     counts = {"lookups": 0, "empty_lookups": 0, "read_sentences": 0, "reads": 0, "weave_attempts": 0, "emit_attempts": 0, "refusals": 0}
     refusals: Dict[str, int] = {}
     struct: Dict[str, int] = {}
+    read_refusals: Dict[str, int] = {}      # LOOM-evidence: the refusals a DRY RUN (`read`, an ok call) showed the model before the run closed (not a refused op, so not in `struct`)
+    read_codes: Dict[str, int] = {}
+    codes: Dict[str, int] = {}              # LOOM-evidence (L-LOOM-188): the structural refusals BY CODE: a `no_evidence` emit refusal contributes one entry per distinct code it carries
     for r in upto:
         op = r["op"]
         res = r["result"]
@@ -349,6 +404,14 @@ def layer_report(rows: Sequence[dict], control: Optional[str] = None) -> dict:
             counts["read_sentences"] += 1
         elif op == "read":
             counts["reads"] += 1
+            if res.get("ok") is True:
+                for ref in res.get("refusals") or []:
+                    if ref.get("type") == "empty_thread":
+                        continue
+                    read_refusals[ref.get("type", "?")] = read_refusals.get(ref.get("type", "?"), 0) + 1
+                    if ref.get("type") == "no_evidence":
+                        for c in evidence_codes_of({"detail": {"refusals": [ref]}}):
+                            read_codes[c] = read_codes.get(c, 0) + 1
         elif op == "emit":
             counts["emit_attempts"] += 1
         elif op in WEAVE_ATTEMPT_OPS:
@@ -359,9 +422,13 @@ def layer_report(rows: Sequence[dict], control: Optional[str] = None) -> dict:
             refusals[typ] = refusals.get(typ, 0) + 1
             if op in BUILD_OPS and typ not in _NON_RECOVERABLE:
                 struct[typ] = struct.get(typ, 0) + 1
+                seen = evidence_codes_of(res) if typ == "no_evidence" else {typ}
+                for c in seen:
+                    codes[c] = codes.get(c, 0) + 1
     attempts = counts["weave_attempts"] + counts["emit_attempts"]
     out: Dict[str, Any] = dict(counts, build_attempts=attempts, refusal_types=dict(sorted(refusals.items())),
-                               struct_refusals=dict(sorted(struct.items())), struct_refusals_total=sum(struct.values()))
+                               struct_refusals=dict(sorted(struct.items())), struct_refusals_total=sum(struct.values()), struct_codes=dict(sorted(codes.items())),
+                               read_refusals=dict(sorted(read_refusals.items())), read_codes=dict(sorted(read_codes.items())))
     emit = next((r for r in model if r["op"] == "emit" and r["result"].get("ok") is True and r["result"].get("status") == "emitted"), None)
     abstain = next((r for r in model if r["op"] == "abstain" and r["result"].get("ok") is True and r["result"].get("status") == "abstained"), None)
     detail = ""
@@ -392,6 +459,17 @@ def layer_report(rows: Sequence[dict], control: Optional[str] = None) -> dict:
         layer, detail = "L_other", "no_output_no_refusal"
     out["stop_layer"] = layer
     out["stop_layer_detail"] = detail
+    if final is not None and control is None:
+        # THE THIRD DEFINITION OF ROUTE (1) (review 2026-10-12): the run emitted no text and the thread it ENDED with, replayed offline, fails the gate.  `route1_final_how`:
+        # strict = a refused `emit` carried no_evidence; shown = a dry-run `read` listed no_evidence (and no emit was refused); unseen = the model never asked.
+        out["final_thread"] = final
+        rec = (final.get("verdicts") or {}).get((final.get("profile") or [None])[0]) or {}
+        fails = emit is None and bool(rec.get("fails"))
+        out["route1_final"] = fails
+        if fails:
+            strict = any(k.startswith("no_evidence") for k in out["struct_codes"])
+            shown = any(k.startswith("no_evidence") for k in out["read_codes"]) or "no_evidence" in out["read_refusals"]
+            out["route1_final_how"] = "strict" if strict else ("shown" if shown else "unseen")
     return out
 
 
@@ -480,7 +558,8 @@ def score_run(run_dir: str, bank_rows: Dict[str, dict], gold_tbl: Dict[str, dict
         raise KeyError("task %r is not in the bank" % facts["task_id"])
     tf = TaskFacts.of(row, gold_tbl)
     replay_ok = v.get("replay", {}).get("status") == "IDENTICAL"
-    lay = layer_report(_rows_of(run_dir), tf.mode if tf.control else None)
+    final = None if tf.control else final_thread_gate(run_dir, corpus_path, loader, versions=FINAL_GATE_VERSIONS)
+    lay = layer_report(_rows_of(run_dir), tf.mode if tf.control else None, final)
     base = dict(task_id=tf.task_id, base=tf.base, mode=tf.mode, control=tf.control, kind=tf.kind, verify_status="OK", replay_verified=replay_ok,
                 facts=facts, stop_layer=lay["stop_layer"], layer=lay)
     if tf.control:

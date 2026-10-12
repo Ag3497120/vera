@@ -38,6 +38,7 @@ from typing import Callable, Dict, List, Optional, Tuple
 
 from verantyx.ledger_events import GENESIS, LedgerError, canonical
 from verantyx.loom import LOOM_VERSION
+from verantyx.loom import evidence as evl
 from verantyx.loom import fixture as fx
 from verantyx.loom import notes as notelib
 from verantyx.loom import paths
@@ -389,7 +390,15 @@ def replay(run_dir, corpus_path: Optional[str] = None, loader: Loader = default_
     if recorded_notes not in notelib.NOTES_VERSIONS:
         out.status, out.mismatch = "INPUTS", "notes_profile_unknown"
         return out
-    run = Run(corpus, task, model, run_id, stability, index, recorded_caps, recorded_notes)
+    evidence = None                                              # LOOM-evidence (L-LOOM-170): absent = no gate (every ledger before it); replay by the RECORDED profile
+    if "evidence_profile" in res0:
+        ep = res0["evidence_profile"]
+        if not (isinstance(ep, dict) and set(ep) == {"version", "subject_scope"} and ep["version"] in evl.EVIDENCE_VERSIONS and ep["subject_scope"] in evl.SUBJECT_SCOPES
+                and task["lang"] == "prose"):
+            out.status, out.mismatch = "INPUTS", "evidence_profile_unknown"
+            return out
+        evidence = (ep["version"], ep["subject_scope"])
+    run = Run(corpus, task, model, run_id, stability, index, recorded_caps, recorded_notes, evidence)
     mm = header_mismatch(recorded_header, run.header())
     if mm is not None:
         out.status, out.mismatch = "INPUTS", mm

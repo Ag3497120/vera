@@ -129,9 +129,10 @@ class DriverResult:
 
 
 def first_message(begin_result: dict) -> str:
-    """The first user turn: the `begin` result (task text, mode, caps, rules) as JSON.  No gold is anywhere in it."""
+    """The first user turn: the `begin` result (task text, mode, caps, rules; with the evidence gate also the loom's own cut of the question, `question`,
+    read-only: L-LOOM-185) as JSON.  No gold is anywhere in it."""
     return ("The run has been begun for you; the run id is supplied by the system, never pass it. This is the result of begin:\n"
-            + json.dumps({k: begin_result[k] for k in ("task", "rules") if k in begin_result}, ensure_ascii=False, sort_keys=True))
+            + json.dumps({k: begin_result[k] for k in ("task", "rules", "question") if k in begin_result}, ensure_ascii=False, sort_keys=True))
 
 
 def run_episode(client: Any, server: Any, run_id: str, model: str, system: str, user_message: str, tools: Sequence[dict], *,

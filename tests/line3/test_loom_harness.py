@@ -206,7 +206,7 @@ def test_a_scored_run_is_typed_and_has_no_float(tmp_path):
 
 
 def _srv(tmp_path, bank=None):
-    return LoomServer([H.abs_row(r) for r in (bank or BANK).values()], str(tmp_path / "runs"))
+    return LoomServer([H.abs_row(r) for r in (bank or BANK).values()], str(tmp_path / "runs"), evidence="off")
 
 
 def test_the_outcome_classes(tmp_path):
@@ -403,7 +403,7 @@ def test_the_subagent_driver_is_a_stub_that_explains(tmp_path, capsys):
 
 def test_a_subagent_run_is_scored_from_its_folder_alone(tmp_path, capsys):
     """The operator's session: the server wrote the run (random id), the subagent's final message is saved to a file, then note / close / score."""
-    srv = LoomServer([H.abs_row(r) for r in BANK.values()], str(tmp_path / "runs"), nonce="operator")
+    srv = LoomServer([H.abs_row(r) for r in BANK.values()], str(tmp_path / "runs"), nonce="operator", evidence="off")
     rid = srv.begin("bank2/I2-041.record_only", "claude-haiku-4-5")["run_id"]
     c = lambda tool, **a: srv.call(tool, dict(a, run_id=rid))
     u1 = c("add", text="キューバ", kind="record", tier="WORD")["uid"]
@@ -441,7 +441,7 @@ def test_a_subagent_run_is_scored_from_its_folder_alone(tmp_path, capsys):
 
 
 def test_a_subagent_control_run(tmp_path):
-    srv = LoomServer([H.abs_row(r) for r in BANK.values()], str(tmp_path / "runs"), nonce="operator")
+    srv = LoomServer([H.abs_row(r) for r in BANK.values()], str(tmp_path / "runs"), nonce="operator", evidence="off")
     rid = srv.begin("bank2/UF-015.free_text", "claude-haiku-4-5")["run_id"]
     srv.call("lookup", {"run_id": rid, "text": "立案", "tier": "any"})
     d = str(tmp_path / "runs" / rid)
@@ -484,7 +484,7 @@ def api_names():
 def api_run(tmp_path, mcp_tools, script, base="I2-041", mode="record_only", model="claude-haiku-4-5", **kw):
     client = drv.ReplayClient(script, allowed_tools=api_names())
     r = H.run(H.select_task(BANK, base, mode), "api", bank_path=H.BANK, bank=BANK, gold=GOLD, runs_dir=str(tmp_path / "runs"),
-              results_dir=str(tmp_path / "res"), model=model, client=client, mcp_tools=mcp_tools, **kw)
+              results_dir=str(tmp_path / "res"), model=model, client=client, mcp_tools=mcp_tools, **dict({"evidence": "off"}, **kw))
     return client, r
 
 
@@ -604,7 +604,7 @@ def test_an_api_error_leaves_a_closed_ledger_and_the_error_only_in_the_result(tm
             def create(**kw):
                 raise RuntimeError("529 overloaded sk-ant-api03-AAAAAAAAAAAAAAAAAAAAAAAAAAAA")
     r = H.run(H.select_task(BANK, "I2-025", "record_only"), "api", bank_path=H.BANK, bank=BANK, gold=GOLD, runs_dir=str(tmp_path / "runs"),
-              results_dir=str(tmp_path / "res"), client=Boom, mcp_tools=mcp_tools)
+              results_dir=str(tmp_path / "res"), client=Boom, mcp_tools=mcp_tools, evidence="off")
     rs, path, obj = r
     assert obj["driver_report"]["ended"] == "api_error" and obj["abandoned"] == ["api_error"] and rs.status == "no_output"
     assert "RuntimeError" in obj["driver_report"]["error"]
@@ -614,7 +614,7 @@ def test_an_api_error_leaves_a_closed_ledger_and_the_error_only_in_the_result(tm
 def test_max_turns_abandons(tmp_path, mcp_tools):
     srv_rows = [[L("status")] for _ in range(3)]
     client = drv.ReplayClient(srv_rows)
-    srv = LoomServer([H.abs_row(H.select_task(BANK, "I2-025", "record_only"))], str(tmp_path / "runs"))
+    srv = LoomServer([H.abs_row(H.select_task(BANK, "I2-025", "record_only"))], str(tmp_path / "runs"), evidence="off")
     b = srv.begin("bank2/I2-025.record_only", "m", "mt")
     res = drv.run_episode(client, srv, "mt", "claude-haiku-4-5", "sys", drv.first_message(b), drv.api_tools(mcp_tools), max_turns=3)
     assert res.ended == "max_turns" and res.turns == 3 and srv.closed("mt") == ["abandoned", "max_turns"]
@@ -653,7 +653,7 @@ def test_the_real_client_factory_is_the_only_place_that_names_the_sdk(monkeypatc
 # ------------------------------------------------------------------------------------------------------------
 def _control_run(tmp_path, base, text, rid):
     """A control run written by a server (random-style id), with `text` stored by `note`."""
-    srv = LoomServer([H.abs_row(r) for r in BANK.values()], str(tmp_path / "runs"), nonce="operator")
+    srv = LoomServer([H.abs_row(r) for r in BANK.values()], str(tmp_path / "runs"), nonce="operator", evidence="off")
     r = srv.begin("bank2/%s.free_text" % base, "claude-haiku-4-5", rid)["run_id"]
     srv.call("lookup", {"run_id": r, "text": "太陽", "tier": "any"})
     f = tmp_path / (rid + ".txt")
@@ -680,7 +680,7 @@ def test_a_control_is_scored_on_its_answer_line_only(tmp_path):
 
 
 def test_note_takes_control_and_agent_from_the_ledger_and_the_bank(tmp_path):
-    srv = LoomServer([H.abs_row(r) for r in BANK.values()], str(tmp_path / "runs"), nonce="operator")
+    srv = LoomServer([H.abs_row(r) for r in BANK.values()], str(tmp_path / "runs"), nonce="operator", evidence="off")
     rid = srv.begin("bank2/I2-041.record_only", "claude-haiku-4-5")["run_id"]
     d = str(tmp_path / "runs" / rid)
     f = tmp_path / "gold.txt"
@@ -722,7 +722,7 @@ class FakeSubagent:
     recorded as an assistant tool_use row (one block per row, like the real file) and a user tool_result row."""
 
     def __init__(self, tmp_path, task_id, model="claude-haiku-4-5"):
-        self.srv = LoomServer([H.abs_row(r) for r in BANK.values()], str(tmp_path / "runs"), nonce="operator")
+        self.srv = LoomServer([H.abs_row(r) for r in BANK.values()], str(tmp_path / "runs"), nonce="operator", evidence="off")
         self.rows = [{"type": "user", "isSidechain": True, "agentId": "a1", "message": {"role": "user", "content": "task_id: %s" % task_id}},
                      {"type": "attachment", "isSidechain": True, "attachment": {"type": "skills"}}]
         self.model, self.n, self.rid = model, 0, None
@@ -872,7 +872,7 @@ def test_a_transcript_of_another_shape_is_a_typed_refusal(tmp_path):
 
 def test_find_refuses_scripted_folders_and_warns_on_ambiguity(tmp_path, capsys):
     run_scripted(tmp_path, "I2-041", "record_only")                                              # a scripted folder in the same runs dir
-    srv = LoomServer([H.abs_row(r) for r in BANK.values()], str(tmp_path / "runs"), nonce="operator")
+    srv = LoomServer([H.abs_row(r) for r in BANK.values()], str(tmp_path / "runs"), nonce="operator", evidence="off")
     r1 = srv.begin("bank2/I2-041.record_only", "claude-haiku-4-5")["run_id"]
     argv = ["--runs-dir", str(tmp_path / "runs"), "--results-dir", str(tmp_path / "res")]
     refused = []

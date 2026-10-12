@@ -607,7 +607,8 @@ def server_policy(tasks_path: str, runs_dir: str, allow_roots: Iterable = ()) ->
     return Policy.make(read=read, write=[runs_dir], list=[str(repo)])
 
 
-def serve_isolated(tasks_path: str, runs_dir: str, allow_roots: Iterable = (), stability: str = "strict_npa") -> int:
+def serve_isolated(tasks_path: str, runs_dir: str, allow_roots: Iterable = (), stability: str = "strict_npa", evidence: str = "v2",
+                   subject_scope: str = "clause_or_title") -> int:
     """`vera loom mcp --isolated`: prove the profile (probe, same policy), then REPLACE this process by the server under sandbox-exec (os.execve:
     stdin / stdout stay the MCP pipes).  Returns only on refusal: 3 = the probe did not pass (nothing was started)."""
     tasks_path, runs_dir = _real(tasks_path), _real(runs_dir)
@@ -625,7 +626,7 @@ def serve_isolated(tasks_path: str, runs_dir: str, allow_roots: Iterable = (), s
         print(json.dumps({"status": "isolation_failed", "probe": res.report()}, sort_keys=True), file=sys.stderr)
         return 3
     repo = str(Path(__file__).resolve().parents[2])
-    args = ["loom", "mcp", "--tasks", tasks_path, "--runs-dir", runs_dir, "--stability", stability]
+    args = ["loom", "mcp", "--tasks", tasks_path, "--runs-dir", runs_dir, "--stability", stability, "--evidence", evidence, "--subject-scope", subject_scope]
     for r in allow:
         args += ["--allow-root", r]
     argv = launcher_argv(policy, "module", args=args, path=[repo] + site_dirs(),

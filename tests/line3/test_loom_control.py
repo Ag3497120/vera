@@ -229,7 +229,7 @@ def test_the_free_text_control_still_offers_the_lookups_and_is_labelled_free_tex
 # the stop layer (item 2)
 # ------------------------------------------------------------------------------------------------------------
 def weaver(tmp_path, base, mode):
-    srv = LoomServer([H.abs_row(H.select_task(BANK, base, mode))], str(tmp_path / "runs"))
+    srv = LoomServer([H.abs_row(H.select_task(BANK, base, mode))], str(tmp_path / "runs"), evidence="off")
     w = ScriptedWeaver(srv, "bank2/%s.%s" % (base, mode), "m", "%s.%s" % (base, mode))
     assert w.begin()["ok"]
     return srv, w
@@ -285,7 +285,7 @@ def test_a_cap_or_run_closed_refusal_is_not_a_structural_refusal(tmp_path):
 
 
 def test_L_none_marked_the_text_carries_a_constructed_unit(tmp_path):
-    srv = LoomServer([H.abs_row(r) for r in DEMO.values()], str(tmp_path / "runs"))
+    srv = LoomServer([H.abs_row(r) for r in DEMO.values()], str(tmp_path / "runs"), evidence="off")
     w = ScriptedWeaver(srv, "demo/tokyo_ca", "m", "tk_ca")
     res = weave_tokyo(w)
     assert res["ok"] and "です" in res["text"] and any(s["kind"] == "constructed" for s in res["annotated"])
@@ -295,7 +295,7 @@ def test_L_none_marked_the_text_carries_a_constructed_unit(tmp_path):
 
 
 def test_L_none_the_text_is_record_only_and_a_refusal_before_the_emit_does_not_stop_it(tmp_path):
-    srv = LoomServer([H.abs_row(r) for r in DEMO.values()], str(tmp_path / "runs"))
+    srv = LoomServer([H.abs_row(r) for r in DEMO.values()], str(tmp_path / "runs"), evidence="off")
     w = ScriptedWeaver(srv, "demo/tokyo_ro", "m", "tk_ro")
     res = weave_tokyo(w)                                                                              # the add of です is refused, the rest is woven and emitted
     assert res["ok"] and "です" not in res["text"]
@@ -347,7 +347,7 @@ def test_the_loom_refuses_every_add_of_a_no_tools_answer_in_record_only_and_mark
             for text in texts:
                 for kind in ("record", "constructed"):
                     n += 1
-                    srv = LoomServer([H.abs_row(H.select_task(BANK, base, mode))], str(tmp_path / ("r%d" % n)))
+                    srv = LoomServer([H.abs_row(H.select_task(BANK, base, mode))], str(tmp_path / ("r%d" % n)), evidence="off")
                     w = ScriptedWeaver(srv, "bank2/%s.%s" % (base, mode), "m", "p")
                     w.begin()
                     r = w.call("add", text=text, kind=kind, tier="WORD")

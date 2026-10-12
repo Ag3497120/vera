@@ -38,7 +38,7 @@ DEFAULT_STABILITY = "strict_npa"
 ARM_ORDER: Tuple[str, ...] = tuple(sorted(AXES, key=lambda ax: SPEC.numerator(SPEC.arm_of_axis(ax))))
 CONSTRUCTED_PREFIX = "\u0000C:"                       # L-LOOM-19
 REFUSAL_ORDER: Tuple[str, ...] = (
-    "empty_thread", "unlinked_cross", "empty_centre", "leg_gap", "tier_mix", "constructed_forbidden", "unstable_cross",
+    "empty_thread", "unlinked_cross", "empty_centre", "leg_gap", "tier_mix", "constructed_forbidden", "no_evidence", "unstable_cross",
     "parse_error", "undefined_name", "import_not_allowed", "unsupported_construct", "cross_not_one_statement", "line_cross_mismatch", "layout_changed_tokens")
 KINDS = ("record", "constructed", "foundation", "layout")
 
@@ -281,6 +281,14 @@ def evaluate(run) -> dict:
                 if state.units[uid].kind == CONSTRUCTED:
                     add({"type": "constructed_forbidden", "cid": c.cid, "uid": uid}, pos)
 
+    evidence: List[dict] = []
+    if run.evidence is not None:                       # LOOM-evidence (L-LOOM-184): after constructed_forbidden, before unstable_cross; prose only (the profile is for prose runs)
+        from verantyx.loom import evidence as evl
+        g = evl.gate(run)
+        evidence = g["evidence"]
+        if g["refusal"] is not None:
+            add(g["refusal"])
+
     stab: List[dict] = []
     for pos, c in enumerate(linked):
         if not _has_content(c) and not c.topic:
@@ -326,4 +334,4 @@ def evaluate(run) -> dict:
     for s in segs:
         shares[s["kind"]] += len(s["s"])
     return {"text": text, "annotated": segs, "refusals": [r for _, _, r in refusals], "stability": stab, "shares": shares,
-            "output_sha": hashlib.sha256(text.encode("utf-8")).hexdigest()}
+            "output_sha": hashlib.sha256(text.encode("utf-8")).hexdigest(), "evidence": evidence}

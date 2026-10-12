@@ -31,7 +31,7 @@ def call(m, tool, args):
 
 
 def test_the_tool_list_is_the_20_operations(bank, tmp_path):
-    m = lm.build(str(bank), str(tmp_path / "runs"))
+    m = lm.build(str(bank), str(tmp_path / "runs"), evidence="off")
     tools = asyncio.run(m.list_tools())
     assert [t.name for t in tools] == list(MODEL_OPS) and len(tools) == 20
     assert m.name == "vera-loom"
@@ -46,7 +46,7 @@ def test_the_tool_list_is_the_20_operations(bank, tmp_path):
 
 
 def test_the_worked_example_over_the_mcp_door(bank, tmp_path):
-    m = lm.build(str(bank), str(tmp_path / "runs"))
+    m = lm.build(str(bank), str(tmp_path / "runs"), evidence="off")
     b = call(m, "begin", {"task_id": "demo/tokyo_ro", "model": "claude-haiku-4-5"})
     rid = b["run_id"]
     assert b["ok"] and b["task"]["mode"] == "record_only" and len(rid) == 12
@@ -74,7 +74,7 @@ def test_the_worked_example_over_the_mcp_door(bank, tmp_path):
 def test_over_mcp_the_same_script_gives_the_same_rows_as_the_scripted_weaver(bank, tmp_path):
     """The door adds nothing: the MCP run and the scripted run have byte-identical rows (up to the run_id label)."""
     from verantyx.loom.scripted import ScriptedWeaver, weave_tokyo
-    m = lm.build(str(bank), str(tmp_path / "mcp"))
+    m = lm.build(str(bank), str(tmp_path / "mcp"), evidence="off")
     srv = m.loom_server
     # make both runs use one label by driving the same server object through the tool wrappers and the weaver
     a = call(m, "begin", {"task_id": "demo/tokyo_ro", "model": "claude-haiku-4-5"})
@@ -103,7 +103,7 @@ def test_over_mcp_the_same_script_gives_the_same_rows_as_the_scripted_weaver(ban
 def test_a_call_the_sdk_rejects_against_the_schema_leaves_no_row(bank, tmp_path):
     """The boundary of "one call = one row" (L-LOOM-46): a mistyped argument is refused by the SDK before the server sees it, so it has no row;
     every call that reaches LoomServer.call with an existing run has exactly one (test_loom_review.py)."""
-    m = lm.build(str(bank), str(tmp_path / "runs"))
+    m = lm.build(str(bank), str(tmp_path / "runs"), evidence="off")
     rid = call(m, "begin", {"task_id": "demo/tokyo_ro", "model": "m"})["run_id"]
     with pytest.raises(Exception):
         call(m, "seat_run", {"run_id": rid, "cid": "c1", "arm": "+x", "uids": "u1"})
@@ -116,7 +116,7 @@ def test_the_server_over_stdio_with_the_sdk_client(bank, tmp_path):
     from mcp import ClientSession, StdioServerParameters
     from mcp.client.stdio import stdio_client
     runs = tmp_path / "stdio_runs"
-    params = StdioServerParameters(command=PY, args=["-m", "verantyx.cli", "loom", "mcp", "--tasks", str(bank), "--runs-dir", str(runs)],
+    params = StdioServerParameters(command=PY, args=["-m", "verantyx.cli", "loom", "mcp", "--tasks", str(bank), "--runs-dir", str(runs), "--evidence", "off"],
                                    env=dict(os.environ, PYTHONPATH=ROOT, PYTHONHASHSEED="0"), cwd=ROOT)
 
     async def go():

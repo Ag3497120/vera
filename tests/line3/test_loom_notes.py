@@ -875,7 +875,7 @@ def test_the_scorer_and_the_result_object_accept_a_ledger_that_holds_note_rows(t
     H = _load("loom_harness_for_notes", os.path.join(ROOT, "experiments/line3/loom/harness.py"))
     bank, gold = score.load_bank(H.BANK), score.load_gold()
     row_ = H.select_task(bank, "I2-001", "constructed_allowed")
-    srv = LoomServer([H.abs_row(row_)], str(tmp_path / "runs"))
+    srv = LoomServer([H.abs_row(row_)], str(tmp_path / "runs"), evidence="off")
     w = ScriptedWeaver(srv, row_["task_id"], "scripted-weaver", "noted")
     w.begin()
     conflicting_thread(w)

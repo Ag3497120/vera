@@ -35,6 +35,7 @@ from verantyx.ledger_events import GENESIS, args_sha256, redact_obj
 from verantyx.line3 import foundation as fd
 from verantyx.loom import LOOM_VERSION
 from verantyx.loom import code as codelib
+from verantyx.loom import evidence as evl
 from verantyx.loom import notes as notelib
 from verantyx.loom import read as rd
 from verantyx.loom.code import CodeIndex
@@ -61,7 +62,8 @@ CAP_REFUSAL: Dict[str, str] = {"ops": "ops_cap", "lookups": "lookup_cap", "reads
 
 WEAVE_SPAN_V1 = "weave_span.v1"
 WEAVE_SPAN_V2 = "weave_span.v2"         # = v1, and the crosses it makes carry the sid they quote (`LoomCross.span`), which the gate reads (L-LOOM-146)
-WEAVE_SPAN_WV = WEAVE_SPAN_V2            # the CURRENT rule that derives a weave_span's crosses (L-LOOM-135); stamped into the args of every new weave_span row
+WEAVE_SPAN_V3 = "weave_span.v3"         # = v2, and each cross it makes also carries `quote` = (w, sid, tier, i0, i1), which the evidence gate reads (LOOM-evidence, L-LOOM-183)
+WEAVE_SPAN_WV = WEAVE_SPAN_V3            # the CURRENT rule that derives a weave_span's crosses (L-LOOM-135); stamped into the args of every new weave_span row
 SPEC_ARMS: Tuple[str, ...] = tuple(SPEC.arms)                  # the particle of each arm, in AXES order (LoomCross puts SPEC.arms[ai] on arm ai)
 DRIVERS = ("L1-subagent", "L2-api", "scripted")
 GRADES = ("pass", "fail", "unclear")
@@ -82,6 +84,16 @@ RULES: Dict[str, Any] = {
     "units": "record units are exactly the corpus's units of a tier; constructed units are marked and only allowed in constructed_allowed.",
     "abstain": ["no_record", "cannot_weave", "unknown"],
 }
+# LOOM-evidence (L-LOOM-170): added to the `rules` of a `begin` row ONLY when the run has an evidence profile (a ledger without one keeps the rules it was recorded with)
+EVIDENCE_RULE = ("A prose answer is a quotation: only an unchanged weave_span quote can be emitted (a hand-built or constructed unit is refused). Find the corpus "
+                 "sentence that states the answer, weave exactly the stretch that answers, and emit. The loom reads the clause around your stretch: it has to hold the "
+                 "subject words of the question (`question.subject`; or the sentence's article title), must not contain a word of the question, and has to be attached "
+                 "as the question asks (`question.slot`: the particle after the answer and the head word `question.slot.head`; or, for a question 「XのYは何」, read as "
+                 "「Y は A」 / 「A は … Y」). A refusal `no_evidence` names what is missing; a sentence that only mentions the topic is not an answer.")
+# evidence.v2 (L-LOOM-191..): the same rules + the extent of the answer + one answer.  evidence.v1 runs keep the text above (it is hashed in their begin row).
+EVIDENCE_RULE_V2 = (EVIDENCE_RULE + " Quote one stretch that is a whole word or phrase of the sentence: not a piece glued to a neighbouring word, not a stretch across a comma, a "
+                    "bracket or a particle (は を に で が と も); and exactly one such quote may stand in the thread. A question with no subject word cannot be answered.")
+EVIDENCE_RULES = {evl.EVIDENCE_V1: EVIDENCE_RULE, evl.EVIDENCE_V2: EVIDENCE_RULE_V2}
 
 
 # ------------------------------------------------------------------------------------------------------------
@@ -226,10 +238,13 @@ def _args(a: dict, spec: Dict[str, Tuple[Any, bool]]) -> dict:
 # ------------------------------------------------------------------------------------------------------------
 class Run:
     def __init__(self, corpus: Corpus, task: dict, model: str, run_id: str, stability_mode: str = rd.DEFAULT_STABILITY,
-                 code_index: Optional[CodeIndex] = None, caps: Optional[Dict[str, int]] = None, notes_version: Optional[str] = None) -> None:
+                 code_index: Optional[CodeIndex] = None, caps: Optional[Dict[str, int]] = None, notes_version: Optional[str] = None,
+                 evidence: Optional[Tuple[str, str]] = None) -> None:
         """`caps`: the cap set of this run for its language, None = the current profile (a new run).  Replay passes the set the `begin` row recorded;
         it must be exactly one of the known profiles (L-LOOM-122).  `notes_version`: the notes definitions of this run (None = the current, a new run;
-        replay passes what the `begin` row named, notes.v1 when it names none: L-LOOM-147)."""
+        replay passes what the `begin` row named, notes.v1 when it names none: L-LOOM-147).  `evidence`: (version, subject_scope) of the evidence gate (LOOM-evidence,
+        L-LOOM-170), None = no gate (the default of a bare Run and of every ledger recorded before the gate: they replay by the rule they were recorded under);
+        a profile is for PROSE runs only (a code task ignores it)."""
         if stability_mode not in rd.STABILITY_MODES:
             raise ValueError("stability must be one of %s" % (rd.STABILITY_MODES,))
         self.corpus = corpus
@@ -247,6 +262,15 @@ class Run:
             raise ValueError("notes_version must be one of %s" % (notelib.NOTES_VERSIONS,))
         self.notes_version = notes_version if notes_version is not None else notelib.NOTES_VERSION
         self.state = LoomState(self.lang)
+        self.evidence: Optional[Tuple[str, str]] = None
+        self.question_units: Optional[evl.QuestionUnits] = None
+        if evidence is not None and self.lang == PROSE:
+            if not (isinstance(evidence, (tuple, list)) and len(evidence) == 2 and evidence[0] in evl.EVIDENCE_VERSIONS and evidence[1] in evl.SUBJECT_SCOPES):
+                raise ValueError("evidence: (version, subject_scope) with version in %s and scope in %s" % (evl.EVIDENCE_VERSIONS, evl.SUBJECT_SCOPES))
+            self.evidence = (evidence[0], evidence[1])
+            self.question_units = evl.question_units(self.task["text"])          # the loom's own cut of the question, recomputed here and never read back from a row
+        self.weaves: List[dict] = []       # LOOM-evidence: the `weave_span.v3` weaves of this run {w, sid, tier, i0, i1, cids}; NOT hashed, re-derived by replay
+        self._nweaves = 0
         self.i = 0                         # the index of the next row
         self.head = GENESIS                # the sha of the last row
         # LOOM-notes: NOT part of the hashed state.  Rebuilt by step() on live calls and on replay alike, so both see the same history.
@@ -274,6 +298,10 @@ class Run:
         res = {"ok": True, "run_id": self.run_id, "task": task_view(self.task, self.caps), "rules": RULES, "header": self.header()}
         if self.notes_version != notelib.NOTES_V1:          # notes.v1 runs (every ledger before L-LOOM-147) have no such key: their begin rows are as they were
             res["notes_profile"] = self.notes_version
+        if self.evidence is not None:                       # LOOM-evidence: no such keys in a run without the gate (every ledger before it), so those rows are as they were
+            res["rules"] = dict(RULES, evidence=EVIDENCE_RULES[self.evidence[0]])
+            res["evidence_profile"] = {"version": self.evidence[0], "subject_scope": self.evidence[1]}
+            res["question"] = self.question_units.to_obj(self.evidence[1], self.evidence[0])      # read-only, recomputed by the loom (L-LOOM-185): a forged row cannot replay
         return {"actor": "model", "op": "begin", "args": {"task_id": self.task["task_id"], "model": self.model}, "result": res,
                 "state_sha": self.state.sha()}
 
@@ -652,7 +680,14 @@ def _weave_span_v2(run: Run, sid: int, tier: str, f: Any, t: Any) -> dict:
     return _weave_span_core(run, sid, tier, f, t, WEAVE_SPAN_V2, True)
 
 
-def _weave_span_core(run: Run, sid: int, tier: str, f: Any, t: Any, wv: str, mark: bool) -> dict:
+def _weave_span_v3(run: Run, sid: int, tier: str, f: Any, t: Any) -> dict:
+    """`weave_span.v3` (LOOM-evidence, L-LOOM-183): EXACTLY v2, and each cross it makes also carries `quote` = (w, sid, tier, i0, i1), w = the 1-based count of v3 weaves of
+    the run, and the run remembers the weave (`Run.weaves`).  The evidence gate reads them: a quotation is a weave whose crosses are all still unchanged, linked and in order.
+    Like `span`, the marker is not hashed and not in the ledger: replay derives it from the row's `wv`, so a ledger recorded under v1 / v2 replays by its own rule."""
+    return _weave_span_core(run, sid, tier, f, t, WEAVE_SPAN_V3, True, True)
+
+
+def _weave_span_core(run: Run, sid: int, tier: str, f: Any, t: Any, wv: str, mark: bool, quote: bool = False) -> dict:
     """The rule `weave_span.v1` / `.v2` (L-LOOM-130..134).  A STRETCH of corpus sentence `sid` -- the units `from` .. `to` (both included) of the tier -- becomes
     a chain of crosses whose read-out is that stretch word for word.  Between two neighbouring units of the stretch the sentence has a GAP (its letters
     only: punctuation, quotes, spaces and 「・」 are not letters and the loom writes none of them; the T9 normaliser drops only whitespace and 「・」/「·」,
@@ -711,6 +746,9 @@ def _weave_span_core(run: Run, sid: int, tier: str, f: Any, t: Any, wv: str, mar
         post = run.corpus.postings(tier, surface)
         uid_of[k] = st.new_unit(surface, RECORD, tier, {"tier": tier, "n": len(post), "sids": list(post)}).uid
     out_crosses: List[dict] = []
+    if quote:
+        run._nweaves += 1
+        run.weaves.append({"w": run._nweaves, "sid": sid, "tier": tier, "i0": i0, "i1": i1, "cids": []})
     for k, att, top in plan:
         cross = st.new_cross(tier, 1 if att is None else 2)
         st.place(cross, None, None, uid_of[k])
@@ -721,13 +759,16 @@ def _weave_span_core(run: Run, sid: int, tier: str, f: Any, t: Any, wv: str, mar
             seated.append({"seat": fmt_seat(ax, 0), "uid": uid_of[att], "surface": surf[att], "particle": gaps[att]})
         cross.topic = top
         cross.span = sid if mark else None
+        if quote:
+            cross.quote = (run._nweaves, sid, tier, i0, i1)
+            run.weaves[-1]["cids"].append(cross.cid)
         st.thread.append(cross.cid)
         cross.linked = True
         out_crosses.append({"cid": cross.cid, "L": cross.L, "centre": {"uid": uid_of[k], "surface": surf[k]}, "seated": seated, "topic": top})
     return {"ok": True, "wv": wv, "sid": sid, "tier": tier, "from": i0, "to": i1, "text": text, "crosses": out_crosses, "thread": list(st.thread)}
 
 
-WEAVE_SPAN_RULES = {WEAVE_SPAN_V1: _weave_span_v1, WEAVE_SPAN_V2: _weave_span_v2}                # rule version -> the rule; a new version is ADDED here, an old one is never edited or removed
+WEAVE_SPAN_RULES = {WEAVE_SPAN_V1: _weave_span_v1, WEAVE_SPAN_V2: _weave_span_v2, WEAVE_SPAN_V3: _weave_span_v3}                # rule version -> the rule; a new version is ADDED here, an old one is never edited or removed
 
 
 def h_weave_span(run: Run, a: dict, i: int) -> dict:
@@ -901,6 +942,7 @@ def h_topic(run: Run, a: dict, i: int) -> dict:
         raise Refuse("not_prose", {"cid": cross.cid})
     if cross.topic != a["on"]:
         cross.span = None                                  # no longer the quoted stretch (L-LOOM-146)
+        cross.quote = None
     cross.topic = a["on"]
     return {"ok": True, "cid": cross.cid, "topic": cross.topic}
 
@@ -944,8 +986,10 @@ def h_unlink(run: Run, a: dict, i: int) -> dict:
 def h_read(run: Run, a: dict, i: int) -> dict:
     _args(a, {})
     ev = rd.evaluate(run)
-    return {"ok": True, "text": ev["text"], "annotated": ev["annotated"], "refusals": ev["refusals"], "stability": ev["stability"],
-            "shares": ev["shares"]}
+    out = {"ok": True, "text": ev["text"], "annotated": ev["annotated"], "refusals": ev["refusals"], "stability": ev["stability"], "shares": ev["shares"]}
+    if run.evidence is not None:                           # LOOM-evidence: the rule version and what the gate read (absent in a run without the gate)
+        out.update(ev=run.evidence[0], evidence=ev["evidence"])
+    return out
 
 
 def h_emit(run: Run, a: dict, i: int) -> dict:
@@ -954,8 +998,11 @@ def h_emit(run: Run, a: dict, i: int) -> dict:
     if ev["refusals"]:
         raise Refuse(ev["refusals"][0]["type"], {"refusals": ev["refusals"], "stability": ev["stability"]})
     run.state.closed = ["emitted", ev["output_sha"]]
-    return {"ok": True, "status": "emitted", "text": ev["text"], "annotated": ev["annotated"], "output_sha": ev["output_sha"],
-            "shares": ev["shares"], "stability": ev["stability"]}
+    out = {"ok": True, "status": "emitted", "text": ev["text"], "annotated": ev["annotated"], "output_sha": ev["output_sha"],
+           "shares": ev["shares"], "stability": ev["stability"]}
+    if run.evidence is not None:
+        out.update(ev=run.evidence[0], evidence=ev["evidence"])
+    return out
 
 
 def h_abstain(run: Run, a: dict, i: int) -> dict:
