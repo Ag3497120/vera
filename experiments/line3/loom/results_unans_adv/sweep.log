@@ -1,0 +1,140 @@
+bank4/ADV-001.record_only                    answered_unans     L_none        ended=closed in=113371 12.3s 2002年メジャーデビュー
+bank4/ADV-001.constructed_allowed            answered_unans     L_none        ended=closed in=58366 6.8s 2002年
+bank4/ADV-004.record_only                    abstained_correct  L_meta        ended=closed in=164679 16.2s 
+bank4/ADV-004.constructed_allowed            abstained_correct  L_meta        ended=closed in=109100 11.5s 
+bank4/ADV-005.record_only                    abstained_correct  L_meta        ended=closed in=77229 9.7s 
+bank4/ADV-005.constructed_allowed            abstained_correct  L_meta        ended=closed in=154409 15.5s 
+bank4/ADV-006.record_only                    abstained_correct  L_meta        ended=closed in=185536 18.7s 
+bank4/ADV-006.constructed_allowed            abstained_correct  L_meta        ended=closed in=1218086 66.6s 
+bank4/ADV-007.record_only                    abstained_correct  L_meta        ended=closed in=749210 52.2s 
+bank4/ADV-007.constructed_allowed            abstained_correct  L_meta        ended=closed in=1118016 67.3s 
+bank4/ADV-008.record_only                    abstained_correct  L_meta        ended=closed in=101926 11.6s 
+bank4/ADV-008.constructed_allowed            abstained_correct  L_meta        ended=closed in=65162 10.2s 
+bank4/ADV-009.record_only                    abstained_correct  L_meta        ended=closed in=401876 33.6s 
+bank4/ADV-009.constructed_allowed            abstained_correct  L_other       ended=closed in=114126 14.2s 
+bank4/ADV-010.record_only                    answered_unans     L_none        ended=closed in=42915 5.1s シンガポール
+bank4/ADV-010.constructed_allowed            answered_unans     L_none        ended=closed in=43792 5.8s シンガポール
+bank4/ADV-011.record_only                    abstained_correct  L_meta        ended=closed in=87413 9.6s 
+bank4/ADV-011.constructed_allowed            abstained_correct  L_meta        ended=closed in=412028 29.7s 
+bank4/ADV-012.record_only                    abstained_correct  L_meta        ended=closed in=78235 8.8s 
+bank4/ADV-012.constructed_allowed            abstained_correct  L_meta        ended=closed in=60268 6.8s 
+bank4/ADV-013.record_only                    abstained_correct  L_meta        ended=closed in=516770 35.0s 
+bank4/ADV-013.constructed_allowed            abstained_correct  L_meta        ended=closed in=857437 56.0s 
+bank4/ADV-014.record_only                    abstained_correct  L_meta        ended=closed in=570055 42.2s 
+bank4/ADV-014.constructed_allowed            abstained_correct  L_meta        ended=closed in=1049519 63.2s 
+bank4/ADV-015.record_only                    abstained_correct  L_meta        ended=closed in=76203 10.2s 
+bank4/ADV-015.constructed_allowed            abstained_correct  L_meta        ended=closed in=130092 12.9s 
+bank4/ADV-016.record_only                    abstained_correct  L_meta        ended=closed in=188989 17.6s 
+bank4/ADV-016.constructed_allowed            abstained_correct  L_meta        ended=closed in=234107 20.9s 
+bank4/ADV-017.record_only                    abstained_correct  L_meta        ended=closed in=125317 15.9s 
+bank4/ADV-017.constructed_allowed            abstained_correct  L_meta        ended=closed in=321680 27.5s 
+bank4/ADV-018.record_only                    abstained_correct  L_meta        ended=closed in=109267 17.7s 
+bank4/ADV-018.constructed_allowed            abstained_correct  L_meta        ended=closed in=201625 18.5s 
+bank4/ADV-019.record_only                    abstained_correct  L_meta        ended=closed in=334573 28.2s 
+bank4/ADV-019.constructed_allowed            abstained_correct  L_meta        ended=closed in=401472 29.4s 
+bank4/ADV-020.record_only                    abstained_correct  L_meta        ended=closed in=87710 10.1s 
+bank4/ADV-020.constructed_allowed            abstained_correct  L_meta        ended=closed in=92797 10.9s 
+bank4/ADV-021.record_only                    abstained_correct  L_meta        ended=closed in=52223 6.0s 
+bank4/ADV-021.constructed_allowed            abstained_correct  L_struct      ended=closed in=53173 6.9s 
+bank4/ADV-022.record_only                    abstained_correct  L_meta        ended=closed in=73822 9.5s 
+bank4/ADV-022.constructed_allowed            abstained_correct  L_meta        ended=closed in=179122 18.6s 
+bank4/ADV-023.record_only                    abstained_correct  L_meta        ended=closed in=227147 20.3s 
+bank4/ADV-023.constructed_allowed            abstained_correct  L_meta        ended=closed in=393101 29.9s 
+bank4/ADV-025.record_only                    abstained_correct  L_meta        ended=closed in=207809 19.7s 
+bank4/ADV-025.constructed_allowed            abstained_correct  L_meta        ended=closed in=413619 31.6s 
+bank4/ADV-026.record_only                    abstained_correct  L_meta        ended=closed in=304766 27.9s 
+bank4/ADV-026.constructed_allowed            abstained_correct  L_meta        ended=closed in=87796 11.0s 
+bank4/ADV-027.record_only                    abstained_correct  L_meta        ended=closed in=71878 9.1s 
+bank4/ADV-027.constructed_allowed            abstained_correct  L_meta        ended=closed in=96312 16.0s 
+bank4/ADV-028.record_only                    abstained_correct  L_other       ended=closed in=224826 18.8s 
+bank4/ADV-028.constructed_allowed            abstained_correct  L_struct      ended=closed in=772937 44.2s 
+bank4/ADV-030.record_only                    abstained_correct  L_meta        ended=closed in=45069 5.4s 
+bank4/ADV-030.constructed_allowed            abstained_correct  L_meta        ended=closed in=78337 8.7s 
+bank4/ADV-031.record_only                    abstained_correct  L_meta        ended=closed in=145093 15.1s 
+bank4/ADV-031.constructed_allowed            abstained_correct  L_meta        ended=closed in=425980 33.4s 
+bank4/ADV-033.record_only                    abstained_correct  L_meta        ended=closed in=55496 7.6s 
+bank4/ADV-033.constructed_allowed            abstained_correct  L_meta        ended=closed in=120853 15.4s 
+bank4/ADV-034.record_only                    abstained_correct  L_meta        ended=closed in=105175 11.0s 
+bank4/ADV-034.constructed_allowed            abstained_correct  L_meta        ended=closed in=150189 16.1s 
+bank4/ADV-035.record_only                    abstained_correct  L_meta        ended=closed in=151684 15.8s 
+bank4/ADV-035.constructed_allowed            abstained_correct  L_meta        ended=closed in=129559 13.1s 
+bank4/ADV-036.record_only                    abstained_correct  L_meta        ended=closed in=63956 9.8s 
+bank4/ADV-036.constructed_allowed            abstained_correct  L_meta        ended=closed in=158224 17.6s 
+bank4/ADV-037.record_only                    abstained_correct  L_meta        ended=closed in=54417 7.3s 
+bank4/ADV-037.constructed_allowed            abstained_correct  L_meta        ended=closed in=306957 27.2s 
+bank4/ADV-038.record_only                    abstained_correct  L_meta        ended=closed in=86229 10.3s 
+bank4/ADV-038.constructed_allowed            abstained_correct  L_meta        ended=closed in=76295 9.3s 
+bank4/ADV-039.record_only                    abstained_correct  L_meta        ended=closed in=140962 16.6s 
+bank4/ADV-039.constructed_allowed            abstained_correct  L_meta        ended=closed in=730551 51.9s 
+bank4/ADV-040.record_only                    abstained_correct  L_meta        ended=closed in=194730 20.0s 
+bank4/ADV-040.constructed_allowed            abstained_correct  L_meta        ended=closed in=354006 32.8s 
+bank4/ADV-001.free_text                      answered_unans     L_none        ended=control_answer in=10890 6.2s 2002年
+bank4/ADV-004.free_text                      abstained_correct  L_meta        ended=control_answer in=23415 9.1s 不明
+bank4/ADV-005.free_text                      abstained_correct  L_meta        ended=control_answer in=15438 8.1s 不明
+bank4/ADV-006.free_text                      abstained_correct  L_meta        ended=control_answer in=72054 19.6s 不明
+bank4/ADV-007.free_text                      abstained_correct  L_meta        ended=control_answer in=48047 16.3s 不明
+bank4/ADV-008.free_text                      abstained_correct  L_meta        ended=control_answer in=18985 9.3s 不明
+bank4/ADV-009.free_text                      abstained_correct  L_meta        ended=control_answer in=27030 9.4s 不明
+bank4/ADV-010.free_text                      abstained_correct  L_meta        ended=control_answer in=41223 14.2s 不明
+bank4/ADV-011.free_text                      abstained_correct  L_meta        ended=control_answer in=19374 7.7s 不明
+bank4/ADV-012.free_text                      abstained_correct  L_meta        ended=control_answer in=18366 7.3s 不明
+bank4/ADV-013.free_text                      abstained_correct  L_meta        ended=control_answer in=20144 9.0s 不明
+bank4/ADV-014.free_text                      abstained_correct  L_meta        ended=control_answer in=20753 9.6s 不明
+bank4/ADV-015.free_text                      abstained_correct  L_meta        ended=control_answer in=24924 8.8s 不明
+bank4/ADV-016.free_text                      abstained_correct  L_meta        ended=control_answer in=16091 6.5s 不明
+bank4/ADV-017.free_text                      abstained_correct  L_meta        ended=control_answer in=48712 14.9s 不明
+bank4/ADV-018.free_text                      abstained_correct  L_meta        ended=control_answer in=14871 8.8s 不明
+bank4/ADV-019.free_text                      abstained_correct  L_meta        ended=control_answer in=18940 11.1s 不明
+bank4/ADV-020.free_text                      abstained_correct  L_meta        ended=control_answer in=29826 12.6s 不明
+bank4/ADV-021.free_text                      abstained_correct  L_meta        ended=control_answer in=6716 5.7s 不明
+bank4/ADV-022.free_text                      abstained_correct  L_meta        ended=control_answer in=32280 10.9s 不明
+bank4/ADV-023.free_text                      abstained_correct  L_meta        ended=control_answer in=56129 15.6s 不明
+bank4/ADV-025.free_text                      abstained_correct  L_meta        ended=control_answer in=33445 13.6s 不明
+bank4/ADV-026.free_text                      abstained_correct  L_meta        ended=control_answer in=38902 14.1s 不明
+bank4/ADV-027.free_text                      abstained_correct  L_meta        ended=control_answer in=29014 11.5s 不明
+bank4/ADV-028.free_text                      abstained_correct  L_meta        ended=control_answer in=42374 14.5s 不明
+bank4/ADV-030.free_text                      abstained_correct  L_meta        ended=control_answer in=10187 6.4s 不明
+bank4/ADV-031.free_text                      abstained_correct  L_meta        ended=control_answer in=24693 9.5s 不明
+bank4/ADV-033.free_text                      abstained_correct  L_meta        ended=control_answer in=30269 11.8s 不明
+bank4/ADV-034.free_text                      abstained_correct  L_meta        ended=control_answer in=19796 7.9s 不明
+bank4/ADV-035.free_text                      abstained_correct  L_meta        ended=control_answer in=18410 8.2s 不明
+bank4/ADV-036.free_text                      abstained_correct  L_meta        ended=control_answer in=35941 12.4s 不明
+bank4/ADV-037.free_text                      abstained_correct  L_meta        ended=control_answer in=33869 11.4s 不明
+bank4/ADV-038.free_text                      abstained_correct  L_meta        ended=control_answer in=14610 7.3s 不明
+bank4/ADV-039.free_text                      abstained_correct  L_meta        ended=control_answer in=24767 11.4s 不明
+bank4/ADV-040.free_text                      abstained_correct  L_meta        ended=control_answer in=21275 9.3s 不明
+bank4/ADV-001.no_tools                       abstained_correct  L_meta        ended=control_answer in=146 2.3s 不明
+bank4/ADV-004.no_tools                       answered_unans     L_none        ended=control_answer in=128 4.7s クロニア（ヒュリエウスの妻）とされています。
+bank4/ADV-005.no_tools                       abstained_correct  L_meta        ended=control_answer in=129 3.6s 不明
+bank4/ADV-006.no_tools                       abstained_correct  L_meta        ended=control_answer in=138 4.1s 不明
+bank4/ADV-007.no_tools                       answered_unans     L_none        ended=control_answer in=145 1.8s ソルトレイク・スタジアム（インド・コルカタ）
+bank4/ADV-008.no_tools                       abstained_correct  L_meta        ended=control_answer in=140 1.8s 不明
+bank4/ADV-009.no_tools                       abstained_correct  L_meta        ended=control_answer in=137 1.5s 不明
+bank4/ADV-010.no_tools                       answered_unans     L_none        ended=control_answer in=147 2.2s OCBCアクアティックセンター（シンガポール・スポーツハブ内）
+bank4/ADV-011.no_tools                       abstained_correct  L_meta        ended=control_answer in=140 2.8s 不明
+bank4/ADV-012.no_tools                       abstained_correct  L_meta        ended=control_answer in=136 1.9s 不明
+bank4/ADV-013.no_tools                       answered_unans     L_none        ended=control_answer in=129 1.9s イブン（ibn）
+bank4/ADV-014.no_tools                       abstained_correct  L_meta        ended=control_answer in=132 2.9s 不明
+bank4/ADV-015.no_tools                       answered_unans     L_none        ended=control_answer in=132 1.5s 4色（青・白・緑・赤）
+bank4/ADV-016.no_tools                       abstained_correct  L_meta        ended=control_answer in=142 1.4s 不明
+bank4/ADV-017.no_tools                       answered_unans     L_none        ended=control_answer in=133 1.7s 約9,116人です（グレントラン FCの本拠地ザ・オーバル）。
+bank4/ADV-018.no_tools                       answered_unans     L_none        ended=control_answer in=125 6.4s 
+bank4/ADV-019.no_tools                       answered_unans     L_none        ended=control_answer in=136 5.5s 35駅
+bank4/ADV-020.no_tools                       abstained_correct  L_meta        ended=control_answer in=127 2.3s 不明
+bank4/ADV-021.no_tools                       abstained_correct  L_meta        ended=control_answer in=129 1.6s 不明
+bank4/ADV-022.no_tools                       abstained_correct  L_meta        ended=control_answer in=127 1.9s 不明
+bank4/ADV-023.no_tools                       abstained_correct  L_meta        ended=control_answer in=143 1.2s 不明
+bank4/ADV-025.no_tools                       abstained_correct  L_meta        ended=control_answer in=131 1.5s 不明
+bank4/ADV-026.no_tools                       answered_unans     L_none        ended=control_answer in=133 3.2s **570馬力（419kW、2020年以降のR35 GT-R搭載時。初期型は480馬力）**
+bank4/ADV-027.no_tools                       abstained_correct  L_meta        ended=control_answer in=130 2.4s 不明
+bank4/ADV-028.no_tools                       abstained_correct  L_meta        ended=control_answer in=149 2.1s 不明
+bank4/ADV-030.no_tools                       abstained_correct  L_meta        ended=control_answer in=129 1.4s 不明
+bank4/ADV-031.no_tools                       answered_unans     L_none        ended=control_answer in=138 1.8s 大阪市北区
+bank4/ADV-033.no_tools                       answered_unans     L_none        ended=control_answer in=146 1.7s Signes（ヴァール県）
+bank4/ADV-034.no_tools                       answered_unans     L_none        ended=control_answer in=139 1.4s マハーラーシュトラ州
+bank4/ADV-035.no_tools                       answered_unans     L_none        ended=control_answer in=143 1.2s ChatGPTが一般公開されたのは2022年11月30日です。  Note: the system asks for o
+bank4/ADV-036.no_tools                       answered_unans     L_none        ended=control_answer in=158 2.8s 1995年（平成7年）
+bank4/ADV-037.no_tools                       answered_unans     L_none        ended=control_answer in=154 1.6s 1999年
+bank4/ADV-038.no_tools                       answered_unans     L_none        ended=control_answer in=133 1.5s 1910年代後半（一般に1917年または1919年頃）とされますが、通常は1920年代初頭を指すことが多く、1920年代
+bank4/ADV-039.no_tools                       answered_unans     L_none        ended=control_answer in=147 1.3s バリャドリード
+bank4/ADV-040.no_tools                       answered_unans     L_none        ended=control_answer in=152 1.4s 2014年4月

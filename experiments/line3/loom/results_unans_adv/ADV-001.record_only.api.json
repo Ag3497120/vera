@@ -1,0 +1,348 @@
+{
+ "abandoned": [],
+ "annotated": [
+  {
+   "cid": "c1",
+   "kind": "record",
+   "prov": {
+    "n": 1,
+    "tier": "WORD"
+   },
+   "s": "2002",
+   "seat": "centre",
+   "tier": "WORD",
+   "uid": "u1"
+  },
+  {
+   "cid": "c2",
+   "join": {
+    "attested": [
+     123,
+     71,
+     76
+    ],
+    "prev": "u1"
+   },
+   "kind": "record",
+   "prov": {
+    "n": 90,
+    "tier": "WORD"
+   },
+   "s": "年",
+   "seat": "centre",
+   "tier": "WORD",
+   "uid": "u2"
+  },
+  {
+   "cid": "c3",
+   "join": {
+    "attested": null,
+    "prev": "u2"
+   },
+   "kind": "record",
+   "prov": {
+    "n": 1,
+    "tier": "WORD"
+   },
+   "s": "メジャー",
+   "seat": "centre",
+   "tier": "WORD",
+   "uid": "u3"
+  },
+  {
+   "cid": "c4",
+   "join": {
+    "attested": [
+     123,
+     92,
+     101
+    ],
+    "prev": "u3"
+   },
+   "kind": "record",
+   "prov": {
+    "n": 2,
+    "tier": "WORD"
+   },
+   "s": "デビュー",
+   "seat": "centre",
+   "tier": "WORD",
+   "uid": "u4"
+  }
+ ],
+ "answer_view": {
+  "excess_chars": null,
+  "hit_cited": null,
+  "hit_exact": null,
+  "hit_record_text": null,
+  "hits_text": null
+ },
+ "base": "ADV-001",
+ "closing": {
+  "i": 17,
+  "op": "emit",
+  "status": "emitted",
+  "type": null
+ },
+ "control": false,
+ "control_note": null,
+ "declared_model": "claude-haiku-5-5",
+ "driver": "api",
+ "driver_report": {
+  "calls_skipped_after_close": 0,
+  "control_text_chars": null,
+  "ended": "closed",
+  "error": null,
+  "response_models": [
+   "claude-haiku-5-5"
+  ],
+  "stop_reasons": [
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use"
+  ],
+  "system_prompt_sha256": "3b7b4a488c9a4a1a4c873d0c9433e9b09dbc164a9518fc2afa432222638ce281",
+  "text_blocks_dropped": 0,
+  "thinking_dropped": {
+   "chars": 0,
+   "n": 0,
+   "sha256": []
+  },
+  "tool_calls": 14,
+  "tool_choice": {
+   "type": "any"
+  },
+  "tool_less_turns": 0,
+  "tools": [
+   "lookup",
+   "read_sentence",
+   "add",
+   "open_cross",
+   "seat",
+   "seat_run",
+   "weave_span",
+   "unseat",
+   "swap",
+   "extend",
+   "topic",
+   "set_depth",
+   "link",
+   "unlink",
+   "drop",
+   "read",
+   "emit",
+   "abstain",
+   "status",
+   "done"
+  ],
+  "turns": 11,
+  "usage": {
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 0,
+   "calls": 11,
+   "input_tokens": 113371,
+   "output_tokens": 1115
+  }
+ },
+ "footnotes": {
+  "hits_words": "hits_words (the gold inside ONE record unit; `score.hits_words`) is false by construction for every multi-unit answer (ハッシュ表, キューバの太陽, カールマルクス, 1981年); it is not a correctness column"
+ },
+ "free_text_dropped": {
+  "chars": 0,
+  "n": 0,
+  "sha256": []
+ },
+ "harness_meta": [
+  {
+   "agent_definition_sha": "3b7b4a488c9a4a1a4c873d0c9433e9b09dbc164a9518fc2afa432222638ce281",
+   "driver": "L2-api",
+   "requested_model": "claude-haiku-5-5"
+  },
+  {
+   "response_model": "claude-haiku-5-5"
+  }
+ ],
+ "ledger": "experiments/line3/loom/runs_unans_adv/ADV-001.record_only.api/ops.jsonl",
+ "ledger_head": "3ac6adc293d32c874f9b664c968983f9bd1e46510344ec0f67ce095908997893",
+ "mode": "record_only",
+ "model_result": true,
+ "op_counts": {
+  "by_class": {
+   "emit_attempts": 1,
+   "lookups": 7,
+   "ops": 4,
+   "other": 1,
+   "reads": 2
+  },
+  "by_op": {
+   "begin": 1,
+   "emit": 1,
+   "lookup": 5,
+   "read": 2,
+   "read_sentence": 2,
+   "weave_span": 4
+  },
+  "emit_attempts": 1,
+  "model_rows": 15,
+  "rows": 20
+ },
+ "output_text": "2002年メジャーデビュー",
+ "refusals": {
+  "span_inexpressible": 2
+ },
+ "schema": "loom-result-1",
+ "score": {
+  "abstain_type": null,
+  "answer_line": null,
+  "base": "ADV-001",
+  "chars": {
+   "constructed": 0,
+   "foundation": 0,
+   "layout": 0,
+   "record": 13
+  },
+  "control": false,
+  "correct": false,
+  "excess_chars": null,
+  "hit_cited": null,
+  "hit_exact": null,
+  "hit_record_text": null,
+  "hits_text": null,
+  "hits_words": null,
+  "kind": "unans",
+  "layer": {
+   "build_attempts": 5,
+   "emit_attempts": 1,
+   "empty_lookups": 2,
+   "lookups": 5,
+   "read_sentences": 2,
+   "reads": 2,
+   "refusal_types": {
+    "span_inexpressible": 2
+   },
+   "refusals": 2,
+   "stop_layer": "L_none",
+   "stop_layer_detail": "",
+   "struct_refusals": {
+    "span_inexpressible": 2
+   },
+   "struct_refusals_before_emit": 2,
+   "struct_refusals_total": 2,
+   "weave_attempts": 4
+  },
+  "mode": "record_only",
+  "note": "an unanswerable question was answered with an output",
+  "outcome": "emitted",
+  "output_sha": "16a9a0fee9d614a2fe6f226e3515769927d47db429bf95df6e4200827fd2c7b4",
+  "replay_verified": true,
+  "share_permille": {
+   "constructed": 0,
+   "foundation": 0,
+   "layout": 0,
+   "record": 1000
+  },
+  "stability": [
+   {
+    "cid": "c1",
+    "improving": [],
+    "key": [
+     0,
+     0,
+     0
+    ],
+    "moves_tested": 0,
+    "status": "trivially_stable",
+    "tier": "WORD"
+   },
+   {
+    "cid": "c2",
+    "improving": [],
+    "key": [
+     0,
+     0,
+     0
+    ],
+    "moves_tested": 0,
+    "status": "trivially_stable",
+    "tier": "WORD"
+   },
+   {
+    "cid": "c3",
+    "improving": [],
+    "key": [
+     0,
+     0,
+     0
+    ],
+    "moves_tested": 0,
+    "status": "trivially_stable",
+    "tier": "WORD"
+   },
+   {
+    "cid": "c4",
+    "improving": [],
+    "key": [
+     0,
+     0,
+     0
+    ],
+    "moves_tested": 0,
+    "status": "trivially_stable",
+    "tier": "WORD"
+   }
+  ],
+  "status": "answered_unans",
+  "stop_layer": "L_none",
+  "task_id": "bank4/ADV-001.record_only",
+  "text": "2002年メジャーデビュー",
+  "verify_status": "OK"
+ },
+ "self_corrections": {
+  "counts": {
+   "plan_change_after_empty": 2,
+   "recovery_after_refusal": 2,
+   "refusals_recoverable": 2,
+   "unseat_swap_before_close": 0
+  },
+  "plan_change_after_empty": [
+   {
+    "i": 2,
+    "next_i": 3,
+    "next_op": "lookup"
+   },
+   {
+    "i": 3,
+    "next_i": 4,
+    "next_op": "lookup"
+   }
+  ],
+  "recovery_after_refusal": [
+   {
+    "i": 9,
+    "op": "weave_span",
+    "refusal": "span_inexpressible"
+   },
+   {
+    "i": 11,
+    "op": "weave_span",
+    "refusal": "span_inexpressible"
+   }
+  ],
+  "refusals_recoverable": 2,
+  "unseat_swap_before_close": []
+ },
+ "t_loom_34": "unchecked",
+ "task_id": "bank4/ADV-001.record_only",
+ "wall": {
+  "driver_ns": 12093613958,
+  "ledger_ns": 12093902667
+ }
+}

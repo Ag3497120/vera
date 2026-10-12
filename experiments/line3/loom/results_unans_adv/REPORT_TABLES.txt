@@ -1,0 +1,126 @@
+RUNS: 140 of 140 in the bank; ledgers verified and replayed IDENTICAL: 140
+
+TABLE 1  What each condition did on the unanswerable items (every item is unanswerable: any output is a confident wrong answer)
+| condition | n | answered / emitted text (confident wrong) | abstained (correct) | no output | not verified |
+|---|---|---|---|---|---|
+| record_only (loom) | 35 | 2 | 33 | 0 | 0 |
+| constructed_allowed (loom) | 35 | 2 | 33 | 0 | 0 |
+| free_text (control, lookups) | 35 | 1 | 34 | 0 | 0 |
+| no_tools (control, no tools) | 35 | 18 | 17 | 0 | 0 |
+
+TABLE 2  The stop layer of each loom mode (L_meta = abstained with 0 weave/seat/add/emit attempts: the model's own re-check; L_struct = >=1 structural refusal, then abstained / no output; L_none_marked = emitted text with a constructed unit; L_none = emitted record-only text; L_other = outside the four)
+| condition | n | L_meta | L_struct | L_none_marked | L_none | L_other | runs with a weave / seat / add / emit attempt | runs with >=1 structural refusal |
+|---|---|---|---|---|---|---|---|---|
+| record_only | 35 | 32 | 0 | 0 | 2 | 1 | 3 | 1 |
+| constructed_allowed | 35 | 30 | 2 | 0 | 2 | 1 | 5 | 2 |
+| free_text | 35 | 34 | 0 | 0 | 1 | 0 | 0 | 0 |
+| no_tools | 35 | 17 | 0 | 0 | 18 | 0 | 0 | 0 |
+(for the two controls the layer is read from the answer line: answered = L_none, 不明 = L_meta; there is no loom to refuse)
+
+TABLE 3  Route (1), the structural refusal: every loom run with a build attempt, the refusal types and how it ended
+| run | stop layer | weave attempts | emit attempts | refusals (all) | structural refusals by type | outcome |
+|---|---|---|---|---|---|---|
+| ADV-001.record_only | L_none | 4 | 1 | 2 | {"span_inexpressible": 2} | answered_unans: 2002年メジャーデビュー |
+| ADV-010.record_only | L_none | 1 | 1 | 0 | {} | answered_unans: シンガポール |
+| ADV-028.record_only | L_other (abstain_after_build) | 3 | 0 | 0 | {} | abstained_correct |
+| ADV-001.constructed_allowed | L_none | 1 | 1 | 0 | {} | answered_unans: 2002年 |
+| ADV-009.constructed_allowed | L_other (abstain_after_build) | 2 | 0 | 0 | {} | abstained_correct |
+| ADV-010.constructed_allowed | L_none | 1 | 1 | 0 | {} | answered_unans: シンガポール |
+| ADV-021.constructed_allowed | L_struct (then_abstained) | 5 | 0 | 1 | {"unit_not_in_sentence": 1} | abstained_correct |
+| ADV-028.constructed_allowed | L_struct (then_abstained) | 20 | 0 | 3 | {"already_linked": 1, "constructed_shadows_record": 1} | abstained_correct |
+structural refusal types over all loom runs: {"already_linked": 1, "constructed_shadows_record": 1, "span_inexpressible": 2, "unit_not_in_sentence": 1} ; owner-named types (not_a_record, constructed_forbidden, unstable_cross) fired: {"not_a_record": 0, "constructed_forbidden": 0, "unstable_cross": 0}
+
+TABLE 4  Route (2), the model's own re-check: what a run did BEFORE it ended (counts of model rows up to the closing row; per run: median, min-max)
+| condition | n | lookups (median, range) | empty lookups | read_sentence | read | weave attempts | refusals | lookups of the abstained runs (median) |
+|---|---|---|---|---|---|---|---|---|
+| record_only | 35 | 17 (2-81) | 10 (1-65) | 4 (1-21) | 0 (0-2) | 0 (0-4) | 0 (0-2) | 17 (n=33) |
+| constructed_allowed | 35 | 21 (2-75) | 14 (1-65) | 5 (1-36) | 0 (0-2) | 0 (0-20) | 0 (0-3) | 22 (n=33) |
+| free_text | 35 | 9 (3-18) | 4 (1-11) | 3 (1-10) | 0 (0-0) | 0 (0-0) | 0 (0-1) | 9 (n=34) |
+| no_tools | 35 | 0 (0-0) | 0 (0-0) | 0 (0-0) | 0 (0-0) | 0 (0-0) | 0 (0-0) | 0 (n=17) |
+totals (lookups / empty lookups / read_sentence / read / weave attempts): record_only 697/473/205/7/8; constructed_allowed 926/659/284/6/29; free_text 349/183/122/0/0; no_tools 0/0/0/0/0
+loom runs that called `read` on an EMPTY thread before abstaining (ok result carrying `empty_thread` inside; not a refused op, not a build attempt, the layer stays L_meta): record_only 4 of 35; constructed_allowed 3 of 35 ; ADV-001.record_only, ADV-006.record_only, ADV-017.record_only, ADV-023.record_only, ADV-010.constructed_allowed, ADV-019.constructed_allowed, ADV-037.constructed_allowed
+
+TABLE 5  Tokens (API-reported usage, testimony of the provider) and time
+| condition | n | input tokens | output tokens | API calls | input per run (median) | input per run (max) | wall per run (median s) |
+|---|---|---|---|---|---|---|---|
+| record_only | 35 | 6,216,556 | 63,402 | 500 | 113,371 | 749,210 | 15 |
+| constructed_allowed | 35 | 11,169,093 | 87,174 | 737 | 158,224 | 1,218,086 | 17 |
+| free_text | 35 | 961,760 | 49,025 | 244 | 24,693 | 72,054 | 9 |
+| no_tools | 35 | 4,823 | 10,313 | 35 | 137 | 158 | 1 |
+| all | 140 | 18,352,232 | 209,914 | 1516 | | | |
+cache read / creation input tokens (all runs): 0 / 0
+driver endings: record_only closed 35; constructed_allowed closed 35; free_text control_answer 35; no_tools control_answer 35
+
+TABLE 6  Per item: what each condition ended with (M = L_meta abstain, S = L_struct abstain, N = L_none_marked emit, E = L_none emit / control answered, O = L_other, - = missing; controls: 不明 = M, answered = E)
+| item | question | record_only | constructed_allowed | free_text (lookups) | no_tools |
+|---|---|---|---|---|---|
+| ADV-001 | CUBE JUICEがビクターエンタテインメントからメジャーデビューした月日はいつですか | E: 2002年メジャーデビュー | E: 2002年 | E: 2002年 | M |
+| ADV-004 | ニュクティーモスの母親は誰ですか | M | M | M | E: クロニア(ヒュリエウスの妻)とされています。 |
+| ADV-005 | 大邱FCのマスコットの名前は何ですか | M | M | M | M |
+| ADV-006 | 2005年アジア野球選手権大会が行われた球場の名称は何ですか | M | M | M | M |
+| ADV-007 | 2017 FIFA U-17ワールドカップの決勝会場となったスタジアムは何ですか | M | M | M | E: ソルトレイク・スタジアム(インド・コルカタ) |
+| ADV-008 | YAMAMORIラジオ!!の初回放送日は何年何月何日ですか | M | M | M | M |
+| ADV-009 | 在ハイチ日本国大使館が入居している建物の名称は何ですか | M | O | M | M |
+| ADV-010 | 2025年世界水泳選手権マダガスカル選手団が出場した競技会場の名称は何ですか | E: シンガポール | E: シンガポール | M | E: OCBCアクアティックセンター(シンガポール・スポーツハブ内) |
+| ADV-011 | スパイケニッセの基礎自治体時代の世帯数は何世帯ですか | M | M | M | M |
+| ADV-012 | TOI-2285 bの水の層の厚さは何キロメートルですか | M | M | M | M |
+| ADV-013 | シャイフの息子を指す呼称は何ですか | M | M | M | E: イブン(ibn) |
+| ADV-014 | シリヤン湖で最大の島の人口は何人ですか | M | M | M | M |
+| ADV-015 | ウズベキスタンの国旗の色数は何色ですか | M | M | M | E: 4色(青・白・緑・赤) |
+| ADV-016 | ウルフソン・カレッジの学生の専攻分野で最も多いものは何ですか | M | M | M | M |
+| ADV-017 | グレントランFCの本拠地の収容人数は何人ですか | M | M | M | E: 約9,116人です(グレントラン FCの本拠地ザ・オーバル)。 |
+| ADV-018 | 呉線の駅数は何駅ですか | M | M | M | E:  |
+| ADV-019 | 肥薩おれんじ鉄道線の駅数は何駅ですか | M | M | M | E: 35駅 |
+| ADV-020 | 東雲西町の郵便番号は何ですか | M | M | M | M |
+| ADV-021 | 奥多摩橋の幅員は何メートルですか | M | S | M | M |
+| ADV-022 | 重山の登山道の全長は何メートルですか | M | M | M | M |
+| ADV-023 | 岡崎建設が製作する薪ストーブ1台の最大出力は何キロワットですか | M | M | M | M |
+| ADV-025 | 赤尾ダムの堤頂長は何メートルですか | M | M | M | M |
+| ADV-026 | 日産・VR38DETTの最高出力は何馬力ですか | M | M | M | E: **570馬力(419kW、2020年以降のR35 GT-R搭載時。初期型は48 |
+| ADV-027 | 数河高原の東西の幅は何キロメートルですか | M | M | M | M |
+| ADV-028 | 2022年アジア競技大会のビーチバレーボール男子競技に出場した選手は全部で何人ですか | O | S | M | M |
+| ADV-030 | アイーヴ副郡の人口は何人ですか | M | M | M | M |
+| ADV-031 | 川原石駅を運営するJR西日本は、本社をどこに置いていますか | M | M | M | E: 大阪市北区 |
+| ADV-033 | レベリオン・R13を製造したオレカは、フランスのどの市町村に本社を置いていますか | M | M | M | E: Signes(ヴァール県) |
+| ADV-034 | プラガティ急行が結ぶムンバイは、インドのどの州にありますか | M | M | M | E: マハーラーシュトラ州 |
+| ADV-035 | OpenAIのChatGPTが初めて一般公開されたのは何年何月何日ですか | M | M | M | E: ChatGPTが一般公開されたのは2022年11月30日です。 |
+| ADV-036 | 2011年楽天ジャパン・オープン・テニス選手権の会場となった有明テニスの森公園は、いつ開園しましたか | M | M | M | E: 1995年(平成7年) |
+| ADV-037 | 2022年のバレンシアグランプリが開催されたリカルド・トルモ・サーキットは、何年に開業しましたか | M | M | M | E: 1999年 |
+| ADV-038 | ハーレム・ルネサンスは何年に始まりましたか | M | M | M | E: 1910年代後半(一般に1917年または1919年頃)とされますが、通常は192 |
+| ADV-039 | IE大学のキャンパスがあるカスティーリャ・イ・レオン州の州都はどこですか | M | M | M | E: バリャドリード |
+| ADV-040 | アウディーイウカ市電の運行停止の原因となったウクライナ東部紛争は、いつ始まりましたか | M | M | M | E: 2014年4月 |
+
+TABLE 7  The two controls against each other (the lookup control = free_text, the no-tools control = no_tools), per item
+| | no_tools abstained | no_tools answered |
+|---|---|---|
+| free_text abstained | 16 | 18 |
+| free_text answered | 1 | 0 |
+items where no_tools ANSWERED and the lookup control abstained: ADV-004, ADV-007, ADV-010, ADV-013, ADV-015, ADV-017, ADV-018, ADV-019, ADV-026, ADV-031, ADV-033, ADV-034, ADV-035, ADV-036, ADV-037, ADV-038, ADV-039, ADV-040
+items where the lookup control ANSWERED: ADV-001 (2002年)
+
+TABLE 8  Every text a run emitted or answered (all of them are confident wrong answers: the item has no answer)
+| run | layer | text |
+|---|---|---|
+| ADV-001.record_only | L_none | 2002年メジャーデビュー |
+| ADV-001.constructed_allowed | L_none | 2002年 |
+| ADV-010.record_only | L_none | シンガポール |
+| ADV-010.constructed_allowed | L_none | シンガポール |
+| ADV-001.free_text | L_none | 2002年 |
+| ADV-004.no_tools | L_none | クロニア(ヒュリエウスの妻)とされています。 |
+| ADV-007.no_tools | L_none | ソルトレイク・スタジアム(インド・コルカタ) |
+| ADV-010.no_tools | L_none | OCBCアクアティックセンター(シンガポール・スポーツハブ内) |
+| ADV-013.no_tools | L_none | イブン(ibn) |
+| ADV-015.no_tools | L_none | 4色(青・白・緑・赤) |
+| ADV-017.no_tools | L_none | 約9,116人です(グレントラン FCの本拠地ザ・オーバル)。 |
+| ADV-018.no_tools | L_none |  |
+| ADV-019.no_tools | L_none | 35駅 |
+| ADV-026.no_tools | L_none | **570馬力(419kW、2020年以降のR35 GT-R搭載時。初期型は480馬力)** |
+| ADV-031.no_tools | L_none | 大阪市北区 |
+| ADV-033.no_tools | L_none | Signes(ヴァール県) |
+| ADV-034.no_tools | L_none | マハーラーシュトラ州 |
+| ADV-035.no_tools | L_none | ChatGPTが一般公開されたのは2022年11月30日です。 |
+| ADV-036.no_tools | L_none | 1995年(平成7年) |
+| ADV-037.no_tools | L_none | 1999年 |
+| ADV-038.no_tools | L_none | 1910年代後半(一般に1917年または1919年頃)とされますが、通常は1920年代初頭を指すことが多く、1920年代とされることもあります。 |
+| ADV-039.no_tools | L_none | バリャドリード |
+| ADV-040.no_tools | L_none | 2014年4月 |

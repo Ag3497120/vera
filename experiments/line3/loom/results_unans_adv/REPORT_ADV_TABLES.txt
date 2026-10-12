@@ -1,0 +1,119 @@
+TABLE A1  Confident wrong (any emitted / answered text) per condition, and how many equal the trap answer (mechanical test; see per-item table)
+| condition | n | confident wrong | = trap (text IS the trap) | mentions trap inside a longer answer | other text | abstained | (of confident wrong: empty reply) |
+|---|---|---|---|---|---|---|---|
+| record_only | 35 | 2 | 1 | 0 | 1 | 33 | 0 |
+| constructed_allowed | 35 | 2 | 1 | 0 | 1 | 33 | 0 |
+| free_text | 35 | 1 | 0 | 0 | 1 | 34 | 0 |
+| no_tools | 35 | 18 | 0 | 3 | 15 | 17 | 1 |
+
+TABLE A2  Stop layer per condition and per kind (L_meta / L_struct / L_none_marked / L_none / L_other)
+| condition | kind | n | L_meta | L_struct | L_none_marked | L_none | L_other | runs with a build attempt | structural refusals (runs) |
+|---|---|---|---|---|---|---|---|---|---|
+| record_only | near-fact | 8 | 6 | 0 | 0 | 2 | 0 | 2 | 1 |
+| record_only | same-slot | 10 | 10 | 0 | 0 | 0 | 0 | 0 | 0 |
+| record_only | numeric | 8 | 7 | 0 | 0 | 0 | 1 | 1 | 0 |
+| record_only | entity-swap | 9 | 9 | 0 | 0 | 0 | 0 | 0 | 0 |
+| record_only | ALL | 35 | 32 | 0 | 0 | 2 | 1 | 3 | 1 |
+| constructed_allowed | near-fact | 8 | 5 | 0 | 0 | 2 | 1 | 3 | 0 |
+| constructed_allowed | same-slot | 10 | 10 | 0 | 0 | 0 | 0 | 0 | 0 |
+| constructed_allowed | numeric | 8 | 6 | 2 | 0 | 0 | 0 | 2 | 2 |
+| constructed_allowed | entity-swap | 9 | 9 | 0 | 0 | 0 | 0 | 0 | 0 |
+| constructed_allowed | ALL | 35 | 30 | 2 | 0 | 2 | 1 | 5 | 2 |
+| free_text | near-fact | 8 | 7 | 0 | 0 | 1 | 0 | 0 | 0 |
+| free_text | same-slot | 10 | 10 | 0 | 0 | 0 | 0 | 0 | 0 |
+| free_text | numeric | 8 | 8 | 0 | 0 | 0 | 0 | 0 | 0 |
+| free_text | entity-swap | 9 | 9 | 0 | 0 | 0 | 0 | 0 | 0 |
+| free_text | ALL | 35 | 34 | 0 | 0 | 1 | 0 | 0 | 0 |
+| no_tools | near-fact | 8 | 5 | 0 | 0 | 3 | 0 | 0 | 0 |
+| no_tools | same-slot | 10 | 5 | 0 | 0 | 5 | 0 | 0 | 0 |
+| no_tools | numeric | 8 | 7 | 0 | 0 | 1 | 0 | 0 | 0 |
+| no_tools | entity-swap | 9 | 0 | 0 | 0 | 9 | 0 | 0 | 0 |
+| no_tools | ALL | 35 | 17 | 0 | 0 | 18 | 0 | 0 | 0 |
+
+TABLE A3  Per item: kind, trap answer (bank4.tsv notes c), and for each condition: M/S abstain, or the emitted / answered text with [=trap] or [other]
+| item | kind | trap | record_only | constructed_allowed | free_text | no_tools |
+|---|---|---|---|---|---|---|
+| ADV-001 | near-fact | 1975年1月22日 | E: 2002年メジャーデビュー [other] | E: 2002年 [other] | E: 2002年 [other] | M |
+| ADV-004 | near-fact | リュカーオーン | M | M | M | E: クロニア(ヒュリエウスの妻)とされています。 [other] |
+| ADV-005 | near-fact | BAN BAN | M | M | M | M |
+| ADV-006 | near-fact | 宮崎県宮崎市 | M | M | M | M |
+| ADV-007 | near-fact | インド | M | M | M | E: ソルトレイク・スタジアム(インド・コルカタ) [mentions trap] |
+| ADV-008 | near-fact | 2003年4月 | M | M | M | M |
+| ADV-009 | near-fact | ペシオンヴィル | M | O | M | M |
+| ADV-010 | near-fact | シンガポール | E: シンガポール [=trap] | E: シンガポール [=trap] | M | E: OCBCアクアティックセンター(シンガポール・スポーツハブ内) [mentions trap] |
+| ADV-011 | same-slot | 73,921人 | M | M | M | M |
+| ADV-012 | same-slot | 液体の水 | M | M | M | M |
+| ADV-013 | same-slot | シャイハ | M | M | M | E: イブン(ibn) [other] |
+| ADV-014 | same-slot | ソレローン島 | M | M | M | M |
+| ADV-015 | same-slot | 1991年11月18日 | M | M | M | E: 4色(青・白・緑・赤) [other] |
+| ADV-016 | same-slot | 大学院生 | M | M | M | M |
+| ADV-017 | same-slot | ザ・オーバル | M | M | M | E: 約9,116人です(グレントラン FCの本拠地ザ・オーバル)。 [mentions trap] |
+| ADV-018 | same-slot | JR-Y13 | M | M | M | E: (empty reply) [other] |
+| ADV-019 | same-slot | OR08 | M | M | M | E: 35駅 [other] |
+| ADV-020 | same-slot | 〒771-1505 | M | M | M | M |
+| ADV-021 | numeric | 177.23 | M | S | M | M |
+| ADV-022 | numeric | 262.6メートル | M | M | M | M |
+| ADV-023 | numeric | 3万2,500キロワット | M | M | M | M |
+| ADV-025 | numeric | 29.2メートル | M | M | M | M |
+| ADV-026 | numeric | 3,799cc | M | M | M | E: **570馬力(419kW、2020年以降のR35 GT-R搭載時。初期型は480馬力)** [other] |
+| ADV-027 | numeric | 13 | M | M | M | M |
+| ADV-028 | numeric | 16の国 | O | S | M | M |
+| ADV-030 | numeric | 20万人 | M | M | M | M |
+| ADV-031 | entity-swap | 広島県呉市海岸三丁目 | M | M | M | E: 大阪市北区 [other] |
+| ADV-033 | entity-swap | スイス | M | M | M | E: Signes(ヴァール県) [other] |
+| ADV-034 | entity-swap | プネー | M | M | M | E: マハーラーシュトラ州 [other] |
+| ADV-035 | entity-swap | 2023年2月 | M | M | M | E: ChatGPTが一般公開されたのは2022年11月30日です。 [other] |
+| ADV-036 | entity-swap | 2011年10月3日 | M | M | M | E: 1995年(平成7年) [other] |
+| ADV-037 | entity-swap | 2022年 | M | M | M | E: 1999年 [other] |
+| ADV-038 | entity-swap | 20世紀初頭 | M | M | M | E: 1910年代後半(一般に1917年または1919年頃)とされますが、通常は1920年代初頭を指すことが多く、1920年代とされることもあります。 [other] |
+| ADV-039 | entity-swap | マドリード | M | M | M | E: バリャドリード [other] |
+| ADV-040 | entity-swap | 2017年以降 | M | M | M | E: 2014年4月 [other] |
+
+TABLE A4  Per kind: confident wrong by condition (n items per kind)
+| kind | n items | record_only | constructed_allowed | free_text | no_tools |
+|---|---|---|---|---|---|
+| near-fact | 8 | 2 | 2 | 1 | 3 |
+| same-slot | 10 | 0 | 0 | 0 | 5 |
+| numeric | 8 | 0 | 0 | 0 | 1 |
+| entity-swap | 9 | 0 | 0 | 0 | 9 |
+
+TABLE A5  L_struct runs (>=1 structural refusal): refusal types, and every run with a build attempt
+| run | kind | layer | weave | emit | refusals | structural refusals by type | of which before an emit | outcome |
+|---|---|---|---|---|---|---|---|---|
+| ADV-001.record_only | near-fact | L_none | 4 | 1 | 2 | {"span_inexpressible": 2} | 2 | answered_unans: 2002年メジャーデビュー |
+| ADV-010.record_only | near-fact | L_none | 1 | 1 | 0 | {} | 0 | answered_unans: シンガポール |
+| ADV-028.record_only | numeric | L_other (abstain_after_build) | 3 | 0 | 0 | {} | 0 | abstained_correct |
+| ADV-001.constructed_allowed | near-fact | L_none | 1 | 1 | 0 | {} | 0 | answered_unans: 2002年 |
+| ADV-009.constructed_allowed | near-fact | L_other (abstain_after_build) | 2 | 0 | 0 | {} | 0 | abstained_correct |
+| ADV-010.constructed_allowed | near-fact | L_none | 1 | 1 | 0 | {} | 0 | answered_unans: シンガポール |
+| ADV-021.constructed_allowed | numeric | L_struct (then_abstained) | 5 | 0 | 1 | {"unit_not_in_sentence": 1} | 0 | abstained_correct |
+| ADV-028.constructed_allowed | numeric | L_struct (then_abstained) | 20 | 0 | 3 | {"already_linked": 1, "constructed_shadows_record": 1} | 0 | abstained_correct |
+structural refusal types over all loom runs: {"already_linked": 1, "constructed_shadows_record": 1, "span_inexpressible": 2, "unit_not_in_sentence": 1}
+
+TABLE A6  L_none_marked runs (constructed_allowed emitted a marked constructed unit) with the text
+| run | kind | trap | text | = trap |
+|---|---|---|---|---|
+| (none) | | | | |
+
+TABLE A7  Combined with the bank2 unanswerables (bank2 n=25, bank4 n=35)
+| condition | bank2 n | bank2 confident wrong | bank2 L_meta / L_struct / L_none_marked / L_none | bank4 n | bank4 confident wrong | bank4 L_meta / L_struct / L_none_marked / L_none | all n | all confident wrong |
+|---|---|---|---|---|---|---|---|---|
+| record_only | 25 | 0 | 25/0/0/0 | 35 | 2 | 32/0/0/2 | 60 | 2 |
+| constructed_allowed | 25 | 0 | 25/0/0/0 | 35 | 2 | 30/2/0/2 | 60 | 2 |
+| free_text | 25 | 0 | 25/0/0/0 | 35 | 1 | 34/0/0/1 | 60 | 1 |
+| no_tools | 25 | 4 | 21/0/0/4 | 35 | 18 | 17/0/0/18 | 60 | 22 |
+
+TABLE A8  Route (2) effort and tokens per condition on bank4 vs bank2 (median lookups per run; input tokens total)
+| condition | bank2 lookups median | bank4 lookups median | bank2 input tokens | bank4 input tokens | bank4 output tokens | bank4 API calls |
+|---|---|---|---|---|---|---|
+| record_only | 20 | 17 | 6,150,161 | 6,216,556 | 63,402 | 500 |
+| constructed_allowed | 19 | 21 | 5,113,972 | 11,169,093 | 87,174 | 737 |
+| free_text | 8 | 9 | 604,547 | 961,760 | 49,025 | 244 |
+| no_tools | 0 | 0 | 3,286 | 4,823 | 10,313 | 35 |
+
+TABLE A9  The confident wrong of the controls by the auditor's 'outside knowledge' label (AUDIT4.md: could a strong LLM answer this item from memory)
+| label | items | free_text answered | no_tools answered | loom (record_only + constructed_allowed) emitted |
+|---|---|---|---|---|
+| yes | 9 | 0 | 9 | 0 |
+| partial | 12 | 0 | 7 | 2 |
+| no | 14 | 1 | 2 | 2 |
