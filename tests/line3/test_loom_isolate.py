@@ -574,7 +574,7 @@ def test_serve_isolated_types_a_missing_task_bank_and_a_missing_sandbox(tmp_path
     assert err["status"] == "isolation_failed" and err["probe"]["reason"] == "sandbox_exec_missing"
 
 
-def test_the_isolated_server_lists_its_18_tools_and_begins_a_run_inside_the_sandbox(tmp_path, need_sandbox):
+def test_the_isolated_server_lists_its_20_tools_and_begins_a_run_inside_the_sandbox(tmp_path, need_sandbox):
     pytest.importorskip("mcp")
     import asyncio
     from mcp import ClientSession, StdioServerParameters
@@ -593,7 +593,7 @@ def test_the_isolated_server_lists_its_18_tools_and_begins_a_run_inside_the_sand
                 res = await s.call_tool("begin", {"task_id": "demo/tokyo_ca", "model": "iso-test"})
                 return sorted(t.name for t in tools.tools), res.content[0].text
     names, begin = asyncio.run(asyncio.wait_for(go(), 60))
-    assert len(names) == 18 and {"begin", "emit", "abstain", "lookup", "add", "read"} <= set(names)
+    assert len(names) == 20 and {"begin", "emit", "abstain", "lookup", "add", "read"} <= set(names)
     assert '"header"' in begin and '"error"' not in begin.lower()
     made = os.listdir(str(runs))
     assert len(made) == 1 and sorted(os.listdir(str(runs / made[0]))) == [".lock", "HEAD", "meta.json", "ops.jsonl", "timing.jsonl"]

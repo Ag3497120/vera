@@ -1,0 +1,91 @@
+=== I2-001 record_only
+bank2/I2-001.record_only hit "ハッシュ表" -> experiments/line3/loom/results_h55d/I2-001.record_only.api.json
+rc=0
+=== I2-001 constructed_allowed
+bank2/I2-001.constructed_allowed miss "連想配列" -> experiments/line3/loom/results_h55d/I2-001.constructed_allowed.api.json
+rc=0
+=== I2-001 free_text
+bank2/I2-001.free_text hit "ハッシュ表" -> experiments/line3/loom/results_h55d/I2-001.free_text.api.json
+rc=0
+=== I2-041 record_only
+bank2/I2-041.record_only hit "キューバの太陽" -> experiments/line3/loom/results_h55d/I2-041.record_only.api.json
+rc=0
+=== I2-041 constructed_allowed
+bank2/I2-041.constructed_allowed hit "キューバの太陽" -> experiments/line3/loom/results_h55d/I2-041.constructed_allowed.api.json
+rc=0
+=== I2-041 free_text
+bank2/I2-041.free_text miss "「キューバの太陽」という意味" -> experiments/line3/loom/results_h55d/I2-041.free_text.api.json
+rc=0
+=== I2-008 record_only
+bank2/I2-008.record_only miss "マルクス" -> experiments/line3/loom/results_h55d/I2-008.record_only.api.json
+rc=0
+=== I2-008 constructed_allowed
+bank2/I2-008.constructed_allowed miss "マルクス" -> experiments/line3/loom/results_h55d/I2-008.constructed_allowed.api.json
+rc=0
+=== I2-008 free_text
+bank2/I2-008.free_text hit "カール・マルクス" -> experiments/line3/loom/results_h55d/I2-008.free_text.api.json
+rc=0
+=== I2-034 record_only
+bank2/I2-034.record_only hit "1981年" -> experiments/line3/loom/results_h55d/I2-034.record_only.api.json
+rc=0
+=== I2-034 constructed_allowed
+bank2/I2-034.constructed_allowed hit "1981年" -> experiments/line3/loom/results_h55d/I2-034.constructed_allowed.api.json
+rc=0
+=== I2-034 free_text
+bank2/I2-034.free_text hit "1981年" -> experiments/line3/loom/results_h55d/I2-034.free_text.api.json
+rc=0
+=== I2-013 record_only
+bank2/I2-013.record_only hit "県社" -> experiments/line3/loom/results_h55d/I2-013.record_only.api.json
+rc=0
+=== I2-013 constructed_allowed
+bank2/I2-013.constructed_allowed hit "県社" -> experiments/line3/loom/results_h55d/I2-013.constructed_allowed.api.json
+rc=0
+=== I2-013 free_text
+bank2/I2-013.free_text hit "県社" -> experiments/line3/loom/results_h55d/I2-013.free_text.api.json
+rc=0
+=== R2-I013 record_only
+bank2/R2-I013.record_only hit "ネパール" -> experiments/line3/loom/results_h55d/R2-I013.record_only.api.json
+rc=0
+=== R2-I013 constructed_allowed
+bank2/R2-I013.constructed_allowed hit "ネパール" -> experiments/line3/loom/results_h55d/R2-I013.constructed_allowed.api.json
+rc=0
+=== R2-I013 free_text
+bank2/R2-I013.free_text hit "ネパール" -> experiments/line3/loom/results_h55d/R2-I013.free_text.api.json
+rc=0
+=== I2-025 record_only
+bank2/I2-025.record_only hit "青" -> experiments/line3/loom/results_h55d/I2-025.record_only.api.json
+rc=0
+=== I2-025 constructed_allowed
+bank2/I2-025.constructed_allowed hit "青" -> experiments/line3/loom/results_h55d/I2-025.constructed_allowed.api.json
+rc=0
+=== I2-025 free_text
+bank2/I2-025.free_text hit "青" -> experiments/line3/loom/results_h55d/I2-025.free_text.api.json
+rc=0
+=== UF-001 record_only
+bank2/UF-001.record_only abstained_correct null -> experiments/line3/loom/results_h55d/UF-001.record_only.api.json
+rc=0
+=== UF-001 constructed_allowed
+bank2/UF-001.constructed_allowed abstained_correct null -> experiments/line3/loom/results_h55d/UF-001.constructed_allowed.api.json
+rc=0
+=== UF-001 free_text
+bank2/UF-001.free_text abstained_correct "不明" -> experiments/line3/loom/results_h55d/UF-001.free_text.api.json
+rc=0
+=== UF-015 record_only
+bank2/UF-015.record_only abstained_correct null -> experiments/line3/loom/results_h55d/UF-015.record_only.api.json
+rc=0
+=== UF-015 constructed_allowed
+bank2/UF-015.constructed_allowed abstained_correct null -> experiments/line3/loom/results_h55d/UF-015.constructed_allowed.api.json
+rc=0
+=== UF-015 free_text
+bank2/UF-015.free_text abstained_correct "不明" -> experiments/line3/loom/results_h55d/UF-015.free_text.api.json
+rc=0
+=== R2-U003 record_only
+bank2/R2-U003.record_only abstained_correct null -> experiments/line3/loom/results_h55d/R2-U003.record_only.api.json
+rc=0
+=== R2-U003 constructed_allowed
+bank2/R2-U003.constructed_allowed abstained_correct null -> experiments/line3/loom/results_h55d/R2-U003.constructed_allowed.api.json
+rc=0
+=== R2-U003 free_text
+bank2/R2-U003.free_text abstained_correct "不明" -> experiments/line3/loom/results_h55d/R2-U003.free_text.api.json
+rc=0
+SWEEP DONE

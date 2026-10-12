@@ -5,7 +5,7 @@ none of them.  Everything is exact (int / Fraction), deterministic and independe
 
   state    Unit, LoomCross, LoomState and the seating rules (design 3)
   corpus   the corpus the loom reads: the three tiers, the adhesion tables, the shas
-  ops      the 18 operations as typed-refusal functions, the per-run caps, Run.step (one ledger row per call)
+  ops      the 20 operations as typed-refusal functions, the per-run caps, Run.step (one ledger row per call)
   read     the read rule, the annotated output, joins / adhesion marks, stability under the full key, the emit gate (design 3.4-3.7)
   code     the CODE tier's layout helpers only (spacing, one-token check); the code index and the definition-first gate are LOOM-e
   ledger   rows, the chain, append under flock, verify, replay, emitted_output (the L4 consumer)

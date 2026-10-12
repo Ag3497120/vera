@@ -233,6 +233,10 @@ def stability_of(run, cross: LoomCross, mode: str) -> dict:
 # ------------------------------------------------------------------------------------------------------------
 # the gate
 # ------------------------------------------------------------------------------------------------------------
+# L-LOOM-146.  What `unstable_cross` says about a cross that quotes a corpus sentence (made by `weave_span.v2`, unchanged since): no swap is listed.
+SPAN_UNSTABLE_ADVICE = ("this stretch is faithful to sentence %d but unstable under the key; a swap would change the quoted text, so none is offered: "
+                        "choose another stretch, or abstain")
+
 def _has_content(c: LoomCross) -> bool:
     return bool(c.uids())
 
@@ -282,10 +286,18 @@ def evaluate(run) -> dict:
         if not _has_content(c) and not c.topic:
             continue
         e = stability_of(run, c, mode)
+        if e["status"] == "unstable" and c.span is not None:
+            # L-LOOM-146: a cross `weave_span.v2` made and nobody changed quotes sentence `c.span` word for word; EVERY improving swap would change the quoted
+            # text, so none is offered.  The status stays "unstable" (the key is the key); only the advice differs.
+            e = dict(e, improving=[], best_swaps=[], improving_n=len(e["improving"]), span={"sid": c.span, "faithful": True})
         stab.append(e)
         if e["status"] == "unstable" and mode != "report":
-            add({"type": "unstable_cross", "cid": c.cid, "key": e["key"], "improving": e["improving"],
-                 "best_key": e["best_key"], "best_swaps": e["best_swaps"], "mode": mode}, pos)
+            r = {"type": "unstable_cross", "cid": c.cid, "key": e["key"], "improving": e["improving"],
+                 "best_key": e["best_key"], "best_swaps": e["best_swaps"], "mode": mode}
+            if c.span is not None:
+                r["span"] = e["span"]
+                r["advice"] = SPAN_UNSTABLE_ADVICE % c.span
+            add(r, pos)
 
     segs: List[dict] = []
     code_lang = any(c.lang == CODE for c in linked)

@@ -1,0 +1,96 @@
+PER TASK x MODE  (every cell is h55 / h55b / h55c / h55d; exact = hit_exact (HEADLINE), cited = hit_cited (letters only), over = emitted a longer text that holds the gold)
+| task | mode | status | exact | cited | over (d) | ops | weaves | refusals d | echo units in final thread (d) | output d |
+|---|---|---|---|---|---|---|---|---|---|---|
+| I2-001 | ro | miss / abstained_wrong / abstained_wrong / hit | N / - / - / Y | Y / - / - / N | N | 13 / 2 / 2 / 1 | 0 / 1 / 2 / 1 | 0 | ハッシュ | 「ハッシュ表」 |
+| I2-001 | ca | miss / hit / miss / miss | N / Y / N / N | N / N / N / N | N | 9 / 15 / 1 / 1 | 0 / 1 / 1 / 1 | 0 | 0 | 「連想配列」 |
+| I2-001 | ctl | abstained_wrong / hit / abstained_wrong / hit | - / Y / - / Y | - / N / - / N | - | 0 / 0 / 0 / 0 | n/a | 0 | - | 「ハッシュ表」 |
+| I2-041 | ro | no_output / abstained_wrong / miss / hit | - / - / N / Y | - / - / Y / N | N | 0 / 10 / 2 / 1 | 0 / 2 / 2 / 1 | 0 | 0 | 「キューバの太陽」 |
+| I2-041 | ca | abstained_wrong / abstained_wrong / miss / hit | - / - / N / Y | - / - / N / N | N | 36 / 2 / 6 / 1 | 0 / 2 / 6 / 1 | 0 | 0 | 「キューバの太陽」 |
+| I2-041 | ctl | miss / hit / hit / miss | N / Y / Y / N | Y / N / N / Y | - | 0 / 0 / 0 / 0 | n/a | 0 | - | 「「キューバの太陽」という意味」 |
+| I2-008 | ro | abstained_wrong / abstained_wrong / hit / miss | - / - / Y / N | - / - / N / N | N | 3 / 12 / 4 / 1 | 0 / 6 / 2 / 1 | 0 | 0 | 「マルクス」 |
+| I2-008 | ca | abstained_wrong / abstained_wrong / hit / miss | - / - / Y / N | - / - / N / N | N | 0 / 4 / 13 / 1 | 0 / 3 / 4 / 1 | 0 | 0 | 「マルクス」 |
+| I2-008 | ctl | hit / hit / hit / hit | Y / Y / Y / Y | N / N / N / N | - | 0 / 0 / 0 / 0 | n/a | 0 | - | 「カール・マルクス」 |
+| I2-034 | ro | miss / miss / miss / hit | N / N / N / Y | N / N / N / N | N | 28 / 22 / 7 / 1 | 0 / 2 / 2 / 1 | 0 | 0 | 「1981年」 |
+| I2-034 | ca | miss / abstained_wrong / miss / hit | N / - / N / Y | N / - / N / N | N | 20 / 1 / 18 / 1 | 0 / 1 / 2 / 1 | 0 | 0 | 「1981年」 |
+| I2-034 | ctl | hit / hit / hit / hit | Y / Y / Y / Y | N / N / N / N | - | 0 / 0 / 0 / 0 | n/a | 0 | - | 「1981年」 |
+| I2-013 | ro | miss / miss / miss / hit | N / N / N / Y | N / Y / Y / N | N | 10 / 8 / 7 / 1 | 0 / 1 / 3 / 1 | 0 | 0 | 「県社」 |
+| I2-013 | ca | miss / abstained_wrong / miss / hit | N / - / N / Y | N / - / Y / N | N | 11 / 23 / 1 / 1 | 0 / 1 / 1 / 1 | 0 | 0 | 「県社」 |
+| I2-013 | ctl | hit / hit / hit / hit | Y / Y / Y / Y | N / N / N / N | - | 0 / 0 / 0 / 0 | n/a | 0 | - | 「県社」 |
+| R2-I013 | ro | hit / abstained_wrong / hit / hit | Y / - / Y / Y | N / - / N / N | N | 6 / 1 / 1 / 1 | 0 / 1 / 1 / 1 | 0 | 0 | 「ネパール」 |
+| R2-I013 | ca | abstained_wrong / miss / hit / hit | - / N / Y / Y | - / N / N / N | N | 0 / 49 / 1 / 1 | 0 / 5 / 1 / 1 | 0 | 0 | 「ネパール」 |
+| R2-I013 | ctl | hit / hit / hit / hit | Y / Y / Y / Y | N / N / N / N | - | 0 / 0 / 0 / 0 | n/a | 0 | - | 「ネパール」 |
+| I2-025 | ro | abstained_wrong / miss / miss / hit | - / N / N / Y | - / N / N / N | N | 33 / 6 / 2 / 4 | 0 / 1 / 1 / 2 | 0 | 0 | 「青」 |
+| I2-025 | ca | abstained_wrong / abstained_wrong / abstained_wrong / hit | - / - / - / Y | - / - / - / N | N | 7 / 137 / 16 / 1 | 0 / 9 / 7 / 1 | 0 | 0 | 「青」 |
+| I2-025 | ctl | hit / hit / hit / hit | Y / Y / Y / Y | N / N / N / N | - | 0 / 0 / 0 / 0 | n/a | 0 | - | 「青」 |
+| UF-001 | ro | abstained_correct / abstained_correct / abstained_correct / abstained_correct | - / - / - / - | - / - / - / - | N | 0 / 0 / 0 / 0 | 0 / 0 / 0 / 0 | 0 | - | (none) |
+| UF-001 | ca | abstained_correct / abstained_correct / abstained_correct / abstained_correct | - / - / - / - | - / - / - / - | N | 0 / 0 / 0 / 0 | 0 / 0 / 0 / 0 | 0 | - | (none) |
+| UF-001 | ctl | abstained_correct / abstained_correct / abstained_correct / abstained_correct | - / - / - / - | - / - / - / - | - | 0 / 0 / 0 / 0 | n/a | 0 | - | 「不明」 |
+| UF-015 | ro | abstained_correct / abstained_correct / abstained_correct / abstained_correct | - / - / - / - | - / - / - / - | N | 0 / 0 / 0 / 0 | 0 / 0 / 0 / 0 | 0 | - | (none) |
+| UF-015 | ca | abstained_correct / abstained_correct / abstained_correct / abstained_correct | - / - / - / - | - / - / - / - | N | 0 / 0 / 0 / 0 | 0 / 0 / 0 / 0 | 0 | - | (none) |
+| UF-015 | ctl | abstained_correct / abstained_correct / abstained_correct / abstained_correct | - / - / - / - | - / - / - / - | - | 0 / 0 / 0 / 0 | n/a | 0 | - | 「不明」 |
+| R2-U003 | ro | abstained_correct / no_output / abstained_correct / abstained_correct | - / - / - / - | - / - / - / - | N | 0 / 0 / 0 / 0 | 0 / 0 / 0 / 0 | 0 | - | (none) |
+| R2-U003 | ca | abstained_correct / abstained_correct / abstained_correct / abstained_correct | - / - / - / - | - / - / - / - | N | 0 / 0 / 0 / 0 | 0 / 0 / 0 / 0 | 0 | - | (none) |
+| R2-U003 | ctl | abstained_correct / abstained_correct / abstained_correct / abstained_correct | - / - / - / - | - / - / - / - | - | 0 / 0 / 0 / 0 | n/a | 0 | - | 「不明」 |
+
+HEADLINE (answerable exact hits /7) and the secondary counts
+| | record_only exact | constructed_allowed exact | control exact | loom cited (14) | loom over-extended (14) | loom emitted (14) | unans abstained (loom 6 + control 3) |
+|---|---|---|---|---|---|---|---|
+| h55 | 1/7 | 0/7 | 5/7 | 1 | 5 | 7 | 9/9 |
+| h55b | 0/7 | 1/7 | 7/7 | 1 | 4 | 5 | 8/9 |
+| h55c | 2/7 | 2/7 | 6/7 | 3 | 7 | 12 | 9/9 |
+| h55d | 6/7 | 5/7 | 6/7 | 0 | 0 | 14 | 9/9 |
+
+OVER-EXTENSION BEFORE / AFTER (answerable loom runs that EMITTED a text holding the gold, longer than it; excess = normalised characters beyond the gold)
+h55: 5 of 14 -- I2-001 ro 「ハッシュ表ともいう」 +4; I2-034 ro 「サンゴーカメラ1981年にに設立」 +11; I2-034 ca 「サンゴーカメラ1981年に設立」 +10; I2-013 ro 「千葉神社の旧社格県社」 +8; I2-013 ca 「千葉神社の旧社格県社」 +8
+h55b: 4 of 14 -- I2-034 ro 「1981年に永豊企業株式会社の設立」 +12; I2-013 ro 「旧社格は県社」 +4; R2-I013 ca 「ネパールにインドの話者」 +7; I2-025 ro 「イギリスアメリカを青」 +9
+h55c: 7 of 14 -- I2-041 ro 「キューバの太陽という意味」 +5; I2-041 ca 「キューバの太陽カクテルという意味」 +9; I2-034 ro 「1981年に設立」 +3; I2-034 ca 「1981年に設立された」 +6; I2-013 ro 「旧社格は県社」 +4; I2-013 ca 「旧社格は県社」 +4; I2-025 ro 「アメリカの青」 +5
+h55d: 0 of 14 -- 
+
+QUESTION_ECHO
+h55: QUESTION_ECHO notes shown in the ledgers (distinct, 20 loom runs) 0; runs with >= 1 echo note 0; units of the FINAL thread that the definition would flag (answerable loom runs that emitted: 7): 10 units in 6 runs
+h55b: QUESTION_ECHO notes shown in the ledgers (distinct, 20 loom runs) 0; runs with >= 1 echo note 0; units of the FINAL thread that the definition would flag (answerable loom runs that emitted: 5): 5 units in 5 runs
+h55c: QUESTION_ECHO notes shown in the ledgers (distinct, 20 loom runs) 0; runs with >= 1 echo note 0; units of the FINAL thread that the definition would flag (answerable loom runs that emitted: 12): 11 units in 8 runs
+h55d: QUESTION_ECHO notes shown in the ledgers (distinct, 20 loom runs) 2; runs with >= 1 echo note 2; units of the FINAL thread that the definition would flag (answerable loom runs that emitted: 14): 1 units in 1 runs
+
+TOTALS (answerable = 7 tasks, unans = 3 tasks, per mode)
+| mode | meas. | exact /7 | cited | over | hits_text /7 | emitted, not exact | unans abstained /3 | unans no output | unans answered | median ops (ans.) | median lookups (ans.) | weaves (ok) | drops | unseats | turns | tool calls |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| ro | h55 | **1** | 1 | 3 | 4 | 3 | 3 | 0 | 0 | 10 | 24 | 0 (0) | 0 | 6 | 191 | 336 |
+| ro | h55b | **0** | 1 | 3 | 3 | 3 | 2 | 1 | 0 | 8 | 10 | 14 (14) | 0 | 11 | 165 | 273 |
+| ro | h55c | **2** | 2 | 4 | 6 | 4 | 3 | 0 | 0 | 2 | 5 | 13 (10) | 4 | 0 | 106 | 177 |
+| ro | h55d | **6** | 0 | 0 | 6 | 1 | 3 | 0 | 0 | 1 | 4 | 8 (8) | 1 | 0 | 103 | 192 |
+| ca | h55 | **0** | 0 | 2 | 2 | 3 | 3 | 0 | 0 | 9 | 31 | 0 (0) | 0 | 3 | 190 | 357 |
+| ca | h55b | **1** | 0 | 1 | 2 | 1 | 3 | 0 | 0 | 15 | 20 | 22 (21) | 0 | 73 | 305 | 506 |
+| ca | h55c | **2** | 1 | 3 | 5 | 4 | 3 | 0 | 0 | 6 | 5 | 22 (19) | 12 | 1 | 124 | 226 |
+| ca | h55d | **5** | 0 | 0 | 5 | 2 | 3 | 0 | 0 | 1 | 3 | 7 (7) | 0 | 0 | 89 | 155 |
+| ctl | h55 | **5** | 1 | 0 | 6 | 1 | 3 | 0 | 0 | 0 | 2 | n/a | 0 | 0 | 39 | 67 |
+| ctl | h55b | **7** | 0 | 0 | 7 | 0 | 3 | 0 | 0 | 0 | 2 | n/a | 0 | 0 | 41 | 75 |
+| ctl | h55c | **6** | 0 | 0 | 6 | 0 | 3 | 0 | 0 | 0 | 2 | n/a | 0 | 0 | 38 | 64 |
+| ctl | h55d | **6** | 1 | 0 | 7 | 1 | 3 | 0 | 0 | 0 | 2 | n/a | 0 | 0 | 40 | 71 |
+
+OTHER COUNTS (loom modes only: ro + ca, 20 runs; answerable = 14)
+h55: refusal totals {'lookup_cap': 19, 'not_a_record': 9, 'seat_occupied': 2, 'unit_already_seated': 2}; answerable runs with >= 1 refusal 9/14; unstable_cross shown in 0 answerable runs, emit refused for it 0; constructed adds ok 5 / refused 0; emit attempts 7; reads 21; unseat ops 9; drops 0; weave calls 0 (ok 0, in 0 runs); note rows 1, notes {'NO_RECORD': 1}
+h55b: refusal totals {'constructed_is_foundation': 2, 'constructed_shadows_record': 3, 'not_code': 1, 'not_linked': 14, 'read_cap': 1, 'seat_empty': 1, 'seat_is_foundation': 3, 'seat_occupied': 6, 'tier_mismatch': 1, 'tier_mix': 1, 'unit_already_seated': 5, 'unlinked_cross': 9}; answerable runs with >= 1 refusal 9/14; unstable_cross shown in 7 answerable runs, emit refused for it 0; constructed adds ok 4 / refused 5; emit attempts 14; reads 60; unseat ops 84; drops 0; weave calls 36 (ok 35, in 14 runs); note rows 5, notes {'NO_RECORD': 5}
+h55c: refusal totals {'already_linked': 1, 'constructed_is_foundation': 1, 'seat_occupied': 1, 'span_inexpressible': 2, 'tier_mix': 1, 'unit_not_in_sentence': 3, 'unstable_cross': 2}; answerable runs with >= 1 refusal 7/14; unstable_cross shown in 2 answerable runs, emit refused for it 2; constructed adds ok 2 / refused 1; emit attempts 14; reads 23; unseat ops 1; drops 16; weave calls 35 (ok 29, in 14 runs); note rows 0, notes {}
+h55d: refusal totals {}; answerable runs with >= 1 refusal 0/14; unstable_cross shown in 1 answerable runs, emit refused for it 0; constructed adds ok 0 / refused 0; emit attempts 14; reads 9; unseat ops 0; drops 1; weave calls 15 (ok 15, in 14 runs); note rows 6, notes {'QUESTION_ECHO': 6}
+h55c weave_span refusals by type: {'span_inexpressible': 2, 'tier_mix': 1, 'unit_not_in_sentence': 3}
+h55d weave_span refusals by type: {}
+
+P-LOOM inputs (exact rule)
+h55 P1 ro exact 1/7 (of which at the first emit attempt 1; hits_text 4/7); P2 ca exact 0/7 (hits_text 2/7), median constructed share of emitted text (permille) 0; P3 unans abstained ro 3/3 (+0 no output), ca 3/3; P4 control exact 5/7 (hits_text 6/7), unans 不明 3/3
+h55 P5 ops per answerable loom run: median 9.5 (min 0, max 36); answerable loom runs with >= 1 refusal 9/14; with unstable_cross shown 0/14
+h55 P6 loom wall / control wall per task (percent): median 315.0, min 67, max 2428; control median wall 4.9 s, loom median wall 20.0 s
+h55b P1 ro exact 0/7 (of which at the first emit attempt 0; hits_text 3/7); P2 ca exact 1/7 (hits_text 2/7), median constructed share of emitted text (permille) 0; P3 unans abstained ro 2/3 (+1 no output), ca 3/3; P4 control exact 7/7 (hits_text 7/7), unans 不明 3/3
+h55b P5 ops per answerable loom run: median 9.0 (min 1, max 137); answerable loom runs with >= 1 refusal 9/14; with unstable_cross shown 7/14
+h55b P6 loom wall / control wall per task (percent): median 318.0, min 73, max 6506; control median wall 4.9 s, loom median wall 18.5 s
+h55c P1 ro exact 2/7 (of which at the first emit attempt 2; hits_text 6/7); P2 ca exact 2/7 (hits_text 5/7), median constructed share of emitted text (permille) 0.0; P3 unans abstained ro 3/3 (+0 no output), ca 3/3; P4 control exact 6/7 (hits_text 6/7), unans 不明 3/3
+h55c P5 ops per answerable loom run: median 3.0 (min 1, max 18); answerable loom runs with >= 1 refusal 7/14; with unstable_cross shown 2/14
+h55c P6 loom wall / control wall per task (percent): median 291.0, min 88, max 1005; control median wall 4.1 s, loom median wall 11.4 s
+h55d P1 ro exact 6/7 (of which at the first emit attempt 6; hits_text 6/7); P2 ca exact 5/7 (hits_text 5/7), median constructed share of emitted text (permille) 0.0; P3 unans abstained ro 3/3 (+0 no output), ca 3/3; P4 control exact 6/7 (hits_text 7/7), unans 不明 3/3
+h55d P5 ops per answerable loom run: median 1.0 (min 1, max 4); answerable loom runs with >= 1 refusal 0/14; with unstable_cross shown 1/14
+h55d P6 loom wall / control wall per task (percent): median 171.0, min 102, max 305; control median wall 4.0 s, loom median wall 6.1 s
+
+TOKENS (API-reported usage, testimony of the provider; h55 recorded none)
+h55b: input 11890403, output 51174, calls 511; by mode: ro in 1983884 out 15005, ca in 9769505 out 28544, ctl in 137014 out 7625; largest run 7164262 input tokens (('I2-025', 'constructed_allowed'))
+h55c: input 2617791, output 30946, calls 268; by mode: ro in 1085421 out 10466, ca in 1419272 out 13688, ctl in 113098 out 6792; largest run 330282 input tokens (('UF-015', 'constructed_allowed'))
+h55d: input 2363157, output 28445, calls 232; by mode: ro in 1222567 out 11298, ca in 1014186 out 9322, ctl in 126404 out 7825; largest run 510802 input tokens (('UF-015', 'record_only'))

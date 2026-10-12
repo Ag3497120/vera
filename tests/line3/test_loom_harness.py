@@ -132,10 +132,10 @@ def live_tool_names():
     return asyncio.run(asyncio.wait_for(go(), 120))
 
 
-def test_the_mcp_json_command_starts_the_server_and_lists_exactly_the_18_tools(live_tool_names):
+def test_the_mcp_json_command_starts_the_server_and_lists_exactly_the_20_tools(live_tool_names):
     name, names = live_tool_names
     assert name == "vera-loom"
-    assert names == list(MODEL_OPS) and len(names) == 18
+    assert names == list(MODEL_OPS) and len(names) == 20
 
 
 def test_the_agent_files_hold_only_loom_tools(live_tool_names):
@@ -143,7 +143,7 @@ def test_the_agent_files_hold_only_loom_tools(live_tool_names):
     for stem in ("loom-weaver", "loom-weaver-record-only"):
         meta, body = H.parse_agent_file(os.path.join(H.AGENTS_DIR, stem + ".md"))
         assert meta["name"] == stem and meta["model"] == "haiku" and meta["description"]
-        assert set(meta["tools"]) == live and len(meta["tools"]) == len(set(meta["tools"])) == 18
+        assert set(meta["tools"]) == live and len(meta["tools"]) == len(set(meta["tools"])) == 20
         assert all(t.startswith("mcp__vera-loom__") for t in meta["tools"])
         for needle in ("emit", "abstain", "discarded", "begin", "only way"):
             assert needle in body.lower()
@@ -175,7 +175,15 @@ def test_the_t9_rule_and_its_stricter_views():
     assert S.excess_chars("a|bcd", "xbcdx") == 2                                             # the shortest matching alternative is not the longest
     ann = [{"s": "キューバ", "kind": "record"}, {"s": "の", "kind": "foundation"}, {"s": "太陽", "kind": "record"}]
     v = S.answer_view("キューバの太陽", "キューバの太陽", ann)
-    assert v == {"hits_text": True, "excess_chars": 0, "hits_words": False, "hit_record_text": True}       # no single unit holds it, the record text does
+    assert v == {"hit_exact": True, "hit_cited": False, "hits_text": True, "excess_chars": 0, "hits_words": False, "hit_record_text": True}       # no single unit holds it, the record text does
+    # LOOM-span (2026-10-12): the headline is EXACT.  A longer text that holds the gold is hit_cited only if the run's ledger cites a sentence with it word for word
+    assert S.hit_exact("県社", "県社") and S.hit_exact("カール・マルクス", "カールマルクス") and S.hit_exact("a|bcd", "BCD")       # the T9 normalisation, on both sides
+    assert not S.hit_exact("県社", "旧県社です") and not S.hit_exact("県社", "県")
+    assert S.hit_cited("県社", "旧県社です", ["旧社格は旧県社です。"]) is True and S.hit_cited("県社", "旧県社です", ["旧社格は県社。"]) is False
+    assert S.hit_cited("県社", "旧県社です", []) is False and S.hit_cited("県社", "旧県社です", None) is False       # nothing cited, nothing to quote
+    assert S.hit_cited("県社", "県社", ["旧社格は県社。"]) is False                                              # an exact hit is not "cited"
+    assert S.hit_cited("県社", "旧県", ["旧県社です"]) is False                                                  # it must hold the gold first
+    assert S.answer_view("県社", "旧県社です", None, ["旧社格は旧県社です。"])["hits_text"] is True
     ann2 = [{"s": "キューバ", "kind": "constructed"}, {"s": "の", "kind": "foundation"}, {"s": "太陽", "kind": "record"}]
     assert S.answer_view("キューバの太陽", "キューバの太陽", ann2)["hit_record_text"] is False
     assert S.answer_view("青", "青", [{"s": "青", "kind": "record"}])["hits_words"] is True
@@ -504,7 +512,7 @@ def test_the_api_driver_weaves_through_tool_calls_only(tmp_path, mcp_tools):
     first = client.calls[0]
     assert first["tool_choice"] == {"type": "any"} and first["model"] == "claude-haiku-4-5" and "strict" not in first["tools"][0]
     names = [t["name"] for t in first["tools"]]
-    assert set(names) == api_names() and len(names) == 18 and names[-1] == "done"
+    assert set(names) == api_names() and len(names) == 20 and names[-1] == "done"
     for t in first["tools"]:
         assert "run_id" not in t["input_schema"].get("properties", {}) and "run_id" not in t["input_schema"].get("required", [])
         assert t["input_schema"]["additionalProperties"] is False
@@ -664,7 +672,7 @@ def test_a_control_is_scored_on_its_answer_line_only(tmp_path):
     rs = _control_run(tmp_path, "I2-041", "キューバの太陽\nなお別の候補もあります", "c2")
     assert rs.status == "hit" and rs.hits_text is True and rs.excess_chars == 0 and rs.answer_line == "キューバの太陽"
     rs = _control_run(tmp_path, "I2-041", "答えは次のとおりです。キューバの太陽です", "c3")                  # one line: the whole line is scored (excess is reported)
-    assert rs.status == "hit" and rs.excess_chars > 0
+    assert rs.status == "miss" and rs.hit_exact is False and rs.hits_text is True and rs.excess_chars > 0       # LOOM-span: the substring is no longer the headline
     rs = _control_run(tmp_path, "UF-001", "不明\nたぶん衝突処理", "c4")
     assert rs.status == "abstained_correct"
     rs = _control_run(tmp_path, "UF-001", "たぶん\n不明", "c5")                                       # 不明 on line 2 is not an abstention
@@ -901,14 +909,15 @@ def test_a_scripted_control_says_it_is_the_scripts_own_words_and_the_result_show
     assert "WRITTEN WITH THE GOLD KNOWN" in obj["control_note"] and "not a measurement" in obj["control_note"] and obj["model_result"] is False
     assert obj["score"]["answer_line"] == "キューバの太陽"
     rs2, _, obj2 = run_scripted(tmp_path, "I2-041", "record_only")
-    assert obj2["answer_view"] == {"hits_text": True, "hit_record_text": True, "excess_chars": 0} and "hits_words" in obj2["footnotes"]
+    assert obj2["answer_view"] == {"hit_exact": True, "hit_cited": False, "hits_text": True, "hit_record_text": True, "excess_chars": 0} \
+        and "hits_words" in obj2["footnotes"]
     assert obj2["score"]["hits_words"] is False and obj2["model_result"] is False and obj2["t_loom_34"] == "unchecked"
     assert obj2["control_note"] is None
     assert H.main(["--results-dir", str(tmp_path / "res"), "summary"]) == 0
     out = capsys.readouterr().out
-    assert "hits_text" in out and "hit_record_text" in out and "excess_chars" in out
+    assert "hit_exact" in out and "hit_cited" in out and "hits_text" in out and "hit_record_text" in out and "excess_chars" in out
     line = [ln for ln in out.splitlines() if ln.startswith("bank2/I2-041.record_only")][0].split()
-    assert line[3] == "hit" and line[4:7] == ["Y", "Y", "0"] and "(1) hits_words" in out
+    assert line[3] == "hit" and line[4:9] == ["Y", "N", "Y", "Y", "0"] and "(1) hits_words" in out and "HEADLINE" in out
 
 
 def test_the_driver_stops_executing_a_turn_once_the_run_has_closed(tmp_path, mcp_tools):

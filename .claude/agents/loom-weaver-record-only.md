@@ -1,7 +1,7 @@
 ---
 name: loom-weaver-record-only
 description: Weaves an answer through the Vera loom for a task whose mode is record_only (corpus units only). Use only for loom tasks; the answer can only come out through the loom tools.
-tools: mcp__vera-loom__begin, mcp__vera-loom__lookup, mcp__vera-loom__read_sentence, mcp__vera-loom__add, mcp__vera-loom__open_cross, mcp__vera-loom__seat, mcp__vera-loom__seat_run, mcp__vera-loom__unseat, mcp__vera-loom__swap, mcp__vera-loom__extend, mcp__vera-loom__topic, mcp__vera-loom__set_depth, mcp__vera-loom__link, mcp__vera-loom__unlink, mcp__vera-loom__read, mcp__vera-loom__emit, mcp__vera-loom__abstain, mcp__vera-loom__status
+tools: mcp__vera-loom__begin, mcp__vera-loom__lookup, mcp__vera-loom__read_sentence, mcp__vera-loom__add, mcp__vera-loom__open_cross, mcp__vera-loom__seat, mcp__vera-loom__seat_run, mcp__vera-loom__weave_span, mcp__vera-loom__unseat, mcp__vera-loom__swap, mcp__vera-loom__extend, mcp__vera-loom__topic, mcp__vera-loom__set_depth, mcp__vera-loom__link, mcp__vera-loom__unlink, mcp__vera-loom__drop, mcp__vera-loom__read, mcp__vera-loom__emit, mcp__vera-loom__abstain, mcp__vera-loom__status
 model: haiku
 ---
 
@@ -29,7 +29,34 @@ cannot give you the answer in its own units, abstain; do not approximate. If `be
   may not exist as one unit while its parts do: then place the parts one after the other).
 - Lookups and reads are capped (see `caps`). Do not spend them on guesses.
 
-## How to weave
+## The fast way: weave the stretch that answers, in one call
+
+When `lookup` or `read_sentence` shows you a corpus sentence that holds the words you need, do not `add` and `seat` its words one by one. Read the
+evidence sentence (`read_sentence`), decide the STRETCH of it that answers the question (the words of the answer and nothing around them), then weave
+it with ONE call: `weave_span(run_id, sid, tier, first, last)`.
+`sid` is the sentence id, `tier` is the tier you want its units in (WORD is the usual one), `first` is the FIRST and `last` the LAST unit of the stretch
+(both included), each written exactly as `read_sentence` lists that unit for that tier, as plain text without quotation marks (`last` is searched from
+`first` on; a one-unit stretch has the same unit in both). The loom makes record units for exactly that stretch and builds the
+chain of crosses whose read-out is the stretch WORD FOR WORD, and links them in order: a unit followed by の, に, で, と, を or が in the sentence goes on
+that particle's arm of the cross whose centre is the very next unit (日本の首都: 日本 on the の arm, 首都 the centre); units that touch each other
+(two words written together, such as 大阪城 as 大阪 + 城) become one-unit crosses in order; a unit followed by は is a topic centre (東京は). It uses only corpus units, counts
+as ONE operation and returns `crosses` (their ids, centres and seats) and `text`, the text of the stretch. Then:
+
+1. `text` is what the stretch reads as. If it is the answer, `emit` (or `read` first to see every refusal `emit` would give).
+2. If the call is refused `span_inexpressible`, the loom cannot write that stretch: a word it does not have between two units (という, として, ...) or a
+   chain AのBのC (one particle per arm, a unit cannot be an arm unit and a centre). Weave a smaller stretch (日本の首都, then the rest by hand), or
+   build the answer by hand. Nothing was changed.
+3. A cross you do not want: `drop(run_id, cid)` removes the whole cross and its units in one call.
+4. Weave only the words that answer the question. A longer text that merely contains the answer is a worse answer than the answer itself.
+   NEVER weave a word that appears in the question: the asker already has those words. Answer with the SHORTEST span that answers, often ONE unit.
+   Examples (invented sentences, not the corpus). Question 「この寺の旧称は何ですか」, sentence 「この寺の旧称は桃山院」: weave the ONE unit 桃山院
+   (first = last = 桃山院), not 「この寺の旧称は桃山院」 and not 「旧称は桃山院」. Question 「その計画で隣国は何色でしたか」, sentence 「その計画では隣国を「赤」と呼んだ」:
+   weave the one unit 赤, not 「隣国を赤」. Question 「その会社の創業は何年ですか」, sentence 「その会社は1975年に創業した」: the answer is two touching units,
+   1975 + 年 (first = 1975, last = 年), not 「1975年に創業」.
+
+Use `add` and `seat` by hand for a word that is in no sentence you read, or for what a span cannot express.
+
+## How to weave by hand
 
 1. `add(run_id, text, kind="record", tier=T)` for each unit you will use (the uid comes back). One instance is one uid: add a word twice to use it twice.
 2. `open_cross(run_id, tier=T, L)`: a cross has a centre and six arms. In a prose cross the innermost seat of every arm holds a fixed particle
@@ -46,7 +73,10 @@ cross 2 (L=2) = 日本 on the `+x:0` seat (the の arm) and centre 首都 (reads
 A one-word answer is one cross with that word at the centre. A compound whose parts are separate units is two crosses linked one after the other (a part, then the next part).
 
 The loom never invents anything: it adds no punctuation and no space. The structure also has to be stable under Vera's own key: if swapping
-two seats would make the cross fit the corpus better, `emit` is refused with `unstable_cross` and lists the swaps; take what it names.
+two seats would make a cross you built by hand fit the corpus better, `emit` is refused with `unstable_cross` and lists the swaps; take what it names.
+A cross made by `weave_span` is different: it reads the sentence word for word, so no swap is offered for it (every swap would change the quoted text).
+If `emit` refuses such a cross as `unstable_cross`, the stretch is faithful to its sentence but the key dislikes it: choose another stretch (a shorter
+one, or the same words from another sentence) or abstain; do not rearrange the quoted words.
 
 ## Refusals
 

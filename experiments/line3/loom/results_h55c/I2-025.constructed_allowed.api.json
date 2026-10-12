@@ -1,0 +1,210 @@
+{
+ "abandoned": [],
+ "annotated": null,
+ "answer_view": {
+  "excess_chars": null,
+  "hit_cited": null,
+  "hit_exact": null,
+  "hit_record_text": null,
+  "hits_text": null
+ },
+ "base": "I2-025",
+ "closing": {
+  "i": 32,
+  "op": "abstain",
+  "status": "abstained",
+  "type": "cannot_weave"
+ },
+ "control": false,
+ "control_note": null,
+ "declared_model": "claude-haiku-5-5",
+ "driver": "api",
+ "driver_report": {
+  "calls_skipped_after_close": 0,
+  "control_text_chars": null,
+  "ended": "closed",
+  "error": null,
+  "response_models": [
+   "claude-haiku-5-5"
+  ],
+  "stop_reasons": [
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use"
+  ],
+  "system_prompt_sha256": "a16037a8f62a65403c344b5a233d410bc43d0c2c9a878a61dec3499599564087",
+  "text_blocks_dropped": 0,
+  "thinking_dropped": {
+   "chars": 0,
+   "n": 0,
+   "sha256": []
+  },
+  "tool_calls": 31,
+  "tool_choice": {
+   "type": "any"
+  },
+  "tool_less_turns": 0,
+  "tools": [
+   "lookup",
+   "read_sentence",
+   "add",
+   "open_cross",
+   "seat",
+   "seat_run",
+   "weave_span",
+   "unseat",
+   "swap",
+   "extend",
+   "topic",
+   "set_depth",
+   "link",
+   "unlink",
+   "drop",
+   "read",
+   "emit",
+   "abstain",
+   "status",
+   "done"
+  ],
+  "turns": 21,
+  "usage": {
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 0,
+   "calls": 21,
+   "input_tokens": 275216,
+   "output_tokens": 1748
+  }
+ },
+ "footnotes": {
+  "hits_words": "hits_words (the gold inside ONE record unit; `score.hits_words`) is false by construction for every multi-unit answer (ハッシュ表, キューバの太陽, カールマルクス, 1981年); it is not a correctness column"
+ },
+ "free_text_dropped": {
+  "chars": 0,
+  "n": 0,
+  "sha256": []
+ },
+ "harness_meta": [
+  {
+   "agent_definition_sha": "a16037a8f62a65403c344b5a233d410bc43d0c2c9a878a61dec3499599564087",
+   "driver": "L2-api",
+   "requested_model": "claude-haiku-5-5"
+  },
+  {
+   "response_model": "claude-haiku-5-5"
+  }
+ ],
+ "ledger": "experiments/line3/loom/runs_h55c/I2-025.constructed_allowed.api/ops.jsonl",
+ "ledger_head": "802ac380355a38f7bbbd63c39aec2a4e83d35f211c74431266894c6407032a8c",
+ "mode": "constructed_allowed",
+ "model_result": true,
+ "op_counts": {
+  "by_class": {
+   "emit_attempts": 1,
+   "lookups": 5,
+   "ops": 16,
+   "other": 6,
+   "reads": 4
+  },
+  "by_op": {
+   "abstain": 1,
+   "add": 1,
+   "begin": 1,
+   "drop": 5,
+   "emit": 1,
+   "lookup": 3,
+   "read": 4,
+   "read_sentence": 2,
+   "seat": 1,
+   "status": 4,
+   "swap": 1,
+   "unseat": 1,
+   "weave_span": 7
+  },
+  "emit_attempts": 1,
+  "model_rows": 32,
+  "rows": 34
+ },
+ "output_text": null,
+ "refusals": {
+  "constructed_is_foundation": 1,
+  "unstable_cross": 1
+ },
+ "schema": "loom-result-1",
+ "score": {
+  "abstain_type": "cannot_weave",
+  "answer_line": null,
+  "base": "I2-025",
+  "chars": {},
+  "control": false,
+  "correct": false,
+  "excess_chars": null,
+  "hit_cited": null,
+  "hit_exact": null,
+  "hit_record_text": null,
+  "hits_text": null,
+  "hits_words": null,
+  "kind": "answerable",
+  "mode": "constructed_allowed",
+  "note": "an answerable question was abstained",
+  "outcome": "abstained",
+  "output_sha": null,
+  "replay_verified": true,
+  "share_permille": {},
+  "stability": null,
+  "status": "abstained_wrong",
+  "task_id": "bank2/I2-025.constructed_allowed",
+  "text": null,
+  "verify_status": "OK"
+ },
+ "self_corrections": {
+  "counts": {
+   "plan_change_after_empty": 1,
+   "recovery_after_refusal": 0,
+   "refusals_recoverable": 2,
+   "unseat_swap_before_close": 2
+  },
+  "plan_change_after_empty": [
+   {
+    "i": 2,
+    "next_i": 3,
+    "next_op": "lookup"
+   }
+  ],
+  "recovery_after_refusal": [],
+  "refusals_recoverable": 2,
+  "unseat_swap_before_close": [
+   {
+    "i": 22,
+    "op": "swap"
+   },
+   {
+    "i": 24,
+    "op": "unseat"
+   }
+  ]
+ },
+ "t_loom_34": "unchecked",
+ "task_id": "bank2/I2-025.constructed_allowed",
+ "wall": {
+  "driver_ns": 22904304709,
+  "ledger_ns": 22904044583
+ }
+}

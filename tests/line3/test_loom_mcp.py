@@ -1,6 +1,6 @@
 """LOOM-d tests: the FastMCP server `vera-loom` (docs/LINE3_LOOM_DESIGN.md 4, 9.1; `vera loom mcp`).
 
-The tool list is the 18 operations; a model that connects over MCP can do exactly what the scripted weaver does and every call is one ledger row.
+The tool list is the 20 operations; a model that connects over MCP can do exactly what the scripted weaver does and every call is one ledger row.
 """
 import asyncio
 import json
@@ -30,10 +30,10 @@ def call(m, tool, args):
     return asyncio.run(go())
 
 
-def test_the_tool_list_is_the_18_operations(bank, tmp_path):
+def test_the_tool_list_is_the_20_operations(bank, tmp_path):
     m = lm.build(str(bank), str(tmp_path / "runs"))
     tools = asyncio.run(m.list_tools())
-    assert [t.name for t in tools] == list(MODEL_OPS) and len(tools) == 18
+    assert [t.name for t in tools] == list(MODEL_OPS) and len(tools) == 20
     assert m.name == "vera-loom"
     for t in tools:
         assert t.description and len(t.description) > 20

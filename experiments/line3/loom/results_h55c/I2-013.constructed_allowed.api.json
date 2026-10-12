@@ -1,0 +1,244 @@
+{
+ "abandoned": [],
+ "annotated": [
+  {
+   "adhesion": {
+    "n": 2,
+    "particle": "は"
+   },
+   "cid": "c1",
+   "kind": "record",
+   "prov": {
+    "n": 2,
+    "tier": "RUN"
+   },
+   "s": "旧社格",
+   "seat": "centre",
+   "tier": "RUN",
+   "uid": "u1"
+  },
+  {
+   "cid": "c1",
+   "kind": "foundation",
+   "prov": {
+    "kind": "foundation",
+    "ratio": "233/377",
+    "seats_sha": "a2083d4536377ac0b8381db5df6d0ba6ebcc6d20ec5d16f80f34f74fa802a5d7"
+   },
+   "s": "は",
+   "seat": "centre"
+  },
+  {
+   "cid": "c2",
+   "kind": "record",
+   "prov": {
+    "n": 2,
+    "tier": "RUN"
+   },
+   "s": "県社",
+   "seat": "centre",
+   "tier": "RUN",
+   "uid": "u2"
+  }
+ ],
+ "answer_view": {
+  "excess_chars": 4,
+  "hit_cited": true,
+  "hit_exact": false,
+  "hit_record_text": true,
+  "hits_text": true
+ },
+ "base": "I2-013",
+ "closing": {
+  "i": 7,
+  "op": "emit",
+  "status": "emitted",
+  "type": null
+ },
+ "control": false,
+ "control_note": null,
+ "declared_model": "claude-haiku-5-5",
+ "driver": "api",
+ "driver_report": {
+  "calls_skipped_after_close": 0,
+  "control_text_chars": null,
+  "ended": "closed",
+  "error": null,
+  "response_models": [
+   "claude-haiku-5-5"
+  ],
+  "stop_reasons": [
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use"
+  ],
+  "system_prompt_sha256": "a16037a8f62a65403c344b5a233d410bc43d0c2c9a878a61dec3499599564087",
+  "text_blocks_dropped": 0,
+  "thinking_dropped": {
+   "chars": 0,
+   "n": 0,
+   "sha256": []
+  },
+  "tool_calls": 6,
+  "tool_choice": {
+   "type": "any"
+  },
+  "tool_less_turns": 0,
+  "tools": [
+   "lookup",
+   "read_sentence",
+   "add",
+   "open_cross",
+   "seat",
+   "seat_run",
+   "weave_span",
+   "unseat",
+   "swap",
+   "extend",
+   "topic",
+   "set_depth",
+   "link",
+   "unlink",
+   "drop",
+   "read",
+   "emit",
+   "abstain",
+   "status",
+   "done"
+  ],
+  "turns": 5,
+  "usage": {
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 0,
+   "calls": 5,
+   "input_tokens": 40611,
+   "output_tokens": 333
+  }
+ },
+ "footnotes": {
+  "hits_words": "hits_words (the gold inside ONE record unit; `score.hits_words`) is false by construction for every multi-unit answer (ハッシュ表, キューバの太陽, カールマルクス, 1981年); it is not a correctness column"
+ },
+ "free_text_dropped": {
+  "chars": 0,
+  "n": 0,
+  "sha256": []
+ },
+ "harness_meta": [
+  {
+   "agent_definition_sha": "a16037a8f62a65403c344b5a233d410bc43d0c2c9a878a61dec3499599564087",
+   "driver": "L2-api",
+   "requested_model": "claude-haiku-5-5"
+  },
+  {
+   "response_model": "claude-haiku-5-5"
+  }
+ ],
+ "ledger": "experiments/line3/loom/runs_h55c/I2-013.constructed_allowed.api/ops.jsonl",
+ "ledger_head": "eaa25da5d0ff607393ee9077b38796ce6891939fc79f3b65e730bb16380f774b",
+ "mode": "constructed_allowed",
+ "model_result": true,
+ "op_counts": {
+  "by_class": {
+   "emit_attempts": 1,
+   "lookups": 3,
+   "ops": 1,
+   "other": 1,
+   "reads": 1
+  },
+  "by_op": {
+   "begin": 1,
+   "emit": 1,
+   "lookup": 2,
+   "read": 1,
+   "read_sentence": 1,
+   "weave_span": 1
+  },
+  "emit_attempts": 1,
+  "model_rows": 7,
+  "rows": 9
+ },
+ "output_text": "旧社格は県社",
+ "refusals": {},
+ "schema": "loom-result-1",
+ "score": {
+  "abstain_type": null,
+  "answer_line": null,
+  "base": "I2-013",
+  "chars": {
+   "constructed": 0,
+   "foundation": 1,
+   "layout": 0,
+   "record": 5
+  },
+  "control": false,
+  "correct": false,
+  "excess_chars": 4,
+  "hit_cited": true,
+  "hit_exact": false,
+  "hit_record_text": true,
+  "hits_text": true,
+  "hits_words": true,
+  "kind": "answerable",
+  "mode": "constructed_allowed",
+  "note": "",
+  "outcome": "emitted",
+  "output_sha": "076c699bd35970f3b88cf0ee57d9df5286ad2bcf082c5b61f0ac751a1c5d7ea3",
+  "replay_verified": true,
+  "share_permille": {
+   "constructed": 0,
+   "foundation": 166,
+   "layout": 0,
+   "record": 833
+  },
+  "stability": [
+   {
+    "cid": "c1",
+    "improving": [],
+    "key": [
+     0,
+     0,
+     466
+    ],
+    "moves_tested": 0,
+    "status": "trivially_stable",
+    "tier": "RUN"
+   },
+   {
+    "cid": "c2",
+    "improving": [],
+    "key": [
+     0,
+     0,
+     0
+    ],
+    "moves_tested": 0,
+    "status": "trivially_stable",
+    "tier": "RUN"
+   }
+  ],
+  "status": "miss",
+  "task_id": "bank2/I2-013.constructed_allowed",
+  "text": "旧社格は県社",
+  "verify_status": "OK"
+ },
+ "self_corrections": {
+  "counts": {
+   "plan_change_after_empty": 0,
+   "recovery_after_refusal": 0,
+   "refusals_recoverable": 0,
+   "unseat_swap_before_close": 0
+  },
+  "plan_change_after_empty": [],
+  "recovery_after_refusal": [],
+  "refusals_recoverable": 0,
+  "unseat_swap_before_close": []
+ },
+ "t_loom_34": "unchecked",
+ "task_id": "bank2/I2-013.constructed_allowed",
+ "wall": {
+  "driver_ns": 5906946500,
+  "ledger_ns": 5907136042
+ }
+}

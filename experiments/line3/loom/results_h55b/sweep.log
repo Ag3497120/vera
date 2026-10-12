@@ -1,0 +1,130 @@
+=== I2-001 record_only
+bank2/I2-001.record_only abstained_wrong null -> experiments/line3/loom/results_h55b/I2-001.record_only.api.json
+rc=0
+=== I2-001 constructed_allowed
+bank2/I2-001.constructed_allowed hit "ハッシュ表" -> experiments/line3/loom/results_h55b/I2-001.constructed_allowed.api.json
+rc=0
+=== I2-001 free_text
+bank2/I2-001.free_text hit "ハッシュ表" -> experiments/line3/loom/results_h55b/I2-001.free_text.api.json
+rc=0
+=== I2-041 record_only
+bank2/I2-041.record_only abstained_wrong null -> experiments/line3/loom/results_h55b/I2-041.record_only.api.json
+rc=0
+=== I2-041 constructed_allowed
+bank2/I2-041.constructed_allowed abstained_wrong null -> experiments/line3/loom/results_h55b/I2-041.constructed_allowed.api.json
+rc=0
+=== I2-041 free_text
+bank2/I2-041.free_text hit "キューバの太陽" -> experiments/line3/loom/results_h55b/I2-041.free_text.api.json
+rc=0
+=== I2-008 record_only
+bank2/I2-008.record_only abstained_wrong null -> experiments/line3/loom/results_h55b/I2-008.record_only.api.json
+rc=0
+=== I2-008 constructed_allowed
+bank2/I2-008.constructed_allowed abstained_wrong null -> experiments/line3/loom/results_h55b/I2-008.constructed_allowed.api.json
+rc=0
+=== I2-008 free_text
+bank2/I2-008.free_text hit "カール・マルクス" -> experiments/line3/loom/results_h55b/I2-008.free_text.api.json
+rc=0
+=== I2-034 record_only
+bank2/I2-034.record_only hit "1981年に永豊企業株式会社の設立" -> experiments/line3/loom/results_h55b/I2-034.record_only.api.json
+rc=0
+=== I2-034 constructed_allowed
+bank2/I2-034.constructed_allowed abstained_wrong null -> experiments/line3/loom/results_h55b/I2-034.constructed_allowed.api.json
+rc=0
+=== I2-034 free_text
+bank2/I2-034.free_text hit "1981年" -> experiments/line3/loom/results_h55b/I2-034.free_text.api.json
+rc=0
+=== I2-013 record_only
+bank2/I2-013.record_only hit "旧社格は県社" -> experiments/line3/loom/results_h55b/I2-013.record_only.api.json
+rc=0
+=== I2-013 constructed_allowed
+bank2/I2-013.constructed_allowed abstained_wrong null -> experiments/line3/loom/results_h55b/I2-013.constructed_allowed.api.json
+rc=0
+=== I2-013 free_text
+bank2/I2-013.free_text hit "県社" -> experiments/line3/loom/results_h55b/I2-013.free_text.api.json
+rc=0
+=== R2-I013 record_only
+bank2/R2-I013.record_only abstained_wrong null -> experiments/line3/loom/results_h55b/R2-I013.record_only.api.json
+rc=0
+=== R2-I013 constructed_allowed
+bank2/R2-I013.constructed_allowed hit "ネパールにインドの話者" -> experiments/line3/loom/results_h55b/R2-I013.constructed_allowed.api.json
+rc=0
+=== R2-I013 free_text
+bank2/R2-I013.free_text hit "ネパール" -> experiments/line3/loom/results_h55b/R2-I013.free_text.api.json
+rc=0
+=== I2-025 record_only
+bank2/I2-025.record_only hit "イギリスアメリカを青" -> experiments/line3/loom/results_h55b/I2-025.record_only.api.json
+rc=0
+=== I2-025 constructed_allowed
+                    INFO     Retrying request to            _base_client.py:1372
+                             /v1/messages in 1.000000                           
+                             seconds                                            
+                    INFO     Retrying request to            _base_client.py:1372
+                             /v1/messages in 2.000000                           
+                             seconds                                            
+                    INFO     Retrying request to            _base_client.py:1372
+                             /v1/messages in 1.000000                           
+                             seconds                                            
+                    INFO     Retrying request to            _base_client.py:1372
+                             /v1/messages in 1.000000                           
+                             seconds                                            
+                    INFO     Retrying request to            _base_client.py:1372
+                             /v1/messages in 2.000000                           
+                             seconds                                            
+                    INFO     Retrying request to            _base_client.py:1372
+                             /v1/messages in 1.000000                           
+                             seconds                                            
+                    INFO     Retrying request to            _base_client.py:1372
+                             /v1/messages in 1.000000                           
+                             seconds                                            
+                    INFO     Retrying request to            _base_client.py:1372
+                             /v1/messages in 1.000000                           
+                             seconds                                            
+                    INFO     Retrying request to            _base_client.py:1372
+                             /v1/messages in 2.000000                           
+                             seconds                                            
+                    INFO     Retrying request to            _base_client.py:1372
+                             /v1/messages in 1.000000                           
+                             seconds                                            
+                    INFO     Retrying request to            _base_client.py:1372
+                             /v1/messages in 1.000000                           
+                             seconds                                            
+                    INFO     Retrying request to            _base_client.py:1372
+                             /v1/messages in 2.000000                           
+                             seconds                                            
+                    INFO     Retrying request to            _base_client.py:1372
+                             /v1/messages in 1.000000                           
+                             seconds                                            
+bank2/I2-025.constructed_allowed abstained_wrong null -> experiments/line3/loom/results_h55b/I2-025.constructed_allowed.api.json
+rc=0
+=== I2-025 free_text
+bank2/I2-025.free_text hit "青" -> experiments/line3/loom/results_h55b/I2-025.free_text.api.json
+rc=0
+=== UF-001 record_only
+bank2/UF-001.record_only abstained_correct null -> experiments/line3/loom/results_h55b/UF-001.record_only.api.json
+rc=0
+=== UF-001 constructed_allowed
+bank2/UF-001.constructed_allowed abstained_correct null -> experiments/line3/loom/results_h55b/UF-001.constructed_allowed.api.json
+rc=0
+=== UF-001 free_text
+bank2/UF-001.free_text abstained_correct "不明" -> experiments/line3/loom/results_h55b/UF-001.free_text.api.json
+rc=0
+=== UF-015 record_only
+bank2/UF-015.record_only abstained_correct null -> experiments/line3/loom/results_h55b/UF-015.record_only.api.json
+rc=0
+=== UF-015 constructed_allowed
+bank2/UF-015.constructed_allowed abstained_correct null -> experiments/line3/loom/results_h55b/UF-015.constructed_allowed.api.json
+rc=0
+=== UF-015 free_text
+bank2/UF-015.free_text abstained_correct "不明" -> experiments/line3/loom/results_h55b/UF-015.free_text.api.json
+rc=0
+=== R2-U003 record_only
+bank2/R2-U003.record_only no_output null -> experiments/line3/loom/results_h55b/R2-U003.record_only.api.json
+rc=0
+=== R2-U003 constructed_allowed
+bank2/R2-U003.constructed_allowed abstained_correct null -> experiments/line3/loom/results_h55b/R2-U003.constructed_allowed.api.json
+rc=0
+=== R2-U003 free_text
+bank2/R2-U003.free_text abstained_correct "不明" -> experiments/line3/loom/results_h55b/R2-U003.free_text.api.json
+rc=0
+=== DONE

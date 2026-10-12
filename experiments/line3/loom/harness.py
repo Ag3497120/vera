@@ -8,7 +8,7 @@
   python experiments/line3/loom/harness.py find    [--task I2-041]                                          # candidates only; refuses scripted folders; warns on >1
   python experiments/line3/loom/harness.py close   RUN_DIR
   python experiments/line3/loom/harness.py score   RUN_DIR [--driver subagent]                            # from the folder alone
-  python experiments/line3/loom/harness.py [--results-dir DIR] summary                                    # hits_text | hit_record_text | excess_chars, footnote hits_words
+  python experiments/line3/loom/harness.py [--results-dir DIR] summary                                    # hit_exact (headline) | hit_cited | hits_text | hit_record_text | excess_chars, footnotes
 
 FOLDERS (L-LOOM-64).  The OPERATOR folders `runs/` and `results/` are where the MCP server and the subagent / api drivers write; they never hold a scripted
 run.  The scripted baseline (gold-informed scripts, not a measurement) lives in `baseline_scripted/{runs,results}/`, which is the default of `--driver scripted`
@@ -322,7 +322,8 @@ def result_object(rs: "score.RunScore", driver: str, run_dir: str, extra: Option
     obj = {
         "schema": "loom-result-1", "task_id": rs.task_id, "base": rs.base, "mode": rs.mode, "driver": driver, "control": rs.control,
         "control_note": cnote, "model_result": driver != "scripted",
-        "answer_view": {"hits_text": s.get("hits_text"), "hit_record_text": s.get("hit_record_text"), "excess_chars": s.get("excess_chars")},
+        "answer_view": {"hit_exact": s.get("hit_exact"), "hit_cited": s.get("hit_cited"), "hits_text": s.get("hits_text"),
+                        "hit_record_text": s.get("hit_record_text"), "excess_chars": s.get("excess_chars")},
         "footnotes": {"hits_words": HITS_WORDS_FOOTNOTE},
         "ledger": _rel(os.path.join(run_dir, "ops.jsonl")), "ledger_head": facts.get("head"),
         "output_text": rs.text, "annotated": ann, "score": s,
@@ -718,9 +719,12 @@ def find_runs(bank: Dict[str, dict], runs_dir: str, results_dir: str, task: Opti
 
 
 def summary_table(results_dir: str) -> str:
-    """One line per results file: hits_text (primary), hit_record_text and excess_chars beside it, then the footnote on hits_words."""
+    """One line per results file: hit_exact (the HEADLINE since 2026-10-12), hit_cited, then hits_text (substring) and excess_chars as secondary columns,
+    hit_record_text, then the footnotes.  A results file written before LOOM-span has no hit_exact / hit_cited ("-"): `experiments/line3/loom/rescore.py`
+    scores such a folder again (its `rescore_*.md`)."""
     yn = lambda v: "-" if v is None else ("Y" if v else "N")
-    lines = ["%-34s %-20s %-9s %-18s %-9s %-15s %s" % ("task", "mode", "driver", "status", "hits_text", "hit_record_text", "excess_chars")]
+    lines = ["%-34s %-20s %-9s %-18s %-9s %-9s %-9s %-15s %s" % ("task", "mode", "driver", "status", "hit_exact", "hit_cited", "hits_text", "hit_record_text",
+                                                                  "excess_chars")]
     if os.path.isdir(results_dir):
         for fn in sorted(os.listdir(results_dir)):
             if not fn.endswith(".json"):
@@ -728,10 +732,13 @@ def summary_table(results_dir: str) -> str:
             with open(os.path.join(results_dir, fn), encoding="utf-8") as f:
                 o = json.load(f)
             v = o.get("answer_view") or {}
-            lines.append("%-34s %-20s %-9s %-18s %-9s %-15s %s" % (o["task_id"], o["mode"], o["driver"], o["score"]["status"], yn(v.get("hits_text")),
-                                                                  yn(v.get("hit_record_text")), "-" if v.get("excess_chars") is None else v["excess_chars"]))
+            lines.append("%-34s %-20s %-9s %-18s %-9s %-9s %-9s %-15s %s" % (
+                o["task_id"], o["mode"], o["driver"], o["score"]["status"], yn(v.get("hit_exact")), yn(v.get("hit_cited")), yn(v.get("hits_text")),
+                yn(v.get("hit_record_text")), "-" if v.get("excess_chars") is None else v["excess_chars"]))
     lines.append("")
-    lines.append("hits_text is the primary column.  (1) " + HITS_WORDS_FOOTNOTE + ".")
+    lines.append("hit_exact is the HEADLINE (the answer text equals a gold alternative after the T9 normalisation; since 2026-10-12, LOOM-span); status follows it.  "
+                 "hit_cited: a longer text that holds the gold and appears word for word in a sentence the ledger cites.  hits_text (substring) and excess_chars are "
+                 "secondary.  (1) " + HITS_WORDS_FOOTNOTE + ".")
     return "\n".join(lines)
 
 
@@ -776,7 +783,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     p = sub.add_parser("find", help="the run folders under --runs-dir that belong to a task (newest first)")
     p.add_argument("--task", default=None)
     p.add_argument("--mode", default=None)
-    p = sub.add_parser("summary", help="table of a results folder: hits_text | hit_record_text | excess_chars (+ footnote on hits_words)")
+    p = sub.add_parser("summary", help="table of a results folder: hit_exact (headline) | hit_cited | hits_text | hit_record_text | excess_chars (+ footnotes)")
     p = sub.add_parser("close")
     p.add_argument("run_dir")
     p.add_argument("--reason", default="no_close")

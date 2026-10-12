@@ -512,7 +512,7 @@ def test_notes_are_in_the_result_and_in_a_note_row_right_after_the_read_and_the_
     assert ops[-2:] == [("model", "emit"), ("loom", nt.NOTE_OP)]
     assert types(r["notes"]) == [nt.CONFLICT, nt.NO_RECORD] and e["notes"] == r["notes"]
     for row, res in ((rs[ri + 1], r), (rs[-1], e)):
-        assert row["args"]["notes"] == res["notes"] and row["result"] == {"ok": True} and row["args"]["nv"] == nt.NOTES_VERSION == "notes.v1"
+        assert row["args"]["notes"] == res["notes"] and row["result"] == {"ok": True} and row["args"]["nv"] == nt.NOTES_VERSION == "notes.v2"
         assert set(row["args"]) == {"after", "of", "notes", "nv"}
         assert row["args"]["after"] == row["i"] - 1
     assert (rs[ri + 1]["args"]["of"], rs[-1]["args"]["of"]) == ("read", "emit")
@@ -1040,7 +1040,7 @@ def test_note_summary_shows_a_note_resolved_by_a_state_change(tmp_path):
     e = w.call("emit")
     assert e["ok"]
     summary = nt.note_summary(rows(tmp_path / "runs" / "s"))
-    assert summary["by_type"] == {nt.CONFLICT: 1, nt.UNANCHORED: 0, nt.NO_RECORD: 0}
+    assert summary["by_type"] == {nt.CONFLICT: 1, nt.UNANCHORED: 0, nt.NO_RECORD: 0, nt.QUESTION_ECHO: 0}
     assert summary["observations"] == 3 and summary["shown"] == 1
     assert summary["resolved"] == [{"i": 13, "next_i": 16, "type": nt.CONFLICT}]
     assert summary["at_close"] == []

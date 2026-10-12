@@ -1,4 +1,4 @@
-"""LOOM-a tests: the 18 operations, their typed refusals, the per-run caps (docs/LINE3_LOOM_DESIGN.md 4, 5.1; T-LOOM-01..09).
+"""LOOM-a tests: the 20 operations (18 + weave_span and drop of LOOM-span), their typed refusals, the per-run caps (docs/LINE3_LOOM_DESIGN.md 4, 5.1; T-LOOM-01..09).
 
 A refusal is {"ok": false, "refusal": <type>, "detail": {...}}, never an exception, and it leaves the structure as it was.
 """
@@ -61,18 +61,18 @@ def test_a_corpus_is_cached_by_its_sha(corpus):
 # ---------------------------------------------------------------------------------------------------------------
 # begin / task bank
 # ---------------------------------------------------------------------------------------------------------------
-def test_there_are_exactly_the_18_tools_and_no_rotate_no_undo():
-    assert len(MODEL_OPS) == 18 and len(set(MODEL_OPS)) == 18
-    assert set(MODEL_OPS) == {"begin", "lookup", "read_sentence", "add", "open_cross", "seat", "seat_run", "unseat", "swap", "extend",
-                              "topic", "set_depth", "link", "unlink", "read", "emit", "abstain", "status"}
-    assert "rotate" not in MODEL_OPS and "undo" not in MODEL_OPS
+def test_there_are_exactly_the_20_tools_and_no_rotate_no_undo():
+    assert len(MODEL_OPS) == 20 and len(set(MODEL_OPS)) == 20
+    assert set(MODEL_OPS) == {"begin", "lookup", "read_sentence", "add", "open_cross", "seat", "seat_run", "weave_span", "unseat", "swap", "extend",
+                              "topic", "set_depth", "link", "unlink", "drop", "read", "emit", "abstain", "status"}
+    assert "rotate" not in MODEL_OPS and "undo" not in MODEL_OPS and "weave_sentence" not in MODEL_OPS    # weave_sentence: legacy, replay only (LOOM-span)
 
 
 def test_begin_returns_the_task_without_a_gold_or_a_path(tmp_path):
     srv = server(tmp_path)
     r = srv.begin("demo/tokyo_ca", "claude-haiku-4-5", "r1")
     assert r["ok"] and r["run_id"] == "r1"
-    assert r["task"]["mode"] == "constructed_allowed" and r["task"]["tiers"] == ["WORD"] and r["task"]["caps"]["ops"] == 120
+    assert r["task"]["mode"] == "constructed_allowed" and r["task"]["tiers"] == ["WORD"] and r["task"]["caps"]["ops"] == 200 and r["task"]["caps"]["lookups"] == 100
     blob = json.dumps(r, ensure_ascii=False)
     assert "gold" not in blob and CORPUS not in blob and "corpus" not in r["task"]
     assert r["header"]["declared_model"] == "claude-haiku-4-5" and r["header"]["stability_mode"] == "strict_npa"
@@ -449,7 +449,7 @@ def test_status_shows_seats_pool_counters_and_the_ledger_head(tmp_path):
     assert s["crosses"][c]["seats"]["centre"] == u1 and s["crosses"][c]["seats"]["+x:2"] == "F:の" and s["crosses"][c]["seats"]["-z:2"] == "F:が"
     assert s["counters"] == {"ops": 4, "lookups": 0, "reads": 0, "emit_attempts": 0, "constructed": 0}
     assert s["ledger_head"] == rows(tmp_path / "runs" / w.run_id)[-2]["sha"]               # the head BEFORE the status row itself
-    assert s["caps"]["ops"] == 120
+    assert s["caps"]["ops"] == 200
 
 
 def test_abstain(tmp_path):
@@ -490,18 +490,18 @@ def test_harness_rows_are_validated(tmp_path):
 # ---------------------------------------------------------------------------------------------------------------
 # the caps fire exactly at the limit (L-LOOM-08)
 # ---------------------------------------------------------------------------------------------------------------
-def test_ops_cap_fires_after_exactly_120_state_changing_calls_refused_or_not(tmp_path):
+def test_ops_cap_fires_after_exactly_200_state_changing_calls_refused_or_not(tmp_path):
     srv = server(tmp_path)
     w = weaver(srv, "prose/ca")
     c = w.call("open_cross", tier="WORD", L=1)["cid"]                       # 1
-    for _ in range(118):
+    for _ in range(198):
         assert w.call("topic", cid=c, on=True)["ok"]
-    r = w.call("topic", cid=c, on=True)                                       # the 120th
+    r = w.call("topic", cid=c, on=True)                                       # the 200th
     assert r["ok"]
     d = refused(w.call("topic", cid=c, on=False), "ops_cap")
-    assert d == {"limit": 120}
+    assert d == {"limit": 200}
     assert srv.runs[w.run_id].run.state.crosses[c].topic is True              # the refused call changed nothing
-    assert w.call("status")["counters"]["ops"] == 120                         # the cap refusal itself does not count
+    assert w.call("status")["counters"]["ops"] == 200                         # the cap refusal itself does not count
     refused(w.call("add", text="日本", kind="record", tier="WORD"), "ops_cap")
     assert w.call("emit")["refusal"] == "empty_thread"                        # emit / read / lookup / status are other classes
     assert w.call("lookup", text="日本", tier="any")["ok"]
@@ -510,17 +510,17 @@ def test_ops_cap_fires_after_exactly_120_state_changing_calls_refused_or_not(tmp
 def test_refused_calls_count_in_their_class(tmp_path):
     srv = server(tmp_path)
     w = weaver(srv, "prose/ca")
-    for _ in range(120):
+    for _ in range(200):
         w.call("seat", cid="c9", seat="centre", uid="u9")                    # unknown_cid every time
     refused(w.call("seat", cid="c9", seat="centre", uid="u9"), "ops_cap")
 
 
 def test_lookup_cap_is_shared_by_lookup_and_read_sentence(tmp_path):
     w = weaver(server(tmp_path), "prose/ca")
-    for i in range(15):
+    for i in range(50):
         assert w.call("lookup", text="日本", tier="any")["ok"]
         assert w.call("read_sentence", sid=i)["ok"]
-    assert refused(w.call("lookup", text="日本", tier="any"), "lookup_cap") == {"limit": 30}
+    assert refused(w.call("lookup", text="日本", tier="any"), "lookup_cap") == {"limit": 100}
     refused(w.call("read_sentence", sid=0), "lookup_cap")
     assert w.call("add", text="日本", kind="record", tier="WORD")["ok"]
 
