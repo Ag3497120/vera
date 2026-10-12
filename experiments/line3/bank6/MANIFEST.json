@@ -1,0 +1,126 @@
+{
+ "intake": {
+  "recorded_at": "2026-10-13",
+  "note": "intake record: sha256 of bank6.tsv recorded before any Vera system reads it; no Vera system has read this bank before intake (no evidence gate v2/v3, reader, loom, model or other Vera system was run on it during authoring or audit); the gate v3 rules were frozen before authoring",
+  "v3_freeze": {
+   "state": "v3 frozen by design doc 65b26d57 (docs/LINE3_LOCAL_DECISIONS.md has no evidence.v3 section with a sha)",
+   "design_commit": "65b26d5720da7d69c0ab80f28b35aef73b0f0da7",
+   "design_commit_time": "2026-10-13T07:48:19+09:00",
+   "owner_acceptance_commit": "bcf9c94c8162368490d35e3db1ca3a18fe2cbcc3",
+   "owner_acceptance_time": "2026-10-13T07:51:33+09:00",
+   "prompt6_written": "2026-10-13T07:51:53+09:00",
+   "author_bank_written": "2026-10-13T07:58:58+09:00"
+  },
+  "blindness": "author saw only S300_fulllead.jsonl and PROMPT6.md (not the rule list); auditor did not open verantyx/loom/evidence.py or the rule section of LINE3_LOOM_REACH_DESIGN.md"
+ },
+ "bank": {
+  "path": "bank6.tsv",
+  "sha256": "d3c093a3f07d7a067ca0dcf00c6d5c8aef5952de49d271385d325aa4eac4d989",
+  "rows": 60,
+  "answerable": 26,
+  "unanswerable": 34,
+  "shapes": {
+   "S1-alias": 5,
+   "S2-place": 5,
+   "S3-person": 5,
+   "S4-toshite": 6,
+   "S5-paren": 4,
+   "S6-naming": 5,
+   "S7-near": 4
+  },
+  "evidence_convention": "title#i, 0-based over the lead's 「。」 split",
+  "audit": {
+   "answerable": {
+    "valid": 11,
+    "fixed": 15,
+    "dropped": 4,
+    "moved": 0
+   },
+   "unanswerable": {
+    "valid": 22,
+    "fixed": 12,
+    "dropped": 6,
+    "moved": 0
+   },
+   "dropped_ids": [
+    "B6-A02",
+    "B6-A04",
+    "B6-A10",
+    "B6-A23",
+    "B6-U04",
+    "B6-U12",
+    "B6-U17",
+    "B6-U25",
+    "B6-U37",
+    "B6-U38"
+   ],
+   "auditor_written": [
+    "B6-A01",
+    "B6-A09",
+    "B6-A12",
+    "B6-A14",
+    "B6-A19",
+    "B6-A22",
+    "B6-A24",
+    "B6-A25",
+    "B6-A27",
+    "B6-A28",
+    "B6-U13",
+    "B6-U29"
+   ]
+  },
+  "author_original": {
+   "path": "vera-impl/bank2-author/out/bank6.tsv",
+   "sha256": "12a6f7e73966d05a9c45cc631e223aa822acdb8dfd93b426d3e3762542fbd04f",
+   "rows": 70
+  }
+ },
+ "checker": {
+  "check6.py": {
+   "sha256": "4177ac5e030c24cf7e5ec823e8914f95a9c3d40ea50612bce903af1146bd02f8",
+   "note": "audited checker (corpus split identity, counts per part/shape, question form, verbatim gold, absence searches, no repeat of bank2/bank3/bank4/questions.tsv)"
+  },
+  "check6.txt": {
+   "sha256": "4c14ff87f88772ec08d915c637c5cc78b37fa03b5387237369a81279c63fd84b",
+   "result": "PASS (0 errors)"
+  }
+ },
+ "corpora": {
+  "fulllead": {
+   "path": "../data/S300_fulllead.jsonl",
+   "sha256": "d987fdee0e19283e9c69e461b2ae695e5f2681f7a64e2c486572fcd6d4f419ea",
+   "equals_author_copy": true,
+   "author_copy": "vera-impl/bank2-author/S300_fulllead.jsonl"
+  },
+  "fulllead_sents": {
+   "path": "../bank2/data/fulllead_sents.jsonl",
+   "sha256": "45efdaedb7abc8f43762ea0c237fca709b7a7b11710203fdeed7ab60c446cefe",
+   "note": "not byte-identical to S300_fulllead.jsonl: it is its sentence split (592 sentences; concatenation per title equals the 300 leads; source = title#i, 0-based over the 「。」 split) — verified by check6.py"
+  }
+ },
+ "author_files": {
+  "PROMPT6.md": {
+   "sha256": "573dcb387dfa7e8f44747c1159b38080b7fb2b8f30ebcb3436c827e39c06bde4",
+   "copied": false
+  },
+  "check6.py": {
+   "sha256": "33d1ff5a7d529c634d8d77696ba70f145cb59490bb8ac1c5e4c79522d61d6941",
+   "copied": false
+  },
+  "check6.txt": {
+   "sha256": "7462f0271fd614d129f6257155ba958d30bd06610d616b616ee0f6b7fa0b974e",
+   "copied": false,
+   "result": "PASS on the original (re-run by the auditor: PASS)"
+  },
+  "README6.md": {
+   "sha256": "c054715ea2ea07ebd12b0a9ed6dcfbbea6b443f6d56bcca2258d1d215cb90745",
+   "copied": false
+  }
+ },
+ "provenance": {
+  "author": "codex gpt-6-luna (saw only the corpus and PROMPT6, never Vera code, results or the gate rules), 1 round, 70 items",
+  "auditor": "Claude Opus 5.5",
+  "audit": "AUDIT6.md",
+  "date": "2026-10-13"
+ }
+}

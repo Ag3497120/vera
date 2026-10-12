@@ -1,0 +1,44 @@
+corpus: 300 leads, 592 sentences, split identity ok
+rows: 60 (ANSWERABLE=26, UNANSWERABLE=34); shapes: S1-alias=5, S2-place=5, S3-person=5, S4-toshite=6, S5-paren=4, S6-naming=5, S7-near=4
+audit: A:fixed=15, A:valid=11, U:fixed=12, U:valid=22
+INFO B6-A05: gold also occurs in other articles: ['トランス女性#0', 'トランス女性#1']
+INFO B6-A07: gold also occurs in other articles: ['岡崎建設#0']
+INFO B6-A27: gold also occurs in other articles: ['ブリティッシュ・エアウェイズ#0', 'ブリティッシュ・エアウェイズ#1', 'レッド計画#0']
+INFO B6-A30: gold also occurs in other articles: ['1965年モナコグランプリ#0']
+INFO B6-U01: c) 'はっしゅひょう' not in the corpus
+INFO B6-U02: c) '呉駅' not in the corpus
+INFO B6-U03: c) 'overseas drama' not in the corpus
+INFO B6-U05: c) '女性解放運動' not in the corpus
+INFO B6-U06: c) 'MacFergus' not in the corpus
+INFO B6-U07: c) '熊本市' not in the corpus
+INFO B6-U08: c) '松本市' occurs in ['梓橋#0']
+INFO B6-U09: c) '中央区' occurs in ['天満橋#3', '千葉神社#0']
+INFO B6-U10: c) '福岡市' not in the corpus
+INFO B6-U11: c) 'ウィルトシャー' not in the corpus
+INFO B6-U13: c) 'ブレイク・レモイン' occurs in ['LaMDA#2']
+INFO B6-U14: c) '長尾伸一' not in the corpus
+INFO B6-U15: c) '山崎弘士' occurs in ['YAMAMORIラジオ!#1']
+INFO B6-U16: c) '藤井健太郎' occurs in ['HONEY BADGER#1']
+INFO B6-U18: c) 'ケーザイ・シモン' occurs in ['ケーザイ・シモン#0']
+INFO B6-U19: c) '19世紀' occurs in ['唯物史観#1']
+INFO B6-U20: c) '1974年' occurs in ['レッド計画#2', 'ダウトフェタール#2']
+INFO B6-U21: c) '1980年代' not in the corpus
+INFO B6-U22: c) 'ロシア' occurs in ['日露協約#0', 'プセール川#0']
+INFO B6-U23: c) '2002年' occurs in ['CUBE JUICE#0']
+INFO B6-U24: c) 'アメリカ' occurs in ['熊送り#0', 'リサ長尾#1']
+INFO B6-U26: c) 'Advanced Train Control System' not in the corpus
+INFO B6-U27: c) 'external insulation' not in the corpus
+INFO B6-U28: c) 'feminist movement' not in the corpus
+INFO B6-U29: c) 'キャロライン' occurs in ['カロリーヌ#1']
+INFO B6-U30: c) '志摩国' occurs in ['英虞郡#0']
+INFO B6-U31: c) '三日月旗' not in the corpus
+INFO B6-U32: c) 'ベルクト' not in the corpus
+INFO B6-U33: c) 'ペシオンヴィル大使館' not in the corpus
+INFO B6-U34: c) '2001年スペイン大会' not in the corpus
+INFO B6-U35: c) 'Y17' occurs in ['花園町駅#1']
+INFO B6-U36: c) 'OR08' occurs in ['海浦駅#1']
+INFO B6-U39: c) '2対0' not in the corpus
+INFO B6-U40: c) '2人' not in the corpus
+INFO B6-A05: gold overlaps questions a10 (フェミニズムとは何ですか -> 社会運動|思想|ジェンダー) [known, kept]
+INFO B6-A08: gold overlaps questions a30 (花園町駅はどこにありますか -> 大阪府|大阪市|西成区) [known, kept]
+RESULT: PASS (0 errors, 40 info)
