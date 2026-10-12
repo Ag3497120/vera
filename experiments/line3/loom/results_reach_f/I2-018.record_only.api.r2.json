@@ -1,0 +1,329 @@
+{
+ "abandoned": [],
+ "annotated": [
+  {
+   "cid": "c7",
+   "kind": "record",
+   "prov": {
+    "n": 1,
+    "tier": "WORD"
+   },
+   "s": "権現",
+   "seat": "centre",
+   "tier": "WORD",
+   "uid": "u7"
+  },
+  {
+   "cid": "c8",
+   "join": {
+    "attested": [
+     122,
+     15,
+     19
+    ],
+    "prev": "u7"
+   },
+   "kind": "record",
+   "prov": {
+    "n": 5,
+    "tier": "WORD"
+   },
+   "s": "さん",
+   "seat": "centre",
+   "tier": "WORD",
+   "uid": "u8"
+  }
+ ],
+ "answer_view": {
+  "excess_chars": 0,
+  "hit_cited": false,
+  "hit_exact": true,
+  "hit_record_text": true,
+  "hits_text": true
+ },
+ "base": "I2-018",
+ "closing": {
+  "i": 29,
+  "op": "emit",
+  "status": "emitted",
+  "type": null
+ },
+ "control": false,
+ "control_note": null,
+ "declared_model": "claude-haiku-5-5",
+ "driver": "api",
+ "driver_report": {
+  "calls_skipped_after_close": 0,
+  "control_text_chars": null,
+  "ended": "closed",
+  "error": null,
+  "response_models": [
+   "claude-haiku-5-5"
+  ],
+  "stop_reasons": [
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use"
+  ],
+  "system_prompt_sha256": "a1ad17d2870c672df1252da336bd79d14da9af6750f2422918fc205db023bb5e",
+  "text_blocks_dropped": 0,
+  "thinking_dropped": {
+   "chars": 0,
+   "n": 0,
+   "sha256": []
+  },
+  "tool_calls": 28,
+  "tool_choice": {
+   "type": "any"
+  },
+  "tool_less_turns": 0,
+  "tools": [
+   "lookup",
+   "read_sentence",
+   "add",
+   "open_cross",
+   "seat",
+   "seat_run",
+   "weave_span",
+   "unseat",
+   "swap",
+   "extend",
+   "topic",
+   "set_depth",
+   "link",
+   "unlink",
+   "drop",
+   "read",
+   "emit",
+   "abstain",
+   "status",
+   "done"
+  ],
+  "turns": 22,
+  "usage": {
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 0,
+   "calls": 22,
+   "input_tokens": 250003,
+   "output_tokens": 1596
+  }
+ },
+ "footnotes": {
+  "hits_words": "hits_words (the gold inside ONE record unit; `score.hits_words`) is false by construction for every multi-unit answer (ハッシュ表, キューバの太陽, カールマルクス, 1981年); it is not a correctness column"
+ },
+ "free_text_dropped": {
+  "chars": 0,
+  "n": 0,
+  "sha256": []
+ },
+ "harness_meta": [
+  {
+   "agent_definition_sha": "a1ad17d2870c672df1252da336bd79d14da9af6750f2422918fc205db023bb5e",
+   "driver": "L2-api",
+   "requested_model": "claude-haiku-5-5"
+  },
+  {
+   "response_model": "claude-haiku-5-5"
+  }
+ ],
+ "ledger": "experiments/line3/loom/runs_reach_f/I2-018.record_only.api.r2/ops.jsonl",
+ "ledger_head": "87bed498ef4241f15973ffd8f3300f296facaa15b61b5657709849d0c38da9e7",
+ "mode": "record_only",
+ "model_result": true,
+ "op_counts": {
+  "by_class": {
+   "emit_attempts": 1,
+   "lookups": 7,
+   "ops": 14,
+   "other": 1,
+   "reads": 6
+  },
+  "by_op": {
+   "begin": 1,
+   "drop": 6,
+   "emit": 1,
+   "lookup": 4,
+   "read": 6,
+   "read_sentence": 3,
+   "weave_span": 8
+  },
+  "emit_attempts": 1,
+  "model_rows": 29,
+  "rows": 31
+ },
+ "output_text": "権現さん",
+ "refusals": {
+  "span_inexpressible": 1,
+  "unit_not_in_sentence": 1
+ },
+ "schema": "loom-result-1",
+ "score": {
+  "abstain_type": null,
+  "answer_line": null,
+  "base": "I2-018",
+  "chars": {
+   "constructed": 0,
+   "foundation": 0,
+   "layout": 0,
+   "record": 4
+  },
+  "control": false,
+  "correct": true,
+  "excess_chars": 0,
+  "hit_cited": false,
+  "hit_exact": true,
+  "hit_record_text": true,
+  "hits_text": true,
+  "hits_words": false,
+  "kind": "answerable",
+  "layer": {
+   "build_attempts": 15,
+   "emit_attempts": 1,
+   "empty_lookups": 1,
+   "final_thread": {
+    "held": 2,
+    "profile": [
+     "evidence.v2",
+     "clause_or_title"
+    ],
+    "verdicts": {
+     "evidence.v1": {
+      "codes": [],
+      "fails": false,
+      "passing": 1
+     },
+     "evidence.v2": {
+      "codes": [],
+      "fails": false,
+      "passing": 1
+     }
+    }
+   },
+   "lookups": 4,
+   "read_codes": {
+    "no_evidence:answer_glued": 4,
+    "no_evidence:wrong_arm": 4
+   },
+   "read_refusals": {
+    "no_evidence": 4
+   },
+   "read_sentences": 3,
+   "reads": 6,
+   "refusal_types": {
+    "span_inexpressible": 1,
+    "unit_not_in_sentence": 1
+   },
+   "refusals": 2,
+   "route1_final": false,
+   "stop_layer": "L_none",
+   "stop_layer_detail": "",
+   "struct_codes": {
+    "span_inexpressible": 1,
+    "unit_not_in_sentence": 1
+   },
+   "struct_refusals": {
+    "span_inexpressible": 1,
+    "unit_not_in_sentence": 1
+   },
+   "struct_refusals_before_emit": 2,
+   "struct_refusals_total": 2,
+   "weave_attempts": 14
+  },
+  "mode": "record_only",
+  "note": "",
+  "outcome": "emitted",
+  "output_sha": "2c2ded31c4ca2b87d67d68c80a59223b713911fc38197c2682b7da895ebe2211",
+  "replay_verified": true,
+  "share_permille": {
+   "constructed": 0,
+   "foundation": 0,
+   "layout": 0,
+   "record": 1000
+  },
+  "stability": [
+   {
+    "cid": "c7",
+    "improving": [],
+    "key": [
+     0,
+     0,
+     0
+    ],
+    "moves_tested": 0,
+    "status": "trivially_stable",
+    "tier": "WORD"
+   },
+   {
+    "cid": "c8",
+    "improving": [],
+    "key": [
+     0,
+     0,
+     0
+    ],
+    "moves_tested": 0,
+    "status": "trivially_stable",
+    "tier": "WORD"
+   }
+  ],
+  "status": "hit",
+  "stop_layer": "L_none",
+  "task_id": "bank2/I2-018.record_only",
+  "text": "権現さん",
+  "verify_status": "OK"
+ },
+ "self_corrections": {
+  "counts": {
+   "plan_change_after_empty": 1,
+   "recovery_after_refusal": 2,
+   "refusals_recoverable": 2,
+   "unseat_swap_before_close": 0
+  },
+  "plan_change_after_empty": [
+   {
+    "i": 18,
+    "next_i": 19,
+    "next_op": "lookup"
+   }
+  ],
+  "recovery_after_refusal": [
+   {
+    "i": 21,
+    "op": "weave_span",
+    "refusal": "span_inexpressible"
+   },
+   {
+    "i": 25,
+    "op": "weave_span",
+    "refusal": "unit_not_in_sentence"
+   }
+  ],
+  "refusals_recoverable": 2,
+  "unseat_swap_before_close": []
+ },
+ "t_loom_34": "unchecked",
+ "task_id": "bank2/I2-018.record_only",
+ "wall": {
+  "driver_ns": 21531772375,
+  "ledger_ns": 21532311709
+ }
+}

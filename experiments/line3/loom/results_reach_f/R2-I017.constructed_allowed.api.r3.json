@@ -1,0 +1,269 @@
+{
+ "abandoned": [],
+ "annotated": [
+  {
+   "cid": "c1",
+   "kind": "record",
+   "prov": {
+    "n": 1,
+    "tier": "WORD"
+   },
+   "s": "エタール・コホモロジー",
+   "seat": "centre",
+   "tier": "WORD",
+   "uid": "u1"
+  }
+ ],
+ "answer_view": {
+  "excess_chars": 0,
+  "hit_cited": false,
+  "hit_exact": true,
+  "hit_record_text": true,
+  "hits_text": true
+ },
+ "base": "R2-I017",
+ "closing": {
+  "i": 11,
+  "op": "emit",
+  "status": "emitted",
+  "type": null
+ },
+ "control": false,
+ "control_note": null,
+ "declared_model": "claude-haiku-5-5",
+ "driver": "api",
+ "driver_report": {
+  "calls_skipped_after_close": 0,
+  "control_text_chars": null,
+  "ended": "closed",
+  "error": null,
+  "response_models": [
+   "claude-haiku-5-5"
+  ],
+  "stop_reasons": [
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use"
+  ],
+  "system_prompt_sha256": "e6eb16d8c074a7b16b172eb0c216d4900806749ff10f67097814f8d2df013faf",
+  "text_blocks_dropped": 0,
+  "thinking_dropped": {
+   "chars": 0,
+   "n": 0,
+   "sha256": []
+  },
+  "tool_calls": 10,
+  "tool_choice": {
+   "type": "any"
+  },
+  "tool_less_turns": 0,
+  "tools": [
+   "lookup",
+   "read_sentence",
+   "add",
+   "open_cross",
+   "seat",
+   "seat_run",
+   "weave_span",
+   "unseat",
+   "swap",
+   "extend",
+   "topic",
+   "set_depth",
+   "link",
+   "unlink",
+   "drop",
+   "read",
+   "emit",
+   "abstain",
+   "status",
+   "done"
+  ],
+  "turns": 9,
+  "usage": {
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 0,
+   "calls": 9,
+   "input_tokens": 85541,
+   "output_tokens": 593
+  }
+ },
+ "footnotes": {
+  "hits_words": "hits_words (the gold inside ONE record unit; `score.hits_words`) is false by construction for every multi-unit answer (ハッシュ表, キューバの太陽, カールマルクス, 1981年); it is not a correctness column"
+ },
+ "free_text_dropped": {
+  "chars": 0,
+  "n": 0,
+  "sha256": []
+ },
+ "harness_meta": [
+  {
+   "agent_definition_sha": "e6eb16d8c074a7b16b172eb0c216d4900806749ff10f67097814f8d2df013faf",
+   "driver": "L2-api",
+   "requested_model": "claude-haiku-5-5"
+  },
+  {
+   "response_model": "claude-haiku-5-5"
+  }
+ ],
+ "ledger": "experiments/line3/loom/runs_reach_f/R2-I017.constructed_allowed.api.r3/ops.jsonl",
+ "ledger_head": "29f54745c4a4e6c89a5112afbc1d680ed657c3238af14a637302034c4878037b",
+ "mode": "constructed_allowed",
+ "model_result": true,
+ "op_counts": {
+  "by_class": {
+   "emit_attempts": 1,
+   "lookups": 6,
+   "ops": 2,
+   "other": 1,
+   "reads": 1
+  },
+  "by_op": {
+   "begin": 1,
+   "emit": 1,
+   "lookup": 3,
+   "read": 1,
+   "read_sentence": 3,
+   "weave_span": 2
+  },
+  "emit_attempts": 1,
+  "model_rows": 11,
+  "rows": 13
+ },
+ "output_text": "エタール・コホモロジー",
+ "refusals": {
+  "unit_not_in_sentence": 1
+ },
+ "schema": "loom-result-1",
+ "score": {
+  "abstain_type": null,
+  "answer_line": null,
+  "base": "R2-I017",
+  "chars": {
+   "constructed": 0,
+   "foundation": 0,
+   "layout": 0,
+   "record": 11
+  },
+  "control": false,
+  "correct": true,
+  "excess_chars": 0,
+  "hit_cited": false,
+  "hit_exact": true,
+  "hit_record_text": true,
+  "hits_text": true,
+  "hits_words": true,
+  "kind": "answerable",
+  "layer": {
+   "build_attempts": 3,
+   "emit_attempts": 1,
+   "empty_lookups": 1,
+   "final_thread": {
+    "held": 1,
+    "profile": [
+     "evidence.v2",
+     "clause_or_title"
+    ],
+    "verdicts": {
+     "evidence.v1": {
+      "codes": [],
+      "fails": false,
+      "passing": 1
+     },
+     "evidence.v2": {
+      "codes": [],
+      "fails": false,
+      "passing": 1
+     }
+    }
+   },
+   "lookups": 3,
+   "read_codes": {},
+   "read_refusals": {},
+   "read_sentences": 3,
+   "reads": 1,
+   "refusal_types": {
+    "unit_not_in_sentence": 1
+   },
+   "refusals": 1,
+   "route1_final": false,
+   "stop_layer": "L_none",
+   "stop_layer_detail": "",
+   "struct_codes": {
+    "unit_not_in_sentence": 1
+   },
+   "struct_refusals": {
+    "unit_not_in_sentence": 1
+   },
+   "struct_refusals_before_emit": 1,
+   "struct_refusals_total": 1,
+   "weave_attempts": 2
+  },
+  "mode": "constructed_allowed",
+  "note": "",
+  "outcome": "emitted",
+  "output_sha": "8806801107d81a25dd040b7652f5b3c3b3481462ea0c45d063a9c2616aac9a8e",
+  "replay_verified": true,
+  "share_permille": {
+   "constructed": 0,
+   "foundation": 0,
+   "layout": 0,
+   "record": 1000
+  },
+  "stability": [
+   {
+    "cid": "c1",
+    "improving": [],
+    "key": [
+     0,
+     0,
+     0
+    ],
+    "moves_tested": 0,
+    "status": "trivially_stable",
+    "tier": "WORD"
+   }
+  ],
+  "status": "hit",
+  "stop_layer": "L_none",
+  "task_id": "bank2/R2-I017.constructed_allowed",
+  "text": "エタール・コホモロジー",
+  "verify_status": "OK"
+ },
+ "self_corrections": {
+  "counts": {
+   "plan_change_after_empty": 1,
+   "recovery_after_refusal": 1,
+   "refusals_recoverable": 1,
+   "unseat_swap_before_close": 0
+  },
+  "plan_change_after_empty": [
+   {
+    "i": 3,
+    "next_i": 4,
+    "next_op": "read_sentence"
+   }
+  ],
+  "recovery_after_refusal": [
+   {
+    "i": 8,
+    "op": "weave_span",
+    "refusal": "unit_not_in_sentence"
+   }
+  ],
+  "refusals_recoverable": 1,
+  "unseat_swap_before_close": []
+ },
+ "t_loom_34": "unchecked",
+ "task_id": "bank2/R2-I017.constructed_allowed",
+ "wall": {
+  "driver_ns": 11271149250,
+  "ledger_ns": 11271469250
+ }
+}

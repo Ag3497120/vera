@@ -1,0 +1,270 @@
+{
+ "abandoned": [],
+ "annotated": [
+  {
+   "cid": "c1",
+   "kind": "record",
+   "prov": {
+    "n": 1,
+    "tier": "RUN"
+   },
+   "s": "和歌山線",
+   "seat": "centre",
+   "tier": "RUN",
+   "uid": "u1"
+  }
+ ],
+ "answer_view": {
+  "excess_chars": 0,
+  "hit_cited": false,
+  "hit_exact": true,
+  "hit_record_text": true,
+  "hits_text": true
+ },
+ "base": "R2-I005",
+ "closing": {
+  "i": 9,
+  "op": "emit",
+  "status": "emitted",
+  "type": null
+ },
+ "control": false,
+ "control_note": null,
+ "declared_model": "claude-haiku-5-5",
+ "driver": "api",
+ "driver_report": {
+  "calls_skipped_after_close": 0,
+  "control_text_chars": null,
+  "ended": "closed",
+  "error": null,
+  "response_models": [
+   "claude-haiku-5-5"
+  ],
+  "stop_reasons": [
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use"
+  ],
+  "system_prompt_sha256": "a1ad17d2870c672df1252da336bd79d14da9af6750f2422918fc205db023bb5e",
+  "text_blocks_dropped": 0,
+  "thinking_dropped": {
+   "chars": 0,
+   "n": 0,
+   "sha256": []
+  },
+  "tool_calls": 8,
+  "tool_choice": {
+   "type": "any"
+  },
+  "tool_less_turns": 0,
+  "tools": [
+   "lookup",
+   "read_sentence",
+   "add",
+   "open_cross",
+   "seat",
+   "seat_run",
+   "weave_span",
+   "unseat",
+   "swap",
+   "extend",
+   "topic",
+   "set_depth",
+   "link",
+   "unlink",
+   "drop",
+   "read",
+   "emit",
+   "abstain",
+   "status",
+   "done"
+  ],
+  "turns": 7,
+  "usage": {
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 0,
+   "calls": 7,
+   "input_tokens": 59728,
+   "output_tokens": 613
+  }
+ },
+ "footnotes": {
+  "hits_words": "hits_words (the gold inside ONE record unit; `score.hits_words`) is false by construction for every multi-unit answer (ハッシュ表, キューバの太陽, カールマルクス, 1981年); it is not a correctness column"
+ },
+ "free_text_dropped": {
+  "chars": 0,
+  "n": 0,
+  "sha256": []
+ },
+ "harness_meta": [
+  {
+   "agent_definition_sha": "a1ad17d2870c672df1252da336bd79d14da9af6750f2422918fc205db023bb5e",
+   "driver": "L2-api",
+   "requested_model": "claude-haiku-5-5"
+  },
+  {
+   "response_model": "claude-haiku-5-5"
+  }
+ ],
+ "ledger": "experiments/line3/loom/runs_reach_f/R2-I005.record_only.api.r3/ops.jsonl",
+ "ledger_head": "d9a962114bdd62df7866c977f35f42be6a280ce80a3f237fa6fe06b2671185ae",
+ "mode": "record_only",
+ "model_result": true,
+ "op_counts": {
+  "by_class": {
+   "emit_attempts": 1,
+   "lookups": 5,
+   "ops": 2,
+   "other": 1
+  },
+  "by_op": {
+   "begin": 1,
+   "emit": 1,
+   "lookup": 4,
+   "read_sentence": 1,
+   "weave_span": 2
+  },
+  "emit_attempts": 1,
+  "model_rows": 9,
+  "rows": 11
+ },
+ "output_text": "和歌山線",
+ "refusals": {
+  "span_inexpressible": 1
+ },
+ "schema": "loom-result-1",
+ "score": {
+  "abstain_type": null,
+  "answer_line": null,
+  "base": "R2-I005",
+  "chars": {
+   "constructed": 0,
+   "foundation": 0,
+   "layout": 0,
+   "record": 4
+  },
+  "control": false,
+  "correct": true,
+  "excess_chars": 0,
+  "hit_cited": false,
+  "hit_exact": true,
+  "hit_record_text": true,
+  "hits_text": true,
+  "hits_words": true,
+  "kind": "answerable",
+  "layer": {
+   "build_attempts": 3,
+   "emit_attempts": 1,
+   "empty_lookups": 2,
+   "final_thread": {
+    "held": 1,
+    "profile": [
+     "evidence.v2",
+     "clause_or_title"
+    ],
+    "verdicts": {
+     "evidence.v1": {
+      "codes": [],
+      "fails": false,
+      "passing": 1
+     },
+     "evidence.v2": {
+      "codes": [],
+      "fails": false,
+      "passing": 1
+     }
+    }
+   },
+   "lookups": 4,
+   "read_codes": {},
+   "read_refusals": {},
+   "read_sentences": 1,
+   "reads": 0,
+   "refusal_types": {
+    "span_inexpressible": 1
+   },
+   "refusals": 1,
+   "route1_final": false,
+   "stop_layer": "L_none",
+   "stop_layer_detail": "",
+   "struct_codes": {
+    "span_inexpressible": 1
+   },
+   "struct_refusals": {
+    "span_inexpressible": 1
+   },
+   "struct_refusals_before_emit": 1,
+   "struct_refusals_total": 1,
+   "weave_attempts": 2
+  },
+  "mode": "record_only",
+  "note": "",
+  "outcome": "emitted",
+  "output_sha": "2c71939ef9c5d72cfd562fe820de24517845a2178182f2d44dbd5fc4d1e2d041",
+  "replay_verified": true,
+  "share_permille": {
+   "constructed": 0,
+   "foundation": 0,
+   "layout": 0,
+   "record": 1000
+  },
+  "stability": [
+   {
+    "cid": "c1",
+    "improving": [],
+    "key": [
+     0,
+     0,
+     0
+    ],
+    "moves_tested": 0,
+    "status": "trivially_stable",
+    "tier": "RUN"
+   }
+  ],
+  "status": "hit",
+  "stop_layer": "L_none",
+  "task_id": "bank2/R2-I005.record_only",
+  "text": "和歌山線",
+  "verify_status": "OK"
+ },
+ "self_corrections": {
+  "counts": {
+   "plan_change_after_empty": 2,
+   "recovery_after_refusal": 1,
+   "refusals_recoverable": 1,
+   "unseat_swap_before_close": 0
+  },
+  "plan_change_after_empty": [
+   {
+    "i": 2,
+    "next_i": 3,
+    "next_op": "lookup"
+   },
+   {
+    "i": 4,
+    "next_i": 5,
+    "next_op": "lookup"
+   }
+  ],
+  "recovery_after_refusal": [
+   {
+    "i": 7,
+    "op": "weave_span",
+    "refusal": "span_inexpressible"
+   }
+  ],
+  "refusals_recoverable": 1,
+  "unseat_swap_before_close": []
+ },
+ "t_loom_34": "unchecked",
+ "task_id": "bank2/R2-I005.record_only",
+ "wall": {
+  "driver_ns": 9854777916,
+  "ledger_ns": 9854948333
+ }
+}

@@ -1,0 +1,226 @@
+{
+ "abandoned": [],
+ "annotated": null,
+ "answer_view": {
+  "excess_chars": null,
+  "hit_cited": null,
+  "hit_exact": null,
+  "hit_record_text": null,
+  "hits_text": null
+ },
+ "base": "I2-034",
+ "closing": {
+  "i": 24,
+  "op": "abstain",
+  "status": "abstained",
+  "type": "no_record"
+ },
+ "control": false,
+ "control_note": null,
+ "declared_model": "claude-haiku-5-5",
+ "driver": "api",
+ "driver_report": {
+  "calls_skipped_after_close": 0,
+  "control_text_chars": null,
+  "ended": "closed",
+  "error": null,
+  "response_models": [
+   "claude-haiku-5-5"
+  ],
+  "stop_reasons": [
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use",
+   "tool_use"
+  ],
+  "system_prompt_sha256": "e6eb16d8c074a7b16b172eb0c216d4900806749ff10f67097814f8d2df013faf",
+  "text_blocks_dropped": 0,
+  "thinking_dropped": {
+   "chars": 0,
+   "n": 0,
+   "sha256": []
+  },
+  "tool_calls": 23,
+  "tool_choice": {
+   "type": "any"
+  },
+  "tool_less_turns": 0,
+  "tools": [
+   "lookup",
+   "read_sentence",
+   "add",
+   "open_cross",
+   "seat",
+   "seat_run",
+   "weave_span",
+   "unseat",
+   "swap",
+   "extend",
+   "topic",
+   "set_depth",
+   "link",
+   "unlink",
+   "drop",
+   "read",
+   "emit",
+   "abstain",
+   "status",
+   "done"
+  ],
+  "turns": 14,
+  "usage": {
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 0,
+   "calls": 14,
+   "input_tokens": 152356,
+   "output_tokens": 1173
+  }
+ },
+ "footnotes": {
+  "hits_words": "hits_words (the gold inside ONE record unit; `score.hits_words`) is false by construction for every multi-unit answer (ハッシュ表, キューバの太陽, カールマルクス, 1981年); it is not a correctness column"
+ },
+ "free_text_dropped": {
+  "chars": 0,
+  "n": 0,
+  "sha256": []
+ },
+ "harness_meta": [
+  {
+   "agent_definition_sha": "e6eb16d8c074a7b16b172eb0c216d4900806749ff10f67097814f8d2df013faf",
+   "driver": "L2-api",
+   "requested_model": "claude-haiku-5-5"
+  },
+  {
+   "response_model": "claude-haiku-5-5"
+  }
+ ],
+ "ledger": "experiments/line3/loom/runs_h55f/I2-034.constructed_allowed.api/ops.jsonl",
+ "ledger_head": "57c3362aa040ab4b8ddc8e6a1f2c0218bbb95e46f90f7d389e07e84d34a505af",
+ "mode": "constructed_allowed",
+ "model_result": true,
+ "op_counts": {
+  "by_class": {
+   "lookups": 4,
+   "ops": 14,
+   "other": 4,
+   "reads": 2
+  },
+  "by_op": {
+   "abstain": 1,
+   "begin": 1,
+   "drop": 6,
+   "lookup": 2,
+   "read": 2,
+   "read_sentence": 2,
+   "status": 2,
+   "unlink": 4,
+   "weave_span": 4
+  },
+  "emit_attempts": 0,
+  "model_rows": 24,
+  "rows": 26
+ },
+ "output_text": null,
+ "refusals": {},
+ "schema": "loom-result-1",
+ "score": {
+  "abstain_type": "no_record",
+  "answer_line": null,
+  "base": "I2-034",
+  "chars": {},
+  "control": false,
+  "correct": false,
+  "excess_chars": null,
+  "hit_cited": null,
+  "hit_exact": null,
+  "hit_record_text": null,
+  "hits_text": null,
+  "hits_words": null,
+  "kind": "answerable",
+  "layer": {
+   "build_attempts": 14,
+   "emit_attempts": 0,
+   "empty_lookups": 0,
+   "final_thread": {
+    "held": 2,
+    "profile": [
+     "evidence.v2",
+     "clause_or_title"
+    ],
+    "verdicts": {
+     "evidence.v1": {
+      "codes": [],
+      "fails": false,
+      "passing": 1
+     },
+     "evidence.v2": {
+      "codes": [
+       "no_evidence:no_slot_head"
+      ],
+      "fails": true,
+      "passing": 0
+     }
+    }
+   },
+   "lookups": 2,
+   "read_codes": {
+    "no_evidence:no_slot_head": 2
+   },
+   "read_refusals": {
+    "no_evidence": 2
+   },
+   "read_sentences": 2,
+   "reads": 2,
+   "refusal_types": {},
+   "refusals": 0,
+   "route1_final": true,
+   "route1_final_how": "shown",
+   "stop_layer": "L_other",
+   "stop_layer_detail": "abstain_after_build",
+   "struct_codes": {},
+   "struct_refusals": {},
+   "struct_refusals_total": 0,
+   "weave_attempts": 14
+  },
+  "mode": "constructed_allowed",
+  "note": "an answerable question was abstained",
+  "outcome": "abstained",
+  "output_sha": null,
+  "replay_verified": true,
+  "share_permille": {},
+  "stability": null,
+  "status": "abstained_wrong",
+  "stop_layer": "L_other",
+  "task_id": "bank2/I2-034.constructed_allowed",
+  "text": null,
+  "verify_status": "OK"
+ },
+ "self_corrections": {
+  "counts": {
+   "plan_change_after_empty": 0,
+   "recovery_after_refusal": 0,
+   "refusals_recoverable": 0,
+   "unseat_swap_before_close": 0
+  },
+  "plan_change_after_empty": [],
+  "recovery_after_refusal": [],
+  "refusals_recoverable": 0,
+  "unseat_swap_before_close": []
+ },
+ "t_loom_34": "unchecked",
+ "task_id": "bank2/I2-034.constructed_allowed",
+ "wall": {
+  "driver_ns": 14125668125,
+  "ledger_ns": 14125866500
+ }
+}

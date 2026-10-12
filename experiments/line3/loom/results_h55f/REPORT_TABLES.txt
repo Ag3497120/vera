@@ -1,0 +1,181 @@
+bank2: 20 loom runs, verified+replayed IDENTICAL 20
+   evidence profile recorded in row 0: {'evidence.v2': 20}
+unans: 50 loom runs, verified+replayed IDENTICAL 50
+   evidence profile recorded in row 0: {'evidence.v2': 50}
+adv: 70 loom runs, verified+replayed IDENTICAL 70
+   evidence profile recorded in row 0: {'evidence.v2': 70}
+
+
+**bank2: the 7 answerable tasks (v1 = results_h55e, v2 = results_h55f)**
+
+| mode | rule | runs | exact hits | + hit_cited (longer, quoted) | wrong emits (confident wrong) | abstentions | no output | not verified |
+|---|---|---|---|---|---|---|---|---|
+| record_only | v1 (h55e-era) | 7 | 2 | 0 | 0 | 5 | 0 | 0 |
+| record_only | **v2 (now)** | 7 | 1 | 0 | 0 | 5 | 1 | 0 |
+| constructed_allowed | v1 (h55e-era) | 7 | 3 | 0 | 0 | 4 | 0 | 0 |
+| constructed_allowed | **v2 (now)** | 7 | 1 | 0 | 0 | 5 | 1 | 0 |
+
+**bank2: the 3 unanswerable tasks (UF-001, UF-015, R2-U003)**
+
+| mode | rule | runs | exact hits | + hit_cited (longer, quoted) | wrong emits (confident wrong) | abstentions | no output | not verified |
+|---|---|---|---|---|---|---|---|---|
+| record_only | v1 (h55e-era) | 3 | 0 | 0 | 0 | 3 | 0 | 0 |
+| record_only | **v2 (now)** | 3 | 0 | 0 | 0 | 2 | 1 | 0 |
+| constructed_allowed | v1 (h55e-era) | 3 | 0 | 0 | 0 | 3 | 0 | 0 |
+| constructed_allowed | **v2 (now)** | 3 | 0 | 0 | 0 | 3 | 0 | 0 |
+
+**bank2 unanswerable, 25 items (v1 = results_unans_e, v2 = results_unans_f)**
+
+| mode | rule | runs | exact hits | + hit_cited (longer, quoted) | wrong emits (confident wrong) | abstentions | no output | not verified |
+|---|---|---|---|---|---|---|---|---|
+| record_only | v1 (h55e-era) | 25 | 0 | 0 | 0 | 24 | 1 | 0 |
+| record_only | **v2 (now)** | 25 | 0 | 0 | 0 | 23 | 2 | 0 |
+| constructed_allowed | v1 (h55e-era) | 25 | 0 | 0 | 0 | 24 | 1 | 0 |
+| constructed_allowed | **v2 (now)** | 25 | 0 | 0 | 0 | 24 | 1 | 0 |
+
+**bank4 adversarial, 35 items (v1 = results_unans_adv_e, v2 = results_unans_adv_f)**
+
+| mode | rule | runs | exact hits | + hit_cited (longer, quoted) | wrong emits (confident wrong) | abstentions | no output | not verified |
+|---|---|---|---|---|---|---|---|---|
+| record_only | v1 (h55e-era) | 35 | 0 | 0 | 0 | 34 | 1 | 0 |
+| record_only | **v2 (now)** | 35 | 0 | 0 | 0 | 34 | 1 | 0 |
+| constructed_allowed | v1 (h55e-era) | 35 | 0 | 0 | 0 | 34 | 1 | 0 |
+| constructed_allowed | **v2 (now)** | 35 | 0 | 0 | 0 | 34 | 1 | 0 |
+
+### answerable tasks, one line per run (final thread under the recorded rule and under the other)
+
+| run | status | text | final thread under v1 (recorded) | final thread under v2 |
+|---|---|---|---|---|
+| I2-001.record_only | no_output | (none) | (no thread) | (no thread) |
+| I2-001.constructed_allowed | abstained_wrong | (none) | (no thread) | (no thread) |
+| I2-041.record_only | abstained_wrong | (none) | FAILS no_evidence:no_slot_head | FAILS no_evidence:no_slot_head,no_evidence:question_has_no_subject |
+| I2-041.constructed_allowed | abstained_wrong | (none) | FAILS no_evidence:no_slot_head | FAILS no_evidence:no_slot_head,no_evidence:question_has_no_subject |
+| I2-008.record_only | abstained_wrong | (none) | FAILS no_evidence:no_slot_head | FAILS no_evidence:answer_glued,no_evidence:no_slot_head |
+| I2-008.constructed_allowed | abstained_wrong | (none) | FAILS no_evidence:no_slot_head | FAILS no_evidence:no_slot_head |
+| I2-034.record_only | abstained_wrong | (none) | passes | FAILS no_evidence:no_slot_head |
+| I2-034.constructed_allowed | abstained_wrong | (none) | passes | FAILS no_evidence:no_slot_head |
+| I2-013.record_only | hit | 県社 | passes | passes |
+| I2-013.constructed_allowed | hit | 県社 | passes | passes |
+| R2-I013.record_only | abstained_wrong | (none) | (no thread) | (no thread) |
+| R2-I013.constructed_allowed | abstained_wrong | (none) | FAILS no_evidence:no_slot_head,no_evidence:wrong_arm | FAILS no_evidence:answer_glued,no_evidence:no_slot_head,no_evidence:wrong_arm |
+| I2-025.record_only | abstained_wrong | (none) | (no thread) | (no thread) |
+| I2-025.constructed_allowed | no_output | (none) | (no thread) | (no thread) |
+
+### route (1) / route (2): final-thread definition, strict / shown / unseen
+
+**the 3 unanswerable bank2 tasks**
+
+| mode | rule | runs | wrong text | route (1) final-thread | = strict (refused emit) | + shown (dry-run read) | + unseen | content-level among route (1) | route (2) L_meta | no text, not route (1) or (2) | (old) L_struct | (old) told |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| record_only | evidence.v1 | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 2 | 1 | 0 | 0 |
+| record_only | evidence.v2 | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 2 | 1 | 0 | 0 |
+| constructed_allowed | evidence.v1 | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 3 | 0 | 0 | 0 |
+| constructed_allowed | evidence.v2 | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 3 | 0 | 0 | 0 |
+
+**bank2 unans (25 items, 50 runs)**
+
+| mode | rule | runs | wrong text | route (1) final-thread | = strict (refused emit) | + shown (dry-run read) | + unseen | content-level among route (1) | route (2) L_meta | no text, not route (1) or (2) | (old) L_struct | (old) told |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| record_only | evidence.v1 | 25 | 0 | 0 | 0 | 0 | 0 | 0 | 23 | 2 | 0 | 0 |
+| record_only | evidence.v2 | 25 | 0 | 0 | 0 | 0 | 0 | 0 | 23 | 2 | 0 | 0 |
+| constructed_allowed | evidence.v1 | 25 | 0 | 0 | 0 | 0 | 0 | 0 | 24 | 1 | 0 | 0 |
+| constructed_allowed | evidence.v2 | 25 | 0 | 0 | 0 | 0 | 0 | 0 | 24 | 1 | 0 | 0 |
+
+**bank4 (35 items, 70 runs)**
+
+| mode | rule | runs | wrong text | route (1) final-thread | = strict (refused emit) | + shown (dry-run read) | + unseen | content-level among route (1) | route (2) L_meta | no text, not route (1) or (2) | (old) L_struct | (old) told |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| record_only | evidence.v1 | 35 | 0 | 4 | 2 | 1 | 1 | 4 | 30 | 1 | 3 | 3 |
+| record_only | evidence.v2 | 35 | 0 | 4 | 2 | 1 | 1 | 4 | 30 | 1 | 3 | 3 |
+| constructed_allowed | evidence.v1 | 35 | 0 | 2 | 0 | 1 | 1 | 2 | 31 | 2 | 0 | 2 |
+| constructed_allowed | evidence.v2 | 35 | 0 | 2 | 0 | 1 | 1 | 2 | 31 | 2 | 0 | 2 |
+
+**bank2 unans + bank4 (60 items, 120 runs)**
+
+| mode | rule | runs | wrong text | route (1) final-thread | = strict (refused emit) | + shown (dry-run read) | + unseen | content-level among route (1) | route (2) L_meta | no text, not route (1) or (2) | (old) L_struct | (old) told |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| record_only | evidence.v1 | 60 | 0 | 4 | 2 | 1 | 1 | 4 | 53 | 3 | 3 | 3 |
+| record_only | evidence.v2 | 60 | 0 | 4 | 2 | 1 | 1 | 4 | 53 | 3 | 3 | 3 |
+| constructed_allowed | evidence.v1 | 60 | 0 | 2 | 0 | 1 | 1 | 2 | 55 | 3 | 0 | 2 |
+| constructed_allowed | evidence.v2 | 60 | 0 | 2 | 0 | 1 | 1 | 2 | 55 | 3 | 0 | 2 |
+
+**BEFORE: same 120 runs of the v1 measurement (results_unans_e + results_unans_adv_e)**
+
+| mode | rule | runs | wrong text | route (1) final-thread | = strict (refused emit) | + shown (dry-run read) | + unseen | content-level among route (1) | route (2) L_meta | no text, not route (1) or (2) | (old) L_struct | (old) told |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| record_only | evidence.v1 | 60 | 0 | 3 | 0 | 2 | 1 | 3 | 55 | 2 | 1 | 2 |
+| record_only | evidence.v2 | 60 | 0 | 3 | 0 | 2 | 1 | 3 | 55 | 2 | 1 | 2 |
+| constructed_allowed | evidence.v1 | 60 | 0 | 1 | 0 | 1 | 0 | 1 | 56 | 3 | 1 | 2 |
+| constructed_allowed | evidence.v2 | 60 | 0 | 1 | 0 | 1 | 0 | 1 | 56 | 3 | 1 | 2 |
+
+rule evidence.v1, 120 new runs: route (1) 6 (5.0%): strict 2, shown 2, unseen 2; route (2) L_meta 108 (90.0%); wrong text 0; other no-text 6
+
+rule evidence.v2, 120 new runs: route (1) 6 (5.0%): strict 2, shown 2, unseen 2; route (2) L_meta 108 (90.0%); wrong text 0; other no-text 6
+
+| run | rule v1 (recorded): final thread | rule v2: final thread | how the model met it | outcome |
+|---|---|---|---|---|
+| ADV-001.record_only | FAILS no_evidence:no_slot_head | FAILS no_evidence:no_slot_head | strict | L_struct / abstained_correct |
+| ADV-001.constructed_allowed | FAILS no_evidence:no_slot_head | FAILS no_evidence:no_slot_head | shown | L_other / abstained_correct |
+| ADV-010.record_only | FAILS no_evidence:no_slot_head,no_evidence:no_subject | FAILS no_evidence:no_slot_head,no_evidence:no_subject | strict | L_struct / abstained_correct |
+| ADV-013.record_only | FAILS no_evidence:no_slot_head | FAILS no_evidence:no_slot_head | shown | L_struct / abstained_correct |
+| ADV-021.record_only | FAILS no_evidence:no_slot_head | FAILS no_evidence:answer_glued,no_evidence:no_slot_head | unseen | L_other / abstained_correct |
+| ADV-021.constructed_allowed | FAILS no_evidence:no_slot_head | FAILS no_evidence:answer_glued,no_evidence:no_slot_head | unseen | L_other / abstained_correct |
+
+### every text emitted on an unanswerable item (confident wrong)
+
+### stop layers of the 120 unanswerable runs, v1 -> v2
+  v1: {'L_meta': 111, 'L_other': 7, 'L_struct': 2}
+  v2: {'L_meta': 108, 'L_other': 9, 'L_struct': 3}
+
+### set (d): the reachable items
+RUNS: 60 of 60; verified and replayed IDENTICAL: 60
+
+| mode | rep | n | exact hits | wrong emits | abstained | no output |
+|---|---|---|---|---|---|---|
+| record_only | r1 | 10 | 8 | 0 | 2 | 0 |
+| record_only | r2 | 10 | 9 | 0 | 0 | 1 |
+| record_only | r3 | 10 | 10 | 0 | 0 | 0 |
+| record_only | all | 30 | 27 | 0 | 2 | 1 |
+| constructed_allowed | r1 | 10 | 9 | 0 | 1 | 0 |
+| constructed_allowed | r2 | 10 | 10 | 0 | 0 | 0 |
+| constructed_allowed | r3 | 10 | 10 | 0 | 0 | 0 |
+| constructed_allowed | all | 30 | 29 | 0 | 1 | 0 |
+| both | all | 60 | 56 | 0 | 3 | 1 |
+
+Per item (hits out of 6 = 2 modes x 3 repeats; R = record_only, C = constructed_allowed; 1 = exact hit, . = no)
+
+| item | question gold | hits /6 | R r1 r2 r3 | C r1 r2 r3 | texts emitted that are not a hit |
+|---|---|---|---|---|---|
+| I2-003 | JR-Y13 | 6 | 1 1 1 | 1 1 1 | - |
+| I2-004 | Y17 | 6 | 1 1 1 | 1 1 1 | - |
+| I2-005 | JA16 | 6 | 1 1 1 | 1 1 1 | - |
+| I2-006 | OR08 | 6 | 1 1 1 | 1 1 1 | - |
+| I2-013 | 県社 | 6 | 1 1 1 | 1 1 1 | - |
+| I2-014 | 九曜紋 | 6 | 1 1 1 | 1 1 1 | - |
+| I2-018 | 権現さん | 6 | 1 1 1 | 1 1 1 | - |
+| R2-I005 | 和歌山線 | 6 | 1 1 1 | 1 1 1 | - |
+| R2-I007 | 日本海側気候|日本海側 | 4 | . . 1 | 1 1 1 | - |
+| R2-I017 | エタール・コホモロジー | 4 | . 1 1 | . 1 1 | - |
+
+Misses, one line each (found = the gold sentence was shown by a lookup (L) or read_sentence (R); woven = texts of every weave_span; gold? = a woven stretch equals the gold; read-codes / emit-codes = no_evidence codes listed by a dry-run `read` / a refused `emit`; end = how the run ended)
+
+| run | found | woven (gold stretch marked *) | drops | reads | emits | read-codes | emit-codes | end |
+|---|---|---|---|---|---|---|---|---|
+| R2-I007.record_only.r1 | R | *日本海側気候, *日本海側気候 | 0 | 1 | 0 | - | - | abstained_wrong cannot_weave |
+| R2-I017.record_only.r1 | R | - | 0 | 0 | 0 | - | - | abstained_wrong no_record |
+| R2-I017.constructed_allowed.r1 | R | *エタールコホモロジー | 0 | 0 | 0 | - | - | abstained_wrong no_record |
+| R2-I007.record_only.r2 | R | *日本海側気候, *日本海側気候, *日本海側気候, *日本海側気候, *日本海側気候 | 0 | 1 | 0 | - | - | no_output |
+
+why the misses missed: {"wove the gold stretch, no refusal shown, did not emit": 3, "saw the sentence, wove nothing": 1}
+
+### tokens and cost (claude-haiku-5-5 list price 0.10 in / 0.50 out per 1M, prompts up to 100K tokens; no cache was used)
+| set | runs | input tokens | output tokens | API calls | input per run (median) | cost USD |
+|---|---|---|---|---|---|---|
+| (a) bank2 10 tasks | 20 | 2,501,295 | 21,893 | 235 | 100,787 | 0.26 |
+| (b) bank2 unans 25 | 50 | 9,622,254 | 79,497 | 824 | 151,200 | 1.00 |
+| (c) bank4 35 | 70 | 10,632,709 | 96,257 | 934 | 119,574 | 1.11 |
+| (d) reach 10 x 2 x 3 | 60 | 40,058,927 | 35,218 | 605 | 59,728 | 4.02 |
+| all | 200 | 62,815,185 | 232,865 | 2598 | | 6.40 |
+(v1 measurement, same three sets, loom modes: 140 runs, 23,856,937 in / 201,637 out, 2061 calls, 2.49 USD at the same price)
+median input tokens per run, sets (a)+(b)+(c), v1: 121,255
+median input tokens per run, sets (a)+(b)+(c), v2: 121,846
