@@ -996,7 +996,7 @@ def test_replay_reads_the_fixture_through_the_sandbox_so_fixture_outside_sandbox
     meta = json.load(open(os.path.join(d, "meta.json")))
     outside = tmp_path / "outside"
     outside.mkdir()                                                                   # a folder with NO .py file: nothing would ever be read from it
-    sb = Sandbox(str(tmp_path / "runs2"), [meta["corpus"]], [FIXTURE])
+    sb = Sandbox(str(tmp_path / "runs2"), [os.path.join(ROOT, meta["corpus"])], [FIXTURE])
     assert lg.replay(d, loader=sb.read_bytes).identical                                 # the real fixture is inside the sandbox
     meta["fixture"] = str(outside)
     json.dump(meta, open(os.path.join(d, "meta.json"), "w"))

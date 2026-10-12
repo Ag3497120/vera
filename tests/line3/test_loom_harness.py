@@ -261,13 +261,13 @@ def test_a_run_that_does_not_verify_is_not_scored(tmp_path):
     assert r["score"]["status"] == "run_not_verified" and r["output_text"] is None
 
 
-def test_a_moved_repository_is_scored_with_the_corpus_flag(tmp_path):
+def test_a_moved_repository_is_scored_with_or_without_the_corpus_flag(tmp_path):
     run_scripted(tmp_path, "I2-025", "record_only")
     d = tmp_path / "runs" / "I2-025.record_only.scripted"
     meta = json.load(open(d / "meta.json", encoding="utf-8"))
     meta["corpus"] = "/nonexistent/moved/fulllead_sents.jsonl"                                  # meta.json is not hashed: the path of the old tree
     (d / "meta.json").write_text(json.dumps(meta), encoding="utf-8")
-    assert S.score_run(str(d), BANK, GOLD).status == "run_not_verified"
+    assert S.score_run(str(d), BANK, GOLD).status == "hit"                                       # LOOM-path: the dead path is only a pointer, the begin row's corpus_sha finds the file
     rc = H.main(["--results-dir", str(tmp_path / "res_m"), "score", str(d), "--driver", "scripted", "--corpus", CORPUS])
     assert rc == 0 and json.load(open(str(tmp_path / "res_m" / "I2-025.record_only.scripted.json"), encoding="utf-8"))["score"]["status"] == "hit"
 

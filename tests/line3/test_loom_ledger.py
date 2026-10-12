@@ -243,7 +243,14 @@ def test_a_changed_corpus_is_REPLAY_INPUTS_MISMATCH_and_a_missing_one_is_unresol
     assert rep.status == "INPUTS" and rep.mismatch == "corpus_sha_mismatch" and rep.exit_code() == 2
     assert lg.verify(d, corpus_path=str(alt))["status"] == "REPLAY_INPUTS_MISMATCH"
     (d / "meta.json").unlink()
-    r2 = lg.replay(d)
+    assert lg.replay(d).identical                                                      # LOOM-path: no meta.json at all, the recorded sha is found in the registry of shipped corpora
+    toy = tmp_path / "toy.jsonl"
+    toy.write_text(json.dumps({"sha": "0" * 64, "title": "t", "sent": "東京は日本の首都です。", "source": "t0#0"}, ensure_ascii=False) + "\n", encoding="utf-8")
+    srv2 = LoomServer([dict(TASKS[0], corpus=str(toy))], str(tmp_path / "runs2"), (), "strict_npa")
+    w2 = ScriptedWeaver(srv2, "demo/tokyo_ca", "m", "t1")
+    w2.begin()
+    (tmp_path / "runs2" / "t1" / "meta.json").unlink()
+    r2 = lg.replay(tmp_path / "runs2" / "t1")                                          # a corpus no registry entry matches, and no pointer: unresolved
     assert r2.status == "INPUTS" and r2.mismatch == "corpus_unresolved"
     assert lg.replay(d, str(tmp_path / "gone.jsonl")).mismatch == "corpus_unreadable"
     assert lg.replay(d, CORPUS).status == "IDENTICAL"                                  # the path is only a pointer; the sha decides
