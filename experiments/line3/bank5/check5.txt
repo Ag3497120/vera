@@ -1,0 +1,8 @@
+Bank 5 (audited) mechanical check — bank5.jsonl
+tasks 6; plants {'contradiction': 36, 'update': 18, 'list_trap': 24, 'repeat': 12, 'reversal': 12}; questions {'contradiction': 24, 'update': 18, 'plain': 18}; plant refs checked 165
+rules: contradiction/reversal value i in ref i, no update/scope marker; reversal refs state one direction each and
+  the values are the same pair reversed; update = one ref 'old から new + marker'; list_trap values in ref;
+  repeat = one identical sentence in >= 2 sessions, all occurrences listed; questions: refs in sessions 1-2,
+  gold tied to the plant on the same refs (contradiction 「矛盾: X と Y」, update = latest), no gold value and no
+  kind-announcing word in the question, audit subject key in the ref and in no session-3 message; per-kind >= 80 %
+PASS (0 errors)

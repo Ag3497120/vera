@@ -1,0 +1,134 @@
+{
+ "intake": {
+  "recorded_at": "2026-10-13",
+  "note": "intake record: sha256 of bank5.jsonl recorded before any Vera system reads it; no Vera system has read this bank before intake (no reader, loom, session store, model or other Vera system was run on it during authoring or audit)"
+ },
+ "bank": {
+  "path": "bank5.jsonl",
+  "sha256": "6019458b5d9dae9c9fd31c5bf72d4862fc47b10e9fd31a36e9334818d1a60b8a",
+  "tasks": 6,
+  "ids": [
+   "MEM-T01",
+   "MEM-T02",
+   "MEM-T03",
+   "MEM-T04",
+   "MEM-T05",
+   "MEM-T06"
+  ],
+  "sessions_per_task": 3,
+  "messages_per_session": [
+   8,
+   8,
+   10
+  ],
+  "ref_convention": "[session, message], both 0-based",
+  "plants": {
+   "contradiction": 36,
+   "update": 18,
+   "list_trap": 24,
+   "repeat": 12,
+   "reversal": 12
+  },
+  "questions": {
+   "contradiction": 24,
+   "update": 18,
+   "plain": 18
+  },
+  "gold": "contradiction: '矛盾: X と Y' (message order); update: latest value; plain: value",
+  "audit": {
+   "contradiction": {
+    "valid": 23,
+    "fixed": 13,
+    "dropped": 0
+   },
+   "update": {
+    "valid": 18,
+    "fixed": 0,
+    "dropped": 0
+   },
+   "list_trap": {
+    "valid": 18,
+    "fixed": 6,
+    "dropped": 0
+   },
+   "repeat": {
+    "valid": 9,
+    "fixed": 3,
+    "dropped": 0
+   },
+   "reversal": {
+    "valid": 0,
+    "fixed": 12,
+    "dropped": 0
+   },
+   "Q-contradiction": {
+    "valid": 0,
+    "fixed": 24,
+    "dropped": 0
+   },
+   "Q-update": {
+    "valid": 0,
+    "fixed": 18,
+    "dropped": 0
+   },
+   "Q-plain": {
+    "valid": 6,
+    "fixed": 12,
+    "dropped": 0
+   }
+  },
+  "audit_totals": {
+   "plants": {
+    "valid": 68,
+    "fixed": 34,
+    "dropped": 0
+   },
+   "questions": {
+    "valid": 6,
+    "fixed": 54,
+    "dropped": 0
+   }
+  },
+  "author_original": {
+   "path": "vera-impl/bank2-author/out/bank5.jsonl",
+   "sha256": "25667cf78973524dcf5a9440cfb96e26a0a0887d80a3c2332f673bdad3a405c8",
+   "tasks": 6
+  }
+ },
+ "checker": {
+  "check5.py": {
+   "sha256": "7775c866203ec1e9472cd4eac89605769c3985830774afd9a07153baa92d416a",
+   "note": "audited checker (extends the author's rules; per-kind value rules, question rules, session-3 restatement keys, unplanted-conflict lint)"
+  },
+  "check5.txt": {
+   "sha256": "269f68e08ccb55a10b5f61c25341052acd4643bad23750d7abd356b35b708602",
+   "result": "PASS (0 errors)"
+  }
+ },
+ "author_files": {
+  "PROMPT5.md": {
+   "sha256": "ca56f823f525f8aedb48cadd829836b11282551831407e85a8305c6d6ad8e090",
+   "copied": false
+  },
+  "check5.py": {
+   "sha256": "6a0190690e2cfaf10dbc28cf084da3e90aa3376bdebf4af79038c278f1adffc6",
+   "copied": false,
+   "note": "its every-value-in-every-ref rule fails on the audited bank by design (de-duplicated reversals, T05 [2,1]); superseded by ./check5.py"
+  },
+  "check5.txt": {
+   "sha256": "0c285e4979b7dd678513426d6c916757c43138e602408730e415148445692d12",
+   "copied": false,
+   "result": "PASS on the original"
+  },
+  "README5.md": {
+   "sha256": "0d7fecd90dcfa6f378a37ace550785c1c2d0d10151027a95e312c5b3767c0936",
+   "copied": false
+  }
+ },
+ "provenance": {
+  "author": "codex gpt-6-luna (never saw Vera code or results), 1 round, 6 tasks",
+  "auditor": "Claude Opus 5.5",
+  "audit": "AUDIT5.md",
+  "date": "2026-10-13"
+ }
+}
