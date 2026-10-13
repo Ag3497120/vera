@@ -80,9 +80,13 @@ class Arm:
     particle: str
     seat: Seat
     arms: Tuple["Arm", ...] = ()
+    written: str = ""                           # shape.v4: the particle as the sentence writes it when it is read as `particle` (「へ」 on the arm 「に」); "" = the particle itself (every older table)
 
     def to_obj(self) -> dict:
-        return {"particle": self.particle, "seat": self.seat.to_obj(), "arms": [a.to_obj() for a in self.arms]}
+        d = {"particle": self.particle, "seat": self.seat.to_obj(), "arms": [a.to_obj() for a in self.arms]}
+        if self.written:
+            d["written"] = self.written
+        return d
 
 
 @dataclass(frozen=True)
@@ -717,14 +721,128 @@ def _shapes_sha_v3() -> str:
 
 
 SHAPES_SHA_V3 = _shapes_sha_v3()
+# ------------------------------------------------------------------------------------------------------------------------------------------
+# shape.v4 (PUB-M6d, stage 2 of the staged shape table, owner 2026-10-13 「へ」を「に」と同じ腕に; L-PUB-78..): shape.v3 plus 「へ」 read like 「に」 on the SAME ARM, recorded as the particle actually written (`Arm.written`
+# = 「へ」, then `Seat.written` in the index).  THE RULE OF THE VERSION is v3's: a clause that shape.v3 reads as F1-F4 is read exactly the same; only a piece that v3 gives F0 is read again, with v3's repairs and the
+# token 「へ」 (a case particle that follows a unit) read as 「に」, and the new reading is kept iff it passes the filters of v3 (not F0, one subject at most, a value clause has no verb after its value).  The
+# arm is 「に」 (the six arms of the foundation have no 「へ」): 「机へ戻す」 and 「机に戻す」 are the same event on the same seat, the written 「へ」 stays in the record.  NOT in this version: 「への」 (a 「へ」 + 「の」 chain:
+# F0 as before), 「へは」 / 「へも」, 「から … へ」 outside the change forms, stage 3 (「X は A だと…」), and everything v3 leaves F0.
+# ------------------------------------------------------------------------------------------------------------------------------------------
+SHAPES_V4 = "shape.v4"
+HE = "へ"
+CONSTANTS_V4: Dict[str, Any] = dict(CONSTANTS_V3, version=SHAPES_V4, he=HE, he_as=TO, rules=list(CONSTANTS_V3["rules"]) + ["he_as_ni"])
+
+
+def _rewrite_he(toks: Sequence[_Tok]) -> List[_Tok]:
+    """The tokens with every 「へ」 (a case particle right after a unit) read as 「に」: the same span, the surface 「に」."""
+    out = list(toks)
+    for k, t in enumerate(toks):
+        if k >= 1 and t.s == HE and t.pos1 == "助詞" and t.pos2 == "格助詞" and not toks[k - 1].fn:
+            out[k] = replace(t, s=TO)
+    return out
+
+
+def _retry_ok_v4(c: Clause, toks: Sequence[_Tok]) -> bool:
+    """The filters of shape.v3 on a new reading: placed, one subject at most, and a value clause has no verb after its value."""
+    if c.shape == "F0" or sum(1 for x in c.arms if x.particle == "が") > 1:
+        return False
+    if c.shape in ("F1", "F2") and c.change is None:
+        units = [t for t in toks if not t.fn]
+        if any(t.pos1 == "動詞" for t in toks if t.a >= units[-1].b):
+            return False
+    return True
+
+
+def _mark_written(text: str, c: Clause) -> Clause:
+    """Record 「へ」 on the arms 「に」 whose seat is followed by it in the sentence (the first letter after the seat)."""
+    def fix(a: Arm) -> Arm:
+        w = ""
+        if a.particle == TO:
+            for ch in text[a.seat.span[1]:]:
+                if ch.isalnum():
+                    w = ch if ch == HE else ""
+                    break
+        return replace(a, arms=tuple(fix(b) for b in a.arms), written=w)
+    return replace(c, arms=tuple(fix(a) for a in c.arms))
+
+
+def _classify_v4(text: str, toks: Sequence[_Tok], term: str) -> Clause:
+    """shape.v4: the v3 reading; only if that is F0, the piece is read again with v3's repairs and 「へ」 as 「に」, and the new reading is kept iff `_retry_ok_v4`."""
+    c = _classify_v3(text, toks, term)
+    if c.shape != "F0":
+        return c
+    t3 = _rewrite_v3(toks)
+    t4 = _rewrite_he(t3)
+    if t4 == t3:
+        return c
+    c2 = _classify_v2(text, t4, term)
+    return _mark_written(text, c2) if _retry_ok_v4(c2, t4) else c
+
+
+def _exchange_v4(text: str) -> Exchange:
+    toks = _tokens(text)
+    clauses: List[Clause] = []
+    skipped: List[Tuple[Tuple[int, int], str]] = []
+    pending: List[Tuple[Seat, Clause]] = []
+    pieces = [(a, b, term, [t for t in toks if a <= t.a < b]) for a, b, term in _pieces(text)]
+
+    def flush() -> None:
+        clauses.extend(c for _, c in pending)
+        pending.clear()
+
+    k = 0
+    while k < len(pieces):
+        a, b, term, pt = pieces[k]
+        k += 1
+        if not pt:
+            if term != "" and term in HARD_CUTS:
+                flush()
+            continue
+        if term != "" and term in LABEL_CUTS:
+            flush()
+            skipped.append(((pt[0].a, pt[-1].b), "label"))
+            continue
+        c = _classify_v4(text, pt, term)
+        if _frag_topic(c, term) and k < len(pieces) and pieces[k][3] and not (pieces[k][2] != "" and pieces[k][2] in LABEL_CUTS):
+            merged = pt + pieces[k][3]
+            c2 = _classify_v4(text, merged, pieces[k][2])
+            if c2.shape != "F0" and sum(1 for x in c2.arms if x.particle == "が") <= 1:
+                c, pt, term = c2, merged, pieces[k][2]
+                k += 1
+        if _adverbial_v3(pt, c, term):
+            sp_ = (pt[0].a, pt[-1].b)
+            pending.append((Seat(text[sp_[0]:sp_[1]], tuple(t.s for t in pt if not t.fn), sp_), c))
+            continue
+        if pending:
+            c = replace(c, adverbial=tuple(x for x, _ in pending))
+            pending.clear()
+        clauses.append(c)
+    flush()
+    return Exchange(text, tuple(clauses), tuple(skipped), SHAPES_V4)
+
+
+RULES_V4 = RULES_V3 + (_rewrite_he, _retry_ok_v4, _mark_written, _classify_v4, _exchange_v4)
+
+
+def _shapes_sha_v4() -> str:
+    h = hashlib.sha256()
+    h.update(json.dumps(CONSTANTS_V4, ensure_ascii=False, sort_keys=True).encode("utf-8"))
+    for f in RULES_V4:
+        h.update(b"\x00")
+        h.update(inspect.getsource(f).encode("utf-8"))
+    return h.hexdigest()
+
+
+SHAPES_SHA_V4 = _shapes_sha_v4()
+
 SHAPE_TABLES: Dict[str, str] = {SHAPES_VERSION: SHAPES_SHA, SHAPES_V2: SHAPES_SHA_V2}      # version -> sha: what a ledger header records (shape.v1, shape.v2: pinned by the tests of PUB-M4)
-SHAPE_TABLES_ALL: Dict[str, str] = dict(SHAPE_TABLES, **{SHAPES_V3: SHAPES_SHA_V3})      # version -> sha of every table (SHAPE_TABLES: v1 and v2, as the tests of PUB-M4 pin it)
-SHAPE_VERSIONS: Tuple[str, ...] = (SHAPES_VERSION, SHAPES_V2, SHAPES_V3)
+SHAPE_TABLES_ALL: Dict[str, str] = dict(SHAPE_TABLES, **{SHAPES_V3: SHAPES_SHA_V3, SHAPES_V4: SHAPES_SHA_V4})      # version -> sha of every table (SHAPE_TABLES: v1 and v2, as the tests of PUB-M4 pin it)
+SHAPE_VERSIONS: Tuple[str, ...] = (SHAPES_VERSION, SHAPES_V2, SHAPES_V3, SHAPES_V4)
 
 
 def exchange(sentence: str, version: str = SHAPES_VERSION) -> Exchange:
     """The shape exchanger: a sentence -> its clauses, each with a shape (F1..F4, or F0 with a reason).  Pure.  `version`: shape.v1 (default: the table of PUB-M1, unchanged), shape.v2 (PUB-M4: the
-    change forms of CHANGE_FORMS_V2 are clauses of their own) or shape.v3 (PUB-M6c: v2 plus the artefacts of stage 1, see above)."""
+    change forms of CHANGE_FORMS_V2 are clauses of their own) shape.v3 (PUB-M6c: v2 plus the artefacts of stage 1, see above) or shape.v4 (PUB-M6d: v3 plus 「へ」 read like 「に」, see below)."""
     text = strip_attribution(unicodedata.normalize("NFC", sentence or ""))
     if version == SHAPES_VERSION:
         return _exchange(text)
@@ -732,6 +850,8 @@ def exchange(sentence: str, version: str = SHAPES_VERSION) -> Exchange:
         return _exchange_v2(text)
     if version == SHAPES_V3:
         return _exchange_v3(text)
+    if version == SHAPES_V4:
+        return _exchange_v4(text)
     raise ValueError("unknown shape version %r (one of %s)" % (version, SHAPE_VERSIONS))
 
 

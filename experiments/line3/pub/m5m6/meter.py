@@ -28,8 +28,9 @@ from typing import Any, Dict, List, Optional, Sequence
 import common as K
 from common import C, ma, mem, mask
 
-MODE: Dict[str, Any] = {"m6c": False}                              # set by main() before the workers fork
+MODE: Dict[str, Any] = {"m6c": False, "m6d": False}                # set by main() before the workers fork (m6d = m6c with shape.v4, PUB-M6d stage 2)
 M6C_DIR = os.path.join(K.ROOT, "experiments", "line3", "pub", "m6c")
+M6D_DIR = os.path.join(K.ROOT, "experiments", "line3", "pub", "m6d")
 JOINER_CHARS = ".,-:/"
 
 
@@ -38,7 +39,7 @@ def answer_version() -> str:
 
 
 def versions() -> Any:
-    return mem.V4_VERSIONS_M6C if MODE["m6c"] else None
+    return mem.V4_VERSIONS_M6D if MODE["m6d"] else mem.V4_VERSIONS_M6C if MODE["m6c"] else None
 
 EXPECT = {"SAME_SEAT": "contradiction", "REVERSAL_X": "reversal", "UPDATE": "update", "ENUMERATION": "list_trap"}
 OLD_NOTES = ("REVERSAL", "SAME_QUESTION")
@@ -499,11 +500,13 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     ap.add_argument("--workers", type=int, default=K.DEFAULT_WORKERS)
     ap.add_argument("--limit", type=int, default=0, help="only the first N runs (a smoke test)")
     ap.add_argument("--m6c", action="store_true", help="PUB-M6c: shape.v3 / ask.v3 / qwords.v2, memanswer.v4; outputs to experiments/line3/pub/m6c/")
+    ap.add_argument("--m6d", action="store_true", help="PUB-M6d: --m6c with shape.v4 (stage 2: 「へ」 read like 「に」); outputs to experiments/line3/pub/m6d/")
     ns = ap.parse_args(argv)
-    MODE["m6c"] = ns.m6c
-    if ns.m6c:
-        os.makedirs(M6C_DIR, exist_ok=True)
-        K.OUT = M6C_DIR
+    MODE["m6d"] = ns.m6d
+    MODE["m6c"] = ns.m6c or ns.m6d
+    if MODE["m6c"]:
+        K.OUT = M6D_DIR if ns.m6d else M6C_DIR
+        os.makedirs(K.OUT, exist_ok=True)
     dirs = C.structure_runs(ns.meter)
     if ns.limit:
         dirs = dirs[:ns.limit]

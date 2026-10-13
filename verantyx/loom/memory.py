@@ -98,6 +98,7 @@ CAPS_MEM_V4: Dict[str, int] = dict(CAPS_MEM_V3, bridges=60)          # PUB-M6: +
 # every test); `V4_VERSIONS_M6C` is the bundle of this ticket: shape.v3 (stage 1 of the staged table), ask.v3 + qwords.v2 (candidates, 「どの<名詞>」, relative clauses, bridges to a whole position).
 V4_VERSIONS_V2: Dict[str, str] = {"shape": ms.SHAPES_V2, "qwords": qw.QWORDS_VERSION, "ask": mask.ASK_VERSION}
 V4_VERSIONS_M6C: Dict[str, str] = {"shape": ms.SHAPES_V3, "qwords": qw.QWORDS_V2, "ask": mask.ASK_V3}
+V4_VERSIONS_M6D: Dict[str, str] = dict(V4_VERSIONS_M6C, shape=ms.SHAPES_V4)             # PUB-M6d: the bundle of M6C with stage 2 of the shape table (「へ」 read like 「に」)
 V4_ASK_QWORDS: Dict[str, str] = {mask.ASK_VERSION: qw.QWORDS_VERSION, mask.ASK_V3: qw.QWORDS_V2}      # an ask version reads one question-word table
 
 
@@ -109,7 +110,7 @@ def check_versions(versions: Optional[Dict[str, str]]) -> Dict[str, str]:
             raise Refuse("bad_policy", {"policy": "versions", "value": k, "allowed": sorted(v)})
         v[k] = x
     if v["shape"] not in ms.SHAPE_TABLES_ALL or v["shape"] == ms.SHAPES_VERSION or v["ask"] not in V4_ASK_QWORDS or v["qwords"] != V4_ASK_QWORDS[v["ask"]]:
-        raise Refuse("bad_policy", {"policy": "versions", "value": dict(v), "allowed": {"shape": [ms.SHAPES_V2, ms.SHAPES_V3], "ask": sorted(V4_ASK_QWORDS), "qwords": "the table of the ask version"}})
+        raise Refuse("bad_policy", {"policy": "versions", "value": dict(v), "allowed": {"shape": [ms.SHAPES_V2, ms.SHAPES_V3, ms.SHAPES_V4], "ask": sorted(V4_ASK_QWORDS), "qwords": "the table of the ask version"}})
     return v
 
 

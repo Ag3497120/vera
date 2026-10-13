@@ -150,11 +150,15 @@ class Seat:
     change: Optional[ChangeRec]                  # a value written by a change clause
     marks: Tuple[Mark, ...]
     scope: Optional[str] = None                  # PUB-M5: the nest that was open when the clause was written (None: no nest)
+    written: str = ""                            # PUB-M6d (shape.v4): the particle as written when it was read as `slot` (「へ」 on the arm 「に」); "" for every older table
 
     def to_obj(self) -> dict:
-        return {"slot": self.slot, "phrase": self.phrase, "units": list(self.units), "prov": self.prov.to_obj(), "key": list(self.key), "rank": self.rank, "ring": self.ring,
-                "path": [list(p) for p in self.path], "arms": [[p, s.to_obj()] for p, s in self.arms], "via": self.via, "nest": self.nest,
-                "change": None if self.change is None else self.change.to_obj(), "marks": [m.to_obj() for m in self.marks], "scope": self.scope}
+        d = {"slot": self.slot, "phrase": self.phrase, "units": list(self.units), "prov": self.prov.to_obj(), "key": list(self.key), "rank": self.rank, "ring": self.ring,
+             "path": [list(p) for p in self.path], "arms": [[p, s.to_obj()] for p, s in self.arms], "via": self.via, "nest": self.nest,
+             "change": None if self.change is None else self.change.to_obj(), "marks": [m.to_obj() for m in self.marks], "scope": self.scope}
+        if self.written:
+            d["written"] = self.written
+        return d
 
 
 @dataclass(frozen=True)
@@ -336,7 +340,7 @@ def _flatten(arms: Sequence[ms.Arm]) -> Path:
 # the builder (a fold over the sentences, incremental)
 # ------------------------------------------------------------------------------------------------------------
 class _Rec:
-    __slots__ = ("slot", "phrase", "units", "sid", "k", "seq", "turn", "session", "origin", "key", "path", "children", "via", "nest", "change", "surface", "scope")
+    __slots__ = ("slot", "phrase", "units", "sid", "k", "seq", "turn", "session", "origin", "key", "path", "children", "via", "nest", "change", "surface", "scope", "written")
 
     def __init__(self, **kw: Any) -> None:
         for k, v in kw.items():
@@ -638,15 +642,15 @@ class IndexBuilder:
         cr.occ.append(Prov(sid, turn, session, origin_of(corpus, c.centre_units), surface, k))
         path = _flatten(arms)
 
-        def rec(slot: str, phrase: str, units: Tuple[str, ...], centre_head: str, sub: Sequence[ms.Arm], v: Optional[str], nid: Optional[str], change: Optional[ChangeRec], p: Path) -> _Rec:
+        def rec(slot: str, phrase: str, units: Tuple[str, ...], centre_head: str, sub: Sequence[ms.Arm], v: Optional[str], nid: Optional[str], change: Optional[ChangeRec], p: Path, written: str = "") -> _Rec:
             """One seat (and, below it, the seats of its own arms: the chain).  `p` = its path: an arm seat's ancestors, a value seat's position."""
             self._seq += 1
             self._seat_n[tank] += 1
             seat_head = units[-1] if units else phrase
             r = _Rec(slot=slot, phrase=phrase, units=tuple(units), sid=sid, k=k, seq=self._seq, turn=turn, session=session, origin=origin_of(corpus, units),
-                     key=seat_key(corpus, slot, centre_head, seat_head), path=p, children=[], via=v, nest=nid, change=change, surface=phrase, scope=open_id)
+                     key=seat_key(corpus, slot, centre_head, seat_head), path=p, children=[], via=v, nest=nid, change=change, surface=phrase, scope=open_id, written=written)
             for a in sub:
-                r.children.append((a.particle, rec(a.particle, a.seat.text, a.seat.units, seat_head, a.arms, v, nid, None, p + ((slot, phrase),))))
+                r.children.append((a.particle, rec(a.particle, a.seat.text, a.seat.units, seat_head, a.arms, v, nid, None, p + ((slot, phrase),), a.written)))
             return r
 
         def top(r: _Rec) -> None:
@@ -659,7 +663,7 @@ class IndexBuilder:
 
         for a in arms:
             is_nest = via == NEST_VIA and a.particle == NEST_ARM
-            top(rec(a.particle, a.seat.text, a.seat.units, head, a.arms, via if is_nest else None, nest_id if is_nest else None, None, ()))
+            top(rec(a.particle, a.seat.text, a.seat.units, head, a.arms, via if is_nest else None, nest_id if is_nest else None, None, (), a.written))
         notes: List[dict] = []
         if c.value is not None:
             vr = rec(VALUE, c.value.text, c.value.units, head, (), None, None, ch, path)
@@ -701,7 +705,7 @@ class IndexBuilder:
         m = self._marks.get(r.sid)
         kids = tuple((p, self._seat_view(ch, 0, 1)) for p, ch in r.children)
         return Seat(r.slot, r.phrase, r.units, Prov(r.sid, r.turn, r.session, r.origin, r.surface, r.k), r.key, rank, ring, r.path, kids, r.via, r.nest, r.change,
-                    () if m is None else (m,), r.scope)
+                    () if m is None else (m,), r.scope, r.written)
 
     def _cross_view(self, cr: _CrossRec) -> Cross:
         if cr.view is not None:

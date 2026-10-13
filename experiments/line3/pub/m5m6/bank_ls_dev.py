@@ -64,7 +64,7 @@ def run_story(args: Any) -> Dict[str, Any]:
         t0 = time.time()
         stamps: List[float] = []
         for si, msgs in enumerate(story["sessions"]):
-            s = st.begin("measure", profile=mem.PROFILE_V4, versions=mem.V4_VERSIONS_M6C if MODE["m6c"] else None)
+            s = st.begin("measure", profile=mem.PROFILE_V4, versions=M.versions())
             r = s.call("declare_topic", {"text": topic_of(story["title"])})
             if r.get("ok"):
                 tally.topics += 1
@@ -225,12 +225,13 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     ap.add_argument("--workers", type=int, default=K.DEFAULT_WORKERS)
     ap.add_argument("--verify", action="store_true")
     ap.add_argument("--m6c", action="store_true", help="PUB-M6c: shape.v3 / ask.v3 / qwords.v2; outputs to experiments/line3/pub/m6c/")
+    ap.add_argument("--m6d", action="store_true", help="PUB-M6d: --m6c with shape.v4 (stage 2); outputs to experiments/line3/pub/m6d/")
     ns = ap.parse_args(argv)
-    MODE["m6c"] = ns.m6c
-    M.MODE["m6c"] = ns.m6c
-    if ns.m6c:
-        os.makedirs(M6C_DIR, exist_ok=True)
-        K.OUT = M6C_DIR
+    MODE["m6c"] = M.MODE["m6c"] = ns.m6c or ns.m6d
+    M.MODE["m6d"] = ns.m6d
+    if MODE["m6c"]:
+        K.OUT = M.M6D_DIR if ns.m6d else M6C_DIR
+        os.makedirs(K.OUT, exist_ok=True)
     stories = [json.loads(ln) for ln in open(DEV, encoding="utf-8") if ln.strip()]
     results = K.pmap(run_story, [(s, ns.verify) for s in stories], ns.workers)
     notes: Dict[str, collections.Counter] = {}
