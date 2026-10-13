@@ -1278,7 +1278,7 @@ NEG_UNITS: frozenset = frozenset("ない なかっ なく なけれ ず ぬ ざ�
 NEG_PAIRS: Tuple[Tuple[str, str], ...] = (("ませ", "ん"),)                                 # ません: two words
 CLAUSE_END: frozenset = frozenset("、，。．！？；,!?;")                                    # a mark in the text between two words that ends the clause the answer stands in
 V6_RULE_SENTENCE = ("The answer's own clause must hold every noun of the question's subject chain (隣駅の駅番号); a question whose subject phrase holds a name the reader could not read is refused; "
-                    "the article title stands in for a subject word only as a whole word of the title, and a kind word alone (県 市 駅 線 ...) is no subject; "
+                    "the article title stands in for a subject word only as a whole word of the title, and a category word alone (県 市 駅 線 ...) is no subject; "
                     "an answer that is followed in its clause by a negation (ない なかった ず ぬ ません: 運行されていない) is cut off from what decides it and is refused.")
 
 
