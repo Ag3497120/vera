@@ -93,7 +93,9 @@ EVIDENCE_RULE = ("A prose answer is a quotation: only an unchanged weave_span qu
 # evidence.v2 (L-LOOM-191..): the same rules + the extent of the answer + one answer.  evidence.v1 runs keep the text above (it is hashed in their begin row).
 EVIDENCE_RULE_V2 = (EVIDENCE_RULE + " Quote one stretch that is a whole word or phrase of the sentence: not a piece glued to a neighbouring word, not a stretch across a comma, a "
                     "bracket or a particle (は を に で が と も); and exactly one such quote may stand in the thread. A question with no subject word cannot be answered.")
-EVIDENCE_RULES = {evl.EVIDENCE_V1: EVIDENCE_RULE, evl.EVIDENCE_V2: EVIDENCE_RULE_V2}
+# evidence.v3 (L-LOOM-201..): the v2 text + one sentence for the widened reach (docs/LINE3_LOOM_REACH_DESIGN.md §7.1).  Selectable; not the default (OP-RE-2).
+EVIDENCE_RULE_V3 = EVIDENCE_RULE_V2 + " " + evl.V3_RULE_SENTENCE
+EVIDENCE_RULES = {evl.EVIDENCE_V1: EVIDENCE_RULE, evl.EVIDENCE_V2: EVIDENCE_RULE_V2, evl.EVIDENCE_V3: EVIDENCE_RULE_V3}
 
 
 # ------------------------------------------------------------------------------------------------------------
