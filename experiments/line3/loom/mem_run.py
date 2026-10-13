@@ -334,7 +334,7 @@ def _first_question_message(door: Any, begin_result: dict) -> str:
 
 
 def run_one(task: dict, arm: str, repeat: int, *, client: Any, model: str, out_root: str, tag: str = "", max_calls: Optional[int] = None,
-            extra_api: Optional[dict] = None, profile: str = mem.PROFILE_V2) -> dict:
+            extra_api: Optional[dict] = None, profile: str = mem.PROFILE_V2, m6c: bool = False) -> dict:
     """Run one (task, arm, repeat): the story sessions, then the questions.  Returns the result object (also written to result.json).  Refuses to touch an existing run folder.
 
     `profile` (MEM-fix, L-MEM-62..64): `mem.v2` (the API default here: the meter v1, 12 tool calls a turn, no forced report) or `mem.v3` (the CLI default: the structure arms' sessions are mem.v3, the
@@ -350,6 +350,11 @@ def run_one(task: dict, arm: str, repeat: int, *, client: Any, model: str, out_r
         max_calls = MAX_CALLS_V3 if v3 else mdrv.MAX_CALLS_PER_TURN
     base_version = md.BASELINE_V2 if v3 else md.BASELINE_VERSION
     answer_version = ma.ANSWER_V3 if profile == mem.PROFILE_V4 else ma.ANSWER_V2 if v3 else ma.ANSWER_VERSION      # mem.v4: the answer run reads the memory crosses (PUB-M6)
+    versions = None
+    if m6c:                                              # PUB-M6c: the bundle shape.v3 / ask.v3 / qwords.v2, the answer run memanswer.v4 (candidates + bridge, source slice, contested_value)
+        if profile != mem.PROFILE_V4:
+            raise MemRunError("m6c needs the profile mem.v4", "bad_profile")
+        versions, answer_version = mem.V4_VERSIONS_M6C, ma.ANSWER_V4
     run_dir = os.path.join(out_root, task["id"], arm + (("." + tag) if tag else ""), "r%02d" % repeat)
     if os.path.exists(run_dir):
         raise MemRunError("run folder exists (never overwritten): %s" % run_dir, "run_exists")
@@ -359,13 +364,15 @@ def run_one(task: dict, arm: str, repeat: int, *, client: Any, model: str, out_r
     t0 = time.monotonic_ns()
     result: Dict[str, Any] = {"schema": SCHEMA_V3 if v3 else SCHEMA, "task_id": task["id"], "arm": arm, "arm_label": md.ARM_LABEL[arm], "repeat": repeat, "model": model, "tool_choice": choice,
                               "system_prompt_sha256": {"story": agent_sha(arm, "story"), "question": agent_sha(arm, "question")},
-                              "tools": {"story": list(md.story_tools(arm, profile)), "question": list(md.QUESTION_TOOLS[arm])}, "sessions": [], "answers": []}
+                              "tools": {"story": list(md.story_tools(arm, profile)), "question": list(ma.ANSWER_TOOLS_V4 if m6c and arm in md.STRUCTURE_ARMS else md.QUESTION_TOOLS[arm])}, "sessions": [], "answers": []}
     if v3:
         result.update(profile=profile, turn_limit=max_calls, baseline_version=base_version, answer_version=answer_version)
+        if versions is not None:
+            result["versions"] = dict(versions)
     all_pairs: List[List[str]] = []
     # -- the story phase: every session a new conversation -----------------------------------------------------------
     for s, msgs in enumerate(task["sessions"]):
-        door = (md.StructureDoor(store, arm, model, profile=profile) if arm in md.STRUCTURE_ARMS
+        door = (md.StructureDoor(store, arm, model, profile=profile, versions=versions) if arm in md.STRUCTURE_ARMS
                 else md.BaselineDoor(store, arm, "story", model, session_no=s + 1, version=base_version))
         tools = md.api_tools(door.tool_names, strict)
         sysp = system_prompt(arm, "story")
@@ -401,7 +408,7 @@ def run_one(task: dict, arm: str, repeat: int, *, client: Any, model: str, out_r
     result["false_pairs"] = false_pairs(task, all_pairs)
     # -- the question phase: one conversation per question ---------------------------------------------------------------
     if result["ended"] == "story_complete":
-        snap = ma.write_snapshot(store, topics=v3 and profile != mem.PROFILE_V4, crosses=profile == mem.PROFILE_V4) if arm in md.STRUCTURE_ARMS else None
+        snap = ma.write_snapshot(store, topics=v3 and profile != mem.PROFILE_V4, crosses=profile == mem.PROFILE_V4, versions=m6c) if arm in md.STRUCTURE_ARMS else None
         if snap is not None:
             result["snapshot"] = {k: snap[k] for k in ("name", "sha256", "sentences", "superseded")}
         order = question_order(task["id"], repeat, len(task["questions"]))
@@ -532,6 +539,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     ap.add_argument("--tag", default="")
     ap.add_argument("--profile", default=mem.PROFILE_V3, choices=PROFILE_CHOICES,
                     help="mem.v3 (default, MEM-fix: topic rule v2, cited REVERSAL, topic-aware answer recall, 24 tool calls a turn + forced final report for every arm, long-story caps), mem.v4 (PUB-M2..M4: mem.v3 + the shape exchanger decides writes, keep_unshaped, memory crosses, nests; the answer run is mem.v3's) or mem.v2 (the meter v1)")
+    ap.add_argument("--m6c", action="store_true", help="with --profile mem.v4: the PUB-M6c bundle (shape.v3, ask.v3 + qwords.v2; the answer run memanswer.v4: candidates + bridge, source slice, contested_value)")
     ns = ap.parse_args(list(sys.argv[1:] if argv is None else argv))
     try:
         if ns.list:
@@ -562,7 +570,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             raise MemRunError("say which driver runs it: --driver api (the real model: network, a key, money) or --driver replay --script FILE", "no_driver")
         for k in (range(1, ns.repeats + 1) if ns.repeats else [ns.repeat]):
             client = make_client(ns.driver, ns.script)
-            r = run_one(task, ns.arm, k, client=client, model=ns.model, out_root=ns.out, tag=ns.tag, profile=ns.profile)
+            r = run_one(task, ns.arm, k, client=client, model=ns.model, out_root=ns.out, tag=ns.tag, profile=ns.profile, m6c=ns.m6c)
             print("%s %s r%02d %s noticed=%d/%d answers hit=%d/%d  ->  %s" % (
                 r["task_id"], r["arm_label"], k, r["ended"], sum(1 for n in r["noticed"] if n["noticed"] and n["kind"] in ("contradiction", "reversal")),
                 sum(1 for n in r["noticed"] if n["kind"] in ("contradiction", "reversal")), sum(1 for a in r["answers"] if a["hit"] is True), len(r["answers"]),

@@ -8,6 +8,12 @@
       second witnesses (SAME_QUESTION, the old REVERSAL), next to the old REVERSAL (13 of 311 firings on a planted reversal, 12 of 72 reversal plants cited).
 
   PYTHONPATH=. PYTHONHASHSEED=0 python experiments/line3/pub/m5m6/meter.py [--workers 4] [--limit N]      -> meter_recall.{json,md}, meter_detect.{json,md}
+
+PUB-M6c (`--m6c`): the same 36 stores rebuilt with the bundle shape.v3 / ask.v3 / qwords.v2 and asked of the answer run memanswer.v4 (the gate evidence.v6, weave_span.v4, candidates + bridge, contested_value);
+outputs to experiments/line3/pub/m6c/meter_recall.{json,md}, meter_detect.{json,md}.  THE ORACLE "MODEL" OF THE BRIDGE (`oracle_top`) CONFIRMS ONLY THE TOP CANDIDATE: every number that depends on it is an
+ORACLE UPPER BOUND on what a model that reads the candidates can do, not a model result.  It also attempts to emit one side of every contested (CHOICE) question to see the refusal.
+
+  PYTHONPATH=. PYTHONHASHSEED=0 python experiments/line3/pub/m5m6/meter.py --m6c [--workers 4] [--limit N]
 """
 from __future__ import annotations
 
@@ -21,6 +27,18 @@ from typing import Any, Dict, List, Optional, Sequence
 
 import common as K
 from common import C, ma, mem, mask
+
+MODE: Dict[str, Any] = {"m6c": False}                              # set by main() before the workers fork
+M6C_DIR = os.path.join(K.ROOT, "experiments", "line3", "pub", "m6c")
+JOINER_CHARS = ".,-:/"
+
+
+def answer_version() -> str:
+    return ma.ANSWER_V4 if MODE["m6c"] else ma.ANSWER_V3
+
+
+def versions() -> Any:
+    return mem.V4_VERSIONS_M6C if MODE["m6c"] else None
 
 EXPECT = {"SAME_SEAT": "contradiction", "REVERSAL_X": "reversal", "UPDATE": "update", "ENUMERATION": "list_trap"}
 OLD_NOTES = ("REVERSAL", "SAME_QUESTION")
@@ -151,6 +169,50 @@ def refusal_codes(detail: Any) -> str:
         return json.dumps(detail, ensure_ascii=False, sort_keys=True)[:60]
 
 
+def m6c_question(ses: Any, res: dict, a: dict, gv: Sequence[str]) -> Dict[str, Any]:
+    """PUB-M6c: what the candidates offer and what the ORACLE (confirms only the top candidate: an upper bound, not a model) gets out of them.  `offered`: number of candidates; `gold_among`: some candidate
+    holds a gold value (lenient); `gold_rank`: the rank of the first that does; then the oracle's bridge on candidate 1 and the recall through it (`bridged`: judged like any recall)."""
+    out: Dict[str, Any] = {"offered": 0}
+    if res["verdict"] != "CANDIDATES":
+        return out
+    cs = res["candidates"]
+    out["offered"] = len(cs)
+    out["tied_top"] = bool(cs[0].get("tied_with_best"))
+    rank = None
+    for c in cs:
+        if any(C.match(g, v, True) for g in gv for v in c["values"]):
+            rank = c["rank"]
+            break
+    out["gold_among"] = rank is not None
+    out["gold_rank"] = rank
+    b = ses.call("bridge", {"question_phrase": cs[0]["bridge"]["question_word"], "memory_phrase": cs[0]["bridge"]["memory_phrase"]})
+    out["oracle_top"] = "ok" if b.get("ok") else b.get("refusal", "?")
+    if b.get("ok"):
+        r2 = ses.call("recall", {"question": a["q"]})
+        out["bridged"] = {"verdict": r2["verdict"], "route": r2.get("route"), "strict": K.judge_recall(r2, a["kind"], gv, False), "lenient": K.judge_recall(r2, a["kind"], gv, True)}
+        out["_res"] = r2
+    return out
+
+
+def m6c_emit(ses: Any, res: dict, kind: str, gold_vals: Sequence[str]) -> Dict[str, Any]:
+    """emit_attempt, and for a contradicted question the ATTEMPT TO EMIT ONE SIDE: status `contested_refused` (the run refused `contested_value`: right), `one_side_emitted` (it did not: wrong),
+    `contested_available` for a verdict that is not a same-seat CHOICE of >= 2 sources."""
+    if kind != "contradicted":
+        return emit_attempt(ses, res, kind, gold_vals)
+    if not (res["verdict"] == "CHOICE" and res.get("choice_kind") == "same_seat" and res.get("sources", 0) >= 2):
+        return {"status": "contested_available" if res["verdict"] == "CHOICE" else "not_applicable"}
+    occ = res["answers"][0]["occurrences"][0]
+    if not occ.get("span"):
+        return {"status": "no_span"}
+    w = ses.call("weave_span", {"sid": occ["sid"], "tier": "WORD", "first": occ["span"][0], "last": occ["span"][1]})
+    if not w.get("ok"):
+        return {"status": "weave_refused", "why": "%s" % w.get("refusal", "?")}
+    e = ses.call("emit", {})
+    if e.get("ok"):
+        return {"status": "one_side_emitted", "text": e["text"]}
+    return {"status": "contested_refused" if e.get("refusal") == "contested_value" else "emit_refused", "why": e.get("refusal", "?")}
+
+
 def measure_run(run_dir: str) -> Dict[str, Any]:
     m2 = K.load_m2()
     label = C.label(run_dir)
@@ -160,22 +222,28 @@ def measure_run(run_dir: str) -> Dict[str, Any]:
     tmp = tempfile.mkdtemp(prefix="m5m6_")
     try:
         store = os.path.join(tmp, "store")
-        tally, ix, vstat, rstat = m2.drive(store, m2.meter_sessions(os.path.join(run_dir, "store")))
+        tally, ix, vstat, rstat = m2.drive(store, m2.meter_sessions(os.path.join(run_dir, "store")), versions())
         rows = mem.MemStore(store).rows()
         # -- (a) recall through the answer run ------------------------------------------------------------------------------------------------------
-        snap = ma.write_snapshot(store, crosses=True)
+        snap = ma.write_snapshot(store, crosses=True, versions=MODE["m6c"])
         qs = []
         for a in sorted(r["answers"], key=lambda a: a["index"]):
             gk, gv = C.mem_run.gold_values(a["gold"])
-            ses = ma.AnswerSession(store, a["q"], "oracle", snapshot=snap, answer_version=ma.ANSWER_V3)
+            ses = ma.AnswerSession(store, a["q"], "oracle", snapshot=snap, answer_version=answer_version())
             res = ses.call("recall", {"question": a["q"]})
             q = {"index": a["index"], "q": a["q"], "kind": a["kind"], "gold": gv, "verdict": res["verdict"], "route": res.get("route"), "choice_kind": res.get("choice_kind"),
                  "issues": res.get("issues", []), "history": len(res.get("history", [])), "parsed": res["question"]["ok"]}
             for mode, lenient in (("strict", False), ("lenient", True)):
                 q[mode] = K.judge_recall(res, a["kind"], gv, lenient)
-            q["emit"] = emit_attempt(ses, res, a["kind"], gv) if q["lenient"]["reached"] else {"status": "not_found"}
+            if MODE["m6c"]:
+                q["m6c"] = m6c_question(ses, res, a, gv)
+                q["verdict_first"] = res["verdict"]
+            q["emit"] = (emit_attempt(ses, res, a["kind"], gv) if not MODE["m6c"] else m6c_emit(ses, res, a["kind"], gv)) if q["lenient"]["reached"] else {"status": "not_found"}
+            if MODE["m6c"] and "bridged" in q["m6c"] and q["m6c"]["bridged"]["lenient"]["reached"]:
+                q["emit_bridged"] = emit_attempt(ses, q["m6c"].pop("_res"), a["kind"], gv)          # the oracle's bridge-confirmed answer, emitted through the same gate
+            q["m6c"].pop("_res", None) if MODE["m6c"] else None
             if res["verdict"] == "UPDATED":                              # PUB-M6b red team: the replaced value must never be emitted (a fresh answer run, the same snapshot)
-                q["old_value"] = old_value_attempt(lambda: ma.AnswerSession(store, a["q"], "oracle", snapshot=snap, answer_version=ma.ANSWER_V3), a["q"], len(res.get("history", [])))
+                q["old_value"] = old_value_attempt(lambda: ma.AnswerSession(store, a["q"], "oracle", snapshot=snap, answer_version=answer_version()), a["q"], len(res.get("history", [])))
             qs.append(q)
         # -- (b) detection --------------------------------------------------------------------------------------------------------------------------
         by_type: Dict[str, Dict[str, int]] = {t: collections.Counter() for t in list(EXPECT) + list(OLD_NOTES)}
@@ -277,6 +345,8 @@ def tally_recall(runs: Sequence[dict]) -> dict:
                 old_value["tried"] += ov["tried"]
                 for x in ov["status"]:
                     old_value[x.split(":")[0] if x.startswith("EMITTED_OLD") else x] += 1
+    if MODE["m6c"]:
+        out["m6c"] = tally_m6c(runs)
     out["verdicts"] = {"%s/%s" % k: v for k, v in sorted(verdicts.items())}
     out["routes"] = dict(sorted(routes.items()))
     out["issues"] = dict(sorted(issues.items()))
@@ -286,6 +356,46 @@ def tally_recall(runs: Sequence[dict]) -> dict:
     out["completion_refused"] = dict(sorted(completion_tried.items()))
     out["old_value_red_team"] = dict(sorted(old_value.items()))
     return out
+
+
+def tally_m6c(runs: Sequence[dict]) -> dict:
+    """PUB-M6c numbers.  EVERY NUMBER UNDER `oracle_top` IS AN ORACLE UPPER BOUND (a "model" that confirms only the top candidate), not a model result."""
+    c = collections.Counter()
+    for r in runs:
+        for q in r["questions"]:
+            m = q.get("m6c") or {}
+            c["questions"] += 1
+            st = q["emit"]["status"]
+            if st in ("emitted_right", "emitted_wrong"):
+                c["emitted_" + ("right" if st == "emitted_right" else "wrong")] += 1
+                if any(ch in q["emit"].get("text", "") for ch in JOINER_CHARS):
+                    c["verbatim_slice_emits"] += 1
+                    c["verbatim_slice_emits_" + ("right" if st == "emitted_right" else "wrong")] += 1
+            if st == "contested_refused":
+                c["contested_refused"] += 1
+            if st == "one_side_emitted":
+                c["one_side_emitted"] += 1
+            if q["verdict"] == "CHOICE" and q["kind"] == "contradicted":
+                c["choice_contradicted"] += 1
+            if q["verdict"] == "ANSWER" or q["verdict"] == "UPDATED":
+                c["answered_exactly"] += 1
+            if m.get("offered"):
+                c["candidates_offered"] += 1
+                c["candidates_total"] += m["offered"]
+                c["candidates_gold_among"] += 1 if m.get("gold_among") else 0
+                c["candidates_gold_rank1"] += 1 if m.get("gold_rank") == 1 else 0
+                c["candidates_tied_top"] += 1 if m.get("tied_top") else 0
+                c["oracle_top_bridge_" + m.get("oracle_top", "none")] += 1
+                b = m.get("bridged")
+                if b:
+                    c["oracle_top_answered"] += 1
+                    c["oracle_top_reached"] += 1 if b["lenient"]["reached"] else 0
+                    c["oracle_top_exact"] += 1 if b["lenient"]["exact"] else 0
+                    c["oracle_top_wrong"] += 0 if b["lenient"]["reached"] else 1
+                eb = q.get("emit_bridged")
+                if eb:
+                    c["oracle_top_emit_" + eb["status"]] += 1
+    return dict(sorted(c.items()))
 
 
 def tally_detect(runs: Sequence[dict]) -> dict:
@@ -345,6 +455,17 @@ def md_recall(t: dict, mf: Optional[dict], n_runs: int) -> str:
             "### 見つかった値は出せるか（到達した問いだけ。出口の門は変えていない: weave_span で引用 → emit）", "", "%s" % t["emit"], "", "出せなかった理由: %s" % t["emit_why"], "",
             "完成した問い（via）で出せた: %s。完成した問いでも門が断った理由: %s" % (t["emit_via"], t["completion_refused"]), "",
             "置き換えられた値の赤チーム（UPDATED の問いごとに、history の各値を引用して emit を試す。`EMITTED_OLD` が古い値の誤出力）: %s" % t["old_value_red_team"], ""]
+    if "m6c" in t:
+        m = t["m6c"]
+        out += ["### PUB-M6c（shape.v3 / ask.v3 / qwords.v2、回答 run memanswer.v4、門 evidence.v6）", "",
+                "- 出せた（正）: %d、出せた（誤）: %d、そのうち句読点つきの値を元の文の範囲のまま出した: %d（正 %d、誤 %d）" % (m.get("emitted_right", 0), m.get("emitted_wrong", 0), m.get("verbatim_slice_emits", 0),
+                                                                                           m.get("verbatim_slice_emits_right", 0), m.get("verbatim_slice_emits_wrong", 0)),
+                "- 食い違い質問（同じ席の CHOICE）: 片方を出そうとして `contested_value` で拒否 %d、拒否されず片方が出た %d（0 でなければならない）" % (m.get("contested_refused", 0), m.get("one_side_emitted", 0)),
+                "- CANDIDATES を示した問い: %d（候補の総数 %d）、そのうち金が候補の中にある %d、金が 1 位 %d、先頭が同点 %d" % (m.get("candidates_offered", 0), m.get("candidates_total", 0), m.get("candidates_gold_among", 0),
+                                                                                       m.get("candidates_gold_rank1", 0), m.get("candidates_tied_top", 0)),
+                "- **ORACLE 上限（先頭の候補だけを確かめる「モデル」。モデルの結果ではない）**: 橋を張って答えた %d、金に到達 %d（厳密 %d）、金に届かず %d；橋で見つけた値を門に通した結果: %s" % (
+                    m.get("oracle_top_answered", 0), m.get("oracle_top_reached", 0), m.get("oracle_top_exact", 0), m.get("oracle_top_wrong", 0),
+                    {k[len("oracle_top_emit_"):]: v for k, v in m.items() if k.startswith("oracle_top_emit_")}), ""]
     return "\n".join(out) + "\n"
 
 
@@ -375,7 +496,12 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     ap.add_argument("--meter", default=C.METER_V1)
     ap.add_argument("--workers", type=int, default=K.DEFAULT_WORKERS)
     ap.add_argument("--limit", type=int, default=0, help="only the first N runs (a smoke test)")
+    ap.add_argument("--m6c", action="store_true", help="PUB-M6c: shape.v3 / ask.v3 / qwords.v2, memanswer.v4; outputs to experiments/line3/pub/m6c/")
     ns = ap.parse_args(argv)
+    MODE["m6c"] = ns.m6c
+    if ns.m6c:
+        os.makedirs(M6C_DIR, exist_ok=True)
+        K.OUT = M6C_DIR
     dirs = C.structure_runs(ns.meter)
     if ns.limit:
         dirs = dirs[:ns.limit]

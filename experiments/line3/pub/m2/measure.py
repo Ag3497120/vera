@@ -74,12 +74,13 @@ class Tally:
                 "accepted_clauses_by_shape": dict(sorted(self.clause_shapes.items())), "completed_by_nest": self.completed, "change_clauses": self.change_clauses, "topics_declared": self.topics}
 
 
-def drive(store_dir, sessions):
-    """sessions: [[("declare", text) | ("write", text, turn)]].  A real mem.v4 store: begin / calls / commit per session.  -> (Tally, MemIndex, verify status, replay status)."""
+def drive(store_dir, sessions, versions=None):
+    """sessions: [[("declare", text) | ("write", text, turn)]].  A real mem.v4 store: begin / calls / commit per session.  `versions` (PUB-M6c): the bundle of shape / qwords / ask versions the sessions
+    record (None: the bundle of PUB-M2..M6b).  -> (Tally, MemIndex, verify status, replay status)."""
     t = Tally()
     st = mem.MemStore(store_dir, "m")
     for ops in sessions:
-        s = st.begin("measure", profile=mem.PROFILE_V4)
+        s = st.begin("measure", profile=mem.PROFILE_V4, versions=versions)
         for op in ops:
             if op[0] == "declare":
                 r = s.call("declare_topic", {"text": op[1]})

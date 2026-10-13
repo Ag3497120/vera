@@ -91,7 +91,9 @@ TOOL_SPECS: Dict[str, dict] = {
                                      "note fires. Refused (shaped) if write would accept it. Use it only when the sentence cannot be rewritten into a fact.",
                       "properties": {"text": _p("string", "the sentence, at most 64 characters")}, "required": ["text"]},
     "bridge": {"description": "Tell the memory that a word of YOUR question stands for a phrase the memory already uses (the question says 開ける日, the memory has 開館日): recall then uses the mapping. Marked as "
-                              "constructed and kept in the log. The memory_phrase must be the centre of a fact already written (a thing you wrote as 「X の Y は A」 with that Y).",
+                              "constructed and kept in the log. The memory_phrase must be the centre of a fact already written (a thing you wrote as 「X の Y は A」 with that Y). When recall offers CANDIDATES "
+                              "(no exact route reached a value), confirm the one that is what you mean with the question word = a part of your question and memory_phrase = the candidate's `phrase`: only then "
+                              "does recall answer. (The argument may also be called question_phrase.)",
                "properties": {"question_word": _p("string", "the word or phrase the question uses, at most 16 characters"), "memory_phrase": _p("string", "the phrase the memory uses, at most 24 characters")},
                "required": ["question_word", "memory_phrase"]},
     "declare_topic": {"description": "Say what this session is about (a noun phrase, at most 24 characters, no particle in it: の に で と を が). A fact you write with no subject (「締め切りは水曜」) is "
@@ -214,7 +216,8 @@ class StructureDoor(_Door):
     """The STORY phase of A2 / A2b: one `MemSession` (profile mem.v2) of a `MemStore`.  `call` = one ledger row.  `commit()` is the harness's (the model has no such tool)."""
     phase = "story"
 
-    def __init__(self, store_path, arm: str, model: str, *, hook: Any = mem.DEFAULT, kind_policy: Optional[str] = None, profile: str = mem.PROFILE_V2) -> None:
+    def __init__(self, store_path, arm: str, model: str, *, hook: Any = mem.DEFAULT, kind_policy: Optional[str] = None, profile: str = mem.PROFILE_V2,
+                 versions: Optional[Dict[str, str]] = None) -> None:
         if arm not in STRUCTURE_ARMS:
             raise ValueError("a StructureDoor is the structure arms' (blind | notes)")
         if profile not in mem.V2_PLUS:
@@ -222,7 +225,7 @@ class StructureDoor(_Door):
         super().__init__(arm)
         self.profile = profile
         self.store = mem.MemStore(store_path)
-        self.session = self.store.begin(model, profile=profile, self_question=hook, kind_policy=kind_policy)
+        self.session = self.store.begin(model, profile=profile, self_question=hook, kind_policy=kind_policy, versions=versions)
         self.run_id = self.session.run_id
         self.begin_result: dict = self.session.rows()[0]["result"]
 
@@ -272,8 +275,13 @@ class AnswerDoor(_Door):
             raise ValueError("an AnswerDoor is the structure arms'")
         super().__init__(arm)
         self.session = ma.AnswerSession(store_path, question, model, snapshot=snapshot, answer_version=answer_version)
+        self.answer_version = answer_version
         self.run_id = self.session.run_id
         self.begin_result: dict = self.session.begin_result
+
+    @property
+    def tool_names(self) -> Tuple[str, ...]:
+        return ma.ANSWER_TOOLS_V4 if self.answer_version == ma.ANSWER_V4 else QUESTION_TOOLS[self.arm]
 
     def call(self, tool: Any, args: Any = None) -> dict:
         bad = self._gate(tool, args)
