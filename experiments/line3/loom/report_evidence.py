@@ -101,7 +101,7 @@ def reach_offline():
                         occ.append((sid, i0, i1))
                     pos = v.text.find(alt, pos + 1)
         for scope in reach:
-            js = [ev.judge_quote(corpus, qu, scope, sid, "WORD", i0, i1) for sid, i0, i1 in occ]
+            js = [ev.judge_quote(corpus, qu, scope, sid, "WORD", i0, i1, ev.EVIDENCE_V2) for sid, i0, i1 in occ]
             if any(not j["codes"] for j in js):
                 reach[scope].append(r["#id"])
             elif scope == ev.SCOPE_TITLE:
@@ -345,7 +345,7 @@ def tables() -> str:
         qu = ev.question_units(f["question_text"])
         verd = {}
         for tag, scope in (("a", ev.SCOPE_TITLE), ("b", ev.SCOPE_CLAUSE)):
-            js = [ev.judge_quote(corpus, qu, scope, sid, tier, i0, i1) for sid, tier, i0, i1 in f["weaves"]]
+            js = [ev.judge_quote(corpus, qu, scope, sid, tier, i0, i1, ev.EVIDENCE_V2) for sid, tier, i0, i1 in f["weaves"]]
             verd[tag] = "PASS" if all(not j["codes"] for j in js) else "refused " + "; ".join("%s:%s" % (j["answer"], "+".join(j["codes"])) for j in js if j["codes"])
             npass[tag] += verd[tag] == "PASS"
         cnt[(f["set"], f["mode"], verd["a"] == "PASS")] += 1
@@ -354,7 +354,7 @@ def tables() -> str:
     p("runs with a non-empty final thread: %d; the thread passes the gate under (a): %d, under (b): %d; unanswerable-item threads that pass under (a): %d" % (
         len(ft), npass["a"], npass["b"], sum(1 for f in ft if f["set"] != "bank2" or f["base"] in BANK2_UNANS) and sum(
             1 for f in ft if (f["set"] != "bank2" or f["base"] in BANK2_UNANS) and all(
-                not ev.judge_quote(corpus, ev.question_units(f["question_text"]), ev.SCOPE_TITLE, sid, tier, i0, i1)["codes"] for sid, tier, i0, i1 in f["weaves"]))))
+                not ev.judge_quote(corpus, ev.question_units(f["question_text"]), ev.SCOPE_TITLE, sid, tier, i0, i1, ev.EVIDENCE_V2)["codes"] for sid, tier, i0, i1 in f["weaves"]))))
     p("")
 
     # ---- E8: reach (offline) -------------------------------------------------------------------------------------------------------------------------------

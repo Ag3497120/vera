@@ -33,9 +33,10 @@ EVIDENCE_V2 = "evidence.v2"                                    # the review's fi
 EVIDENCE_V3 = "evidence.v3"                                    # LOOM-reach (L-LOOM-201..): v2 + the safe set R1..R7 and the tightenings T1 / T2 of docs/LINE3_LOOM_REACH_DESIGN.md; selectable, NOT the default (OP-RE-2)
 EVIDENCE_V4 = "evidence.v4"                                    # LOOM-evidence-v4 (L-LOOM-212..): v3 minus R7 (the naming verb 「いう」 of 「という」) plus the subject-chain rule; selectable, NOT the default (OP-PUB-6: only after the held-out bank7)
 EVIDENCE_V5 = "evidence.v5"                                    # LOOM-evidence-v5 (L-LOOM-219..): v4 plus SU (a question whose subject phrase the cut could not read in full is refused) and TW (the article title stands in for a subject word only as a whole word of the title; a kind word alone is no subject); selectable, NOT the default
-EVIDENCE_VERSIONS: Tuple[str, ...] = (EVIDENCE_V1, EVIDENCE_V2, EVIDENCE_V3, EVIDENCE_V4, EVIDENCE_V5)
-EVIDENCE_LATEST = EVIDENCE_V2                                  # the rule NEW prose runs get; a ledger replays under the version its begin row recorded.  Stays v2 until the held-out bank6 passes (OP-RE-2)
-PROFILE_NAMES: Dict[str, str] = {"v1": EVIDENCE_V1, "v2": EVIDENCE_V2, "v3": EVIDENCE_V3, "v4": EVIDENCE_V4, "v5": EVIDENCE_V5}     # the server / CLI spelling -> the rule version
+EVIDENCE_V6 = "evidence.v6"                                    # LOOM-evidence-v6 (L-LOOM-226..): v2 plus the refusal-only safety rules CH, SU, TW and NEG (a PURE FILTER over the v2 verdict; no reach-widening rule of v3..v5); the DEFAULT (owner 2026-10-06 decision, last section)
+EVIDENCE_VERSIONS: Tuple[str, ...] = (EVIDENCE_V1, EVIDENCE_V2, EVIDENCE_V3, EVIDENCE_V4, EVIDENCE_V5, EVIDENCE_V6)
+EVIDENCE_LATEST = EVIDENCE_V6                                  # the rule NEW prose runs get; a ledger replays under the version its begin row recorded (a ledger with no recorded profile has no gate at all)
+PROFILE_NAMES: Dict[str, str] = {"v1": EVIDENCE_V1, "v2": EVIDENCE_V2, "v3": EVIDENCE_V3, "v4": EVIDENCE_V4, "v5": EVIDENCE_V5, "v6": EVIDENCE_V6}     # the server / CLI spelling -> the rule version
 SCOPE_TITLE, SCOPE_CLAUSE = "clause_or_title", "clause"
 SUBJECT_SCOPES: Tuple[str, ...] = (SCOPE_TITLE, SCOPE_CLAUSE)
 DEFAULT_SCOPE = SCOPE_TITLE                                    # L-LOOM-190: until the owner answers OP-EV-1 otherwise (he said yes: 2026-10-12)
@@ -43,7 +44,8 @@ DEFAULT_SCOPE = SCOPE_TITLE                                    # L-LOOM-190: unt
 CODES: Tuple[str, ...] = ("not_quoted", "constructed_unit", "answer_not_word_aligned", "question_form_open", "question_has_no_subject", "no_subject",
                           "wrong_arm", "no_slot_head", "not_copular", "answer_holds_question_unit",
                           "answer_glued", "answer_crosses_break", "multiple_answers",          # the last three are evidence.v2 only
-                          "subject_unreadable")                                                # evidence.v5 only (SU)
+                          "subject_unreadable",                                                # evidence.v5 and v6 (SU)
+                          "answer_polarity_cut")                                               # evidence.v6 only (NEG)
 IGNORE = frozenset("「」『』“”\"'・· 　\t")                  # L-LOOM-177
 P7 = gm.P7
 ARMS = ("の", "に", "で", "と", "を", "が")                        # the six arm particles (は is the centre relation)
@@ -511,6 +513,8 @@ def judge_quote(corpus, qu: QuestionUnits, scope: str, sid: int, tier: str, i0: 
     whole word / phrase: not glued to a neighbouring word, no break inside)."""
     if version not in EVIDENCE_VERSIONS:
         raise ValueError("version must be one of %s" % (EVIDENCE_VERSIONS,))
+    if version == EVIDENCE_V6:                                                          # evidence.v6 (L-LOOM-226): its own path (the v2 verdict, filtered)
+        return _judge_v6(corpus, qu, scope, sid, tier, i0, i1)
     if version == EVIDENCE_V5:                                                          # evidence.v5 (L-LOOM-219): its own path (v4 plus SU and TW)
         return _judge_v5(corpus, qu, scope, sid, tier, i0, i1)
     if version == EVIDENCE_V4:                                                          # evidence.v4 (L-LOOM-212): its own path (v3 minus R7, plus the subject-chain rule)
@@ -1257,6 +1261,123 @@ def v5_rules_digest() -> str:
     funcs = (_m_unreadable, _m_kind_only, _m_no_subject_whole, _subject_unread, subject_unread, kind_only_subject, _title_run_strings, _tw_recheck, _v5_question_failures, begin_question_obj,
              _judge_v5)
     obj = {"version": EVIDENCE_V5, "v4": v4_rules_digest(), "ids": list(V5_RULE_IDS), "off": sorted(V5_OFF), "KIND_SUFFIX": sorted(KIND_SUFFIX), "sentence": V5_RULE_SENTENCE,
+           "functions": {f.__qualname__: hashlib.sha256(inspect.getsource(f).encode("utf-8")).hexdigest() for f in funcs}}
+    return hashlib.sha256(json.dumps(obj, sort_keys=True, ensure_ascii=False, separators=(",", ":")).encode("utf-8")).hexdigest()
+
+
+# ------------------------------------------------------------------------------------------------------------
+# evidence.v6 (L-LOOM-226..): v2 plus the REFUSAL-ONLY safety rules.  A separate path ADDED after the v5 code: no function of the frozen v3 / v4 / v5 digests is edited.  v6 is a PURE FILTER over
+# the v2 verdict (owner decision, ops/decisions/2026-10-06_line3_faithful_build.md, last section: 「安全の規則だけを v2 に足して既定に」): a stretch passes v6 iff it passes v2 AND every check
+# below passes; no rule of v3..v5 that WIDENS the reach (R1..R7, T1, T2) is in it.  The checks are the existing code paths: CH is v4's chain rule (`_m_no_chain`, `_read_idx`), SU and the
+# kind-word-only subject are v5's (`_v5_question_failures`), TW is v5's title whole-word recheck (`_tw_recheck`); NEG is new.
+# ------------------------------------------------------------------------------------------------------------
+V6_RULE_IDS: Tuple[str, ...] = ("CH", "SU", "TW", "NEG")
+V6_OFF: frozenset = frozenset()
+# NEG: the negating endings, as the grammar layer's own WORDS (`gm.words_of`, function words kept: 運行|さ|れ|て|い|ない), never a string search over the sentence.  A CLOSED list.
+NEG_UNITS: frozenset = frozenset("ない なかっ なく なけれ ず ぬ ざる ざれ".split())
+NEG_PAIRS: Tuple[Tuple[str, str], ...] = (("ませ", "ん"),)                                 # ません: two words
+CLAUSE_END: frozenset = frozenset("、，。．！？；,!?;")                                    # a mark in the text between two words that ends the clause the answer stands in
+V6_RULE_SENTENCE = ("The answer's own clause must hold every noun of the question's subject chain (隣駅の駅番号); a question whose subject phrase holds a name the reader could not read is refused; "
+                    "the article title stands in for a subject word only as a whole word of the title, and a kind word alone (県 市 駅 線 ...) is no subject; "
+                    "an answer that is followed in its clause by a negation (ない なかった ず ぬ ません: 運行されていない) is cut off from what decides it and is refused.")
+
+
+def _m_polarity_cut(ans: str, tail: str, sid: int) -> str:
+    return "the answer 「%s」 of sentence %d is followed in its clause by 「%s」, a negation: the quoted stretch is cut off from the polarity that decides it, so it would say the opposite" % (ans, sid, tail)
+
+
+def _neg_after(v: "SentenceView", ce: int) -> Optional[Tuple[str, int]]:
+    """NEG: the negating ending that follows the answer (which ends at character `ce` of the sentence) in its clause, as (the ending's surface, the offset where it ends); None when there is
+    none.  The clause runs from the answer to the first mark that ends a clause (CLAUSE_END, read in the text between two words) or the end of the sentence; the words of that stretch are the
+    grammar layer's (`v.raw`, function words kept).  An ending that is part of the answer itself is not seen (the scan starts at the answer's end)."""
+    ws = v.raw
+    k = next((i for i, w in enumerate(ws) if w[1] >= ce), len(ws))
+    prev = ce
+    for i in range(k, len(ws)):
+        s, a, b = ws[i]
+        if any(ch in CLAUSE_END for ch in v.text[prev:a]):
+            return None
+        if s in NEG_UNITS:
+            return s, b
+        for first, second in NEG_PAIRS:
+            if s == first and i + 1 < len(ws) and ws[i + 1][0] == second:
+                return first + second, ws[i + 1][2]
+        prev = b
+    return None
+
+
+def _v6_chain_failures(v: "SentenceView", chain: Sequence[str], a0: int, a1: int, sid: int) -> List[dict]:
+    """CH exactly as `_judge_v4` / `_judge_v5` apply it: every noun of the subject chain except the outermost (which the v2 subject check reads, in the clause or in the article title) must be
+    read in the clause around the answer, disjoint from the answer, with the v3 reading of §4.3."""
+    out: List[dict] = []
+    if len(chain) > 1:
+        lo, hi = clause_bounds(v, a0, a1, True)
+        cl = clause_text(v, lo, hi)
+        for s in chain[1:]:
+            if not _read_idx(v.units, v.gap, range(lo, hi + 1), s, (a0, a1), True):
+                out.append({"code": "no_subject", "message": _m_no_chain(s, cl, sid), "subject": s})
+    return out
+
+
+def begin_question_obj6(qu: QuestionUnits, scope: Optional[str], version: str) -> dict:
+    """The `question` object of the `begin` row under `version` (ops.Run.begin): `begin_question_obj` for v1..v5 (unchanged), and for v6 the v2 object labelled evidence.v6 plus `chain` (the
+    subject chain, outermost first) and `unread` (the pieces of the subject phrase the cut could not read; [] = none)."""
+    if version != EVIDENCE_V6:
+        return begin_question_obj(qu, scope, version)
+    o = qu.to_obj(scope, EVIDENCE_V6)
+    o["chain"] = list(subject_chain(qu))
+    o["unread"] = list(subject_unread(qu))
+    return o
+
+
+def _judge_v6(corpus, qu: QuestionUnits, scope: str, sid: int, tier: str, i0: int, i1: int, off: frozenset = V6_OFF) -> dict:
+    """`judge_quote` under evidence.v6 = the v2 verdict FILTERED.  The v2 judge runs first and its failures stay; to them are added the failures of the safety checks, so a stretch that v2
+    refuses is refused with v2's codes (and the question-level ones), and a stretch that v2 passes is refused iff a check fails:
+      SU   the subject phrase holds a piece the cut could not read (`subject_unreadable`, every stretch);   TW  a kind word alone is no subject (`question_has_no_subject`, every stretch) and a
+      subject word read through the article title must be a whole word of it (`no_subject`);   CH  a noun of the subject chain is missing from the clause (`no_subject`);
+      NEG  a negating ending follows the answer in its clause (`answer_polarity_cut`).
+    A stretch outside the sentence is `answer_not_word_aligned` (v6 never raises).  `off`: rule ids switched off -- the ablation of the tests / sweeps only (all off = the v2 verdict); the
+    product never passes it."""
+    v = view_of(corpus, sid)
+    sps = corpus.spans().spans(tier, sid)
+    chain = subject_chain(qu)
+    if not (0 <= i0 <= i1 < len(sps)):
+        out = {"answer": "", "clause": None, "sid": sid, "source": v.source, "reading": None, "rules": [], "chain": list(chain)}
+        fails = [{"code": "answer_not_word_aligned", "message": _m_not_aligned("", sid)}]
+        if qu.form == FORM_OPEN:
+            fails.append({"code": "question_form_open", "message": _m_open(qu.text)})
+        return _done(out, fails, None)
+    out = judge_quote(corpus, qu, scope, sid, tier, i0, i1, EVIDENCE_V2)
+    out.update(reading="base", rules=[], chain=list(chain))
+    fails = list(out["failures"])
+    n0 = len(fails)
+    fails += _v5_question_failures(qu, off)                                              # SU and the kind-word-only subject: they belong to the question
+    if not out["codes"]:                                                                # v2 passed: the checks that belong to the stretch
+        cs, ce = sps[i0][0], sps[i1][1]
+        a0 = next(k for k, s in enumerate(v.spans) if s[0] == cs)
+        a1 = next(k for k, s in enumerate(v.spans) if s[1] == ce)
+        if "TW" not in off:
+            fails += _tw_recheck(v, [], out["evidence"], [], sid)[0]
+        if "CH" not in off:
+            fails += _v6_chain_failures(v, chain, a0, a1, sid)
+        if "NEG" not in off:
+            neg = _neg_after(v, ce)
+            if neg is not None:
+                fails.append({"code": "answer_polarity_cut", "message": _m_polarity_cut(out["answer"], v.text[ce:neg[1]], sid), "negation": neg[0]})
+    if len(fails) == n0:
+        return out
+    return _done(out, fails, None)
+
+
+def v6_rules_digest() -> str:
+    """The sha256 of the frozen v6 rules (L-LOOM-226): the v5 digest (so a change to anything v3, v4 or v5 froze changes this too), v6's ids, switched-off set, the NEG lists, the clause-end
+    marks and the rule sentence, and the source text of every function that carries a v6 rule.  A change is a new version and needs a new held-out set; the tests pin this digest."""
+    import hashlib
+    import inspect
+    import json
+    funcs = (_m_polarity_cut, _neg_after, _v6_chain_failures, begin_question_obj6, _judge_v6)
+    obj = {"version": EVIDENCE_V6, "v5": v5_rules_digest(), "ids": list(V6_RULE_IDS), "off": sorted(V6_OFF), "NEG_UNITS": sorted(NEG_UNITS), "NEG_PAIRS": [list(p) for p in NEG_PAIRS],
+           "CLAUSE_END": sorted(CLAUSE_END), "sentence": V6_RULE_SENTENCE,
            "functions": {f.__qualname__: hashlib.sha256(inspect.getsource(f).encode("utf-8")).hexdigest() for f in funcs}}
     return hashlib.sha256(json.dumps(obj, sort_keys=True, ensure_ascii=False, separators=(",", ":")).encode("utf-8")).hexdigest()
 
