@@ -48,15 +48,20 @@ from verantyx.loom.state import ABSTAIN_TYPES, ARG_STR_CAP, Refuse, canonical, s
 ANSWER_VERSION = "memanswer.v1"
 ANSWER_V2 = "memanswer.v2"          # MEM-fix (L-MEM-59 / 60): the answer run holds the store's declared topics (read from a file the snapshot is paired with) and `recall` reads the question in its other forms
 ANSWER_V3 = "memanswer.v3"          # PUB-M6: the answer run of a mem.v4 store: `recall` reads the memory CROSSES (memask), rebuilt from the snapshot and the file `crosses_<sha12>.json` (nest declarations + bridges) it is paired with
-ANSWER_VERSIONS: Tuple[str, ...] = (ANSWER_VERSION, ANSWER_V2, ANSWER_V3)
+ANSWER_V4 = "memanswer.v4"          # PUB-M6c: memanswer.v3 + the versions of the store (shape / ask / qwords, in the crosses file) + `bridge` in the run + weave_span.v4 (the source slice is emitted) + `contested_value`
+ANSWER_VERSIONS: Tuple[str, ...] = (ANSWER_VERSION, ANSWER_V2, ANSWER_V3, ANSWER_V4)
 GUARD_V3 = "ansguard.v1"            # PUB-M6b (L-PUB-54..57; memanswer.v3 only, no v3 ledger was ever recorded with a model): weave_span refuses a stretch that is not verbatim and a value the recall replaced; emit may hand the gate a completed question
+GUARD_V4 = "ansguard.v2"            # PUB-M6c (memanswer.v4): ansguard.v1 with the joiner-aware verbatim check + an emit of one value of a same-seat CHOICE is refused `contested_value`
+BRIDGE_CAP = 5                      # memanswer.v4: at most this many bridges a run
 ANSWER_TASK_ID = "answer"
 ANSWER_EVIDENCE = (mr.MEM_GATE_VERSION, evl.SCOPE_CLAUSE)      # the gate NEW answer runs judge with: `memrecall.MEM_GATE_VERSION` (evidence.v6 since PUB-M6c, L-PUB-76), scope clause (L-MEM-12).  A run records it in its
                                                                # begin row (`evidence_profile`) and replays under THAT; a stored run (evidence.v2) is not touched
 LEGACY_EVIDENCE = (evl.EVIDENCE_V2, evl.SCOPE_CLAUSE)          # what a begin row without an `evidence_profile` was recorded with (never happens for an answer run: every one has the gate)
 RECALL_CAP = 20
 ANSWER_ABSTAIN: Tuple[str, ...] = ABSTAIN_TYPES + ("contested",)
+V4_TOOL: Tuple[str, ...] = ("bridge",)
 ANSWER_TOOLS: Tuple[str, ...] = ("recall", "lookup", "read_sentence", "weave_span", "drop", "read", "emit", "abstain", "status")     # what the model is offered
+ANSWER_TOOLS_V4: Tuple[str, ...] = ANSWER_TOOLS + V4_TOOL          # memanswer.v4: + bridge(question_phrase, memory_phrase), the model's confirmation of a candidate
 _RUN_RX = re.compile(r"^a[0-9]{4,}$")
 ANSWER_RULES: Dict[str, str] = {
     "memory": "The corpus is the memory of earlier sessions: one sentence per fact, 「X の Y は A」. You see it only through recall, lookup and read_sentence.",
@@ -80,6 +85,19 @@ ANSWER_RULES_V3: Dict[str, str] = {
               "weave_span refuses a stretch the loom would read out without its punctuation (quote_not_verbatim: 「v2.4」 would be emitted as 「v24」) and a value recall listed under `history` "
               "(replaced_value); abstain (cannot_weave) then. A subject-less question whose value came through a nest, and the new value of a change clause, are judged by the same gate against the "
               "question completed by the nest centre (via: nest) or the form of the change (via: update).",
+}
+
+
+ANSWER_RULES_V4: Dict[str, str] = {
+    "bridge": "bridge(question_phrase, memory_phrase): the model's confirmation that a part of the question means a phrase the memory holds (a candidate's `phrase`, or a centre). Marked constructed, kept in the log.",
+    "recall": "recall(question) reads the question with the shape exchanger and answers from the memory CROSSES: ANSWER (one value), UPDATED (the latest value + `history`), CHOICE (two or more values at one "
+              "place: nothing is ranked), NONE (`issues` say why), or CANDIDATES: no exact route reaches a value, so the positions that share >= 2 content units with the question are offered, each with its "
+              "sentence; recall NEVER answers a question fuzzily. If one candidate is what the question means, confirm it with bridge(question_phrase, memory_phrase) (question_phrase a part of the question, "
+              "memory_phrase the candidate's `phrase`; constructed, marked, ledgered) and recall again: only then does recall answer, through the bridge. Each value comes with its sentence (`sid`) and the units "
+              "of the stretch to quote (`span`): weave_span that stretch and emit. emit still judges the quote against the question AS ASKED: a value found through a bridge may be refused (no_evidence). "
+              "weave_span refuses a stretch whose read-out is not the source text (quote_not_verbatim; a number with . , - : / inside is read out as written: v2.4, 6.5万円) and a value recall listed under "
+              "`history` (replaced_value). emit refuses one value of a CHOICE whose sources disagree at one place (contested_value): abstain(type=contested). A subject-less question whose value came through a "
+              "nest, and the new value of a change clause, are judged by the same gate against the question completed by the nest centre (via: nest) or the form of the change (via: update).",
 }
 
 
@@ -139,6 +157,42 @@ def crosses_bytes(decls: Sequence[dict], bridges: Sequence[dict]) -> bytes:
                        "decls": [{"at": d["at"], "session": d["session"], "topic": d["topic"]} for d in decls]}) + "\n").encode("utf-8")
 
 
+def _crosses_ok(obj: Any) -> bool:
+    return (isinstance(obj, dict) and set(obj) == {"bridges", "decls"}
+            and all(isinstance(d, dict) and set(d) == {"at", "session", "topic"} and isinstance(d["at"], int) and isinstance(d["session"], int) and isinstance(d["topic"], str)
+                    and 1 <= len(d["topic"]) <= mem.TOPIC_MAX_CHARS for d in obj["decls"])
+            and all(isinstance(b, dict) and set(b) == {"at", "phrase", "qword", "session"} and isinstance(b["at"], int) and isinstance(b["session"], int) and isinstance(b["phrase"], str)
+                    and isinstance(b["qword"], str) for b in obj["bridges"]))
+
+
+def crosses_bytes_v4(decls: Sequence[dict], bridges: Sequence[dict], versions: Dict[str, str]) -> bytes:
+    """The crosses file of a memanswer.v4 snapshot: crosses_bytes + the versions {shape, qwords, ask} the store's sessions were written with (the index is rebuilt from the snapshot with them)."""
+    obj = json.loads(crosses_bytes(decls, bridges).decode("utf-8"))
+    obj["versions"] = {"ask": versions["ask"], "qwords": versions["qwords"], "shape": versions["shape"]}
+    return (canonical(obj) + "\n").encode("utf-8")
+
+
+def read_crosses_v4(path) -> Tuple[bytes, List[dict], List[dict], Dict[str, str]]:
+    """(bytes, decls, bridges, versions) of a crosses file with versions: its name must be the sha256 of its bytes (`crosses_unverified`), the content canonical, the versions a legal bundle."""
+    p = Path(path)
+    data = p.read_bytes()
+    if p.name != crosses_name(hashlib.sha256(data).hexdigest()):
+        raise Refuse("crosses_unverified", {"reason": "the file name is not the sha256 of its bytes"})
+    try:
+        obj = json.loads(data.decode("utf-8"))
+        versions = obj.pop("versions")
+        if not (isinstance(versions, dict) and set(versions) == {"ask", "qwords", "shape"} and all(isinstance(v, str) for v in versions.values())):
+            raise ValueError("versions")
+        mem.check_versions(versions)
+        ok = _crosses_ok(obj)
+        decls, bridges = obj["decls"], obj["bridges"]
+    except (ValueError, KeyError, TypeError, Refuse):
+        ok = False
+    if not ok or data != crosses_bytes_v4(decls, bridges, versions):
+        raise Refuse("crosses_unverified", {"reason": "not the canonical bytes of declarations, bridges and versions"})
+    return data, decls, bridges, versions
+
+
 def read_crosses(path) -> Tuple[bytes, List[dict], List[dict]]:
     """(bytes, decls, bridges) of a crosses file: its name must be the sha256 of its bytes (`crosses_unverified`), the content the canonical form of what it holds."""
     p = Path(path)
@@ -188,7 +242,7 @@ def read_topics(path) -> Tuple[bytes, List[dict]]:
     return data, ents
 
 
-def write_snapshot(store_path, topics: bool = False, crosses: bool = False) -> dict:
+def write_snapshot(store_path, topics: bool = False, crosses: bool = False, versions: bool = False) -> dict:
     """`mem snapshot`: verify the store (the chain of every listed session, memory.jsonl against the ledgers), derive H and the supersede marks from the ledgers, write
     `<store>/snapshots/memory_<sha12>.jsonl` (never overwritten with other bytes).  -> {"path", "name", "sha256", "sentences", "superseded", "store_id"}.  An empty store has no
     snapshot (`empty_store`)."""
@@ -225,7 +279,13 @@ def write_snapshot(store_path, topics: bool = False, crosses: bool = False) -> d
         for e in head["sessions"]:
             decls += mem.session_nest_decls(store.sessions_dir / e["run_id"])
             brs += mem.session_bridges(store.sessions_dir / e["run_id"])
-        cdata = crosses_bytes(decls, brs)
+        if versions:                                    # memanswer.v4: the versions every committed session recorded (one store, one bundle)
+            vs = [mem.session_versions(store.sessions_dir / e["run_id"]) for e in head["sessions"]]
+            if not vs or any(v is None or v != vs[0] for v in vs):
+                raise Refuse("versions_unverified", {"reason": "the committed sessions of the store do not all record one bundle of shape / qwords / ask versions"})
+            cdata = crosses_bytes_v4(decls, brs, vs[0])
+        else:
+            cdata = crosses_bytes(decls, brs)
         cp = d / crosses_name(hashlib.sha256(cdata).hexdigest())
         if not cp.exists():
             mem._atomic_write(cp, cdata)
@@ -257,7 +317,7 @@ class AnswerRun(Run):
 
     def __init__(self, corpus: Corpus, rows: Sequence[dict], store_id: str, snapshot_name_: str, question: str, model: str, run_id: str,
                  topics: Optional[Sequence[str]] = None, topics_file: Optional[str] = None, crosses: Optional[Tuple[str, Sequence[dict], Sequence[dict]]] = None,
-                 evidence: Tuple[str, str] = ANSWER_EVIDENCE) -> None:
+                 evidence: Tuple[str, str] = ANSWER_EVIDENCE, versions: Optional[Dict[str, str]] = None) -> None:
         mg.check_memory_rows(rows)
         task = {"task_id": ANSWER_TASK_ID, "text": question, "lang": "prose", "mode": "record_only", "tiers": ["WORD"]}
         super().__init__(corpus, task, model, run_id, DEFAULT_STABILITY, None, None, notelib.NOTES_VERSION, tuple(evidence))
@@ -269,7 +329,18 @@ class AnswerRun(Run):
         self.v2 = topics is not None                      # memanswer.v2: the declared topics are known (possibly none: a store whose sessions declared none)
         self.topics: Tuple[str, ...] = tuple(topics or ())
         self.topics_file = topics_file
-        self.v3 = crosses is not None                     # memanswer.v3: recall reads the memory crosses of a mem.v4 store
+        self.v3 = crosses is not None                     # memanswer.v3: recall reads the memory crosses of a mem.v4 store (memanswer.v4 too)
+        self.v4 = versions is not None                    # memanswer.v4: + the store's versions, `bridge`, weave_span.v4, contested_value
+        if self.v4 and not self.v3:
+            raise ValueError("memanswer.v4 reads the memory crosses")
+        self.versions: Dict[str, str] = mem.check_versions(versions) if self.v4 else dict(mem.V4_VERSIONS_V2)
+        self.run_bridges: List[mx.Bridge] = []            # memanswer.v4: the bridges the model confirmed in this run (the ledger is their source: replay re-executes the rows)
+        if self.v4:
+            self.weave_wv = ops.WEAVE_SPAN_V4
+        self.single_spans: List[Tuple[int, int, int]] = []              # (sid, first, last) of every occurrence a recall with ONE answer (ANSWER / UPDATED) returned
+        self.single_norms: List[str] = []
+        self.contested_spans: List[Tuple[int, int, int]] = []           # ... of a same-seat CHOICE of >= 2 sources (memanswer.v4: an emit of one of them is refused)
+        self.contested_norms: List[str] = []
         self.crosses_file: Optional[str] = None if crosses is None else crosses[0]
         self.decls: List[dict] = [] if crosses is None else [dict(d) for d in crosses[1]]
         self.bridges: List[dict] = [] if crosses is None else [dict(b) for b in crosses[2]]
@@ -287,7 +358,7 @@ class AnswerRun(Run):
             key = (self.snapshot, self.crosses_file)
             ix = _INDEX_CACHE.get(key)
             if ix is None:
-                ix = _INDEX_CACHE[key] = mx.build_index(self.rows, self.decls, self.superseded, bridges=self.bridges)
+                ix = _INDEX_CACHE[key] = mx.build_index(self.rows, self.decls, self.superseded, shape_version=self.versions["shape"], bridges=self.bridges)
             self._index = ix
         return self._index
 
@@ -304,12 +375,22 @@ class AnswerRun(Run):
             res["mem_answer"]["version"] = ANSWER_V3
             res["mem_answer"].update(crosses_file=self.crosses_file, ask=mask.ASK_VERSION, cross=mx.CROSS_VERSION, guard=GUARD_V3, complete=mask.COMPLETE_VERSION)
             res["rules"] = dict(res["rules"], recall=ANSWER_RULES_V3["recall"])
-        res["tools"] = list(ANSWER_TOOLS)
+        if self.v4:
+            res["mem_answer"]["version"] = ANSWER_V4
+            res["mem_answer"].update(ask=self.versions["ask"], qwords=self.versions["qwords"], shape=self.versions["shape"], guard=GUARD_V4, readout=ops.WEAVE_SPAN_V4, bridge_cap=BRIDGE_CAP,
+                                     evidence=self.evidence[0])
+            res["rules"] = dict(res["rules"], recall=ANSWER_RULES_V4["recall"], bridge=ANSWER_RULES_V4["bridge"])
+        res["tools"] = list(ANSWER_TOOLS_V4 if self.v4 else ANSWER_TOOLS)
         return b
+
+    def _executable(self, op: Any) -> bool:
+        return super()._executable(op) or (self.v4 and op == "bridge")
 
     def _handler(self, op: str):
         if op == "recall":
             return _h_recall
+        if op == "bridge":
+            return _h_bridge
         if op == "weave_span":
             return _h_weave_span
         if op == "emit" and self.v3:
@@ -317,6 +398,14 @@ class AnswerRun(Run):
         return super()._handler(op)
 
     def _precheck(self, op: str) -> None:
+        if op == "bridge":
+            st = self.state
+            if st.closed is not None:
+                st.guards["closed_calls"] += 1
+                raise Refuse("run_closed", {"closed": list(st.closed)})
+            if len(self.run_bridges) >= BRIDGE_CAP:
+                raise Refuse("bridge_cap", {"limit": BRIDGE_CAP})
+            return
         if op == "recall":
             st = self.state
             if st.closed is not None:
@@ -339,7 +428,8 @@ def _h_recall(run: AnswerRun, a: dict, i: int) -> dict:
         raise Refuse("bad_question", {"reason": "1 to %d characters, no newline / NUL / control character" % ARG_STR_CAP})
     mg.check_memory_rows(run.rows)
     if run.v3:
-        res = mask.recall(run.index(), run.rows, run.corpus, q)
+        ix = run.index()
+        res = mask.recall(ix, run.rows, run.corpus, q, ask=run.versions["ask"], bridges=tuple(ix.bridges) + tuple(run.run_bridges)) if run.v4 else mask.recall(ix, run.rows, run.corpus, q)
         res.update(ok=True, text=q)
         _note_recall(run, res, q)
         return res
@@ -347,6 +437,27 @@ def _h_recall(run: AnswerRun, a: dict, i: int) -> dict:
     res = mr.recall(run.corpus, q, run.evidence[0], subject_guard=True, superseded=run.superseded or None, turns=turns or None, topics=run.topics or None)
     res.update(ok=True, text=q)
     return res
+
+
+def _h_bridge(run: AnswerRun, a: dict, i: int) -> dict:
+    """memanswer.v4: bridge(question_phrase, memory_phrase) -- the model confirms that a part of the question means a phrase of the memory (a candidate of `recall`, or a centre the memory holds).  A
+    CONSTRUCTED, marked entry that the next `recall` of this run uses (route `bridge`); nothing in the memory changes.  Refused: bad_bridge, unknown_phrase, bridge_exists, bridge_cap, run_closed."""
+    a = ops._args(a, {"question_word": (str, False), "question_phrase": (str, False), "memory_phrase": (str, True)})
+    if ("question_word" in a) == ("question_phrase" in a):
+        raise Refuse("bad_args", {"field": "question_phrase", "reason": "give question_phrase (or question_word), not both and not neither"})
+    qwd = mem._plain_text(a["question_word"] if "question_word" in a else a["question_phrase"], "question_phrase", 1, 24, "bad_bridge")
+    ph = mem._plain_text(a["memory_phrase"], "memory_phrase", 1, 40, "bad_bridge")
+    if qwd == ph:
+        raise Refuse("bad_bridge", {"field": "memory_phrase", "reason": "the question phrase and the memory phrase are the same"})
+    ix = run.index()
+    positions = ix.positions_text(ph)
+    if not positions and not any(ix.cross(t, ph) is not None for t in mx.TANKS):
+        raise Refuse("unknown_phrase", {"memory_phrase": ph, "reason": "no cross of the memory has this phrase as its centre and no position has it as its phrase: give it as a candidate of recall shows it"})
+    if any(b.qword == qwd and b.phrase == ph for b in tuple(ix.bridges) + tuple(run.run_bridges)):
+        raise Refuse("bridge_exists", {"question_word": qwd, "memory_phrase": ph})
+    at = len(run.rows)
+    run.run_bridges.append(mx.Bridge(qwd, ph, 0, at))
+    return {"ok": True, "question_word": qwd, "memory_phrase": ph, "origin": "constructed", "at": at, "positions": len(positions), "bridges": len(run.run_bridges)}
 
 
 def _spans_of(groups: Sequence[dict]) -> Tuple[List[Tuple[int, int, int]], List[str]]:
@@ -375,6 +486,21 @@ def _note_recall(run: AnswerRun, res: dict, question: str) -> None:
     for n in nr:
         if n not in run.live_norms:
             run.live_norms.append(n)
+    if run.v4:                                         # memanswer.v4: which values a recall returned ALONE, and which only as one side of a contradiction (same seat, >= 2 sentences)
+        if res.get("verdict") in ("ANSWER", "UPDATED"):
+            for k in sp:
+                if k not in run.single_spans:
+                    run.single_spans.append(k)
+            for n in nr:
+                if n not in run.single_norms:
+                    run.single_norms.append(n)
+        elif res.get("verdict") == "CHOICE" and res.get("choice_kind") == "same_seat" and res.get("sources", 0) >= 2:
+            for k in sp:
+                if k not in run.contested_spans:
+                    run.contested_spans.append(k)
+            for n in nr:
+                if n not in run.contested_norms:
+                    run.contested_norms.append(n)
     hsp, hnr = _spans_of(res.get("history", ()))
     for k in hsp:
         if k not in run.hist_spans:
@@ -407,7 +533,8 @@ def _h_weave_span(run: AnswerRun, a: dict, i: int) -> dict:
     if run.v3:
         tg = _weave_target(run, a)
         if tg is not None:
-            readout, source, verbatim = mask.quote_check(run.corpus, tg[0], tg[2], tg[3])
+            joiners = run.v4 and (a.get("wv", run.weave_wv) == ops.WEAVE_SPAN_V4)        # weave_span.v4 reads the joiners . , - : / out as the source has them
+            readout, source, verbatim = mask.quote_check(run.corpus, tg[0], tg[2], tg[3], None, joiners)
             if not verbatim:                      # PUB-M6b (L-PUB-54): an emit is the READ-OUT of the thread, which has no punctuation: 「v2.4」 would be emitted as 「v24」, a value nobody wrote
                 raise Refuse("quote_not_verbatim", {"sid": tg[0], "source": source[:64], "readout": readout[:64],
                                                     "hint": "the loom reads this stretch out without its punctuation, so emitting it would change the value: abstain (cannot_weave)"})
@@ -424,6 +551,13 @@ def _h_emit_v3(run: AnswerRun, a: dict, i: int) -> dict:
     (`via: nest`), or the form of the change for the new value of a change clause at the question's own position (`via: update`).  The completion is recorded on the emit row; a refusal says what the
     completed question was refused for (`completion`)."""
     ops._args(a, {})
+    if run.v4:                                                                                  # memanswer.v4: one side of a contradiction is no answer (owner 2026-10-13 「片方だけは拒否する」)
+        for wv in evl.intact_weaves(run).values():
+            key = (wv["sid"], wv["i0"], wv["i1"])
+            _r, source, _v = mask.quote_check(run.corpus, wv["sid"], wv["i0"], wv["i1"], None, True)
+            n = mn.norm_answer(source)
+            if (key in run.contested_spans and key not in run.single_spans) or (n in run.contested_norms and n not in run.single_norms):
+                raise Refuse("contested_value", {"sid": wv["sid"], "text": source[:64], "hint": "recall returned this value as one side of a CHOICE (the memory states two answers at one place): abstain(type=contested)"})
     ev = rd.evaluate(run)
     used: Optional[dict] = None
     tried: Optional[dict] = None
@@ -485,15 +619,20 @@ class AnswerSession:
         if answer_version not in ANSWER_VERSIONS:
             raise Refuse("bad_answer_version", {"allowed": list(ANSWER_VERSIONS)})
         want_topics = answer_version == ANSWER_V2
-        want_crosses = answer_version == ANSWER_V3
-        snap = snapshot if snapshot is not None else write_snapshot(store_path, topics=want_topics, crosses=want_crosses)
+        want_crosses = answer_version in (ANSWER_V3, ANSWER_V4)
+        want_versions = answer_version == ANSWER_V4
+        snap = snapshot if snapshot is not None else write_snapshot(store_path, topics=want_topics, crosses=want_crosses, versions=want_versions)
         if want_topics and "topics_name" not in snap:                 # a snapshot handed in without its topics file is refused, never replaced by a fresh snapshot of the store as it is now
             raise Refuse("snapshot_without_topics", {"reason": "memanswer.v2 needs the snapshot dict of write_snapshot(store, topics=True)", "snapshot": snap.get("name")})
         if want_crosses and "crosses_name" not in snap:
             raise Refuse("snapshot_without_crosses", {"reason": "memanswer.v3 needs the snapshot dict of write_snapshot(store, crosses=True)", "snapshot": snap.get("name")})
         data, rows = read_snapshot(snap["path"])
         crosses = None
-        if want_crosses:
+        versions = None
+        if want_versions:
+            _, cdecls, cbridges, versions = read_crosses_v4(snap["crosses_path"])
+            crosses = (snap["crosses_name"], cdecls, cbridges)
+        elif want_crosses:
             _, cdecls, cbridges = read_crosses(snap["crosses_path"])
             crosses = (snap["crosses_name"], cdecls, cbridges)
         topics = topics_file = None
@@ -510,7 +649,7 @@ class AnswerSession:
             run_id = "a%04d" % k
         if not _RUN_RX.match(run_id) or (d / run_id).exists():
             raise Refuse("bad_run_id", {"run_id": run_id})
-        self.run = AnswerRun(Corpus(data), rows, snap["store_id"], snap["name"], question, model, run_id, topics, topics_file, crosses)
+        self.run = AnswerRun(Corpus(data), rows, snap["store_id"], snap["name"], question, model, run_id, topics, topics_file, crosses, versions=versions)
         self.ledger = lg.Ledger(d / run_id)
         meta = {"store": snap["store_id"], "mode": "memory_answer", "snapshot": snap["name"], "corpus_sha": hashlib.sha256(data).hexdigest()}
         if want_topics:
@@ -608,14 +747,18 @@ def replay_answer(run_dir, store_path=None) -> ReplayResult:
             out.status, out.mismatch = "INPUTS", "topics_unverified"
             return out
     crosses = None
-    if ma["version"] == ANSWER_V3:                       # the crosses file the begin row names (nest declarations + bridges) must be there and be what its name says
+    versions = None
+    if ma["version"] in (ANSWER_V3, ANSWER_V4):          # the crosses file the begin row names (nest declarations + bridges, memanswer.v4: + versions) must be there and be what its name says
         cf = str(ma.get("crosses_file"))
         cp = store_path / "snapshots" / cf
         if not re.fullmatch(r"crosses_[0-9a-f]{12}\.json", cf) or not cp.is_file():
             out.status, out.mismatch = "INPUTS", "crosses_missing"
             return out
         try:
-            _, cdecls, cbridges = read_crosses(cp)
+            if ma["version"] == ANSWER_V4:
+                _, cdecls, cbridges, versions = read_crosses_v4(cp)
+            else:
+                _, cdecls, cbridges = read_crosses(cp)
         except (Refuse, OSError, ValueError, KeyError, UnicodeDecodeError):
             out.status, out.mismatch = "INPUTS", "crosses_unverified"
             return out
@@ -623,7 +766,7 @@ def replay_answer(run_dir, store_path=None) -> ReplayResult:
     ep = res0.get("evidence_profile")                    # the gate the run was recorded with (a run before PUB-M6c: evidence.v2)
     evidence = (ep["version"], ep["subject_scope"]) if isinstance(ep, dict) and "version" in ep and "subject_scope" in ep else LEGACY_EVIDENCE
     try:
-        run = AnswerRun(Corpus(data), srows, str(ma["store_id"]), str(ma["snapshot"]), question, model, run_id, topics, topics_file, crosses, evidence)
+        run = AnswerRun(Corpus(data), srows, str(ma["store_id"]), str(ma["snapshot"]), question, model, run_id, topics, topics_file, crosses, evidence, versions)
     except (Refuse, ValueError):
         out.status, out.mismatch = "INPUTS", "snapshot_unverified"
         return out

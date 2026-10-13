@@ -24,6 +24,7 @@ Pure and deterministic.
 """
 from __future__ import annotations
 
+import re
 import unicodedata
 from dataclasses import dataclass
 from typing import Any, Dict, List, Optional, Sequence, Tuple
@@ -36,6 +37,12 @@ from verantyx.loom import memshape as ms
 from verantyx.loom.memguard import parse_source
 
 ASK_VERSION = "ask.v2"                     # ask.v1 + (PUB-M6b, L-PUB-58) the bare 「何」 takes the counter that touches it (何日 何箱 何段 何年 何枚 何番): the question word is 「何日」, not 「何」 + a leftover 「日」
+ASK_V3 = "ask.v3"                          # PUB-M6c (L-PUB-70..): ask.v2 + qwords.v2 (「どの<名詞>」) + a question with a relative clause is read by its last noun (never answered by itself) + CANDIDATES when no exact route
+                                           # reaches a value + a confirmed bridge may name a whole position + occurrences are checked against the weave_span.v4 read-out (joiners kept) + `sources` of a CHOICE
+ASK_VERSIONS: Tuple[str, ...] = (ASK_VERSION, ASK_V3)
+JOINERS_V4 = frozenset(".,-:/")           # the joiners weave_span.v4 keeps (ops.READOUT_JOINERS): owner 2026-10-13
+CANDIDATE_MIN = 2                          # ask.v3: a candidate shares at least this many content units with the question
+CANDIDATE_CAP = 5                          # ... and at most this many are offered
 PLACEHOLDER = "QQ"
 TAILS: Tuple[str, ...] = ("でしょうか", "ですか", "でしたか", "か")           # cut from the end of the question (longest first)
 END_MARKS = "？?。 　"
@@ -61,10 +68,17 @@ class Query:
     fixed: Tuple[Tuple[str, str], ...] = ()      # an event: the other arms the question names
     via_topic: bool = False
     need_nest: bool = False                      # an F4 frame: the subject is the open nest's
+    ask: str = ASK_VERSION
+    relative: bool = False                       # ask.v3: a relative clause before 「は」, read by its last noun (`centre`): this reading is never answered by itself (bridge + candidates only)
+    kind_noun: Optional[str] = None              # ask.v3: the noun of 「どの<名詞>」
 
     def to_obj(self) -> dict:
-        return {"v": ASK_VERSION, "ok": self.ok, "reason": self.reason, "frame": self.frame, "shape": self.shape, "centre": self.centre, "path": [list(p) for p in self.path],
-                "qword": self.qword, "class": self.qclass, "asked": self.asked, "fixed": [list(p) for p in self.fixed], "via_topic": self.via_topic}
+        d = {"v": self.ask, "ok": self.ok, "reason": self.reason, "frame": self.frame, "shape": self.shape, "centre": self.centre, "path": [list(p) for p in self.path],
+             "qword": self.qword, "class": self.qclass, "asked": self.asked, "fixed": [list(p) for p in self.fixed], "via_topic": self.via_topic}
+        if self.ask == ASK_V3:
+            d["relative"] = self.relative
+            d["kind_noun"] = self.kind_noun
+        return d
 
 
 def _clean(question: str) -> str:
@@ -87,27 +101,69 @@ def _with_counter(t: str, i: int) -> str:
     return qw.BARE_WHAT
 
 
-def parse_question(question: str) -> Query:
-    """The frame of a question (see the module doc).  `ok` False with a `reason`: no_question_word | frame_not_read:<why> | placeholder_not_asked | no_clause."""
+def _with_noun(t: str, i: int) -> str:
+    """ask.v3: 「どの」 at `i` and the nouns that touch it (「どの部屋」, 「どの会議室」): the question word.  Without a noun the word is 「どの」."""
+    end = i + len(qw.WHICH)
+    out = ""
+    for tok in ms._tokens(t):
+        if tok.a == end and not tok.fn and tok.pos1 in ("名詞", "接尾辞"):
+            out += tok.s
+            end = tok.b
+    return qw.WHICH + out
+
+
+def _relative(question: str, frame: str, word: str, cls: Optional[str], shape: str) -> Optional[Query]:
+    """ask.v3: a frame the exchanger cannot read because its subject holds a relative clause or a verb (「新館を開ける日はQQ」, 「分室を閉じる…」) but which ends 「<subject> は QQ」 is read by the LAST NOUN before
+    the 「は」 (the head noun of the subject: 日, 箱, 目安): shape F2, centre that noun (with the nouns touching it before), no owner.  None when the frame does not end in 「は QQ」 or the last
+    word before the 「は」 is not a noun.  The reading is marked `relative`: recall never answers a question by it (the head noun alone is no position); it serves the bridges and the candidates."""
+    toks = ms._tokens(frame)
+    for k, t in enumerate(toks):
+        if t.s == ms.TOPIC and t.pos2 == "係助詞":
+            if frame[t.b:].strip() != PLACEHOLDER:
+                return None
+            subj = [x for x in toks[:k] if not x.fn]
+            if not subj or subj[-1].pos1 not in ("名詞", "接尾辞"):
+                return None
+            a = subj[-1].a
+            j = len(subj) - 1
+            while j > 0 and subj[j - 1].b == subj[j].a and subj[j - 1].pos1 in ("名詞", "接尾辞"):
+                j -= 1
+                a = subj[j].a
+            return Query(True, None, question, frame, "F2", frame[a:subj[-1].b], (), word, cls, mx.VALUE, ask=ASK_V3, relative=True)
+    return None
+
+
+def parse_question(question: str, ask: str = ASK_VERSION, shape: str = ms.SHAPES_V2) -> Query:
+    """The frame of a question (see the module doc).  `ok` False with a `reason`: no_question_word | frame_not_read:<why> | placeholder_not_asked | no_clause | several_clauses.
+    `ask` ask.v3: the question words of qwords.v2 (「どの<名詞>」), the frame is read with the table `shape` (the one the memory was written with), and a frame with a relative clause is read by its last noun."""
+    v3 = ask == ASK_V3
     t = _clean(question)
-    hit = qw.find_word(t)
+    hit = qw.find_word(t, qw.QWORDS_V2 if v3 else qw.QWORDS_VERSION)
     if hit is None:
-        return Query(False, "no_question_word", question)
+        return Query(False, "no_question_word", question, ask=ask)
     i, word = hit
+    kind_noun = None
     if word == qw.BARE_WHAT:
         word = _with_counter(t, i)
+    elif v3 and word == qw.WHICH:
+        word = _with_noun(t, i)
+        kind_noun = word[len(qw.WHICH):] or None
     frame = t[:i] + PLACEHOLDER + t[i + len(word):]
-    ex = ms.exchange(frame, ms.SHAPES_V2)
-    if len(ex.clauses) != 1:
-        return Query(False, "no_clause" if not ex.clauses else "several_clauses", question, frame, qword=word, qclass=qw.class_of_word(word))
-    c = ex.clauses[0]
+    ex = ms.exchange(frame, shape if v3 else ms.SHAPES_V2)
     cls = qw.class_of_word(word)
+    if len(ex.clauses) != 1:
+        return Query(False, "no_clause" if not ex.clauses else "several_clauses", question, frame, qword=word, qclass=cls, ask=ask, kind_noun=kind_noun)
+    c = ex.clauses[0]
     if c.shape == "F0":
-        return Query(False, "frame_not_read:%s" % c.reason, question, frame, qword=word, qclass=cls)
+        if v3:
+            rel = _relative(question, frame, word, cls, shape)
+            if rel is not None:
+                return rel
+        return Query(False, "frame_not_read:%s" % c.reason, question, frame, qword=word, qclass=cls, ask=ask, kind_noun=kind_noun)
     if c.shape in ("F1", "F2"):
         if c.value is None or c.value.text != PLACEHOLDER:
-            return Query(False, "placeholder_not_asked", question, frame, qword=word, qclass=cls)
-        return Query(True, None, question, frame, c.shape, c.centre, mx._flatten(c.arms), word, cls, mx.VALUE)
+            return Query(False, "placeholder_not_asked", question, frame, qword=word, qclass=cls, ask=ask, kind_noun=kind_noun)
+        return Query(True, None, question, frame, c.shape, c.centre, mx._flatten(c.arms), word, cls, mx.VALUE, ask=ask, kind_noun=kind_noun)
     asked = None
     for a in c.arms:
         if a.seat.text == PLACEHOLDER and not a.arms:
@@ -117,9 +173,9 @@ def parse_question(question: str) -> Query:
     if asked is None and c.object_bare is not None and PLACEHOLDER in c.object_bare.text:
         asked = "object_bare"
     if asked is None:
-        return Query(False, "placeholder_not_asked", question, frame, qword=word, qclass=cls)
+        return Query(False, "placeholder_not_asked", question, frame, qword=word, qclass=cls, ask=ask, kind_noun=kind_noun)
     fixed = tuple((a.particle, a.seat.text) for a in c.arms if not (a.particle == asked and a.seat.text == PLACEHOLDER))
-    return Query(True, None, question, frame, c.shape, c.centre, (), word, cls, asked, fixed, c.via_topic, c.shape == "F4")
+    return Query(True, None, question, frame, c.shape, c.centre, (), word, cls, asked, fixed, c.via_topic, c.shape == "F4", ask=ask, kind_noun=kind_noun)
 
 
 # ------------------------------------------------------------------------------------------------------------
@@ -129,19 +185,20 @@ def _has(index: mx.MemIndex, pos: Position) -> bool:
     return bool(index.history_full(pos))
 
 
-def _variants(index: mx.MemIndex, qy: Query, text: str) -> Tuple[List[Tuple[str, str]], bool]:
+def _variants(index: mx.MemIndex, qy: Query, text: str, bridges: Optional[Sequence[mx.Bridge]] = None) -> Tuple[List[Tuple[str, str]], bool]:
     """([(noun, source)] the slot nouns to try after the asked one, in order; source = bridge | class), and whether the question's own slot noun IS one of the class (then it is replaced, else the question
     asks the nouns as the slot of its subject)."""
     out: List[Tuple[str, str]] = []
     keys = [x for x in (qy.centre, qy.qword) if x]
-    for b in index.bridges:
+    brs = index.bridges if bridges is None else bridges
+    for b in brs:
         if (b.qword in keys or (len(b.qword) >= 2 and b.qword in text)) and all(b.phrase != n for n, _ in out) and b.phrase != qy.centre:
             out.append((b.phrase, "bridge"))
     nouns = qw.slots_of_word(qy.qword) if qy.qword else ()
     for n in nouns:
         if n != qy.centre and all(n != m for m, _ in out):
             out.append((n, "class"))
-    bridged = any(b.phrase == qy.centre or b.qword == qy.centre for b in index.bridges)
+    bridged = any(b.phrase == qy.centre or b.qword == qy.centre for b in brs)
     explicit = qy.centre in nouns or bridged
     return out, explicit
 
@@ -156,11 +213,27 @@ def _flat(path: Path, centre: str) -> Optional[str]:
     return "".join(ph for _, ph in reversed(path)) + centre
 
 
-def _attribute_route(index: mx.MemIndex, qy: Query, text: str) -> Tuple[Optional[str], List[Position], List[str]]:
+def _bridge_positions(index: mx.MemIndex, bridges: Sequence[mx.Bridge], qy: Optional[Query], text: str) -> Tuple[Optional[mx.Bridge], List[Position]]:
+    """ask.v3: the positions a bridge the MODEL confirmed names as a whole (`bridge(question_phrase, memory_phrase)` with the phrase of a position as a candidate shows it: 棚ラベル照合の締切).  A bridge
+    applies when its question phrase is the question's slot noun / question word or occurs in the question text (>= 2 characters); the first bridge that reaches a position wins, no union."""
+    keys = [x for x in (qy.centre, qy.qword) if x] if qy is not None and qy.ok else []
+    for b in bridges:
+        if b.qword in keys or (len(b.qword) >= 2 and b.qword in text):
+            ps = [p for p in index.positions_text(b.phrase) if _has(index, p)]
+            if ps:
+                return b, ps
+    return None, []
+
+
+def _attribute_route(index: mx.MemIndex, qy: Query, text: str, bridges: Optional[Sequence[mx.Bridge]] = None, v3: bool = False) -> Tuple[Optional[str], List[Position], List[str]]:
     """(route, positions, looked_for) of an F1 / F2 frame."""
     looked: List[str] = []
     tank = "F1" if qy.path else "F2"
     pos0: Position = (tank, qy.centre or "", qy.path)
+    if v3 and qy.relative:                                         # a relative clause read by its last noun: only a bridge the model confirmed answers it (L-PUB-71)
+        b, ps = _bridge_positions(index, index.bridges if bridges is None else bridges, qy, text)
+        looked.append("bridge_position:%s" % (b.phrase if b else "-"))
+        return ("bridge", ps, looked) if ps else (None, [], looked)
     looked.append("exact:%s" % qy.centre)
     if _has(index, pos0):
         return "exact", [pos0], looked
@@ -170,7 +243,12 @@ def _attribute_route(index: mx.MemIndex, qy: Query, text: str) -> Tuple[Optional
         ps = [p for p in index.positions_flat(f0) if _has(index, p)]
         if ps:
             return "flat", ps, looked
-    variants, explicit = _variants(index, qy, qy.text)
+    if v3:
+        b, ps = _bridge_positions(index, index.bridges if bridges is None else bridges, qy, text)
+        if ps:
+            looked.append("bridge_position:%s" % b.phrase)
+            return "bridge", ps, looked
+    variants, explicit = _variants(index, qy, qy.text, bridges)
     for noun, source in variants:
         path = qy.path if explicit else _owner_path(qy.path, qy.centre or "")
         tk = "F1" if path else "F2"
@@ -273,23 +351,31 @@ def _squash(s: str) -> str:
     return "".join(ch for ch in s if not ch.isspace() and ch not in "・·")
 
 
-def quote_check(corpus: Any, sid: int, i0: int, i1: int, value: Optional[str] = None) -> Tuple[str, str, bool]:
+def quote_check(corpus: Any, sid: int, i0: int, i1: int, value: Optional[str] = None, joiners: bool = False) -> Tuple[str, str, bool]:
     """(readout, source, verbatim) of the WORD-unit stretch i0..i1 of sentence `sid`.  `readout` is what `weave_span` would read out (the units with the LETTERS of the gaps between them: the loom writes no
     punctuation, so 「v2.4」 reads out as 「v24」, 「6.5万円」 as 「65万円」, 「6/14」 as 「614」), `source` the characters of the sentence from the first unit to the last, `verbatim` iff they are the same text
     (`_squash`), and, when the value the memory holds is given, also the same text as that value (a prefix or a suffix the loom drops as a function word, 「閉」室日, is in the value and not in the units).  An emit is the
-    read-out of the thread, so a stretch that is not verbatim cannot be emitted without changing the value (PUB-M6b, L-PUB-54)."""
+    read-out of the thread, so a stretch that is not verbatim cannot be emitted without changing the value (PUB-M6b, L-PUB-54).  `joiners` (PUB-M6c): the read-out of `weave_span.v4`, which keeps the joiners
+    . , - : / the source has between two touching units (v2.4 stays v2.4, 6.5万円 stays 6.5万円); any other punctuation is still dropped, so such a stretch is still not verbatim."""
     t = corpus.tier("WORD")
     units = t.sentence_units[sid]
     ok, gaps = corpus.span_gaps("WORD", sid, i0, i1)
     surf = units[i0:i1 + 1]
-    readout = "".join(surf[k] + (gaps[k] if k < len(surf) - 1 else "") for k in range(len(surf)))
     idx = corpus.spans()
     sps = idx.spans("WORD", sid)
+    if joiners:
+        full = idx.text(sid)
+        gaps = list(gaps)
+        for k in range(len(surf) - 1):
+            raw = full[sps[i0 + k][1]:sps[i0 + k + 1][0]]
+            if raw != "" and gaps[k] == "" and all(ch in JOINERS_V4 for ch in raw):
+                gaps[k] = raw
+    readout = "".join(surf[k] + (gaps[k] if k < len(surf) - 1 else "") for k in range(len(surf)))
     source = idx.text(sid)[sps[i0][0]:sps[i1][1]]
     return readout, source, bool(ok) and _squash(readout) == _squash(source) and (value is None or _squash(readout) == _squash(value))
 
 
-def _occurrence(index: mx.MemIndex, rows: Sequence[dict], corpus: Any, e: mx.Entry, route: str, position: Any) -> dict:
+def _occurrence(index: mx.MemIndex, rows: Sequence[dict], corpus: Any, e: mx.Entry, route: str, position: Any, joiners: bool = False) -> dict:
     row = rows[e.sid]
     _, session, _, role = parse_source(row["source"])
     cr = index.clause_rec(e.sid, e.k)
@@ -298,7 +384,7 @@ def _occurrence(index: mx.MemIndex, rows: Sequence[dict], corpus: Any, e: mx.Ent
                          "position": [position[0], position[1], [list(p) for p in position[2]]]}
     if o["span"] is not None:                                      # PUB-M6b: can the stretch be emitted as it stands?  (a value with punctuation inside is read out without it)
         try:
-            readout, _source, verbatim = quote_check(corpus, e.sid, o["span"][0], o["span"][1], e.value)
+            readout, _source, verbatim = quote_check(corpus, e.sid, o["span"][0], o["span"][1], e.value, joiners)
         except (IndexError, KeyError):
             readout, verbatim = "", False
         o["verbatim"] = verbatim
@@ -311,11 +397,11 @@ def _occurrence(index: mx.MemIndex, rows: Sequence[dict], corpus: Any, e: mx.Ent
     return o
 
 
-def _group(index: mx.MemIndex, rows: Sequence[dict], corpus: Any, entries: Sequence[Tuple[mx.Entry, Any]], route: str, replaced: Optional[Sequence[dict]] = None) -> dict:
+def _group(index: mx.MemIndex, rows: Sequence[dict], corpus: Any, entries: Sequence[Tuple[mx.Entry, Any]], route: str, replaced: Optional[Sequence[dict]] = None, joiners: bool = False) -> dict:
     occ = []
     shown: List[str] = []
     for i, (e, pos) in enumerate(entries):
-        o = _occurrence(index, rows, corpus, e, route, pos)
+        o = _occurrence(index, rows, corpus, e, route, pos, joiners)
         if replaced is not None:
             o["replaced_by"] = replaced[i]
         occ.append(o)
@@ -326,18 +412,135 @@ def _group(index: mx.MemIndex, rows: Sequence[dict], corpus: Any, entries: Seque
     return {"text": answers[0], "answers": answers, "occurrences": occ}
 
 
-def recall(index: mx.MemIndex, rows: Sequence[dict], corpus: Any, question: str, *, open_nest: Optional[str] = None) -> dict:
+# ------------------------------------------------------------------------------------------------------------
+# ask.v3: CANDIDATES.  Recall never answers fuzzily; when no exact route reaches a value it OFFERS the positions that share >= 2 content units with the question, and the model confirms one with
+# bridge(question_phrase, memory_phrase) (constructed, marked, ledgered); only then does recall answer, through the bridge.  (PUB-M6c, owner 2026-10-13 「候補を示し、モデルが確かめて橋を張る」)
+# ------------------------------------------------------------------------------------------------------------
+TYPE_OF: Dict[str, "re.Pattern[str]"] = {"when": re.compile(r"\d+日|\d+月|曜"), "clock": re.compile(r"\d+時"), "count": re.compile(r"\d"), "money": re.compile(r"\d.*円"),
+                                       "duration": re.compile(r"\d.*(分|秒|時間|日)"), "temperature": re.compile(r"\d.*(度|℃)"), "length": re.compile(r"\d"), "weight": re.compile(r"\d"),
+                                       "rate": re.compile(r"\d.*[%％]")}
+_UNITS: Dict[str, Tuple[str, ...]] = {}
+
+
+def _units(text: str) -> Tuple[str, ...]:
+    """The WORD units of the exchanger's tagger cut of `text` (a pure function of the text; cached)."""
+    u = _UNITS.get(text)
+    if u is None:
+        if len(_UNITS) > 50000:
+            _UNITS.clear()
+        u = _UNITS[text] = tuple(t.s for t in ms._tokens(text) if not t.fn)
+    return u
+
+
+def _type_ok(word: Optional[str], value: str) -> bool:
+    """Does the value look like what the question word asks (a date for いつ, a count for いくつ, an amount for いくら ...)?  General rules of the tank's classes; no class (誰, どこ, 何, どの<名詞>): yes.
+    「何<counter>」: the counter is in the value."""
+    cls = qw.class_of_word(word) if word else None
+    if cls in TYPE_OF:
+        return bool(TYPE_OF[cls].search(value))
+    if word and word.startswith(qw.BARE_WHAT) and len(word) > 1:
+        return word[1:] in value or (word[1:] == "日" and bool(re.search(r"\d+日", value)))
+    return True
+
+
+def _question_word(t: str, qy: Query) -> Optional[str]:
+    if qy.qword:
+        return qy.qword
+    hit = qw.find_word(t, qw.QWORDS_V2)
+    if hit is None:
+        return None
+    i, word = hit
+    return _with_counter(t, i) if word == qw.BARE_WHAT else (_with_noun(t, i) if word == qw.WHICH else word)
+
+
+def _phrase_hint(t: str, word: Optional[str]) -> str:
+    """The part of the question the model would bridge from: what stands before the topic 「は」 (else before the question word), at most 24 characters from its end."""
+    k = t.find(ms.TOPIC)
+    if k <= 0 and word:
+        k = t.find(word)
+    h = t[:k] if k > 0 else t
+    return h[-24:]
+
+
+def candidates(index: mx.MemIndex, rows: Sequence[dict], question: str, qy: Query) -> List[dict]:
+    """The positions (F1 / F2, owners joined by の only) that hold a live value of the type the question word asks and share >= CANDIDATE_MIN content units with the question, best first (stable: the order
+    the positions got their first value), at most CANDIDATE_CAP, each with its sentence.  The content units of the question are its tagger units minus the question word and the placeholder."""
+    t = _clean(question)
+    word = _question_word(t, qy)
+    qu = [u for u in dict.fromkeys(_units(t)) if not (word and u in word) and u != PLACEHOLDER]
+    if len(qu) < CANDIDATE_MIN:
+        return []
+    hint = _phrase_hint(t, word)
+    scored: List[Tuple[int, int, Position, List[str], List[mx.Entry], List[str]]] = []
+    for n, p in enumerate(index.positions):
+        text = mx.position_text(p)
+        if text is None:
+            continue
+        pu = [u for _, ph in p[2] for u in _units(ph)] + list(_units(p[1]))
+        shared = [u for u in qu if u in pu]
+        if len(shared) < CANDIDATE_MIN:
+            continue
+        live_entries: List[mx.Entry] = []
+        values: List[str] = []
+        scopes: List[Optional[str]] = []
+        es = index.history_full(p)
+        for e in es:
+            if e.scope not in scopes:
+                scopes.append(e.scope)
+        for sc in scopes:
+            live, _hist = _fold([e for e in es if e.scope == sc])
+            for grp in live:
+                for e in grp:
+                    live_entries.append(e)
+                if grp[0].value not in values:
+                    values.append(grp[0].value)
+        if not live_entries or not _type_ok(word, live_entries[-1].value):
+            continue
+        scored.append((len(shared), n, p, shared, live_entries, values))
+    scored.sort(key=lambda x: (-x[0], x[1]))
+    top = scored[0][0] if scored else 0
+    out: List[dict] = []
+    for rank, (sc, _n, p, shared, ents, values) in enumerate(scored[:CANDIDATE_CAP], 1):
+        text = mx.position_text(p) or ""
+        out.append({"rank": rank, "position": [p[0], p[1], [list(x) for x in p[2]]], "phrase": text, "score": sc, "tied_with_best": sc == top and sum(1 for x in scored if x[0] == top) > 1,
+                    "shared": shared, "values": values,
+                    "entries": [{"sid": e.sid, "value": e.value, "source": rows[e.sid]["source"], "sentence": rows[e.sid]["sent"]} for e in ents[:3]],
+                    "bridge": {"question_word": hint, "memory_phrase": text}})
+    return out
+
+
+def recall(index: mx.MemIndex, rows: Sequence[dict], corpus: Any, question: str, *, open_nest: Optional[str] = None, ask: str = ASK_VERSION,
+           bridges: Optional[Sequence[mx.Bridge]] = None) -> dict:
     """The verdict of one question over the crosses.  `rows` = H (for the source of every sentence), `corpus` = its memory corpus (for the unit stretch to quote; None: no spans),
-    `open_nest` = the nest open in the asking session (its statements are preferred)."""
-    qy = parse_question(question)
-    out: Dict[str, Any] = {"verdict": "NONE", "question": qy.to_obj(), "engine": ASK_VERSION, "qwords": qw.QWORDS_SHA, "sentences": index.n, "answers": []}
-    if not qy.ok:
-        out.update(issues=["question_unparsed:%s" % qy.reason], looked_for=[], route=None)
+    `open_nest` = the nest open in the asking session (its statements are preferred).  `ask` ask.v3 (PUB-M6c): see the module doc of that version; `bridges` (ask.v3) = the bridges to use instead of those of
+    the index (an answer run adds the ones the model confirmed in it)."""
+    v3 = ask == ASK_V3
+    qy = parse_question(question, ask, index.shape_version if v3 else ms.SHAPES_V2)
+    brs = index.bridges if bridges is None else tuple(bridges)
+    out: Dict[str, Any] = {"verdict": "NONE", "question": qy.to_obj(), "engine": ask, "qwords": qw.QWORDS_SHAS[qw.QWORDS_V2 if v3 else qw.QWORDS_VERSION], "sentences": index.n, "answers": []}
+
+    def none(issues: List[str], looked: List[str]) -> dict:
+        out.update(issues=issues, looked_for=looked, route=None)
+        if v3:
+            cs = candidates(index, rows, question, qy)
+            out["candidates"] = cs
+            if cs:
+                out["verdict"] = "CANDIDATES"                       # never an answer: the model confirms one with bridge(), then recall answers through it
         return out
+
     groups: List[Tuple[Position, List[mx.Entry]]] = []
     looked: List[str] = []
-    if qy.shape in ("F1", "F2"):
-        route, positions, looked = _attribute_route(index, qy, question)
+    route: Optional[str] = None
+    if not qy.ok:
+        if v3:
+            b, ps = _bridge_positions(index, brs, None, question)
+            if ps:
+                route, looked = "bridge", ["bridge_position:%s" % b.phrase]
+                groups = [(p, list(index.history_full(p))) for p in ps]
+        if not groups:
+            return none(["question_unparsed:%s" % qy.reason], [])
+    elif qy.shape in ("F1", "F2"):
+        route, positions, looked = _attribute_route(index, qy, question, brs, v3)
         for p in positions:
             groups.append((p, list(index.history_full(p))))
     else:
@@ -350,14 +553,19 @@ def recall(index: mx.MemIndex, rows: Sequence[dict], corpus: Any, question: str,
             route = None
             subj = [ph for p, ph in qy.fixed if p == mx.NEST_ARM]
             if qy.via_topic and len(subj) == 1:                    # 「障害訓練はどこで行いますか」 and the memory says 「障害訓練の開催地は…」: the topic asks the slot nouns of the class of the question word
-                dq = Query(True, None, qy.text, qy.frame, "F2", subj[0], (), qy.qword, qy.qclass, mx.VALUE)
-                route, positions, looked2 = _attribute_route(index, dq, question)
+                dq = Query(True, None, qy.text, qy.frame, "F2", subj[0], (), qy.qword, qy.qclass, mx.VALUE, ask=ask)
+                route, positions, looked2 = _attribute_route(index, dq, question, brs, v3)
                 looked += looked2
                 for p in positions:
                     groups.append((p, list(index.history_full(p))))
+            if v3 and not groups:
+                b, ps = _bridge_positions(index, brs, qy, question)
+                if ps:
+                    route = "bridge"
+                    looked.append("bridge_position:%s" % b.phrase)
+                    groups = [(p, list(index.history_full(p))) for p in ps]
     if not groups:
-        out.update(issues=["no_position"] + (["no_slot_noun_matches"] if qy.shape in ("F1", "F2") else ["no_event_clause"]), looked_for=looked, route=None)
-        return out
+        return none(["no_position"] + (["no_slot_noun_matches"] if qy.shape in ("F1", "F2") else ["no_event_clause"]), looked)
     pool = [e for _, es in groups for e in es]
     if open_nest is not None and any(e.scope == open_nest for e in pool):
         groups = [(p, [e for e in es if e.scope == open_nest]) for p, es in groups]
@@ -387,8 +595,7 @@ def recall(index: mx.MemIndex, rows: Sequence[dict], corpus: Any, question: str,
     superseded_all = False
     if not live_all:
         if not hist_all:
-            out.update(issues=["no_value"], looked_for=looked, route=route)
-            return out
+            return none(["no_value"], looked) if v3 else _none_plain(out, looked, route)
         superseded_all = True
         for e, pos, who in hist_all:
             n = mn.norm_answer(e.value)
@@ -401,8 +608,8 @@ def recall(index: mx.MemIndex, rows: Sequence[dict], corpus: Any, question: str,
         hist_all = []
     out["route"] = route
     out["looked_for"] = looked
-    out["candidates"] = len(groups)
-    out["answers"] = [_group(index, rows, corpus, ents, route or "exact") for _, ents in live_all]
+    out["positions_found" if v3 else "candidates"] = len(groups)
+    out["answers"] = [_group(index, rows, corpus, ents, route or "exact", None, v3) for _, ents in live_all]
     if hist_all:
         hnorm: List[Tuple[str, List[Tuple[mx.Entry, Any, dict]]]] = []
         for e, pos, who in hist_all:
@@ -413,7 +620,7 @@ def recall(index: mx.MemIndex, rows: Sequence[dict], corpus: Any, question: str,
                     break
             else:
                 hnorm.append((n, [(e, pos, who)]))
-        out["history"] = [_group(index, rows, corpus, [(e, pos) for e, pos, _ in items], route or "exact", [w for _, _, w in items]) for _, items in hnorm]
+        out["history"] = [_group(index, rows, corpus, [(e, pos) for e, pos, _ in items], route or "exact", [w for _, _, w in items], v3) for _, items in hnorm]
     if superseded_all:
         out["superseded_all"] = True
     if len(out["answers"]) >= 2:
@@ -424,8 +631,15 @@ def recall(index: mx.MemIndex, rows: Sequence[dict], corpus: Any, question: str,
                 if o["scope"] not in scopes_seen:
                     scopes_seen.append(o["scope"])
         out["choice_kind"] = "same_seat" if same_seat else ("scopes" if len(scopes_seen) > 1 else "positions")
+        if v3:                                                      # how many sentences the values come from: a same_seat CHOICE of >= 2 sources is a contradiction (the answer run refuses to emit one side)
+            out["sources"] = len({o["sid"] for g in out["answers"] for o in g["occurrences"]})
     else:
         out["verdict"] = "UPDATED" if hist_all else "ANSWER"
+    return out
+
+
+def _none_plain(out: Dict[str, Any], looked: List[str], route: Optional[str]) -> dict:
+    out.update(issues=["no_value"], looked_for=looked, route=route)
     return out
 
 

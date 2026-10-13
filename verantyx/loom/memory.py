@@ -94,6 +94,25 @@ CAPS_MEM_V2: Dict[str, int] = dict(CAPS_MEM_V1, topics=8, supersedes=30, reports
 # v2 one times 4; the shape caps (unit_chars, max_L, crosses, max_depth) are unchanged.  The baselines' log caps move the same way (memdoor.LOG_CAPS_V2).
 CAPS_MEM_V3: Dict[str, int] = dict(CAPS_MEM_V2, writes=240, recalls=240, lookups=240, ops=1200, topics=32, supersedes=120, reports=240)
 CAPS_MEM_V4: Dict[str, int] = dict(CAPS_MEM_V3, bridges=60)          # PUB-M6: + at most 60 bridges a session
+# PUB-M6c: the VERSIONS a mem.v4 session reads and writes with, recorded in its begin row (`header.shape`, `header.qwords`, `header.ask`).  The default is the bundle of PUB-M2..M6b (every stored mem.v4 ledger and
+# every test); `V4_VERSIONS_M6C` is the bundle of this ticket: shape.v3 (stage 1 of the staged table), ask.v3 + qwords.v2 (candidates, 「どの<名詞>」, relative clauses, bridges to a whole position).
+V4_VERSIONS_V2: Dict[str, str] = {"shape": ms.SHAPES_V2, "qwords": qw.QWORDS_VERSION, "ask": mask.ASK_VERSION}
+V4_VERSIONS_M6C: Dict[str, str] = {"shape": ms.SHAPES_V3, "qwords": qw.QWORDS_V2, "ask": mask.ASK_V3}
+V4_ASK_QWORDS: Dict[str, str] = {mask.ASK_VERSION: qw.QWORDS_VERSION, mask.ASK_V3: qw.QWORDS_V2}      # an ask version reads one question-word table
+
+
+def check_versions(versions: Optional[Dict[str, str]]) -> Dict[str, str]:
+    """The versions of a mem.v4 session: the default bundle with the given keys replaced; `Refuse bad_policy` for an unknown version or an ask version with the wrong question-word table."""
+    v = dict(V4_VERSIONS_V2)
+    for k, x in (versions or {}).items():
+        if k not in v:
+            raise Refuse("bad_policy", {"policy": "versions", "value": k, "allowed": sorted(v)})
+        v[k] = x
+    if v["shape"] not in ms.SHAPE_TABLES or v["shape"] == ms.SHAPES_VERSION or v["ask"] not in V4_ASK_QWORDS or v["qwords"] != V4_ASK_QWORDS[v["ask"]]:
+        raise Refuse("bad_policy", {"policy": "versions", "value": dict(v), "allowed": {"shape": [ms.SHAPES_V2, ms.SHAPES_V3], "ask": sorted(V4_ASK_QWORDS), "qwords": "the table of the ask version"}})
+    return v
+
+
 TOPIC_FORBIDDEN = "のにでとをが"                                    # a mem.v3 topic holds none of the arm particles (L-MEM-58): with one inside, 「<topic>の…」 is a nested particle chain and EVERY expansion is refused
 LEAD_PARTICLES = "のにでとをがはもへ"                              # a particle in the lead-in of a clause (text from the start of its token up to the Y) means the clause already has its own subject
 FORCE_OPS: Tuple[str, ...] = ("report_forced", "report_missing")  # MEM-fix (L-MEM-62): the harness rows of a turn that ended without a report of its own (mem.v3 / membase.v2)
@@ -283,7 +302,7 @@ class MemRun(Run):
 
     def __init__(self, store_id: str, session_no: int, run_id: str, model: str, *, store_head_before: str = GENESIS, kind_policy: str = "a",
                  contradiction_policy: str = "a", unseatable_policy: str = "a", self_question: Optional[mn.SelfQuestionFn] = None,
-                 profile: str = PROFILE_V1) -> None:
+                 profile: str = PROFILE_V1, versions: Optional[Dict[str, str]] = None) -> None:
         if profile not in PROFILES:
             raise Refuse("bad_policy", {"policy": "profile", "value": profile, "allowed": list(PROFILES)})
         if kind_policy not in KIND_POLICIES:
@@ -301,7 +320,12 @@ class MemRun(Run):
         self.v2plus = profile in V2_PLUS               # declare_topic / supersede / report, the door-supplied turn, the v2 state; mem.v3 adds the topic rule `topic.v2`, cited REVERSALs, the long-story caps
         self.v3 = profile in V3_PLUS
         self.v4 = profile == PROFILE_V4                # PUB-M2..M4: the shape exchanger accepts writes, memory crosses, nests, slide order
-        self.builder = mx.IndexBuilder(ms.SHAPES_V2) if self.v4 else None
+        if versions is not None and profile != PROFILE_V4:
+            raise Refuse("bad_policy", {"policy": "versions", "value": "only a mem.v4 session has versions", "allowed": []})
+        self.versions: Dict[str, str] = check_versions(versions) if self.v4 else {}
+        self.shape_version: str = self.versions.get("shape", ms.SHAPES_V2)
+        self.ask_version: str = self.versions.get("ask", mask.ASK_VERSION)
+        self.builder = mx.IndexBuilder(self.shape_version) if self.v4 else None
         self.decls: List[dict] = []                    # mem.v4: the topic declarations [{session, at, topic}] of every earlier v4 session and this one (the ledger is their source)
         self.notes_profile = mn.MEM_NOTES_V4 if self.v4 else mn.MEM_NOTES_V2 if self.v3 else mn.MEM_NOTES_VERSION
         self.bridge_log: List[dict] = []                # mem.v4: the bridges [{session, at, qword, phrase}] of every earlier v4 session and this one (the ledger is their source)
@@ -417,11 +441,11 @@ class MemRun(Run):
             if self.v2plus:                                   # absent in a mem.v1 header: every earlier begin row is as it was
                 h["mem_profile"] = self.profile
             if self.v4:                                       # PUB-M2: the frozen shape table and the version of the memory cross serialisation this session reads / writes
-                h["shape"] = {"version": ms.SHAPES_V2, "sha": ms.SHAPES_SHA_V2}
+                h["shape"] = {"version": self.shape_version, "sha": ms.SHAPE_TABLES[self.shape_version]}
                 h["cross"] = {"version": mx.CROSS_VERSION}
-                h["qwords"] = {"version": qw.QWORDS_VERSION, "sha": qw.QWORDS_SHA}        # PUB-M6: the question-word tank (frozen)
+                h["qwords"] = {"version": self.versions["qwords"], "sha": qw.QWORDS_SHAS[self.versions["qwords"]]}        # PUB-M6: the question-word tank (frozen)
                 h["detect"] = {"version": mdt.DETECT_VERSION}                              # PUB-M5: the detections on the crosses
-                h["ask"] = {"version": mask.ASK_VERSION}                                   # PUB-M6: recall on the crosses
+                h["ask"] = {"version": self.ask_version}                                   # PUB-M6: recall on the crosses
             self._begin_header = h
         return self._begin_header
 
@@ -691,7 +715,7 @@ def _write_v4(run: MemRun, a: dict, i: int) -> dict:
     """mem.v4 (PUB-M2, L-PUB-26): the shape exchanger decides.  Accepted iff every clause is F1-F4 (an F0 clause: `no_shape`, nothing stored).  An accepted sentence is stored; the `weave_span` thread of the loom
     is attempted for it, and if it is refused the sentence is stored anyway with `weave: refused(...)` (the tanks hold it, the thread does not).  Nothing is put in front of the text."""
     text, role, turn = _model_text(a, run)
-    ex = ms.exchange(text, ms.SHAPES_V2)
+    ex = ms.exchange(text, run.shape_version)
     if not ex.clauses or any(c.shape == "F0" for c in ex.clauses):
         raise _no_shape(ex)
     t = len(run.rows)
@@ -759,7 +783,7 @@ def _write_v4(run: MemRun, a: dict, i: int) -> dict:
         run.tally["notes"][n["type"]] += 1
     if all_notes:
         res["notes"] = all_notes
-    res["shape"] = {"v": ms.SHAPES_V2, "clauses": [_clause_summary(c) for c in placed]}
+    res["shape"] = {"v": run.shape_version, "clauses": [_clause_summary(c) for c in placed]}
     res["index"] = _index_view(run)
     if turn is not None:
         res["turn"] = turn
@@ -807,7 +831,7 @@ def h_keep_unshaped(run: MemRun, a: dict, i: int) -> dict:
     text, role, turn = _model_text(a, run)
     if not any(ch.isalnum() for ch in text):
         raise Refuse("bad_sentence", {"reason": "no letter in the sentence"})
-    ex = ms.exchange(text, ms.SHAPES_V2)
+    ex = ms.exchange(text, run.shape_version)
     if ex.clauses and all(c.shape != "F0" for c in ex.clauses):
         raise Refuse("shaped", {"shapes": list(ex.shapes()), "hint": "every clause has a shape: use write"})
     t = len(run.rows)
@@ -826,7 +850,7 @@ def h_keep_unshaped(run: MemRun, a: dict, i: int) -> dict:
     for n in all_notes:
         run.tally["notes"][n["type"]] += 1
     res: Dict[str, Any] = {"ok": True, "sid": t, "source": row["source"], "kind": row["kind"], "role": role, "text": text, "tank": mx.F0_TANK, "unshaped": True, "weave": "none",
-                           "shape": {"v": ms.SHAPES_V2, "shapes": list(ex.shapes()), "reasons": [c.reason for c in ex.clauses if c.shape == "F0"], "indexed": [_clause_summary(c) for c in placed if c.tank is not None]},
+                           "shape": {"v": run.shape_version, "shapes": list(ex.shapes()), "reasons": [c.reason for c in ex.clauses if c.shape == "F0"], "indexed": [_clause_summary(c) for c in placed if c.tank is not None]},
                            "index": _index_view(run)}
     if all_notes:
         res["notes"] = all_notes
@@ -904,7 +928,7 @@ def h_recall(run: MemRun, a: dict, i: int) -> dict:
         raise Refuse("bad_question", {"reason": "1 to %d characters, no newline / NUL / control character" % ARG_STR_CAP})
     check_memory_rows(run.rows)
     if run.v4:                                                          # PUB-M6: the question is read by the shape exchanger and answered from the crosses (memask); the gate judges only the emitted quote
-        res = mask.recall(run.builder.index(), run.rows, run.corpus_cur, q, open_nest=run.builder.open_nest_id(run.session_no))
+        res = mask.recall(run.builder.index(), run.rows, run.corpus_cur, q, open_nest=run.builder.open_nest_id(run.session_no), ask=run.ask_version)
         res.update(ok=True, text=q)
         return res
     res = mr.recall(run.corpus_cur, q, run.evidence_version, subject_guard=bool(getattr(run.hook, "subject_guard", False)), superseded=run.superseded or None,
@@ -915,21 +939,34 @@ def h_recall(run: MemRun, a: dict, i: int) -> dict:
 
 def h_bridge(run: MemRun, a: dict, i: int) -> dict:
     """mem.v4 (PUB-M6, OP-PUB-7): bridge(question_word, memory_phrase) -- the model adds a mapping the question-word tank lacks: the question word / phrase stands for a phrase the memory holds as the centre of a
-    cross.  A CONSTRUCTED, marked, ledgered entry of the index (`origin: constructed`) that recall then uses (route `bridge`).  Refused: bad_bridge, unknown_phrase (no cross has that centre), bridge_exists."""
-    a = ops._args(a, {"question_word": (str, True), "memory_phrase": (str, True)})
-    qwd = _plain_text(a["question_word"], "question_word", 1, 16, "bad_bridge")
-    ph = _plain_text(a["memory_phrase"], "memory_phrase", 1, 24, "bad_bridge")
+    cross.  A CONSTRUCTED, marked, ledgered entry of the index (`origin: constructed`) that recall then uses (route `bridge`).  Refused: bad_bridge, unknown_phrase (no cross has that centre), bridge_exists.
+    ask.v3 (PUB-M6c, L-PUB-71): the argument may be called `question_phrase` (an alias: the row stores it as `question_word`), the question phrase may be 24 and the memory phrase 40 characters, and the memory
+    phrase may also be the phrase of a whole POSITION as a candidate of `recall` shows it (棚ラベル照合の締切): recall then answers a question that holds the question phrase from that position."""
+    v3 = run.ask_version == mask.ASK_V3
+    if v3:
+        a = ops._args(a, {"question_word": (str, False), "question_phrase": (str, False), "memory_phrase": (str, True)})
+        if ("question_word" in a) == ("question_phrase" in a):
+            raise Refuse("bad_args", {"field": "question_phrase", "reason": "give question_phrase (or question_word), not both and not neither"})
+        a = {"question_word": a["question_word"] if "question_word" in a else a["question_phrase"], "memory_phrase": a["memory_phrase"]}
+    else:
+        a = ops._args(a, {"question_word": (str, True), "memory_phrase": (str, True)})
+    qwd = _plain_text(a["question_word"], "question_word", 1, 24 if v3 else 16, "bad_bridge")
+    ph = _plain_text(a["memory_phrase"], "memory_phrase", 1, 40 if v3 else 24, "bad_bridge")
     if qwd == ph:
         raise Refuse("bad_bridge", {"field": "memory_phrase", "reason": "the question word and the memory phrase are the same"})
-    if not run.builder.has_centre(ph):
-        raise Refuse("unknown_phrase", {"memory_phrase": ph, "reason": "no cross of the memory has this phrase as its centre: give the phrase as the memory writes it"})
+    positions = run.builder.index().positions_text(ph) if v3 else ()
+    if not run.builder.has_centre(ph) and not positions:
+        raise Refuse("unknown_phrase", {"memory_phrase": ph, "reason": "no cross of the memory has this phrase as its centre%s: give the phrase as the memory writes it" % (" and no position has it as its phrase" if v3 else "")})
     at = len(run.rows)
     if not run.builder.bridge(run.session_no, at, qwd, ph):
         raise Refuse("bridge_exists", {"question_word": qwd, "memory_phrase": ph})
     run.bridge_log.append({"session": run.session_no, "at": at, "qword": qwd, "phrase": ph})
     ix = run.builder.index()
-    return {"ok": True, "question_word": qwd, "memory_phrase": ph, "origin": "constructed", "session": run.session_no, "at": at,
-            "tanks": [t for t in mx.TANKS if ix.cross(t, ph) is not None], "bridges": len(ix.bridges)}
+    res = {"ok": True, "question_word": qwd, "memory_phrase": ph, "origin": "constructed", "session": run.session_no, "at": at,
+           "tanks": [t for t in mx.TANKS if ix.cross(t, ph) is not None], "bridges": len(ix.bridges)}
+    if v3:
+        res["positions"] = len(positions)
+    return res
 
 
 def h_lookup(run: MemRun, a: dict, i: int) -> dict:
@@ -1240,6 +1277,20 @@ def session_bridges(run_dir) -> List[dict]:
     return out
 
 
+def session_versions(run_dir) -> Optional[Dict[str, str]]:
+    """PUB-M6c: {"shape", "qwords", "ask"} -- the versions the begin row of a mem.v4 session ledger records; None for another profile (or a header without them)."""
+    lines, _ = lg.read_raw_lines(run_dir)
+    if not lines:
+        return None
+    hdr = lg._parse_line(lines[0])["result"]["header"]
+    if hdr.get("mem_profile") != PROFILE_V4:
+        return None
+    try:
+        return {"shape": hdr["shape"]["version"], "qwords": hdr["qwords"]["version"], "ask": hdr["ask"]["version"]}
+    except (KeyError, TypeError):
+        return None
+
+
 class MemStore:
     """A memory store on disk (`--store DIR`, required).  One memory per store; two stores never merge (L-MEM-01)."""
 
@@ -1344,7 +1395,7 @@ class MemStore:
 
     # -- sessions -----------------------------------------------------------------------------------------------------
     def begin(self, model: str, *, kind_policy: Optional[str] = None, contradiction_policy: str = "a", unseatable_policy: str = "a",
-              self_question: Any = DEFAULT, profile: str = DEFAULT_PROFILE) -> "MemSession":
+              self_question: Any = DEFAULT, profile: str = DEFAULT_PROFILE, versions: Optional[Dict[str, str]] = None) -> "MemSession":
         """Open a memory session: the store's lock, the cheap verification, the carried state, the `begin` row (L-MEM-18).  Raises `Refuse` (store_locked,
         store_unverified, bad_model_id, policy_mismatch, ...).  The defaults are the owner's choices: OP-MEM-1 (a), OP-MEM-2 (a), OP-MEM-3 (a).
         `self_question`: DEFAULT = the gate hook `gate.evidence.v2` (MEM-c, L-MEM-29); `StubSelfQuestion()` the stub; None no hook (no SAME_QUESTION, no recall).
@@ -1371,13 +1422,16 @@ class MemStore:
                 k += 1
             run_id = "s%04d" % k
             run = MemRun(self.store_id, n_sess + 1, run_id, model, store_head_before=head_sha(head), kind_policy=policy,
-                         contradiction_policy=contradiction_policy, unseatable_policy=unseatable_policy, self_question=self_question, profile=profile)
+                         contradiction_policy=contradiction_policy, unseatable_policy=unseatable_policy, self_question=self_question, profile=profile, versions=versions)
             sup: Dict[int, dict] = {}
             decls: List[dict] = []
             brs: List[dict] = []
             for e in (head["sessions"] if head else []):
                 sup.update(session_supersedes(self.sessions_dir / e["run_id"]))
                 if profile == PROFILE_V4:
+                    sv = session_versions(self.sessions_dir / e["run_id"])
+                    if sv is not None and sv != run.versions:                    # one store, one bundle: the index is rebuilt from H with one table
+                        raise Refuse("policy_mismatch", {"policy": "versions", "store": sv, "asked": dict(run.versions)})
                     decls += session_nest_decls(self.sessions_dir / e["run_id"])
                     brs += session_bridges(self.sessions_dir / e["run_id"])
             run.carry(rows, sup, decls, brs)
@@ -1408,11 +1462,13 @@ class MemStore:
         sup: Dict[int, dict] = {}
         decls: List[dict] = []
         brs: List[dict] = []
+        vs: Optional[Dict[str, str]] = None
         for e in (head["sessions"] if head else []):
             sup.update(session_supersedes(self.sessions_dir / e["run_id"]))
             decls += session_nest_decls(self.sessions_dir / e["run_id"])
             brs += session_bridges(self.sessions_dir / e["run_id"])
-        return mx.build_index(rows, decls, sup, bridges=brs)
+            vs = session_versions(self.sessions_dir / e["run_id"]) or vs
+        return mx.build_index(rows, decls, sup, shape_version=(vs or V4_VERSIONS_V2)["shape"], bridges=brs)
 
     def replay(self, self_question: Any = DEFAULT) -> "MemReplay":
         return replay_store(self.path, self_question)
@@ -1570,8 +1626,16 @@ def replay_store(path, self_question: Any = DEFAULT) -> MemReplay:
         if hdr.get("self_question") != mn.hook_id(hook):
             out.status, out.mismatch = "INPUTS", "self_question_mismatch"
             return out
+        versions = None
+        if profile == PROFILE_V4:                         # PUB-M6c: the versions the begin row recorded (a header without them: the bundle of PUB-M2..M6b)
+            versions = session_versions(d)
+            try:
+                check_versions(versions)
+            except Refuse:
+                out.status, out.mismatch = "INPUTS", "versions_unknown"
+                return out
         try:
-            run = MemRun(hdr["store_id"], hdr["session_no"], run_id, model, store_head_before=before, self_question=hook, profile=profile, **opts)
+            run = MemRun(hdr["store_id"], hdr["session_no"], run_id, model, store_head_before=before, self_question=hook, profile=profile, versions=versions, **opts)
             run.carry(H, S, D, B)
         except Refuse:
             out.status, out.first_diff = "DIFFERS", {"session": e["run_id"], "i": 0, "field": "carry"}
@@ -1591,7 +1655,7 @@ def replay_store(path, self_question: Any = DEFAULT) -> MemReplay:
         if not rows or rows[-1]["op"] != "commit" or rows[-1]["result"].get("ok") is not True:
             out.status, out.first_diff = "DIFFERS", {"session": e["run_id"], "i": len(rows) - 1, "field": "commit_missing"}
             return out
-        if run.v4 and mx.build_index(run.rows, run.decls, run.superseded, bridges=run.bridge_log).index_sha != run.builder.index().index_sha:     # the memory crosses must be rebuilt identically from H alone
+        if run.v4 and mx.build_index(run.rows, run.decls, run.superseded, shape_version=run.shape_version, bridges=run.bridge_log).index_sha != run.builder.index().index_sha:     # the memory crosses must be rebuilt identically from H alone
             out.status, out.first_diff = "DIFFERS", {"session": e["run_id"], "i": None, "field": "index"}
             return out
         H = list(run.rows)

@@ -63,7 +63,9 @@ CAP_REFUSAL: Dict[str, str] = {"ops": "ops_cap", "lookups": "lookup_cap", "reads
 WEAVE_SPAN_V1 = "weave_span.v1"
 WEAVE_SPAN_V2 = "weave_span.v2"         # = v1, and the crosses it makes carry the sid they quote (`LoomCross.span`), which the gate reads (L-LOOM-146)
 WEAVE_SPAN_V3 = "weave_span.v3"         # = v2, and each cross it makes also carries `quote` = (w, sid, tier, i0, i1), which the evidence gate reads (LOOM-evidence, L-LOOM-183)
+WEAVE_SPAN_V4 = "weave_span.v4"         # = v3, and a stretch whose units are joined only by the joiners . , - : / inside a token (v2.4, 6.5万円, 3.2.0-rc2, 6/14) reads out as the SOURCE slice, joiners included (PUB-M6c, L-PUB-65)
 WEAVE_SPAN_WV = WEAVE_SPAN_V3            # the CURRENT rule that derives a weave_span's crosses (L-LOOM-135); stamped into the args of every new weave_span row
+READOUT_JOINERS = frozenset(".,-:/")     # weave_span.v4: the joiners the evidence gate lets hold inside a token (evidence.JOINERS has more); the owner's list (2026-10-13)
 SPEC_ARMS: Tuple[str, ...] = tuple(SPEC.arms)                  # the particle of each arm, in AXES order (LoomCross puts SPEC.arms[ai] on arm ai)
 DRIVERS = ("L1-subagent", "L2-api", "scripted")
 GRADES = ("pass", "fail", "unclear")
@@ -281,6 +283,8 @@ class Run:
                 raise ValueError("evidence: (version, subject_scope) with version in %s and scope in %s" % (evl.EVIDENCE_VERSIONS, evl.SUBJECT_SCOPES))
             self.evidence = (evidence[0], evidence[1])
             self.question_units = evl.question_units(self.task["text"])          # the loom's own cut of the question, recomputed here and never read back from a row
+        self.weave_wv = WEAVE_SPAN_WV      # the rule a weave_span with no `wv` gets (stamped into its row): weave_span.v3; a subclass (the answer run v4) sets weave_span.v4
+        self.joints: Dict[str, str] = {}   # weave_span.v4: {uid of a unit: the joiners the source has right after it}; NOT hashed, re-derived by replay; `read.evaluate` writes them after the unit
         self.weaves: List[dict] = []       # LOOM-evidence: the `weave_span.v3` weaves of this run {w, sid, tier, i0, i1, cids}; NOT hashed, re-derived by replay
         self._nweaves = 0
         self.i = 0                         # the index of the next row
@@ -378,7 +382,7 @@ class Run:
             if n:
                 extra = {"redacted": n, "args_sha256": args_sha256(args)}
             if op == "weave_span" and isinstance(stored, dict) and "wv" not in stored:
-                stored = dict(stored, wv=WEAVE_SPAN_WV)           # the rule version that derives this row's crosses (L-LOOM-135); the handler defaults to it
+                stored = dict(stored, wv=self.weave_wv)           # the rule version that derives this row's crosses (L-LOOM-135); the handler defaults to it
         try:
             if blocked is not None:
                 raise Refuse("cap_exceeded", {"guard": blocked, "limit": GUARD_CAPS[blocked]})
@@ -703,7 +707,15 @@ def _weave_span_v3(run: Run, sid: int, tier: str, f: Any, t: Any) -> dict:
     return _weave_span_core(run, sid, tier, f, t, WEAVE_SPAN_V3, True, True)
 
 
-def _weave_span_core(run: Run, sid: int, tier: str, f: Any, t: Any, wv: str, mark: bool, quote: bool = False) -> dict:
+def _weave_span_v4(run: Run, sid: int, tier: str, f: Any, t: Any) -> dict:
+    """`weave_span.v4` (PUB-M6c, owner 2026-10-13 「元の文のその範囲をそのまま出す」): EXACTLY v3 (the same crosses, the same markers), and where two touching units of the stretch have between them nothing
+    but the joiners . , - : / (6 . 5, 3 . 2 . 0 - rc2, 6 / 14), the unit before the gap remembers them (`Run.joints`) and `read` writes them right after it.  The read-out of such a stretch is the source slice
+    character for character (v2.4, 6.5万円); every other punctuation is dropped as before, so a stretch with a quote mark or a bracket is NOT its own read-out and stays unquotable.  A ledger recorded
+    under v1..v3 replays by its own rule: it never has a joint."""
+    return _weave_span_core(run, sid, tier, f, t, WEAVE_SPAN_V4, True, True, True)
+
+
+def _weave_span_core(run: Run, sid: int, tier: str, f: Any, t: Any, wv: str, mark: bool, quote: bool = False, joiners: bool = False) -> dict:
     """The rule `weave_span.v1` / `.v2` (L-LOOM-130..134).  A STRETCH of corpus sentence `sid` -- the units `from` .. `to` (both included) of the tier -- becomes
     a chain of crosses whose read-out is that stretch word for word.  Between two neighbouring units of the stretch the sentence has a GAP (its letters
     only: punctuation, quotes, spaces and 「・」 are not letters and the loom writes none of them; the T9 normaliser drops only whitespace and 「・」/「·」,
@@ -752,6 +764,18 @@ def _weave_span_core(run: Run, sid: int, tier: str, f: Any, t: Any, wv: str, mar
         plan.append((k, att, k < n - 1 and kinds[k] == "topic"))
     text = "".join(surf[k] + (gaps[k] if k < n - 1 else "") for k in range(n))
     read = "".join((surf[att] + gaps[att] if att is not None else "") + surf[k] + (SPEC.centre if top else "") for k, att, top in plan)
+    joint: Dict[int, str] = {}                                    # weave_span.v4: the raw gap after unit k when it is only joiners and the units touch
+    if joiners:
+        idx = run.corpus.spans()
+        sps = idx.spans(tier, sid)
+        src = idx.text(sid)
+        for k in range(n - 1):
+            raw = src[sps[i0 + k][1]:sps[i0 + k + 1][0]]
+            if raw != "" and gaps[k] == "" and all(ch in READOUT_JOINERS for ch in raw):
+                joint[k] = raw
+        if joint:
+            text = "".join(surf[k] + joint.get(k, "") + (gaps[k] if k < n - 1 else "") for k in range(n))
+            read = "".join((surf[att] + gaps[att] if att is not None else "") + surf[k] + joint.get(k, "") + (SPEC.centre if top else "") for k, att, top in plan)
     if read != text:                                              # cannot happen by construction; kept so that "word for word" is checked, not assumed
         raise Refuse("span_inexpressible", {"reason": "readout_differs", "from": i0, "to": i1})
     if len(st.crosses) + len(plan) > run.caps["crosses"]:
@@ -765,6 +789,8 @@ def _weave_span_core(run: Run, sid: int, tier: str, f: Any, t: Any, wv: str, mar
     if quote:
         run._nweaves += 1
         run.weaves.append({"w": run._nweaves, "sid": sid, "tier": tier, "i0": i0, "i1": i1, "cids": []})
+    for k, j in joint.items():
+        run.joints[uid_of[k]] = j
     for k, att, top in plan:
         cross = st.new_cross(tier, 1 if att is None else 2)
         st.place(cross, None, None, uid_of[k])
@@ -784,7 +810,7 @@ def _weave_span_core(run: Run, sid: int, tier: str, f: Any, t: Any, wv: str, mar
     return {"ok": True, "wv": wv, "sid": sid, "tier": tier, "from": i0, "to": i1, "text": text, "crosses": out_crosses, "thread": list(st.thread)}
 
 
-WEAVE_SPAN_RULES = {WEAVE_SPAN_V1: _weave_span_v1, WEAVE_SPAN_V2: _weave_span_v2, WEAVE_SPAN_V3: _weave_span_v3}                # rule version -> the rule; a new version is ADDED here, an old one is never edited or removed
+WEAVE_SPAN_RULES = {WEAVE_SPAN_V1: _weave_span_v1, WEAVE_SPAN_V2: _weave_span_v2, WEAVE_SPAN_V3: _weave_span_v3, WEAVE_SPAN_V4: _weave_span_v4}                # rule version -> the rule; a new version is ADDED here, an old one is never edited or removed
 
 
 def h_weave_span(run: Run, a: dict, i: int) -> dict:
@@ -796,7 +822,7 @@ def h_weave_span(run: Run, a: dict, i: int) -> dict:
     the row names.  Refusals (all before anything is touched): not_prose, tier_not_in_task, unknown_sid, unit_not_in_sentence, span_out_of_range,
     bad_span, tier_mix, span_inexpressible, cross_cap, bad_args."""
     a = _args(a, {"sid": (int, True), "tier": (str, True), "from": ((int, str), True), "to": ((int, str), True), "wv": (str, False)})
-    rule = WEAVE_SPAN_RULES.get(a.get("wv", WEAVE_SPAN_WV))
+    rule = WEAVE_SPAN_RULES.get(a.get("wv", run.weave_wv))
     if rule is None:
         raise Refuse("bad_args", {"field": "wv", "reason": "unknown rule version"})
     if run.lang != PROSE:

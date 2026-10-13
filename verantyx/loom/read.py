@@ -329,6 +329,13 @@ def evaluate(run) -> dict:
             for r in codelib.gate_refusals(text, run.code_index, run.context_names(), line_cids):
                 add(r, state.thread.index(r["cid"]) if "cid" in r else 0)
     annotate(run, segs)
+    joints = getattr(run, "joints", None)
+    if joints and not code_lang:                       # weave_span.v4 (PUB-M6c): the joiners . , - : / the source has between two touching units are written right after the unit (v2.4, not v24); only a v4 weave has any
+        for sg in segs:
+            j = joints.get(sg.get("uid"))
+            if j and sg["kind"] == RECORD:
+                sg["s"] = sg["s"] + j
+        text = "".join(s["s"] for s in segs)
     refusals.sort(key=lambda t: (t[0], t[1]))
     shares = {k: 0 for k in KINDS}
     for s in segs:
