@@ -156,6 +156,8 @@ def old_value_attempt(make: Any, question: str, n_history: int) -> Dict[str, Any
 
 def refusal_codes(detail: Any) -> str:
     """The gate codes of the first refused weave of an emit refusal ('question_has_no_subject,no_slot_head'), else the refusal types."""
+    if isinstance(detail, dict) and "refusals" not in detail:
+        return ""                                       # a refusal with no gate codes (contested_value, replaced_value ...): its type is the reason
     try:
         refs = detail["refusals"]
         codes: List[str] = []
@@ -439,7 +441,7 @@ def old_reversal() -> Optional[dict]:
 def md_recall(t: dict, mf: Optional[dict], n_runs: int) -> str:
     names = {"contradicted": "矛盾質問", "updated": "更新質問", "plain": "平文質問", "all": "**全体**"}
     out = ["# PUB-M6 想起（十字）の到達 — meter v1（offline, API なし）", "",
-           "meter v1 の構造 arm %d run（%d 問）の書き込みを mem.v4 の store に流し直し（モデルの raw write をそのまま、turn つき）、回答 run memanswer.v3 の `recall` を質問文のまま呼ぶ oracle。" % (n_runs, t["strict"]["all"]["n"]), "",
+           "meter v1 の構造 arm %d run（%d 問）の書き込みを mem.v4 の store に流し直し（モデルの raw write をそのまま、turn つき）、回答 run %s の `recall` を質問文のまま呼ぶ oracle。" % (n_runs, t["strict"]["all"]["n"], "memanswer.v4（PUB-M6c）" if "m6c" in t else "memanswer.v3"), "",
            "### 厳密一致の照合", "", "| 質問の種類 | n | 到達 | 厳密一致 | 余計な値あり |" + (" memfix 到達 前 | memfix 到達 後 |" if mf else ""), "|---|---|---|---|---|" + ("---|---|" if mf else "")]
     for k in ("contradicted", "updated", "plain", "all"):
         c = t["strict"][k]
