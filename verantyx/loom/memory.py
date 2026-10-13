@@ -185,7 +185,18 @@ class _Sentinel:
 DEFAULT = _Sentinel("DEFAULT")              # self_question=DEFAULT: the default hook of a new store (the gate)
 FROM_HEADER = _Sentinel("FROM_HEADER")      # replay / verify: each session with the hook its own begin row names (the registry below)
 HOOKS: Dict[str, Any] = {mn.StubSelfQuestion.id: mn.StubSelfQuestion, GateSelfQuestion.id: GateSelfQuestion, GateSubjectSelfQuestion.id: GateSubjectSelfQuestion}     # the hook code, by recorded id
-DEFAULT_HOOK_FACTORY = GateSubjectSelfQuestion      # a callable returning the default hook (or None); tests that need the pre-MEM-c behaviour replace it (monkeypatch)
+for _v in evidence.EVIDENCE_VERSIONS:                # PUB-M6c: the gate hooks of the other evidence versions (ids gate.<version>, gate.<version>+subject), so that a session replays under the gate its begin row recorded
+    if _v != mr.RECALL_VERSION and _v != evidence.EVIDENCE_V1:
+        for _c in mr.hook_classes(_v):
+            HOOKS[_c.id] = _c
+
+
+def _default_hook() -> Any:
+    """The default hook of a NEW store: the gate with the whole-subject guard, reading with `memrecall.MEM_GATE_VERSION` (the one line to change when the default gate changes)."""
+    return mr.hook_classes(mr.MEM_GATE_VERSION)[1]()
+
+
+DEFAULT_HOOK_FACTORY = _default_hook      # a callable returning the default hook (or None); tests that need the pre-MEM-c behaviour replace it (monkeypatch)
 
 
 def resolve_hook(spec: Any, header_id: Optional[str] = None) -> Optional[mn.SelfQuestionFn]:
@@ -419,6 +430,8 @@ class MemRun(Run):
         if self.v2plus:
             base = MEM_RULES_V4 if self.v4 else MEM_RULES_V3 if self.v3 else MEM_RULES_V2
             rules = base if (self.evidence_version is not None or self.v4) else dict(base, recall=MEM_RULES["recall"])
+        if self.evidence_version is not None and self.evidence_version != mr.RECALL_VERSION:       # PUB-M6c: the rule text names the gate the session reads with
+            rules = {k: (v.replace(mr.RECALL_VERSION, self.evidence_version) if k == "recall" and isinstance(v, str) else v) for k, v in rules.items()}
         res = {"ok": True, "run_id": self.run_id, "mode": "memory", "task": ops.task_view(self.task, self.caps), "rules": rules, "header": self.header()}
         if self.v2plus:
             res["tools"] = list(tools_of(self.profile))

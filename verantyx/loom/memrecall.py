@@ -30,7 +30,9 @@ from verantyx.loom.state import Refuse
 
 GATE_HOOK_ID = "gate.evidence.v2"
 GATE_SUBJECT_HOOK_ID = "gate.evidence.v2+subject"       # the same gate + the whole-subject guard (MEM-c2, owner 2026-10-12: a cut subject is UNREADABLE, never SAME_QUESTION)
-RECALL_VERSION = ev.EVIDENCE_V2               # the evidence version the gate hook records in the begin row (evidence_version)
+RECALL_VERSION = ev.EVIDENCE_V2               # the evidence version of the ORIGINAL gate hook (`gate.evidence.v2`, the defaults of the functions below); a stored session replays under the version its begin row recorded
+MEM_GATE_VERSION = ev.EVIDENCE_V6             # PUB-M6c (designer decision, L-PUB-76): THE ONE LINE.  The evidence gate NEW memory sessions (the self-question hook, `recall`) and NEW answer runs (memanswer: `emit`, `recall` of v1 / v2) judge with;
+                                              # it is recorded in their begin row (`evidence_version` / `evidence_profile`) and replay reads it from there, never from this constant
 RECALL_SCOPE = ev.SCOPE_CLAUSE                # L-MEM-12
 RECALL_TIER = "WORD"
 MAX_STRETCH = 3                               # L-MEM-11: i1 - i0 <= 3
@@ -280,6 +282,25 @@ class GateSubjectSelfQuestion(GateSelfQuestion):
     never SAME_QUESTION, and an earlier cut sentence never joins a later question.  The default hook of a NEW store; `evidence_version` is still evidence.v2."""
     id = GATE_SUBJECT_HOOK_ID
     subject_guard = True
+
+
+_HOOK_CLASSES: Dict[str, Tuple[type, type]] = {}
+
+
+def hook_classes(version: str) -> Tuple[type, type]:
+    """(the plain gate hook, the gate hook with the whole-subject guard) of an evidence version.  evidence.v2: the two classes above (ids `gate.evidence.v2`, `gate.evidence.v2+subject`, unchanged);
+    any other version: the same hooks reading with that version, ids `gate.<version>` and `gate.<version>+subject` (the begin row records the id, the registry of memory.py finds the class)."""
+    if version == RECALL_VERSION:
+        return GateSelfQuestion, GateSubjectSelfQuestion
+    if version not in ev.EVIDENCE_VERSIONS:
+        raise ValueError("unknown evidence version %r" % (version,))
+    hit = _HOOK_CLASSES.get(version)
+    if hit is None:
+        tag = version.replace(".", "_")
+        plain = type("GateSelfQuestion_" + tag, (GateSelfQuestion,), {"id": "gate." + version, "evidence_version": version})
+        subj = type("GateSubjectSelfQuestion_" + tag, (plain,), {"id": "gate." + version + "+subject", "subject_guard": True})
+        hit = _HOOK_CLASSES[version] = (plain, subj)
+    return hit
 
 
 # ------------------------------------------------------------------------------------------------------------

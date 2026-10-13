@@ -51,7 +51,9 @@ ANSWER_V3 = "memanswer.v3"          # PUB-M6: the answer run of a mem.v4 store: 
 ANSWER_VERSIONS: Tuple[str, ...] = (ANSWER_VERSION, ANSWER_V2, ANSWER_V3)
 GUARD_V3 = "ansguard.v1"            # PUB-M6b (L-PUB-54..57; memanswer.v3 only, no v3 ledger was ever recorded with a model): weave_span refuses a stretch that is not verbatim and a value the recall replaced; emit may hand the gate a completed question
 ANSWER_TASK_ID = "answer"
-ANSWER_EVIDENCE = (evl.EVIDENCE_V2, evl.SCOPE_CLAUSE)          # the gate of every memory use: evidence.v2, scope clause (L-MEM-12)
+ANSWER_EVIDENCE = (mr.MEM_GATE_VERSION, evl.SCOPE_CLAUSE)      # the gate NEW answer runs judge with: `memrecall.MEM_GATE_VERSION` (evidence.v6 since PUB-M6c, L-PUB-76), scope clause (L-MEM-12).  A run records it in its
+                                                               # begin row (`evidence_profile`) and replays under THAT; a stored run (evidence.v2) is not touched
+LEGACY_EVIDENCE = (evl.EVIDENCE_V2, evl.SCOPE_CLAUSE)          # what a begin row without an `evidence_profile` was recorded with (never happens for an answer run: every one has the gate)
 RECALL_CAP = 20
 ANSWER_ABSTAIN: Tuple[str, ...] = ABSTAIN_TYPES + ("contested",)
 ANSWER_TOOLS: Tuple[str, ...] = ("recall", "lookup", "read_sentence", "weave_span", "drop", "read", "emit", "abstain", "status")     # what the model is offered
@@ -248,16 +250,17 @@ def read_snapshot(path) -> Tuple[bytes, List[dict]]:
 # the run
 # ------------------------------------------------------------------------------------------------------------
 class AnswerRun(Run):
-    """A loom `Run` over a memory snapshot.  Prose, record_only, tier WORD, the evidence gate evidence.v2 / scope clause; + `recall`, + abstain `contested`; `weave_span` refuses a
+    """A loom `Run` over a memory snapshot.  Prose, record_only, tier WORD, the evidence gate (`evidence_profile` of its begin row: evidence.v2 for a stored run, `memrecall.MEM_GATE_VERSION` for a new one) / scope clause; + `recall`, + abstain `contested`; `weave_span` refuses a
     superseded sentence.  Everything else (lookup, read_sentence, weave_span, drop, read, emit, abstain, status, the hand-seating ops) is the loom's own code."""
     EXTRA_OPS = ("recall",)
     ABSTAIN = ANSWER_ABSTAIN
 
     def __init__(self, corpus: Corpus, rows: Sequence[dict], store_id: str, snapshot_name_: str, question: str, model: str, run_id: str,
-                 topics: Optional[Sequence[str]] = None, topics_file: Optional[str] = None, crosses: Optional[Tuple[str, Sequence[dict], Sequence[dict]]] = None) -> None:
+                 topics: Optional[Sequence[str]] = None, topics_file: Optional[str] = None, crosses: Optional[Tuple[str, Sequence[dict], Sequence[dict]]] = None,
+                 evidence: Tuple[str, str] = ANSWER_EVIDENCE) -> None:
         mg.check_memory_rows(rows)
         task = {"task_id": ANSWER_TASK_ID, "text": question, "lang": "prose", "mode": "record_only", "tiers": ["WORD"]}
-        super().__init__(corpus, task, model, run_id, DEFAULT_STABILITY, None, None, notelib.NOTES_VERSION, ANSWER_EVIDENCE)
+        super().__init__(corpus, task, model, run_id, DEFAULT_STABILITY, None, None, notelib.NOTES_VERSION, tuple(evidence))
         self.rows = list(rows)
         self.store_id = store_id
         self.snapshot = snapshot_name_
@@ -341,7 +344,7 @@ def _h_recall(run: AnswerRun, a: dict, i: int) -> dict:
         _note_recall(run, res, q)
         return res
     turns = {k: r["turn"] for k, r in enumerate(run.rows) if "turn" in r}
-    res = mr.recall(run.corpus, q, evl.EVIDENCE_V2, subject_guard=True, superseded=run.superseded or None, turns=turns or None, topics=run.topics or None)
+    res = mr.recall(run.corpus, q, run.evidence[0], subject_guard=True, superseded=run.superseded or None, turns=turns or None, topics=run.topics or None)
     res.update(ok=True, text=q)
     return res
 
@@ -617,8 +620,10 @@ def replay_answer(run_dir, store_path=None) -> ReplayResult:
             out.status, out.mismatch = "INPUTS", "crosses_unverified"
             return out
         crosses = (cf, cdecls, cbridges)
+    ep = res0.get("evidence_profile")                    # the gate the run was recorded with (a run before PUB-M6c: evidence.v2)
+    evidence = (ep["version"], ep["subject_scope"]) if isinstance(ep, dict) and "version" in ep and "subject_scope" in ep else LEGACY_EVIDENCE
     try:
-        run = AnswerRun(Corpus(data), srows, str(ma["store_id"]), str(ma["snapshot"]), question, model, run_id, topics, topics_file, crosses)
+        run = AnswerRun(Corpus(data), srows, str(ma["store_id"]), str(ma["snapshot"]), question, model, run_id, topics, topics_file, crosses, evidence)
     except (Refuse, ValueError):
         out.status, out.mismatch = "INPUTS", "snapshot_unverified"
         return out
