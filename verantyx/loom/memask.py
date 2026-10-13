@@ -336,6 +336,69 @@ def _left_ok(text: str, a: int) -> bool:
     return text[max(0, j - 2):j] in LEFT_SUFFIXES
 
 
+RIGHT_STARTS_V11 = ("は", "が", "の", "に", "で", "と", "を", "も", "へ", "だ", "です", "でし", "ある", "ます", "なる", "なっ", "し", "する")      # memanswer.v11: no から / まで / より (「5日から」 is a start, not the value)
+RIGHT_DENY_V11 = RIGHT_DENY + ("とか", "でさえ", "ですら", "からは")
+_COPULA = re.compile(r"^(だ|です|である|でした|だった|であった|でございます)$")
+_CHANGE = re.compile(r"^に(変更|更新|延期)(する|した|します|しました|になった|になりました|となった|となりました|です|である)?$")
+EVENT_ENDINGS = ("る", "う", "く", "ぐ", "す", "つ", "ぬ", "ぶ", "む", "た", "だ", "ます", "ました", "です", "でした")
+EVENT_DENY = ("たい", "たく", "かも", "そう", "よう", "でしょ", "だろ", "たら", "なら", "れば", "ない", "なかっ", "ず", "べき", "ほしい", "欲し", "たかっ", "ください", "下さい", "ましょう", "らしい", "みたい",
+              "とか", "さえ", "すら", "せいぜい", "もあれ", "はかかる", "を切る", "を過ぎる", "を超える", "を越える", "思", "考え", "聞", "かな", "けど", "ので", "のに", "たり", "まい", "つもり", "予定")
+CLAUSE_END_MARKS = "、，。．!?！？"
+
+
+def _tail(text: str, b: int) -> str:
+    e = b
+    while e < len(text) and text[e] not in CLAUSE_END_MARKS:
+        e += 1
+    return text[b:e].strip(" \u3000\t").rstrip(",.")
+
+
+def asserted_tail(tail: str) -> bool:
+    """memanswer.v11 (L-PUB-102): the PREDICATE side is deny-by-default too.  What follows the value in its clause is a plain assertion only if it is nothing (the clause ends with the value), a copula (だ です である
+    でした だった ...), a change form in plain / polite present or past (に変更 に更新 に延期 + する した します しました になった となった ...), or a case particle (が を に で と へ) and an event predicate in the plain /
+    polite present or past that carries no wish, volition, hedge, request, obligation, conditional, negation, report or bound (EVENT_DENY).  Anything else is NOT asserted: 5日にしたい, 5日になりそう, 5日でしょう,
+    5日を切る, 5日はかかる, 5日もあれば, 変更したい / するかも / しよう / すべき / してほしい / したかった."""
+    if tail == "" or _COPULA.match(tail) or _CHANGE.match(tail):
+        return True
+    if len(tail) >= 2 and tail[0] in "がをにでとへ" and len(tail) <= 16 and tail.endswith(EVENT_ENDINGS) and not any(d in tail for d in EVENT_DENY):
+        return True
+    return False
+
+
+def value_status(corpus: Any, sid: int, i0: int, i1: int) -> Tuple[str, str, Optional[str]]:
+    """memanswer.v11: (identity text, the clean source span, reason) of the WORD-unit stretch i0..i1.  reason None = the value is clean (boundary of v10 with the narrower right side, and an asserted
+    predicate); `boundary` = a neighbour the rule does not accept; `not_asserted` = the clause does not end in a plain assertion.  The identity of an unclean value is the text extended to the boundary / the
+    end of its clause, so two unclean values never merge with each other or with a clean one; the display is always the clean source span, never a cut string."""
+    idx = corpus.spans()
+    sps = idx.spans("WORD", sid)
+    text = idx.text(sid)
+    a, b = sps[i0][0], sps[i1][1]
+    span = unicodedata.normalize("NFC", text[a:b])
+
+    def right_ok(b_: int) -> bool:
+        j = b_
+        while j < len(text) and text[j] in " \u3000\t":
+            j += 1
+        if j >= len(text) or text[j] in CLAUSE_MARKS:
+            return True
+        if text[j] in ",." and (j + 1 >= len(text) or text[j + 1] in " \u3000\t" or text[j + 1] in CLAUSE_MARKS):
+            return True
+        return not any(text.startswith(r, j) for r in RIGHT_DENY_V11) and any(text.startswith(r, j) for r in RIGHT_STARTS_V11)
+    a2, b2 = a, b
+    while a2 > 0 and not _left_ok(text, a2):
+        a2 -= 1
+    while b2 < len(text) and not right_ok(b2):
+        b2 += 1
+    if (a2, b2) != (a, b):
+        return unicodedata.normalize("NFC", text[a2:b2]), span, "boundary"
+    if not asserted_tail(_tail(text, b)):
+        e = b
+        while e < len(text) and text[e] not in CLAUSE_END_MARKS:
+            e += 1
+        return unicodedata.normalize("NFC", text[a:e]), span, "not_asserted"
+    return span, span, None
+
+
 def _right_ok(text: str, b: int) -> bool:
     j = b
     while j < len(text) and text[j] in " \u3000\t":
@@ -374,12 +437,12 @@ def source_value(corpus: Any, sid: int, i0: int, i1: int, strict: bool = False) 
     return unicodedata.normalize("NFC", text[a:b]), (a, b) == (s0, e0)
 
 
-def source_entries(corpus: Any, entries: Sequence[mx.Entry], strict: bool = False) -> List[mx.Entry]:
+def source_entries(corpus: Any, entries: Sequence[mx.Entry], strict: bool = False, v11: bool = False) -> List[mx.Entry]:
     """The entries with their value replaced by the value as written (`source_value`); an entry whose stretch is unknown keeps its value."""
     out: List[mx.Entry] = []
     for e in entries:
         sp = _unit_span(corpus, e.sid, e.units) if corpus is not None else None
-        out.append(e if sp is None else replace(e, value=source_value(corpus, e.sid, sp[0], sp[1], strict)[0]))
+        out.append(e if sp is None else replace(e, value=(value_status(corpus, e.sid, sp[0], sp[1])[0] if v11 else source_value(corpus, e.sid, sp[0], sp[1], strict)[0])))
     return out
 
 
@@ -460,7 +523,7 @@ def quote_check(corpus: Any, sid: int, i0: int, i1: int, value: Optional[str] = 
     return readout, source, bool(ok) and _squash(readout) == _squash(source) and (value is None or _squash(readout) == _squash(value))
 
 
-def _occurrence(index: mx.MemIndex, rows: Sequence[dict], corpus: Any, e: mx.Entry, route: str, position: Any, joiners: bool = False, exact: bool = False) -> dict:
+def _occurrence(index: mx.MemIndex, rows: Sequence[dict], corpus: Any, e: mx.Entry, route: str, position: Any, joiners: bool = False, exact: bool = False, display: bool = False) -> dict:
     row = rows[e.sid]
     _, session, _, role = parse_source(row["source"])
     cr = index.clause_rec(e.sid, e.k)
@@ -475,6 +538,14 @@ def _occurrence(index: mx.MemIndex, rows: Sequence[dict], corpus: Any, e: mx.Ent
         o["verbatim"] = verbatim
         if not verbatim:
             o["readout"] = readout
+    if display and o["span"] is not None:                          # memanswer.v11: show the clean source span; an unclean value says why and keeps its identity in `written`
+        try:
+            _w, clean_span, why = value_status(corpus, e.sid, o["span"][0], o["span"][1])
+        except (IndexError, KeyError):
+            clean_span, why = o["answer"], None
+        if why is not None:
+            o["answer"], o["unclean"], o["written"] = clean_span, why, e.value
+            o["verbatim"] = False
     if e.turn is not None:
         o["turn"] = e.turn
     if e.change is not None:
@@ -482,16 +553,17 @@ def _occurrence(index: mx.MemIndex, rows: Sequence[dict], corpus: Any, e: mx.Ent
     return o
 
 
-def _group(index: mx.MemIndex, rows: Sequence[dict], corpus: Any, entries: Sequence[Tuple[mx.Entry, Any]], route: str, replaced: Optional[Sequence[dict]] = None, joiners: bool = False, exact: bool = False) -> dict:
+def _group(index: mx.MemIndex, rows: Sequence[dict], corpus: Any, entries: Sequence[Tuple[mx.Entry, Any]], route: str, replaced: Optional[Sequence[dict]] = None, joiners: bool = False, exact: bool = False, display: bool = False) -> dict:
     occ = []
     shown: List[str] = []
     for i, (e, pos) in enumerate(entries):
-        o = _occurrence(index, rows, corpus, e, route, pos, joiners, exact)
+        o = _occurrence(index, rows, corpus, e, route, pos, joiners, exact, display)
         if replaced is not None:
             o["replaced_by"] = replaced[i]
         occ.append(o)
-        if e.value not in shown:
-            shown.append(e.value)
+        sv = o["answer"] if display else e.value
+        if sv not in shown:
+            shown.append(sv)
     occ.sort(key=lambda o: (o["sid"], o["span"] or [0, 0]))
     answers = sorted(shown, key=lambda a: (-len(a), a))
     return {"text": answers[0], "answers": answers, "occurrences": occ}
@@ -660,7 +732,7 @@ def recall(index: mx.MemIndex, rows: Sequence[dict], corpus: Any, question: str,
     same_seat = False
     for pos, es in groups:
         if source_values:                                                    # memanswer.v9: the value as written, not as the clause parser kept it
-            es = source_entries(corpus, es, source_values == 2)
+            es = source_entries(corpus, es, source_values >= 2, source_values == 3)
         scopes: List[Optional[str]] = []
         for e in es:
             if e.scope not in scopes:
@@ -696,7 +768,7 @@ def recall(index: mx.MemIndex, rows: Sequence[dict], corpus: Any, question: str,
     out["route"] = route
     out["looked_for"] = looked
     out["positions_found" if v3 else "candidates"] = len(groups)
-    out["answers"] = [_group(index, rows, corpus, ents, route or "exact", None, v3, exact_values) for _, ents in live_all]
+    out["answers"] = [_group(index, rows, corpus, ents, route or "exact", None, v3, exact_values, source_values == 3) for _, ents in live_all]
     if hist_all:
         hnorm: List[Tuple[str, List[Tuple[mx.Entry, Any, dict]]]] = []
         for e, pos, who in hist_all:
@@ -707,7 +779,7 @@ def recall(index: mx.MemIndex, rows: Sequence[dict], corpus: Any, question: str,
                     break
             else:
                 hnorm.append((n, [(e, pos, who)]))
-        out["history"] = [_group(index, rows, corpus, [(e, pos) for e, pos, _ in items], route or "exact", [w for _, _, w in items], v3, exact_values) for _, items in hnorm]
+        out["history"] = [_group(index, rows, corpus, [(e, pos) for e, pos, _ in items], route or "exact", [w for _, _, w in items], v3, exact_values, source_values == 3) for _, items in hnorm]
     if superseded_all:
         out["superseded_all"] = True
     if len(out["answers"]) >= 2:

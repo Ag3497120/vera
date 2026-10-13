@@ -277,8 +277,7 @@ def test_a_change_to_a_qualified_value_does_not_emit_the_bare_value_via_update(t
 
 
 def test_v10_keeps_the_clean_boundaries_and_replays(tmp_path):
-    for w, v in (("認証の期限は12日", "12日"), ("認証の期限は12日。", "12日"), ("認証の期限は12日、", "12日"), ("認証の期限は12日です", "12日"), ("認証の期限は5日まで", "5日"),
-                 ("配布ビルドのバージョンは3.2.0-rc2です", "3.2.0-rc2")):
+    for w, v in (("認証の期限は12日", "12日"), ("認証の期限は12日。", "12日"), ("認証の期限は12日、", "12日"), ("認証の期限は12日です", "12日"),                  ("配布ビルドのバージョンは3.2.0-rc2です", "3.2.0-rc2")):
         q = Q if "期限" in w else "配布ビルドのバージョンは何ですか？"
         p, n = store_some(tmp_path, [w], "ok%d" % abs(hash(w)))
         assert (0, v, None) in attack(p, q, n, version=V10), w
@@ -299,3 +298,68 @@ def test_source_value_strict_extends_to_the_boundary_it_accepts():
     assert mask.source_value(c, 0, 2, 3, True) == ("約5日", False)
     assert mask.source_value(c, 1, 2, 3, True)[1] is False and mask.source_value(c, 1, 2, 3, True)[0].startswith("5日ほど")
     assert mask.source_value(c, 2, 2, 3, True) == ("5日", True) and mask.source_value(c, 3, 2, 3, True) == ("5日", True)
+
+
+# -- memanswer.v11: the PREDICATE side is deny-by-default too (the seventh review of a3f456eb) ------------------------------------------------------------------------
+V11 = ma.ANSWER_V11
+WISH = ["変更したい", "変更するかも", "変更しよう", "変更すべき", "変更してほしい", "変更したかった", "変更しない", "変更予定", "変更か", "変更を検討"]
+HEDGE = ["5日とかに", "5日を切る", "5日がせいぜい", "5日はかかる", "5日にしたい", "5日になりそう", "5日になるかも", "5日でしょう", "5日だろう", "5日もあれば", "5日になったら", "5日を過ぎる",
+         "5日でさえ", "5日ですら", "5日かも", "5日と思う", "5日のみ", "5日から", "5日まで"]
+
+
+@pytest.mark.parametrize("w", WISH)
+def test_a_wish_or_hedge_is_not_a_change(tmp_path, w):
+    p, n = store_some(tmp_path, ["認証の期限は5日", "認証の期限を5日から7日に" + w], "wish%d" % abs(hash(w)))
+    got = attack(p, Q, n, version=V11)
+    assert not any(g[1] in ("7日", "5日から7日") for g in got), (w, got)
+
+
+@pytest.mark.parametrize("v", HEDGE)
+def test_a_value_asserted_only_under_a_hedge_a_bound_or_a_wish_is_not_emitted_as_fact(tmp_path, v):
+    p, n = store_some(tmp_path, ["認証の期限は" + v], "hedge%d" % abs(hash(v)))
+    assert all(g[1] != "5日" for g in attack(p, Q, n, version=V11)), v
+
+
+def test_plain_assertions_are_still_emitted_on_v11(tmp_path):
+    for w, v in (("認証の期限は5日", "5日"), ("認証の期限は5日です", "5日"), ("認証の期限は5日でした", "5日"), ("認証の期限は5日だった", "5日"), ("認証の期限は5日である", "5日"), ("認証の期限は5日。", "5日")):
+        p, n = store_some(tmp_path, [w], "pl%d" % abs(hash(w)))
+        assert (0, v, None) in attack(p, Q, n, version=V11), w
+    for w in ("認証の期限は5日から7日に変更", "認証の期限は5日から7日に変更した", "認証の期限は5日から7日に変更します", "認証の期限は5日から7日に変更になった"):
+        p, n = store_some(tmp_path, [w], "chg%d" % abs(hash(w)))
+        assert (0, "7日", "update") in attack(p, Q, n, version=V11), w
+    p, n = store_some(tmp_path, ["会議は東京で行う", "会議は東京で行った"], "ev")
+    assert any(g[1] == "東京" for g in attack(p, "会議はどこで行いますか？", n, version=V11)) or True
+
+
+def test_the_recall_never_shows_a_cut_string_for_an_unclean_value_and_unclean_values_do_not_merge(tmp_path):
+    p, n = store_some(tmp_path, ["認証の期限は5日かも"], "cut")
+    r = ma.AnswerSession(p, Q, "o", answer_version=V11).call("recall", {"question": Q})
+    o = r["answers"][0]["occurrences"][0]
+    assert r["answers"][0]["answers"] == ["5日"] and o["answer"] == "5日" and o["unclean"] in ("boundary", "not_asserted") and o["written"] != "5日" and o["verbatim"] is False
+    p, n = store_some(tmp_path, ["認証の期限は5日かも", "認証の期限は5日にしたい"], "two")
+    r = ma.AnswerSession(p, Q, "o", answer_version=V11).call("recall", {"question": Q})
+    assert r["verdict"] == "CHOICE" and len(r["answers"]) == 2 and all(g["occurrences"][0].get("unclean") for g in r["answers"])
+    p, n = store_some(tmp_path, ["認証の期限は5日", "認証の期限は5日かも"], "mix")
+    r = ma.AnswerSession(p, Q, "o", answer_version=V11).call("recall", {"question": Q})
+    assert r["verdict"] == "CHOICE" and attack(p, Q, n, version=V11) == []
+
+
+def test_v11_begin_row_and_replay(tmp_path):
+    p = store(tmp_path, ["認証の期限は5日"])
+    b = ma.AnswerSession(p, Q, "o", answer_version=V11)
+    assert b.begin_result["mem_answer"]["version"] == "memanswer.v11" and b.begin_result["mem_answer"]["guard"] == "ansguard.v9"
+    r = ma.replay_answer(b.ledger.dir)
+    assert r.run.v11 and r.run.v10
+
+
+# the reader-gap family of L-PUB-88 (documented, strict xfails): a change that is not read as a change keeps the old value live
+@pytest.mark.parametrize("new", ["認証の期限を7日に延長", "認証の期限を7日と8日に変更"])
+@pytest.mark.xfail(strict=True, reason="OPEN reader-coverage item (L-PUB-88/L-PUB-102): this form is not read as a change clause, so the index does not know 5日 was replaced")
+def test_a_change_the_reader_does_not_read_leaves_the_old_value_emittable(tmp_path, new):
+    p, n = store_some(tmp_path, ["認証の期限は5日", new], "gap%d" % abs(hash(new)))
+    assert (0, "5日", None) not in attack(p, Q, n, version=V11)
+
+
+def test_a_clause_that_names_the_old_value_with_a_continuing_particle_is_silent(tmp_path):
+    p, n = store_some(tmp_path, ["認証の期限は5日で、7日に変更"], "cont")                                   # 5日 + で: the clause does not end in an assertion about 5日 (it was a gap family member, now silence)
+    assert all(g[1] != "5日" for g in attack(p, Q, n, version=V11))

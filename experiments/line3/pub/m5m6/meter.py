@@ -35,7 +35,7 @@ JOINER_CHARS = ".,-:/"
 
 
 def answer_version() -> str:
-    return ma.ANSWER_V10 if MODE["m6c"] else ma.ANSWER_V3
+    return ma.ANSWER_V11 if MODE["m6c"] else ma.ANSWER_V3
 
 
 def versions() -> Any:
@@ -283,11 +283,13 @@ def collision_variants(v: str) -> List[str]:
         add(v + post)
     for pre in ("⁻", "約", "およそ", "最大"):
         add(pre + v)
+    for post in ("にしたい", "になるかも", "になりそう", "でしょう", "だろう", "になったら", "ならば", "を切る", "はかかる", "とかに", "でさえ", "ですら", "から", "まで"):       # memanswer.v11: predicates under which the value is not asserted
+        add(v + post)
     return out
 
 
 def collision_red_team(tmp: str, store: str, snap: dict, limit: int = 3) -> Dict[str, Any]:
-    """PUB-M6h red team, the NORMALISATION-COLLISION GENERATOR: for the first values of the store's index (about `limit` x 30 variants), a fresh mem.v4 store gets the original sentence and a second sentence in which the value is
+    """PUB-M6h red team, the NORMALISATION-COLLISION GENERATOR: for the first values of the store's index (about `limit` x 45 variants), a fresh mem.v4 store gets the original sentence and a second sentence in which the value is
     replaced by a variant that normalisation would merge with it; the task asks that position; every span of both sentences is woven and emitted in a fresh v8 run.  The two written values differ, so the
     memory contradicts itself: NOTHING may be emitted (`EMITTED_WRONG` must be 0)."""
     from verantyx.loom import memask as mk
@@ -327,7 +329,7 @@ def collision_red_team(tmp: str, store: str, snap: dict, limit: int = 3) -> Dict
                             if em.get("ok"):
                                 out["EMITTED_WRONG"] += 1
                                 out["wrong"].append([e.value, var, em["text"]])
-            if n >= limit * 30:
+            if n >= limit * 45:
                 return out
     return out
 
