@@ -35,7 +35,7 @@ from verantyx.loom import memqwords as qw
 from verantyx.loom import memshape as ms
 from verantyx.loom.memguard import parse_source
 
-ASK_VERSION = "ask.v1"
+ASK_VERSION = "ask.v2"                     # ask.v1 + (PUB-M6b, L-PUB-58) the bare 「何」 takes the counter that touches it (何日 何箱 何段 何年 何枚 何番): the question word is 「何日」, not 「何」 + a leftover 「日」
 PLACEHOLDER = "QQ"
 TAILS: Tuple[str, ...] = ("でしょうか", "ですか", "でしたか", "か")           # cut from the end of the question (longest first)
 END_MARKS = "？?。 　"
@@ -78,6 +78,15 @@ def _clean(question: str) -> str:
     return t.strip()
 
 
+def _with_counter(t: str, i: int) -> str:
+    """ask.v2: the bare 「何」 at `i` and the unit that touches it: a single-character noun or a counter of the tagger (日 箱 段 年 枚 番 名 分 ...; at most two characters): 「何日」.  A particle after 「何」 (を が も か) is
+    no counter.  Otherwise the bare 「何」 as it was."""
+    for tok in ms._tokens(t):
+        if tok.a == i + 1 and not tok.fn and tok.pos1 in ("名詞", "接尾辞") and len(tok.s) <= 2 and (len(tok.s) == 1 or tok.pos3 in ms.COUNTER_POS3):
+            return qw.BARE_WHAT + tok.s
+    return qw.BARE_WHAT
+
+
 def parse_question(question: str) -> Query:
     """The frame of a question (see the module doc).  `ok` False with a `reason`: no_question_word | frame_not_read:<why> | placeholder_not_asked | no_clause."""
     t = _clean(question)
@@ -85,6 +94,8 @@ def parse_question(question: str) -> Query:
     if hit is None:
         return Query(False, "no_question_word", question)
     i, word = hit
+    if word == qw.BARE_WHAT:
+        word = _with_counter(t, i)
     frame = t[:i] + PLACEHOLDER + t[i + len(word):]
     ex = ms.exchange(frame, ms.SHAPES_V2)
     if len(ex.clauses) != 1:
@@ -262,10 +273,11 @@ def _squash(s: str) -> str:
     return "".join(ch for ch in s if not ch.isspace() and ch not in "・·")
 
 
-def quote_check(corpus: Any, sid: int, i0: int, i1: int) -> Tuple[str, str, bool]:
+def quote_check(corpus: Any, sid: int, i0: int, i1: int, value: Optional[str] = None) -> Tuple[str, str, bool]:
     """(readout, source, verbatim) of the WORD-unit stretch i0..i1 of sentence `sid`.  `readout` is what `weave_span` would read out (the units with the LETTERS of the gaps between them: the loom writes no
     punctuation, so 「v2.4」 reads out as 「v24」, 「6.5万円」 as 「65万円」, 「6/14」 as 「614」), `source` the characters of the sentence from the first unit to the last, `verbatim` iff they are the same text
-    (`_squash`).  An emit is the read-out of the thread, so a stretch that is not verbatim cannot be emitted without changing the value (PUB-M6b, L-PUB-54)."""
+    (`_squash`), and, when the value the memory holds is given, also the same text as that value (a prefix or a suffix the loom drops as a function word, 「閉」室日, is in the value and not in the units).  An emit is the
+    read-out of the thread, so a stretch that is not verbatim cannot be emitted without changing the value (PUB-M6b, L-PUB-54)."""
     t = corpus.tier("WORD")
     units = t.sentence_units[sid]
     ok, gaps = corpus.span_gaps("WORD", sid, i0, i1)
@@ -274,7 +286,7 @@ def quote_check(corpus: Any, sid: int, i0: int, i1: int) -> Tuple[str, str, bool
     idx = corpus.spans()
     sps = idx.spans("WORD", sid)
     source = idx.text(sid)[sps[i0][0]:sps[i1][1]]
-    return readout, source, bool(ok) and _squash(readout) == _squash(source)
+    return readout, source, bool(ok) and _squash(readout) == _squash(source) and (value is None or _squash(readout) == _squash(value))
 
 
 def _occurrence(index: mx.MemIndex, rows: Sequence[dict], corpus: Any, e: mx.Entry, route: str, position: Any) -> dict:
@@ -286,7 +298,7 @@ def _occurrence(index: mx.MemIndex, rows: Sequence[dict], corpus: Any, e: mx.Ent
                          "position": [position[0], position[1], [list(p) for p in position[2]]]}
     if o["span"] is not None:                                      # PUB-M6b: can the stretch be emitted as it stands?  (a value with punctuation inside is read out without it)
         try:
-            readout, _source, verbatim = quote_check(corpus, e.sid, o["span"][0], o["span"][1])
+            readout, _source, verbatim = quote_check(corpus, e.sid, o["span"][0], o["span"][1], e.value)
         except (IndexError, KeyError):
             readout, verbatim = "", False
         o["verbatim"] = verbatim

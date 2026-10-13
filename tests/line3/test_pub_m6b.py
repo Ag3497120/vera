@@ -10,6 +10,7 @@ from verantyx.loom import memanswer as ma
 from verantyx.loom import memask as mask
 from verantyx.loom import memcross as mx
 from verantyx.loom import memory as mem
+from verantyx.loom import memqwords as qw
 from verantyx.loom.corpus import Corpus
 from verantyx.loom.memguard import make_source
 from mem_common import ROOT, new_store
@@ -241,3 +242,45 @@ def test_recall_with_the_verbatim_flags_and_the_completions_is_byte_identical_ac
     out = subprocess.run([sys.executable, "-c", code], capture_output=True, text=True, env=env, cwd=ROOT, check=True).stdout
     ref = subprocess.run([sys.executable, "-c", code], capture_output=True, text=True, env=dict(env, PYTHONHASHSEED="0"), cwd=ROOT, check=True).stdout
     assert out == ref and '"verbatim": false' in out and '"via": "update"' in out and '"readout": "65万円"' in out
+
+
+# -- 4. the bare 「何」 with the counter that touches it (ask.v2; bank_ls dev same-form questions 認証端末の設置日は何日 / 新館カードの有効期間は何年) ----------------------------------------------
+@pytest.mark.parametrize("q,centre,path,word", [
+    ("認証端末の設置日は何日ですか？", "設置日", (("の", "認証端末"),), "何日"),
+    ("新館カードの有効期間は何年ですか？", "有効期間", (("の", "新館カード"),), "何年"),
+    ("一般書の移送箱は何箱ですか？", "移送箱", (("の", "一般書"),), "何箱"),
+    ("職員休憩室の内線は何番ですか", "内線", (("の", "職員休憩室"),), "何番"),
+    ("児童コーナーの書架は何段ですか？", "書架", (("の", "児童コーナー"),), "何段"),
+])
+def test_the_bare_nani_takes_the_counter_that_touches_it_as_the_question_word(q, centre, path, word):
+    p = mask.parse_question(q)
+    assert p.ok and (p.shape, p.centre, p.path, p.qword, p.asked, p.qclass) == ("F1", centre, path, word, "は", None)
+    assert qw.QWORDS_SHA == "f6778156f2db076ee4d7f3892faa77f283ea258835f8f2951bf9844ceb0d3e21"          # the tank is unchanged: a counter is read by the tagger, not looked up
+
+
+def test_the_bare_nani_keeps_every_other_reading_and_ask_v1_questions_still_read_the_same():
+    for q, asked in [("会議は何を決めますか", "を"), ("資料は何ですか？", "は"), ("研修は何分で組みますか", "で"), ("連絡カードは何枚配布しますか？", "object_bare")]:
+        p = mask.parse_question(q)
+        assert p.ok and p.asked == asked, q
+    assert mask.parse_question("会議は何を決めますか").qword == "何" and mask.parse_question("研修は何分で組みますか").qword == "何分"
+    assert mask.ASK_VERSION == "ask.v2"
+
+
+def test_the_two_same_form_questions_that_were_not_read_now_reach_their_value_the_dev_story_wrote(tmp_path):
+    p = store(tmp_path, ["新館カードの有効期間は3年。", "認証端末の設置日は2032年10月2日。", "認証端末の設置日は2032年10月2日から2032年10月4日に変更になった。"])
+    a, r = answer(p, "新館カードの有効期間は何年ですか？")
+    assert r["verdict"] == "ANSWER" and r["answers"][0]["answers"] == ["3年"] and weave(a, occ_of(r))["ok"] and a.call("emit", {})["text"] == "3年"
+    a2, r2 = answer(p, "認証端末の設置日は何日ですか？")
+    assert r2["verdict"] == "UPDATED" and r2["answers"][0]["answers"] == ["2032年10月4日"] and r2["history"][0]["answers"] == ["2032年10月2日"]
+    assert weave(a2, occ_of(r2))["ok"]
+    e = a2.call("emit", {})
+    assert e["ok"] and e["text"] == "2032年10月4日" and e["via"] == "update"                                    # the clause of the new value 「2032年10月4日に変更になった」 has no subject
+
+
+def test_a_value_the_dropped_prefix_or_suffix_would_shorten_is_not_verbatim():
+    rs = [{"kind": "base", "sent": "珪戸分室の閉室日は2032年10月31日", "source": make_source("t", 1, 0)}]
+    c = Corpus(mem.rows_bytes(rs))
+    units = c.tier("WORD").sentence_units[0]
+    i = units.index("室")
+    assert mask.quote_check(c, 0, i, i + 1)[2] is True                     # the stretch 「室日」 is what the sentence holds at those units ...
+    assert mask.quote_check(c, 0, i, i + 1, "閉室日")[2] is False         # ... but the value of the seat is 「閉室日」: the loom does not write the prefix 「閉」, so 「室日」 is not the value
