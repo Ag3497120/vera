@@ -681,7 +681,7 @@ def test_t_ev_15_the_server_defaults_are_the_gate_with_the_title(tmp_path, tasks
     assert srv.evidence_profile == ("evidence.v2", "clause_or_title")                       # evidence.v2 since the review (L-LOOM-191..)
     assert LoomServer(list(tasks.values()), str(tmp_path / "r1"), evidence="v1").evidence_profile == ("evidence.v1", "clause_or_title")
     with pytest.raises(ValueError):
-        LoomServer(list(tasks.values()), str(tmp_path / "r2"), evidence="v3")
+        LoomServer(list(tasks.values()), str(tmp_path / "r2"), evidence="v4")                  # "v3" is a rule version since LOOM-reach (L-LOOM-201); "v4" is the unknown one
     with pytest.raises(ValueError):
         LoomServer(list(tasks.values()), str(tmp_path / "r3"), subject_scope="title")
 
@@ -1100,3 +1100,381 @@ def test_t_ev_23_a_run_without_a_gate_and_a_layer_report_without_a_final_thread_
     assert L == S.layer_report(rows(old), None, None)
     for c in ("answer_glued", "answer_crosses_break", "multiple_answers"):
         assert c in S.EVIDENCE_CONTENT_CODES and c in ev.CODES
+
+
+# ===============================================================================================================
+# evidence.v3 (docs/LINE3_LOOM_REACH_DESIGN.md; owner 2026-10-13 OP-RE-3 both, OP-RE-1 no inflected heads, OP-RE-2 not the default; L-LOOM-201..211): T-EV-24..30
+# ===============================================================================================================
+V3 = ev.EVIDENCE_V3
+REACH_V3 = ["I2-001", "I2-003", "I2-004", "I2-005", "I2-006", "I2-008", "I2-012", "I2-013", "I2-014", "I2-018", "I2-026", "I2-027", "I2-032", "I2-035", "I2-042", "I2-045", "I2-048",
+            "R2-I005", "R2-I007", "R2-I008", "R2-I015", "R2-I017"]
+NEW_V3 = ["I2-001", "I2-008", "I2-012", "I2-026", "I2-027", "I2-032", "I2-035", "I2-042", "I2-045", "I2-048", "R2-I008", "R2-I015"]          # the 12 items v3 adds to v2's 10
+assert sorted(set(REACH_V3) - set(REACH_V2)) == NEW_V3 and set(REACH_V2) <= set(REACH_V3) and len(REACH_V3) == 22
+VIA_V3 = {"I2-001": "alias", "I2-026": "alias", "I2-035": "alias", "I2-008": "relative", "I2-032": "relative", "I2-048": "relative", "R2-I015": "relative"}
+ANSWERS_V3 = {"I2-001": ["ハッシュ表"], "I2-008": ["カール・マルクス"], "I2-012": ["深川八幡宮"], "I2-026": ["アワド語"], "I2-027": ["ゴゴプラッタ"], "I2-032": ["製鋼所"],
+              "I2-035": ["ライパン", "黒パン"], "I2-042": ["新潟市西区"], "I2-045": ["MtF"], "I2-048": ["イングランド"], "R2-I008": ["ウルトラプリニー式噴火"], "R2-I015": ["イングランド"]}
+# the rule attribution of the design (§5): removing a rule loses exactly these ids
+ABLATION_V3 = {"R1": ["I2-042"], "R2": ["I2-012", "I2-027", "I2-045"], "R3": ["I2-001", "I2-026", "I2-035"], "R3b": ["I2-026"], "R4": ["I2-008", "I2-032", "I2-048", "R2-I015"],
+               "R5": ["R2-I008"], "R6": ["I2-048", "R2-I015"], "R7": ["I2-012"]}
+
+
+def _all_items(texts):
+    """[(kind, id, question text, golds)]: the 69 answerable bank2 items and the 60 unanswerable ones, as T-EV-21 takes them."""
+    unans = [r["#id"] for r in bank2_rows() if r["kind"] == "unans" and r["corpus"] == "fulllead"] + [r["#id"] for r in bank4_rows()]
+    bases = [b for b in texts if b not in ANSWERABLE_LOOM and (b in unans or b.startswith(("UF-", "R2-U")))]
+    out = [("ans", r["#id"], r["question"], [_norm(a) for a in r["gold"].split("|")]) for r in bank2_rows() if r["kind"] == "intra2" and r["corpus"] == "fulllead"]
+    out += [("unans", b, texts[b], []) for b in bases]
+    assert len(out) == 129 and len(bases) == 60
+    return out
+
+
+# ---- T-EV-24: the question cut under v3 ----------------------------------------------------------------------------------------------------------------
+def test_t_ev_24_the_v3_cut_adds_kinds_the_relative_head_and_the_alias_form_and_v1_v2_cuts_are_untouched(texts):
+    items = _all_items(texts)
+    tbl = {iid: [list(ev.question_units(q).kinds), ev.question_units(q).rel_head, ev.question_units(q).alias] for _, iid, q, _ in items}
+    assert hashlib.sha256(json.dumps(tbl, sort_keys=True, ensure_ascii=False).encode()).hexdigest() == "fdaab01d6cd4c910bb8fbab737b89ab59963c54fa99d8b8ae27f4d69f87799e5"
+    assert (sum(1 for v in tbl.values() if v[0]), sum(1 for v in tbl.values() if v[1]), sum(1 for v in tbl.values() if v[2])) == (52, 5, 3)
+    assert {k: v[1] for k, v in tbl.items() if v[1]} == {"I2-008": "唱え", "I2-032": "地", "I2-048": "優勝", "R2-I015": "優勝", "UF-017": "提唱"}              # R4: UF-017 has the variant, no subject
+    assert sorted(k for k, v in tbl.items() if v[2]) == ["I2-001", "I2-026", "I2-035"]                                                                 # R3
+    assert tbl["I2-042"][0] == ["区"] and tbl["I2-015"][0] == ["市", "区"] and tbl["I2-021"][0] == ["姓"] and tbl["R2-I013"][0] == ["国"] and tbl["I2-034"][0] == ["年"]
+    assert ev.question_units("2017 FIFA U-17ワールドカップで優勝した国はどこですか").kinds == ()                                                           # 国 is Y here, not glued to a question word
+    # UF-017: the relative variant is built, and the gate refuses it for the missing subject
+    assert ev.question_units(texts["UF-017"]).subject == () and ev.question_units(texts["UF-017"]).rel_head == "提唱"
+    # the written object: v3 only
+    for _, iid, q, _ in items:
+        qu = ev.question_units(q)
+        o1, o2, o3 = (qu.to_obj(ev.SCOPE_TITLE, v) for v in (ev.EVIDENCE_V1, ev.EVIDENCE_V2, ev.EVIDENCE_V3))
+        assert set(o1) == set(o2) == {"evidence", "subject_scope", "form", "slot", "y", "y_forms", "subject", "subject_level", "units"}              # v1 / v2: the object of before
+        assert {k: v for k, v in o3.items() if k not in ("kinds", "relative", "alias")} == o2 | {"evidence": V3} and set(o3) - set(o2) == {"kinds", "relative", "alias"}
+        assert o3["kinds"] == list(qu.kinds) and o3["alias"] is qu.alias and o3["relative"] == (None if qu.rel_head is None else {"head": qu.rel_head})
+    objs = {iid: ev.question_units(q).to_obj(ev.SCOPE_TITLE, V3) for _, iid, q, _ in items}
+    assert hashlib.sha256(json.dumps(objs, sort_keys=True, ensure_ascii=False).encode()).hexdigest() == "3f3c3a4ea897a2876208ff4d001dc8a1da8025854d34e68b78aea97af9840eab"
+    # v2 / v1 cuts of the 129 questions are what they were: the table CUT (T-EV-01) still holds
+    for k, want in CUT.items():
+        if k in texts:
+            assert cut_of(texts[k]) == want
+
+
+# ---- T-EV-25: per-rule probes on the real sentences ---------------------------------------------------------------------------------------------------
+def _qtext(iid, texts):
+    return {r["#id"]: r["question"] for r in bank2_rows()}.get(iid) or texts[iid]
+
+
+def _verdict(corpus, texts, iid, sid, i0, i1, version=V3, **kw):
+    qu = ev.question_units(_qtext(iid, texts))
+    r = ev.judge_quote(corpus, qu, ev.SCOPE_TITLE, sid, "WORD", i0, i1, version) if not kw else ev._judge_v3(corpus, qu, ev.SCOPE_TITLE, sid, "WORD", i0, i1, **kw)
+    return r
+
+
+# (item, answer, sid, i0, i1, via, rules the passing reading used)
+PASS_V3 = [("I2-042", "新潟市西区", 356, 9, 12, None, ["R1"]),                                                       # R1: the kind noun of どの区 ends the answer
+           ("I2-027", "ゴゴプラッタ", 159, 2, 2, None, ["R2"]), ("I2-045", "MtF", 526, 0, 0, None, ["R2"]),            # R2: one gloss before the particle
+           ("I2-012", "深川八幡宮", 64, 1, 3, None, ["R2", "R7"]),                                                    # R2 + R7: 称さ for 呼ば
+           ("I2-001", "ハッシュ表", 1, 0, 1, "alias", ["R3"]), ("I2-035", "ライパン", 297, 4, 4, "alias", ["R3"]), ("I2-035", "黒パン", 297, 13, 14, "alias", ["R3"]),
+           ("I2-026", "アワド語", 151, 0, 1, "alias", ["R3", "R3b"]),
+           ("I2-008", "カール・マルクス", 23, 2, 3, "relative", ["R4"]), ("I2-032", "製鋼所", 222, 8, 9, "relative", ["R4"]),
+           ("I2-048", "イングランド", 396, 0, 0, "relative", ["R4", "R6"]), ("R2-I015", "イングランド", 396, 0, 0, "relative", ["R4", "R6"]),     # R4 + R6: 2017 FIFA U-17 in the title
+           ("R2-I008", "ウルトラプリニー式噴火", 321, 3, 6, None, ["R5"])]                                            # R5: 「Y としては A」
+
+
+@pytest.mark.parametrize("iid,ans,sid,i0,i1,via,rules", PASS_V3)
+def test_t_ev_25_each_v3_rule_passes_its_real_sentence_and_v2_refuses_it(corpus, texts, iid, ans, sid, i0, i1, via, rules):
+    r = _verdict(corpus, texts, iid, sid, i0, i1)
+    assert r["answer"] == ans and r["codes"] == [] and r["failures"] == [] and r["evidence"] is not None, r
+    assert sorted(r["rules"]) == sorted(rules)
+    e = r["evidence"]
+    assert e.get("via") == via and (e.get("head") == ev.question_units(_qtext(iid, texts)).rel_head if via == "relative" else "head" not in e)
+    if via is None:
+        assert r["reading"] == "base" and ("via" not in e)
+    assert _verdict(corpus, texts, iid, sid, i0, i1, ev.EVIDENCE_V2)["codes"] != []                                    # v2 refuses every one of them
+
+
+def test_t_ev_25_the_evidence_a_v3_pass_carries(corpus, texts):
+    e = _verdict(corpus, texts, "R2-I008", 321, 3, 6)["evidence"]
+    assert e["copula"] == "Y としては A" and e["y"] and e["subject"]
+    e = _verdict(corpus, texts, "I2-008", 23, 2, 3)["evidence"]
+    assert (e["via"], e["head"], e["slot"]) == ("relative", "唱え", {"particle": "が", "arm": e["slot"]["arm"]}) and e["slot"]["arm"] is not None
+    e = _verdict(corpus, texts, "I2-001", 1, 0, 1)["evidence"]
+    assert e["via"] == "alias" and "slot" not in e and "copula" not in e
+    e = _verdict(corpus, texts, "I2-027", 159, 2, 2)["evidence"]
+    assert e["slot"]["particle"] and "via" not in e
+
+
+def test_t_ev_25_a_bare_kind_noun_a_piece_and_a_glued_prefix_are_refused(corpus, texts):
+    for sid, i0, i1 in occurrences(corpus, "区"):                                                                       # 区 alone is never an answer to どの区 (T2 / the echo)
+        assert _verdict(corpus, texts, "I2-042", sid, i0, i1)["codes"] != []
+    r = _verdict(corpus, texts, "I2-042", 356, 12, 12)
+    assert "answer_holds_question_unit" in r["codes"]
+    for sid, i0, i1 in occurrences(corpus, "ハッシュ"):                                                                 # 「ハッシュ」 alone is a piece of ハッシュ表 / ハッシュテーブル
+        assert _verdict(corpus, texts, "I2-001", sid, i0, i1)["codes"] != []
+    r = _verdict(corpus, texts, "I2-021", 130, 6, 6)                                                                  # T2: 「姓」 for 何姓を (the kind noun is no echo of v2: 何姓 holds a question word)
+    assert "answer_holds_question_unit" in r["codes"] and "answer_holds_question_unit" not in _verdict(corpus, texts, "I2-021", 130, 6, 6, version=V2)["codes"]
+    assert "answer_holds_question_unit" not in _verdict(corpus, texts, "I2-021", 130, 6, 6, off=frozenset({"T2"}))["codes"]                  # T2 is what refuses it
+    assert "answer_glued" in _verdict(corpus, texts, "I2-028", 171, 5, 6)["codes"]                                      # T1: 曲輪遺跡 is the end of 大曲輪遺跡 (the prefix 大 lies in the gap)
+    assert "answer_glued" not in _verdict(corpus, texts, "I2-028", 171, 5, 6, version=V2)["codes"]
+    assert _verdict(corpus, texts, "I2-028", 171, 5, 6, off=frozenset({"T1"}))["codes"] == []                           # without T1 the set admits this wrong stretch
+
+
+NOT_ADOPTED_V3 = [("I2-007", "廃止"), ("I2-021", "永樂"), ("I2-029", "和歌山線"), ("R2-I005", "和歌山千葉線"), ("R2-I017", "成り立つ性質"), ("ADV-037", "11月6日")]
+
+
+@pytest.mark.parametrize("iid,ans", NOT_ADOPTED_V3)
+def test_t_ev_25_the_candidates_not_adopted_stay_refused_under_v3(corpus, texts, iid, ans):
+    occ = occurrences(corpus, ans)
+    assert occ
+    for sid, i0, i1 in occ:
+        assert _verdict(corpus, texts, iid, sid, i0, i1)["codes"] != [], (iid, ans, sid)
+
+
+def test_t_ev_25_an_inflected_head_is_not_a_head_op_re_1(corpus, texts):
+    """OP-RE-1 (owner: no): 伴う / 伴い, 名乗っ / 名乗り are different words.  I2-007's 路線の廃止 is not reached either."""
+    qu = ev.question_units(_qtext("I2-021", texts))
+    assert qu.slot_head == "名乗っ"
+    sid, i0, i1 = [o for o in occurrences(corpus, "永樂") if o[0] == 130][0]
+    r = ev.judge_quote(corpus, qu, ev.SCOPE_TITLE, sid, "WORD", i0, i1, V3)
+    assert "no_slot_head" in r["codes"]
+
+
+def test_t_ev_25_the_alias_form_is_only_for_betsumei_and_a_naming_word_is_required(corpus, texts):
+    """R3: ALIAS_Y = 別名 別称 異名.  Another asked item (通称) has no alias reading; a sentence without a naming word is refused."""
+    assert ev.ALIAS_Y == frozenset({"別名", "別称", "異名"}) and ev.question_units("ハッシュテーブルの通称は何ですか").alias is False
+    assert ev.question_units("ハッシュテーブルの別称は何ですか").alias and ev.question_units("ハッシュテーブルの異名は何ですか").alias
+    qu = ev.question_units(_qtext("I2-001", texts))
+    for sid in range(corpus.n_sentences):                                                                             # no stretch of sentence 0 or 2 passes (ハッシュ表 is in sentence 1)
+        if sid in (0, 2):
+            v = ev.view_of(corpus, sid)
+            for i in range(len(v.units)):
+                assert ev.judge_quote(corpus, qu, ev.SCOPE_TITLE, sid, "WORD", i, i, V3)["codes"] != []
+
+
+def test_t_ev_25_a_toy_corpus_checks_each_rule_from_both_sides(tmp_path):
+    """Hand-made sentences: each rule passes its own pattern and is refused one step away (no corpus accident)."""
+    sents = [  # (title, sentence)
+        ("青葉堂", "青葉堂は松風庵ともいう。"),                               # R3 yes: 「A ともいう」 answers 別名 (the sentence has no 「別名」)
+        ("青葉堂", "青葉堂は松風庵と呼ばれる。"),                             # no 「とも」 right after the answer: refused
+        ("青葉堂", "青葉堂は松風庵とも歌われる。"),                           # 「とも」 but no naming word: refused
+        ("青葉堂", "青葉堂は松風庵（まつかぜあん）に移された。"),              # R2 yes
+        ("青葉堂", "青葉堂は松風庵（まつかぜあん）、緑町に移された。"),         # a comma after the gloss: no
+        ("青葉堂", "青葉堂は松風庵（まつかぜあん）（旧称）に移された。"),        # two glosses: no
+    ]
+    p = tmp_path / "toy.jsonl"
+    p.write_text("".join(json.dumps({"sha": hashlib.sha256(s.encode()).hexdigest(), "title": t, "sent": s, "source": "%s#%d" % (t, i)}, ensure_ascii=False) + "\n"
+                         for i, (t, s) in enumerate(sents)), encoding="utf-8")
+    c = Corpus.load(p.read_bytes())
+
+    def passing(q, sid, off=frozenset()):
+        qu = ev.question_units(q)
+        v = ev.view_of(c, sid)
+        return [v.text[v.spans[i][0]:v.spans[j][1]] for i in range(len(v.units)) for j in range(i, len(v.units)) if not ev._judge_v3(c, qu, ev.SCOPE_CLAUSE, sid, "WORD", i, j, off)["codes"]]
+    assert passing("青葉堂の別名は何ですか", 0) == ["松風庵"] and passing("青葉堂の別名は何ですか", 0, frozenset({"R3"})) == []
+    assert passing("青葉堂の別名は何ですか", 1) == [] and passing("青葉堂の別名は何ですか", 2) == []
+    assert passing("青葉堂の通称は何ですか", 0) == []                                                              # 通称 is not an alias question (ALIAS_Y)
+    assert passing("青葉堂は何に移されましたか", 3) == ["松風庵"] and passing("青葉堂は何に移されましたか", 3, frozenset({"R2"})) == []
+    assert passing("青葉堂は何に移されましたか", 4) == [] and passing("青葉堂は何に移されましたか", 5) == []
+
+
+# ---- T-EV-26: the sweep (as T-EV-21; v3 added) ------------------------------------------------------------------------------------------------------
+@pytest.fixture(scope="module")
+def sweep_v3(corpus, texts):
+    """For the 69 answerable + 60 unanswerable questions: every stretch of at most 10 WORD units of every sentence that passes the gate evidence.v3 (title scope).
+    {(kind, id): [(sid, i0, i1, text, via)]}.  About 2 minutes."""
+    out = {}
+    for kind, iid, q, golds in _all_items(texts):
+        qu = ev.question_units(q)
+        res = []
+        for sid in range(corpus.n_sentences):
+            v = ev.view_of(corpus, sid)
+            n = len(v.units)
+            for i in range(n):
+                for j in range(i, min(n, i + 10)):
+                    r = ev.judge_quote(corpus, qu, ev.SCOPE_TITLE, sid, "WORD", i, j, V3)
+                    if not r["codes"]:
+                        res.append((sid, i, j, r["answer"], (r["evidence"] or {}).get("via")))
+        out[(kind, iid)] = res
+    return out
+
+
+def test_t_ev_26_the_reach_of_v3_is_22_of_69_with_no_wrong_stretch(sweep_v3, texts):
+    golds = {iid: g for kind, iid, _, g in _all_items(texts) if kind == "ans"}
+    ans = {k[1]: v for k, v in sweep_v3.items() if k[0] == "ans"}
+    assert len(ans) == 69
+    right = [k for k, v in ans.items() if any(_norm(t) in golds[k] for _, _, _, t, _ in v)]
+    wrong = [k for k, v in ans.items() if any(_norm(t) not in golds[k] for _, _, _, t, _ in v)]
+    assert right == REACH_V3 and len(right) == 22 and wrong == []
+    assert sorted(set(right) - set(REACH_V2)) == NEW_V3                                          # v3 keeps v2's 10 and adds 12
+    assert {k: sorted({t for _, _, _, t, _ in ans[k]}) for k in NEW_V3} == {k: sorted(v) for k, v in ANSWERS_V3.items()}
+    via = {k: sorted({w for *_, w in ans[k] if w}) for k in ans if any(w for *_, w in ans[k])}
+    assert via == {k: [w] for k, w in VIA_V3.items()}                                            # R3 / R4 are the readings that passed; every other pass is the question's own
+
+
+def test_t_ev_26_no_stretch_passes_for_an_unanswerable_question_and_no_trap_value_is_admitted(sweep_v3):
+    un = {k: v for k, v in sweep_v3.items() if k[0] == "unans"}
+    assert len(un) == 60
+    assert {k: v[:3] for k, v in un.items() if v} == {}
+    traps = {r["#id"]: _norm(r["trap"]) for r in bank4_rows()}
+    assert len(traps) == 35 and all(("unans", i) in sweep_v3 for i in traps)
+    assert [i for i, t in traps.items() if any(_norm(x[3]) == t for x in sweep_v3[("unans", i)])] == []
+
+
+def test_t_ev_26_v2_is_still_10_of_69_with_0_wrong_and_0_unanswerable(sweep10):
+    ans = {k[1]: v for k, v in sweep10.items() if k[0] == "ans"}
+    assert [k for k, v in ans.items() if any(_norm(t) in v["golds"] for _, _, _, t in v[V2])] == REACH_V2
+    assert [k for k, v in ans.items() if any(_norm(t) not in v["golds"] for _, _, _, t in v[V2])] == []
+    assert [k for k, v in sweep10.items() if k[0] == "unans" and v[V2]] == []
+
+
+# ---- T-EV-27: ablation ---------------------------------------------------------------------------------------------------------------------------------
+@pytest.mark.parametrize("rule", sorted(ABLATION_V3))
+def test_t_ev_27_removing_a_rule_loses_exactly_its_ids(corpus, texts, sweep_v3, rule):
+    """The rules widen (an OR of readings, an exemption, a longer read), so a stretch that passes with a rule off also passes with it on: the items reached with the rule off
+    are those with a gold stretch, among v3's passing stretches, that still passes."""
+    items = {iid: (q, g) for kind, iid, q, g in _all_items(texts) if kind == "ans"}
+    lost = []
+    for iid in REACH_V3:
+        q, g = items[iid]
+        qu = ev.question_units(q)
+        golds = [(sid, i, j) for sid, i, j, t, _ in sweep_v3[("ans", iid)] if _norm(t) in g]
+        assert golds
+        if not any(not ev._judge_v3(corpus, qu, ev.SCOPE_TITLE, sid, "WORD", i, j, frozenset({rule}))["codes"] for sid, i, j in golds):
+            lost.append(iid)
+    assert lost == ABLATION_V3[rule]
+
+
+def test_t_ev_27_the_attribution_table_covers_exactly_the_twelve_new_ids():
+    assert sorted(set().union(*ABLATION_V3.values())) == NEW_V3
+
+
+def test_t_ev_27_without_t1_the_set_admits_a_wrong_stretch_for_i2_028(corpus, texts, sweep_v3):
+    qu = ev.question_units(_qtext("I2-028", texts))
+    assert [x for x in sweep_v3[("ans", "I2-028")]] == []                                          # v3: nothing passes for I2-028 (gold not WORD-aligned)
+    assert not ev._judge_v3(corpus, qu, ev.SCOPE_TITLE, 171, "WORD", 5, 6, frozenset({"T1"}))["codes"]        # 曲輪遺跡 (a piece of the gold 大曲輪遺跡) passes without T1
+    assert ev._judge_v3(corpus, qu, ev.SCOPE_TITLE, 171, "WORD", 5, 6)["codes"] == ["answer_glued"]
+
+
+# ---- T-EV-28: versions, the begin row, the old ledgers, the freeze ----------------------------------------------------------------------------------------
+def test_t_ev_28_v3_is_selectable_and_v2_stays_the_default_everywhere(tmp_path, tasks, monkeypatch):
+    import inspect
+    from verantyx import cli
+    from verantyx.loom import mcp as lm
+    assert ev.EVIDENCE_VERSIONS == (V1, V2, V3) and ev.EVIDENCE_LATEST == V2 and ev.PROFILE_NAMES == {"v1": V1, "v2": V2, "v3": V3}
+    assert inspect.signature(ev.judge_quote).parameters["version"].default == V2
+    assert LoomServer(list(tasks.values()), str(tmp_path / "a")).evidence_profile == (V2, "clause_or_title")                   # OP-RE-2: v2 is the server default
+    assert LoomServer(list(tasks.values()), str(tmp_path / "b"), evidence="v3").evidence_profile == (V3, "clause_or_title")
+    with pytest.raises(ValueError):
+        LoomServer(list(tasks.values()), str(tmp_path / "c"), evidence="v4")
+    seen = []
+    monkeypatch.setattr(lm, "serve", lambda *a, **k: seen.append(a) or 0)
+    assert cli.main(["loom", "mcp", "--tasks", "t.jsonl", "--runs-dir", str(tmp_path / "r")]) == 0
+    assert cli.main(["loom", "mcp", "--tasks", "t.jsonl", "--runs-dir", str(tmp_path / "r"), "--evidence", "v3"]) == 0
+    assert [a[4] for a in seen] == ["v2", "v3"]                                                                               # the CLI default is v2; --evidence v3 selects v3
+    H = _harness()
+    assert inspect.signature(H.run).parameters["evidence"].default is None                                                     # None = v2 for the api driver (unchanged)
+
+
+def test_t_ev_28_a_v3_run_records_its_rules_and_the_kinds_and_replays_identically(tmp_path, tasks):
+    from verantyx.loom.ops import EVIDENCE_RULE_V2, EVIDENCE_RULE_V3
+    assert EVIDENCE_RULE_V3 == EVIDENCE_RULE_V2 + " " + ev.V3_RULE_SENTENCE and "kind word" in EVIDENCE_RULE_V3 and EVIDENCE_RULE_V3.startswith(EVIDENCE_RULE_V2)
+    srv = server(tmp_path, tasks, evidence="v3", name="v3")
+    b = srv.begin("bank2/I2-001.record_only", "t", "x")
+    assert b["evidence_profile"] == {"version": V3, "subject_scope": "clause_or_title"} and b["rules"]["evidence"] == EVIDENCE_RULE_V3
+    q = ev.question_units("ハッシュテーブルの別名は何ですか").to_obj("clause_or_title", V3)
+    assert b["question"] == q and b["question"]["alias"] is True and b["question"]["kinds"] == [] and b["question"]["relative"] is None and b["question"]["evidence"] == V3
+    # a v2 begin row has none of the new keys
+    b2 = server(tmp_path, tasks, evidence="v2", name="v2").begin("bank2/I2-001.record_only", "t", "x")
+    assert set(b2["question"]) == set(b["question"]) - {"kinds", "relative", "alias"} and b2["rules"]["evidence"] == EVIDENCE_RULE_V2
+
+
+def _scripted_i2_001(srv, rid="r1"):
+    srv.begin("bank2/I2-001.record_only", "test", rid)
+    assert srv.call("weave_span", {"run_id": rid, "sid": 1, "tier": "WORD", "first": "ハッシュ", "last": "表"})["ok"]
+    return srv.call("emit", {"run_id": rid})
+
+
+def test_t_ev_28_a_v3_alias_answer_is_emitted_where_v2_refuses_it_and_both_replay_identically(tmp_path, tasks):
+    s3, s2 = server(tmp_path, tasks, evidence="v3", name="r3"), server(tmp_path, tasks, evidence="v2", name="r2")
+    e3, e2 = _scripted_i2_001(s3), _scripted_i2_001(s2)
+    assert e3["ok"] and e3["text"] == "ハッシュ表" and e3["ev"] == V3 and [(x["via"], x["subject"]) for x in e3["evidence"]] == [("alias", [{"run": "ハッシュテーブル", "via": "title"}])]
+    assert e2["ok"] is False and e2["refusal"] == "no_evidence"
+    for name in ("r3", "r2"):
+        v = lg.verify(tmp_path / name / "r1")
+        assert v["status"] == "OK" and v["replay"]["status"] == "IDENTICAL", v
+
+
+def test_t_ev_28_a_v3_relative_answer_records_its_head(tmp_path, tasks):
+    srv = server(tmp_path, tasks, evidence="v3", name="rel")
+    srv.begin("bank2/I2-008.record_only", "t", "x")
+    assert srv.call("weave_span", {"run_id": "x", "sid": 23, "tier": "WORD", "first": "カール", "last": "マルクス"})["ok"]
+    e = srv.call("emit", {"run_id": "x"})
+    assert e["ok"] and e["text"] == "カールマルクス" and e["ev"] == V3                                      # the units joined: 「・」 is not a WORD unit
+    assert [(x["via"], x["head"], x["slot"]["particle"]) for x in e["evidence"]] == [("relative", "唱え", "が")]
+    v = lg.verify(tmp_path / "rel" / "x")
+    assert v["status"] == "OK" and v["replay"]["status"] == "IDENTICAL"
+
+
+def test_t_ev_28_a_ledger_cannot_change_its_rule_version_between_v2_and_v3(tmp_path, tasks):
+    s3, s2 = server(tmp_path, tasks, evidence="v3", name="f3"), server(tmp_path, tasks, evidence="v2", name="f2")
+    _scripted_i2_001(s3, "a")
+    _scripted_i2_013(s2, "b")
+    _scripted_i2_013(s3, "c")
+    d3, d2, dc = tmp_path / "f3" / "a", tmp_path / "f2" / "b", tmp_path / "f3" / "c"
+    _reseal(d3, lambda rs: rs[0]["result"]["evidence_profile"].update(version=V2))
+    assert lg.verify_chain(d3)["status"] == "OK" and lg.verify(d3)["status"] == "REPLAY_DIFFERS"                         # a forged v3 -> v2 relabel
+    _reseal(d2, lambda rs: rs[0]["result"]["evidence_profile"].update(version=V3))
+    assert lg.verify_chain(d2)["status"] == "OK" and lg.verify(d2)["status"] == "REPLAY_DIFFERS"                         # and v2 -> v3
+    _reseal(dc, lambda rs: rs[0]["result"]["question"].update(kinds=["区"]))
+    assert lg.verify(dc)["status"] == "REPLAY_DIFFERS"                                                                    # a forged kinds list
+
+
+FROZEN_V3_RULES_DIGEST = "eca9ccd48aa6ddca8e74f33894acb380cc68667bd34950fd579c4e9bd9cf829d"
+FROZEN_V3_EVIDENCE_SHA = "b9ae56b284807c147e314f59e3fb9ec5158cdc82fdde2056ec57cd4e30dd6ab2"
+
+
+def test_t_ev_28_the_v3_rules_are_frozen_a_change_is_evidence_v4(tmp_path):
+    """OP-RE-2 (owner): the rules are frozen before the held-out bank6 is written; the digest covers the closed lists, the rule sentence and the source of every v3 function.
+    A rule change is evidence.v4 and needs a new held-out set (docs/LINE3_LOOM_REACH_DESIGN.md §6.2 step 1)."""
+    assert ev.v3_rules_digest() == FROZEN_V3_RULES_DIGEST
+    assert hashlib.sha256(open(os.path.join(ROOT, "verantyx/loom/evidence.py"), "rb").read()).hexdigest() == FROZEN_V3_EVIDENCE_SHA
+    assert ev.V3_RULE_IDS == ("R1", "R2", "R3", "R3b", "R4", "R5", "R6", "R7", "T1", "T2")
+    assert sorted(ev.KIND_REL) == sorted("人物 人 者 国 チーム 選手 団体 施設 会社 組織 都市 街 場所".split()) and sorted(ev.ALIAS_Y) == ["別名", "別称", "異名"]
+    assert sorted(ev.NAMING) == sorted("呼ば 呼ぶ 呼び 呼ん 称さ 称し 称する 称 いう 言う 云う".split())
+
+
+# ---- T-EV-29: byte identity under three hash seeds -------------------------------------------------------------------------------------------------------
+_DET_V3 = r'''
+import sys, json, hashlib, csv
+sys.path.insert(0, sys.argv[3])
+from verantyx.loom import evidence as ev
+from verantyx.loom.corpus import Corpus
+corpus = Corpus.load(open(sys.argv[1], "rb").read())
+qs = [("I2-042", "五十嵐浜村が消滅した後、その地域は現在どの区の一部ですか", 356, 9, 12), ("I2-001", "ハッシュテーブルの別名は何ですか", 1, 0, 1), ("I2-008", "唯物史観を唱えた人物は誰ですか", 23, 2, 3),
+      ("I2-027", None, 159, 2, 2), ("I2-028", None, 171, 5, 6), ("R2-I008", None, 321, 3, 6), ("I2-026", "アワディー語の別名は何ですか", 151, 0, 1), ("I2-012", None, 64, 1, 3)]
+rows_ = {r["#id"]: r["question"] for r in csv.DictReader(open(sys.argv[2], encoding="utf-8"), delimiter="\t")}
+out = []
+for iid, q, sid, i0, i1 in qs:
+    qu = ev.question_units(q or rows_[iid])
+    out.append(qu.to_obj("clause_or_title", ev.EVIDENCE_V3))
+    for ver in ("evidence.v2", "evidence.v3"):
+        out.append(ev.judge_quote(corpus, qu, "clause_or_title", sid, "WORD", i0, i1, ver))
+    out.append(ev.judge_quote(corpus, qu, "clause", sid, "WORD", i0, i1, "evidence.v3"))
+out.append(ev.v3_rules_digest())
+print(hashlib.sha256(json.dumps(out, sort_keys=True, ensure_ascii=False).encode()).hexdigest())
+'''
+
+
+def test_t_ev_29_the_v3_cut_the_verdicts_and_the_digest_are_identical_under_three_hash_seeds():
+    digests = set()
+    for seed in ("0", "1", "12345"):
+        env = dict(os.environ, PYTHONHASHSEED=seed, PYTHONPATH=ROOT)
+        p = subprocess.run([PY, "-c", _DET_V3, CORPUS, BANK2_TSV, ROOT], env=env, capture_output=True, text=True, timeout=300, cwd=ROOT)
+        assert p.returncode == 0, p.stderr[-800:]
+        digests.add(p.stdout.strip())
+    assert len(digests) == 1
+
+
+# ---- T-EV-30: the held-out sweep (after bank6 exists) -----------------------------------------------------------------------------------------------------
+def test_t_ev_30_the_held_out_bank6_sweep_waits_for_bank6():
+    """OP-RE-2 (owner): v3 becomes the default only when the held-out bank6 passes (docs/LINE3_LOOM_REACH_DESIGN.md §6.2): the rules are frozen (T-EV-28), then codex writes bank6,
+    Opus audits it, the sweep runs ONCE.  Until then the default is v2 and this test only says so; the ticket that adds `experiments/line3/bank6/` replaces it with the sweep
+    pinned with the numbers of the single run (reach, wrong-admitting items, unanswerable admissions, trap admissions, per rule) and only then may EVIDENCE_LATEST change."""
+    assert ev.EVIDENCE_LATEST == V2 and ev.PROFILE_NAMES["v2"] == V2
+    assert sorted(ev.V3_RULE_IDS) == sorted(ABLATION_V3) + ["T1", "T2"]
