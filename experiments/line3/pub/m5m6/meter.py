@@ -35,7 +35,7 @@ JOINER_CHARS = ".,-:/"
 
 
 def answer_version() -> str:
-    return ma.ANSWER_V13 if MODE["m6c"] else ma.ANSWER_V3
+    return ma.ANSWER_V14 if MODE["m6c"] else ma.ANSWER_V3
 
 
 def versions() -> Any:
@@ -260,6 +260,9 @@ def all_values_attack(make: Any, stretches: Sequence[Tuple[int, int, int]], gold
     return out
 
 
+PREFIX_VARIANTS = ("誤：", "不採用：", "没案：", "訂正前：", "誤:", "×", "❌", "> ", "違う！", "例:", "Q:", "# ", "- ", "「", "たぶん", "おそらく", "もし", "例えば", "まさか", "決して", "間違って", "🙂", " ", "　")       # memanswer.v14: leading labels, marks, quotes, markers, hedge adverbs
+
+
 def collision_variants(v: str) -> List[str]:
     """PUB-M6h: the written variants of a value that the gate-style normalisation (NFKC, casefold, no spaces / 「・」) would merge with it: a 「・」 inserted (or removed), a space inserted (or removed), the ASCII
     digits and letters in full width."""
@@ -310,6 +313,29 @@ def collision_red_team(tmp: str, store: str, snap: dict, limit: int = 3) -> Dict
             sent = r.rows[e.sid]["sent"]
             if e.marks or e.change is not None or e.value not in sent:
                 continue
+            if out.setdefault("prefix_entries", 0) < 3:                       # memanswer.v14: text BEFORE the clause (labels, marks, hedge adverbs, quotes, markers) -> the write asserts nothing
+                out["prefix_entries"] += 1
+                for pre in PREFIX_VARIANTS:
+                    n += 1
+                    cs = os.path.join(tmp, "pre%d" % n)
+                    st = mem.MemStore(cs, "c")
+                    s = st.begin("measure", profile=mem.PROFILE_V4, versions=versions())
+                    if not s.write(pre + sent).get("ok"):
+                        s.commit()
+                        continue
+                    s.commit()
+                    out["stores"] += 1
+                    q = text + "は何ですか？"
+                    units = ma.AnswerSession(cs, q, "oracle", answer_version=answer_version()).call("read_sentence", {"sid": 0})["units"]["WORD"]
+                    for f in range(len(units)):
+                        for l in range(f, len(units)):
+                            a = ma.AnswerSession(cs, q, "oracle", answer_version=answer_version())
+                            if not a.call("weave_span", {"sid": 0, "tier": "WORD", "first": f, "last": l}).get("ok"):
+                                continue
+                            out["tried"] += 1
+                            if a.call("emit", {}).get("ok"):
+                                out["EMITTED_WRONG"] += 1
+                                out["wrong"].append([pre, sent])
             for var in collision_variants(e.value):
                 n += 1
                 cs = os.path.join(tmp, "col%d" % n)

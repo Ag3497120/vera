@@ -483,3 +483,78 @@ def test_v13_older_runs_replay_unchanged(tmp_path):
     p = store(tmp_path, ["認証の期限は5日、承認の期限は7日"])
     a = ma.AnswerSession(p, Q, "o", answer_version=V12)
     assert a.call("recall", {"question": Q})
+
+
+# ---- memanswer.v14: the one-fact test covers the WHOLE write (tenth review, L-PUB-111..113) ----
+from verantyx.loom import memask as mk
+
+V14 = ma.ANSWER_V14
+CLEAN = ["認証の期限は5日", "認証の期限は5日。", "認証の期限は5日です", "認証の期限は5日に変更した", "認証の期限は5日に変更した。", "新製品のQAの期限は5日"]
+EXTRAS = ["！", "？", "!", "?", "：", ":", "；", "、", "「", "」", "×", "❌", "🙂", " ", "　", "> ", "# ", "- ", "誤：", "違う！", "たぶん", "もし", "例えば", "おそらく", "まさか", "決して", "間違って", "~~", "\n"]
+
+
+def _emits14(tmp_path, writes, name):
+    p = store(tmp_path, writes, name=name)
+    return [t for (_s, t, _v) in attack(p, Q, len(writes), version=V14)]
+
+
+@pytest.mark.parametrize("w", ["誤：認証の期限は5日に変更した", "不採用：認証の期限は5日に変更した", "没案：認証の期限は5日に変更した", "訂正前：認証の期限は5日に変更した", "誤:認証の期限は5日に変更した",
+                               "×認証の期限は5日に変更した", "❌認証の期限は5日に変更した", "> 認証の期限は5日に変更した", "違う！認証の期限は5日", "例:認証の期限は5日", "Q:認証の期限は5日", "# 認証の期限は5日",
+                               "たぶん認証の期限は5日", "おそらく認証の期限は5日に変更した", "もし認証の期限は5日", "例えば認証の期限は5日", "まさか認証の期限は5日", "決して認証の期限は5日", "間違って認証の期限は5日に変更した"])
+def test_v14_text_before_the_clause_asserts_nothing(tmp_path, w):
+    assert _emits14(tmp_path, [w], "a") == []                                   # never an answer
+    assert "5日" not in _emits14(tmp_path, ["認証の期限は7日", w], "b")         # never an update (the old value is not replaced)
+    assert _emits14(tmp_path, ["認証の期限は7日", w], "c") in (["7日"], [])
+
+
+@pytest.mark.parametrize("w", CLEAN)
+def test_v14_the_clean_forms_still_answer(tmp_path, w):
+    q = "新製品のQAの期限はいつですか？" if "QA" in w else Q
+    p = store(tmp_path, [w])
+    assert [t for (_s, t, _v) in attack(p, q, 1, version=V14)] == ["5日"]
+
+
+def test_v14_a_clean_update_still_updates(tmp_path):
+    assert _emits14(tmp_path, ["認証の期限は7日", "認証の期限は5日に変更した"], "u") == ["5日"]
+
+
+def test_v14_coverage_property_any_single_extra_character_or_morpheme_never_covers(tmp_path):
+    n = 0
+    for w in (CLEAN[0], CLEAN[3], CLEAN[5]):
+        body = w
+        for pos in range(len(body) + 1):
+            for x in EXTRAS:
+                t = body[:pos] + x + body[pos:]
+                if t == body or (x == "。" and pos == len(body)):
+                    continue
+                if x[0].isalpha() and x[0] not in "×" and pos not in (0, len(body)):   # a letter morpheme inside the clause is another word, as written (see the value-qualifier note, L-PUB-113)
+                    continue
+                a = t.find("5日")
+                if a < 0 or pos in (a + 1,):                                        # the insertion split the value: another value
+                    continue
+                n += 1
+                if mk._covered14(t, a, a + 2):
+                    # the only insertions that may leave a covered write are no-ops of the layout: none are in EXTRAS
+                    raise AssertionError(repr(t))
+    assert n > 500
+
+
+def test_v14_status_is_not_asserted_and_visible(tmp_path):
+    p = store(tmp_path, ["誤：認証の期限は5日"])
+    r = ma.AnswerSession(p, Q, "o", answer_version=V14).call("recall", {"question": Q})
+    assert "not_asserted" in repr(r)
+
+
+def test_v14_prefixed_value_contests_a_different_value(tmp_path):
+    p = store(tmp_path, ["認証の期限は7日", "誤：認証の期限は5日に変更した"])
+    r = ma.AnswerSession(p, Q, "o", answer_version=V14).call("recall", {"question": Q})
+    assert r["verdict"] == "CHOICE"
+
+
+def test_v14_begin_row_and_replay(tmp_path):
+    p = store(tmp_path, ["認証の期限は5日"])
+    a = ma.AnswerSession(p, Q, "o", answer_version=V14)
+    assert a.begin_result["mem_answer"]["version"] == "memanswer.v14" and a.begin_result["mem_answer"]["guard"] == "ansguard.v12"
+    r = ma.replay_answer(a.ledger.dir)
+    assert r.run.v14 and r.run.v13
+    assert attack(p, Q, 1, version=V13) == [(0, "5日", None)] and attack(p, Q, 1, version=V14) == [(0, "5日", None)]
