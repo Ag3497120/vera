@@ -54,10 +54,14 @@ QUESTION_TOOLS: Dict[str, Tuple[str, ...]] = {
 }
 LOG_ENTRY_CHARS = 64
 LOG_CAPS = {"appends": 60, "reads": 60, "reports": 60, "answers": 3}
+LOG_CAPS_V2 = {"appends": 240, "reads": 240, "reports": 240, "answers": 3}            # MEM-fix (L-MEM-63): the long-story caps of membase.v2, the same x4 as the structure's mem.v3
 LOG_READ_LINES = 30
 ANSWER_KINDS = ("value", "contested", "none")
 ANSWER_VALUE_CHARS = 32
 BASELINE_VERSION = "membase.v1"
+BASELINE_V2 = "membase.v2"          # MEM-fix: LOG_CAPS_V2 and the harness rows `report_forced` / `report_missing` (L-MEM-62); membase.v1 ledgers replay as they were
+BASELINE_VERSIONS: Tuple[str, ...] = (BASELINE_VERSION, BASELINE_V2)
+CAPS_OF_BASELINE: Dict[str, Dict[str, int]] = {BASELINE_VERSION: LOG_CAPS, BASELINE_V2: LOG_CAPS_V2}
 
 
 # ------------------------------------------------------------------------------------------------------------
@@ -74,7 +78,7 @@ TOOL_SPECS: Dict[str, dict] = {
     "write": {"description": "Write ONE fact into the memory, as a sentence 「X の Y は A」 (X the whole subject, Y what is asked about, A a noun phrase), at most 64 characters. The structure weaves "
                              "the whole sentence; a sentence it cannot seat is refused and stores nothing: rewrite it in that form. Returns the sid and, in some arms, notes.",
               "properties": {"text": _p("string", "the fact, 「X の Y は A」, at most 64 characters")}, "required": ["text"]},
-    "declare_topic": {"description": "Say what this session is about (a noun phrase, at most 24 characters, no particle at the end). A fact you write with no subject (「締め切りは水曜」) is "
+    "declare_topic": {"description": "Say what this session is about (a noun phrase, at most 24 characters, no particle in it: の に で と を が). A fact you write with no subject (「締め切りは水曜」) is "
                                      "stored as 「<topic>の締め切りは水曜」. Call it first; declare it again when the subject changes.",
                       "properties": {"text": _p("string", "the topic, e.g. 展示会準備")}, "required": ["text"]},
     "supersede": {"description": "Resolve a contested fact explicitly: the sentence new_sid REPLACES the older statement (old_sid, or old_answer = the text of the old answer). Recall then "
@@ -194,12 +198,14 @@ class StructureDoor(_Door):
     """The STORY phase of A2 / A2b: one `MemSession` (profile mem.v2) of a `MemStore`.  `call` = one ledger row.  `commit()` is the harness's (the model has no such tool)."""
     phase = "story"
 
-    def __init__(self, store_path, arm: str, model: str, *, hook: Any = mem.DEFAULT, kind_policy: Optional[str] = None) -> None:
+    def __init__(self, store_path, arm: str, model: str, *, hook: Any = mem.DEFAULT, kind_policy: Optional[str] = None, profile: str = mem.PROFILE_V2) -> None:
         if arm not in STRUCTURE_ARMS:
             raise ValueError("a StructureDoor is the structure arms' (blind | notes)")
+        if profile not in mem.V2_PLUS:
+            raise ValueError("a StructureDoor's profile is one of %s" % (mem.V2_PLUS,))
         super().__init__(arm)
         self.store = mem.MemStore(store_path)
-        self.session = self.store.begin(model, profile=mem.PROFILE_V2, self_question=hook, kind_policy=kind_policy)
+        self.session = self.store.begin(model, profile=profile, self_question=hook, kind_policy=kind_policy)
         self.run_id = self.session.run_id
         self.begin_result: dict = self.session.rows()[0]["result"]
 
@@ -240,11 +246,11 @@ class AnswerDoor(_Door):
     """The QUESTION phase of A2 / A2b: an `AnswerSession` over a snapshot of the store.  `call` = one ledger row (a note row after a read / emit)."""
     phase = "question"
 
-    def __init__(self, store_path, arm: str, question: str, model: str, snapshot: Optional[dict] = None) -> None:
+    def __init__(self, store_path, arm: str, question: str, model: str, snapshot: Optional[dict] = None, answer_version: str = ma.ANSWER_VERSION) -> None:
         if arm not in STRUCTURE_ARMS:
             raise ValueError("an AnswerDoor is the structure arms'")
         super().__init__(arm)
-        self.session = ma.AnswerSession(store_path, question, model, snapshot=snapshot)
+        self.session = ma.AnswerSession(store_path, question, model, snapshot=snapshot, answer_version=answer_version)
         self.run_id = self.session.run_id
         self.begin_result: dict = self.session.begin_result
 
@@ -285,9 +291,13 @@ class BaselineRun:
     """A run of A0 (context only) or A1 (plain log): ops `log_append` `log_read` `report` (story) / `log_read` `answer` (question) and `begin`; rows in the loom's format, no clock.
     `entries_before` = the log lines of the earlier sessions (A1; [] for A0).  Never reads a file."""
 
-    def __init__(self, arm: str, phase: str, run_id: str, model: str, session_no: int, entries_before: Sequence[dict] = (), question: Optional[str] = None) -> None:
+    def __init__(self, arm: str, phase: str, run_id: str, model: str, session_no: int, entries_before: Sequence[dict] = (), question: Optional[str] = None,
+                 version: str = BASELINE_VERSION) -> None:
         if arm not in ("context", "log") or phase not in ("story", "question"):
             raise ValueError("BaselineRun: arm context | log, phase story | question")
+        if version not in BASELINE_VERSIONS:
+            raise ValueError("BaselineRun: version one of %s" % (BASELINE_VERSIONS,))
+        self.version, self.caps = version, dict(CAPS_OF_BASELINE[version])
         self.arm, self.phase, self.run_id, self.model, self.session_no, self.question = arm, phase, run_id, model, session_no, question
         self.entries: List[dict] = [dict(e) for e in entries_before]
         self.n_before = len(self.entries)
@@ -304,8 +314,8 @@ class BaselineRun:
         return sha256_text(canonical({"arm": self.arm, "log": self.log_sha(), "counts": self.counts, "closed": self.closed}))
 
     def begin_body(self) -> dict:
-        res = {"ok": True, "run_id": self.run_id, "mode": "baseline", "arm": self.arm, "phase": self.phase, "tools": list(self.tools), "caps": dict(LOG_CAPS),
-               "header": {"baseline_version": BASELINE_VERSION, "arm": self.arm, "phase": self.phase, "session_no": self.session_no, "declared_model": self.model,
+        res = {"ok": True, "run_id": self.run_id, "mode": "baseline", "arm": self.arm, "phase": self.phase, "tools": list(self.tools), "caps": dict(self.caps),
+               "header": {"baseline_version": self.version, "arm": self.arm, "phase": self.phase, "session_no": self.session_no, "declared_model": self.model,
                           "log_sha_before": self.log_sha(), "log_lines_before": self.n_before}}
         if self.question is not None:
             res["question"] = self.question
@@ -320,8 +330,10 @@ class BaselineRun:
     def step(self, actor: str, op: str, args: dict, replay_extra: Optional[dict] = None) -> dict:
         if actor == "model":
             return self._model_step(op, args, replay_extra)
-        if actor != "harness" or op not in ("free_text_dropped", "harness_meta", "abandoned", "session_end"):
+        if actor != "harness" or op not in ("free_text_dropped", "harness_meta", "abandoned", "session_end") + (mem.FORCE_OPS if self.version == BASELINE_V2 else ()):
             raise ValueError("op %r is not a row of actor %r" % (op, actor))
+        if op in mem.FORCE_OPS:
+            args = mem.force_args(args)
         if op == "abandoned" and self.closed is None:
             self.closed = ["abandoned", str(args.get("reason", "?"))]
         if op == "session_end" and self.closed is None:
@@ -366,8 +378,8 @@ class BaselineRun:
 
     # -- the tools ---------------------------------------------------------------------------------------------------
     def _count(self, key: str) -> None:
-        if self.counts[key] >= LOG_CAPS[key]:
-            raise Refuse(key[:-1] + "_cap", {"limit": LOG_CAPS[key]})
+        if self.counts[key] >= self.caps[key]:
+            raise Refuse(key[:-1] + "_cap", {"limit": self.caps[key]})
         self.counts[key] += 1
 
     def _h_log_append(self, a: dict) -> dict:
@@ -453,7 +465,8 @@ class BaselineStore:
 class BaselineDoor(_Door):
     """A0 / A1, either phase: a `BaselineRun` with its ledger.  `call` = one row; `commit()` ends a story session (a `session_end` harness row and, for A1, `log.txt`)."""
 
-    def __init__(self, store_path, arm: str, phase: str, model: str, question: Optional[str] = None, session_no: Optional[int] = None) -> None:
+    def __init__(self, store_path, arm: str, phase: str, model: str, question: Optional[str] = None, session_no: Optional[int] = None,
+                 version: str = BASELINE_VERSION) -> None:
         if arm not in ("context", "log"):
             raise ValueError("a BaselineDoor is the baseline arms' (context | log)")
         super().__init__(arm)
@@ -462,7 +475,7 @@ class BaselineDoor(_Door):
         before = self.store.entries() if arm == "log" else []
         n_story = sum(1 for d in self.store.story_dirs() if _read_rows(d)[-1]["op"] == "session_end")
         d, rid = self.store.next_dir(phase)
-        self.run = BaselineRun(arm, phase, rid, model, session_no if session_no is not None else n_story + 1, before, question)
+        self.run = BaselineRun(arm, phase, rid, model, session_no if session_no is not None else n_story + 1, before, question, version)
         self.run_id = rid
         self.ledger = lg.Ledger(d)
         self.ledger.create({"mode": "baseline", "arm": arm, "phase": phase})
@@ -535,7 +548,10 @@ def verify_baseline(run_dir) -> dict:
             if sr and sr[-1]["op"] == "session_end":
                 before += [{"session": sr[0]["result"]["header"]["session_no"], "text": r["result"]["text"]}
                            for r in sr if r["actor"] == "model" and r["op"] == "log_append" and r["result"].get("ok") is True]
-    run = BaselineRun(arm, phase, rows[0]["result"]["run_id"], rows[0]["args"]["model"], h["session_no"], before, rows[0]["result"].get("question"))
+    if h.get("baseline_version", BASELINE_VERSION) not in BASELINE_VERSIONS:
+        return {"status": "REPLAY_DIFFERS", "first_diff": {"i": 0, "field": "baseline_version"}}
+    run = BaselineRun(arm, phase, rows[0]["result"]["run_id"], rows[0]["args"]["model"], h["session_no"], before, rows[0]["result"].get("question"),
+                      h.get("baseline_version", BASELINE_VERSION))
     prev = GENESIS
     for idx, orig in enumerate(rows):
         try:

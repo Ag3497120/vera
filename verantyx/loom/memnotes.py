@@ -40,6 +40,9 @@ from verantyx.loom import read as rd
 from verantyx.loom.state import AXES, SPEC, LoomCross, canonical, fmt_seat
 
 MEM_NOTES_VERSION = "mem.v1"
+MEM_NOTES_V2 = "mem.v2"                # MEM-fix (L-MEM-61): mem.v1 + a REVERSAL note CITES the two sentences (sid, turn) it is about; recorded as header.notes_profile of a mem.v3 session
+MEM_NOTES_VERSIONS: Tuple[str, ...] = (MEM_NOTES_VERSION, MEM_NOTES_V2)
+REVERSAL_CITE_MAX = 8                  # the earlier sentences a REVERSAL note lists (the count is in `earlier_n`)
 CONFLICT, UNANCHORED = notelib.CONFLICT, notelib.UNANCHORED
 REVERSAL, NEW_RELATION, SAME_QUESTION = "REVERSAL", "NEW_RELATION", "SAME_QUESTION"
 SELF_QUESTION_UNREADABLE, IDENTIFIER_FLATTENED, NO_RELATION_SEATED = "SELF_QUESTION_UNREADABLE", "IDENTIFIER_FLATTENED", "NO_RELATION_SEATED"
@@ -108,6 +111,58 @@ def key_notes(view, keys: Sequence[dict], pos0: int = 0) -> List[dict]:
         out.append({"type": typ, "cid": k["cid"], "centre": k["centre"], "units": _arm_units(view.state, cross), "key": list(e["key"]),
                     "best_key": list(e["best_key"]), "swaps": [list(s) for s in e["best_swaps"]], "improving": [list(i) for i in e["improving"]],
                     "_pos": pos0 + pos, "_arm": 0})
+    return out
+
+
+def reversal_witnesses(corpus_before, centre: str, arm_units: Sequence[str]) -> List[int]:
+    """MEM-fix (L-MEM-61): the sentences of the history that make a cross a REVERSAL.  A cross is unstable under (n, p) iff swapping the centre and an arm unit improves p: the history
+    holds the two words more often in the OTHER order.  `p(u, v)` (`space.p_pair`) counts the sentences where u's first occurrence precedes v's, so the witnesses are the sentences of
+    C_<t in which the first occurrence of `centre` precedes the first occurrence of an arm unit (the flagged write has the arm unit first).  Sorted sids; [] when a word is not in the space."""
+    t = corpus_before.tier("WORD")
+    if centre not in t.postings:
+        return []
+    out = set()
+    for u in arm_units:
+        if u not in t.postings or u == centre:
+            continue
+        for sid in set(t.postings[centre]).intersection(t.postings[u]):
+            us = t.sentence_units[sid]
+            if us.index(centre) < us.index(u):
+                out.add(sid)
+    return sorted(out)
+
+
+def _cite_entry(sid: int, rows: Sequence[dict]) -> dict:
+    d = {"sid": sid, "source": rows[sid]["source"]}
+    if "turn" in rows[sid]:
+        d["turn"] = rows[sid]["turn"]
+    return d
+
+
+def cite_reversals(notes: List[dict], corpus_before, t: int, rows_after: Sequence[dict]) -> List[dict]:
+    """MEM-fix (L-MEM-61, owner 「REVERSAL ... does not cite the two messages」): every REVERSAL note gains
+      sentence  {sid, source, turn?}     this write (sentence t)
+      earlier   [{sid, source, turn?}]   the first REVERSAL_CITE_MAX witness sentences (sid order), `earlier_n` = how many there are
+      cite      [[turn, turn]]           for a report: the pair (this write's turn, a witness's turn) for each witness written at a DIFFERENT turn, in witness order, at most 3 pairs
+    Pure function of the history; other notes are returned unchanged."""
+    out = []
+    for n in notes:
+        if n["type"] != REVERSAL:
+            out.append(n)
+            continue
+        wit = reversal_witnesses(corpus_before, n["centre"], [u["unit"] for u in n["units"]])
+        me = _cite_entry(t, rows_after)
+        pairs: List[List[str]] = []
+        if "turn" in me:
+            for w in wit:
+                wt = rows_after[w].get("turn")
+                if wt is not None and wt != me["turn"]:
+                    pair = sorted([wt, me["turn"]], key=lambda x: tuple(int(y) for y in x.split("-")))
+                    if pair not in pairs:
+                        pairs.append(pair)
+        d = dict(n)
+        d.update(sentence=me, earlier=[_cite_entry(w, rows_after) for w in wit[:REVERSAL_CITE_MAX]], earlier_n=len(wit), cite=pairs[:3])
+        out.append(d)
     return out
 
 
@@ -313,7 +368,7 @@ def shape_notes(text: str, crosses: Sequence[dict], n_units: int) -> List[dict]:
 def compute_write_notes(*, t: int, row: dict, rows_before: Sequence[dict], rows_after: Sequence[dict], corpus_key: Any, corpus_before: Any, corpus_after: Any,
                         state, linked: Sequence[LoomCross], new_crosses: Sequence[LoomCross], weave: dict, contradiction_policy: str,
                         self_question: Optional[SelfQuestionFn], superseded: Optional[Dict[int, dict]] = None,
-                        clause_start: Optional[int] = None) -> Tuple[List[dict], dict]:
+                        clause_start: Optional[int] = None, cite: bool = False) -> Tuple[List[dict], dict]:
     """The notes of the write of sentence t, in the loom's note order, and {"keys": [...], "clause": ... | None}.
 
     `corpus_key` is C_<t as the KEY reads it (= `corpus_before` for OP-MEM-1 (a)/(b); under (c) the rows of the current session are relabelled so they give
@@ -322,6 +377,8 @@ def compute_write_notes(*, t: int, row: dict, rows_before: Sequence[dict], rows_
     keys = history_keys(view, new_crosses)
     found: List[dict] = []
     found += key_notes(view, keys)
+    if cite:                                                       # mem.v2 notes (a mem.v3 session): a REVERSAL names the two sentences it is about
+        found = cite_reversals(found, corpus_key, t, rows_after)
     found += unanchored_notes(view, new_crosses)
     found += conflict_notes(view, linked, [c.cid for c in new_crosses])
     clause = sentence_clause(corpus_after, t, weave["crosses"], clause_start)

@@ -1,0 +1,182 @@
+[
+ {
+  "class": "double",
+  "meter_store": "experiments/line3/mem/meter_v1/MEM-T01/blind/r01",
+  "topic": "在庫管理アプリ小規模リリース",
+  "written": "在庫管理アプリ小規模リリースの認証モジュール担当は田中",
+  "v3_stored": "在庫管理アプリ小規模リリースの認証モジュール担当は田中",
+  "v3_expanded": false,
+  "v2_stored": "在庫管理アプリ小規模リリースの在庫管理アプリ小規模リリースの認証モジュール担当は田中"
+ },
+ {
+  "class": "double",
+  "meter_store": "experiments/line3/mem/meter_v1/MEM-T01/blind/r01",
+  "topic": "在庫管理アプリ小規模リリース",
+  "written": "在庫管理アプリ小規模リリースの監視当番は佐藤",
+  "v3_stored": "在庫管理アプリ小規模リリースの監視当番は佐藤",
+  "v3_expanded": false,
+  "v2_stored": "在庫管理アプリ小規模リリースの在庫管理アプリ小規模リリースの監視当番は佐藤"
+ },
+ {
+  "class": "double",
+  "meter_store": "experiments/line3/mem/meter_v1/MEM-T01/blind/r01",
+  "topic": "在庫管理アプリ小規模リリース",
+  "written": "在庫管理アプリ小規模リリースの決済レビュー期限は月曜",
+  "v3_stored": "在庫管理アプリ小規模リリースの決済レビュー期限は月曜",
+  "v3_expanded": false,
+  "v2_stored": "在庫管理アプリ小規模リリースの在庫管理アプリ小規模リリースの決済レビュー期限は月曜"
+ },
+ {
+  "class": "double",
+  "meter_store": "experiments/line3/mem/meter_v1/MEM-T05/blind/r01",
+  "topic": "地域防災フォーラム",
+  "written": "地域防災フォーラムの司会担当は野口",
+  "v3_stored": "地域防災フォーラムの司会担当は野口",
+  "v3_expanded": false,
+  "v2_stored": "地域防災フォーラムの地域防災フォーラムの司会担当は野口"
+ },
+ {
+  "class": "double",
+  "meter_store": "experiments/line3/mem/meter_v1/MEM-T05/blind/r01",
+  "topic": "地域防災フォーラム",
+  "written": "地域防災フォーラムの避難訓練場所は南運動場",
+  "v3_stored": "地域防災フォーラムの避難訓練場所は南運動場",
+  "v3_expanded": false,
+  "v2_stored": "地域防災フォーラムの地域防災フォーラムの避難訓練場所は南運動場"
+ },
+ {
+  "class": "double",
+  "meter_store": "experiments/line3/mem/meter_v1/MEM-T05/blind/r01",
+  "topic": "地域防災フォーラム",
+  "written": "地域防災フォーラムの入場開始は13:30",
+  "v3_stored": "地域防災フォーラムの入場開始は13:30",
+  "v3_expanded": false,
+  "v2_stored": "地域防災フォーラムの地域防災フォーラムの入場開始は13:30"
+ },
+ {
+  "class": "own_subject",
+  "meter_store": "experiments/line3/mem/meter_v1/MEM-T01/blind/r02",
+  "topic": "在庫管理アプリ小規模リリース",
+  "written": "監視設定の本番監視ポートは8443",
+  "v3_stored": "監視設定の本番監視ポートは8443",
+  "v3_expanded": false,
+  "v2_stored": "在庫管理アプリ小規模リリースの監視設定の本番監視ポートは8443"
+ },
+ {
+  "class": "own_subject",
+  "meter_store": "experiments/line3/mem/meter_v1/MEM-T05/blind/r01",
+  "topic": "地域防災フォーラム",
+  "written": "基調講演者の到着予定は8:40",
+  "v3_stored": "基調講演者の到着予定は8:40",
+  "v3_expanded": false,
+  "v2_stored": "地域防災フォーラムの基調講演者の到着予定は8:40"
+ },
+ {
+  "class": "own_subject",
+  "meter_store": "experiments/line3/mem/meter_v1/MEM-T05/blind/r01",
+  "topic": "地域防災フォーラム",
+  "written": "参加者用椅子の追加費は3万円",
+  "v3_stored": "参加者用椅子の追加費は3万円",
+  "v3_expanded": false,
+  "v2_stored": "地域防災フォーラムの参加者用椅子の追加費は3万円"
+ },
+ {
+  "class": "own_subject",
+  "meter_store": "experiments/line3/mem/meter_v1/MEM-T01/blind/r02",
+  "topic": "在庫管理アプリ小規模リリース",
+  "written": "監視設定の検証ログ受信ポートは8088",
+  "v3_stored": "監視設定の検証ログ受信ポートは8088",
+  "v3_expanded": false,
+  "v2_stored": "在庫管理アプリ小規模リリースの監視設定の検証ログ受信ポートは8088"
+ },
+ {
+  "class": "own_subject",
+  "meter_store": "experiments/line3/mem/meter_v1/MEM-T05/notes/r01",
+  "topic": "地域防災フォーラム",
+  "written": "会場誘導の確認者は黒田",
+  "v3_stored": "会場誘導の確認者は黒田",
+  "v3_expanded": false,
+  "v2_stored": "地域防災フォーラムの会場誘導の確認者は黒田"
+ },
+ {
+  "class": "own_subject",
+  "meter_store": "experiments/line3/mem/meter_v1/MEM-T05/notes/r01",
+  "topic": "地域防災フォーラム",
+  "written": "通訳者の到着予定は8:40",
+  "v3_stored": "通訳者の到着予定は8:40",
+  "v3_expanded": false,
+  "v2_stored": "地域防災フォーラムの通訳者の到着予定は8:40"
+ },
+ {
+  "class": "lacks",
+  "meter_store": "experiments/line3/mem/meter_v1/MEM-T01/blind/r03",
+  "topic": "在庫管理アプリ小規模リリース",
+  "written": "共有ドライブは/release/test",
+  "v3_stored": "在庫管理アプリ小規模リリースの共有ドライブは/release/test",
+  "v3_expanded": true,
+  "v2_stored": "在庫管理アプリ小規模リリースの共有ドライブは/release/test"
+ },
+ {
+  "class": "lacks",
+  "meter_store": "experiments/line3/mem/meter_v1/MEM-T01/blind/r03",
+  "topic": "在庫管理アプリ小規模リリース",
+  "written": "監視当番は佐藤",
+  "v3_stored": "在庫管理アプリ小規模リリースの監視当番は佐藤",
+  "v3_expanded": true,
+  "v2_stored": "在庫管理アプリ小規模リリースの監視当番は佐藤"
+ },
+ {
+  "class": "lacks",
+  "meter_store": "experiments/line3/mem/meter_v1/MEM-T01/blind/r03",
+  "topic": "在庫管理アプリ小規模リリース",
+  "written": "端末テスト責任者は森",
+  "v3_stored": "在庫管理アプリ小規模リリースの端末テスト責任者は森",
+  "v3_expanded": true,
+  "v2_stored": "在庫管理アプリ小規模リリースの端末テスト責任者は森"
+ },
+ {
+  "class": "lacks",
+  "meter_store": "experiments/line3/mem/meter_v1/MEM-T01/blind/r03",
+  "topic": "在庫管理アプリ小規模リリース",
+  "written": "検証ログ受信ポートは8088",
+  "v3_stored": "在庫管理アプリ小規模リリースの検証ログ受信ポートは8088",
+  "v3_expanded": true,
+  "v2_stored": "在庫管理アプリ小規模リリースの検証ログ受信ポートは8088"
+ },
+ {
+  "class": "lacks",
+  "meter_store": "experiments/line3/mem/meter_v1/MEM-T05/blind/r01",
+  "topic": "地域防災フォーラム",
+  "written": "通訳機材費は7万円",
+  "v3_stored": "地域防災フォーラムの通訳機材費は7万円",
+  "v3_expanded": true,
+  "v2_stored": "地域防災フォーラムの通訳機材費は7万円"
+ },
+ {
+  "class": "lacks",
+  "meter_store": "experiments/line3/mem/meter_v1/MEM-T05/blind/r02",
+  "topic": "地域防災フォーラム",
+  "written": "参加者用椅子は140席",
+  "v3_stored": "地域防災フォーラムの参加者用椅子は140席",
+  "v3_expanded": true,
+  "v2_stored": "地域防災フォーラムの参加者用椅子は140席"
+ },
+ {
+  "class": "lacks",
+  "meter_store": "experiments/line3/mem/meter_v1/MEM-T05/notes/r01",
+  "topic": "地域防災フォーラム",
+  "written": "登壇者紹介担当は宮本",
+  "v3_stored": "地域防災フォーラムの登壇者紹介担当は宮本",
+  "v3_expanded": true,
+  "v2_stored": "地域防災フォーラムの登壇者紹介担当は宮本"
+ },
+ {
+  "class": "lacks",
+  "meter_store": "experiments/line3/mem/meter_v1/MEM-T05/blind/r02",
+  "topic": "地域防災フォーラム",
+  "written": "連絡用無線はch3",
+  "v3_stored": "地域防災フォーラムの連絡用無線はch3",
+  "v3_expanded": true,
+  "v2_stored": "地域防災フォーラムの連絡用無線はch3"
+ }
+]

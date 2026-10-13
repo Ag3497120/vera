@@ -6,6 +6,7 @@
   python experiments/line3/loom/mem_run.py --task MEM-T01 --arm notes --repeat 2 [--model claude-haiku-5-5] [--out DIR]     # ONE run: repeat number 2 of (task, arm)
   python experiments/line3/loom/mem_run.py --task MEM-T01 --arm notes --repeats 3          # repeats 1, 2, 3 in turn
   python experiments/line3/loom/mem_run.py --score DIR/MEM-T01/notes/r02                   # the raw mechanical reading of a finished run (no API)
+  python experiments/line3/loom/mem_run.py --task ... --arm ... [--profile mem.v2|mem.v3]  # mem.v3 (the default, MEM-fix) or mem.v2 = the meter v1's settings (12 calls a turn, no forced report)
 
 THE TASK (the bank5 schema, bank2-author/PROMPT5.md): {id, title, sessions: [[{speaker, text}, ...] x3], plants: [{kind, fact, values, message_refs: [[s, i], ...], note}],
 questions: [{q, gold, kind, refs}]}.  The model never sees plants, golds or kinds.  `--bank` defaults to the audited bank5 (`experiments/line3/bank5/bank5.jsonl`) when it exists, then the toy task
@@ -54,6 +55,9 @@ OUT_ROOT = os.path.join(ROOT, "experiments", "line3", "mem", "runs")
 AGENTS_DIR = os.path.join(ROOT, ".claude", "agents")
 DEFAULT_MODEL = "claude-haiku-5-5"
 SCHEMA = "mem-run-1"
+SCHEMA_V3 = "mem-run-2"                                  # MEM-fix: a mem.v3 run (result.json also says profile, turn_limit, forced / missing reports)
+PROFILE_CHOICES = (mem.PROFILE_V2, mem.PROFILE_V3)
+MAX_CALLS_V3 = mdrv.MAX_CALLS_PER_TURN_V3
 STORY_AGENT = {"context": "mem-plain", "log": "mem-log", "blind": "mem-blind", "notes": "mem-writer"}
 QUESTION_AGENT = {"context": "mem-plain", "log": "mem-log", "blind": "mem-answer", "notes": "mem-answer"}
 TOOL_PREFIX = "mcp__vera-mem__"
@@ -329,11 +333,22 @@ def _first_question_message(door: Any, begin_result: dict) -> str:
             + json.dumps({k: begin_result[k] for k in ("question", "tools", "caps") if k in begin_result}, ensure_ascii=False, sort_keys=True))
 
 
-def run_one(task: dict, arm: str, repeat: int, *, client: Any, model: str, out_root: str, tag: str = "", max_calls: int = mdrv.MAX_CALLS_PER_TURN,
-            extra_api: Optional[dict] = None) -> dict:
-    """Run one (task, arm, repeat): the story sessions, then the questions.  Returns the result object (also written to result.json).  Refuses to touch an existing run folder."""
+def run_one(task: dict, arm: str, repeat: int, *, client: Any, model: str, out_root: str, tag: str = "", max_calls: Optional[int] = None,
+            extra_api: Optional[dict] = None, profile: str = mem.PROFILE_V2) -> dict:
+    """Run one (task, arm, repeat): the story sessions, then the questions.  Returns the result object (also written to result.json).  Refuses to touch an existing run folder.
+
+    `profile` (MEM-fix, L-MEM-62..64): `mem.v2` (the API default here: the meter v1, 12 tool calls a turn, no forced report) or `mem.v3` (the CLI default: the structure arms' sessions are mem.v3, the
+    baselines membase.v2, the answer run memanswer.v2; 24 tool calls a turn for EVERY arm and a turn that ends without a report gets the forced final `report` or an explicit `report_missing`).
+    `max_calls` overrides the profile's limit."""
     if arm not in md.ARMS:
         raise MemRunError("arm must be one of %s" % (md.ARMS,), "bad_arm")
+    if profile not in PROFILE_CHOICES:
+        raise MemRunError("profile must be one of %s" % (PROFILE_CHOICES,), "bad_profile")
+    v3 = profile == mem.PROFILE_V3
+    if max_calls is None:
+        max_calls = MAX_CALLS_V3 if v3 else mdrv.MAX_CALLS_PER_TURN
+    base_version = md.BASELINE_V2 if v3 else md.BASELINE_VERSION
+    answer_version = ma.ANSWER_V2 if v3 else ma.ANSWER_VERSION
     run_dir = os.path.join(out_root, task["id"], arm + (("." + tag) if tag else ""), "r%02d" % repeat)
     if os.path.exists(run_dir):
         raise MemRunError("run folder exists (never overwritten): %s" % run_dir, "run_exists")
@@ -341,17 +356,21 @@ def run_one(task: dict, arm: str, repeat: int, *, client: Any, model: str, out_r
     store = os.path.join(run_dir, "store")
     choice, strict = drv.tool_choice_for(model)
     t0 = time.monotonic_ns()
-    result: Dict[str, Any] = {"schema": SCHEMA, "task_id": task["id"], "arm": arm, "arm_label": md.ARM_LABEL[arm], "repeat": repeat, "model": model, "tool_choice": choice,
+    result: Dict[str, Any] = {"schema": SCHEMA_V3 if v3 else SCHEMA, "task_id": task["id"], "arm": arm, "arm_label": md.ARM_LABEL[arm], "repeat": repeat, "model": model, "tool_choice": choice,
                               "system_prompt_sha256": {"story": agent_sha(arm, "story"), "question": agent_sha(arm, "question")},
                               "tools": {"story": list(md.STORY_TOOLS[arm]), "question": list(md.QUESTION_TOOLS[arm])}, "sessions": [], "answers": []}
+    if v3:
+        result.update(profile=profile, turn_limit=max_calls, baseline_version=base_version, answer_version=answer_version)
     all_pairs: List[List[str]] = []
     # -- the story phase: every session a new conversation -----------------------------------------------------------
     for s, msgs in enumerate(task["sessions"]):
-        door = md.StructureDoor(store, arm, model) if arm in md.STRUCTURE_ARMS else md.BaselineDoor(store, arm, "story", model, session_no=s + 1)
+        door = (md.StructureDoor(store, arm, model, profile=profile) if arm in md.STRUCTURE_ARMS
+                else md.BaselineDoor(store, arm, "story", model, session_no=s + 1, version=base_version))
         tools = md.api_tools(door.tool_names, strict)
         sysp = system_prompt(arm, "story")
         turns = [(turn_id(s, i), render(task, s, i)) for i in range(len(msgs))]
-        res = mdrv.run_story_session(client, door, model, sysp, _intro_text(door, task, s), turns, tools, tool_choice=choice, max_calls=max_calls, extra=extra_api)
+        res = mdrv.run_story_session(client, door, model, sysp, _intro_text(door, task, s), turns, tools, tool_choice=choice, max_calls=max_calls, extra=extra_api,
+                                      force_report=v3)
         committed = None
         if res.ended == "complete":
             committed = door.commit()
@@ -363,6 +382,9 @@ def run_one(task: dict, arm: str, repeat: int, *, client: Any, model: str, out_r
         all_pairs += [p for p in pairs if p not in all_pairs]
         sess: Dict[str, Any] = {"session": s + 1, "run_id": door.run_id, "ledger": os.path.relpath(str(ledger_dir), run_dir), "story": res.to_obj(), "committed": committed is not None,
                                 "reports": md.reports_of(rows), "turns_without_report": [t["turn"] for t in res.turns if t["report"] is None]}
+        if v3:
+            sess["turns_forced"] = [t["turn"] for t in res.turns if t.get("forced")]
+            sess["turns_report_missing"] = [t["turn"] for t in res.turns if t["ended"] == "report_missing"]
         if hasattr(door, "session"):
             sess["events"] = door.session.events()
         result["sessions"].append(sess)
@@ -376,14 +398,15 @@ def run_one(task: dict, arm: str, repeat: int, *, client: Any, model: str, out_r
     result["false_pairs"] = false_pairs(task, all_pairs)
     # -- the question phase: one conversation per question ---------------------------------------------------------------
     if result["ended"] == "story_complete":
-        snap = ma.write_snapshot(store) if arm in md.STRUCTURE_ARMS else None
+        snap = ma.write_snapshot(store, topics=v3) if arm in md.STRUCTURE_ARMS else None
         if snap is not None:
             result["snapshot"] = {k: snap[k] for k in ("name", "sha256", "sentences", "superseded")}
         order = question_order(task["id"], repeat, len(task["questions"]))
         result["question_order"] = order
         for k in order:
             q = task["questions"][k]
-            qd = md.AnswerDoor(store, arm, q["q"], model, snapshot=snap) if arm in md.STRUCTURE_ARMS else md.BaselineDoor(store, arm, "question", model, question=q["q"])
+            qd = (md.AnswerDoor(store, arm, q["q"], model, snapshot=snap, answer_version=answer_version) if arm in md.STRUCTURE_ARMS
+                  else md.BaselineDoor(store, arm, "question", model, question=q["q"], version=base_version))
             tools = md.api_tools(qd.tool_names, strict, done=True)
             er = drv.run_episode(client, qd, qd.run_id, model, system_prompt(arm, "question"), _first_question_message(qd, qd.begin_result), tools, tool_choice=choice,
                                  max_turns=ANSWER_MAX_TURNS, extra=extra_api)
@@ -415,6 +438,9 @@ def _cost(result: dict) -> dict:
         c["output_tokens"] += st["usage"]["output_tokens"]
         c["text_blocks_dropped"] += st["text_blocks_dropped"]
         c["turns_without_report"] += len(s["turns_without_report"])
+        if "turns_forced" in s:
+            c["reports_forced"] = c.get("reports_forced", 0) + len(s["turns_forced"])
+            c["reports_missing"] = c.get("reports_missing", 0) + len(s["turns_report_missing"])
         ev = s.get("events")
         if ev:
             c["rewrites"] += ev["rewrites"]["rewritten"]
@@ -455,13 +481,13 @@ def score_run(run_dir: str, task: dict) -> dict:
 # ------------------------------------------------------------------------------------------------------------
 # the plan and the CLI
 # ------------------------------------------------------------------------------------------------------------
-def prepare(task: dict, arm: str, model: str, out_root: str, repeat: int = 1) -> dict:
+def prepare(task: dict, arm: str, model: str, out_root: str, repeat: int = 1, profile: str = mem.PROFILE_V2) -> dict:
     """What a run would do.  Writes nothing."""
-    return {"task_id": task["id"], "arm": arm, "arm_label": md.ARM_LABEL[arm], "model": model, "repeat": repeat, "run_dir": os.path.join(out_root, task["id"], arm, "r%02d" % repeat),
+    return {"profile": profile, "turn_limit": MAX_CALLS_V3 if profile == mem.PROFILE_V3 else mdrv.MAX_CALLS_PER_TURN, "task_id": task["id"], "arm": arm, "arm_label": md.ARM_LABEL[arm], "model": model, "repeat": repeat, "run_dir": os.path.join(out_root, task["id"], arm, "r%02d" % repeat),
             "sessions": [len(s) for s in task["sessions"]], "questions": len(task["questions"]),
             "story": {"agent": STORY_AGENT[arm], "tools": [TOOL_PREFIX + n for n in md.STORY_TOOLS[arm]], "system_prompt_sha256": agent_sha(arm, "story")},
             "question": {"agent": QUESTION_AGENT[arm], "tools": [TOOL_PREFIX + n for n in md.QUESTION_TOOLS[arm]], "system_prompt_sha256": agent_sha(arm, "question")},
-            "command": "python experiments/line3/loom/mem_run.py --task %s --arm %s --repeat %d --model %s" % (task["id"], arm, repeat, model)}
+            "command": "python experiments/line3/loom/mem_run.py --task %s --arm %s --repeat %d --model %s --profile %s" % (task["id"], arm, repeat, model, profile)}
 
 
 def make_client(driver: str, script: Optional[str]) -> Any:
@@ -499,6 +525,8 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     ap.add_argument("--driver", default=None, choices=("api", "replay"), help="REQUIRED to run: api = the real model through the Anthropic API (costs money, needs network and a key); replay = a recorded script")
     ap.add_argument("--script", default=None, help="--driver replay: the recorded turns (JSON)")
     ap.add_argument("--tag", default="")
+    ap.add_argument("--profile", default=mem.PROFILE_V3, choices=PROFILE_CHOICES,
+                    help="mem.v3 (default, MEM-fix: topic rule v2, cited REVERSAL, topic-aware answer recall, 24 tool calls a turn + forced final report for every arm, long-story caps) or mem.v2 (the meter v1)")
     ns = ap.parse_args(list(sys.argv[1:] if argv is None else argv))
     try:
         if ns.list:
@@ -523,13 +551,13 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             raise MemRunError("--task and --arm are required", "no_task")
         task = find_task(ns.task, ns.bank)
         if ns.prepare:
-            print(json.dumps(prepare(task, ns.arm, ns.model, ns.out, ns.repeat), ensure_ascii=False, sort_keys=True, indent=1))
+            print(json.dumps(prepare(task, ns.arm, ns.model, ns.out, ns.repeat, ns.profile), ensure_ascii=False, sort_keys=True, indent=1))
             return 0
         if ns.driver is None:
             raise MemRunError("say which driver runs it: --driver api (the real model: network, a key, money) or --driver replay --script FILE", "no_driver")
         for k in (range(1, ns.repeats + 1) if ns.repeats else [ns.repeat]):
             client = make_client(ns.driver, ns.script)
-            r = run_one(task, ns.arm, k, client=client, model=ns.model, out_root=ns.out, tag=ns.tag)
+            r = run_one(task, ns.arm, k, client=client, model=ns.model, out_root=ns.out, tag=ns.tag, profile=ns.profile)
             print("%s %s r%02d %s noticed=%d/%d answers hit=%d/%d  ->  %s" % (
                 r["task_id"], r["arm_label"], k, r["ended"], sum(1 for n in r["noticed"] if n["noticed"] and n["kind"] in ("contradiction", "reversal")),
                 sum(1 for n in r["noticed"] if n["kind"] in ("contradiction", "reversal")), sum(1 for a in r["answers"] if a["hit"] is True), len(r["answers"]),

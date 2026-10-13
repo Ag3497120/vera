@@ -32,6 +32,10 @@ and replays exactly as before): the rules text guides the model to write 「X �
 column, `memnotes.op_counts`), `declare_topic(text)` (a subject-less sentence is stored as 「<topic>の…」 and self-questioned with it; the expansion is in the row), `supersede`
 (the model resolves a contested group explicitly; recall answers with the newest and lists the old as history, nothing is deleted) and `report` (what the model noticed in a
 turn, mechanically).  The structure, the gate and the clause cut are not changed: the expanded sentence is an ordinary sentence of the memory.
+MEM-fix (owner 2026-10-13 「不具合を直し、長い物語で測る」, L-MEM-57..): the PROFILE `mem.v3` = mem.v2 + the topic rule `topic.v2` (a topic is put in front of a clause only if it truly has no
+subject: never twice, never before a subject of its own; a topic holding a particle is refused; a sentence with its own subject whose clause starts inside a token is asked from the start
+of that token: `clause_at`), REVERSAL notes that cite the two sentences (notes `mem.v2`), the harness rows `report_forced` / `report_missing`, and the long-story caps `CAPS_MEM_V3`.  Every
+older session replays under the profile its header records.
 """
 from __future__ import annotations
 
@@ -68,10 +72,18 @@ ROLES: Tuple[str, ...] = ("model", "user")
 CROSS_UNCAPPED = 1 << 30                                   # L-MEM-14: no cross cap across sessions (a session's writes are capped instead)
 CAPS_MEM_V1: Dict[str, int] = {"writes": 60, "recalls": 60, "lookups": 60, "ops": 300, "reads": 0, "emit_attempts": 0, "constructed": 0, "unit_chars": 8,
                                "max_L": 2, "crosses": CROSS_UNCAPPED, "max_depth": 0}
-PROFILE_V1, PROFILE_V2 = "mem.v1", "mem.v2"
-PROFILES: Tuple[str, ...] = (PROFILE_V1, PROFILE_V2)
+PROFILE_V1, PROFILE_V2, PROFILE_V3 = "mem.v1", "mem.v2", "mem.v3"
+PROFILES: Tuple[str, ...] = (PROFILE_V1, PROFILE_V2, PROFILE_V3)
+V2_PLUS: Tuple[str, ...] = (PROFILE_V2, PROFILE_V3)              # the profiles that have declare_topic / supersede / report and the door-supplied turn
 DEFAULT_PROFILE = PROFILE_V1                     # the API default: every store and test before MEM-d. The meter's doors (memdoor) ask for PROFILE_V2.
 CAPS_MEM_V2: Dict[str, int] = dict(CAPS_MEM_V1, topics=8, supersedes=30, reports=60)
+# MEM-fix (L-MEM-63): the caps of a LONG story (a session of 100+ messages must not run into 60 reports / 60 writes: the arms would stop being comparable).  Every count is the
+# v2 one times 4; the shape caps (unit_chars, max_L, crosses, max_depth) are unchanged.  The baselines' log caps move the same way (memdoor.LOG_CAPS_V2).
+CAPS_MEM_V3: Dict[str, int] = dict(CAPS_MEM_V2, writes=240, recalls=240, lookups=240, ops=1200, topics=32, supersedes=120, reports=240)
+TOPIC_FORBIDDEN = "のにでとをが"                                    # a mem.v3 topic holds none of the arm particles (L-MEM-58): with one inside, 「<topic>の…」 is a nested particle chain and EVERY expansion is refused
+LEAD_PARTICLES = "のにでとをがはもへ"                              # a particle in the lead-in of a clause (text from the start of its token up to the Y) means the clause already has its own subject
+FORCE_OPS: Tuple[str, ...] = ("report_forced", "report_missing")  # MEM-fix (L-MEM-62): the harness rows of a turn that ended without a report of its own (mem.v3 / membase.v2)
+FORCE_REASONS: Tuple[str, ...] = ("turn_limit", "no_tool_call")
 TOOLS: Tuple[str, ...] = ("write", "recall", "lookup", "read_sentence", "status", "commit")         # the memory session's tools (begin is the store's door)
 V2_OPS: Tuple[str, ...] = ("declare_topic", "supersede", "report")                                 # MEM-d: the ops a `mem.v2` session adds
 TOPIC_MAX_CHARS = 24
@@ -91,11 +103,11 @@ MEM_RULES: Dict[str, Any] = {
     "close": "commit closes the session; an uncommitted session is not part of the memory.",
 }
 def caps_of(profile: str) -> Dict[str, int]:
-    return CAPS_MEM_V2 if profile == PROFILE_V2 else CAPS_MEM_V1
+    return CAPS_MEM_V3 if profile == PROFILE_V3 else CAPS_MEM_V2 if profile == PROFILE_V2 else CAPS_MEM_V1
 
 
 def tools_of(profile: str) -> Tuple[str, ...]:
-    return TOOLS + V2_OPS if profile == PROFILE_V2 else TOOLS
+    return TOOLS + V2_OPS if profile in V2_PLUS else TOOLS
 
 
 MEM_RULES_GATE: Dict[str, Any] = dict(MEM_RULES, recall="recall(question) asks the evidence gate (scope clause, " + mr.RECALL_VERSION + ") of the WHOLE memory: ANSWER (one "
@@ -116,6 +128,15 @@ MEM_RULES_V2: Dict[str, Any] = dict(
     report="report(contradictions, bugs) ends EVERY turn: contradictions = pairs of turn ids (\"1-3\" = session 1, message 3) whose statements disagree, [] if none; bugs = [] here.",
     recall="recall(question) asks the evidence gate (scope clause, " + mr.RECALL_VERSION + ") of the WHOLE memory: ANSWER (one group), CHOICE (two or more: contested facts stay listed, "
            "nothing is ranked), NONE (no sentence passes: the codes say why). Superseded sentences are returned under `history`, not as the answer.")
+
+
+MEM_RULES_V3: Dict[str, Any] = dict(
+    MEM_RULES_V2,
+    topic="declare_topic(text) at the start of the session: what it is about (a noun phrase, at most 24 characters, NO particle in it: の に で と を が -- 展示会準備, not 展示会の準備). A sentence you write with NO subject "
+          "(「締め切りは水曜」) is stored as 「<topic>の締め切りは水曜」 and the result says so (implicit_topic). A sentence that already has its own subject (「広報の締め切りは水曜」, or one that "
+          "names the topic) is stored AS WRITTEN: the topic is never added twice. Declare it again when the subject changes.",
+    report="report(contradictions, bugs) ends EVERY turn: contradictions = pairs of turn ids (\"1-3\" = session 1, message 3) whose statements disagree, [] if none; bugs = [] here. A REVERSAL "
+           "note names the two sentences it is about (`sentence`, `earlier`, and `cite`: the turn pairs you can report).")
 
 
 class _Sentinel:
@@ -155,6 +176,8 @@ def row_line(row: dict) -> str:
     d = {"kind": row.get("kind", "base"), "sent": row["sent"], "source": row["source"]}
     if "topic_at" in row:                  # MEM-d: where the declared topic was put in front of the clause (only a row that was expanded has it; every other row is as it was)
         d["topic_at"] = row["topic_at"]
+    if "clause_at" in row:                 # MEM-fix (mem.v3): where the self-question starts when the clause's own first unit is inside a token (a compound Y); only such a row has it
+        d["clause_at"] = row["clause_at"]
     if "turn" in row:                      # MEM-d: the turn id the door told the session ("1-3"): only a mem.v2 write that was given one has it
         d["turn"] = row["turn"]
     return canonical(d) + "\n"
@@ -225,6 +248,9 @@ class MemRun(Run):
         task = {"task_id": MEM_TASK_ID, "text": "memory session", "lang": "prose", "mode": "record_only", "tiers": ["WORD"]}
         super().__init__(Corpus(b""), task, model, run_id, "report", None, None, "notes.v1")
         self.profile = profile
+        self.v2plus = profile in V2_PLUS               # declare_topic / supersede / report, the door-supplied turn, the v2 state; mem.v3 adds the topic rule `topic.v2`, cited REVERSALs, the long-story caps
+        self.v3 = profile == PROFILE_V3
+        self.notes_profile = mn.MEM_NOTES_V2 if self.v3 else mn.MEM_NOTES_VERSION
         self.caps = dict(caps_of(profile))
         self.store_id, self.session_no = store_id, session_no
         self.store_head_before = store_head_before
@@ -264,6 +290,8 @@ class MemRun(Run):
             prev = c_t
             if "topic_at" in rows[t]:
                 self.starts[t] = rows[t]["topic_at"]
+            elif "clause_at" in rows[t]:
+                self.starts[t] = rows[t]["clause_at"]
         sup = {int(k): dict(v) for k, v in (superseded or {}).items()}
         if any(not 0 <= k < len(rows) or not 0 <= v["by"] < len(rows) for k, v in sup.items()):
             raise Refuse("store_unverified", {"reason": "supersede_names_no_sentence"})
@@ -307,26 +335,27 @@ class MemRun(Run):
             h = super().header()
             h.update({"mem_version": MEM_VERSION, "store_id": self.store_id, "session_no": self.session_no, "store_head_before": self.store_head_before,
                       "memory_sha_before": mem_sha(self.rows), "sessions_before": self.session_no - 1, "sentences_before": len(self.rows),
-                      "evidence_version": self.evidence_version, "notes_profile": mn.MEM_NOTES_VERSION, "caps": MEM_VERSION, "kind_policy": self.kind_policy,
+                      "evidence_version": self.evidence_version, "notes_profile": self.notes_profile, "caps": MEM_VERSION, "kind_policy": self.kind_policy,
                       "contradiction_policy": self.contradiction_policy, "unseatable_policy": self.unseatable_policy, "self_question": self.hook_id})
-            if self.profile == PROFILE_V2:                    # absent in a mem.v1 header: every earlier begin row is as it was
+            if self.v2plus:                                   # absent in a mem.v1 header: every earlier begin row is as it was
                 h["mem_profile"] = self.profile
             self._begin_header = h
         return self._begin_header
 
     def begin_body(self) -> dict:
         rules = MEM_RULES if self.evidence_version is None else MEM_RULES_GATE
-        if self.profile == PROFILE_V2:
-            rules = MEM_RULES_V2 if self.evidence_version is not None else dict(MEM_RULES_V2, recall=MEM_RULES["recall"])
+        if self.v2plus:
+            base = MEM_RULES_V3 if self.v3 else MEM_RULES_V2
+            rules = base if self.evidence_version is not None else dict(base, recall=MEM_RULES["recall"])
         res = {"ok": True, "run_id": self.run_id, "mode": "memory", "task": ops.task_view(self.task, self.caps), "rules": rules, "header": self.header()}
-        if self.profile == PROFILE_V2:
+        if self.v2plus:
             res["tools"] = list(tools_of(self.profile))
         return {"actor": "model", "op": "begin", "args": {"task_id": self.task["task_id"], "model": self.model}, "result": res, "state_sha": self.mem_state_sha()}
 
     def mem_state_sha(self) -> str:
         """The state after a row: the loom state (units, crosses, thread, counters, guards) + the memory (|H|, its sha, the write / recall counts)."""
         mem = {"sentences": len(self.rows), "memory_sha": mem_sha(self.rows), "writes": self.counts["writes"], "recalls": self.counts["recalls"]}
-        if self.profile == PROFILE_V2:                         # MEM-d: what a mem.v2 session adds to its state; absent for mem.v1, so those hashes are as they were
+        if self.v2plus:                                        # MEM-d: what a mem.v2 session adds to its state; absent for mem.v1, so those hashes are as they were
             mem["v2"] = {"topic": self.topic, **self.counts2}
         if self.superseded:
             mem["superseded"] = [[k, v["by"], v["session"], v["reason"]] for k, v in sorted(self.superseded.items())]
@@ -339,7 +368,7 @@ class MemRun(Run):
         return list(self._pending)
 
     def _executable(self, op: Any) -> bool:
-        return isinstance(op, str) and (op in TOOLS or op in FROZEN_OPS or (self.profile == PROFILE_V2 and op in V2_OPS))
+        return isinstance(op, str) and (op in TOOLS or op in FROZEN_OPS or (self.v2plus and op in V2_OPS))
 
     def _precheck(self, op: str) -> None:
         st = self.state
@@ -422,8 +451,12 @@ class MemRun(Run):
             notes = self.notes_due()
             if not notes:
                 raise ValueError("note: no notes are due after the previous row")
-            return {"actor": actor, "op": op, "args": {"after": self.i - 1, "of": "write", "notes": notes, "nv": mn.MEM_NOTES_VERSION},
+            return {"actor": actor, "op": op, "args": {"after": self.i - 1, "of": "write", "notes": notes, "nv": self.notes_profile},
                     "result": {"ok": True}, "state_sha": self.mem_state_sha()}
+        if actor == "harness" and op in FORCE_OPS:             # MEM-fix (L-MEM-62): only a mem.v3 session has them; any other session refuses them as it always did
+            if not self.v3:
+                raise ValueError("op %r is not a row of actor %r" % (op, actor))
+            return {"actor": actor, "op": op, "args": force_args(args), "result": {"ok": True}, "state_sha": self.mem_state_sha()}
         body = super()._outside_step(actor, op, args)
         body["state_sha"] = self.mem_state_sha()
         return body
@@ -446,7 +479,7 @@ def _marked(wv_crosses: Sequence[dict], new_uids: set) -> str:
 
 
 def h_write(run: MemRun, a: dict, i: int) -> dict:
-    a = ops._args(a, {"text": (str, True), "role": (str, False), **({"turn": (str, False)} if run.profile == PROFILE_V2 else {})})
+    a = ops._args(a, {"text": (str, True), "role": (str, False), **({"turn": (str, False)} if run.v2plus else {})})
     turn = a.get("turn")
     if turn is not None and not TURN_RX.match(turn):
         raise Refuse("bad_turn", {"turn": turn[:16]})
@@ -458,7 +491,7 @@ def h_write(run: MemRun, a: dict, i: int) -> dict:
         raise Refuse("bad_sentence", {"reason": "1 to %d characters, no newline / NUL / control character" % ARG_STR_CAP})
     t = len(run.rows)
     implicit: Optional[dict] = None
-    if run.profile == PROFILE_V2 and run.topic is not None:           # MEM-d: a subject-less sentence is stored with the declared topic as its subject
+    if run.v2plus and run.topic is not None:                          # MEM-d: a subject-less sentence is stored with the declared topic as its subject
         implicit = _expand_with_topic(run, t, text, role)
         if implicit is not None:
             text = implicit["stored"]
@@ -478,13 +511,19 @@ def h_write(run: MemRun, a: dict, i: int) -> dict:
     run.session_written += 1
     if implicit is not None:
         run.starts[t] = implicit["at"]
+    elif run.v3:                                                      # MEM-fix (L-MEM-58): a sentence with its own subject whose clause starts inside a token is asked from the start of that token
+        cs = clause_run_start(c_t, t, text, wv)
+        if cs is not None:
+            row["clause_at"] = cs
+            run.starts[t] = cs
+            c_t = run.corpus_cur = run.corpus = build_corpus(rows_after)       # the row changed after c_t was built from it: the live corpus must be the corpus of memory.jsonl's bytes (history.corpus_sha, mem_sha)
     st = run.state
     new_crosses = [st.crosses[c["cid"]] for c in wv["crosses"]]
     linked = [st.crosses[cid] for cid in st.thread]
     c_key = c_before if run.kind_policy != "c" else build_corpus(_key_rows(rows_before, "c", run.session_no))
     notes, extra = mn.compute_write_notes(t=t, row=row, rows_before=rows_before, rows_after=rows_after, corpus_key=c_key, corpus_before=c_before, corpus_after=c_t,
                                           state=st, linked=linked, new_crosses=new_crosses, weave=wv, contradiction_policy=run.contradiction_policy,
-                                          self_question=run.hook, superseded=run.superseded or None, clause_start=None if implicit is None else implicit["at"])
+                                          self_question=run.hook, superseded=run.superseded or None, clause_start=run.starts.get(t), cite=run.v3)
     run._pending = notes
     for n in notes:
         run.tally["notes"][n["type"]] += 1
@@ -505,6 +544,8 @@ def h_write(run: MemRun, a: dict, i: int) -> dict:
            "history": {"sentences": t, "corpus_sha": c_key.corpus_sha}, "keys": extra["keys"], "clause": extra["clause"], "thread_length": len(st.thread)}
     if implicit is not None:
         res["implicit_topic"] = {"topic": run.topic, "at": implicit["at"], "written": implicit["written"]}
+    if "clause_at" in row:
+        res["clause_at"] = row["clause_at"]
     if turn is not None:
         res["turn"] = turn
     if notes:
@@ -534,7 +575,36 @@ def _expand_with_topic(run: MemRun, t: int, text: str, role: str) -> Optional[di
     at = g["start"]
     while at > 0 and mr.mid_token(text, at):           # the clause starts inside a written token (新規|締め切り): the topic goes before the WHOLE token, the subject stays whole (MEM-c2 rule)
         at -= 1
+    if run.v3 and not topic_is_missing(run.topic, text, at, g):
+        return None
     return {"stored": text[:at] + run.topic + TOPIC_PARTICLE + text[at:], "at": at, "written": text}
+
+
+def clause_run_start(corpus_t: Any, t: int, text: str, wv: dict) -> Optional[int]:
+    """MEM-fix (L-MEM-58): the offset the self-question of sentence t starts at when the clause's own first unit sits INSIDE a written token -- 「監視設定の本番監視ポートは…」, whose Y 本番監視ポート the
+    word cut seats as 本番 / 監視 / ポート and whose topic cross therefore begins at 「ポート」: the question 「ポートは何ですか」 is a cut subject (MEM-c2 guard: UNREADABLE).  In a mem.v2 session the
+    topic expansion's walk-back accidentally asked these sentences from the start of the token (and put the topic in front); a mem.v3 session no longer invents the topic, so it asks them from
+    that same start: 「監視設定の本番監視ポートは何ですか」.  None when the clause starts at a token boundary (nothing changes) or there is no clause.  The guard and the gate are not touched."""
+    g = mn.clause_geometry(corpus_t, t, wv["crosses"])
+    if g is None or not mr.mid_token(text, g["start"]):
+        return None
+    at = g["start"]
+    while at > 0 and mr.mid_token(text, at):
+        at -= 1
+    return at
+
+
+def topic_is_missing(topic: str, text: str, at: int, geometry: dict) -> bool:
+    """MEM-fix (L-MEM-58, rule `topic.v2`, owner 「主題の二重付与」: 254 of the 654 expanded sentences of meter v1 carried the topic twice, 430 more were given a topic in front of a subject of
+    their own): a sentence whose clause the geometry reads as subject-less is given the topic ONLY IF the clause truly has no subject, i.e.
+      - the topic is not already in the clause (`topic` in text[:end of the は]: the sentence starts with it, or has it as part of its subject), and
+      - the lead-in of the clause (text from `at`, the start of the token the Y sits in, to the Y) holds no particle (のにでとをがはもへ): 「端末テストの責任者は…」 has the subject 端末テスト
+        although the word cut seats 責任 / 者 as separate crosses and leaves the topic cross without an arm.
+    A lead-in of kana / kanji / Latin with no particle (「新規」 in 「新規締め切りは水曜」, 「チェックサム責任」, 「CDNキャッシュ」) is a compound Y, not a subject.  A missed expansion leaves the sentence as written
+    (the self-question then reads it or calls it UNREADABLE); a false one would invent a subject, so the doubt goes to not expanding."""
+    if topic in text[:geometry["end"]]:
+        return False
+    return not any(ch in LEAD_PARTICLES for ch in text[at:geometry["start"]])
 
 
 RECALL_UNAVAILABLE = {"ticket": "MEM-c", "reason": "the evidence gate is not merged into line3; recall over the memory is MEM-c"}      # bytes as MEM-a/b recorded them
@@ -573,7 +643,7 @@ def h_status(run: MemRun, a: dict, i: int) -> dict:
             "thread_length": len(st.thread), "counters": dict(st.counters), "writes": run.counts["writes"], "recalls": run.counts["recalls"],
             "caps": dict(run.caps), "notes": dict(run.tally["notes"]), "refused_writes": dict(sorted(run.tally["refused"].items())), "guards": dict(st.guards),
             "memory_sha": mem_sha(run.rows), "ledger_head": run.head}
-    if run.profile == PROFILE_V2:
+    if run.v2plus:
         res.update(profile=run.profile, topic=run.topic, topics=run.counts2["topics"], supersedes=run.counts2["supersedes"], reports=run.counts2["reports"],
                    superseded=len(run.superseded))
     return res
@@ -601,6 +671,9 @@ def h_declare_topic(run: MemRun, a: dict, i: int) -> dict:
     t = _plain_text(a["text"], "text", 1, TOPIC_MAX_CHARS, "bad_topic")
     if t[-1] in "のはがをにでともへ" or any(ch in t for ch in "。、．，"):
         raise Refuse("bad_topic", {"field": "text", "reason": "a noun phrase: no particle at the end (the structure adds の), no 。 or 、"})
+    if run.v3 and any(ch in TOPIC_FORBIDDEN for ch in t):
+        raise Refuse("bad_topic", {"field": "text", "reason": "no particle (%s) inside the topic: the structure puts の after it, and a second particle before the head makes the sentence unseatable "
+                                                              "(nested_particle_chain); write 展示会準備, not 展示会の準備" % "".join(TOPIC_FORBIDDEN)})
     units = mn.word_units(t)
     if not units:
         raise Refuse("bad_topic", {"field": "text", "reason": "no word unit"})
@@ -707,6 +780,17 @@ def report_result(a: dict) -> dict:
     return {"ok": True, "turn": a["turn"], "contradictions": sorted(pairs), "bugs": list(bugs)}
 
 
+def force_args(args: Any) -> dict:
+    """The args of a `report_forced` / `report_missing` harness row (MEM-fix, L-MEM-62): {turn (a turn id), reason (turn_limit | no_tool_call), calls (tool calls the turn had used)}.  Raises
+    ValueError, as every malformed harness row does."""
+    if not (isinstance(args, dict) and set(args) == {"turn", "reason", "calls"}):
+        raise ValueError("report_forced / report_missing: arguments are turn, reason, calls")
+    if not (isinstance(args["turn"], str) and TURN_RX.match(args["turn"]) and args["reason"] in FORCE_REASONS and isinstance(args["calls"], int)
+            and not isinstance(args["calls"], bool) and args["calls"] >= 0):
+        raise ValueError("report_forced / report_missing: turn is a turn id, reason one of %s, calls a count" % (FORCE_REASONS,))
+    return dict(args)
+
+
 def _frozen_handler(op: str):
     def h(run: MemRun, a: dict, i: int) -> dict:
         cid = a.get("cid") if isinstance(a, dict) else None
@@ -750,6 +834,8 @@ def session_memory_rows(run_dir) -> Tuple[List[dict], bool, Optional[dict]]:
             out.append({"kind": res["kind"], "sent": res["text"], "source": res["source"]})
             if "implicit_topic" in res:
                 out[-1]["topic_at"] = res["implicit_topic"]["at"]
+            if "clause_at" in res:
+                out[-1]["clause_at"] = res["clause_at"]
             if "turn" in res:
                 out[-1]["turn"] = res["turn"]
         committed = (k == len(lines) - 1 and r["actor"] == "model" and r["op"] == "commit" and r["result"].get("ok") is True)
@@ -767,6 +853,21 @@ def session_supersedes(run_dir) -> Dict[int, dict]:
             res = r["result"]
             for x in res["superseded"]:
                 out[x["sid"]] = {"by": res["new_sid"], "reason": res["reason"], "session": res["session"]}
+    return out
+
+
+def session_topics(run_dir) -> List[dict]:
+    """MEM-fix (L-MEM-59): [{"session": n, "topic": text}] -- the ok `declare_topic` rows of a session ledger, in order (the ledger is the single source of truth, as for the supersede
+    marks).  A session without a topic (every mem.v1 session, a v2 session that declared none) gives []."""
+    lines, _ = lg.read_raw_lines(run_dir)
+    out: List[dict] = []
+    session = None
+    for k, ln in enumerate(lines):
+        r = lg._parse_line(ln)
+        if k == 0:
+            session = r["result"]["header"]["session_no"]
+        if r["actor"] == "model" and r["op"] == "declare_topic" and r["result"].get("ok") is True:
+            out.append({"session": session, "topic": r["result"]["topic"]})
     return out
 
 

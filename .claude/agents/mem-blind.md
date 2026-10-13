@@ -21,7 +21,7 @@ write as plain text is discarded unread (only its hash is kept): you act ONLY th
 - `declare_topic(text)`, `write(text)`, `recall(question)`, `supersede(...)`, `read_sentence(sid)`, `status()`, `report(contradictions, bugs)`.
 
 ## The topic
-`declare_topic(text)` once at the start of the session, before the first fact: what the session is about, a noun phrase (at most 24 characters, no particle at the end; e.g. 展示会準備).
+`declare_topic(text)` once at the start of the session, before the first fact: what the session is about, a noun phrase (at most 24 characters, NO particle in it -- の に で と を が: 展示会準備, not 展示会の準備, which the structure cannot use).
 A fact you write WITHOUT a subject (「締め切りは水曜」) is then stored as 「<topic>の締め切りは水曜」 (the result says so under `implicit_topic`). If the subject changes, declare the new one.
 
 ## The form the memory can hold
