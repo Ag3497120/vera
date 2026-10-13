@@ -124,3 +124,53 @@ def test_v7_begin_row_and_replay_and_older_versions_replay(tmp_path):
     for v in (ma.ANSWER_V5, ma.ANSWER_V6):
         b = ma.AnswerSession(p, "認証の期限はいつですか？", "o", answer_version=v)
         assert not ma.replay_answer(b.ledger.dir).run.v7
+
+
+# -- memanswer.v8: the identity of a value is the value AS WRITTEN (the fourth review of 70e3b152) ---------------------------------------------------------------
+V8 = ma.ANSWER_V8
+
+
+@pytest.mark.parametrize("pair,q", [
+    (("休業日は1・2日", "休業日は12日"), "休業日はいつですか？"),                    # c1
+    (("面積は10²", "面積は102"), "面積は何ですか？"),
+    (("認証の期限は1・2日", "認証の期限は12日"), "認証の期限はいつですか？"),          # c3
+    (("認証の版はv2・1", "認証の版はv21"), "認証の版は何ですか？"),
+    (("認証の部屋は10²", "認証の部屋は102"), "認証の部屋はどこですか？"),
+    (("認証の部屋は1 02", "認証の部屋は102"), "認証の部屋はどこですか？"),
+    (("会議の場所は3・4階", "会議の場所は34階"), "会議の場所はどこですか？"),          # c4
+    (("認証の期限は12日", "認証の期限は1・2日"), "認証の期限はいつですか？"),
+])
+def test_values_that_differ_only_in_a_dot_a_space_or_a_width_are_a_contradiction_and_nothing_is_emitted(tmp_path, pair, q):
+    p = store(tmp_path, list(pair))
+    r = ma.AnswerSession(p, q, "o", answer_version=V8).call("recall", {"question": q})
+    assert r["verdict"] == "CHOICE" and len(r["answers"]) == 2                                          # two written values, never one
+    assert attack(p, q, 2, version=V8) == []
+
+
+def test_a_value_with_a_dot_or_a_space_inside_is_never_emitted_squashed(tmp_path):
+    for w, q in (("認証の期限は1・2日", "認証の期限はいつですか？"), ("認証の部屋は1 02", "認証の部屋はどこですか？")):
+        p = store(tmp_path, [w], name="s" + str(abs(hash(w)) % 1000))
+        got = attack(p, q, 1, version=V8)
+        assert got == [], (w, got)                                                                      # the loom would read it out as 12日 / 102: refused (quote_not_verbatim), not emitted
+        a = ma.AnswerSession(p, q, "o", answer_version=V8)
+        o = a.call("recall", {"question": q})["answers"][0]["occurrences"][0]
+        assert o["verbatim"] is False
+        assert a.call("weave_span", {"sid": 0, "tier": "WORD", "first": o["span"][0], "last": o["span"][1]})["refusal"] == "quote_not_verbatim"
+
+
+def test_v8_keeps_the_exact_answers_and_the_owner_joiners(tmp_path):
+    p = store(tmp_path, ["認証の期限は12日"])
+    assert attack(p, "認証の期限はいつですか？", 1, version=V8) == [(0, "12日", None)]
+    p = store(tmp_path, ["配布ビルドのバージョンは3.2.0-rc2です"], name="j")
+    assert (0, "3.2.0-rc2", None) in attack(p, "配布ビルドのバージョンは何ですか？", 1, version=V8)
+    b = ma.AnswerSession(p, "配布ビルドのバージョンは何ですか？", "o", answer_version=V8)
+    assert b.begin_result["mem_answer"]["version"] == "memanswer.v8" and b.begin_result["mem_answer"]["guard"] == "ansguard.v6"
+    r = ma.replay_answer(b.ledger.dir)
+    assert r.run.v8 and r.run.v7
+
+
+def test_written_identity_merges_nothing_but_nfc_forms():
+    from verantyx.loom import memask as mask
+    assert mask.written_id("1・2日") != mask.written_id("12日") and mask.written_id("1 2") != mask.written_id("12") and mask.written_id("V2") != mask.written_id("v2")
+    assert mask.written_id("10²") != mask.written_id("102") and mask.written_id("１２") != mask.written_id("12")
+    assert mask.written_id("\u30ac") == mask.written_id("\u30ab\u3099")                              # canonical equivalents only

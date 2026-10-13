@@ -300,13 +300,19 @@ def _event_entries(index: mx.MemIndex, qy: Query, open_nest: Optional[str]) -> L
 # ------------------------------------------------------------------------------------------------------------
 # the fold of the values of a position and scope, and the verdict
 # ------------------------------------------------------------------------------------------------------------
-def _fold(entries: Sequence[mx.Entry]) -> Tuple[List[List[mx.Entry]], List[Tuple[mx.Entry, dict]]]:
+def written_id(s: str) -> str:
+    """memanswer.v8 (L-PUB-93): the identity of a value is the value AS WRITTEN, NFC only.  No casefold, no NFKC, and nothing is removed: 「・」, spaces and every other character are part of the value, so 「1・2日」,
+    「12日」 and 「1 2日」 are three values (mn.norm_answer, which strips them, merged them: a contradiction looked like one answer).  No width folding is kept: none can be shown not to merge two written values."""
+    return unicodedata.normalize("NFC", s)
+
+
+def _fold(entries: Sequence[mx.Entry], exact: bool = False) -> Tuple[List[List[mx.Entry]], List[Tuple[mx.Entry, dict]]]:
     """(live, history) of the values of ONE position in ONE scope, in slide order.  live = groups of entries with the same normalised value; history = (entry, who replaced it)."""
     live: List[List[mx.Entry]] = []
     hist: List[Tuple[mx.Entry, dict]] = []
 
     def norm(e: mx.Entry) -> str:
-        return mn.norm_answer(e.value)
+        return written_id(e.value) if exact else mn.norm_answer(e.value)
 
     for e in entries:
         if e.marks:
@@ -351,7 +357,7 @@ def _squash(s: str) -> str:
     return "".join(ch for ch in s if not ch.isspace() and ch not in "・·")
 
 
-def quote_check(corpus: Any, sid: int, i0: int, i1: int, value: Optional[str] = None, joiners: bool = False) -> Tuple[str, str, bool]:
+def quote_check(corpus: Any, sid: int, i0: int, i1: int, value: Optional[str] = None, joiners: bool = False, exact: bool = False) -> Tuple[str, str, bool]:
     """(readout, source, verbatim) of the WORD-unit stretch i0..i1 of sentence `sid`.  `readout` is what `weave_span` would read out (the units with the LETTERS of the gaps between them: the loom writes no
     punctuation, so 「v2.4」 reads out as 「v24」, 「6.5万円」 as 「65万円」, 「6/14」 as 「614」), `source` the characters of the sentence from the first unit to the last, `verbatim` iff they are the same text
     (`_squash`), and, when the value the memory holds is given, also the same text as that value (a prefix or a suffix the loom drops as a function word, 「閉」室日, is in the value and not in the units).  An emit is the
@@ -372,10 +378,12 @@ def quote_check(corpus: Any, sid: int, i0: int, i1: int, value: Optional[str] = 
                 gaps[k] = raw
     readout = "".join(surf[k] + (gaps[k] if k < len(surf) - 1 else "") for k in range(len(surf)))
     source = idx.text(sid)[sps[i0][0]:sps[i1][1]]
+    if exact:                                                       # memanswer.v8: the read-out IS the source text (joiners kept by weave_span.v4), no whitespace / 「・」 equivalence
+        return readout, source, bool(ok) and readout == source and (value is None or readout == value)
     return readout, source, bool(ok) and _squash(readout) == _squash(source) and (value is None or _squash(readout) == _squash(value))
 
 
-def _occurrence(index: mx.MemIndex, rows: Sequence[dict], corpus: Any, e: mx.Entry, route: str, position: Any, joiners: bool = False) -> dict:
+def _occurrence(index: mx.MemIndex, rows: Sequence[dict], corpus: Any, e: mx.Entry, route: str, position: Any, joiners: bool = False, exact: bool = False) -> dict:
     row = rows[e.sid]
     _, session, _, role = parse_source(row["source"])
     cr = index.clause_rec(e.sid, e.k)
@@ -384,7 +392,7 @@ def _occurrence(index: mx.MemIndex, rows: Sequence[dict], corpus: Any, e: mx.Ent
                          "position": [position[0], position[1], [list(p) for p in position[2]]]}
     if o["span"] is not None:                                      # PUB-M6b: can the stretch be emitted as it stands?  (a value with punctuation inside is read out without it)
         try:
-            readout, _source, verbatim = quote_check(corpus, e.sid, o["span"][0], o["span"][1], e.value, joiners)
+            readout, _source, verbatim = quote_check(corpus, e.sid, o["span"][0], o["span"][1], e.value, joiners, exact)
         except (IndexError, KeyError):
             readout, verbatim = "", False
         o["verbatim"] = verbatim
@@ -397,11 +405,11 @@ def _occurrence(index: mx.MemIndex, rows: Sequence[dict], corpus: Any, e: mx.Ent
     return o
 
 
-def _group(index: mx.MemIndex, rows: Sequence[dict], corpus: Any, entries: Sequence[Tuple[mx.Entry, Any]], route: str, replaced: Optional[Sequence[dict]] = None, joiners: bool = False) -> dict:
+def _group(index: mx.MemIndex, rows: Sequence[dict], corpus: Any, entries: Sequence[Tuple[mx.Entry, Any]], route: str, replaced: Optional[Sequence[dict]] = None, joiners: bool = False, exact: bool = False) -> dict:
     occ = []
     shown: List[str] = []
     for i, (e, pos) in enumerate(entries):
-        o = _occurrence(index, rows, corpus, e, route, pos, joiners)
+        o = _occurrence(index, rows, corpus, e, route, pos, joiners, exact)
         if replaced is not None:
             o["replaced_by"] = replaced[i]
         occ.append(o)
@@ -510,7 +518,7 @@ def candidates(index: mx.MemIndex, rows: Sequence[dict], question: str, qy: Quer
 
 
 def recall(index: mx.MemIndex, rows: Sequence[dict], corpus: Any, question: str, *, open_nest: Optional[str] = None, ask: str = ASK_VERSION,
-           bridges: Optional[Sequence[mx.Bridge]] = None) -> dict:
+           bridges: Optional[Sequence[mx.Bridge]] = None, exact_values: bool = False) -> dict:
     """The verdict of one question over the crosses.  `rows` = H (for the source of every sentence), `corpus` = its memory corpus (for the unit stretch to quote; None: no spans),
     `open_nest` = the nest open in the asking session (its statements are preferred).  `ask` ask.v3 (PUB-M6c): see the module doc of that version; `bridges` (ask.v3) = the bridges to use instead of those of
     the index (an answer run adds the ones the model confirmed in it)."""
@@ -579,11 +587,11 @@ def recall(index: mx.MemIndex, rows: Sequence[dict], corpus: Any, question: str,
             if e.scope not in scopes:
                 scopes.append(e.scope)
         for sc in scopes:
-            live, hist = _fold([e for e in es if e.scope == sc])
+            live, hist = _fold([e for e in es if e.scope == sc], exact_values)
             if len(live) >= 2:
                 same_seat = True
             for grp in live:
-                n = mn.norm_answer(grp[0].value)
+                n = (written_id if exact_values else mn.norm_answer)(grp[0].value)
                 for item in live_all:
                     if item[0] == n:
                         item[1].extend((e, pos) for e in grp)
@@ -598,7 +606,7 @@ def recall(index: mx.MemIndex, rows: Sequence[dict], corpus: Any, question: str,
             return none(["no_value"], looked) if v3 else _none_plain(out, looked, route)
         superseded_all = True
         for e, pos, who in hist_all:
-            n = mn.norm_answer(e.value)
+            n = (written_id if exact_values else mn.norm_answer)(e.value)
             for item in live_all:
                 if item[0] == n:
                     item[1].append((e, pos))
@@ -609,18 +617,18 @@ def recall(index: mx.MemIndex, rows: Sequence[dict], corpus: Any, question: str,
     out["route"] = route
     out["looked_for"] = looked
     out["positions_found" if v3 else "candidates"] = len(groups)
-    out["answers"] = [_group(index, rows, corpus, ents, route or "exact", None, v3) for _, ents in live_all]
+    out["answers"] = [_group(index, rows, corpus, ents, route or "exact", None, v3, exact_values) for _, ents in live_all]
     if hist_all:
         hnorm: List[Tuple[str, List[Tuple[mx.Entry, Any, dict]]]] = []
         for e, pos, who in hist_all:
-            n = mn.norm_answer(e.value)
+            n = (written_id if exact_values else mn.norm_answer)(e.value)
             for item in hnorm:
                 if item[0] == n:
                     item[1].append((e, pos, who))
                     break
             else:
                 hnorm.append((n, [(e, pos, who)]))
-        out["history"] = [_group(index, rows, corpus, [(e, pos) for e, pos, _ in items], route or "exact", [w for _, _, w in items], v3) for _, items in hnorm]
+        out["history"] = [_group(index, rows, corpus, [(e, pos) for e, pos, _ in items], route or "exact", [w for _, _, w in items], v3, exact_values) for _, items in hnorm]
     if superseded_all:
         out["superseded_all"] = True
     if len(out["answers"]) >= 2:

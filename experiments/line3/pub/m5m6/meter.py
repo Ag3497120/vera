@@ -35,7 +35,7 @@ JOINER_CHARS = ".,-:/"
 
 
 def answer_version() -> str:
-    return ma.ANSWER_V7 if MODE["m6c"] else ma.ANSWER_V3
+    return ma.ANSWER_V8 if MODE["m6c"] else ma.ANSWER_V3
 
 
 def versions() -> Any:
@@ -260,6 +260,66 @@ def all_values_attack(make: Any, stretches: Sequence[Tuple[int, int, int]], gold
     return out
 
 
+def collision_variants(v: str) -> List[str]:
+    """PUB-M6h: the written variants of a value that the gate-style normalisation (NFKC, casefold, no spaces / 「・」) would merge with it: a 「・」 inserted (or removed), a space inserted (or removed), the ASCII
+    digits and letters in full width."""
+    out: List[str] = []
+
+    def add(t: str) -> None:
+        if t != v and t and t not in out:
+            out.append(t)
+    add(v.replace("・", "") if "・" in v else (v[0] + "・" + v[1:] if len(v) >= 2 else ""))
+    add(v.replace(" ", "") if " " in v else (v[0] + " " + v[1:] if len(v) >= 2 else ""))
+    add("".join(chr(ord(ch) + 0xFEE0) if (ch.isascii() and ch.isalnum()) else ch for ch in v))
+    return out
+
+
+def collision_red_team(tmp: str, store: str, snap: dict, limit: int = 8) -> Dict[str, Any]:
+    """PUB-M6h red team, the NORMALISATION-COLLISION GENERATOR: for the first `limit` values of the store's index, a fresh mem.v4 store gets the original sentence and a second sentence in which the value is
+    replaced by a variant that normalisation would merge with it; the task asks that position; every span of both sentences is woven and emitted in a fresh v8 run.  The two written values differ, so the
+    memory contradicts itself: NOTHING may be emitted (`EMITTED_WRONG` must be 0)."""
+    from verantyx.loom import memask as mk
+    from verantyx.loom import memcross as mxx
+    r = ma.AnswerSession(store, "x？", "oracle", snapshot=snap, answer_version=answer_version()).run
+    ix = r.index()
+    out = {"stores": 0, "tried": 0, "EMITTED_WRONG": 0, "wrong": []}
+    n = 0
+    for pos in ix.positions:
+        text = mxx.position_text(pos)
+        if text is None:
+            continue
+        for e in ix.history_full(pos):
+            sent = r.rows[e.sid]["sent"]
+            if e.marks or e.change is not None or e.value not in sent:
+                continue
+            for var in collision_variants(e.value):
+                n += 1
+                cs = os.path.join(tmp, "col%d" % n)
+                st = mem.MemStore(cs, "c")
+                s = st.begin("measure", profile=mem.PROFILE_V4, versions=versions())
+                if not (s.write(sent).get("ok") and s.write(sent.replace(e.value, var, 1)).get("ok")):
+                    s.commit()
+                    continue
+                s.commit()
+                out["stores"] += 1
+                q = text + "は何ですか？"
+                for sid in (0, 1):
+                    units = ma.AnswerSession(cs, q, "oracle", answer_version=answer_version()).call("read_sentence", {"sid": sid})["units"]["WORD"]
+                    for f in range(len(units)):
+                        for l in range(f, len(units)):
+                            a = ma.AnswerSession(cs, q, "oracle", answer_version=answer_version())
+                            if not a.call("weave_span", {"sid": sid, "tier": "WORD", "first": f, "last": l}).get("ok"):
+                                continue
+                            out["tried"] += 1
+                            em = a.call("emit", {})
+                            if em.get("ok"):
+                                out["EMITTED_WRONG"] += 1
+                                out["wrong"].append([e.value, var, em["text"]])
+            if n >= limit * 3:
+                return out
+    return out
+
+
 def bridge_red_team(make: Any, res: dict, question: str) -> Dict[str, Any]:
     """PUB-M6f red team: when the recall of the question is a CHOICE (any kind), a fresh answer run makes a BRIDGE from a part of the question to the position of ONE side, weaves that side and emits it, with no
     recall.  The run's own bridge must not collapse the task's ambiguity: `EMITTED_BRIDGED_CHOICE` must be 0."""
@@ -350,6 +410,7 @@ def measure_run(run_dir: str) -> Dict[str, Any]:
         # -- (a) recall through the answer run ------------------------------------------------------------------------------------------------------
         snap = ma.write_snapshot(store, crosses=True, versions=MODE["m6c"])
         stretches = store_stretches(store, snap) if MODE["m6c"] else []
+        collisions = collision_red_team(tmp, store, snap) if MODE["m6c"] else None
         qs = []
         for a in sorted(r["answers"], key=lambda a: a["index"]):
             gk, gv = C.mem_run.gold_values(a["gold"])
@@ -427,7 +488,7 @@ def measure_run(run_dir: str) -> Dict[str, Any]:
             idxs = [k for k, p in enumerate(plants) if p["kind"] == want]
             cov[t] = {"plants": len(idxs), "found": len([k for k in covered[t] if k in idxs])}
         return {"label": label, "arm": r["arm_label"], "task": r["task_id"], "sentences": len(rows), "writes": tally.to_obj(), "verify": [vstat, rstat], "index_sha": ix.index_sha,
-                "questions": qs, "notes": {t: dict(c) for t, c in by_type.items()}, "plant_coverage": cov, "planted": dict(planted), "firing_sentences": {t: len(v) for t, v in firing_sids.items()},
+                "questions": qs, "collisions": collisions, "notes": {t: dict(c) for t, c in by_type.items()}, "plant_coverage": cov, "planted": dict(planted), "firing_sentences": {t: len(v) for t, v in firing_sids.items()},
                 "extra": dict(extra), "agree": {t: dict(c) for t, c in agree.items()}}
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
@@ -493,6 +554,11 @@ def tally_m6c(runs: Sequence[dict]) -> dict:
     """PUB-M6c numbers.  EVERY NUMBER UNDER `oracle_top` IS AN ORACLE UPPER BOUND (a "model" that confirms only the top candidate), not a model result."""
     c = collections.Counter()
     for r in runs:
+        cr = r.get("collisions")
+        if cr:
+            c["collision_stores"] += cr["stores"]
+            c["collision_tried"] += cr["tried"]
+            c["COLLISION_EMITTED_WRONG"] += cr["EMITTED_WRONG"]
         for q in r["questions"]:
             m = q.get("m6c") or {}
             c["questions"] += 1
@@ -612,6 +678,8 @@ def md_recall(t: dict, mf: Optional[dict], n_runs: int) -> str:
                     m.get("no_recall_tried", 0), m.get("no_recall_EMITTED_OLD", 0), m.get("no_recall_EMITTED_CONTESTED", 0), {k[10:]: v for k, v in m.items() if k.startswith("no_recall_") and ":" in k}),
                 "- **既定拒否の赤チーム（memanswer.v7）**: 問いごとに、問いと言い換え %d 通り（の を落とす / 重ねる / 問い語を同じ類の語に替える / ですか を落とす）について、索引の全ての値（recall が返した値だけでなく）を新しい run で weave して emit（recall なし、CANDIDATES / NONE の問いも含む）: 試行 %d、金の値が出た %d、その問い自身の recall が唯一の答えとして返す値だが金ではない（記憶が片側しか持たない等。情報）%d、**誤出力 `EMITTED_WRONG` %d（0 でなければならない）**。出せた（正）は上の行（v7 での数。CI の以前の数は 66）" % (
                     m.get("all_values_variants", 0), m.get("all_values_tried", 0), m.get("all_values_right", 0), m.get("all_values_task_answer_not_gold", 0), m.get("ALL_VALUES_EMITTED_WRONG", 0)),
+                "- **正規化の衝突**の赤チーム（索引の値ごとに、「・」/空白/全角を足し引きした書き方を第 2 の文として別の store に書き、全ての範囲を weave → emit。2 つは書かれた値が違うので何も出てはいけない）: store %d、試行 %d、**`EMITTED_WRONG` %d（0 でなければならない）**" % (
+                    m.get("collision_stores", 0), m.get("collision_tried", 0), m.get("COLLISION_EMITTED_WRONG", 0)),
                 "- **実行内の橋**の赤チーム（CHOICE の問いで、問いの一部から片方の席へ橋を張り、recall せずに weave → emit）: 試行 %d、`EMITTED_BRIDGED_CHOICE` %d（0 でなければならない）、内訳: %s" % (
                     m.get("bridge_rt_tried", 0), m.get("bridge_rt_EMITTED_BRIDGED_CHOICE", 0), {k[10:]: v for k, v in m.items() if k.startswith("bridge_rt_") and k != "bridge_rt_tried"}),
                 "- CANDIDATES を示した問い: %d（候補の総数 %d）、そのうち金が候補の中にある %d、金が 1 位 %d、先頭が同点 %d" % (m.get("candidates_offered", 0), m.get("candidates_total", 0), m.get("candidates_gold_among", 0),
