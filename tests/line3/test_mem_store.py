@@ -409,7 +409,9 @@ def test_the_cli_reports(tmp_path, capsys):
     st = _run_story(tmp_path)
     assert mem.main(["status", "--store", str(st.path)]) == 0
     assert json.loads(capsys.readouterr().out)["sessions"] == 3
-    assert mem.main(["replay", "--store", str(st.path)]) == 2                # the story used the stub hook: INPUTS self_question_mismatch
+    assert mem.main(["replay", "--store", str(st.path), "--hook", "default"]) == 2         # the story used the stub hook: INPUTS self_question_mismatch under the explicit default hook
+    capsys.readouterr()
+    assert mem.main(["replay", "--store", str(st.path)]) == 0                # replay defaults to FROM_HEADER (PUB-M6e)
     capsys.readouterr()
     assert mem.main(["events", "--store", str(st.path)]) == 0
     assert set(json.loads(capsys.readouterr().out)) == {"s0001", "s0002", "s0003"}

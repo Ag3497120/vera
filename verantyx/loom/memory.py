@@ -1460,7 +1460,7 @@ class MemStore:
         sessions.append({"run_id": run.run_id, "session_no": run.session_no, "head": run.head, "rows": run.i, "sentences_after": len(run.rows)})
         return self._write_state(sessions, run.rows, run.kind_policy)
 
-    def verify(self, self_question: Any = DEFAULT) -> dict:
+    def verify(self, self_question: Any = FROM_HEADER) -> dict:
         return verify_store(self.path, self_question)
 
     def index(self) -> "mx.MemIndex":
@@ -1477,7 +1477,7 @@ class MemStore:
             vs = session_versions(self.sessions_dir / e["run_id"]) or vs
         return mx.build_index(rows, decls, sup, shape_version=(vs or V4_VERSIONS_V2)["shape"], bridges=brs)
 
-    def replay(self, self_question: Any = DEFAULT) -> "MemReplay":
+    def replay(self, self_question: Any = FROM_HEADER) -> "MemReplay":
         return replay_store(self.path, self_question)
 
 
@@ -1587,10 +1587,10 @@ class MemReplay:
 _HEADER_OPT_KEYS = ("kind_policy", "contradiction_policy", "unseatable_policy")
 
 
-def replay_store(path, self_question: Any = DEFAULT) -> MemReplay:
+def replay_store(path, self_question: Any = FROM_HEADER) -> MemReplay:
     """`mem replay`: re-execute every listed session, in order, against an empty M0 (each session starts from the H the earlier ones re-derived, not from
-    memory.jsonl) and require every row, every byte, the HEAD and memory.jsonl to be reproduced.  `self_question` must be the hook the sessions were recorded
-    with (its `id` is in the begin header; a mismatch is INPUTS `self_question_mismatch`).  DEFAULT = the default hook of a new store (so a store recorded with the
+    memory.jsonl) and require every row, every byte, the HEAD and memory.jsonl to be reproduced.  `self_question` is by default FROM_HEADER (PUB-M6e: each session
+    is replayed with the hook its begin row names); an explicit hook must be the one the sessions were recorded with (a mismatch is INPUTS `self_question_mismatch`).  DEFAULT = the default hook of a new store (so a store recorded with the
     stub replays under `StubSelfQuestion()` or `FROM_HEADER`, and is INPUTS under the default); FROM_HEADER = each session with the registry hook its begin row names."""
     out = MemReplay()
     store = MemStore(path)
@@ -1717,7 +1717,7 @@ def _replay_rows(out: MemReplay, run: MemRun, run_id: str, rows: List[dict], lin
     return True
 
 
-def verify_store(path, self_question: Any = DEFAULT) -> dict:
+def verify_store(path, self_question: Any = FROM_HEADER) -> dict:
     """`mem verify`: every listed session's chain (TAMPERED), the derived memory against memory.jsonl and the HEAD (STORE_UNVERIFIED), then the replay
     (REPLAY_DIFFERS / REPLAY_INPUTS_MISMATCH).  {"status": "OK" | "EMPTY" | ..., ...}"""
     store = MemStore(path)
@@ -1767,7 +1767,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     ap = argparse.ArgumentParser(prog="python -m verantyx.loom.memory", description="the memory store of the loom (MEM-a)")
     ap.add_argument("cmd", choices=("verify", "replay", "status", "events"))
     ap.add_argument("--store", required=True, help="the store directory (required; there is no default path)")
-    ap.add_argument("--hook", default="default", choices=("default", "header") + tuple(sorted(HOOKS)) + (mn.NO_HOOK,),
+    ap.add_argument("--hook", default="header", choices=("default", "header") + tuple(sorted(HOOKS)) + (mn.NO_HOOK,),
                     help="verify / replay: the self-question hook to replay with (default = the default hook of a new store; header = each session's recorded id)")
     ns = ap.parse_args(list(sys.argv[1:] if argv is None else argv))
     hook = {"default": DEFAULT, "header": FROM_HEADER, mn.NO_HOOK: None}.get(ns.hook) if ns.hook in ("default", "header", mn.NO_HOOK) else HOOKS[ns.hook]()

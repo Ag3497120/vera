@@ -49,9 +49,12 @@ ANSWER_VERSION = "memanswer.v1"
 ANSWER_V2 = "memanswer.v2"          # MEM-fix (L-MEM-59 / 60): the answer run holds the store's declared topics (read from a file the snapshot is paired with) and `recall` reads the question in its other forms
 ANSWER_V3 = "memanswer.v3"          # PUB-M6: the answer run of a mem.v4 store: `recall` reads the memory CROSSES (memask), rebuilt from the snapshot and the file `crosses_<sha12>.json` (nest declarations + bridges) it is paired with
 ANSWER_V4 = "memanswer.v4"          # PUB-M6c: memanswer.v3 + the versions of the store (shape / ask / qwords, in the crosses file) + `bridge` in the run + weave_span.v4 (the source slice is emitted) + `contested_value`
-ANSWER_VERSIONS: Tuple[str, ...] = (ANSWER_VERSION, ANSWER_V2, ANSWER_V3, ANSWER_V4)
+ANSWER_V5 = "memanswer.v5"          # PUB-M6e: memanswer.v4 with every emit-time safety decision made FROM THE INDEX and the TASK QUESTION, never from the recalls the model chose to make (the review of a6970cd3..67fe932f)
+ANSWER_VERSIONS: Tuple[str, ...] = (ANSWER_VERSION, ANSWER_V2, ANSWER_V3, ANSWER_V4, ANSWER_V5)
+V4_PLUS: Tuple[str, ...] = (ANSWER_V4, ANSWER_V5)
 GUARD_V3 = "ansguard.v1"            # PUB-M6b (L-PUB-54..57; memanswer.v3 only, no v3 ledger was ever recorded with a model): weave_span refuses a stretch that is not verbatim and a value the recall replaced; emit may hand the gate a completed question
 GUARD_V4 = "ansguard.v2"            # PUB-M6c (memanswer.v4): ansguard.v1 with the joiner-aware verbatim check + an emit of one value of a same-seat CHOICE is refused `contested_value`
+GUARD_V5 = "ansguard.v3"            # PUB-M6e (memanswer.v5): replaced_value / contested_value / completions are decided from the index and the task question at weave / emit; what the model recalled does not count
 BRIDGE_CAP = 5                      # memanswer.v4: at most this many bridges a run
 ANSWER_TASK_ID = "answer"
 ANSWER_EVIDENCE = (mr.MEM_GATE_VERSION, evl.SCOPE_CLAUSE)      # the gate NEW answer runs judge with: `memrecall.MEM_GATE_VERSION` (evidence.v6 since PUB-M6c, L-PUB-76), scope clause (L-MEM-12).  A run records it in its
@@ -61,7 +64,7 @@ RECALL_CAP = 20
 ANSWER_ABSTAIN: Tuple[str, ...] = ABSTAIN_TYPES + ("contested",)
 V4_TOOL: Tuple[str, ...] = ("bridge",)
 ANSWER_TOOLS: Tuple[str, ...] = ("recall", "lookup", "read_sentence", "weave_span", "drop", "read", "emit", "abstain", "status")     # what the model is offered
-ANSWER_TOOLS_V4: Tuple[str, ...] = ANSWER_TOOLS + V4_TOOL          # memanswer.v4: + bridge(question_phrase, memory_phrase), the model's confirmation of a candidate
+ANSWER_TOOLS_V4: Tuple[str, ...] = ANSWER_TOOLS + V4_TOOL          # memanswer.v4 / v5: + bridge(question_phrase, memory_phrase), the model's confirmation of a candidate
 _RUN_RX = re.compile(r"^a[0-9]{4,}$")
 ANSWER_RULES: Dict[str, str] = {
     "memory": "The corpus is the memory of earlier sessions: one sentence per fact, 「X の Y は A」. You see it only through recall, lookup and read_sentence.",
@@ -88,6 +91,10 @@ ANSWER_RULES_V3: Dict[str, str] = {
 }
 
 
+ANSWER_RULES_V5: Dict[str, str] = {
+    "decide": "What may be emitted does not depend on what you recalled: weave_span refuses a value the memory replaced (replaced_value), emit refuses one side of a contradiction (contested_value), and the "
+              "question the gate is handed instead of the one asked (via: nest / via: update) is computed from THIS run's question only, never from a recall of another question.",
+}
 ANSWER_RULES_V4: Dict[str, str] = {
     "bridge": "bridge(question_phrase, memory_phrase): the model's confirmation that a part of the question means a phrase the memory holds (a candidate's `phrase`, or a centre). Marked constructed, kept in the log.",
     "recall": "recall(question) reads the question with the shape exchanger and answers from the memory CROSSES: ANSWER (one value), UPDATED (the latest value + `history`), CHOICE (two or more values at one "
@@ -321,7 +328,7 @@ class AnswerRun(Run):
 
     def __init__(self, corpus: Corpus, rows: Sequence[dict], store_id: str, snapshot_name_: str, question: str, model: str, run_id: str,
                  topics: Optional[Sequence[str]] = None, topics_file: Optional[str] = None, crosses: Optional[Tuple[str, Sequence[dict], Sequence[dict]]] = None,
-                 evidence: Optional[Tuple[str, str]] = None, versions: Optional[Dict[str, str]] = None) -> None:
+                 evidence: Optional[Tuple[str, str]] = None, versions: Optional[Dict[str, str]] = None, v5: bool = False) -> None:
         mg.check_memory_rows(rows)
         task = {"task_id": ANSWER_TASK_ID, "text": question, "lang": "prose", "mode": "record_only", "tiers": ["WORD"]}
         super().__init__(corpus, task, model, run_id, DEFAULT_STABILITY, None, None, notelib.NOTES_VERSION, tuple(evidence if evidence is not None else ANSWER_EVIDENCE))
@@ -334,9 +341,14 @@ class AnswerRun(Run):
         self.topics: Tuple[str, ...] = tuple(topics or ())
         self.topics_file = topics_file
         self.v3 = crosses is not None                     # memanswer.v3: recall reads the memory crosses of a mem.v4 store (memanswer.v4 too)
-        self.v4 = versions is not None                    # memanswer.v4: + the store's versions, `bridge`, weave_span.v4, contested_value
+        self.v4 = versions is not None                    # memanswer.v4 (and v5): + the store's versions, `bridge`, weave_span.v4, contested_value
+        self.v5 = bool(v5)                                # memanswer.v5: the safety decisions come from the index and the task question (L-PUB-83)
         if self.v4 and not self.v3:
             raise ValueError("memanswer.v4 reads the memory crosses")
+        if self.v5 and not self.v4:
+            raise ValueError("memanswer.v5 is memanswer.v4 with decisions made from the index")
+        self._stretches: Optional[Dict[Tuple[int, int, int], List[Tuple[Any, Any]]]] = None      # v5: {(sid, first, last): [(position, entry)]}: the stretch of every value of the index
+        self._olds: Optional[Dict[int, List[Tuple[str, Any, Any]]]] = None                        # v5: {sid: [(norm of the old value of a change clause, position, scope)]}
         self.versions: Dict[str, str] = mem.check_versions(versions) if self.v4 else dict(mem.V4_VERSIONS_V2)
         self.run_bridges: List[mx.Bridge] = []            # memanswer.v4: the bridges the model confirmed in this run (the ledger is their source: replay re-executes the rows)
         if self.v4:
@@ -380,10 +392,12 @@ class AnswerRun(Run):
             res["mem_answer"].update(crosses_file=self.crosses_file, ask=mask.ASK_VERSION, cross=mx.CROSS_VERSION, guard=GUARD_V3, complete=mask.COMPLETE_VERSION)
             res["rules"] = dict(res["rules"], recall=ANSWER_RULES_V3["recall"])
         if self.v4:
-            res["mem_answer"]["version"] = ANSWER_V4
-            res["mem_answer"].update(ask=self.versions["ask"], qwords=self.versions["qwords"], shape=self.versions["shape"], guard=GUARD_V4, readout=ops.WEAVE_SPAN_V4, bridge_cap=BRIDGE_CAP,
-                                     evidence=self.evidence[0])
+            res["mem_answer"]["version"] = ANSWER_V5 if self.v5 else ANSWER_V4
+            res["mem_answer"].update(ask=self.versions["ask"], qwords=self.versions["qwords"], shape=self.versions["shape"], guard=GUARD_V5 if self.v5 else GUARD_V4, readout=ops.WEAVE_SPAN_V4,
+                                     bridge_cap=BRIDGE_CAP, evidence=self.evidence[0])
             res["rules"] = dict(res["rules"], recall=ANSWER_RULES_V4["recall"], bridge=ANSWER_RULES_V4["bridge"])
+            if self.v5:
+                res["rules"]["decide"] = ANSWER_RULES_V5["decide"]
         res["tools"] = list(ANSWER_TOOLS_V4 if self.v4 else ANSWER_TOOLS)
         return b
 
@@ -544,9 +558,66 @@ def _h_weave_span(run: AnswerRun, a: dict, i: int) -> dict:
                                                     "hint": "the loom reads this stretch out without its punctuation, so emitting it would change the value: abstain (cannot_weave)"})
             n = mn.norm_answer(source)
             key = (tg[0], tg[2], tg[3])
-            if (key in run.hist_spans and key not in run.live_spans) or (n in run.hist_norms and n not in run.live_norms):
+            if run.v5:                                                       # memanswer.v5: decided from the index history of the stretch's position, whatever was recalled
+                if _stretch_status(run, tg[0], tg[2], tg[3], source)[0] == "replaced":
+                    raise Refuse("replaced_value", {"sid": tg[0], "text": source[:64], "hint": "the memory replaced this value (its position's history): only the latest value is a quote"})
+            elif (key in run.hist_spans and key not in run.live_spans) or (n in run.hist_norms and n not in run.live_norms):
                 raise Refuse("replaced_value", {"sid": tg[0], "text": source[:64], "hint": "the memory replaced this value (recall `history`): only the latest value is a quote"})
     return ops.h_weave_span(run, a, i)
+
+
+def _task_recall(run: AnswerRun) -> dict:
+    """memanswer.v5: the recall of THE TASK QUESTION (the question the run was begun with; the bridges the model confirmed apply), made by the run itself, for the decisions of weave / emit."""
+    ix = run.index()
+    return mask.recall(ix, run.rows, run.corpus, run.task["text"], ask=run.versions["ask"], bridges=tuple(ix.bridges) + tuple(run.run_bridges))
+
+
+def _stretch_maps(run: AnswerRun) -> Tuple[Dict[Tuple[int, int, int], List[Tuple[Any, Any]]], Dict[int, List[Tuple[str, Any, Any]]]]:
+    if run._stretches is None:
+        ix = run.index()
+        st: Dict[Tuple[int, int, int], List[Tuple[Any, Any]]] = {}
+        olds: Dict[int, List[Tuple[str, Any, Any]]] = {}
+        for p in ix.positions:
+            for e in ix.history_full(p):
+                sp = mask._unit_span(run.corpus, e.sid, e.units)
+                if sp is not None:
+                    st.setdefault((e.sid, sp[0], sp[1]), []).append((p, e))
+                if e.change is not None and e.change.old:
+                    olds.setdefault(e.sid, []).append((mn.norm_answer(e.change.old), p, e.scope))
+        run._stretches, run._olds = st, olds
+    return run._stretches, run._olds or {}
+
+
+def _live_norms_at(run: AnswerRun, p: Any, scope: Optional[str]) -> List[str]:
+    es = [x for x in run.index().history_full(p) if x.scope == scope]
+    live, _hist = mask._fold(es)
+    return [mn.norm_answer(g[0].value) for g in live]
+
+
+def _stretch_status(run: AnswerRun, sid: int, i0: int, i1: int, source: str) -> Tuple[str, Optional[dict]]:
+    """memanswer.v5: ("replaced" | "contested" | "ok", detail) for the stretch (sid, i0, i1) of the memory, from the INDEX alone: the values the index holds at that stretch, each folded with the other values of
+    its position in its own scope.  replaced = the fold's history holds it (a later change clause, or the model superseded its sentence) and no live value of that position has the same text; the OLD value
+    named inside a change clause is replaced the same way; contested = the fold has >= 2 live values (different texts) from >= 2 sentences and the stretch is one of them (a same-seat contradiction)."""
+    ix = run.index()
+    st, olds = _stretch_maps(run)
+    n = mn.norm_answer(source)
+    for p, e in st.get((sid, i0, i1), ()):
+        es = [x for x in ix.history_full(p) if x.scope == e.scope]
+        live, hist = mask._fold(es)
+        live_n = [mn.norm_answer(g[0].value) for g in live]
+        if any(h == e for h, _w in hist) and n not in live_n:
+            return "replaced", {"position": list(p)}
+        sids: List[int] = []
+        for g in live:
+            for x in g:
+                if x.sid not in sids:
+                    sids.append(x.sid)
+        if len(live) >= 2 and len(sids) >= 2 and any(e in g for g in live):
+            return "contested", {"position": list(p), "values": [g[0].value for g in live]}
+    for on, p, sc in olds.get(sid, ()):
+        if on == n and n not in _live_norms_at(run, p, sc):
+            return "replaced", {"position": list(p)}
+    return "ok", None
 
 
 def _h_emit_v3(run: AnswerRun, a: dict, i: int) -> dict:
@@ -555,7 +626,22 @@ def _h_emit_v3(run: AnswerRun, a: dict, i: int) -> dict:
     (`via: nest`), or the form of the change for the new value of a change clause at the question's own position (`via: update`).  The completion is recorded on the emit row; a refusal says what the
     completed question was refused for (`completion`)."""
     ops._args(a, {})
-    if run.v4:                                                                                  # memanswer.v4: one side of a contradiction is no answer (owner 2026-10-13 「片方だけは拒否する」)
+    comps = run.completions
+    if run.v5:                                                                                  # memanswer.v5: the index and the TASK question decide; what the model recalled does not count
+        rt = _task_recall(run)
+        comps = {(c["sid"], c["span"][0], c["span"][1]): c for c in reversed(mask.completions(run.index(), rt, run.task["text"]))}
+        task_spans = _spans_of(rt.get("answers", ()))[0]
+        task_hist = _spans_of(rt.get("history", ()))[0]
+        task_contested = rt.get("verdict") == "CHOICE" and rt.get("choice_kind") == "same_seat" and rt.get("sources", 0) >= 2
+        for wv in evl.intact_weaves(run).values():
+            key = (wv["sid"], wv["i0"], wv["i1"])
+            _r, source, _v = mask.quote_check(run.corpus, wv["sid"], wv["i0"], wv["i1"], None, True)
+            st = _stretch_status(run, wv["sid"], wv["i0"], wv["i1"], source)[0]
+            if st == "replaced" or (key in task_hist and key not in task_spans):
+                raise Refuse("replaced_value", {"sid": wv["sid"], "text": source[:64], "hint": "the memory replaced this value: only the latest value is a quote"})
+            if st == "contested" or (task_contested and key in task_spans):
+                raise Refuse("contested_value", {"sid": wv["sid"], "text": source[:64], "hint": "the memory states two answers at this place (same seat, two sentences): abstain(type=contested)"})
+    elif run.v4:                                                                                # memanswer.v4: one side of a contradiction is no answer (owner 2026-10-13 「片方だけは拒否する」)
         for wv in evl.intact_weaves(run).values():
             key = (wv["sid"], wv["i0"], wv["i1"])
             _r, source, _v = mask.quote_check(run.corpus, wv["sid"], wv["i0"], wv["i1"], None, True)
@@ -568,7 +654,7 @@ def _h_emit_v3(run: AnswerRun, a: dict, i: int) -> dict:
     intact = evl.intact_weaves(run) if ev["refusals"] else {}
     if ev["refusals"] and len(ev["refusals"]) == 1 and ev["refusals"][0]["type"] == "no_evidence" and len(intact) == 1:
         wv = next(iter(intact.values()))
-        comp = run.completions.get((wv["sid"], wv["i0"], wv["i1"]))
+        comp = comps.get((wv["sid"], wv["i0"], wv["i1"]))
         if comp is not None:
             saved = run.question_units
             run.question_units = evl.question_units(comp["question"])
@@ -624,8 +710,8 @@ class AnswerSession:
         if answer_version not in ANSWER_VERSIONS:
             raise Refuse("bad_answer_version", {"allowed": list(ANSWER_VERSIONS)})
         want_topics = answer_version == ANSWER_V2
-        want_crosses = answer_version in (ANSWER_V3, ANSWER_V4)
-        want_versions = answer_version == ANSWER_V4
+        want_crosses = answer_version in (ANSWER_V3,) + V4_PLUS
+        want_versions = answer_version in V4_PLUS
         snap = snapshot if snapshot is not None else write_snapshot(store_path, topics=want_topics, crosses=want_crosses, versions=want_versions)
         if want_topics and "topics_name" not in snap:                 # a snapshot handed in without its topics file is refused, never replaced by a fresh snapshot of the store as it is now
             raise Refuse("snapshot_without_topics", {"reason": "memanswer.v2 needs the snapshot dict of write_snapshot(store, topics=True)", "snapshot": snap.get("name")})
@@ -654,7 +740,7 @@ class AnswerSession:
             run_id = "a%04d" % k
         if not _RUN_RX.match(run_id) or (d / run_id).exists():
             raise Refuse("bad_run_id", {"run_id": run_id})
-        self.run = AnswerRun(Corpus(data), rows, snap["store_id"], snap["name"], question, model, run_id, topics, topics_file, crosses, evidence, versions)
+        self.run = AnswerRun(Corpus(data), rows, snap["store_id"], snap["name"], question, model, run_id, topics, topics_file, crosses, evidence, versions, answer_version == ANSWER_V5)
         self.ledger = lg.Ledger(d / run_id)
         meta = {"store": snap["store_id"], "mode": "memory_answer", "snapshot": snap["name"], "corpus_sha": hashlib.sha256(data).hexdigest()}
         if want_topics:
@@ -753,14 +839,14 @@ def replay_answer(run_dir, store_path=None) -> ReplayResult:
             return out
     crosses = None
     versions = None
-    if ma["version"] in (ANSWER_V3, ANSWER_V4):          # the crosses file the begin row names (nest declarations + bridges, memanswer.v4: + versions) must be there and be what its name says
+    if ma["version"] in (ANSWER_V3,) + V4_PLUS:          # the crosses file the begin row names (nest declarations + bridges, memanswer.v4: + versions) must be there and be what its name says
         cf = str(ma.get("crosses_file"))
         cp = store_path / "snapshots" / cf
         if not re.fullmatch(r"crosses_[0-9a-f]{12}\.json", cf) or not cp.is_file():
             out.status, out.mismatch = "INPUTS", "crosses_missing"
             return out
         try:
-            if ma["version"] == ANSWER_V4:
+            if ma["version"] in V4_PLUS:
                 _, cdecls, cbridges, versions = read_crosses_v4(cp)
             else:
                 _, cdecls, cbridges = read_crosses(cp)
@@ -771,7 +857,7 @@ def replay_answer(run_dir, store_path=None) -> ReplayResult:
     ep = res0.get("evidence_profile")                    # the gate the run was recorded with (a run before PUB-M6c: evidence.v2)
     evidence = (ep["version"], ep["subject_scope"]) if isinstance(ep, dict) and "version" in ep and "subject_scope" in ep else LEGACY_EVIDENCE
     try:
-        run = AnswerRun(Corpus(data), srows, str(ma["store_id"]), str(ma["snapshot"]), question, model, run_id, topics, topics_file, crosses, evidence, versions)
+        run = AnswerRun(Corpus(data), srows, str(ma["store_id"]), str(ma["snapshot"]), question, model, run_id, topics, topics_file, crosses, evidence, versions, ma["version"] == ANSWER_V5)
     except (Refuse, ValueError):
         out.status, out.mismatch = "INPUTS", "snapshot_unverified"
         return out

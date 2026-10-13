@@ -605,8 +605,8 @@ def test_gate_store_replays_byte_for_byte_with_recall_rows(tmp_path, hook):
         rep = st.replay(other)
         assert rep.status == "INPUTS" and rep.mismatch == "self_question_mismatch"
     assert st.verify(STUB)["status"] == "REPLAY_INPUTS_MISMATCH"
-    # the default hook of a NEW store is the guarded gate: it replays the new stores and not the old ones (those replay under their own id or FROM_HEADER)
-    assert (st.replay().status == "IDENTICAL") is (hook is SUBJ)
+    # the hook DEFAULT (the API default of a NEW store, frozen at the guarded gate v2) replays the stores written with it and not the old ones; replay / verify now default to FROM_HEADER (PUB-M6e)
+    assert (st.replay(mem.DEFAULT).status == "IDENTICAL") is (hook is SUBJ) and st.replay().identical
     assert mem.main(["verify", "--store", str(st.path), "--hook", "header"]) == 0
     assert mem.main(["verify", "--store", str(st.path), "--hook", hook.id]) == 0
 
@@ -637,9 +637,10 @@ def test_a_forged_recall_row_is_replay_differs(tmp_path):
 def test_stub_store_still_replays_under_the_stub_and_not_under_the_default(tmp_path):
     st = run_story(tmp_path, "s", STUB, recalls=False)
     assert st.verify(STUB)["status"] == "OK" and st.replay(STUB).identical and st.replay(mem.FROM_HEADER).identical
-    d = st.replay()                                                      # the default hook is the gate: a different id
-    assert d.status == "INPUTS" and d.mismatch == "self_question_mismatch"
-    assert mem.main(["replay", "--store", str(st.path)]) == 2
+    d = st.replay(mem.DEFAULT)                                           # the hook DEFAULT is the gate: a different id (replay / verify default to FROM_HEADER since PUB-M6e)
+    assert d.status == "INPUTS" and d.mismatch == "self_question_mismatch" and st.replay().identical
+    assert mem.main(["replay", "--store", str(st.path), "--hook", "default"]) == 2
+    assert mem.main(["replay", "--store", str(st.path)]) == 0
     assert mem.main(["replay", "--store", str(st.path), "--hook", "stub.v1"]) == 0
     assert mem.main(["verify", "--store", str(st.path), "--hook", "header"]) == 0
     assert mem.main(["verify", "--store", str(st.path), "--hook", "gate.evidence.v2"]) == 1

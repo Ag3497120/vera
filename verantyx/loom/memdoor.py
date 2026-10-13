@@ -281,7 +281,7 @@ class AnswerDoor(_Door):
 
     @property
     def tool_names(self) -> Tuple[str, ...]:
-        return ma.ANSWER_TOOLS_V4 if self.answer_version == ma.ANSWER_V4 else QUESTION_TOOLS[self.arm]
+        return ma.ANSWER_TOOLS_V4 if self.answer_version in ma.V4_PLUS else QUESTION_TOOLS[self.arm]
 
     def call(self, tool: Any, args: Any = None) -> dict:
         bad = self._gate(tool, args)
