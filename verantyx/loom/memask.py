@@ -500,7 +500,7 @@ def _letters14(s: str) -> bool:
     return bool(s) and all(unicodedata.category(ch)[0] in "LNM" or ch in "ー・" for ch in s)
 
 
-def _covered14(text: str, a: int, b: int) -> bool:
+def _covered14(text: str, a: int, b: int, old_from: bool = False) -> bool:
     """memanswer.v14 (designer, L-PUB-111): COVERAGE of the whole write.  After NFC the write (less one closing 。) must be EXACTLY one clause as the shape exchanger (shape.v3) read it: a single clause, no skipped label,
     no leading adverbial, starting at character 0 and ending at the end of the write, whose value seat contains the stretch (a, b), and whose characters BEFORE the value are exactly the owner chain (the arm seats and
     their particles, nested ones included), the centre phrase and the one case / topic particle that stands right before the value.  Every other character (a label, a mark of any kind, a quote, a list or markdown marker,
@@ -540,16 +540,22 @@ def _covered14(text: str, a: int, b: int) -> bool:
 
     if not cover(c.arms):
         return False
-    if v0 == 0 or body[v0 - 1] not in "はがをにでとへも":
+    pre = v0
+    if old_from and c.change is not None and c.change.old is not None:         # memanswer.v15: exactly one 「<old value>から」 seat right before the new value, in a change clause only
+        o0, o1 = c.change.old.span
+        if body[o1:o1 + 2] != "から" or o1 + 2 != v0 or o0 == 0 or not _letters14(body[o0:o1]):
+            return False
+        pre = o0
+    if pre == 0 or body[pre - 1] not in "はがをにでとへも":
         return False
-    for i in range(v0 - 1, len(body)):
+    for i in range(pre - 1, len(body)):
         if i < len(covered):
             covered[i] = True
-    rem = "".join(body[i] for i in range(v0) if not covered[i])
+    rem = "".join(body[i] for i in range(pre) if not covered[i])
     return rem in ("", "".join(c.centre_units)) and _letters14(rem)
 
 
-def value_status14(corpus: Any, sid: int, i0: int, i1: int) -> Tuple[str, str, Optional[str]]:
+def value_status14(corpus: Any, sid: int, i0: int, i1: int, old_from: bool = False) -> Tuple[str, str, Optional[str]]:
     """memanswer.v14 (designer, L-PUB-111): v13 plus COVERAGE of the whole write (`_covered14`): a value is answered / updates only if every character of its write belongs to the single clause the exchanger read,
     starting at character 0.  A label, mark, quote, marker, leading adverb or any other uncovered character makes it `not_asserted` (still indexed, identity = the text from the value to the end, so it still
     contests other values; never an answer or an update).  No word list."""
@@ -560,8 +566,49 @@ def value_status14(corpus: Any, sid: int, i0: int, i1: int) -> Tuple[str, str, O
     sps = idx.spans("WORD", sid)
     text = idx.text(sid)
     a, b = sps[i0][0], sps[i1][1]
-    if not _covered14(text, a, b):
+    if not _covered14(text, a, b, old_from):
         return unicodedata.normalize("NFC", text[a:]), disp, "not_asserted"
+    return ident, disp, why
+
+
+_BRACKETS = {"（": "）", "(": ")", "「": "」", "『": "』", "【": "】", "[": "]", "［": "］", "｛": "｝", "{": "}", "〈": "〉", "《": "》", "〔": "〕", "<": ">", "＜": "＞"}
+
+
+def _bracket_close(text: str, a: int, b: int) -> int:
+    """memanswer.v15: the end of the display span so that no bracket pair is cut: while the span text[a:b] holds an opener without its closer, b moves to just after the next matching closer (if the text has none, the span is left)."""
+    stack: List[str] = []
+    for ch in text[a:b]:
+        if ch in _BRACKETS:
+            stack.append(_BRACKETS[ch])
+        elif stack and ch == stack[-1]:
+            stack.pop()
+    j = b
+    while stack:
+        k = text.find(stack[-1], j)
+        if k < 0:
+            return b
+        j = k + 1
+        stack.pop()
+    return j
+
+
+def value_status15(corpus: Any, sid: int, i0: int, i1: int) -> Tuple[str, str, Optional[str]]:
+    """memanswer.v15: v14 plus (1) a change clause may carry exactly one 「<old value>から」 seat before the new value (`_covered14(old_from=True)`) and (2) the display span never cuts inside a bracket pair
+    (「5日（仮）」, not 「5日（仮」)."""
+    ident, disp, why = value_status14(corpus, sid, i0, i1, True)
+    if why is None:
+        return ident, disp, why
+    idx = corpus.spans()
+    sps = idx.spans("WORD", sid)
+    text = idx.text(sid)
+    a, b = sps[i0][0], sps[i1][1]
+    b2 = _bracket_close(text, a, b)
+    if b2 != b:
+        full = unicodedata.normalize("NFC", text[a:b2])
+        if disp == unicodedata.normalize("NFC", text[a:b]):
+            disp = full
+        if ident == unicodedata.normalize("NFC", text[a:b]):
+            ident = full
     return ident, disp, why
 
 
@@ -633,13 +680,13 @@ def source_value(corpus: Any, sid: int, i0: int, i1: int, strict: bool = False) 
     return unicodedata.normalize("NFC", text[a:b]), (a, b) == (s0, e0)
 
 
-def source_entries(corpus: Any, entries: Sequence[mx.Entry], strict: bool = False, v11: bool = False, v12: bool = False, v13: bool = False, v14: bool = False) -> List[mx.Entry]:
+def source_entries(corpus: Any, entries: Sequence[mx.Entry], strict: bool = False, v11: bool = False, v12: bool = False, v13: bool = False, v14: bool = False, v15: bool = False) -> List[mx.Entry]:
     """The entries with their value replaced by the value as written (`source_value`); an entry whose stretch is unknown keeps its value."""
     out: List[mx.Entry] = []
     for e in entries:
         sp = _unit_span(corpus, e.sid, e.units) if corpus is not None else None
         if sp is not None and v13:                                           # memanswer.v13: one fact per write; v14: the whole write is covered by the one clause
-            ident, _disp, why = (value_status14 if v14 else value_status13)(corpus, e.sid, sp[0], sp[1])
+            ident, _disp, why = (value_status15 if v15 else value_status14 if v14 else value_status13)(corpus, e.sid, sp[0], sp[1])
             out.append(replace(e, value=ident, change=(None if why is not None else e.change)))
             continue
         if sp is not None and v12:                                           # memanswer.v12: a change counts only through an allow-listed ending; the event branch never makes an update
@@ -744,7 +791,7 @@ def _occurrence(index: mx.MemIndex, rows: Sequence[dict], corpus: Any, e: mx.Ent
             o["readout"] = readout
     if display and o["span"] is not None:                          # memanswer.v11: show the clean source span; an unclean value says why and keeps its identity in `written`
         try:
-            _w, clean_span, why = (value_status14 if display == 4 else value_status13 if display == 3 else value_status12 if display == 2 else value_status)(corpus, e.sid, o["span"][0], o["span"][1])
+            _w, clean_span, why = (value_status15 if display == 5 else value_status14 if display == 4 else value_status13 if display == 3 else value_status12 if display == 2 else value_status)(corpus, e.sid, o["span"][0], o["span"][1])
         except (IndexError, KeyError):
             clean_span, why = o["answer"], None
         if why is not None:
@@ -936,7 +983,7 @@ def recall(index: mx.MemIndex, rows: Sequence[dict], corpus: Any, question: str,
     same_seat = False
     for pos, es in groups:
         if source_values:                                                    # memanswer.v9: the value as written, not as the clause parser kept it
-            es = source_entries(corpus, es, source_values >= 2, source_values == 3, source_values == 4, source_values >= 5, source_values == 6)
+            es = source_entries(corpus, es, source_values >= 2, source_values == 3, source_values == 4, source_values >= 5, source_values >= 6, source_values == 7)
         scopes: List[Optional[str]] = []
         for e in es:
             if e.scope not in scopes:
@@ -972,7 +1019,7 @@ def recall(index: mx.MemIndex, rows: Sequence[dict], corpus: Any, question: str,
     out["route"] = route
     out["looked_for"] = looked
     out["positions_found" if v3 else "candidates"] = len(groups)
-    out["answers"] = [_group(index, rows, corpus, ents, route or "exact", None, v3, exact_values, (4 if source_values == 6 else 3 if source_values == 5 else 2 if source_values == 4 else source_values == 3)) for _, ents in live_all]
+    out["answers"] = [_group(index, rows, corpus, ents, route or "exact", None, v3, exact_values, (5 if source_values == 7 else 4 if source_values == 6 else 3 if source_values == 5 else 2 if source_values == 4 else source_values == 3)) for _, ents in live_all]
     if hist_all:
         hnorm: List[Tuple[str, List[Tuple[mx.Entry, Any, dict]]]] = []
         for e, pos, who in hist_all:
@@ -983,7 +1030,7 @@ def recall(index: mx.MemIndex, rows: Sequence[dict], corpus: Any, question: str,
                     break
             else:
                 hnorm.append((n, [(e, pos, who)]))
-        out["history"] = [_group(index, rows, corpus, [(e, pos) for e, pos, _ in items], route or "exact", [w for _, _, w in items], v3, exact_values, (4 if source_values == 6 else 3 if source_values == 5 else 2 if source_values == 4 else source_values == 3)) for _, items in hnorm]
+        out["history"] = [_group(index, rows, corpus, [(e, pos) for e, pos, _ in items], route or "exact", [w for _, _, w in items], v3, exact_values, (5 if source_values == 7 else 4 if source_values == 6 else 3 if source_values == 5 else 2 if source_values == 4 else source_values == 3)) for _, items in hnorm]
     if superseded_all:
         out["superseded_all"] = True
     if len(out["answers"]) >= 2:

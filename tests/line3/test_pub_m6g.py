@@ -320,15 +320,16 @@ def test_a_value_asserted_only_under_a_hedge_a_bound_or_a_wish_is_not_emitted_as
     assert all(g[1] != "5日" for g in attack(p, Q, n, version=V11)), v
 
 
-def test_plain_assertions_are_still_emitted_on_v11(tmp_path):
+@pytest.mark.parametrize("ver", [V11, ma.ANSWER_V15])
+def test_plain_assertions_are_still_emitted_on_v11(tmp_path, ver):
     for w, v in (("認証の期限は5日", "5日"), ("認証の期限は5日です", "5日"), ("認証の期限は5日でした", "5日"), ("認証の期限は5日だった", "5日"), ("認証の期限は5日である", "5日"), ("認証の期限は5日。", "5日")):
         p, n = store_some(tmp_path, [w], "pl%d" % abs(hash(w)))
-        assert (0, v, None) in attack(p, Q, n, version=V11), w
+        assert (0, v, None) in attack(p, Q, n, version=ver), w
     for w in ("認証の期限は5日から7日に変更", "認証の期限は5日から7日に変更した", "認証の期限は5日から7日に変更します", "認証の期限は5日から7日に変更になった"):
         p, n = store_some(tmp_path, [w], "chg%d" % abs(hash(w)))
-        assert (0, "7日", "update") in attack(p, Q, n, version=V11), w
+        assert (0, "7日", "update") in attack(p, Q, n, version=ver), w
     p, n = store_some(tmp_path, ["会議は東京で行う", "会議は東京で行った"], "ev")
-    assert any(g[1] == "東京" for g in attack(p, "会議はどこで行いますか？", n, version=V11)) or True
+    assert any(g[1] == "東京" for g in attack(p, "会議はどこで行いますか？", n, version=ver)) or True
 
 
 def test_the_recall_never_shows_a_cut_string_for_an_unclean_value_and_unclean_values_do_not_merge(tmp_path):
@@ -558,3 +559,41 @@ def test_v14_begin_row_and_replay(tmp_path):
     r = ma.replay_answer(a.ledger.dir)
     assert r.run.v14 and r.run.v13
     assert attack(p, Q, 1, version=V13) == [(0, "5日", None)] and attack(p, Q, 1, version=V14) == [(0, "5日", None)]
+
+
+# ---- memanswer.v15: one 「<old>から」 seat in a change clause; the display never cuts a bracket pair (eleventh review, L-PUB-114..115) ----
+V15 = ma.ANSWER_V15
+
+
+@pytest.mark.parametrize("first,second,q,want", [("認証の期限は7日", "認証の期限は7日から5日に変更した", Q, "5日"), ("認証の期限は7日", "認証の期限を7日から5日に変更した", Q, "5日"),
+                                                  ("認証の期限は5日", "認証の期限を5日から7日に変更した", Q, "7日"), ("室温の下限は3度", "室温の下限は5度から7度に変更", "室温の下限はいくつですか？", "7度")])
+def test_v15_the_old_value_kara_seat_of_a_change_clause_is_covered(tmp_path, first, second, q, want):
+    p = store(tmp_path, [first, second])
+    assert [t for (_s, t, _v) in attack(p, q, 2, version=V15)] == [want]
+    r = ma.AnswerSession(p, q, "o", answer_version=V15).call("recall", {"question": q})
+    assert r["verdict"] == "UPDATED"
+    p2 = store(tmp_path, [first, second], name="v14")
+    assert ma.AnswerSession(p2, q, "o", answer_version=V14).call("recall", {"question": q})["verdict"] == "CHOICE"      # v14 replays as it was
+
+
+def test_v15_kara_is_covered_in_a_change_clause_only(tmp_path):
+    for w in ("誤：認証の期限は7日から5日に変更した", "認証の期限は7日から5日に変更したい"):
+        p = store(tmp_path, ["認証の期限は7日", w], name="k%d" % abs(hash(w)))
+        assert "5日" not in [t for (_s, t, _v) in attack(p, Q, 2, version=V15)], w
+
+
+def test_v15_the_display_never_cuts_inside_a_bracket_pair(tmp_path):
+    for w, shown in (("認証の期限は5日（仮）", "5日（仮）"), ("認証の期限は5日(仮)", "5日(仮)"), ("認証の期限は5日（仮）です", "5日（仮）")):
+        p = store(tmp_path, [w], name="b%d" % abs(hash(w)))
+        r = ma.AnswerSession(p, Q, "o", answer_version=V15).call("recall", {"question": Q})
+        assert r["answers"][0]["answers"] == [shown] and "仮" in shown, (w, r["answers"])
+        assert attack(p, Q, 1, version=V15) == []
+
+
+def test_v15_begin_row_and_older_runs_replay(tmp_path):
+    p = store(tmp_path, ["認証の期限は5日"])
+    a = ma.AnswerSession(p, Q, "o", answer_version=V15)
+    assert a.begin_result["mem_answer"]["version"] == "memanswer.v15" and a.begin_result["mem_answer"]["guard"] == "ansguard.v13"
+    r = ma.replay_answer(a.ledger.dir)
+    assert r.run.v15 and r.run.v14
+    assert attack(p, Q, 1, version=V15) == [(0, "5日", None)]
