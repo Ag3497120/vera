@@ -1,0 +1,29 @@
+== dev129 (69 answerable + 60 unanswerable), evidence.py sha256 712249cc0cb481ea9c9b4dd60f3721b0d8db287062876c58f0cbde347a93efe6, 782s
+evidence.v2: answerable reach 10/69 ['I2-003', 'I2-004', 'I2-005', 'I2-006', 'I2-013', 'I2-014', 'I2-018', 'R2-I005', 'R2-I007', 'R2-I017'] | wrong-admitting 0 [] | unanswerable admissions 0/60 [] | bank4 traps admitted 0 | per shape -
+evidence.v3: answerable reach 22/69 ['I2-001', 'I2-003', 'I2-004', 'I2-005', 'I2-006', 'I2-008', 'I2-012', 'I2-013', 'I2-014', 'I2-018', 'I2-026', 'I2-027', 'I2-032', 'I2-035', 'I2-042', 'I2-045', 'I2-048', 'R2-I005', 'R2-I007', 'R2-I008', 'R2-I015', 'R2-I017'] | wrong-admitting 0 [] | unanswerable admissions 0/60 [] | bank4 traps admitted 0 | per shape -
+evidence.v4: answerable reach 21/69 ['I2-001', 'I2-003', 'I2-004', 'I2-005', 'I2-006', 'I2-008', 'I2-013', 'I2-014', 'I2-018', 'I2-026', 'I2-027', 'I2-032', 'I2-035', 'I2-042', 'I2-045', 'I2-048', 'R2-I005', 'R2-I007', 'R2-I008', 'R2-I015', 'R2-I017'] | wrong-admitting 0 [] | unanswerable admissions 0/60 [] | bank4 traps admitted 0 | per shape -
+evidence.v5: answerable reach 21/69 ['I2-001', 'I2-003', 'I2-004', 'I2-005', 'I2-006', 'I2-008', 'I2-013', 'I2-014', 'I2-018', 'I2-026', 'I2-027', 'I2-032', 'I2-035', 'I2-042', 'I2-045', 'I2-048', 'R2-I005', 'R2-I007', 'R2-I008', 'R2-I015', 'R2-I017'] | wrong-admitting 0 [] | unanswerable admissions 0/60 [] | bank4 traps admitted 0 | per shape -
+v5-noSU: answerable reach 21/69 ['I2-001', 'I2-003', 'I2-004', 'I2-005', 'I2-006', 'I2-008', 'I2-013', 'I2-014', 'I2-018', 'I2-026', 'I2-027', 'I2-032', 'I2-035', 'I2-042', 'I2-045', 'I2-048', 'R2-I005', 'R2-I007', 'R2-I008', 'R2-I015', 'R2-I017'] | wrong-admitting 0 [] | unanswerable admissions 0/60 [] | bank4 traps admitted 0 | per shape -
+v5-noTW: answerable reach 21/69 ['I2-001', 'I2-003', 'I2-004', 'I2-005', 'I2-006', 'I2-008', 'I2-013', 'I2-014', 'I2-018', 'I2-026', 'I2-027', 'I2-032', 'I2-035', 'I2-042', 'I2-045', 'I2-048', 'R2-I005', 'R2-I007', 'R2-I008', 'R2-I015', 'R2-I017'] | wrong-admitting 0 [] | unanswerable admissions 0/60 [] | bank4 traps admitted 0 | per shape -
+== bank6 (26 answerable + 34 unanswerable), evidence.py sha256 712249cc0cb481ea9c9b4dd60f3721b0d8db287062876c58f0cbde347a93efe6, 375s
+evidence.v2: answerable reach 3/26 ['B6-A05', 'B6-A13', 'B6-A27'] | wrong-admitting 3 ['B6-A05', 'B6-A20', 'B6-A27'] | unanswerable admissions 2/34 ['B6-U35', 'B6-U36'] | bank4 traps admitted 0 | per shape {'S1-alias': '0/5', 'S2-place': '0/5', 'S3-person': '0/5', 'S4-toshite': '0/6', 'S5-paren': '0/4', 'S6-naming': '0/5', 'S7-near': '2/4'}
+    ADMITTED B6-U35 花園町駅の隣駅の駅番号は何ですか？ [(21, 'Y17', [])]
+    ADMITTED B6-U36 海浦駅の隣駅の駅番号は何ですか？ [(37, 'OR08', [])]
+evidence.v3: answerable reach 5/26 ['B6-A05', 'B6-A13', 'B6-A15', 'B6-A24', 'B6-A27'] | wrong-admitting 3 ['B6-A05', 'B6-A20', 'B6-A27'] | unanswerable admissions 3/34 ['B6-U05', 'B6-U35', 'B6-U36'] | bank4 traps admitted 0 | per shape {'S1-alias': '1/5', 'S2-place': '0/5', 'S3-person': '0/5', 'S4-toshite': '0/6', 'S5-paren': '0/4', 'S6-naming': '0/5', 'S7-near': '2/4'}
+    ADMITTED B6-U05 フェミニズムは別名で何と呼ばれていますか？ [(16, '男女', ['R7'])]
+    ADMITTED B6-U35 花園町駅の隣駅の駅番号は何ですか？ [(21, 'Y17', [])]
+    ADMITTED B6-U36 海浦駅の隣駅の駅番号は何ですか？ [(37, 'OR08', [])]
+evidence.v4: answerable reach 5/26 ['B6-A05', 'B6-A13', 'B6-A15', 'B6-A24', 'B6-A27'] | wrong-admitting 3 ['B6-A05', 'B6-A20', 'B6-A27'] | unanswerable admissions 0/34 [] | bank4 traps admitted 0 | per shape {'S1-alias': '0/5', 'S2-place': '0/5', 'S3-person': '0/5', 'S4-toshite': '0/6', 'S5-paren': '0/4', 'S6-naming': '0/5', 'S7-near': '0/4'}
+evidence.v5: answerable reach 5/26 ['B6-A05', 'B6-A13', 'B6-A15', 'B6-A24', 'B6-A27'] | wrong-admitting 3 ['B6-A05', 'B6-A20', 'B6-A27'] | unanswerable admissions 0/34 [] | bank4 traps admitted 0 | per shape {'S1-alias': '0/5', 'S2-place': '0/5', 'S3-person': '0/5', 'S4-toshite': '0/6', 'S5-paren': '0/4', 'S6-naming': '0/5', 'S7-near': '0/4'}
+v5-noSU: answerable reach 5/26 ['B6-A05', 'B6-A13', 'B6-A15', 'B6-A24', 'B6-A27'] | wrong-admitting 3 ['B6-A05', 'B6-A20', 'B6-A27'] | unanswerable admissions 0/34 [] | bank4 traps admitted 0 | per shape {'S1-alias': '0/5', 'S2-place': '0/5', 'S3-person': '0/5', 'S4-toshite': '0/6', 'S5-paren': '0/4', 'S6-naming': '0/5', 'S7-near': '0/4'}
+v5-noTW: answerable reach 5/26 ['B6-A05', 'B6-A13', 'B6-A15', 'B6-A24', 'B6-A27'] | wrong-admitting 3 ['B6-A05', 'B6-A20', 'B6-A27'] | unanswerable admissions 0/34 [] | bank4 traps admitted 0 | per shape {'S1-alias': '0/5', 'S2-place': '0/5', 'S3-person': '0/5', 'S4-toshite': '0/6', 'S5-paren': '0/4', 'S6-naming': '0/5', 'S7-near': '0/4'}
+== bank7 (32 answerable + 47 unanswerable), evidence.py sha256 712249cc0cb481ea9c9b4dd60f3721b0d8db287062876c58f0cbde347a93efe6, 511s
+evidence.v2: answerable reach 1/32 ['B7-A23'] | wrong-admitting 0 [] | unanswerable admissions 1/47 ['B7-U43'] | bank4 traps admitted 0 | per shape -
+    ADMITTED B7-U43 ネノの属するネノ県の人口は何人ですか？ [(504, '20万人', [])]
+evidence.v3: answerable reach 4/32 ['B7-A22', 'B7-A23', 'B7-A25', 'B7-A36'] | wrong-admitting 0 [] | unanswerable admissions 1/47 ['B7-U43'] | bank4 traps admitted 0 | per shape -
+    ADMITTED B7-U43 ネノの属するネノ県の人口は何人ですか？ [(504, '20万人', [])]
+evidence.v4: answerable reach 4/32 ['B7-A22', 'B7-A23', 'B7-A25', 'B7-A36'] | wrong-admitting 0 [] | unanswerable admissions 1/47 ['B7-U43'] | bank4 traps admitted 0 | per shape -
+    ADMITTED B7-U43 ネノの属するネノ県の人口は何人ですか？ [(504, '20万人', [])]
+evidence.v5: answerable reach 4/32 ['B7-A22', 'B7-A23', 'B7-A25', 'B7-A36'] | wrong-admitting 0 [] | unanswerable admissions 0/47 [] | bank4 traps admitted 0 | per shape -
+v5-noSU: answerable reach 4/32 ['B7-A22', 'B7-A23', 'B7-A25', 'B7-A36'] | wrong-admitting 0 [] | unanswerable admissions 0/47 [] | bank4 traps admitted 0 | per shape -
+v5-noTW: answerable reach 4/32 ['B7-A22', 'B7-A23', 'B7-A25', 'B7-A36'] | wrong-admitting 0 [] | unanswerable admissions 0/47 [] | bank4 traps admitted 0 | per shape -

@@ -706,7 +706,7 @@ def test_t_ev_15_the_server_defaults_are_the_gate_with_the_title(tmp_path, tasks
     assert srv.evidence_profile == ("evidence.v2", "clause_or_title")                       # evidence.v2 since the review (L-LOOM-191..)
     assert LoomServer(list(tasks.values()), str(tmp_path / "r1"), evidence="v1").evidence_profile == ("evidence.v1", "clause_or_title")
     with pytest.raises(ValueError):
-        LoomServer(list(tasks.values()), str(tmp_path / "r2"), evidence="v5")                  # "v3" is a rule version since LOOM-reach (L-LOOM-201), "v4" since LOOM-evidence-v4 (L-LOOM-212); "v5" is the unknown one
+        LoomServer(list(tasks.values()), str(tmp_path / "r2"), evidence="v6")                  # "v3" is a rule version since LOOM-reach (L-LOOM-201), "v4" since LOOM-evidence-v4 (L-LOOM-212), "v5" since LOOM-evidence-v5 (L-LOOM-219); "v6" is the unknown one
     with pytest.raises(ValueError):
         LoomServer(list(tasks.values()), str(tmp_path / "r3"), subject_scope="title")
 
@@ -1381,12 +1381,12 @@ def test_t_ev_28_v3_is_selectable_and_v2_stays_the_default_everywhere(tmp_path, 
     import inspect
     from verantyx import cli
     from verantyx.loom import mcp as lm
-    assert ev.EVIDENCE_VERSIONS == (V1, V2, V3, "evidence.v4") and ev.EVIDENCE_LATEST == V2 and ev.PROFILE_NAMES == {"v1": V1, "v2": V2, "v3": V3, "v4": "evidence.v4"}
+    assert ev.EVIDENCE_VERSIONS == (V1, V2, V3, "evidence.v4", "evidence.v5") and ev.EVIDENCE_LATEST == V2 and ev.PROFILE_NAMES == {"v1": V1, "v2": V2, "v3": V3, "v4": "evidence.v4", "v5": "evidence.v5"}
     assert inspect.signature(ev.judge_quote).parameters["version"].default == V2
     assert LoomServer(list(tasks.values()), str(tmp_path / "a")).evidence_profile == (V2, "clause_or_title")                   # OP-RE-2: v2 is the server default
     assert LoomServer(list(tasks.values()), str(tmp_path / "b"), evidence="v3").evidence_profile == (V3, "clause_or_title")
     with pytest.raises(ValueError):
-        LoomServer(list(tasks.values()), str(tmp_path / "c"), evidence="v5")
+        LoomServer(list(tasks.values()), str(tmp_path / "c"), evidence="v6")
     seen = []
     monkeypatch.setattr(lm, "serve", lambda *a, **k: seen.append(a) or 0)
     assert cli.main(["loom", "mcp", "--tasks", "t.jsonl", "--runs-dir", str(tmp_path / "r")]) == 0
