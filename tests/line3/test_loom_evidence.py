@@ -703,10 +703,10 @@ def test_t_ev_15_code_tasks_have_no_profile_and_a_bare_run_has_none(tmp_path):
 
 def test_t_ev_15_the_server_defaults_are_the_gate_with_the_title(tmp_path, tasks):
     srv = LoomServer(list(tasks.values()), str(tmp_path / "runs"))
-    assert srv.evidence_profile == ("evidence.v2", "clause_or_title")                       # evidence.v2 since the review (L-LOOM-191..)
+    assert srv.evidence_profile == ("evidence.v6", "clause_or_title")                       # evidence.v2 since the review (L-LOOM-191..); evidence.v6 since L-LOOM-226
     assert LoomServer(list(tasks.values()), str(tmp_path / "r1"), evidence="v1").evidence_profile == ("evidence.v1", "clause_or_title")
     with pytest.raises(ValueError):
-        LoomServer(list(tasks.values()), str(tmp_path / "r2"), evidence="v6")                  # "v3" is a rule version since LOOM-reach (L-LOOM-201), "v4" since LOOM-evidence-v4 (L-LOOM-212), "v5" since LOOM-evidence-v5 (L-LOOM-219); "v6" is the unknown one
+        LoomServer(list(tasks.values()), str(tmp_path / "r2"), evidence="v7")                  # "v3" is a rule version since LOOM-reach (L-LOOM-201), "v4" since LOOM-evidence-v4 (L-LOOM-212), "v5" since LOOM-evidence-v5 (L-LOOM-219); "v6" is the unknown one
     with pytest.raises(ValueError):
         LoomServer(list(tasks.values()), str(tmp_path / "r3"), subject_scope="title")
 
@@ -1381,19 +1381,19 @@ def test_t_ev_28_v3_is_selectable_and_v2_stays_the_default_everywhere(tmp_path, 
     import inspect
     from verantyx import cli
     from verantyx.loom import mcp as lm
-    assert ev.EVIDENCE_VERSIONS == (V1, V2, V3, "evidence.v4", "evidence.v5") and ev.EVIDENCE_LATEST == V2 and ev.PROFILE_NAMES == {"v1": V1, "v2": V2, "v3": V3, "v4": "evidence.v4", "v5": "evidence.v5"}
-    assert inspect.signature(ev.judge_quote).parameters["version"].default == V2
-    assert LoomServer(list(tasks.values()), str(tmp_path / "a")).evidence_profile == (V2, "clause_or_title")                   # OP-RE-2: v2 is the server default
+    assert ev.EVIDENCE_VERSIONS == (V1, V2, V3, "evidence.v4", "evidence.v5", "evidence.v6") and ev.EVIDENCE_LATEST == "evidence.v6" and ev.PROFILE_NAMES == {"v1": V1, "v2": V2, "v3": V3, "v4": "evidence.v4", "v5": "evidence.v5", "v6": "evidence.v6"}
+    assert inspect.signature(ev.judge_quote).parameters["version"].default == "evidence.v6"
+    assert LoomServer(list(tasks.values()), str(tmp_path / "a")).evidence_profile == ("evidence.v6", "clause_or_title")          # OP-RE-2: v2 was the server default; v6 is since L-LOOM-226
     assert LoomServer(list(tasks.values()), str(tmp_path / "b"), evidence="v3").evidence_profile == (V3, "clause_or_title")
     with pytest.raises(ValueError):
-        LoomServer(list(tasks.values()), str(tmp_path / "c"), evidence="v6")
+        LoomServer(list(tasks.values()), str(tmp_path / "c"), evidence="v7")
     seen = []
     monkeypatch.setattr(lm, "serve", lambda *a, **k: seen.append(a) or 0)
     assert cli.main(["loom", "mcp", "--tasks", "t.jsonl", "--runs-dir", str(tmp_path / "r")]) == 0
     assert cli.main(["loom", "mcp", "--tasks", "t.jsonl", "--runs-dir", str(tmp_path / "r"), "--evidence", "v3"]) == 0
-    assert [a[4] for a in seen] == ["v2", "v3"]                                                                               # the CLI default is v2; --evidence v3 selects v3
+    assert [a[4] for a in seen] == ["v6", "v3"]                                                                               # the CLI default is v6 (v2 before L-LOOM-226); --evidence v3 selects v3
     H = _harness()
-    assert inspect.signature(H.run).parameters["evidence"].default is None                                                     # None = v2 for the api driver (unchanged)
+    assert inspect.signature(H.run).parameters["evidence"].default is None                                                     # None = v6 for the api driver (v2 before L-LOOM-226)
 
 
 def test_t_ev_28_a_v3_run_records_its_rules_and_the_kinds_and_replays_identically(tmp_path, tasks):
@@ -1501,5 +1501,5 @@ def test_t_ev_30_the_held_out_bank6_sweep_waits_for_bank6():
     """OP-RE-2 (owner): v3 becomes the default only when the held-out bank6 passes (docs/LINE3_LOOM_REACH_DESIGN.md §6.2): the rules are frozen (T-EV-28), then codex writes bank6,
     Opus audits it, the sweep runs ONCE.  Until then the default is v2 and this test only says so; the ticket that adds `experiments/line3/bank6/` replaces it with the sweep
     pinned with the numbers of the single run (reach, wrong-admitting items, unanswerable admissions, trap admissions, per rule) and only then may EVIDENCE_LATEST change."""
-    assert ev.EVIDENCE_LATEST == V2 and ev.PROFILE_NAMES["v2"] == V2
+    assert ev.EVIDENCE_LATEST == "evidence.v6" and ev.PROFILE_NAMES["v2"] == V2      # the default moved to v6 (v2 plus the refusal-only rules), not to v3 (the owner decision after bank8)
     assert sorted(ev.V3_RULE_IDS) == sorted(ABLATION_V3) + ["T1", "T2"]

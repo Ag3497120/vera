@@ -3275,8 +3275,8 @@ def main(argv: Optional[list] = None) -> int:
     q.add_argument("--allow-root", dest="allow_root", action="append", default=None, help="an extra folder the server may READ (repeatable)")
     q.add_argument("--stability", choices=["strict_npa", "strict_np", "report"], default="strict_npa",
                    help="OP-LOOM-1: strict_npa (default, the owner's choice: the full key (n, p, a)) | strict_np | report (annotation only)")
-    q.add_argument("--evidence", choices=["v1", "v2", "v3", "v4", "v5", "off"], default="v2",
-                   help="LOOM-evidence: the reader's evidence gate NEW prose runs get (v2 = evidence.v2, the default: only an unchanged weave_span quote that the loom reads as an "
+    q.add_argument("--evidence", choices=["v1", "v2", "v3", "v4", "v5", "v6", "off"], default="v6",
+                   help="LOOM-evidence: the reader's evidence gate NEW prose runs get (v6 = evidence.v6, the default: v2 plus the refusal-only safety rules CH / SU / TW / NEG, a pure filter over the v2 verdict; v2 = evidence.v2: only an unchanged weave_span quote that the loom reads as an "
                         "answer to the question can be emitted, as one whole word or phrase; v1 = the first build's rules; v3 = the widened reach (selectable, not the default until the held-out bank6 passes); v4 = v3 without the naming-verb rule R7, with the subject-chain rule (selectable, not the default until the held-out bank7 passes); v5 = v4 plus SU (an unreadable subject phrase is refused) and TW (the title stands in for a subject only as a whole word; a kind word alone is no subject) (selectable, not the default); off = no gate). "
                         "A run's begin row records it; replay uses the recorded profile")
     q.add_argument("--subject-scope", dest="subject_scope", choices=["clause_or_title", "clause"], default="clause_or_title",

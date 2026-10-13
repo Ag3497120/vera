@@ -33,7 +33,7 @@ def main(argv=None) -> int:
     ap.add_argument("--modes", default="record_only,constructed_allowed")
     ap.add_argument("--repeats", type=int, default=3)
     ap.add_argument("--only-repeats", dest="only_repeats", default=None, help="comma-separated repeat numbers (default: all)")
-    ap.add_argument("--evidence", default="v2", choices=("v1", "v2", "off"))
+    ap.add_argument("--evidence", default="v6", choices=("v1", "v2", "v3", "v4", "v5", "v6", "off"))
     ap.add_argument("--subject-scope", dest="subject_scope", default="clause_or_title", choices=("clause_or_title", "clause"))
     a = ap.parse_args(argv)
     bank = S.load_bank(a.bank)

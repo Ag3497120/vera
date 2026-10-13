@@ -99,7 +99,10 @@ EVIDENCE_RULE_V3 = EVIDENCE_RULE_V2 + " " + evl.V3_RULE_SENTENCE
 EVIDENCE_RULE_V4 = EVIDENCE_RULE_V2 + " " + evl.V4_RULE_SENTENCE
 # evidence.v5 (L-LOOM-219..): the v2 text + the v5 sentence (v4 plus the unreadable-subject and title-whole-word rules).  Selectable; not the default.
 EVIDENCE_RULE_V5 = EVIDENCE_RULE_V2 + " " + evl.V5_RULE_SENTENCE
-EVIDENCE_RULES = {evl.EVIDENCE_V1: EVIDENCE_RULE, evl.EVIDENCE_V2: EVIDENCE_RULE_V2, evl.EVIDENCE_V3: EVIDENCE_RULE_V3, evl.EVIDENCE_V4: EVIDENCE_RULE_V4, evl.EVIDENCE_V5: EVIDENCE_RULE_V5}
+# evidence.v6 (L-LOOM-226..): the v2 text + the v6 sentence (the refusal-only safety rules: chain, unreadable subject, title whole word, polarity).  The DEFAULT.
+EVIDENCE_RULE_V6 = EVIDENCE_RULE_V2 + " " + evl.V6_RULE_SENTENCE
+EVIDENCE_RULES = {evl.EVIDENCE_V1: EVIDENCE_RULE, evl.EVIDENCE_V2: EVIDENCE_RULE_V2, evl.EVIDENCE_V3: EVIDENCE_RULE_V3, evl.EVIDENCE_V4: EVIDENCE_RULE_V4, evl.EVIDENCE_V5: EVIDENCE_RULE_V5,
+                  evl.EVIDENCE_V6: EVIDENCE_RULE_V6}
 
 
 # ------------------------------------------------------------------------------------------------------------
@@ -310,7 +313,7 @@ class Run:
         if self.evidence is not None:                       # LOOM-evidence: no such keys in a run without the gate (every ledger before it), so those rows are as they were
             res["rules"] = dict(RULES, evidence=EVIDENCE_RULES[self.evidence[0]])
             res["evidence_profile"] = {"version": self.evidence[0], "subject_scope": self.evidence[1]}
-            res["question"] = evl.begin_question_obj(self.question_units, self.evidence[1], self.evidence[0])      # read-only, recomputed by the loom (L-LOOM-185): a forged row cannot replay
+            res["question"] = evl.begin_question_obj6(self.question_units, self.evidence[1], self.evidence[0])      # read-only, recomputed by the loom (L-LOOM-185): a forged row cannot replay
         return {"actor": "model", "op": "begin", "args": {"task_id": self.task["task_id"], "model": self.model}, "result": res,
                 "state_sha": self.state.sha()}
 

@@ -320,7 +320,8 @@ def _is_close(r: dict) -> bool:
 
 
 EVIDENCE_CONTENT_CODES = ("answer_not_word_aligned", "question_form_open", "question_has_no_subject", "no_subject", "wrong_arm", "no_slot_head", "not_copular",
-                          "answer_holds_question_unit", "answer_glued", "answer_crosses_break", "multiple_answers")      # the codes that say the SENTENCE does not answer the question (the others, not_quoted / constructed_unit, say how the thread was built)
+                          "answer_holds_question_unit", "answer_glued", "answer_crosses_break", "multiple_answers",
+                          "subject_unreadable", "answer_polarity_cut")      # the codes that say the SENTENCE does not answer the question (the others, not_quoted / constructed_unit, say how the thread was built)
 
 
 def evidence_codes_of(res: dict) -> set:
