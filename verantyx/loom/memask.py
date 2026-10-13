@@ -40,7 +40,7 @@ ASK_VERSION = "ask.v2"                     # ask.v1 + (PUB-M6b, L-PUB-58) the ba
 ASK_V3 = "ask.v3"                          # PUB-M6c (L-PUB-70..): ask.v2 + qwords.v2 (「どの<名詞>」) + a question with a relative clause is read by its last noun (never answered by itself) + CANDIDATES when no exact route
                                            # reaches a value + a confirmed bridge may name a whole position + occurrences are checked against the weave_span.v4 read-out (joiners kept) + `sources` of a CHOICE
 ASK_VERSIONS: Tuple[str, ...] = (ASK_VERSION, ASK_V3)
-JOINERS_V4 = frozenset(".,-:/")           # the joiners weave_span.v4 keeps (ops.READOUT_JOINERS): owner 2026-10-13
+JOINERS_V4 = ".,-:/"           # the joiners weave_span.v4 keeps (ops.READOUT_JOINERS): owner 2026-10-13
 CANDIDATE_MIN = 2                          # ask.v3: a candidate shares at least this many content units with the question
 CANDIDATE_CAP = 5                          # ... and at most this many are offered
 PLACEHOLDER = "QQ"
@@ -632,7 +632,12 @@ def recall(index: mx.MemIndex, rows: Sequence[dict], corpus: Any, question: str,
                     scopes_seen.append(o["scope"])
         out["choice_kind"] = "same_seat" if same_seat else ("scopes" if len(scopes_seen) > 1 else "positions")
         if v3:                                                      # how many sentences the values come from: a same_seat CHOICE of >= 2 sources is a contradiction (the answer run refuses to emit one side)
-            out["sources"] = len({o["sid"] for g in out["answers"] for o in g["occurrences"]})
+            sids: List[int] = []
+            for g in out["answers"]:
+                for o in g["occurrences"]:
+                    if o["sid"] not in sids:
+                        sids.append(o["sid"])
+            out["sources"] = len(sids)
     else:
         out["verdict"] = "UPDATED" if hist_all else "ANSWER"
     return out

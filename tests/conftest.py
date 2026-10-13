@@ -57,3 +57,15 @@ def pytest_terminal_summary(terminalreporter):
         terminalreporter.write_line(f"ENV_MISSING[{name}]: {len(by_resource[name])} skipped")
     for nodeid in unclassified:
         terminalreporter.write_line(f"UNCLASSIFIED_SKIP: {nodeid}")
+
+
+@pytest.fixture
+def gate_v2(monkeypatch):
+    """PUB-M6c (L-PUB-76): the default evidence gate of NEW memory sessions and answer runs is evidence.v6 (`memrecall.MEM_GATE_VERSION`).  The tests written against the original gate (evidence.v2: the pinned
+    ids `gate.evidence.v2+subject`, the `evidence_profile` of a begin row, the call counts of the gate) use this fixture, which sets that one constant back to evidence.v2 for the test; v2 stays a
+    selectable, replayable version.  The default itself is asserted in tests/line3/test_pub_m6c.py."""
+    from verantyx.loom import evidence as _ev
+    from verantyx.loom import memanswer as _ma
+    from verantyx.loom import memrecall as _mr
+    monkeypatch.setattr(_mr, "MEM_GATE_VERSION", _ev.EVIDENCE_V2)
+    monkeypatch.setattr(_ma, "ANSWER_EVIDENCE", (_ev.EVIDENCE_V2, _ev.SCOPE_CLAUSE))

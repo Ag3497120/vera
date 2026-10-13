@@ -21,6 +21,8 @@ from verantyx.loom.corpus import Corpus
 from verantyx.loom.state import Refuse
 from mem_common import PROBE_REVERSAL, ROOT, STUB, ledger_rows, new_store, notes_of, session, write_all
 
+pytestmark = pytest.mark.usefixtures("gate_v2")                # PUB-M6c (L-PUB-76): written against the original gate (evidence.v2); the default gate is asserted in test_pub_m6c.py
+
 GATE = mr.GateSelfQuestion()                  # gate.evidence.v2 (MEM-c): the hook of the stores written before the whole-subject guard; they replay with exactly this behaviour
 SUBJ = mr.GateSubjectSelfQuestion()           # gate.evidence.v2+subject (MEM-c2): the default of a new store
 PR4 = ["田中の担当は認証", "認証の期限は金曜", "田中の担当は決済", "決済の期限は月曜", "会議は東京で開く", "サーバーのポートは8080", "会議は大阪で行う", "サーバーのポートは9090"]
@@ -55,7 +57,7 @@ def test_the_default_hook_of_a_new_store_is_the_gate_with_the_subject_guard(tmp_
     assert (h["self_question"], h["evidence_version"]) == ("gate.evidence.v2+subject", "evidence.v2")
     assert s.run.hook_id == SUBJ.id == mr.GATE_SUBJECT_HOOK_ID and s.run.evidence_version == SUBJ.evidence_version == ev.EVIDENCE_V2 and SUBJ.subject_guard is True
     assert GATE.id == mr.GATE_HOOK_ID == "gate.evidence.v2" and GATE.subject_guard is False and GATE.evidence_version == ev.EVIDENCE_V2
-    assert set(mem.HOOKS) == {"stub.v1", "gate.evidence.v2", "gate.evidence.v2+subject"}
+    assert {"stub.v1", "gate.evidence.v2", "gate.evidence.v2+subject"} <= set(mem.HOOKS)               # PUB-M6c: the hooks of the other evidence versions (gate.evidence.v3..v6, with +subject) are registered too, so a session replays under the gate it recorded
     assert "evidence.v2" in ledger_rows(s)[0]["result"]["rules"]["recall"]
     # the old gate hook is still selectable and records its own id
     s1 = session(tmp_path, "oldgate", self_question=GATE)
@@ -720,6 +722,7 @@ _SCRIPT = r"""
 import sys, hashlib, os, json, pathlib
 sys.path.insert(0, os.path.join(%(root)r, "tests", "line3"))
 from test_mem_recall import run_story, GATE, SUBJ, digest_of
+
 for h in (GATE, SUBJ):
     st = run_story(pathlib.Path(sys.argv[1]), "det" + h.id, h)
     print(digest_of(st), st.verify(h)["status"], hashlib.sha256(json.dumps(st.rows(), sort_keys=True).encode()).hexdigest()[:8])

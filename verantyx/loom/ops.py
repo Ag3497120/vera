@@ -65,7 +65,7 @@ WEAVE_SPAN_V2 = "weave_span.v2"         # = v1, and the crosses it makes carry t
 WEAVE_SPAN_V3 = "weave_span.v3"         # = v2, and each cross it makes also carries `quote` = (w, sid, tier, i0, i1), which the evidence gate reads (LOOM-evidence, L-LOOM-183)
 WEAVE_SPAN_V4 = "weave_span.v4"         # = v3, and a stretch whose units are joined only by the joiners . , - : / inside a token (v2.4, 6.5万円, 3.2.0-rc2, 6/14) reads out as the SOURCE slice, joiners included (PUB-M6c, L-PUB-65)
 WEAVE_SPAN_WV = WEAVE_SPAN_V3            # the CURRENT rule that derives a weave_span's crosses (L-LOOM-135); stamped into the args of every new weave_span row
-READOUT_JOINERS = frozenset(".,-:/")     # weave_span.v4: the joiners the evidence gate lets hold inside a token (evidence.JOINERS has more); the owner's list (2026-10-13)
+READOUT_JOINERS = ".,-:/"     # weave_span.v4: the joiners the evidence gate lets hold inside a token (evidence.JOINERS has more); the owner's list (2026-10-13)
 SPEC_ARMS: Tuple[str, ...] = tuple(SPEC.arms)                  # the particle of each arm, in AXES order (LoomCross puts SPEC.arms[ai] on arm ai)
 DRIVERS = ("L1-subagent", "L2-api", "scripted")
 GRADES = ("pass", "fail", "unclear")

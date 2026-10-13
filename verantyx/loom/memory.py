@@ -108,7 +108,7 @@ def check_versions(versions: Optional[Dict[str, str]]) -> Dict[str, str]:
         if k not in v:
             raise Refuse("bad_policy", {"policy": "versions", "value": k, "allowed": sorted(v)})
         v[k] = x
-    if v["shape"] not in ms.SHAPE_TABLES or v["shape"] == ms.SHAPES_VERSION or v["ask"] not in V4_ASK_QWORDS or v["qwords"] != V4_ASK_QWORDS[v["ask"]]:
+    if v["shape"] not in ms.SHAPE_TABLES_ALL or v["shape"] == ms.SHAPES_VERSION or v["ask"] not in V4_ASK_QWORDS or v["qwords"] != V4_ASK_QWORDS[v["ask"]]:
         raise Refuse("bad_policy", {"policy": "versions", "value": dict(v), "allowed": {"shape": [ms.SHAPES_V2, ms.SHAPES_V3], "ask": sorted(V4_ASK_QWORDS), "qwords": "the table of the ask version"}})
     return v
 
@@ -441,7 +441,7 @@ class MemRun(Run):
             if self.v2plus:                                   # absent in a mem.v1 header: every earlier begin row is as it was
                 h["mem_profile"] = self.profile
             if self.v4:                                       # PUB-M2: the frozen shape table and the version of the memory cross serialisation this session reads / writes
-                h["shape"] = {"version": self.shape_version, "sha": ms.SHAPE_TABLES[self.shape_version]}
+                h["shape"] = {"version": self.shape_version, "sha": ms.SHAPE_TABLES_ALL[self.shape_version]}
                 h["cross"] = {"version": mx.CROSS_VERSION}
                 h["qwords"] = {"version": self.versions["qwords"], "sha": qw.QWORDS_SHAS[self.versions["qwords"]]}        # PUB-M6: the question-word tank (frozen)
                 h["detect"] = {"version": mdt.DETECT_VERSION}                              # PUB-M5: the detections on the crosses

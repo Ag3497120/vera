@@ -16,6 +16,9 @@ from verantyx.loom.mcp import LoomServer
 from verantyx.loom.state import Refuse
 from mem_common import new_store, refusal_of, write_all
 
+pytestmark = pytest.mark.usefixtures("gate_v2")                # PUB-M6c (L-PUB-76): written against the original gate (evidence.v2); the default gate is asserted in test_pub_m6c.py
+
+
 SENT = ["田中の担当は認証", "認証の期限は金曜", "田中の担当は決済", "サーバーのポートは8080", "サーバーのポートは9090", "決済の期限は月曜"]       # sid 0..5
 
 

@@ -717,7 +717,8 @@ def _shapes_sha_v3() -> str:
 
 
 SHAPES_SHA_V3 = _shapes_sha_v3()
-SHAPE_TABLES: Dict[str, str] = {SHAPES_VERSION: SHAPES_SHA, SHAPES_V2: SHAPES_SHA_V2, SHAPES_V3: SHAPES_SHA_V3}      # version -> sha: what a ledger header records
+SHAPE_TABLES: Dict[str, str] = {SHAPES_VERSION: SHAPES_SHA, SHAPES_V2: SHAPES_SHA_V2}      # version -> sha: what a ledger header records (shape.v1, shape.v2: pinned by the tests of PUB-M4)
+SHAPE_TABLES_ALL: Dict[str, str] = dict(SHAPE_TABLES, **{SHAPES_V3: SHAPES_SHA_V3})      # version -> sha of every table (SHAPE_TABLES: v1 and v2, as the tests of PUB-M4 pin it)
 SHAPE_VERSIONS: Tuple[str, ...] = (SHAPES_VERSION, SHAPES_V2, SHAPES_V3)
 
 

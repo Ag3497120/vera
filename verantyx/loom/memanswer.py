@@ -317,10 +317,10 @@ class AnswerRun(Run):
 
     def __init__(self, corpus: Corpus, rows: Sequence[dict], store_id: str, snapshot_name_: str, question: str, model: str, run_id: str,
                  topics: Optional[Sequence[str]] = None, topics_file: Optional[str] = None, crosses: Optional[Tuple[str, Sequence[dict], Sequence[dict]]] = None,
-                 evidence: Tuple[str, str] = ANSWER_EVIDENCE, versions: Optional[Dict[str, str]] = None) -> None:
+                 evidence: Optional[Tuple[str, str]] = None, versions: Optional[Dict[str, str]] = None) -> None:
         mg.check_memory_rows(rows)
         task = {"task_id": ANSWER_TASK_ID, "text": question, "lang": "prose", "mode": "record_only", "tiers": ["WORD"]}
-        super().__init__(corpus, task, model, run_id, DEFAULT_STABILITY, None, None, notelib.NOTES_VERSION, tuple(evidence))
+        super().__init__(corpus, task, model, run_id, DEFAULT_STABILITY, None, None, notelib.NOTES_VERSION, tuple(evidence if evidence is not None else ANSWER_EVIDENCE))
         self.rows = list(rows)
         self.store_id = store_id
         self.snapshot = snapshot_name_
@@ -611,7 +611,8 @@ class AnswerSession:
     """An open answer run: `call(tool, args)` executes one op, appends exactly one row (a refused call too) and, after a read / emit / weave with notes, the `loom_note` row;
     `harness(op, args)` appends a row that is not the model's.  No lock is taken on the store: an answer run only READS the snapshot it was begun on."""
 
-    def __init__(self, store_path, question: str, model: str, run_id: Optional[str] = None, snapshot: Optional[dict] = None, answer_version: str = ANSWER_VERSION) -> None:
+    def __init__(self, store_path, question: str, model: str, run_id: Optional[str] = None, snapshot: Optional[dict] = None, answer_version: str = ANSWER_VERSION,
+                 evidence: Optional[Tuple[str, str]] = None) -> None:
         if not isinstance(question, str) or not 1 <= len(question) <= 256 or any(unicodedata.category(ch) in ("Cc", "Zl", "Zp") for ch in question):
             raise Refuse("bad_question", {"reason": "1 to 256 characters, no control character"})
         if not isinstance(model, str) or not mem._MODEL_RX.match(model):
@@ -649,7 +650,7 @@ class AnswerSession:
             run_id = "a%04d" % k
         if not _RUN_RX.match(run_id) or (d / run_id).exists():
             raise Refuse("bad_run_id", {"run_id": run_id})
-        self.run = AnswerRun(Corpus(data), rows, snap["store_id"], snap["name"], question, model, run_id, topics, topics_file, crosses, versions=versions)
+        self.run = AnswerRun(Corpus(data), rows, snap["store_id"], snap["name"], question, model, run_id, topics, topics_file, crosses, evidence, versions)
         self.ledger = lg.Ledger(d / run_id)
         meta = {"store": snap["store_id"], "mode": "memory_answer", "snapshot": snap["name"], "corpus_sha": hashlib.sha256(data).hexdigest()}
         if want_topics:
