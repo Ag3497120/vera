@@ -1,0 +1,5 @@
+dev {"id": "LS-D01", "sessions": 16, "messages": 160, "sentences": 640, "subjectless": 0.592, "plants": {"contradiction": 12, "update": 8, "list_trap": 8, "reversal": 4, "repeat": 6}, "questions": {"plain": 12, "contradiction": 12, "absent": 8, "update": 8}, "rephrased": "26/32", "plain_on_traps": 8, "ledger": 109}
+dev {"id": "LS-D02", "sessions": 14, "messages": 115, "sentences": 805, "subjectless": 0.429, "plants": {"contradiction": 12, "update": 8, "reversal": 4, "list_trap": 8, "repeat": 6}, "questions": {"contradiction": 12, "plain": 12, "absent": 8, "update": 8}, "rephrased": "32/32", "plain_on_traps": 4, "ledger": 157}
+INFO LS-D01: ledger has only 109 entries
+INFO LS-D02: Q9 says 記録されて/上/では (mild kind hint)
+PASS (0 errors)

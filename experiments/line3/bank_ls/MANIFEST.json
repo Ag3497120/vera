@@ -1,0 +1,84 @@
+{
+ "intake": {
+  "recorded_at": "2026-10-13",
+  "note": "sha256 of every story file recorded before any Vera system reads it; no Vera system has read any of these stories; the held-out splits were not read by the designer (counts only in README.md and AUDIT_LS.md)"
+ },
+ "splits": {
+  "dev": {
+   "stories": [
+    "LS-D01",
+    "LS-D02"
+   ],
+   "stories_jsonl_sha256": "991a56e1d19eafdb144e28b3b598ebc097a95d90c4dc2d4d860376e849b3bad5",
+   "manifest": "dev/MANIFEST.json",
+   "manifest_sha256": "1a0bdb43e56f02b87fb6ee41ad5d0228fef0a62cf28ab6d3d4d72550e19e8a82",
+   "check": "check_dev.txt",
+   "check_sha256": "2eb49455f9d866d89619465f8cc98ba257d7289a010480f864339bdda036232d",
+   "check_result": "PASS (0 errors)"
+  },
+  "heldout_1": {
+   "stories": [
+    "LS-H1-01",
+    "LS-H1-02",
+    "LS-H1-03",
+    "LS-H1-04",
+    "LS-H1-05",
+    "LS-H1-06"
+   ],
+   "stories_jsonl_sha256": "33f74a3c2ff0032ae21483103e4aaf843a23795f4a5d69d050c281c24e4f448d",
+   "manifest": "heldout_1/MANIFEST.json",
+   "manifest_sha256": "b8fc25816136998b9fdb8f048669da98b43e72eaa2499ff40187acfeb8bd3fad",
+   "check": "check_heldout_1.txt",
+   "check_sha256": "c2a38c618121ff4272e54c0f141cbbf3c688a49714189838242ef5572e523221",
+   "check_result": "PASS (0 errors)"
+  },
+  "heldout_2": {
+   "stories": [
+    "LS-H2-01",
+    "LS-H2-02",
+    "LS-H2-03",
+    "LS-H2-04",
+    "LS-H2-05",
+    "LS-H2-06"
+   ],
+   "stories_jsonl_sha256": "2adf9cf2c6aedff45296c6460c681fadac235f4585db7880aaf7768933463957",
+   "manifest": "heldout_2/MANIFEST.json",
+   "manifest_sha256": "8a4ea2f145e0b730c7424c8101d52d7dc6fd3d0a0f3a66b56fd1c2132c7f36bd",
+   "check": "check_heldout_2.txt",
+   "check_sha256": "2c9ceb8c836540b63c64e774e5b11a1e2f8f5ead874e062af7a755ea868a14ce",
+   "check_result": "PASS (0 errors)"
+  }
+ },
+ "files": {
+  "README.md": "2094826c7241c0a304c36337cd4c825e2e1ec518a01db299bcd640ce3f0ce1a1",
+  "AUDIT_LS.md": "07cb01a342d037c7c804138f3f963ac9b612f7a65c315ea1ab523bfca9929384",
+  "check_ls.py": "88f530ca4ab749e6404a495312ae2ff1ed0f57eabf51d283e7f00310f44c6005",
+  "package_ls.py": "793545687658d8d6799ca9555fbc6beb1e00fb17a5938bea9e4074c89fe511dc",
+  "check_cross.txt": "a457af2bd464d4bc6b63215d70cde1649d1f561c525d3bee82fd0632a177fedc"
+ },
+ "prompts": {
+  "PROMPT_LS.template": "8ccdbdcaba1f04aaa18ed7809105073307479d7ce676dbbc37a5539f80b6ce17",
+  "PROMPT_LSAUDIT.md": "e8d8661caaa5926c9b3389e82c25583e19a09de13f6ca868ac8978539cfe64a9",
+  "PROMPT_LS_dev1.md": "bf124db7a9d6578c937d7e3d76c3fd21ee38f8d66644d8adc567c705a8fe1c61",
+  "PROMPT_LS_dev2.md": "bef71e136eba77fa23ce8863d10dd72206d99657bdc030b2abd7441a9ebcbbd2",
+  "PROMPT_LS_h1_1.md": "2e92e78aa3da659791e10c4a834b7fbcbd9e581fcd4772c38893a9de422c5214",
+  "PROMPT_LS_h1_2.md": "bb42f9f86323245ae9bc264a27472fd42c03976283b6008b11955da171cebf88",
+  "PROMPT_LS_h1_3.md": "78b96e6e0e7f2d8a521d0542db1fd701a12778da960bc0eaaf5608da319677b3",
+  "PROMPT_LS_h1_4.md": "c62d5dc391b0979e5626868760a66652d1b804531f2033c229a71bfaca7c046d",
+  "PROMPT_LS_h1_4_resume.md": "c40343f40eade000122dee070aaeaffd8b92d824cdb6be9e5f7a4623049478a3",
+  "PROMPT_LS_h1_5.md": "128e2a9b272668f0a757bd197215e705e905008816f971268bb11da2750743c7",
+  "PROMPT_LS_h1_6.md": "4872a1e8e2c8d3448fd8440877be677574aedebe0a8c1e23bccf217a1a2cce72",
+  "PROMPT_LS_h2_1.md": "a6b8b71b65d13531d0891004c86328cca3d2646a83bbb583540e1a91f440bc4e",
+  "PROMPT_LS_h2_1_repair.md": "f4dc79f7c0a4036993e047ad953808602d821ce9e03fa5c47db6c0f71925302d",
+  "PROMPT_LS_h2_2.md": "11081a45378ce3348ab5b1f8d558ccd57eaeac26ef5a5fb59cc535701684731a",
+  "PROMPT_LS_h2_3.md": "ed8604ed913df17c1762d0fc7fa6858660e1a51845c0c6f405ccd6bcedf99f21",
+  "PROMPT_LS_h2_3_repair.md": "1ddf54768ff826abebf503744e61519fd67abad11bfbde2ae1da7796828040ef",
+  "PROMPT_LS_h2_4.md": "51afaadfaaa72b257ed70e30ff0d471fcf00bae31af624174610f9fdd276309a",
+  "PROMPT_LS_h2_4_v2.md": "f2f10b3a69d23cc471e83637026aebb987c9b81802091ebbde5d73c6ea01c32c",
+  "PROMPT_LS_h2_4_v2r.md": "a64500821341d673b8d683e420781dd21265507c7e2029da4f98faba9ed5011c",
+  "PROMPT_LS_h2_5.md": "a9b7b382431334118551f42b118c1885ce028ba1b28d50ccbb870a701febb65a",
+  "PROMPT_LS_h2_6.md": "91f025f50d142dcf9ca224b84e71728a8d4b8645a79c19fe704c754eec9fdaab"
+ },
+ "author": "codex gpt-6-luna (effort max), one fresh directory per story",
+ "auditor": "Claude Sonnet 5.5"
+}

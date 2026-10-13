@@ -1,0 +1,72 @@
+{
+ "split": "heldout_1",
+ "stories": [
+  {
+   "id": "LS-H1-01",
+   "author_dir": "bank7-author/ls/h1_1",
+   "author_story_sha256": "eb4b910984bfe2a2d17bf7cb7de7ba9de8442417e94b281965706041c23e564f",
+   "absent_refs_normalised": 0,
+   "prompt": "bank2-author/PROMPT_LS_h1_1.md",
+   "sessions": 12,
+   "messages": 96,
+   "sentences": 768,
+   "questions": 40
+  },
+  {
+   "id": "LS-H1-02",
+   "author_dir": "bank7-author/ls/h1_2",
+   "author_story_sha256": "d37b62f690125965fd0b1824cfc7c055c15fcf621907196b909d6fb9bc9a8546",
+   "absent_refs_normalised": 0,
+   "prompt": "bank2-author/PROMPT_LS_h1_2.md",
+   "sessions": 12,
+   "messages": 120,
+   "sentences": 840,
+   "questions": 40
+  },
+  {
+   "id": "LS-H1-03",
+   "author_dir": "bank7-author/ls/h1_3",
+   "author_story_sha256": "06cd01fc5e9ded8923e384f34fb388ff993193f04ad683e2df22f130c4465bc0",
+   "absent_refs_normalised": 0,
+   "prompt": "bank2-author/PROMPT_LS_h1_3.md",
+   "sessions": 12,
+   "messages": 144,
+   "sentences": 720,
+   "questions": 40
+  },
+  {
+   "id": "LS-H1-04",
+   "author_dir": "bank7-author/ls/h1_4",
+   "author_story_sha256": "4c7ab46b57ccee09b1c887e8a97325a4b64abd42eb25faf864252e267299f991",
+   "absent_refs_normalised": 0,
+   "prompt": "bank2-author/PROMPT_LS_h1_4.md",
+   "sessions": 16,
+   "messages": 128,
+   "sentences": 736,
+   "questions": 40
+  },
+  {
+   "id": "LS-H1-05",
+   "author_dir": "bank7-author/ls/h1_5",
+   "author_story_sha256": "6bcd0979748d409ad9d1b27403580399420662b7be7d0a4ba1b08eb54a7d2313",
+   "absent_refs_normalised": 0,
+   "prompt": "bank2-author/PROMPT_LS_h1_5.md",
+   "sessions": 12,
+   "messages": 144,
+   "sentences": 720,
+   "questions": 40
+  },
+  {
+   "id": "LS-H1-06",
+   "author_dir": "bank7-author/ls/h1_6",
+   "author_story_sha256": "caf9ba291b646de0fdd1147b8a72f37d467843e7c04f8fdcf066c73649b8c60f",
+   "absent_refs_normalised": 0,
+   "prompt": "bank2-author/PROMPT_LS_h1_6.md",
+   "sessions": 10,
+   "messages": 100,
+   "sentences": 600,
+   "questions": 40
+  }
+ ],
+ "stories_jsonl_sha256": "33f74a3c2ff0032ae21483103e4aaf843a23795f4a5d69d050c281c24e4f448d"
+}

@@ -1,0 +1,28 @@
+{
+ "split": "dev",
+ "stories": [
+  {
+   "id": "LS-D01",
+   "author_dir": "bank7-author/ls/dev1",
+   "author_story_sha256": "fa6266fc0c2b7d45a9a3fd3093ea85f48cbc4a0b6aa1ecfe136793215bb3d56c",
+   "absent_refs_normalised": 0,
+   "prompt": "bank2-author/PROMPT_LS_dev1.md",
+   "sessions": 16,
+   "messages": 160,
+   "sentences": 640,
+   "questions": 40
+  },
+  {
+   "id": "LS-D02",
+   "author_dir": "bank7-author/ls/dev2",
+   "author_story_sha256": "d8547cc33c8e22bd4fb14d200e8661674ebd5548b180e82a0face793b03410b7",
+   "absent_refs_normalised": 0,
+   "prompt": "bank2-author/PROMPT_LS_dev2.md",
+   "sessions": 14,
+   "messages": 115,
+   "sentences": 805,
+   "questions": 40
+  }
+ ],
+ "stories_jsonl_sha256": "991a56e1d19eafdb144e28b3b598ebc097a95d90c4dc2d4d860376e849b3bad5"
+}

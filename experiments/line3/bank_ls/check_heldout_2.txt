@@ -1,0 +1,14 @@
+heldout_2 {"id": "LS-H2-01", "sessions": 13, "messages": 130, "sentences": 650, "subjectless": 0.685, "plants": {"contradiction": 12, "update": 8, "reversal": 4, "list_trap": 8, "repeat": 6}, "questions": {"plain": 12, "contradiction": 12, "absent": 8, "update": 8}, "rephrased": "29/32", "plain_on_traps": 6, "ledger": 272}
+heldout_2 {"id": "LS-H2-02", "sessions": 12, "messages": 120, "sentences": 600, "subjectless": 0.367, "plants": {"contradiction": 12, "update": 8, "reversal": 4, "list_trap": 8, "repeat": 6}, "questions": {"plain": 12, "contradiction": 12, "absent": 8, "update": 8}, "rephrased": "23/32", "plain_on_traps": 4, "ledger": 353}
+heldout_2 {"id": "LS-H2-03", "sessions": 12, "messages": 96, "sentences": 600, "subjectless": 0.32, "plants": {"contradiction": 12, "update": 8, "reversal": 4, "list_trap": 8, "repeat": 6}, "questions": {"plain": 12, "contradiction": 12, "absent": 8, "update": 8}, "rephrased": "23/32", "plain_on_traps": 10, "ledger": 97}
+heldout_2 {"id": "LS-H2-04", "sessions": 12, "messages": 120, "sentences": 600, "subjectless": 0.598, "plants": {"contradiction": 12, "update": 8, "reversal": 4, "list_trap": 8, "repeat": 6}, "questions": {"plain": 12, "contradiction": 12, "absent": 8, "update": 8}, "rephrased": "23/32", "plain_on_traps": 8, "ledger": 129}
+heldout_2 {"id": "LS-H2-05", "sessions": 12, "messages": 120, "sentences": 600, "subjectless": 0.425, "plants": {"contradiction": 12, "update": 8, "reversal": 4, "list_trap": 8, "repeat": 6}, "questions": {"contradiction": 12, "plain": 12, "absent": 8, "update": 8}, "rephrased": "32/32", "plain_on_traps": 4, "ledger": 110}
+heldout_2 {"id": "LS-H2-06", "sessions": 12, "messages": 97, "sentences": 679, "subjectless": 0.408, "plants": {"contradiction": 12, "update": 8, "list_trap": 8, "reversal": 4, "repeat": 6}, "questions": {"contradiction": 12, "absent": 8, "plain": 12, "update": 8}, "rephrased": "25/32", "plain_on_traps": 6, "ledger": 298}
+INFO LS-H2-01: Q1 says 記録されて/上/では (mild kind hint)
+INFO LS-H2-02: Q16 says 記録されて/上/では (mild kind hint)
+INFO LS-H2-02: Q32 says 記録されて/上/では (mild kind hint)
+INFO LS-H2-03: ledger has only 97 entries
+INFO LS-H2-04: ledger has only 129 entries
+INFO LS-H2-05: ledger has only 110 entries
+INFO LS-H2-05: Q6 says 記録されて/上/では (mild kind hint)
+PASS (0 errors)

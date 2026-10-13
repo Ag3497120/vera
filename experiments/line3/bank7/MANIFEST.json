@@ -1,0 +1,104 @@
+{
+ "intake": {
+  "recorded_at": "2026-10-13",
+  "note": "intake record: sha256 of bank7.tsv recorded before any Vera system reads it; no Vera system has read this bank before intake (no evidence gate v2/v3/v4, reader, loom, model or other Vera system was run on it during authoring or audit)",
+  "freeze_context": {
+   "prompt7_written": "2026-10-13T10:11:43+09:00",
+   "launched": "2026-10-13T10:12:49+09:00",
+   "author_checker_written": "2026-10-13T10:50:14+09:00",
+   "author_bank_written": "2026-10-13T10:50:46+09:00",
+   "evidence_v4_merge_seen_in_git": "2026-10-13T10:48:24+09:00 (subject: evidence.v4 frozen, not default); the brief predates it, the author's output postdates it; the author never had the rules",
+   "blindness": "author saw only S300_fulllead.jsonl, EXCLUDED_ARTICLES.txt and PROMPT7.md; auditor did not open verantyx/loom/evidence.py or the REACH/EVIDENCE design documents"
+  }
+ },
+ "bank": {
+  "path": "bank7.tsv",
+  "sha256": "efafdb9ed93336b4b903de56b8ad0cde1a663729c1c343768d67927de4eaaab2",
+  "rows": 79,
+  "answerable": 32,
+  "unanswerable": 47,
+  "shapes": {
+   "S1-alias": 6,
+   "S2-place": 5,
+   "S3-person": 6,
+   "S4-toshite": 6,
+   "S5-paren": 6,
+   "S6-naming": 5,
+   "S7-near": 5,
+   "S8-chain": 8
+  },
+  "audit": {
+   "valid": 64,
+   "fixed": 15,
+   "dropped": 7,
+   "dropped_ids": [
+    "B7-A01",
+    "B7-A15",
+    "B7-A16",
+    "B7-A17",
+    "B7-U12",
+    "B7-U31",
+    "B7-U42"
+   ],
+   "auditor_written": [
+    "B7-A27",
+    "B7-U10",
+    "B7-U13",
+    "B7-U14",
+    "B7-U33"
+   ]
+  },
+  "author_original": {
+   "path": "vera-impl/bank7-author/work7/out/bank7.tsv",
+   "sha256": "05dee813f222cbcd06090a209fa84355be3d2621e89232ebf500498c45d9ace9",
+   "rows": 86
+  }
+ },
+ "checker": {
+  "check7.py": {
+   "sha256": "0325c25b45af579adf7ba62d1584e8033070b54c1eded345342cc9aac13554a8"
+  },
+  "check7.txt": {
+   "sha256": "dfab38f1a4afce7de4ba9d0cc43e4470a5784a5bfd8dc3077841079ce5ec018a",
+   "result": "PASS (0 errors)"
+  }
+ },
+ "corpora": {
+  "fulllead": {
+   "path": "../data/S300_fulllead.jsonl",
+   "sha256": "d987fdee0e19283e9c69e461b2ae695e5f2681f7a64e2c486572fcd6d4f419ea",
+   "equals_author_copy": true
+  }
+ },
+ "author_files": {
+  "PROMPT7.md": {
+   "sha256": "36a7a24e72a4913414831637bababa5f99ea960627bbf49ebaccfda6f505fe86",
+   "copied": false
+  },
+  "EXCLUDED_ARTICLES.txt": {
+   "sha256": "4b4ad046a181c668e741489dd62d52867589cb9560a12f338245c7864e3ed2a1",
+   "copied": false,
+   "note": "110 titles; missed the titles that contain a space"
+  },
+  "check7.py": {
+   "sha256": "768e112f61b5027fa437a8336b4b22da09c2e2564d13027514ed7eb91851a616",
+   "copied": false
+  },
+  "check7.txt": {
+   "sha256": "f094c1d45ec2b1eac29510b6fc0ebdb59177edfff9450d8832aaceb064550bc2",
+   "copied": false,
+   "result": "PASS on the original"
+  },
+  "README7.md": {
+   "sha256": "4e8b671f581577089f4f324736a2b065547cfb6b3b0c3b8f7fff5135d9a49959",
+   "copied": false
+  },
+  "jobs": "vera-impl/bank2-author/jobs7.tsv, log vera-impl/bank2-author/fleet-out7/bank7.log, launcher .claude/vera-audit/fleet.sh"
+ },
+ "provenance": {
+  "author": "codex gpt-6-luna (effort max), 1 round, 86 items",
+  "auditor": "Claude Sonnet 5.5",
+  "audit": "AUDIT7.md",
+  "date": "2026-10-13"
+ }
+}

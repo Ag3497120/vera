@@ -1,0 +1,22 @@
+corpus: 300 articles, 592 sentences; sha256 d987fdee0e19
+rows 79: answerable 32, unanswerable 47; shapes {'S1-alias': 6, 'S2-place': 5, 'S3-person': 6, 'S4-toshite': 6, 'S5-paren': 6, 'S6-naming': 5, 'S7-near': 5, 'S8-chain': 8}; audit {'valid': 64, 'fixed': 15}
+absence searches: 47 terms over the kept unanswerable items, 0 hits required
+items whose article also appears in an earlier bank: 15 (different asked fact; listed in AUDIT7.md)
+bank6 questions repeated: 0
+INFO an article is used by 4 items
+INFO B7-A02: article '互先' also in questions a36, questions u29
+INFO B7-A18: article 'CUBE JUICE' also in bank2 I2-019, bank2 UF-013, bank3 b3_pa07, bank3 b3_sc04, bank3 b3_tf10, bank3 b3_uk02, bank3 b3_uk06, bank3 b3_uw17, bank4 ADV-001, bank6 B6-U14, ban
+INFO B7-A23: article '二等分線' also in questions a43
+INFO B7-A26: article '万太郎山' also in questions a47
+INFO B7-A27: article '万太郎山' also in questions a47
+INFO B7-U05: article 'オボック空港' also in questions a13
+INFO B7-U07: article '2025 UEFAスーパーカップ' also in bank2 I2-046, bank6 B6-U39
+INFO B7-U09: article '真野湾' also in questions a52
+INFO B7-U13: article 'Magisk' also in questions a49
+INFO B7-U14: article 'NGC 36' also in bank2 I2-036
+INFO B7-U17: article 'CUBE JUICE' also in bank2 I2-019, bank2 UF-013, bank3 b3_pa07, bank3 b3_sc04, bank3 b3_tf10, bank3 b3_uk02, bank3 b3_uk06, bank3 b3_uw17, bank4 ADV-001, bank6 B6-U14, ban
+INFO B7-U20: article '舞浜地ビール工房ハーヴェスト・ムーン' also in questions a06
+INFO B7-U34: article '2017 FIFA U-17ワールドカップ' also in bank2 I2-048, bank2 R2-I015, bank3 b3_sc07, bank3 b3_tf14, bank3 b3_uk08, bank3 b3_uk15, bank4 ADV-007
+INFO B7-U39: article '2017 FIFA U-17ワールドカップ' also in bank2 I2-048, bank2 R2-I015, bank3 b3_sc07, bank3 b3_tf14, bank3 b3_uk08, bank3 b3_uk15, bank4 ADV-007
+INFO B7-U50: article 'CUBE JUICE' also in bank2 I2-019, bank2 UF-013, bank3 b3_pa07, bank3 b3_sc04, bank3 b3_tf10, bank3 b3_uk02, bank3 b3_uk06, bank3 b3_uw17, bank4 ADV-001, bank6 B6-U14, ban
+PASS (0 errors)

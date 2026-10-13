@@ -1,0 +1,72 @@
+{
+ "split": "heldout_2",
+ "stories": [
+  {
+   "id": "LS-H2-01",
+   "author_dir": "bank7-author/ls/h2_1",
+   "author_story_sha256": "7f43106be0e3ada019e71744c0e11e014b05fedfa7aec39295e446881828c4cd",
+   "absent_refs_normalised": 0,
+   "prompt": "bank2-author/PROMPT_LS_h2_1.md",
+   "sessions": 13,
+   "messages": 130,
+   "sentences": 650,
+   "questions": 40
+  },
+  {
+   "id": "LS-H2-02",
+   "author_dir": "bank7-author/ls/h2_2",
+   "author_story_sha256": "a9d25c47f595a7c2061a706baab3872d13b0e9802247b7c43b8a1314502ae87b",
+   "absent_refs_normalised": 8,
+   "prompt": "bank2-author/PROMPT_LS_h2_2.md",
+   "sessions": 12,
+   "messages": 120,
+   "sentences": 600,
+   "questions": 40
+  },
+  {
+   "id": "LS-H2-03",
+   "author_dir": "bank7-author/ls/h2_3",
+   "author_story_sha256": "5fb5a4e1375894c0178b5ea9eb822e88610d01c36ce9168cf72e32af6e392be0",
+   "absent_refs_normalised": 0,
+   "prompt": "bank2-author/PROMPT_LS_h2_3.md",
+   "sessions": 12,
+   "messages": 96,
+   "sentences": 600,
+   "questions": 40
+  },
+  {
+   "id": "LS-H2-04",
+   "author_dir": "bank7-author/ls/h2_4",
+   "author_story_sha256": "d061ecfd3b80acd068e8ec732bc79f39bf9c9185cbe6ae92702342a3405d832c",
+   "absent_refs_normalised": 0,
+   "prompt": "bank2-author/PROMPT_LS_h2_4.md",
+   "sessions": 12,
+   "messages": 120,
+   "sentences": 600,
+   "questions": 40
+  },
+  {
+   "id": "LS-H2-05",
+   "author_dir": "bank7-author/ls/h2_5",
+   "author_story_sha256": "fc4205a468f0d6f344d4b034cf08839c59ac4c926dc7c7c3cd08409d7e399d1f",
+   "absent_refs_normalised": 0,
+   "prompt": "bank2-author/PROMPT_LS_h2_5.md",
+   "sessions": 12,
+   "messages": 120,
+   "sentences": 600,
+   "questions": 40
+  },
+  {
+   "id": "LS-H2-06",
+   "author_dir": "bank7-author/ls/h2_6",
+   "author_story_sha256": "872e1abebfb24368eddeb1ca71da9a3eb45ebfc25573c18313a2d4456f6d1b81",
+   "absent_refs_normalised": 8,
+   "prompt": "bank2-author/PROMPT_LS_h2_6.md",
+   "sessions": 12,
+   "messages": 97,
+   "sentences": 679,
+   "questions": 40
+  }
+ ],
+ "stories_jsonl_sha256": "2adf9cf2c6aedff45296c6460c681fadac235f4585db7880aaf7768933463957"
+}

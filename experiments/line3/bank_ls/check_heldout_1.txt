@@ -1,0 +1,11 @@
+heldout_1 {"id": "LS-H1-01", "sessions": 12, "messages": 96, "sentences": 768, "subjectless": 0.37, "plants": {"contradiction": 12, "update": 8, "list_trap": 8, "reversal": 4, "repeat": 6}, "questions": {"contradiction": 12, "plain": 12, "update": 8, "absent": 8}, "rephrased": "20/32", "plain_on_traps": 8, "ledger": 123}
+heldout_1 {"id": "LS-H1-02", "sessions": 12, "messages": 120, "sentences": 840, "subjectless": 0.429, "plants": {"contradiction": 12, "update": 8, "reversal": 4, "list_trap": 8, "repeat": 6}, "questions": {"plain": 12, "contradiction": 12, "absent": 8, "update": 8}, "rephrased": "32/32", "plain_on_traps": 8, "ledger": 122}
+heldout_1 {"id": "LS-H1-03", "sessions": 12, "messages": 144, "sentences": 720, "subjectless": 0.658, "plants": {"contradiction": 12, "update": 8, "reversal": 4, "list_trap": 8, "repeat": 6}, "questions": {"plain": 12, "update": 8, "contradiction": 12, "absent": 8}, "rephrased": "32/32", "plain_on_traps": 8, "ledger": 268}
+heldout_1 {"id": "LS-H1-04", "sessions": 16, "messages": 128, "sentences": 736, "subjectless": 0.326, "plants": {"contradiction": 12, "update": 8, "list_trap": 8, "repeat": 6, "reversal": 4}, "questions": {"plain": 12, "contradiction": 12, "absent": 8, "update": 8}, "rephrased": "25/32", "plain_on_traps": 8, "ledger": 159}
+heldout_1 {"id": "LS-H1-05", "sessions": 12, "messages": 144, "sentences": 720, "subjectless": 0.4, "plants": {"contradiction": 12, "update": 8, "list_trap": 8, "repeat": 6, "reversal": 4}, "questions": {"plain": 12, "contradiction": 12, "absent": 8, "update": 8}, "rephrased": "32/32", "plain_on_traps": 4, "ledger": 288}
+heldout_1 {"id": "LS-H1-06", "sessions": 10, "messages": 100, "sentences": 600, "subjectless": 0.733, "plants": {"contradiction": 12, "update": 8, "reversal": 4, "list_trap": 8, "repeat": 6}, "questions": {"plain": 12, "contradiction": 12, "absent": 8, "update": 8}, "rephrased": "21/32", "plain_on_traps": 8, "ledger": 116}
+INFO LS-H1-01: ledger has only 123 entries
+INFO LS-H1-02: ledger has only 122 entries
+INFO LS-H1-03: Q2 says 記録されて/上/では (mild kind hint)
+INFO LS-H1-06: ledger has only 116 entries
+PASS (0 errors)

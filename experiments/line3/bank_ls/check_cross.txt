@@ -1,0 +1,4 @@
+cross-split check: dev heldout_1 heldout_2
+INFO largest shared-14-gram share between two stories: 0.07%
+INFO 9371 sentences (>= 8 chars) compared; 560 distinct questions; speakers shared by more than one story: 0
+PASS (0 errors)
