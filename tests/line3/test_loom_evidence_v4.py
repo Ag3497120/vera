@@ -51,28 +51,28 @@ def _passing(c, q, sid, version, scope=ev.SCOPE_TITLE):
 def test_t_ev4_01_the_v3_rules_are_untouched_and_v4_is_frozen():
     assert ev.v3_rules_digest() == FROZEN_V3_RULES_DIGEST                                                    # v4 added code; no function the v3 digest covers changed
     assert ev.v4_rules_digest() == FROZEN_V4_RULES_DIGEST
-    assert len(FROZEN_V4_EVIDENCE_SHA) == 64                                                                 # historical: evidence.py changed when evidence.v5 was added (the v3 and v4 digests above did not); the file pin moved to test_loom_evidence_v5.py
+    assert len(FROZEN_V4_EVIDENCE_SHA) == 64                                                                 # historical: evidence.py changed when evidence.v5 was added (the v3 and v4 digests above did not); the file pin is now in test_loom_evidence_v6.py (the history: v4 -> v5 -> v6)
     assert ev.V4_RULE_IDS == ("R1", "R2", "R3", "R3b", "R4", "R5", "R6", "T1", "T2", "CH") and ev.V4_OFF == frozenset({"R7"})
     assert set(ev.V4_RULE_IDS) - {"CH"} == set(ev.V3_RULE_IDS) - {"R7"}
     assert ev.V4_RULE_SENTENCE.startswith(ev.V3_RULE_SENTENCE.rstrip(".").rsplit(";", 1)[0])             # the v3 sentence's rules, then the chain sentence
 
 
-def test_t_ev4_01_v4_is_selectable_and_v2_stays_the_default_everywhere(tmp_path, monkeypatch):
+def test_t_ev4_01_v4_is_selectable_and_v6_is_the_default_everywhere(tmp_path, monkeypatch):
     import inspect
     from verantyx import cli
     from verantyx.loom import mcp as lm
     from verantyx.loom.ops import EVIDENCE_RULE_V2, EVIDENCE_RULE_V4, EVIDENCE_RULES
-    assert ev.EVIDENCE_VERSIONS == (ev.EVIDENCE_V1, V2, V3, V4, ev.EVIDENCE_V5) and ev.EVIDENCE_LATEST == V2 and ev.PROFILE_NAMES["v4"] == V4
-    assert inspect.signature(ev.judge_quote).parameters["version"].default == V2
+    assert ev.EVIDENCE_VERSIONS == (ev.EVIDENCE_V1, V2, V3, V4, ev.EVIDENCE_V5, ev.EVIDENCE_V6) and ev.EVIDENCE_LATEST == ev.EVIDENCE_V6 and ev.PROFILE_NAMES["v4"] == V4
+    assert inspect.signature(ev.judge_quote).parameters["version"].default == ev.EVIDENCE_V6
     assert EVIDENCE_RULES[V4] == EVIDENCE_RULE_V4 == EVIDENCE_RULE_V2 + " " + ev.V4_RULE_SENTENCE
     t = [{"task_id": "x", "text": "花園町駅の隣駅の駅番号は何ですか", "lang": "prose", "mode": "record_only", "corpus": CORPUS}]
-    assert LoomServer(t, str(tmp_path / "a"), ()).evidence_profile == (V2, "clause_or_title")
+    assert LoomServer(t, str(tmp_path / "a"), ()).evidence_profile == (ev.EVIDENCE_V6, "clause_or_title")      # evidence.v6 is the default since L-LOOM-226
     assert LoomServer(t, str(tmp_path / "b"), (), evidence="v4").evidence_profile == (V4, "clause_or_title")
     seen = []
     monkeypatch.setattr(lm, "serve", lambda *a, **k: seen.append(a) or 0)
     assert cli.main(["loom", "mcp", "--tasks", "t.jsonl", "--runs-dir", str(tmp_path / "r")]) == 0
     assert cli.main(["loom", "mcp", "--tasks", "t.jsonl", "--runs-dir", str(tmp_path / "r"), "--evidence", "v4"]) == 0
-    assert [a[4] for a in seen] == ["v2", "v4"]
+    assert [a[4] for a in seen] == ["v6", "v4"]
 
 
 # ---- T-EV4-02: the chain ----------------------------------------------------------------------------------------------------------------------------
@@ -300,10 +300,10 @@ def test_t_ev4_06_the_v4_cut_the_verdicts_and_the_digests_are_identical_under_th
     assert len(digests) == 1
 
 
-def test_t_ev4_07_the_gate_is_pure_and_the_default_waits_for_bank7():
-    """OP-PUB-6 (owner): v4 becomes the default only when the held-out bank7 shows 0 unanswerable admissions.  Until that single probe is pinned the default stays v2.  No clock, float,
+def test_t_ev4_07_the_gate_is_pure_and_the_default_moved_to_v6():
+    """OP-PUB-6 (owner): v4 becomes the default only when the held-out bank7 shows 0 unanswerable admissions.  The default moved to evidence.v6 (v2 plus refusal-only safety rules; L-LOOM-226), not to v4.  No clock, float,
     subprocess or network in verantyx/loom/evidence.py."""
-    assert ev.EVIDENCE_LATEST == V2 and ev.PROFILE_NAMES["v2"] == V2
+    assert ev.EVIDENCE_LATEST == ev.EVIDENCE_V6 and ev.PROFILE_NAMES["v2"] == V2
     src = open(os.path.join(ROOT, "verantyx/loom/evidence.py"), encoding="utf-8").read()
     for bad in ("subprocess", "import time", "import socket", "urllib", "float(", "random", "datetime"):
         assert bad not in src, bad

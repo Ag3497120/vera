@@ -1,0 +1,41 @@
+== dev129 (69 answerable + 60 unanswerable), evidence.py sha256 56b28acc75283c45221b0909815729cd8645c7b1f5f434a93f0de77940287954, v6 digest c79d0d4fed0bc9432fe71b063a6204c471add5605ee376866d8916b9fe8fab8f, 224s
+evidence.v2: answerable reach 10/69 ['I2-003', 'I2-004', 'I2-005', 'I2-006', 'I2-013', 'I2-014', 'I2-018', 'R2-I005', 'R2-I007', 'R2-I017'] | wrong-admitting 0 [] | unanswerable admissions 0/60 [] | bank4 traps admitted 0 | per shape -
+evidence.v6: answerable reach 10/69 ['I2-003', 'I2-004', 'I2-005', 'I2-006', 'I2-013', 'I2-014', 'I2-018', 'R2-I005', 'R2-I007', 'R2-I017'] | wrong-admitting 0 [] | unanswerable admissions 0/60 [] | bank4 traps admitted 0 | per shape -
+v6-noCH: answerable reach 10/69 ['I2-003', 'I2-004', 'I2-005', 'I2-006', 'I2-013', 'I2-014', 'I2-018', 'R2-I005', 'R2-I007', 'R2-I017'] | wrong-admitting 0 [] | unanswerable admissions 0/60 [] | bank4 traps admitted 0 | per shape -
+v6-noSU: answerable reach 10/69 ['I2-003', 'I2-004', 'I2-005', 'I2-006', 'I2-013', 'I2-014', 'I2-018', 'R2-I005', 'R2-I007', 'R2-I017'] | wrong-admitting 0 [] | unanswerable admissions 0/60 [] | bank4 traps admitted 0 | per shape -
+v6-noTW: answerable reach 10/69 ['I2-003', 'I2-004', 'I2-005', 'I2-006', 'I2-013', 'I2-014', 'I2-018', 'R2-I005', 'R2-I007', 'R2-I017'] | wrong-admitting 0 [] | unanswerable admissions 0/60 [] | bank4 traps admitted 0 | per shape -
+v6-noNEG: answerable reach 10/69 ['I2-003', 'I2-004', 'I2-005', 'I2-006', 'I2-013', 'I2-014', 'I2-018', 'R2-I005', 'R2-I007', 'R2-I017'] | wrong-admitting 0 [] | unanswerable admissions 0/60 [] | bank4 traps admitted 0 | per shape -
+SUBSET dev129: v6 passing stretches (10) subset of v2's (10) for every item and every ablation: OK
+== bank6 (26 answerable + 34 unanswerable), evidence.py sha256 56b28acc75283c45221b0909815729cd8645c7b1f5f434a93f0de77940287954, v6 digest c79d0d4fed0bc9432fe71b063a6204c471add5605ee376866d8916b9fe8fab8f, 106s
+evidence.v2: answerable reach 3/26 ['B6-A05', 'B6-A13', 'B6-A27'] | wrong-admitting 3 ['B6-A05', 'B6-A20', 'B6-A27'] | unanswerable admissions 2/34 ['B6-U35', 'B6-U36'] | bank4 traps admitted 0 | per shape {'S1-alias': '0/5', 'S2-place': '0/5', 'S3-person': '0/5', 'S4-toshite': '0/6', 'S5-paren': '0/4', 'S6-naming': '0/5', 'S7-near': '2/4'}
+    ADMITTED B6-U35 花園町駅の隣駅の駅番号は何ですか？ [(21, 'Y17')]
+    ADMITTED B6-U36 海浦駅の隣駅の駅番号は何ですか？ [(37, 'OR08')]
+evidence.v6: answerable reach 3/26 ['B6-A05', 'B6-A13', 'B6-A27'] | wrong-admitting 3 ['B6-A05', 'B6-A20', 'B6-A27'] | unanswerable admissions 0/34 [] | bank4 traps admitted 0 | per shape {'S1-alias': '0/5', 'S2-place': '0/5', 'S3-person': '0/5', 'S4-toshite': '0/6', 'S5-paren': '0/4', 'S6-naming': '0/5', 'S7-near': '0/4'}
+v6-noCH: answerable reach 3/26 ['B6-A05', 'B6-A13', 'B6-A27'] | wrong-admitting 3 ['B6-A05', 'B6-A20', 'B6-A27'] | unanswerable admissions 2/34 ['B6-U35', 'B6-U36'] | bank4 traps admitted 0 | per shape {'S1-alias': '0/5', 'S2-place': '0/5', 'S3-person': '0/5', 'S4-toshite': '0/6', 'S5-paren': '0/4', 'S6-naming': '0/5', 'S7-near': '2/4'}
+    ADMITTED B6-U35 花園町駅の隣駅の駅番号は何ですか？ [(21, 'Y17')]
+    ADMITTED B6-U36 海浦駅の隣駅の駅番号は何ですか？ [(37, 'OR08')]
+v6-noSU: answerable reach 3/26 ['B6-A05', 'B6-A13', 'B6-A27'] | wrong-admitting 3 ['B6-A05', 'B6-A20', 'B6-A27'] | unanswerable admissions 0/34 [] | bank4 traps admitted 0 | per shape {'S1-alias': '0/5', 'S2-place': '0/5', 'S3-person': '0/5', 'S4-toshite': '0/6', 'S5-paren': '0/4', 'S6-naming': '0/5', 'S7-near': '0/4'}
+v6-noTW: answerable reach 3/26 ['B6-A05', 'B6-A13', 'B6-A27'] | wrong-admitting 3 ['B6-A05', 'B6-A20', 'B6-A27'] | unanswerable admissions 0/34 [] | bank4 traps admitted 0 | per shape {'S1-alias': '0/5', 'S2-place': '0/5', 'S3-person': '0/5', 'S4-toshite': '0/6', 'S5-paren': '0/4', 'S6-naming': '0/5', 'S7-near': '0/4'}
+v6-noNEG: answerable reach 3/26 ['B6-A05', 'B6-A13', 'B6-A27'] | wrong-admitting 3 ['B6-A05', 'B6-A20', 'B6-A27'] | unanswerable admissions 0/34 [] | bank4 traps admitted 0 | per shape {'S1-alias': '0/5', 'S2-place': '0/5', 'S3-person': '0/5', 'S4-toshite': '0/6', 'S5-paren': '0/4', 'S6-naming': '0/5', 'S7-near': '0/4'}
+    v2 passes, v6 refuses: B6-U35 unans 花園町駅の隣駅の駅番号は何ですか？ [Y17] no_subject
+    v2 passes, v6 refuses: B6-U36 unans 海浦駅の隣駅の駅番号は何ですか？ [OR08] no_subject
+SUBSET bank6: v6 passing stretches (7) subset of v2's (9) for every item and every ablation: OK
+== bank7 (32 answerable + 47 unanswerable), evidence.py sha256 56b28acc75283c45221b0909815729cd8645c7b1f5f434a93f0de77940287954, v6 digest c79d0d4fed0bc9432fe71b063a6204c471add5605ee376866d8916b9fe8fab8f, 141s
+evidence.v2: answerable reach 1/32 ['B7-A23'] | wrong-admitting 0 [] | unanswerable admissions 1/47 ['B7-U43'] | bank4 traps admitted 0 | per shape -
+    ADMITTED B7-U43 ネノの属するネノ県の人口は何人ですか？ [(504, '20万人')]
+evidence.v6: answerable reach 1/32 ['B7-A23'] | wrong-admitting 0 [] | unanswerable admissions 0/47 [] | bank4 traps admitted 0 | per shape -
+v6-noCH: answerable reach 1/32 ['B7-A23'] | wrong-admitting 0 [] | unanswerable admissions 0/47 [] | bank4 traps admitted 0 | per shape -
+v6-noSU: answerable reach 1/32 ['B7-A23'] | wrong-admitting 0 [] | unanswerable admissions 0/47 [] | bank4 traps admitted 0 | per shape -
+v6-noTW: answerable reach 1/32 ['B7-A23'] | wrong-admitting 0 [] | unanswerable admissions 0/47 [] | bank4 traps admitted 0 | per shape -
+v6-noNEG: answerable reach 1/32 ['B7-A23'] | wrong-admitting 0 [] | unanswerable admissions 0/47 [] | bank4 traps admitted 0 | per shape -
+    v2 passes, v6 refuses: B7-U43 unans ネノの属するネノ県の人口は何人ですか？ [20万人] subject_unreadable+question_has_no_subject+no_subject
+SUBSET bank7: v6 passing stretches (1) subset of v2's (2) for every item and every ablation: OK
+== bank8 (35 answerable + 50 unanswerable), evidence.py sha256 56b28acc75283c45221b0909815729cd8645c7b1f5f434a93f0de77940287954, v6 digest c79d0d4fed0bc9432fe71b063a6204c471add5605ee376866d8916b9fe8fab8f, 150s
+evidence.v2: answerable reach 3/35 ['B8b-A05', 'B8b-A07', 'B8b-A19'] | wrong-admitting 2 ['B8b-A23', 'B8b-A28'] | unanswerable admissions 0/50 [] | bank4 traps admitted 0 | per shape -
+evidence.v6: answerable reach 3/35 ['B8b-A05', 'B8b-A07', 'B8b-A19'] | wrong-admitting 1 ['B8b-A28'] | unanswerable admissions 0/50 [] | bank4 traps admitted 0 | per shape -
+v6-noCH: answerable reach 3/35 ['B8b-A05', 'B8b-A07', 'B8b-A19'] | wrong-admitting 1 ['B8b-A28'] | unanswerable admissions 0/50 [] | bank4 traps admitted 0 | per shape -
+v6-noSU: answerable reach 3/35 ['B8b-A05', 'B8b-A07', 'B8b-A19'] | wrong-admitting 1 ['B8b-A28'] | unanswerable admissions 0/50 [] | bank4 traps admitted 0 | per shape -
+v6-noTW: answerable reach 3/35 ['B8b-A05', 'B8b-A07', 'B8b-A19'] | wrong-admitting 1 ['B8b-A28'] | unanswerable admissions 0/50 [] | bank4 traps admitted 0 | per shape -
+v6-noNEG: answerable reach 3/35 ['B8b-A05', 'B8b-A07', 'B8b-A19'] | wrong-admitting 2 ['B8b-A23', 'B8b-A28'] | unanswerable admissions 0/50 [] | bank4 traps admitted 0 | per shape -
+    v2 passes, v6 refuses: B8b-A23 ans 2025年現在、コモロの鉄道はどのような運行状況ですか？ [運行] answer_polarity_cut
+SUBSET bank8: v6 passing stretches (4) subset of v2's (5) for every item and every ablation: OK
