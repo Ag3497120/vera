@@ -363,3 +363,62 @@ def test_a_change_the_reader_does_not_read_leaves_the_old_value_emittable(tmp_pa
 def test_a_clause_that_names_the_old_value_with_a_continuing_particle_is_silent(tmp_path):
     p, n = store_some(tmp_path, ["認証の期限は5日で、7日に変更"], "cont")                                   # 5日 + で: the clause does not end in an assertion about 5日 (it was a gap family member, now silence)
     assert all(g[1] != "5日" for g in attack(p, Q, n, version=V11))
+
+
+# -- memanswer.v12: the predicate side is an ALLOW-LIST read to the end of the sentence (the eighth review of 5e4259b3) -------------------------------------------------
+V12 = ma.ANSWER_V12
+Y_TAILS = ["に変更し忘れた", "にし忘れた", "にしそびれた", "にできる", "になりうる", "にしてみる", "にしてもらった", "を間違えた", "にし損ねた", "にするのをやめた", "に変更してしまった", "にしている", "になっている", "らしい",
+           "、と思う", "、と聞いた", "、と田中は言った", "、と誤解していた", "、らしい", "、かもしれない", "、ただし未確認", "、いや7日"]
+
+
+@pytest.mark.parametrize("t", Y_TAILS)
+def test_nothing_extra_after_the_value_clause_is_a_plain_assertion(tmp_path, t):
+    p, n = store_some(tmp_path, ["認証の期限は7日", "認証の期限は5日" + t], "y%d" % abs(hash(t)))
+    got = attack(p, Q, n, version=V12)
+    assert all(g[1] not in ("5日",) for g in got), (t, got)                                              # the unasserted 5日 is never emitted ...
+    r = ma.AnswerSession(p, Q, "o", answer_version=V12).call("recall", {"question": Q})
+    assert n < 2 or r["verdict"] != "UPDATED"                                                            # ... and never makes 7日 a replaced value (the event branch produces no update)
+    if n == 2:
+        assert all(g[1] != "7日" for g in got) or r["verdict"] == "CHOICE" and not got
+
+
+def test_a_change_counts_only_through_an_allow_listed_ending(tmp_path):
+    for ok in ("に変更", "に変更した", "に変更します", "に変更しました", "に変更になった", "に更新した", "に延期した"):
+        p, n = store_some(tmp_path, ["認証の期限は5日", "認証の期限は7日" + ok], "ok%d" % abs(hash(ok)))
+        assert any(g[:2] == (1, "7日") for g in attack(p, Q, n, version=V12)), ok
+    for bad in ("に変更し忘れた", "に変更してしまった", "に変更しそこねた", "に変更できる", "に変更しようとした"):
+        p, n = store_some(tmp_path, ["認証の期限は5日", "認証の期限は7日" + bad], "bad%d" % abs(hash(bad)))
+        r = ma.AnswerSession(p, Q, "o", answer_version=V12).call("recall", {"question": Q})
+        assert r["verdict"] != "UPDATED" and attack(p, Q, n, version=V12) == [], bad
+
+
+def test_a_following_independent_clause_is_fine_and_a_following_fragment_is_not(tmp_path):
+    p, n = store_some(tmp_path, ["認証の期限は5日、承認の期限は7日"], "indep")
+    assert (0, "5日", None) in attack(p, Q, n, version=V12)
+    p, n = store_some(tmp_path, ["認証の期限は5日、担当は田中"], "indep2")
+    assert (0, "5日", None) in attack(p, Q, n, version=V12)
+    p, n = store_some(tmp_path, ["認証の期限は5日、と思う"], "frag")
+    assert attack(p, Q, n, version=V12) == []
+
+
+def test_the_display_is_the_whole_source_span_with_the_reason_of_the_check_that_failed(tmp_path):
+    p, n = store_some(tmp_path, ["認証の期限は5日らしい"], "d1")
+    o = ma.AnswerSession(p, Q, "o", answer_version=V12).call("recall", {"question": Q})["answers"][0]["occurrences"][0]
+    assert o["answer"] == "5日" and o["unclean"] == "not_asserted" and o["written"] == "5日らしい"           # never 「5日ら」
+    p, n = store_some(tmp_path, ["認証の期限は(5)日"], "d2")
+    o = ma.AnswerSession(p, Q, "o", answer_version=V12).call("recall", {"question": Q})["answers"][0]["occurrences"][0]
+    assert o["answer"] == "(5)日" and o["unclean"] == "boundary"                                              # never 「5)日」
+    p, n = store_some(tmp_path, ["認証の期限は約5日です"], "d3")
+    o = ma.AnswerSession(p, Q, "o", answer_version=V12).call("recall", {"question": Q})["answers"][0]["occurrences"][0]
+    assert o["answer"] == "約5日" and o["unclean"] == "boundary"
+
+
+def test_v12_keeps_the_plain_assertions_and_replays(tmp_path):
+    for w in ("認証の期限は5日", "認証の期限は5日です", "認証の期限は5日でした", "認証の期限は5日。"):
+        p, n = store_some(tmp_path, [w], "k%d" % abs(hash(w)))
+        assert (0, "5日", None) in attack(p, Q, n, version=V12), w
+    p, n = store_some(tmp_path, ["認証の期限は5日に決まった"], "kk")
+    b = ma.AnswerSession(p, Q, "o", answer_version=V12)
+    assert b.begin_result["mem_answer"]["version"] == "memanswer.v12" and b.begin_result["mem_answer"]["guard"] == "ansguard.v10"
+    r = ma.replay_answer(b.ledger.dir)
+    assert r.run.v12 and r.run.v11

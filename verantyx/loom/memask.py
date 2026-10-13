@@ -399,6 +399,78 @@ def value_status(corpus: Any, sid: int, i0: int, i1: int) -> Tuple[str, str, Opt
     return span, span, None
 
 
+# ------------------------------------------------------------------------------------------------------------
+# memanswer.v12 (designer, L-PUB-105): the predicate side is an ALLOW-LIST and reads to the END OF THE SENTENCE.
+# ------------------------------------------------------------------------------------------------------------
+SENTENCE_END = "。！？!?"
+_PRED12 = r"(?:なる|なった|なります|なりました|する|した|します|しました|決まる|決まった|決まります|決まりました|(?:変更|更新|延期)(?:する|した|します|しました|になった|になりました|となった|となりました|です|である)?)"
+_TAIL12 = re.compile(r"^(?:|だ|です|である|でした|だった|であった|でございます|[がをにでとへ]" + _PRED12 + r")$")
+_PRED12_ONLY = re.compile(r"^" + _PRED12 + r"$|^(?:だ|です|である|でした|だった|であった)$")
+
+
+def asserted_tail12(tail: str) -> bool:
+    """memanswer.v12: ONLY these tails count as a plain assertion of the value: nothing, a copula (だ です である でした だった であった でございます), or a case particle (が を に で と へ) followed by exactly one of
+    なる なった なります なりました する した します しました 決まる 決まった 決まります 決まりました and the change verbs (変更 更新 延期, bare or + する した します しました になった になりました となった
+    となりました です である).  No auxiliary, suffix or further verb may follow (忘れる そびれる みる もらう うる できる 間違える らしい ...): any extra morpheme -> not asserted."""
+    return bool(_TAIL12.match(tail))
+
+
+def _independent(rem: str) -> bool:
+    """Is `rem` (what follows a comma) made of complete, independently clean clauses: each has its own topic / subject and an asserted predicate?  Read by the shape exchanger (shape.v3): every clause F1 / F2 (its
+    value followed by an asserted tail) or F3 (a subject arm and an allow-listed predicate); an F0 / F4 clause (「と思う」, 「と聞いた」, 「と誤解していた」) is not."""
+    rem = rem.strip(" \u3000\t、，,")
+    if not rem:
+        return True
+    ex = ms.exchange(rem, ms.SHAPES_V3)
+    if not ex.clauses:
+        return False
+    for c in ex.clauses:
+        if c.shape in ("F1", "F2") and c.value is not None:
+            if not asserted_tail12(ex.text[c.value.span[1]:c.span[1]].strip(" \u3000\t").rstrip(",.")):
+                return False
+        elif c.shape == "F3":
+            if not _PRED12_ONLY.match(c.surface or c.tail or ""):
+                return False
+        else:
+            return False
+    return True
+
+
+def value_status12(corpus: Any, sid: int, i0: int, i1: int) -> Tuple[str, str, Optional[str]]:
+    """memanswer.v12: (identity text, display text, reason).  The right neighbour must be accepted (RIGHT_STARTS_V11 minus RIGHT_DENY_V11) -- if not, the value is `not_asserted` and its identity is the text
+    to the end of its clause (never a cut string); the left neighbour must be accepted -- if not, `boundary`, identity AND display the text extended to the left boundary (「約5日」, 「(5)日」).  Then the
+    predicate: the rest of the SENTENCE is read: the clause tail up to the first 、 / ， must be `asserted_tail12`, and what follows the comma must be complete independent clauses (`_independent`); else
+    `not_asserted` (identity: the text to the end of the sentence)."""
+    idx = corpus.spans()
+    sps = idx.spans("WORD", sid)
+    text = idx.text(sid)
+    a, b = sps[i0][0], sps[i1][1]
+    span = unicodedata.normalize("NFC", text[a:b])
+    se = b
+    while se < len(text) and text[se] not in SENTENCE_END:
+        se += 1
+    ce = b
+    while ce < se and text[ce] not in "、，":
+        ce += 1
+    a2 = a
+    while a2 > 0 and not _left_ok(text, a2):
+        a2 -= 1
+    j = b
+    while j < len(text) and text[j] in " \u3000\t":
+        j += 1
+    right_ok = j >= len(text) or text[j] in CLAUSE_MARKS or (text[j] in ",." and (j + 1 >= len(text) or text[j + 1] in " \u3000\t" or text[j + 1] in CLAUSE_MARKS)) or \
+        (not any(text.startswith(r, j) for r in RIGHT_DENY_V11) and any(text.startswith(r, j) for r in RIGHT_STARTS_V11))
+    if not right_ok:
+        return unicodedata.normalize("NFC", text[a2:ce]), span if a2 == a else unicodedata.normalize("NFC", text[a2:b]), "not_asserted"
+    if a2 != a:
+        return unicodedata.normalize("NFC", text[a2:b]), unicodedata.normalize("NFC", text[a2:b]), "boundary"
+    head = text[b:ce].strip(" \u3000\t").rstrip(",.")
+    rest = text[ce + 1:se] if ce < se else ""
+    if not asserted_tail12(head) or not _independent(rest):
+        return unicodedata.normalize("NFC", text[a:se]), span, "not_asserted"
+    return span, span, None
+
+
 def _right_ok(text: str, b: int) -> bool:
     j = b
     while j < len(text) and text[j] in " \u3000\t":
@@ -437,11 +509,15 @@ def source_value(corpus: Any, sid: int, i0: int, i1: int, strict: bool = False) 
     return unicodedata.normalize("NFC", text[a:b]), (a, b) == (s0, e0)
 
 
-def source_entries(corpus: Any, entries: Sequence[mx.Entry], strict: bool = False, v11: bool = False) -> List[mx.Entry]:
+def source_entries(corpus: Any, entries: Sequence[mx.Entry], strict: bool = False, v11: bool = False, v12: bool = False) -> List[mx.Entry]:
     """The entries with their value replaced by the value as written (`source_value`); an entry whose stretch is unknown keeps its value."""
     out: List[mx.Entry] = []
     for e in entries:
         sp = _unit_span(corpus, e.sid, e.units) if corpus is not None else None
+        if sp is not None and v12:                                           # memanswer.v12: a change counts only through an allow-listed ending; the event branch never makes an update
+            ident, _disp, why = value_status12(corpus, e.sid, sp[0], sp[1])
+            out.append(replace(e, value=ident, change=(None if why is not None else e.change)))
+            continue
         out.append(e if sp is None else replace(e, value=(value_status(corpus, e.sid, sp[0], sp[1])[0] if v11 else source_value(corpus, e.sid, sp[0], sp[1], strict)[0])))
     return out
 
@@ -540,7 +616,7 @@ def _occurrence(index: mx.MemIndex, rows: Sequence[dict], corpus: Any, e: mx.Ent
             o["readout"] = readout
     if display and o["span"] is not None:                          # memanswer.v11: show the clean source span; an unclean value says why and keeps its identity in `written`
         try:
-            _w, clean_span, why = value_status(corpus, e.sid, o["span"][0], o["span"][1])
+            _w, clean_span, why = (value_status12 if display == 2 else value_status)(corpus, e.sid, o["span"][0], o["span"][1])
         except (IndexError, KeyError):
             clean_span, why = o["answer"], None
         if why is not None:
@@ -732,7 +808,7 @@ def recall(index: mx.MemIndex, rows: Sequence[dict], corpus: Any, question: str,
     same_seat = False
     for pos, es in groups:
         if source_values:                                                    # memanswer.v9: the value as written, not as the clause parser kept it
-            es = source_entries(corpus, es, source_values >= 2, source_values == 3)
+            es = source_entries(corpus, es, source_values >= 2, source_values == 3, source_values == 4)
         scopes: List[Optional[str]] = []
         for e in es:
             if e.scope not in scopes:
@@ -768,7 +844,7 @@ def recall(index: mx.MemIndex, rows: Sequence[dict], corpus: Any, question: str,
     out["route"] = route
     out["looked_for"] = looked
     out["positions_found" if v3 else "candidates"] = len(groups)
-    out["answers"] = [_group(index, rows, corpus, ents, route or "exact", None, v3, exact_values, source_values == 3) for _, ents in live_all]
+    out["answers"] = [_group(index, rows, corpus, ents, route or "exact", None, v3, exact_values, (2 if source_values == 4 else source_values == 3)) for _, ents in live_all]
     if hist_all:
         hnorm: List[Tuple[str, List[Tuple[mx.Entry, Any, dict]]]] = []
         for e, pos, who in hist_all:
@@ -779,7 +855,7 @@ def recall(index: mx.MemIndex, rows: Sequence[dict], corpus: Any, question: str,
                     break
             else:
                 hnorm.append((n, [(e, pos, who)]))
-        out["history"] = [_group(index, rows, corpus, [(e, pos) for e, pos, _ in items], route or "exact", [w for _, _, w in items], v3, exact_values, source_values == 3) for _, items in hnorm]
+        out["history"] = [_group(index, rows, corpus, [(e, pos) for e, pos, _ in items], route or "exact", [w for _, _, w in items], v3, exact_values, (2 if source_values == 4 else source_values == 3)) for _, items in hnorm]
     if superseded_all:
         out["superseded_all"] = True
     if len(out["answers"]) >= 2:
