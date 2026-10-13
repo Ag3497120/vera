@@ -623,11 +623,24 @@ def _old_seat14(text: str) -> Optional[str]:
     return body[o0:o1]
 
 
-def confirm16(corpus: Any, entries: Sequence[mx.Entry]) -> List[bool]:
+def confirm16(corpus: Any, entries: Sequence[mx.Entry], partial: bool = False) -> List[bool]:
     """memanswer.v16 (designer, L-PUB-116): for the entries of ONE position in ONE scope, in slide order: is each entry's change CONFIRMED?  A change clause that names an old value counts only if the old
     seat, AS WRITTEN, EQUALS a value that is live at this position from an earlier clean single-fact write (or an earlier confirmed change).  Anything else -- an unknown old value, a mismatch, extra letters
     in the seat, another owner, a person -- is unconfirmed (False): the write is not asserted and it changes nothing, so a mismatched old value never wipes the live values.  Entries that are not changes, or
     name no old value, are True."""
+    scopes: List[Optional[str]] = []
+    for e in entries:
+        if e.scope not in scopes:
+            scopes.append(e.scope)
+    res: List[bool] = [True] * len(entries)
+    for sc in scopes:                                                         # memanswer.v17: one walk PER SCOPE (nest), never across scopes
+        idxs = [i for i, e in enumerate(entries) if e.scope == sc]
+        for i, ok in zip(idxs, _confirm_scope(corpus, [entries[i] for i in idxs], partial)):
+            res[i] = ok
+    return res
+
+
+def _confirm_scope(corpus: Any, entries: Sequence[mx.Entry], partial: bool) -> List[bool]:
     live: List[str] = []
     out: List[bool] = []
     for e in entries:
@@ -648,7 +661,12 @@ def confirm16(corpus: Any, entries: Sequence[mx.Entry]) -> List[bool]:
         if e.change.old and (old is None or written_id(old) not in live):
             out.append(False)
             continue
-        live = [written_id(ident)]
+        if partial and e.change.old:                                          # memanswer.v17: the change replaces only the live value it names
+            live = [x for x in live if x != written_id(old)]
+            if written_id(ident) not in live:
+                live.append(written_id(ident))
+        else:
+            live = [written_id(ident)]
         out.append(True)
     return out
 
@@ -741,10 +759,10 @@ def source_value(corpus: Any, sid: int, i0: int, i1: int, strict: bool = False) 
     return unicodedata.normalize("NFC", text[a:b]), (a, b) == (s0, e0)
 
 
-def source_entries(corpus: Any, entries: Sequence[mx.Entry], strict: bool = False, v11: bool = False, v12: bool = False, v13: bool = False, v14: bool = False, v15: bool = False, v16: bool = False) -> List[mx.Entry]:
+def source_entries(corpus: Any, entries: Sequence[mx.Entry], strict: bool = False, v11: bool = False, v12: bool = False, v13: bool = False, v14: bool = False, v15: bool = False, v16: bool = False, v17: bool = False) -> List[mx.Entry]:
     """The entries with their value replaced by the value as written (`source_value`); an entry whose stretch is unknown keeps its value."""
     out: List[mx.Entry] = []
-    conf = confirm16(corpus, entries) if (v16 and corpus is not None) else None
+    conf = confirm16(corpus, entries, v17) if (v16 and corpus is not None) else None
     for n_, e in enumerate(entries):
         sp = _unit_span(corpus, e.sid, e.units) if corpus is not None else None
         if sp is not None and v16 and conf is not None and not conf[n_]:        # memanswer.v16: a change whose old value the memory does not hold is not asserted (identity = the text to the end of the write)
@@ -753,7 +771,11 @@ def source_entries(corpus: Any, entries: Sequence[mx.Entry], strict: bool = Fals
             continue
         if sp is not None and v13:                                           # memanswer.v13: one fact per write; v14: the whole write is covered by the one clause
             ident, _disp, why = (value_status15 if v15 else value_status14 if v14 else value_status13)(corpus, e.sid, sp[0], sp[1])
-            out.append(replace(e, value=ident, change=(None if why is not None else e.change)))
+            ch = None if why is not None else e.change
+            if v17 and ch is not None and ch.old:                                  # memanswer.v17: the change names the old value AS WRITTEN (confirmed against a live value)
+                ow = _old_seat14(corpus.spans().text(e.sid))
+                ch = replace(ch, old=ow) if ow is not None else ch
+            out.append(replace(e, value=ident, change=ch))
             continue
         if sp is not None and v12:                                           # memanswer.v12: a change counts only through an allow-listed ending; the event branch never makes an update
             ident, _disp, why = value_status12(corpus, e.sid, sp[0], sp[1])
@@ -763,7 +785,7 @@ def source_entries(corpus: Any, entries: Sequence[mx.Entry], strict: bool = Fals
     return out
 
 
-def _fold(entries: Sequence[mx.Entry], exact: bool = False) -> Tuple[List[List[mx.Entry]], List[Tuple[mx.Entry, dict]]]:
+def _fold(entries: Sequence[mx.Entry], exact: bool = False, partial: bool = False) -> Tuple[List[List[mx.Entry]], List[Tuple[mx.Entry, dict]]]:
     """(live, history) of the values of ONE position in ONE scope, in slide order.  live = groups of entries with the same normalised value; history = (entry, who replaced it)."""
     live: List[List[mx.Entry]] = []
     hist: List[Tuple[mx.Entry, dict]] = []
@@ -774,6 +796,20 @@ def _fold(entries: Sequence[mx.Entry], exact: bool = False) -> Tuple[List[List[m
     for e in entries:
         if e.marks:
             hist.append((e, {"sid": e.marks[0].by, "kind": "supersede", "reason": e.marks[0].reason}))
+            continue
+        if e.change is not None and partial and e.change.old:                  # memanswer.v17: a change replaces only the live value it names; the other sides of a contested position stay live
+            oldn = written_id(e.change.old) if exact else mn.norm_answer(e.change.old)
+            keep: List[List[mx.Entry]] = []
+            same = []
+            for grp in live:
+                if norm(grp[0]) == oldn and norm(grp[0]) != norm(e):
+                    for o in grp:
+                        hist.append((o, {"sid": e.sid, "kind": "change"}))
+                elif norm(grp[0]) == norm(e):
+                    same = grp
+                else:
+                    keep.append(grp)
+            live = keep + [same + [e]]
             continue
         if e.change is not None:
             same: List[mx.Entry] = []
@@ -1053,13 +1089,13 @@ def recall(index: mx.MemIndex, rows: Sequence[dict], corpus: Any, question: str,
     same_seat = False
     for pos, es in groups:
         if source_values:                                                    # memanswer.v9: the value as written, not as the clause parser kept it
-            es = source_entries(corpus, es, source_values >= 2, source_values == 3, source_values == 4, source_values >= 5, source_values >= 6, source_values >= 7, source_values == 8)
+            es = source_entries(corpus, es, source_values >= 2, source_values == 3, source_values == 4, source_values >= 5, source_values >= 6, source_values >= 7, source_values >= 8, source_values == 9)
         scopes: List[Optional[str]] = []
         for e in es:
             if e.scope not in scopes:
                 scopes.append(e.scope)
         for sc in scopes:
-            live, hist = _fold([e for e in es if e.scope == sc], exact_values)
+            live, hist = _fold([e for e in es if e.scope == sc], exact_values, source_values == 9)
             if len(live) >= 2:
                 same_seat = True
             for grp in live:
@@ -1089,7 +1125,7 @@ def recall(index: mx.MemIndex, rows: Sequence[dict], corpus: Any, question: str,
     out["route"] = route
     out["looked_for"] = looked
     out["positions_found" if v3 else "candidates"] = len(groups)
-    out["answers"] = [_group(index, rows, corpus, ents, route or "exact", None, v3, exact_values, (6 if source_values == 8 else 5 if source_values == 7 else 4 if source_values == 6 else 3 if source_values == 5 else 2 if source_values == 4 else source_values == 3)) for _, ents in live_all]
+    out["answers"] = [_group(index, rows, corpus, ents, route or "exact", None, v3, exact_values, (6 if source_values >= 8 else 5 if source_values == 7 else 4 if source_values == 6 else 3 if source_values == 5 else 2 if source_values == 4 else source_values == 3)) for _, ents in live_all]
     if hist_all:
         hnorm: List[Tuple[str, List[Tuple[mx.Entry, Any, dict]]]] = []
         for e, pos, who in hist_all:
@@ -1100,7 +1136,7 @@ def recall(index: mx.MemIndex, rows: Sequence[dict], corpus: Any, question: str,
                     break
             else:
                 hnorm.append((n, [(e, pos, who)]))
-        out["history"] = [_group(index, rows, corpus, [(e, pos) for e, pos, _ in items], route or "exact", [w for _, _, w in items], v3, exact_values, (6 if source_values == 8 else 5 if source_values == 7 else 4 if source_values == 6 else 3 if source_values == 5 else 2 if source_values == 4 else source_values == 3)) for _, items in hnorm]
+        out["history"] = [_group(index, rows, corpus, [(e, pos) for e, pos, _ in items], route or "exact", [w for _, _, w in items], v3, exact_values, (6 if source_values >= 8 else 5 if source_values == 7 else 4 if source_values == 6 else 3 if source_values == 5 else 2 if source_values == 4 else source_values == 3)) for _, items in hnorm]
     if superseded_all:
         out["superseded_all"] = True
     if len(out["answers"]) >= 2:

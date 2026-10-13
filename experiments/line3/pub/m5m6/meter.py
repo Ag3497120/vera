@@ -35,7 +35,7 @@ JOINER_CHARS = ".,-:/"
 
 
 def answer_version() -> str:
-    return ma.ANSWER_V16 if MODE["m6c"] else ma.ANSWER_V3
+    return ma.ANSWER_V17 if MODE["m6c"] else ma.ANSWER_V3
 
 
 def versions() -> Any:

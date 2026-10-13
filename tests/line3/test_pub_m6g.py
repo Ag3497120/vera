@@ -650,3 +650,71 @@ def test_v16_begin_row_and_older_runs_replay(tmp_path):
     assert attack(p, Q, 1, version=V16) == [(0, "5日", None)]
     p2 = store(tmp_path, ["認証の期限を次回3日から5日に変更"], name="old")
     assert ma.AnswerSession(p2, Q, "o", answer_version=V15).call("recall", {"question": Q})["verdict"] == "ANSWER"       # v15 replays as it was
+
+
+# ---- memanswer.v17: the confirmation is PER SCOPE everywhere; a change replaces only the live value it names (thirteenth review, L-PUB-118..119) ----
+V17 = ma.ANSWER_V17
+
+
+def store_sessions(tmp_path, sessions, name):
+    st = new_store(tmp_path, name)
+    for ws in sessions:
+        s = st.begin("m", profile=mem.PROFILE_V4, versions=M6C)
+        for w in ws:
+            if isinstance(w, tuple):
+                assert s.call("declare_topic", {"text": w[1]})["ok"]
+            else:
+                assert s.write(w).get("ok"), w
+        s.commit()
+    return str(tmp_path / name)
+
+
+def _rec17(p):
+    r = ma.AnswerSession(p, Q, "o", answer_version=V17).call("recall", {"question": Q})
+    return r["verdict"], sorted(a for g in r["answers"] for a in g["answers"])
+
+
+T = ("T", "旧製品")
+
+
+def test_v17_an_old_value_that_is_live_only_in_another_nest_is_not_confirmed(tmp_path):
+    for n, sess in enumerate((
+        [["認証の期限は3日だ"], [T, "認証の期限は5日だ"], ["認証の期限を5日から7日に変更"], [T, "認証の期限は7日に変更"]],
+        [["認証の期限は3日だ"], [T, "認証の期限は5日だ"], ["認証の期限を5日から7日に変更"]],
+        [["認証の期限は3日だ"], [T, "認証の期限は7日だ"], ["認証の期限を7日から7日に変更"]],
+        [["認証の期限は3日だ"], [T, "認証の期限は7日だ"], ["認証の期限を4日から7日に変更"]],
+        [[T, "認証の期限は3日だ"], ["認証の期限は7日だ", "認証の期限を3日から5日に変更"]],
+        [["認証の期限は3日だ", ("T", "新製品"), "認証の期限を3日から5日に変更"]],
+    )):
+        p = store_sessions(tmp_path, sess, "n%d" % n)
+        verdict, answers = _rec17(p)
+        assert verdict == "CHOICE" and "3日" in answers, (n, verdict, answers)
+        assert [t for (_s, t, _v) in attack(p, Q, sum(1 for ws in sess for w in ws if not isinstance(w, tuple)), version=V17)] == [], n
+
+
+def test_v17_the_same_scope_confirmation_still_updates(tmp_path):
+    p = store_sessions(tmp_path, [[T, "認証の期限は5日だ", "認証の期限を5日から7日に変更"]], "same")
+    assert [t for (_s, t, _v) in attack(p, Q, 2, version=V17)] == ["7日"]
+    p = store_sessions(tmp_path, [["認証の期限は3日だ"], ["認証の期限を3日から5日に変更"], ["認証の期限を5日から7日に変更"]], "chain")
+    assert [t for (_s, t, _v) in attack(p, Q, 3, version=V17)] == ["7日"]
+
+
+def test_v17_a_change_replaces_only_the_contested_side_it_names(tmp_path):
+    p = store(tmp_path, ["認証の期限は3日だ", "認証の期限は4日だ", "認証の期限を3日から5日に変更"], name="cont")
+    verdict, answers = _rec17(p)
+    assert verdict == "CHOICE" and answers == ["4日", "5日"], (verdict, answers)
+    assert attack(p, Q, 3, version=V17) == []
+    p = store(tmp_path, ["認証の期限は3日だ", "認証の期限は4日だ", "認証の期限を3日から5日に変更", "認証の期限を4日から5日に変更"], name="both")
+    verdict, answers = _rec17(p)
+    assert verdict == "UPDATED" and answers == ["5日", "5日"] or set(answers) == {"5日"}
+    assert {t for (_s, t, _v) in attack(p, Q, 4, version=V17)} == {"5日"}
+    p = store(tmp_path, ["認証の期限は3日だ", "認証の期限は4日だ", "認証の期限を3日から5日に変更"], name="v16")
+    assert ma.AnswerSession(p, Q, "o", answer_version=V16).call("recall", {"question": Q})["verdict"] == "UPDATED"          # v16 replays as it was
+
+
+def test_v17_begin_row_and_replay(tmp_path):
+    p = store(tmp_path, ["認証の期限は5日"])
+    a = ma.AnswerSession(p, Q, "o", answer_version=V17)
+    assert a.begin_result["mem_answer"]["version"] == "memanswer.v17" and a.begin_result["mem_answer"]["guard"] == "ansguard.v15"
+    r = ma.replay_answer(a.ledger.dir)
+    assert r.run.v17 and r.run.v16
