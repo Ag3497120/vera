@@ -1,0 +1,130 @@
+# Vera line 3 on GitHub-hosted runners (owner 2026-10-13: 「一時計測を中断して。別セッションでcpuを使うのでgithubのciで回して」).
+# Two modes, started from the Actions tab or `gh workflow run line3-ci.yml --ref <branch> -f mode=... `:
+#   mode=tests  the line-3 pytest suite selected by -k (default "loom or mem or pub"), sharded by test file, under PYTHONHASHSEED 0, 1 and 12345,
+#               plus the stored-ledger replay (experiments/line3/mem/memfix/verify_stores.py --loom --mem). Junit XML is uploaded per job.
+#   mode=run    one command (input cmd) on one 4-vCPU runner; every path matched by input outputs is uploaded as the artifact run-output.
+# Everything is offline: no API key is configured and none is needed.  Pure CPU; results are byte-identical to the Pro/Air (determinism probe).
+name: line3-ci
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "tests | run"
+        default: tests
+        type: choice
+        options: [tests, run]
+      k:
+        description: "tests: pytest -k expression"
+        default: "loom or mem or pub"
+        type: string
+      shards:
+        description: "tests: shards per seed (by test file)"
+        default: "4"
+        type: string
+      seeds:
+        description: "tests: JSON list of PYTHONHASHSEED values"
+        default: "[0, 1, 12345]"
+        type: string
+      replay:
+        description: "tests: also run verify_stores.py --loom --mem"
+        default: true
+        type: boolean
+      cmd:
+        description: "run: the command (bash, from the repo root, PYTHONPATH=. PYTHONHASHSEED=0)"
+        default: ""
+        type: string
+      outputs:
+        description: "run: space-separated paths/globs to upload"
+        default: ""
+        type: string
+      timeout:
+        description: "run: minutes"
+        default: "300"
+        type: string
+
+env:
+  PYTHONPATH: "."
+  PYTHONDONTWRITEBYTECODE: "1"
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      shards: ${{ steps.p.outputs.shards }}
+    steps:
+      - id: p
+        run: python3 -c "n=max(1,min(16,int('${{ inputs.shards }}'))); print('shards=' + str(list(range(n))))" >> "$GITHUB_OUTPUT"
+
+  tests:
+    if: inputs.mode == 'tests'
+    needs: plan
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        seed: ${{ fromJson(inputs.seeds) }}
+        shard: ${{ fromJson(needs.plan.outputs.shards) }}
+    env:
+      PYTHONHASHSEED: ${{ matrix.seed }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.11" }
+      - run: python -m pip install --quiet fugashi unidic-lite pytest mcp
+      - name: pytest (shard ${{ matrix.shard }}, seed ${{ matrix.seed }})
+        run: |
+          N=$(python -c "import json; print(len(json.loads('${{ needs.plan.outputs.shards }}')))")
+          FILES=$(ls tests/line3/test_*.py | sort | awk -v n="$N" -v s="${{ matrix.shard }}" 'NR % n == s')
+          echo "$FILES"
+          python -m pytest -q -p no:cacheprovider -k "${{ inputs.k }}" --junitxml=junit.xml $FILES || rc=$?
+          rc=${rc:-0}; [ "$rc" = 5 ] && rc=0   # 5 = no test selected in this shard
+          exit $rc
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: junit-seed${{ matrix.seed }}-shard${{ matrix.shard }}
+          path: junit.xml
+
+  replay:
+    if: inputs.mode == 'tests' && inputs.replay
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      PYTHONHASHSEED: "0"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.11" }
+      - run: python -m pip install --quiet fugashi unidic-lite
+      - run: python experiments/line3/mem/memfix/verify_stores.py --loom --mem | tee replay.txt
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: replay
+          path: replay.txt
+
+  run:
+    if: inputs.mode == 'run'
+    runs-on: ubuntu-latest
+    timeout-minutes: 340
+    env:
+      PYTHONHASHSEED: "0"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.11" }
+      - run: python -m pip install --quiet fugashi unidic-lite pytest mcp
+      - name: run
+        timeout-minutes: ${{ fromJson(inputs.timeout) }}
+        env:
+          CMD: ${{ inputs.cmd }}
+        run: bash -c "$CMD" 2>&1 | tee run.log; exit ${PIPESTATUS[0]}
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: run-output
+          path: |
+            run.log
+            ${{ inputs.outputs }}
