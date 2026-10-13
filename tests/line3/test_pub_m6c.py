@@ -424,15 +424,21 @@ def test_the_default_gate_of_a_new_memory_answer_run_and_session_is_the_constant
     p = store(tmp_path, ["田中の担当は認証"])
     a = ma.AnswerSession(p, "田中の担当は何ですか？", "m", answer_version=ma.ANSWER_V4)
     assert a.begin_result["evidence_profile"] == {"version": "evidence.v6", "subject_scope": "clause"} and a.begin_result["mem_answer"]["evidence"] == "evidence.v6"
-    s = new_store(tmp_path, "sess").begin("m")
+    s = new_store(tmp_path, "sess").begin("m", self_question=mem.LATEST)                       # what the doors pass: the gate of today, recorded explicitly
     h = s.run.header()
     assert (h["self_question"], h["evidence_version"]) == ("gate.evidence.v6+subject", "evidence.v6")
     assert "evidence.v6" in s.rows()[0]["result"]["rules"]["recall"] and "evidence.v2" not in s.rows()[0]["result"]["rules"]["recall"]
+    h0 = new_store(tmp_path, "dflt").begin("m").run.header()                                    # the meaning of DEFAULT is frozen: replay never depends on a mutable default
+    assert (h0["self_question"], h0["evidence_version"]) == ("gate.evidence.v2+subject", "evidence.v2") and mem.DEFAULT_HOOK_FACTORY is mr.GateSubjectSelfQuestion
+    from verantyx.loom import memdoor as md
+    d = md.StructureDoor(str(tmp_path / "door"), "blind", "m", profile=V4)
+    assert d.begin_result["header"]["self_question"] == "gate.evidence.v6+subject" and d.begin_result["header"]["evidence_version"] == "evidence.v6"
+    d.close()
 
 
 def test_the_gate_v2_fixture_pins_the_original_gate(gate_v2, tmp_path):
-    assert mr.MEM_GATE_VERSION == ev.EVIDENCE_V2
-    s = new_store(tmp_path).begin("m")
+    assert mr.MEM_GATE_VERSION == ev.EVIDENCE_V2 and ma.ANSWER_EVIDENCE == (ev.EVIDENCE_V2, "clause")
+    s = new_store(tmp_path).begin("m", self_question=mem.LATEST)
     assert s.run.header()["self_question"] == "gate.evidence.v2+subject"
 
 

@@ -108,11 +108,15 @@ def test_t_ev6_01_v6_is_selectable_and_the_default_everywhere_v2_is_the_default_
     assert '("v6" if driver == "api" else "off")' in src
 
 
-def test_t_ev6_01_the_memory_gates_are_pinned_to_v2_not_to_the_latest():
-    """memanswer.ANSWER_EVIDENCE and memrecall.RECALL_VERSION name evidence.v2 explicitly: they do NOT take EVIDENCE_LATEST, and their replay does not read the recorded version
-    (L-LOOM-226 open point 1).  The stored memory stores / answer runs therefore replay exactly as before; switching them is a separate step with new hook ids."""
-    from verantyx.loom import memanswer, memrecall
-    assert memanswer.ANSWER_EVIDENCE == (V2, "clause") and memrecall.RECALL_VERSION == V2
+def test_t_ev6_01_the_memory_gates_record_their_version_new_runs_get_v6_stored_runs_replay_under_theirs(tmp_path):
+    """PUB-M6c (designer decision L-PUB-76; this test said "pinned to v2" before it): the gate of NEW memory answer runs and of the sessions the doors open is `memrecall.MEM_GATE_VERSION`, an explicit
+    constant (evidence.v6), not EVIDENCE_LATEST; it is RECORDED in the begin row (`evidence_profile` / `evidence_version` + hook id) and replay reads the record, never a default.  `RECALL_VERSION` (the original
+    hook, gate.evidence.v2) and the meaning of `mem.DEFAULT` (the API default of `begin` / `verify_store`: gate.evidence.v2+subject) are FROZEN, and a begin row without a recorded profile is evidence.v2."""
+    from verantyx.loom import memanswer, memory as mem, memrecall
+    assert memrecall.MEM_GATE_VERSION == V6 and memanswer.ANSWER_EVIDENCE == (V6, "clause") and memanswer.LEGACY_EVIDENCE == (V2, "clause")
+    assert memrecall.RECALL_VERSION == V2 and mem.DEFAULT_HOOK_FACTORY is memrecall.GateSubjectSelfQuestion                  # frozen
+    assert memrecall.hook_classes(V6)[1].id == "gate.evidence.v6+subject" and mem.HOOKS["gate.evidence.v6+subject"] is memrecall.hook_classes(V6)[1]
+    assert mem.latest_hook().evidence_version == V6
 
 
 # ---- T-EV6-02: NEG, on the grammar layer's units ----------------------------------------------------------------------------------------------------------

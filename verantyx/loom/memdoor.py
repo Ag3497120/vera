@@ -216,7 +216,7 @@ class StructureDoor(_Door):
     """The STORY phase of A2 / A2b: one `MemSession` (profile mem.v2) of a `MemStore`.  `call` = one ledger row.  `commit()` is the harness's (the model has no such tool)."""
     phase = "story"
 
-    def __init__(self, store_path, arm: str, model: str, *, hook: Any = mem.DEFAULT, kind_policy: Optional[str] = None, profile: str = mem.PROFILE_V2,
+    def __init__(self, store_path, arm: str, model: str, *, hook: Any = mem.LATEST, kind_policy: Optional[str] = None, profile: str = mem.PROFILE_V2,
                  versions: Optional[Dict[str, str]] = None) -> None:
         if arm not in STRUCTURE_ARMS:
             raise ValueError("a StructureDoor is the structure arms' (blind | notes)")

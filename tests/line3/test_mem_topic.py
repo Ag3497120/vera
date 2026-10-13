@@ -14,7 +14,6 @@ from verantyx.loom import memnotes as mn
 from verantyx.loom import memory as mem
 from mem_common import ledger_rows, new_store, notes_of, refusal_of, session, session_v2, write_all
 
-pytestmark = pytest.mark.usefixtures("gate_v2")                # PUB-M6c (L-PUB-76): written against the original gate (evidence.v2); the default gate is asserted in test_pub_m6c.py
 
 
 T = "広報"

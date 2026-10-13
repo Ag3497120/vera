@@ -21,7 +21,6 @@ from verantyx.loom.corpus import Corpus
 from verantyx.loom.state import Refuse
 from mem_common import PROBE_REVERSAL, ROOT, STUB, ledger_rows, new_store, notes_of, session, write_all
 
-pytestmark = pytest.mark.usefixtures("gate_v2")                # PUB-M6c (L-PUB-76): written against the original gate (evidence.v2); the default gate is asserted in test_pub_m6c.py
 
 GATE = mr.GateSelfQuestion()                  # gate.evidence.v2 (MEM-c): the hook of the stores written before the whole-subject guard; they replay with exactly this behaviour
 SUBJ = mr.GateSubjectSelfQuestion()           # gate.evidence.v2+subject (MEM-c2): the default of a new store

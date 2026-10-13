@@ -1,0 +1,2970 @@
+{
+ "extra": {
+  "enumeration_arm_owner": 10,
+  "reversal_x_key_agrees": 8,
+  "update_first": 8,
+  "update_with_prior": 8
+ },
+ "f0_reasons": {
+  "case_before_topic": 9,
+  "coordination": 12,
+  "gap_is_not_a_particle": 719,
+  "negated": 9,
+  "no_predicate": 65,
+  "no_relation": 30,
+  "repeated_case_particle": 12,
+  "value_not_noun": 1
+ },
+ "notes": {
+  "ENUMERATION": {
+   "hit": 7,
+   "no_plant": 3,
+   "total": 10
+  },
+  "REVERSAL_X": {
+   "hit": 8,
+   "total": 8
+  },
+  "SAME_SEAT": {
+   "hit": 12,
+   "no_plant": 13,
+   "total": 25
+  },
+  "UPDATE": {
+   "hit": 15,
+   "no_plant": 1,
+   "total": 16
+  }
+ },
+ "plant_coverage": {
+  "ENUMERATION": {
+   "found": 7,
+   "plants": 16
+  },
+  "REVERSAL_X": {
+   "found": 8,
+   "plants": 8
+  },
+  "SAME_SEAT": {
+   "found": 12,
+   "plants": 24
+  },
+  "UPDATE": {
+   "found": 15,
+   "plants": 16
+  }
+ },
+ "planted": {
+  "contradiction": 24,
+  "list_trap": 16,
+  "repeat": 12,
+  "reversal": 8,
+  "update": 16
+ },
+ "questions": {
+  "absent": {
+   "admitted": 0,
+   "candidates_offered": 0,
+   "n": 16,
+   "oracle_admitted": 0,
+   "parsed": 12,
+   "route_None": 16,
+   "verdict_NONE": 16
+  },
+  "contradiction": {
+   "candidates_gold_among": 10,
+   "candidates_gold_rank1": 10,
+   "candidates_offered": 10,
+   "candidates_tied_top": 0,
+   "form_rephrased_n": 23,
+   "form_rephrased_reached": 0,
+   "form_same_n": 1,
+   "form_same_reached": 1,
+   "lenient_exact": 1,
+   "lenient_extra": 0,
+   "lenient_reached": 1,
+   "n": 24,
+   "oracle_top_answered": 10,
+   "oracle_top_exact": 9,
+   "oracle_top_reached": 9,
+   "oracle_top_wrong": 1,
+   "parsed": 16,
+   "route_None": 23,
+   "route_exact": 1,
+   "strict_exact": 1,
+   "strict_extra": 0,
+   "strict_reached": 1,
+   "verdict_CANDIDATES": 10,
+   "verdict_CHOICE": 1,
+   "verdict_NONE": 13
+  },
+  "plain": {
+   "candidates_gold_among": 8,
+   "candidates_gold_rank1": 8,
+   "candidates_offered": 8,
+   "candidates_tied_top": 0,
+   "form_rephrased_n": 20,
+   "form_rephrased_reached": 0,
+   "form_same_n": 4,
+   "form_same_reached": 4,
+   "lenient_exact": 4,
+   "lenient_extra": 0,
+   "lenient_reached": 4,
+   "n": 24,
+   "oracle_top_answered": 8,
+   "oracle_top_exact": 8,
+   "oracle_top_reached": 8,
+   "oracle_top_wrong": 0,
+   "parsed": 18,
+   "route_None": 20,
+   "route_exact": 4,
+   "strict_exact": 4,
+   "strict_extra": 0,
+   "strict_reached": 4,
+   "verdict_ANSWER": 4,
+   "verdict_CANDIDATES": 8,
+   "verdict_NONE": 12
+  },
+  "update": {
+   "candidates_gold_among": 6,
+   "candidates_gold_rank1": 5,
+   "candidates_offered": 7,
+   "candidates_tied_top": 1,
+   "form_rephrased_n": 15,
+   "form_rephrased_reached": 0,
+   "form_same_n": 1,
+   "form_same_reached": 1,
+   "lenient_exact": 1,
+   "lenient_extra": 0,
+   "lenient_reached": 1,
+   "n": 16,
+   "oracle_top_answered": 7,
+   "oracle_top_exact": 5,
+   "oracle_top_reached": 5,
+   "oracle_top_wrong": 2,
+   "parsed": 12,
+   "route_None": 15,
+   "route_exact": 1,
+   "strict_exact": 1,
+   "strict_extra": 0,
+   "strict_reached": 1,
+   "verdict_CANDIDATES": 7,
+   "verdict_NONE": 8,
+   "verdict_UPDATED": 1
+  }
+ },
+ "stories": [
+  {
+   "bridges": 0,
+   "elapsed_s": 78.3,
+   "extra": {
+    "enumeration_arm_owner": 10,
+    "reversal_x_key_agrees": 4,
+    "update_with_prior": 8
+   },
+   "id": "LS-D01",
+   "index": {
+    "F0": {
+     "sentences": 0
+    },
+    "F1": {
+     "crosses": 30,
+     "max_L": 5,
+     "seats": 108
+    },
+    "F2": {
+     "crosses": 16,
+     "max_L": 1,
+     "seats": 22
+    },
+    "F3": {
+     "crosses": 84,
+     "max_L": 18,
+     "seats": 1372
+    },
+    "F4": {
+     "crosses": 0,
+     "max_L": 0,
+     "seats": 0
+    },
+    "nests": 1,
+    "positions": 56
+   },
+   "index_sha": "b0807c7f0f9194e2f903fef772d39a946b4d1235025be85f0821ae608c3cbf90",
+   "messages": 160,
+   "notes": {
+    "ENUMERATION": {
+     "hit": 7,
+     "no_plant": 3,
+     "total": 10
+    },
+    "REVERSAL_X": {
+     "hit": 4,
+     "total": 4
+    },
+    "SAME_SEAT": {
+     "hit": 12,
+     "no_plant": 10,
+     "total": 22
+    },
+    "UPDATE": {
+     "hit": 8,
+     "total": 8
+    }
+   },
+   "plant_coverage": {
+    "ENUMERATION": {
+     "found": 7,
+     "plants": 8
+    },
+    "REVERSAL_X": {
+     "found": 4,
+     "plants": 4
+    },
+    "SAME_SEAT": {
+     "found": 12,
+     "plants": 12
+    },
+    "UPDATE": {
+     "found": 8,
+     "plants": 8
+    }
+   },
+   "planted": {
+    "contradiction": 12,
+    "list_trap": 8,
+    "repeat": 6,
+    "reversal": 4,
+    "update": 8
+   },
+   "questions": [
+    {
+     "checkpoint": 0,
+     "form": "same",
+     "gold": "2032年10月3日",
+     "issues": [],
+     "kind": "plain",
+     "lenient": {
+      "answers": [
+       "2032年10月3日"
+      ],
+      "exact": true,
+      "extra": [],
+      "reached": true
+     },
+     "parsed": true,
+     "q": "認証端末の検収日はいつですか？",
+     "route": "exact",
+     "strict": {
+      "answers": [
+       "2032年10月3日"
+      ],
+      "exact": true,
+      "extra": [],
+      "reached": true
+     },
+     "verdict": "ANSWER"
+    },
+    {
+     "checkpoint": 0,
+     "form": "rephrased",
+     "gold": "矛盾: 2032年11月7日 と 2032年11月8日",
+     "gold_among": true,
+     "gold_rank": 1,
+     "issues": [
+      "no_position",
+      "no_slot_noun_matches"
+     ],
+     "kind": "contradiction",
+     "lenient": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "offered": 1,
+     "oracle": {
+      "lenient": {
+       "answers": [
+        "2032年11月7日",
+        "2032年11月8日"
+       ],
+       "exact": true,
+       "extra": [],
+       "reached": true
+      },
+      "strict": {
+       "answers": [
+        "2032年11月7日",
+        "2032年11月8日"
+       ],
+       "exact": true,
+       "extra": [],
+       "reached": true
+      }
+     },
+     "oracle_route": "bridge",
+     "oracle_verdict": "CHOICE",
+     "parsed": true,
+     "q": "新館を開ける日はいつですか？",
+     "route": null,
+     "strict": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "tied_top": false,
+     "verdict": "CANDIDATES"
+    },
+    {
+     "admitted": false,
+     "candidates_offered": false,
+     "checkpoint": 0,
+     "form": "absent",
+     "gold": "記録なし",
+     "issues": [
+      "no_position",
+      "no_event_clause"
+     ],
+     "kind": "absent",
+     "oracle_admitted": false,
+     "parsed": true,
+     "q": "屋外返却ポストの夜間点検を誰が受け持ちますか？",
+     "route": null,
+     "verdict": "NONE"
+    },
+    {
+     "checkpoint": 0,
+     "form": "rephrased",
+     "gold": "2032年9月24日",
+     "gold_among": true,
+     "gold_rank": 1,
+     "issues": [
+      "no_position",
+      "no_slot_noun_matches"
+     ],
+     "kind": "update",
+     "lenient": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "offered": 1,
+     "oracle": {
+      "lenient": {
+       "answers": [
+        "2032年9月24日"
+       ],
+       "exact": true,
+       "extra": [],
+       "reached": true
+      },
+      "strict": {
+       "answers": [
+        "2032年9月24日"
+       ],
+       "exact": true,
+       "extra": [],
+       "reached": true
+      }
+     },
+     "oracle_route": "bridge",
+     "oracle_verdict": "UPDATED",
+     "parsed": true,
+     "q": "棚ラベルの確認作業はいつまでですか？",
+     "route": null,
+     "strict": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "tied_top": false,
+     "verdict": "CANDIDATES"
+    },
+    {
+     "checkpoint": 0,
+     "form": "rephrased",
+     "gold": "6時40分",
+     "gold_among": true,
+     "gold_rank": 1,
+     "issues": [
+      "no_position",
+      "no_event_clause"
+     ],
+     "kind": "plain",
+     "lenient": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "offered": 1,
+     "oracle": {
+      "lenient": {
+       "answers": [
+        "6時40分"
+       ],
+       "exact": true,
+       "extra": [],
+       "reached": true
+      },
+      "strict": {
+       "answers": [
+        "6時40分"
+       ],
+       "exact": true,
+       "extra": [],
+       "reached": true
+      }
+     },
+     "oracle_route": "bridge",
+     "oracle_verdict": "ANSWER",
+     "parsed": true,
+     "q": "北側搬入口の鍵は何時に開けますか？",
+     "route": null,
+     "strict": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "tied_top": false,
+     "verdict": "CANDIDATES"
+    },
+    {
+     "checkpoint": 0,
+     "form": "rephrased",
+     "gold": "矛盾: 2032年10月15日 と 2032年10月16日",
+     "gold_among": true,
+     "gold_rank": 1,
+     "issues": [
+      "no_position",
+      "no_slot_noun_matches"
+     ],
+     "kind": "contradiction",
+     "lenient": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "offered": 1,
+     "oracle": {
+      "lenient": {
+       "answers": [
+        "2032年10月15日",
+        "2032年10月16日"
+       ],
+       "exact": true,
+       "extra": [],
+       "reached": true
+      },
+      "strict": {
+       "answers": [
+        "2032年10月15日",
+        "2032年10月16日"
+       ],
+       "exact": true,
+       "extra": [],
+       "reached": true
+      }
+     },
+     "oracle_route": "bridge",
+     "oracle_verdict": "CHOICE",
+     "parsed": true,
+     "q": "最初の蔵書の搬出日はいつですか？",
+     "route": null,
+     "strict": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "tied_top": false,
+     "verdict": "CANDIDATES"
+    },
+    {
+     "admitted": false,
+     "candidates_offered": false,
+     "checkpoint": 0,
+     "form": "absent",
+     "gold": "記録なし",
+     "issues": [
+      "question_unparsed:frame_not_read:case_before_topic"
+     ],
+     "kind": "absent",
+     "oracle_admitted": false,
+     "parsed": false,
+     "q": "寄贈資料に押す蔵書印は何人で作業しますか？",
+     "route": null,
+     "verdict": "NONE"
+    },
+    {
+     "checkpoint": 0,
+     "form": "same",
+     "gold": "2032年10月4日",
+     "issues": [],
+     "kind": "update",
+     "lenient": {
+      "answers": [
+       "2032年10月4日"
+      ],
+      "exact": true,
+      "extra": [],
+      "reached": true
+     },
+     "parsed": true,
+     "q": "認証端末の設置日は何日ですか？",
+     "route": "exact",
+     "strict": {
+      "answers": [
+       "2032年10月4日"
+      ],
+      "exact": true,
+      "extra": [],
+      "reached": true
+     },
+     "verdict": "UPDATED"
+    },
+    {
+     "checkpoint": 0,
+     "form": "rephrased",
+     "gold": "413",
+     "issues": [
+      "no_position",
+      "no_slot_noun_matches"
+     ],
+     "kind": "plain",
+     "lenient": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "parsed": true,
+     "q": "職員休憩室へつなぐ内線は何番ですか？",
+     "route": null,
+     "strict": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "verdict": "NONE"
+    },
+    {
+     "checkpoint": 0,
+     "form": "rephrased",
+     "gold": "矛盾: 120人 と 96人",
+     "gold_among": true,
+     "gold_rank": 1,
+     "issues": [
+      "no_position",
+      "no_slot_noun_matches"
+     ],
+     "kind": "contradiction",
+     "lenient": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "offered": 1,
+     "oracle": {
+      "lenient": {
+       "answers": [
+        "120人",
+        "96人"
+       ],
+       "exact": true,
+       "extra": [],
+       "reached": true
+      },
+      "strict": {
+       "answers": [
+        "120人",
+        "96人"
+       ],
+       "exact": true,
+       "extra": [],
+       "reached": true
+      }
+     },
+     "oracle_route": "bridge",
+     "oracle_verdict": "CHOICE",
+     "parsed": true,
+     "q": "大閲覧室でイベントを受け入れる人数は何人ですか？",
+     "route": null,
+     "strict": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "tied_top": false,
+     "verdict": "CANDIDATES"
+    },
+    {
+     "checkpoint": 1,
+     "form": "rephrased",
+     "gold": "340箱",
+     "gold_among": true,
+     "gold_rank": 1,
+     "issues": [
+      "no_position",
+      "no_slot_noun_matches"
+     ],
+     "kind": "plain",
+     "lenient": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "offered": 1,
+     "oracle": {
+      "lenient": {
+       "answers": [
+        "340箱"
+       ],
+       "exact": true,
+       "extra": [],
+       "reached": true
+      },
+      "strict": {
+       "answers": [
+        "340箱"
+       ],
+       "exact": true,
+       "extra": [],
+       "reached": true
+      }
+     },
+     "oracle_route": "bridge",
+     "oracle_verdict": "ANSWER",
+     "parsed": true,
+     "q": "一般書の移送箱は何箱ですか？",
+     "route": null,
+     "strict": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "tied_top": false,
+     "verdict": "CANDIDATES"
+    },
+    {
+     "checkpoint": 1,
+     "form": "rephrased",
+     "gold": "矛盾: 2032年10月31日 と 2032年11月1日",
+     "gold_among": true,
+     "gold_rank": 1,
+     "issues": [
+      "question_unparsed:frame_not_read:gap_is_not_a_particle"
+     ],
+     "kind": "contradiction",
+     "lenient": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "offered": 1,
+     "oracle": {
+      "lenient": {
+       "answers": [
+        "2032年10月31日",
+        "2032年11月1日"
+       ],
+       "exact": true,
+       "extra": [],
+       "reached": true
+      },
+      "strict": {
+       "answers": [
+        "2032年10月31日",
+        "2032年11月1日"
+       ],
+       "exact": true,
+       "extra": [],
+       "reached": true
+      }
+     },
+     "oracle_route": "bridge",
+     "oracle_verdict": "CHOICE",
+     "parsed": false,
+     "q": "珪戸分室を閉じるのは何日ですか？",
+     "route": null,
+     "strict": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "tied_top": false,
+     "verdict": "CANDIDATES"
+    },
+    {
+     "admitted": false,
+     "candidates_offered": false,
+     "checkpoint": 1,
+     "form": "absent",
+     "gold": "記録なし",
+     "issues": [
+      "no_position",
+      "no_event_clause"
+     ],
+     "kind": "absent",
+     "oracle_admitted": false,
+     "parsed": true,
+     "q": "携帯型拡大鏡の手入れは誰が受け持ちますか？",
+     "route": null,
+     "verdict": "NONE"
+    },
+    {
+     "checkpoint": 1,
+     "form": "rephrased",
+     "gold": "2032年10月30日",
+     "issues": [
+      "no_position",
+      "no_slot_noun_matches"
+     ],
+     "kind": "update",
+     "lenient": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "parsed": true,
+     "q": "本の庭開きの会場準備は何日ですか？",
+     "route": null,
+     "strict": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "verdict": "NONE"
+    },
+    {
+     "checkpoint": 1,
+     "form": "same",
+     "gold": "24名",
+     "issues": [],
+     "kind": "plain",
+     "lenient": {
+      "answers": [
+       "24名"
+      ],
+      "exact": true,
+      "extra": [],
+      "reached": true
+     },
+     "parsed": true,
+     "q": "イベント午後枠の定員は何人ですか？",
+     "route": "exact",
+     "strict": {
+      "answers": [
+       "24名"
+      ],
+      "exact": true,
+      "extra": [],
+      "reached": true
+     },
+     "verdict": "ANSWER"
+    },
+    {
+     "checkpoint": 1,
+     "form": "rephrased",
+     "gold": "矛盾: 486,000円 と 512,000円",
+     "issues": [
+      "no_position",
+      "no_event_clause"
+     ],
+     "kind": "contradiction",
+     "lenient": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "parsed": true,
+     "q": "台車調達にいくら計上していますか？",
+     "route": null,
+     "strict": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "verdict": "NONE"
+    },
+    {
+     "admitted": false,
+     "candidates_offered": false,
+     "checkpoint": 1,
+     "form": "absent",
+     "gold": "記録なし",
+     "issues": [
+      "question_unparsed:frame_not_read:gap_is_not_a_particle"
+     ],
+     "kind": "absent",
+     "oracle_admitted": false,
+     "parsed": false,
+     "q": "読み聞かせ代読補助には何人を置きますか？",
+     "route": null,
+     "verdict": "NONE"
+    },
+    {
+     "checkpoint": 1,
+     "form": "rephrased",
+     "gold": "2032年10月22日",
+     "issues": [
+      "no_position",
+      "no_slot_noun_matches"
+     ],
+     "kind": "update",
+     "lenient": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "parsed": true,
+     "q": "参加希望を送る期限は何日ですか？",
+     "route": null,
+     "strict": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "verdict": "NONE"
+    },
+    {
+     "checkpoint": 1,
+     "form": "rephrased",
+     "gold": "26枚",
+     "gold_among": true,
+     "gold_rank": 1,
+     "issues": [
+      "no_position",
+      "no_event_clause"
+     ],
+     "kind": "plain",
+     "lenient": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "offered": 1,
+     "oracle": {
+      "lenient": {
+       "answers": [
+        "26枚"
+       ],
+       "exact": true,
+       "extra": [],
+       "reached": true
+      },
+      "strict": {
+       "answers": [
+        "26枚"
+       ],
+       "exact": true,
+       "extra": [],
+       "reached": true
+      }
+     },
+     "oracle_route": "bridge",
+     "oracle_verdict": "ANSWER",
+     "parsed": true,
+     "q": "連絡カードは何枚配布しますか？",
+     "route": null,
+     "strict": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "tied_top": false,
+     "verdict": "CANDIDATES"
+    },
+    {
+     "checkpoint": 1,
+     "form": "same",
+     "gold": "矛盾: 8時15分 と 8時30分",
+     "issues": [],
+     "kind": "contradiction",
+     "lenient": {
+      "answers": [
+       "8時15分",
+       "8時30分"
+      ],
+      "exact": true,
+      "extra": [],
+      "reached": true
+     },
+     "parsed": true,
+     "q": "早番の出勤時刻は何時ですか？",
+     "route": "exact",
+     "strict": {
+      "answers": [
+       "8時15分",
+       "8時30分"
+      ],
+      "exact": true,
+      "extra": [],
+      "reached": true
+     },
+     "verdict": "CHOICE"
+    },
+    {
+     "checkpoint": 2,
+     "form": "rephrased",
+     "gold": "5段",
+     "gold_among": true,
+     "gold_rank": 1,
+     "issues": [
+      "no_position",
+      "no_slot_noun_matches"
+     ],
+     "kind": "plain",
+     "lenient": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "offered": 1,
+     "oracle": {
+      "lenient": {
+       "answers": [
+        "5段"
+       ],
+       "exact": true,
+       "extra": [],
+       "reached": true
+      },
+      "strict": {
+       "answers": [
+        "5段"
+       ],
+       "exact": true,
+       "extra": [],
+       "reached": true
+      }
+     },
+     "oracle_route": "bridge",
+     "oracle_verdict": "ANSWER",
+     "parsed": true,
+     "q": "児童コーナーの書架は何段ですか？",
+     "route": null,
+     "strict": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "tied_top": false,
+     "verdict": "CANDIDATES"
+    },
+    {
+     "checkpoint": 2,
+     "form": "rephrased",
+     "gold": "矛盾: 2032年10月26日 と 2032年10月24日",
+     "issues": [
+      "no_position",
+      "no_event_clause"
+     ],
+     "kind": "contradiction",
+     "lenient": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "parsed": true,
+     "q": "西側看板の取り付けは何日に予定されていますか？",
+     "route": null,
+     "strict": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "verdict": "NONE"
+    },
+    {
+     "admitted": false,
+     "candidates_offered": false,
+     "checkpoint": 2,
+     "form": "absent",
+     "gold": "記録なし",
+     "issues": [
+      "no_position",
+      "no_event_clause"
+     ],
+     "kind": "absent",
+     "oracle_admitted": false,
+     "parsed": true,
+     "q": "読書テラスの雨天時はどの風速で閉めますか？",
+     "route": null,
+     "verdict": "NONE"
+    },
+    {
+     "checkpoint": 2,
+     "form": "rephrased",
+     "gold": "120分",
+     "issues": [
+      "no_position",
+      "no_event_clause"
+     ],
+     "kind": "update",
+     "lenient": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "parsed": true,
+     "q": "新任向け研修は何分で組みますか？",
+     "route": null,
+     "strict": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "verdict": "NONE"
+    },
+    {
+     "checkpoint": 2,
+     "form": "same",
+     "gold": "1,400部",
+     "issues": [],
+     "kind": "plain",
+     "lenient": {
+      "answers": [
+       "1,400部"
+      ],
+      "exact": true,
+      "extra": [],
+      "reached": true
+     },
+     "parsed": true,
+     "q": "広報チラシの印刷部数はいくつですか？",
+     "route": "exact",
+     "strict": {
+      "answers": [
+       "1,400部"
+      ],
+      "exact": true,
+      "extra": [],
+      "reached": true
+     },
+     "verdict": "ANSWER"
+    },
+    {
+     "checkpoint": 2,
+     "form": "rephrased",
+     "gold": "矛盾: 19時00分 と 20時00分",
+     "gold_among": true,
+     "gold_rank": 1,
+     "issues": [
+      "question_unparsed:frame_not_read:gap_is_not_a_particle"
+     ],
+     "kind": "contradiction",
+     "lenient": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "offered": 1,
+     "oracle": {
+      "lenient": {
+       "answers": [
+        "19時00分",
+        "20時00分"
+       ],
+       "exact": true,
+       "extra": [],
+       "reached": true
+      },
+      "strict": {
+       "answers": [
+        "19時00分",
+        "20時00分"
+       ],
+       "exact": true,
+       "extra": [],
+       "reached": true
+      }
+     },
+     "oracle_route": "bridge",
+     "oracle_verdict": "CHOICE",
+     "parsed": false,
+     "q": "貸出系を止めるのは何時ですか？",
+     "route": null,
+     "strict": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "tied_top": false,
+     "verdict": "CANDIDATES"
+    },
+    {
+     "admitted": false,
+     "candidates_offered": false,
+     "checkpoint": 2,
+     "form": "absent",
+     "gold": "記録なし",
+     "issues": [
+      "no_position",
+      "no_event_clause"
+     ],
+     "kind": "absent",
+     "oracle_admitted": false,
+     "parsed": true,
+     "q": "ボランティア用昼食は何食用意しますか？",
+     "route": null,
+     "verdict": "NONE"
+    },
+    {
+     "checkpoint": 2,
+     "form": "rephrased",
+     "gold": "2032年10月19日",
+     "issues": [
+      "question_unparsed:no_question_word"
+     ],
+     "kind": "update",
+     "lenient": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "parsed": false,
+     "q": "展示写真の許可確認を終える日を教えてください？",
+     "route": null,
+     "strict": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "verdict": "NONE"
+    },
+    {
+     "checkpoint": 2,
+     "form": "rephrased",
+     "gold": "3台",
+     "gold_among": true,
+     "gold_rank": 1,
+     "issues": [
+      "question_unparsed:frame_not_read:gap_is_not_a_particle"
+     ],
+     "kind": "plain",
+     "lenient": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "offered": 1,
+     "oracle": {
+      "lenient": {
+       "answers": [
+        "3台"
+       ],
+       "exact": true,
+       "extra": [],
+       "reached": true
+      },
+      "strict": {
+       "answers": [
+        "3台"
+       ],
+       "exact": true,
+       "extra": [],
+       "reached": true
+      }
+     },
+     "oracle_route": "bridge",
+     "oracle_verdict": "ANSWER",
+     "parsed": false,
+     "q": "停電用に予備する蓄電池はいくつありますか？",
+     "route": null,
+     "strict": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "tied_top": false,
+     "verdict": "CANDIDATES"
+    },
+    {
+     "checkpoint": 2,
+     "form": "rephrased",
+     "gold": "矛盾: 研修室藍 と 会議室C",
+     "gold_among": true,
+     "gold_rank": 1,
+     "issues": [
+      "no_position",
+      "no_event_clause"
+     ],
+     "kind": "contradiction",
+     "lenient": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "offered": 1,
+     "oracle": {
+      "lenient": {
+       "answers": [
+        "研修室藍",
+        "会議室C"
+       ],
+       "exact": true,
+       "extra": [],
+       "reached": true
+      },
+      "strict": {
+       "answers": [
+        "研修室藍",
+        "会議室C"
+       ],
+       "exact": true,
+       "extra": [],
+       "reached": true
+      }
+     },
+     "oracle_route": "bridge",
+     "oracle_verdict": "CHOICE",
+     "parsed": true,
+     "q": "ボランティア説明会はどの部屋で開きますか？",
+     "route": null,
+     "strict": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "tied_top": false,
+     "verdict": "CANDIDATES"
+    },
+    {
+     "checkpoint": 3,
+     "form": "rephrased",
+     "gold": "18時40分",
+     "issues": [
+      "no_position",
+      "no_event_clause"
+     ],
+     "kind": "plain",
+     "lenient": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "parsed": true,
+     "q": "蔵書検索画面の切替は何時に始まりますか？",
+     "route": null,
+     "strict": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "verdict": "NONE"
+    },
+    {
+     "checkpoint": 3,
+     "form": "rephrased",
+     "gold": "矛盾: 45% と 48%",
+     "gold_among": true,
+     "gold_rank": 1,
+     "issues": [
+      "question_unparsed:no_question_word"
+     ],
+     "kind": "contradiction",
+     "lenient": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "offered": 3,
+     "oracle": {
+      "lenient": {
+       "answers": [
+        "45",
+        "48"
+       ],
+       "exact": true,
+       "extra": [],
+       "reached": true
+      },
+      "strict": {
+       "answers": [
+        "45",
+        "48"
+       ],
+       "exact": false,
+       "extra": [
+        "45",
+        "48"
+       ],
+       "reached": false
+      }
+     },
+     "oracle_route": "bridge",
+     "oracle_verdict": "CHOICE",
+     "parsed": false,
+     "q": "郷土資料箱に保つ湿度の上限を教えてください？",
+     "route": null,
+     "strict": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "tied_top": false,
+     "verdict": "CANDIDATES"
+    },
+    {
+     "admitted": false,
+     "candidates_offered": false,
+     "checkpoint": 3,
+     "form": "absent",
+     "gold": "記録なし",
+     "issues": [
+      "question_unparsed:placeholder_not_asked"
+     ],
+     "kind": "absent",
+     "oracle_admitted": false,
+     "parsed": false,
+     "q": "展示窓の照明は何ルクスまで上げますか？",
+     "route": null,
+     "verdict": "NONE"
+    },
+    {
+     "checkpoint": 3,
+     "form": "rephrased",
+     "gold": "22台",
+     "issues": [
+      "no_position",
+      "no_slot_noun_matches"
+     ],
+     "kind": "update",
+     "lenient": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "parsed": true,
+     "q": "増便分として用意する台車は何台ですか？",
+     "route": null,
+     "strict": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "verdict": "NONE"
+    },
+    {
+     "checkpoint": 3,
+     "form": "same",
+     "gold": "3年",
+     "issues": [],
+     "kind": "plain",
+     "lenient": {
+      "answers": [
+       "3年"
+      ],
+      "exact": true,
+      "extra": [],
+      "reached": true
+     },
+     "parsed": true,
+     "q": "新館カードの有効期間は何年ですか？",
+     "route": "exact",
+     "strict": {
+      "answers": [
+       "3年"
+      ],
+      "exact": true,
+      "extra": [],
+      "reached": true
+     },
+     "verdict": "ANSWER"
+    },
+    {
+     "checkpoint": 3,
+     "form": "rephrased",
+     "gold": "矛盾: 7時20分 と 7時35分",
+     "gold_among": true,
+     "gold_rank": 1,
+     "issues": [
+      "no_position",
+      "no_slot_noun_matches"
+     ],
+     "kind": "contradiction",
+     "lenient": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "offered": 1,
+     "oracle": {
+      "lenient": {
+       "answers": [
+        "7時20分",
+        "7時35分"
+       ],
+       "exact": true,
+       "extra": [],
+       "reached": true
+      },
+      "strict": {
+       "answers": [
+        "7時20分",
+        "7時35分"
+       ],
+       "exact": true,
+       "extra": [],
+       "reached": true
+      }
+     },
+     "oracle_route": "bridge",
+     "oracle_verdict": "CHOICE",
+     "parsed": true,
+     "q": "書架を運ぶ便の出発予定は何時ですか？",
+     "route": null,
+     "strict": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "tied_top": false,
+     "verdict": "CANDIDATES"
+    },
+    {
+     "admitted": false,
+     "candidates_offered": false,
+     "checkpoint": 3,
+     "form": "absent",
+     "gold": "記録なし",
+     "issues": [
+      "no_position",
+      "no_event_clause"
+     ],
+     "kind": "absent",
+     "oracle_admitted": false,
+     "parsed": true,
+     "q": "遅番巡回の終了確認は誰が署名しますか？",
+     "route": null,
+     "verdict": "NONE"
+    },
+    {
+     "checkpoint": 3,
+     "form": "rephrased",
+     "gold": "17時50分",
+     "issues": [
+      "no_position",
+      "no_event_clause"
+     ],
+     "kind": "update",
+     "lenient": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "parsed": true,
+     "q": "玄関照明の動作確認は何時に行いますか？",
+     "route": null,
+     "strict": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "verdict": "NONE"
+    },
+    {
+     "checkpoint": 3,
+     "form": "rephrased",
+     "gold": "若草色",
+     "gold_among": true,
+     "gold_rank": 1,
+     "issues": [
+      "no_position",
+      "no_slot_noun_matches"
+     ],
+     "kind": "plain",
+     "lenient": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "offered": 1,
+     "oracle": {
+      "lenient": {
+       "answers": [
+        "若草色"
+       ],
+       "exact": true,
+       "extra": [],
+       "reached": true
+      },
+      "strict": {
+       "answers": [
+        "若草色"
+       ],
+       "exact": true,
+       "extra": [],
+       "reached": true
+      }
+     },
+     "oracle_route": "bridge",
+     "oracle_verdict": "ANSWER",
+     "parsed": true,
+     "q": "優先席を示す色は何ですか？",
+     "route": null,
+     "strict": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "tied_top": false,
+     "verdict": "CANDIDATES"
+    },
+    {
+     "checkpoint": 3,
+     "form": "rephrased",
+     "gold": "矛盾: 9時40分 と 10時00分",
+     "gold_among": true,
+     "gold_rank": 1,
+     "issues": [
+      "no_position",
+      "no_slot_noun_matches"
+     ],
+     "kind": "contradiction",
+     "lenient": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "offered": 1,
+     "oracle": {
+      "lenient": {
+       "answers": [
+        "9時40分",
+        "10時00分"
+       ],
+       "exact": true,
+       "extra": [],
+       "reached": true
+      },
+      "strict": {
+       "answers": [
+        "9時40分",
+        "10時00分"
+       ],
+       "exact": true,
+       "extra": [],
+       "reached": true
+      }
+     },
+     "oracle_route": "bridge",
+     "oracle_verdict": "CHOICE",
+     "parsed": true,
+     "q": "開館式でリボンを切る時刻は何時ですか？",
+     "route": null,
+     "strict": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "tied_top": false,
+     "verdict": "CANDIDATES"
+    }
+   ],
+   "seconds_at_every_100_writes": [
+    1.5,
+    5.3,
+    13.9,
+    24.4,
+    45.8,
+    66.5
+   ],
+   "sentences_in_memory": 274,
+   "sessions": 16,
+   "verify": [
+    null,
+    null
+   ],
+   "writes": {
+    "accepted": 274,
+    "accepted_clauses_by_shape": {
+     "F1": 54,
+     "F2": 22,
+     "F3": 30,
+     "F4": 332
+    },
+    "accepted_pct": 42.8,
+    "change_clauses": 8,
+    "completed_by_nest": 332,
+    "f0": 366,
+    "f0_pct": 57.2,
+    "f0_reasons": {
+     "coordination": 8,
+     "gap_is_not_a_particle": 356,
+     "negated": 6,
+     "no_predicate": 34,
+     "no_relation": 22,
+     "repeated_case_particle": 6
+    },
+    "other_refused": {},
+    "topics_declared": 16,
+    "weave_refused_but_accepted": 172,
+    "weave_refused_pct_of_accepted": 62.8,
+    "weave_refused_reasons": {
+     "span_inexpressible:gap_is_not_a_particle": 99,
+     "span_inexpressible:nested_particle_chain": 73
+    },
+    "writes": 640
+   }
+  },
+  {
+   "bridges": 0,
+   "elapsed_s": 105.4,
+   "extra": {
+    "reversal_x_key_agrees": 4,
+    "update_first": 8
+   },
+   "id": "LS-D02",
+   "index": {
+    "F0": {
+     "sentences": 0
+    },
+    "F1": {
+     "crosses": 26,
+     "max_L": 4,
+     "seats": 59
+    },
+    "F2": {
+     "crosses": 16,
+     "max_L": 1,
+     "seats": 16
+    },
+    "F3": {
+     "crosses": 152,
+     "max_L": 16,
+     "seats": 974
+    },
+    "F4": {
+     "crosses": 0,
+     "max_L": 0,
+     "seats": 0
+    },
+    "nests": 1,
+    "positions": 42
+   },
+   "index_sha": "94ed7f328c64c461fc438d2cfd125cddf5f94ca4843dce0557da808565cea8e8",
+   "messages": 115,
+   "notes": {
+    "ENUMERATION": {},
+    "REVERSAL_X": {
+     "hit": 4,
+     "total": 4
+    },
+    "SAME_SEAT": {
+     "no_plant": 3,
+     "total": 3
+    },
+    "UPDATE": {
+     "hit": 7,
+     "no_plant": 1,
+     "total": 8
+    }
+   },
+   "plant_coverage": {
+    "ENUMERATION": {
+     "found": 0,
+     "plants": 8
+    },
+    "REVERSAL_X": {
+     "found": 4,
+     "plants": 4
+    },
+    "SAME_SEAT": {
+     "found": 0,
+     "plants": 12
+    },
+    "UPDATE": {
+     "found": 7,
+     "plants": 8
+    }
+   },
+   "planted": {
+    "contradiction": 12,
+    "list_trap": 8,
+    "repeat": 6,
+    "reversal": 4,
+    "update": 8
+   },
+   "questions": [
+    {
+     "checkpoint": 0,
+     "form": "rephrased",
+     "gold": "矛盾: 420本 と 460本",
+     "issues": [
+      "no_position",
+      "no_slot_noun_matches"
+     ],
+     "kind": "contradiction",
+     "lenient": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "parsed": true,
+     "q": "替えブラシを試験用に手配する本数はいくつですか？",
+     "route": null,
+     "strict": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "verdict": "NONE"
+    },
+    {
+     "checkpoint": 0,
+     "form": "rephrased",
+     "gold": "11月6日",
+     "issues": [
+      "no_position",
+      "no_slot_noun_matches"
+     ],
+     "kind": "plain",
+     "lenient": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "parsed": true,
+     "q": "認証審査へ資料を出す日はいつですか？",
+     "route": null,
+     "strict": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "verdict": "NONE"
+    },
+    {
+     "admitted": false,
+     "candidates_offered": false,
+     "checkpoint": 0,
+     "form": "absent",
+     "gold": "記録なし",
+     "issues": [
+      "no_position",
+      "no_slot_noun_matches"
+     ],
+     "kind": "absent",
+     "oracle_admitted": false,
+     "parsed": true,
+     "q": "段差越え確認の最終評価責任者は誰ですか？",
+     "route": null,
+     "verdict": "NONE"
+    },
+    {
+     "checkpoint": 0,
+     "form": "rephrased",
+     "gold": "46分",
+     "gold_among": true,
+     "gold_rank": 1,
+     "issues": [
+      "question_unparsed:frame_not_read:gap_is_not_a_particle"
+     ],
+     "kind": "update",
+     "lenient": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "offered": 1,
+     "oracle": {
+      "lenient": {
+       "answers": [
+        "46分"
+       ],
+       "exact": true,
+       "extra": [],
+       "reached": true
+      },
+      "strict": {
+       "answers": [
+        "46分"
+       ],
+       "exact": true,
+       "extra": [],
+       "reached": true
+      }
+     },
+     "oracle_route": "bridge",
+     "oracle_verdict": "ANSWER",
+     "parsed": false,
+     "q": "静音設定で連続運転できる長さはどれくらいですか？",
+     "route": null,
+     "strict": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "tied_top": false,
+     "verdict": "CANDIDATES"
+    },
+    {
+     "checkpoint": 0,
+     "form": "rephrased",
+     "gold": "20か月",
+     "issues": [
+      "no_position",
+      "no_slot_noun_matches"
+     ],
+     "kind": "plain",
+     "lenient": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "parsed": true,
+     "q": "駆動部品の保証期間はどれくらいですか？",
+     "route": null,
+     "strict": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "verdict": "NONE"
+    },
+    {
+     "checkpoint": 0,
+     "form": "rephrased",
+     "gold": "矛盾: 19.5度 と 21度",
+     "gold_among": true,
+     "gold_rank": 1,
+     "issues": [
+      "no_position",
+      "no_slot_noun_matches"
+     ],
+     "kind": "contradiction",
+     "lenient": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "offered": 1,
+     "oracle": {
+      "lenient": {
+       "answers": [
+        "19.5度"
+       ],
+       "exact": false,
+       "extra": [],
+       "reached": false
+      },
+      "strict": {
+       "answers": [
+        "19.5度"
+       ],
+       "exact": false,
+       "extra": [],
+       "reached": false
+      }
+     },
+     "oracle_route": "bridge",
+     "oracle_verdict": "ANSWER",
+     "parsed": true,
+     "q": "朝一番に組立作業をする場所の温度表示は何度ですか？",
+     "route": null,
+     "strict": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "tied_top": false,
+     "verdict": "CANDIDATES"
+    },
+    {
+     "checkpoint": 0,
+     "form": "rephrased",
+     "gold": "11月5日",
+     "gold_among": true,
+     "gold_rank": 1,
+     "issues": [
+      "no_position",
+      "no_slot_noun_matches"
+     ],
+     "kind": "update",
+     "lenient": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "offered": 1,
+     "oracle": {
+      "lenient": {
+       "answers": [
+        "11月5日"
+       ],
+       "exact": true,
+       "extra": [],
+       "reached": true
+      },
+      "strict": {
+       "answers": [
+        "11月5日"
+       ],
+       "exact": true,
+       "extra": [],
+       "reached": true
+      }
+     },
+     "oracle_route": "bridge",
+     "oracle_verdict": "ANSWER",
+     "parsed": true,
+     "q": "先行機が工房を出る日程はいつですか？",
+     "route": null,
+     "strict": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "tied_top": false,
+     "verdict": "CANDIDATES"
+    },
+    {
+     "admitted": false,
+     "candidates_offered": false,
+     "checkpoint": 0,
+     "form": "absent",
+     "gold": "記録なし",
+     "issues": [
+      "no_position",
+      "no_slot_noun_matches"
+     ],
+     "kind": "absent",
+     "oracle_admitted": false,
+     "parsed": true,
+     "q": "交換ブラシ一個あたりの購入価格はいくらですか？",
+     "route": null,
+     "verdict": "NONE"
+    },
+    {
+     "checkpoint": 0,
+     "form": "rephrased",
+     "gold": "17分",
+     "issues": [
+      "no_position",
+      "no_slot_noun_matches"
+     ],
+     "kind": "plain",
+     "lenient": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "parsed": true,
+     "q": "洗ったごみ容器が乾くまでの目安は何分ですか？",
+     "route": null,
+     "strict": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "verdict": "NONE"
+    },
+    {
+     "checkpoint": 0,
+     "form": "rephrased",
+     "gold": "矛盾: 8対2 と 7対3",
+     "issues": [
+      "question_unparsed:no_question_word"
+     ],
+     "kind": "contradiction",
+     "lenient": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "parsed": false,
+     "q": "床材を再現する粉の混ぜ方はどう記録されていますか？",
+     "route": null,
+     "strict": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "verdict": "NONE"
+    },
+    {
+     "checkpoint": 1,
+     "form": "rephrased",
+     "gold": "繭輪市の殻間広場",
+     "issues": [
+      "no_position",
+      "no_slot_noun_matches"
+     ],
+     "kind": "plain",
+     "lenient": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "parsed": true,
+     "q": "購入検討者向けの説明会場はどこですか？",
+     "route": null,
+     "strict": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "verdict": "NONE"
+    },
+    {
+     "checkpoint": 1,
+     "form": "rephrased",
+     "gold": "矛盾: 11月17日 と 11月19日",
+     "issues": [
+      "no_position",
+      "no_slot_noun_matches"
+     ],
+     "kind": "contradiction",
+     "lenient": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "parsed": true,
+     "q": "試験後の箱を運送会社が回収する日はいつですか？",
+     "route": null,
+     "strict": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "verdict": "NONE"
+    },
+    {
+     "checkpoint": 1,
+     "form": "rephrased",
+     "gold": "11月14日",
+     "gold_among": true,
+     "gold_rank": 1,
+     "issues": [
+      "no_position",
+      "no_event_clause"
+     ],
+     "kind": "update",
+     "lenient": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "offered": 1,
+     "oracle": {
+      "lenient": {
+       "answers": [
+        "11月14日"
+       ],
+       "exact": true,
+       "extra": [],
+       "reached": true
+      },
+      "strict": {
+       "answers": [
+        "11月14日"
+       ],
+       "exact": true,
+       "extra": [],
+       "reached": true
+      }
+     },
+     "oracle_route": "bridge",
+     "oracle_verdict": "ANSWER",
+     "parsed": true,
+     "q": "組付け確認の集まりは何日に開かれますか？",
+     "route": null,
+     "strict": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "tied_top": false,
+     "verdict": "CANDIDATES"
+    },
+    {
+     "admitted": false,
+     "candidates_offered": false,
+     "checkpoint": 1,
+     "form": "absent",
+     "gold": "記録なし",
+     "issues": [
+      "question_unparsed:frame_not_read:gap_is_not_a_particle"
+     ],
+     "kind": "absent",
+     "oracle_admitted": false,
+     "parsed": false,
+     "q": "段差板を試験場所に据えるのは誰ですか？",
+     "route": null,
+     "verdict": "NONE"
+    },
+    {
+     "checkpoint": 1,
+     "form": "rephrased",
+     "gold": "再生ABS樹脂",
+     "gold_among": true,
+     "gold_rank": 1,
+     "issues": [
+      "question_unparsed:frame_not_read:gap_is_not_a_particle"
+     ],
+     "kind": "plain",
+     "lenient": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "offered": 1,
+     "oracle": {
+      "lenient": {
+       "answers": [
+        "再生ABS樹脂"
+       ],
+       "exact": true,
+       "extra": [],
+       "reached": true
+      },
+      "strict": {
+       "answers": [
+        "再生ABS樹脂"
+       ],
+       "exact": true,
+       "extra": [],
+       "reached": true
+      }
+     },
+     "oracle_route": "bridge",
+     "oracle_verdict": "ANSWER",
+     "parsed": false,
+     "q": "持ち手の試作品にはどの樹脂を使いましたか？",
+     "route": null,
+     "strict": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "tied_top": false,
+     "verdict": "CANDIDATES"
+    },
+    {
+     "checkpoint": 1,
+     "form": "rephrased",
+     "gold": "矛盾: 2台 と 3台",
+     "issues": [
+      "question_unparsed:frame_not_read:case_before_topic"
+     ],
+     "kind": "contradiction",
+     "lenient": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "parsed": false,
+     "q": "展示に使う試作機は何台と数えられていますか？",
+     "route": null,
+     "strict": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "verdict": "NONE"
+    },
+    {
+     "checkpoint": 1,
+     "form": "rephrased",
+     "gold": "10台",
+     "issues": [
+      "no_position",
+      "no_slot_noun_matches"
+     ],
+     "kind": "update",
+     "lenient": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "parsed": true,
+     "q": "売り場で評価してもらう機体はいくつですか？",
+     "route": null,
+     "strict": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "verdict": "NONE"
+    },
+    {
+     "checkpoint": 1,
+     "form": "rephrased",
+     "gold": "9.4センチ",
+     "issues": [
+      "question_unparsed:frame_not_read:gap_is_not_a_particle"
+     ],
+     "kind": "plain",
+     "lenient": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "parsed": false,
+     "q": "二号機を床から測った高さは何センチですか？",
+     "route": null,
+     "strict": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "verdict": "NONE"
+    },
+    {
+     "admitted": false,
+     "candidates_offered": false,
+     "checkpoint": 1,
+     "form": "absent",
+     "gold": "記録なし",
+     "issues": [
+      "no_position",
+      "no_slot_noun_matches"
+     ],
+     "kind": "absent",
+     "oracle_admitted": false,
+     "parsed": true,
+     "q": "電池固定治具の購入金額はいくらですか？",
+     "route": null,
+     "verdict": "NONE"
+    },
+    {
+     "checkpoint": 1,
+     "form": "rephrased",
+     "gold": "矛盾: 18日 と 24日",
+     "issues": [
+      "question_unparsed:frame_not_read:no_predicate"
+     ],
+     "kind": "contradiction",
+     "lenient": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "parsed": false,
+     "q": "予備の蓄電池は何日に届く見込みですか？",
+     "route": null,
+     "strict": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "verdict": "NONE"
+    },
+    {
+     "checkpoint": 2,
+     "form": "rephrased",
+     "gold": "矛盾: 1.0メートル と 1.2メートル",
+     "issues": [
+      "question_unparsed:several_clauses"
+     ],
+     "kind": "contradiction",
+     "lenient": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "parsed": false,
+     "q": "音を測る際、掃除機からマイクまで何メートル離しますか？",
+     "route": null,
+     "strict": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "verdict": "NONE"
+    },
+    {
+     "checkpoint": 2,
+     "form": "rephrased",
+     "gold": "11月18日",
+     "issues": [
+      "question_unparsed:placeholder_not_asked"
+     ],
+     "kind": "plain",
+     "lenient": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "parsed": false,
+     "q": "蓄電池の経時確認はいつ始める予定ですか？",
+     "route": null,
+     "strict": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "verdict": "NONE"
+    },
+    {
+     "checkpoint": 2,
+     "form": "rephrased",
+     "gold": "60サイクル",
+     "gold_among": true,
+     "gold_rank": 2,
+     "issues": [
+      "no_position",
+      "no_slot_noun_matches"
+     ],
+     "kind": "update",
+     "lenient": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "offered": 2,
+     "oracle": {
+      "lenient": {
+       "answers": [
+        "48サイクル"
+       ],
+       "exact": false,
+       "extra": [
+        "48サイクル"
+       ],
+       "reached": false
+      },
+      "strict": {
+       "answers": [
+        "48サイクル"
+       ],
+       "exact": false,
+       "extra": [
+        "48サイクル"
+       ],
+       "reached": false
+      }
+     },
+     "oracle_route": "bridge",
+     "oracle_verdict": "ANSWER",
+     "parsed": true,
+     "q": "充電耐久で許容する上限回数はいくつですか？",
+     "route": null,
+     "strict": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "tied_top": true,
+     "verdict": "CANDIDATES"
+    },
+    {
+     "admitted": false,
+     "candidates_offered": false,
+     "checkpoint": 2,
+     "form": "absent",
+     "gold": "記録なし",
+     "issues": [
+      "no_position",
+      "no_slot_noun_matches"
+     ],
+     "kind": "absent",
+     "oracle_admitted": false,
+     "parsed": true,
+     "q": "夜間の連続運転試験で残す電池残量は何％ですか？",
+     "route": null,
+     "verdict": "NONE"
+    },
+    {
+     "checkpoint": 2,
+     "form": "rephrased",
+     "gold": "3.1キロ",
+     "issues": [
+      "question_unparsed:frame_not_read:gap_is_not_a_particle"
+     ],
+     "kind": "plain",
+     "lenient": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "parsed": false,
+     "q": "二号機を持ち上げた時の重さはいくらですか？",
+     "route": null,
+     "strict": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "verdict": "NONE"
+    },
+    {
+     "checkpoint": 2,
+     "form": "rephrased",
+     "gold": "矛盾: 720箱 と 760箱",
+     "issues": [
+      "no_position",
+      "no_slot_noun_matches"
+     ],
+     "kind": "contradiction",
+     "lenient": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "parsed": true,
+     "q": "最初の量産分に用意する梱包箱はいくつですか？",
+     "route": null,
+     "strict": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "verdict": "NONE"
+    },
+    {
+     "checkpoint": 2,
+     "form": "rephrased",
+     "gold": "11月22日",
+     "gold_among": true,
+     "gold_rank": 1,
+     "issues": [
+      "question_unparsed:frame_not_read:gap_is_not_a_particle"
+     ],
+     "kind": "update",
+     "lenient": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "offered": 1,
+     "oracle": {
+      "lenient": {
+       "answers": [
+        "11月22日"
+       ],
+       "exact": true,
+       "extra": [],
+       "reached": true
+      },
+      "strict": {
+       "answers": [
+        "11月22日"
+       ],
+       "exact": true,
+       "extra": [],
+       "reached": true
+      }
+     },
+     "oracle_route": "bridge",
+     "oracle_verdict": "ANSWER",
+     "parsed": false,
+     "q": "説明書の校正原稿はいつまでに戻しますか？",
+     "route": null,
+     "strict": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "tied_top": false,
+     "verdict": "CANDIDATES"
+    },
+    {
+     "checkpoint": 2,
+     "form": "rephrased",
+     "gold": "143,000円",
+     "issues": [
+      "no_position",
+      "no_slot_noun_matches"
+     ],
+     "kind": "plain",
+     "lenient": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "parsed": true,
+     "q": "交換用の駆動輪について問屋が示した合計はいくらですか？",
+     "route": null,
+     "strict": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "verdict": "NONE"
+    },
+    {
+     "admitted": false,
+     "candidates_offered": false,
+     "checkpoint": 2,
+     "form": "absent",
+     "gold": "記録なし",
+     "issues": [
+      "no_position",
+      "no_slot_noun_matches"
+     ],
+     "kind": "absent",
+     "oracle_admitted": false,
+     "parsed": true,
+     "q": "梱包手順で使う内箱の最終承認者は誰ですか？",
+     "route": null,
+     "verdict": "NONE"
+    },
+    {
+     "checkpoint": 2,
+     "form": "rephrased",
+     "gold": "矛盾: 11月2日 と 11月4日",
+     "issues": [
+      "question_unparsed:frame_not_read:gap_is_not_a_particle"
+     ],
+     "kind": "contradiction",
+     "lenient": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "parsed": false,
+     "q": "基板の試作品を受け取るのは何日ですか？",
+     "route": null,
+     "strict": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "verdict": "NONE"
+    },
+    {
+     "checkpoint": 3,
+     "form": "rephrased",
+     "gold": "12月18日",
+     "gold_among": true,
+     "gold_rank": 1,
+     "issues": [
+      "question_unparsed:frame_not_read:gap_is_not_a_particle"
+     ],
+     "kind": "plain",
+     "lenient": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "offered": 1,
+     "oracle": {
+      "lenient": {
+       "answers": [
+        "12月18日"
+       ],
+       "exact": true,
+       "extra": [],
+       "reached": true
+      },
+      "strict": {
+       "answers": [
+        "12月18日"
+       ],
+       "exact": true,
+       "extra": [],
+       "reached": true
+      }
+     },
+     "oracle_route": "bridge",
+     "oracle_verdict": "ANSWER",
+     "parsed": false,
+     "q": "取材向けの資料一式はいつから閲覧できますか？",
+     "route": null,
+     "strict": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "tied_top": false,
+     "verdict": "CANDIDATES"
+    },
+    {
+     "checkpoint": 3,
+     "form": "rephrased",
+     "gold": "矛盾: 36台 と 40台",
+     "issues": [
+      "no_position",
+      "no_event_clause"
+     ],
+     "kind": "contradiction",
+     "lenient": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "parsed": true,
+     "q": "売り場用の見本機を何台配る計画ですか？",
+     "route": null,
+     "strict": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "verdict": "NONE"
+    },
+    {
+     "checkpoint": 3,
+     "form": "rephrased",
+     "gold": "1月22日",
+     "gold_among": false,
+     "gold_rank": null,
+     "issues": [
+      "no_position",
+      "no_slot_noun_matches"
+     ],
+     "kind": "update",
+     "lenient": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "offered": 1,
+     "oracle": {
+      "lenient": {
+       "answers": [
+        "12月18日"
+       ],
+       "exact": false,
+       "extra": [
+        "12月18日"
+       ],
+       "reached": false
+      },
+      "strict": {
+       "answers": [
+        "12月18日"
+       ],
+       "exact": false,
+       "extra": [
+        "12月18日"
+       ],
+       "reached": false
+      }
+     },
+     "oracle_route": "bridge",
+     "oracle_verdict": "ANSWER",
+     "parsed": true,
+     "q": "新型機の販売開始日はいつですか？",
+     "route": null,
+     "strict": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "tied_top": false,
+     "verdict": "CANDIDATES"
+    },
+    {
+     "admitted": false,
+     "candidates_offered": false,
+     "checkpoint": 3,
+     "form": "absent",
+     "gold": "記録なし",
+     "issues": [
+      "no_position",
+      "no_slot_noun_matches"
+     ],
+     "kind": "absent",
+     "oracle_admitted": false,
+     "parsed": true,
+     "q": "殻間広場の実演に入れる人数の上限はいくつですか？",
+     "route": null,
+     "verdict": "NONE"
+    },
+    {
+     "checkpoint": 3,
+     "form": "rephrased",
+     "gold": "48,600円",
+     "issues": [
+      "no_position",
+      "no_slot_noun_matches"
+     ],
+     "kind": "plain",
+     "lenient": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "parsed": true,
+     "q": "販売の場で示す金額はいくらですか？",
+     "route": null,
+     "strict": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "verdict": "NONE"
+    },
+    {
+     "checkpoint": 3,
+     "form": "rephrased",
+     "gold": "矛盾: 4316 と 4318",
+     "issues": [
+      "no_position",
+      "no_slot_noun_matches"
+     ],
+     "kind": "contradiction",
+     "lenient": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "parsed": true,
+     "q": "発売後の安全相談窓口へかける内線番号はいくつですか？",
+     "route": null,
+     "strict": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "verdict": "NONE"
+    },
+    {
+     "checkpoint": 3,
+     "form": "rephrased",
+     "gold": "1月11日",
+     "issues": [
+      "question_unparsed:frame_not_read:gap_is_not_a_particle"
+     ],
+     "kind": "update",
+     "lenient": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "parsed": false,
+     "q": "販売店への先行分は何日に納めますか？",
+     "route": null,
+     "strict": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "verdict": "NONE"
+    },
+    {
+     "checkpoint": 3,
+     "form": "rephrased",
+     "gold": "日本語と英語",
+     "issues": [
+      "no_position",
+      "no_slot_noun_matches"
+     ],
+     "kind": "plain",
+     "lenient": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "parsed": true,
+     "q": "操作ガイドの初版で選べる言語は何ですか？",
+     "route": null,
+     "strict": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "verdict": "NONE"
+    },
+    {
+     "admitted": false,
+     "candidates_offered": false,
+     "checkpoint": 3,
+     "form": "absent",
+     "gold": "記録なし",
+     "issues": [
+      "no_position",
+      "no_event_clause"
+     ],
+     "kind": "absent",
+     "oracle_admitted": false,
+     "parsed": true,
+     "q": "ノズル落下試験の合否判定は誰が行いますか？",
+     "route": null,
+     "verdict": "NONE"
+    },
+    {
+     "checkpoint": 3,
+     "form": "rephrased",
+     "gold": "矛盾: 74秒 と 82秒",
+     "issues": [
+      "no_position",
+      "no_slot_noun_matches"
+     ],
+     "kind": "contradiction",
+     "lenient": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "parsed": true,
+     "q": "販促映像の再生時間は何秒ですか？",
+     "route": null,
+     "strict": {
+      "answers": [],
+      "exact": false,
+      "extra": [],
+      "reached": false
+     },
+     "verdict": "NONE"
+    }
+   ],
+   "seconds_at_every_100_writes": [
+    1.0,
+    3.6,
+    9.4,
+    15.3,
+    30.6,
+    51.2,
+    83.3,
+    105.0
+   ],
+   "sentences_in_memory": 386,
+   "sessions": 14,
+   "verify": [
+    null,
+    null
+   ],
+   "writes": {
+    "accepted": 386,
+    "accepted_clauses_by_shape": {
+     "F1": 29,
+     "F2": 16,
+     "F3": 103,
+     "F4": 239
+    },
+    "accepted_pct": 48.0,
+    "change_clauses": 8,
+    "completed_by_nest": 239,
+    "f0": 419,
+    "f0_pct": 52.0,
+    "f0_reasons": {
+     "case_before_topic": 9,
+     "coordination": 4,
+     "gap_is_not_a_particle": 363,
+     "negated": 3,
+     "no_predicate": 31,
+     "no_relation": 8,
+     "repeated_case_particle": 6,
+     "value_not_noun": 1
+    },
+    "other_refused": {},
+    "topics_declared": 14,
+    "weave_refused_but_accepted": 132,
+    "weave_refused_pct_of_accepted": 34.2,
+    "weave_refused_reasons": {
+     "span_inexpressible:gap_is_not_a_particle": 28,
+     "span_inexpressible:nested_particle_chain": 104
+    },
+    "writes": 805
+   }
+  }
+ ]
+}

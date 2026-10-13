@@ -202,6 +202,7 @@ class _Sentinel:
 
 
 DEFAULT = _Sentinel("DEFAULT")              # self_question=DEFAULT: the default hook of a new store (the gate)
+LATEST = _Sentinel("LATEST")                # self_question=LATEST: the gate of today (`latest_hook`), recorded explicitly in the begin row
 FROM_HEADER = _Sentinel("FROM_HEADER")      # replay / verify: each session with the hook its own begin row names (the registry below)
 HOOKS: Dict[str, Any] = {mn.StubSelfQuestion.id: mn.StubSelfQuestion, GateSelfQuestion.id: GateSelfQuestion, GateSubjectSelfQuestion.id: GateSubjectSelfQuestion}     # the hook code, by recorded id
 for _v in evidence.EVIDENCE_VERSIONS:                # PUB-M6c: the gate hooks of the other evidence versions (ids gate.<version>, gate.<version>+subject), so that a session replays under the gate its begin row recorded
@@ -210,12 +211,15 @@ for _v in evidence.EVIDENCE_VERSIONS:                # PUB-M6c: the gate hooks o
             HOOKS[_c.id] = _c
 
 
-def _default_hook() -> Any:
-    """The default hook of a NEW store: the gate with the whole-subject guard, reading with `memrecall.MEM_GATE_VERSION` (the one line to change when the default gate changes)."""
+def latest_hook() -> Any:
+    """The hook a NEW run of the meter is given: the gate with the whole-subject guard, reading with `memrecall.MEM_GATE_VERSION` (the one line to change when the default gate changes).  The sentinel
+    `LATEST` resolves to it; the doors (`StructureDoor`, `mem_run`) pass it, so a new session RECORDS its gate explicitly (`header.self_question`, `header.evidence_version`)."""
     return mr.hook_classes(mr.MEM_GATE_VERSION)[1]()
 
 
-DEFAULT_HOOK_FACTORY = _default_hook      # a callable returning the default hook (or None); tests that need the pre-MEM-c behaviour replace it (monkeypatch)
+# THE MEANING OF `DEFAULT` IS FROZEN (L-PUB-76): the API default of `MemStore.begin` / `verify_store` / `replay_store` is the hook of MEM-c2, gate.evidence.v2+subject, as it always was -- a store or a
+# session that records no other hook is read with it, and the pre-MEM-d bytes stay what they were.  Replay never depends on a mutable default: it reads the recorded id (FROM_HEADER).
+DEFAULT_HOOK_FACTORY = GateSubjectSelfQuestion      # a callable returning the default hook (or None); tests that need the pre-MEM-c behaviour replace it (monkeypatch)
 
 
 def resolve_hook(spec: Any, header_id: Optional[str] = None) -> Optional[mn.SelfQuestionFn]:
@@ -223,6 +227,8 @@ def resolve_hook(spec: Any, header_id: Optional[str] = None) -> Optional[mn.Self
     anything else (a hook, or None = no hook) as given."""
     if spec is DEFAULT:
         return DEFAULT_HOOK_FACTORY()
+    if spec is LATEST:
+        return latest_hook()
     if spec is FROM_HEADER:
         f = HOOKS.get(header_id) if isinstance(header_id, str) else None
         return None if f is None else f()
