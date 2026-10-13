@@ -597,3 +597,56 @@ def test_v15_begin_row_and_older_runs_replay(tmp_path):
     r = ma.replay_answer(a.ledger.dir)
     assert r.run.v15 and r.run.v14
     assert attack(p, Q, 1, version=V15) == [(0, "5日", None)]
+
+
+# ---- memanswer.v16: a change counts only if its old value is a value the memory holds (twelfth review, L-PUB-116..117) ----
+V16 = ma.ANSWER_V16
+BAD_OLD = ["認証の期限を次回3日から5日に変更", "認証の期限を将来3日から5日に変更", "認証の期限を明日3日から5日に変更", "認証の期限を来週3日から5日に変更", "認証の期限を後日3日から5日に変更",
+           "認証の期限を不採用3日から5日に変更", "認証の期限を噂3日から5日に変更", "認証の期限を誤3日から5日に変更", "認証の期限をパスワードの期限の3日から5日に変更",
+           "認証の期限を旧期限の3日から5日に変更", "認証の期限は田中から5日に変更", "認証の期限を7日から5日に変更", "認証の期限を5日から5日に変更"]
+
+
+@pytest.mark.parametrize("w", BAD_OLD)
+def test_v16_an_old_value_the_memory_does_not_hold_asserts_nothing(tmp_path, w):
+    assert "5日" not in _emits_v(tmp_path, [w], V16, "one")                                    # one-write store: nothing
+    assert "5日" not in _emits_v(tmp_path, ["認証の期限は3日だ", w], V16, "two")                 # never an update
+    p = store(tmp_path, ["認証の期限は3日だ", w], name="three")
+    r = ma.AnswerSession(p, Q, "o", answer_version=V16).call("recall", {"question": Q})
+    assert r["verdict"] != "UPDATED" and ["3日"] in [g["answers"] for g in r["answers"]], r["answers"]      # the live value is not wiped
+
+
+def _emits_v(tmp_path, writes, ver, name):
+    p = store(tmp_path, writes, name=name)
+    return [t for (_s, t, _v) in attack(p, Q, len(writes), version=ver)]
+
+
+@pytest.mark.parametrize("ver", [V15, V16])
+def test_v16_the_confirmed_old_value_still_updates(tmp_path, ver):
+    for first, second, want in (("認証の期限は7日", "認証の期限は7日から5日に変更した", "5日"), ("認証の期限は3日だ", "認証の期限を3日から5日に変更", "5日"), ("認証の期限は5日", "認証の期限を5日から7日に変更した", "7日")):
+        assert _emits_v(tmp_path, [first, second], ver, "c%d" % abs(hash(second))) == [want], second
+
+
+def test_v16_a_change_chain_confirms_through_the_new_value(tmp_path):
+    assert _emits_v(tmp_path, ["認証の期限は3日だ", "認証の期限を3日から5日に変更", "認証の期限を5日から7日に変更"], V16, "chain") == ["7日"]
+    assert "7日" not in _emits_v(tmp_path, ["認証の期限は3日だ", "認証の期限を3日から5日に変更", "認証の期限を3日から7日に変更"], V16, "chain2")      # 3日 is no longer live
+
+
+def test_v16_a_bracketed_value_displays_the_pair_not_a_cut(tmp_path):
+    for w, shown in (("認証の期限は「5日」だ", "「5日」"), ("認証の期限は(5日)だ", "(5日)"), ("認証の期限は5日（仮）だ", "5日（仮）")):
+        p = store(tmp_path, [w], name="d%d" % abs(hash(w)))
+        r = ma.AnswerSession(p, Q, "o", answer_version=V16).call("recall", {"question": Q})
+        assert r["answers"][0]["answers"] == [shown], (w, r["answers"])
+    p = store(tmp_path, ["認証の期限は「5日」だ", "認証の期限は「5日」（仮）だ"], name="dd")
+    r = ma.AnswerSession(p, Q, "o", answer_version=V16).call("recall", {"question": Q})
+    assert sorted(a for g in r["answers"] for a in g["answers"]) == ["「5日」", "「5日」（仮）"]
+
+
+def test_v16_begin_row_and_older_runs_replay(tmp_path):
+    p = store(tmp_path, ["認証の期限は5日"])
+    a = ma.AnswerSession(p, Q, "o", answer_version=V16)
+    assert a.begin_result["mem_answer"]["version"] == "memanswer.v16" and a.begin_result["mem_answer"]["guard"] == "ansguard.v14"
+    r = ma.replay_answer(a.ledger.dir)
+    assert r.run.v16 and r.run.v15
+    assert attack(p, Q, 1, version=V16) == [(0, "5日", None)]
+    p2 = store(tmp_path, ["認証の期限を次回3日から5日に変更"], name="old")
+    assert ma.AnswerSession(p2, Q, "o", answer_version=V15).call("recall", {"question": Q})["verdict"] == "ANSWER"       # v15 replays as it was

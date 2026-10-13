@@ -612,6 +612,67 @@ def value_status15(corpus: Any, sid: int, i0: int, i1: int) -> Tuple[str, str, O
     return ident, disp, why
 
 
+def _old_seat14(text: str) -> Optional[str]:
+    """memanswer.v16: the old-value seat of a change clause as WRITTEN (NFC), read by the exchanger (None: the write is not a single change clause with an old seat)."""
+    t = unicodedata.normalize("NFC", text)
+    body = t[:-1] if t.endswith("。") else t
+    ex = ms.exchange(body, ms.SHAPES_V3)
+    if len(ex.clauses) != 1 or ex.clauses[0].change is None or ex.clauses[0].change.old is None:
+        return None
+    o0, o1 = ex.clauses[0].change.old.span
+    return body[o0:o1]
+
+
+def confirm16(corpus: Any, entries: Sequence[mx.Entry]) -> List[bool]:
+    """memanswer.v16 (designer, L-PUB-116): for the entries of ONE position in ONE scope, in slide order: is each entry's change CONFIRMED?  A change clause that names an old value counts only if the old
+    seat, AS WRITTEN, EQUALS a value that is live at this position from an earlier clean single-fact write (or an earlier confirmed change).  Anything else -- an unknown old value, a mismatch, extra letters
+    in the seat, another owner, a person -- is unconfirmed (False): the write is not asserted and it changes nothing, so a mismatched old value never wipes the live values.  Entries that are not changes, or
+    name no old value, are True."""
+    live: List[str] = []
+    out: List[bool] = []
+    for e in entries:
+        sp = _unit_span(corpus, e.sid, e.units) if corpus is not None else None
+        if e.marks or sp is None:
+            out.append(True)
+            continue
+        ident, _d, why = value_status15(corpus, e.sid, sp[0], sp[1])
+        if why is not None:
+            out.append(True)                                                 # already not asserted: nothing to confirm, and it joins no live set
+            continue
+        if e.change is None:
+            if written_id(ident) not in live:
+                live.append(written_id(ident))
+            out.append(True)
+            continue
+        old = _old_seat14(corpus.spans().text(e.sid)) if e.change.old else None
+        if e.change.old and (old is None or written_id(old) not in live):
+            out.append(False)
+            continue
+        live = [written_id(ident)]
+        out.append(True)
+    return out
+
+
+def value_status16(corpus: Any, sid: int, i0: int, i1: int) -> Tuple[str, str, Optional[str]]:
+    """memanswer.v16: v15 with the DISPLAY closed over bracket pairs for every outcome: 「5日」 shows 「5日」 (never the cut 「5日), 「5日」（仮） shows the whole, and a clean value that sits in a pair shows
+    the pair."""
+    ident, disp, why = value_status15(corpus, sid, i0, i1)
+    idx = corpus.spans()
+    sps = idx.spans("WORD", sid)
+    text = idx.text(sid)
+    a, b = sps[i0][0], sps[i1][1]
+    a2 = a
+    while a2 > 0 and not _left_ok(text, a2):
+        a2 -= 1
+    for st in (a2, a):
+        if disp == unicodedata.normalize("NFC", text[st:b]) or (st == a2 and why is None):
+            b2 = _bracket_close(text, st, b)
+            if b2 != b:
+                disp = unicodedata.normalize("NFC", text[st:b2])
+            break
+    return ident, disp, why
+
+
 def value_status12_core(corpus: Any, sid: int, i0: int, i1: int) -> Tuple[str, str, Optional[str]]:
     """The boundary and clause-tail checks of v12 WITHOUT the independent-clause rule: what follows the value up to the first 、 / ， must be an allow-listed tail (`asserted_tail12`)."""
     idx = corpus.spans()
@@ -680,11 +741,16 @@ def source_value(corpus: Any, sid: int, i0: int, i1: int, strict: bool = False) 
     return unicodedata.normalize("NFC", text[a:b]), (a, b) == (s0, e0)
 
 
-def source_entries(corpus: Any, entries: Sequence[mx.Entry], strict: bool = False, v11: bool = False, v12: bool = False, v13: bool = False, v14: bool = False, v15: bool = False) -> List[mx.Entry]:
+def source_entries(corpus: Any, entries: Sequence[mx.Entry], strict: bool = False, v11: bool = False, v12: bool = False, v13: bool = False, v14: bool = False, v15: bool = False, v16: bool = False) -> List[mx.Entry]:
     """The entries with their value replaced by the value as written (`source_value`); an entry whose stretch is unknown keeps its value."""
     out: List[mx.Entry] = []
-    for e in entries:
+    conf = confirm16(corpus, entries) if (v16 and corpus is not None) else None
+    for n_, e in enumerate(entries):
         sp = _unit_span(corpus, e.sid, e.units) if corpus is not None else None
+        if sp is not None and v16 and conf is not None and not conf[n_]:        # memanswer.v16: a change whose old value the memory does not hold is not asserted (identity = the text to the end of the write)
+            sps = corpus.spans().spans("WORD", e.sid)
+            out.append(replace(e, value=unicodedata.normalize("NFC", corpus.spans().text(e.sid)[sps[sp[0]][0]:]), change=None))
+            continue
         if sp is not None and v13:                                           # memanswer.v13: one fact per write; v14: the whole write is covered by the one clause
             ident, _disp, why = (value_status15 if v15 else value_status14 if v14 else value_status13)(corpus, e.sid, sp[0], sp[1])
             out.append(replace(e, value=ident, change=(None if why is not None else e.change)))
@@ -791,9 +857,13 @@ def _occurrence(index: mx.MemIndex, rows: Sequence[dict], corpus: Any, e: mx.Ent
             o["readout"] = readout
     if display and o["span"] is not None:                          # memanswer.v11: show the clean source span; an unclean value says why and keeps its identity in `written`
         try:
-            _w, clean_span, why = (value_status15 if display == 5 else value_status14 if display == 4 else value_status13 if display == 3 else value_status12 if display == 2 else value_status)(corpus, e.sid, o["span"][0], o["span"][1])
+            _w, clean_span, why = (value_status16 if display == 6 else value_status15 if display == 5 else value_status14 if display == 4 else value_status13 if display == 3 else value_status12 if display == 2 else value_status)(corpus, e.sid, o["span"][0], o["span"][1])
         except (IndexError, KeyError):
             clean_span, why = o["answer"], None
+        if display == 6 and why is None and clean_span != o["answer"]:                          # memanswer.v16: a clean value in a bracket pair shows the pair
+            o["answer"] = clean_span
+        if display == 6 and why is None and unicodedata.normalize("NFC", e.value) != _w:       # memanswer.v16: a change whose old value the memory does not hold
+            why = "not_asserted"
         if why is not None:
             o["answer"], o["unclean"], o["written"] = clean_span, why, e.value
             o["verbatim"] = False
@@ -983,7 +1053,7 @@ def recall(index: mx.MemIndex, rows: Sequence[dict], corpus: Any, question: str,
     same_seat = False
     for pos, es in groups:
         if source_values:                                                    # memanswer.v9: the value as written, not as the clause parser kept it
-            es = source_entries(corpus, es, source_values >= 2, source_values == 3, source_values == 4, source_values >= 5, source_values >= 6, source_values == 7)
+            es = source_entries(corpus, es, source_values >= 2, source_values == 3, source_values == 4, source_values >= 5, source_values >= 6, source_values >= 7, source_values == 8)
         scopes: List[Optional[str]] = []
         for e in es:
             if e.scope not in scopes:
@@ -1019,7 +1089,7 @@ def recall(index: mx.MemIndex, rows: Sequence[dict], corpus: Any, question: str,
     out["route"] = route
     out["looked_for"] = looked
     out["positions_found" if v3 else "candidates"] = len(groups)
-    out["answers"] = [_group(index, rows, corpus, ents, route or "exact", None, v3, exact_values, (5 if source_values == 7 else 4 if source_values == 6 else 3 if source_values == 5 else 2 if source_values == 4 else source_values == 3)) for _, ents in live_all]
+    out["answers"] = [_group(index, rows, corpus, ents, route or "exact", None, v3, exact_values, (6 if source_values == 8 else 5 if source_values == 7 else 4 if source_values == 6 else 3 if source_values == 5 else 2 if source_values == 4 else source_values == 3)) for _, ents in live_all]
     if hist_all:
         hnorm: List[Tuple[str, List[Tuple[mx.Entry, Any, dict]]]] = []
         for e, pos, who in hist_all:
@@ -1030,7 +1100,7 @@ def recall(index: mx.MemIndex, rows: Sequence[dict], corpus: Any, question: str,
                     break
             else:
                 hnorm.append((n, [(e, pos, who)]))
-        out["history"] = [_group(index, rows, corpus, [(e, pos) for e, pos, _ in items], route or "exact", [w for _, _, w in items], v3, exact_values, (5 if source_values == 7 else 4 if source_values == 6 else 3 if source_values == 5 else 2 if source_values == 4 else source_values == 3)) for _, items in hnorm]
+        out["history"] = [_group(index, rows, corpus, [(e, pos) for e, pos, _ in items], route or "exact", [w for _, _, w in items], v3, exact_values, (6 if source_values == 8 else 5 if source_values == 7 else 4 if source_values == 6 else 3 if source_values == 5 else 2 if source_values == 4 else source_values == 3)) for _, items in hnorm]
     if superseded_all:
         out["superseded_all"] = True
     if len(out["answers"]) >= 2:
