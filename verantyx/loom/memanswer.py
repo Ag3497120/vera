@@ -50,11 +50,13 @@ ANSWER_V2 = "memanswer.v2"          # MEM-fix (L-MEM-59 / 60): the answer run ho
 ANSWER_V3 = "memanswer.v3"          # PUB-M6: the answer run of a mem.v4 store: `recall` reads the memory CROSSES (memask), rebuilt from the snapshot and the file `crosses_<sha12>.json` (nest declarations + bridges) it is paired with
 ANSWER_V4 = "memanswer.v4"          # PUB-M6c: memanswer.v3 + the versions of the store (shape / ask / qwords, in the crosses file) + `bridge` in the run + weave_span.v4 (the source slice is emitted) + `contested_value`
 ANSWER_V5 = "memanswer.v5"          # PUB-M6e: memanswer.v4 with every emit-time safety decision made FROM THE INDEX and the TASK QUESTION, never from the recalls the model chose to make (the review of a6970cd3..67fe932f)
-ANSWER_VERSIONS: Tuple[str, ...] = (ANSWER_VERSION, ANSWER_V2, ANSWER_V3, ANSWER_V4, ANSWER_V5, "memanswer.v6")
+ANSWER_VERSIONS: Tuple[str, ...] = (ANSWER_VERSION, ANSWER_V2, ANSWER_V3, ANSWER_V4, ANSWER_V5, "memanswer.v6", "memanswer.v7")
 ANSWER_V6 = "memanswer.v6"          # PUB-M6f: memanswer.v5 + no completion through a bridge of the run, a CHOICE the run's bridge collapses stays contested, `unindexed_value`
-V4_PLUS: Tuple[str, ...] = (ANSWER_V4, ANSWER_V5, ANSWER_V6)
+ANSWER_V7 = "memanswer.v7"          # PUB-M6g (designer): DEFAULT-DENY emit -- the task question recalled WITHOUT the run's bridges must have exactly one live value and the quote must be exactly an occurrence of it
+V4_PLUS: Tuple[str, ...] = (ANSWER_V4, ANSWER_V5, ANSWER_V6, ANSWER_V7)
 GUARD_V3 = "ansguard.v1"            # PUB-M6b (L-PUB-54..57; memanswer.v3 only, no v3 ledger was ever recorded with a model): weave_span refuses a stretch that is not verbatim and a value the recall replaced; emit may hand the gate a completed question
 GUARD_V4 = "ansguard.v2"            # PUB-M6c (memanswer.v4): ansguard.v1 with the joiner-aware verbatim check + an emit of one value of a same-seat CHOICE is refused `contested_value`
+GUARD_V7 = "ansguard.v5"            # PUB-M6g (memanswer.v7): default-deny, see L-PUB-90
 GUARD_V6 = "ansguard.v4"            # PUB-M6f (memanswer.v6): v5 + completions never through a run-made bridge, the task recall WITHOUT the run's bridges decides a CHOICE, unindexed quotes refused
 GUARD_V5 = "ansguard.v3"            # PUB-M6e (memanswer.v5): replaced_value / contested_value / completions are decided from the index and the task question at weave / emit; what the model recalled does not count
 BRIDGE_CAP = 5                      # memanswer.v4: at most this many bridges a run
@@ -330,7 +332,7 @@ class AnswerRun(Run):
 
     def __init__(self, corpus: Corpus, rows: Sequence[dict], store_id: str, snapshot_name_: str, question: str, model: str, run_id: str,
                  topics: Optional[Sequence[str]] = None, topics_file: Optional[str] = None, crosses: Optional[Tuple[str, Sequence[dict], Sequence[dict]]] = None,
-                 evidence: Optional[Tuple[str, str]] = None, versions: Optional[Dict[str, str]] = None, v5: bool = False, v6: bool = False) -> None:
+                 evidence: Optional[Tuple[str, str]] = None, versions: Optional[Dict[str, str]] = None, v5: bool = False, v6: bool = False, v7: bool = False) -> None:
         mg.check_memory_rows(rows)
         task = {"task_id": ANSWER_TASK_ID, "text": question, "lang": "prose", "mode": "record_only", "tiers": ["WORD"]}
         super().__init__(corpus, task, model, run_id, DEFAULT_STABILITY, None, None, notelib.NOTES_VERSION, tuple(evidence if evidence is not None else ANSWER_EVIDENCE))
@@ -344,7 +346,8 @@ class AnswerRun(Run):
         self.topics_file = topics_file
         self.v3 = crosses is not None                     # memanswer.v3: recall reads the memory crosses of a mem.v4 store (memanswer.v4 too)
         self.v4 = versions is not None                    # memanswer.v4 (and v5): + the store's versions, `bridge`, weave_span.v4, contested_value
-        self.v6 = bool(v6)                                # memanswer.v6 (L-PUB-87)
+        self.v7 = bool(v7)                                # memanswer.v7 (L-PUB-90)
+        self.v6 = bool(v6) or self.v7                                # memanswer.v6 (L-PUB-87)
         self.v5 = bool(v5) or self.v6                                # memanswer.v5: the safety decisions come from the index and the task question (L-PUB-83)
         if self.v4 and not self.v3:
             raise ValueError("memanswer.v4 reads the memory crosses")
@@ -395,8 +398,8 @@ class AnswerRun(Run):
             res["mem_answer"].update(crosses_file=self.crosses_file, ask=mask.ASK_VERSION, cross=mx.CROSS_VERSION, guard=GUARD_V3, complete=mask.COMPLETE_VERSION)
             res["rules"] = dict(res["rules"], recall=ANSWER_RULES_V3["recall"])
         if self.v4:
-            res["mem_answer"]["version"] = ANSWER_V6 if self.v6 else ANSWER_V5 if self.v5 else ANSWER_V4
-            res["mem_answer"].update(ask=self.versions["ask"], qwords=self.versions["qwords"], shape=self.versions["shape"], guard=GUARD_V6 if self.v6 else GUARD_V5 if self.v5 else GUARD_V4, readout=ops.WEAVE_SPAN_V4,
+            res["mem_answer"]["version"] = ANSWER_V7 if self.v7 else ANSWER_V6 if self.v6 else ANSWER_V5 if self.v5 else ANSWER_V4
+            res["mem_answer"].update(ask=self.versions["ask"], qwords=self.versions["qwords"], shape=self.versions["shape"], guard=GUARD_V7 if self.v7 else GUARD_V6 if self.v6 else GUARD_V5 if self.v5 else GUARD_V4, readout=ops.WEAVE_SPAN_V4,
                                      bridge_cap=BRIDGE_CAP, evidence=self.evidence[0])
             res["rules"] = dict(res["rules"], recall=ANSWER_RULES_V4["recall"], bridge=ANSWER_RULES_V4["bridge"])
             if self.v5:
@@ -640,6 +643,22 @@ def _h_emit_v3(run: AnswerRun, a: dict, i: int) -> dict:
             rt0 = rt if not run.run_bridges else mask.recall(run.index(), run.rows, run.corpus, run.task["text"], ask=run.versions["ask"], bridges=tuple(run.index().bridges))
             if rt0.get("verdict") == "CHOICE" and rt0.get("sources", 0) >= 2:
                 task0_spans = _spans_of(rt0.get("answers", ()))[0]
+        if run.v7:                                                                              # memanswer.v7: DEFAULT-DENY (designer, L-PUB-90)
+            rt0v = rt if not run.run_bridges else mask.recall(run.index(), run.rows, run.corpus, run.task["text"], ask=run.versions["ask"], bridges=tuple(run.index().bridges))
+            one = lambda r: r.get("verdict") in ("ANSWER", "UPDATED") and len(r.get("answers", ())) == 1
+            if one(rt0v):
+                base = rt0v
+            elif rt0v.get("verdict") == "NONE" and not rt0v.get("candidates") and one(rt):
+                base = rt
+            else:
+                raise Refuse("ambiguous_task" if rt0v.get("verdict") in ("CANDIDATES", "CHOICE") else "not_the_task_answer",
+                             {"verdict": rt0v.get("verdict"), "hint": "the task question, recalled without any bridge of this run, does not have exactly one live value: abstain"})
+            allowed = _spans_of(base.get("answers", ()))[0]
+            for wv in evl.intact_weaves(run).values():
+                if (wv["sid"], wv["i0"], wv["i1"]) not in allowed:
+                    raise Refuse("not_the_task_answer", {"sid": wv["sid"], "hint": "the quote is not an occurrence of the one value the task question's recall returns: abstain"})
+            rt = base
+            comps = {(c["sid"], c["span"][0], c["span"][1]): c for c in reversed(mask.completions(run.index(), rt, run.task["text"], True))}
         task_spans = _spans_of(rt.get("answers", ()))[0]
         task_hist = _spans_of(rt.get("history", ()))[0]
         task_contested = rt.get("verdict") == "CHOICE" and rt.get("choice_kind") == "same_seat" and rt.get("sources", 0) >= 2
@@ -754,7 +773,7 @@ class AnswerSession:
             run_id = "a%04d" % k
         if not _RUN_RX.match(run_id) or (d / run_id).exists():
             raise Refuse("bad_run_id", {"run_id": run_id})
-        self.run = AnswerRun(Corpus(data), rows, snap["store_id"], snap["name"], question, model, run_id, topics, topics_file, crosses, evidence, versions, answer_version in (ANSWER_V5, ANSWER_V6), answer_version == ANSWER_V6)
+        self.run = AnswerRun(Corpus(data), rows, snap["store_id"], snap["name"], question, model, run_id, topics, topics_file, crosses, evidence, versions, answer_version in (ANSWER_V5, ANSWER_V6, ANSWER_V7), answer_version in (ANSWER_V6, ANSWER_V7), answer_version == ANSWER_V7)
         self.ledger = lg.Ledger(d / run_id)
         meta = {"store": snap["store_id"], "mode": "memory_answer", "snapshot": snap["name"], "corpus_sha": hashlib.sha256(data).hexdigest()}
         if want_topics:
@@ -871,7 +890,7 @@ def replay_answer(run_dir, store_path=None) -> ReplayResult:
     ep = res0.get("evidence_profile")                    # the gate the run was recorded with (a run before PUB-M6c: evidence.v2)
     evidence = (ep["version"], ep["subject_scope"]) if isinstance(ep, dict) and "version" in ep and "subject_scope" in ep else LEGACY_EVIDENCE
     try:
-        run = AnswerRun(Corpus(data), srows, str(ma["store_id"]), str(ma["snapshot"]), question, model, run_id, topics, topics_file, crosses, evidence, versions, ma["version"] in (ANSWER_V5, ANSWER_V6), ma["version"] == ANSWER_V6)
+        run = AnswerRun(Corpus(data), srows, str(ma["store_id"]), str(ma["snapshot"]), question, model, run_id, topics, topics_file, crosses, evidence, versions, ma["version"] in (ANSWER_V5, ANSWER_V6, ANSWER_V7), ma["version"] in (ANSWER_V6, ANSWER_V7), ma["version"] == ANSWER_V7)
     except (Refuse, ValueError):
         out.status, out.mismatch = "INPUTS", "snapshot_unverified"
         return out

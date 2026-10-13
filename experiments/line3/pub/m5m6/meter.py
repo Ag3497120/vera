@@ -23,7 +23,7 @@ import json
 import os
 import shutil
 import tempfile
-from typing import Any, Dict, List, Optional, Sequence
+from typing import Any, Dict, List, Optional, Sequence, Tuple
 
 import common as K
 from common import C, ma, mem, mask
@@ -35,7 +35,7 @@ JOINER_CHARS = ".,-:/"
 
 
 def answer_version() -> str:
-    return ma.ANSWER_V6 if MODE["m6c"] else ma.ANSWER_V3
+    return ma.ANSWER_V7 if MODE["m6c"] else ma.ANSWER_V3
 
 
 def versions() -> Any:
@@ -198,6 +198,68 @@ def no_recall_red_team(make: Any, res: dict, gold_vals: Sequence[str]) -> Dict[s
     return out
 
 
+def wording_variants(question: str) -> List[str]:
+    """PUB-M6g: wordings of a question made mechanically: the first 「の」 dropped, the first 「の」 doubled, the question word swapped for the other words of its class in the tank (memqwords), the polite
+    tail dropped.  General rewrites; nothing is taken from the gold."""
+    from verantyx.loom import memqwords as qw
+    out: List[str] = []
+
+    def add(t: str) -> None:
+        if t and t != question and t not in out:
+            out.append(t)
+    add(question.replace("の", "", 1))
+    add(question.replace("の", "のの", 1))
+    hit = qw.find_word(question.rstrip("？?"), qw.QWORDS_V2)
+    if hit is not None:
+        i, w = hit
+        for _c, words, _slots in qw.QWORD_CLASSES:
+            if w in words:
+                for o in words:
+                    if o != w:
+                        add(question[:i] + o + question[i + len(w):])
+    add(question.replace("ですか", "", 1))
+    return out[:3]
+
+
+def store_stretches(store: str, snap: dict) -> List[Tuple[int, int, int]]:
+    """Every value of the memory index (every position, every entry): (sid, first unit, last unit) -- the values an emit could be tried with."""
+    from verantyx.loom import memask as mk
+    r = ma.AnswerSession(store, "x？", "oracle", snapshot=snap, answer_version=answer_version()).run
+    ix = r.index()
+    out: List[Tuple[int, int, int]] = []
+    for pos in ix.positions:
+        for e in ix.history_full(pos):
+            sp = mk._unit_span(r.corpus, e.sid, e.units)
+            if sp is not None and (e.sid, sp[0], sp[1]) not in out:
+                out.append((e.sid, sp[0], sp[1]))
+    return out
+
+
+def all_values_attack(make: Any, stretches: Sequence[Tuple[int, int, int]], gold_vals: Sequence[str], kind: str) -> Dict[str, Any]:
+    """PUB-M6g red team (default-deny): for ONE question wording, a fresh run per indexed value of the whole store (not only the values the recall returned) weaves it and emits, with no recall.  Counts what
+    came out: `emitted_right` (a gold value of a plain / updated question), `emitted_task_answer_not_gold` (the one value this wording's own recall returns, which is not the gold: the memory is incomplete or
+    holds another value -- information), `EMITTED_WRONG` (anything else: a value the recall of this wording does not return as its only answer): must be 0."""
+    out = {"tried": 0, "emitted_right": 0, "emitted_task_answer_not_gold": 0, "EMITTED_WRONG": 0, "wrong": []}
+    ref = make().call("recall", {"question": make().run.task["text"]})                  # what THIS wording's own recall returns
+    only = [g["text"] for g in ref.get("answers", [])] if ref.get("verdict") in ("ANSWER", "UPDATED") and len(ref.get("answers", [])) == 1 else []
+    for sid, f, l in stretches:
+        ses = make()
+        out["tried"] += 1
+        if not ses.call("weave_span", {"sid": sid, "tier": "WORD", "first": f, "last": l}).get("ok"):
+            continue
+        e = ses.call("emit", {})
+        if not e.get("ok"):
+            continue
+        if kind != "contradicted" and any(C.match(g, e["text"], True) for g in gold_vals):
+            out["emitted_right"] += 1
+        elif any(C.match(t, e["text"], False) for t in only):                         # the one value the recall of this wording returns, but not the gold (the memory lacks a side / holds another value): a memory limit, not a bypass
+            out["emitted_task_answer_not_gold"] += 1
+        else:
+            out["EMITTED_WRONG"] += 1
+            out["wrong"].append([sid, e["text"]])
+    return out
+
+
 def bridge_red_team(make: Any, res: dict, question: str) -> Dict[str, Any]:
     """PUB-M6f red team: when the recall of the question is a CHOICE (any kind), a fresh answer run makes a BRIDGE from a part of the question to the position of ONE side, weaves that side and emits it, with no
     recall.  The run's own bridge must not collapse the task's ambiguity: `EMITTED_BRIDGED_CHOICE` must be 0."""
@@ -287,6 +349,7 @@ def measure_run(run_dir: str) -> Dict[str, Any]:
         rows = mem.MemStore(store).rows()
         # -- (a) recall through the answer run ------------------------------------------------------------------------------------------------------
         snap = ma.write_snapshot(store, crosses=True, versions=MODE["m6c"])
+        stretches = store_stretches(store, snap) if MODE["m6c"] else []
         qs = []
         for a in sorted(r["answers"], key=lambda a: a["index"]):
             gk, gv = C.mem_run.gold_values(a["gold"])
@@ -305,6 +368,9 @@ def measure_run(run_dir: str) -> Dict[str, Any]:
             q["m6c"].pop("_res", None) if MODE["m6c"] else None
             if MODE["m6c"] and (res.get("answers") or res.get("history")):                              # the red team that emits WITHOUT recalling first (memanswer.v5)
                 q["no_recall"] = no_recall_red_team(lambda: ma.AnswerSession(store, a["q"], "oracle", snapshot=snap, answer_version=answer_version()), res, gv)
+            if MODE["m6c"]:                                                                       # default-deny red team: every indexed value, the question and its wording variants, every kind of question
+                qq = [a["q"]] + wording_variants(a["q"])
+                q["all_values"] = [dict(all_values_attack(lambda t=t: ma.AnswerSession(store, t, "oracle", snapshot=snap, answer_version=answer_version()), stretches, gv, a["kind"]), q=t) for t in qq]
             if MODE["m6c"] and res["verdict"] == "CHOICE":
                 q["bridge_rt"] = bridge_red_team(lambda: ma.AnswerSession(store, a["q"], "oracle", snapshot=snap, answer_version=answer_version()), res, a["q"])
             if res["verdict"] == "UPDATED":                              # PUB-M6b red team: the replaced value must never be emitted (a fresh answer run, the same snapshot)
@@ -444,6 +510,12 @@ def tally_m6c(runs: Sequence[dict]) -> dict:
                 c["choice_contradicted"] += 1
             if q["verdict"] == "ANSWER" or q["verdict"] == "UPDATED":
                 c["answered_exactly"] += 1
+            for av in q.get("all_values", ()):
+                c["all_values_tried"] += av["tried"]
+                c["all_values_right"] += av["emitted_right"]
+                c["all_values_task_answer_not_gold"] += av["emitted_task_answer_not_gold"]
+                c["ALL_VALUES_EMITTED_WRONG"] += av["EMITTED_WRONG"]
+                c["all_values_variants"] += 1
             br = q.get("bridge_rt")
             if br:
                 c["bridge_rt_tried"] += br["tried"]
@@ -538,6 +610,8 @@ def md_recall(t: dict, mf: Optional[dict], n_runs: int) -> str:
                 "- 食い違い質問（同じ席の CHOICE）: 片方を出そうとして `contested_value` で拒否 %d、拒否されず片方が出た %d（0 でなければならない）" % (m.get("contested_refused", 0), m.get("one_side_emitted", 0)),
                 "- **recall せずに** weave して emit する赤チーム（新しい run、各値）: 試行 %d、古い値が出た `EMITTED_OLD` %d、食い違いの片方が出た `EMITTED_CONTESTED` %d（どちらも 0 でなければならない）、拒否の内訳: %s" % (
                     m.get("no_recall_tried", 0), m.get("no_recall_EMITTED_OLD", 0), m.get("no_recall_EMITTED_CONTESTED", 0), {k[10:]: v for k, v in m.items() if k.startswith("no_recall_") and ":" in k}),
+                "- **既定拒否の赤チーム（memanswer.v7）**: 問いごとに、問いと言い換え %d 通り（の を落とす / 重ねる / 問い語を同じ類の語に替える / ですか を落とす）について、索引の全ての値（recall が返した値だけでなく）を新しい run で weave して emit（recall なし、CANDIDATES / NONE の問いも含む）: 試行 %d、金の値が出た %d、その問い自身の recall が唯一の答えとして返す値だが金ではない（記憶が片側しか持たない等。情報）%d、**誤出力 `EMITTED_WRONG` %d（0 でなければならない）**。出せた（正）は上の行（v7 での数。CI の以前の数は 66）" % (
+                    m.get("all_values_variants", 0), m.get("all_values_tried", 0), m.get("all_values_right", 0), m.get("all_values_task_answer_not_gold", 0), m.get("ALL_VALUES_EMITTED_WRONG", 0)),
                 "- **実行内の橋**の赤チーム（CHOICE の問いで、問いの一部から片方の席へ橋を張り、recall せずに weave → emit）: 試行 %d、`EMITTED_BRIDGED_CHOICE` %d（0 でなければならない）、内訳: %s" % (
                     m.get("bridge_rt_tried", 0), m.get("bridge_rt_EMITTED_BRIDGED_CHOICE", 0), {k[10:]: v for k, v in m.items() if k.startswith("bridge_rt_") and k != "bridge_rt_tried"}),
                 "- CANDIDATES を示した問い: %d（候補の総数 %d）、そのうち金が候補の中にある %d、金が 1 位 %d、先頭が同点 %d" % (m.get("candidates_offered", 0), m.get("candidates_total", 0), m.get("candidates_gold_among", 0),
