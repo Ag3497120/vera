@@ -31,9 +31,10 @@ from verantyx.line3.granularity import _raw_spans
 EVIDENCE_V1 = "evidence.v1"
 EVIDENCE_V2 = "evidence.v2"                                    # the review's fixes (L-LOOM-191..): a subject-less predicate question is refused, the answer's extent is checked, one answer only
 EVIDENCE_V3 = "evidence.v3"                                    # LOOM-reach (L-LOOM-201..): v2 + the safe set R1..R7 and the tightenings T1 / T2 of docs/LINE3_LOOM_REACH_DESIGN.md; selectable, NOT the default (OP-RE-2)
-EVIDENCE_VERSIONS: Tuple[str, ...] = (EVIDENCE_V1, EVIDENCE_V2, EVIDENCE_V3)
+EVIDENCE_V4 = "evidence.v4"                                    # LOOM-evidence-v4 (L-LOOM-212..): v3 minus R7 (the naming verb 「いう」 of 「という」) plus the subject-chain rule; selectable, NOT the default (OP-PUB-6: only after the held-out bank7)
+EVIDENCE_VERSIONS: Tuple[str, ...] = (EVIDENCE_V1, EVIDENCE_V2, EVIDENCE_V3, EVIDENCE_V4)
 EVIDENCE_LATEST = EVIDENCE_V2                                  # the rule NEW prose runs get; a ledger replays under the version its begin row recorded.  Stays v2 until the held-out bank6 passes (OP-RE-2)
-PROFILE_NAMES: Dict[str, str] = {"v1": EVIDENCE_V1, "v2": EVIDENCE_V2, "v3": EVIDENCE_V3}     # the server / CLI spelling -> the rule version
+PROFILE_NAMES: Dict[str, str] = {"v1": EVIDENCE_V1, "v2": EVIDENCE_V2, "v3": EVIDENCE_V3, "v4": EVIDENCE_V4}     # the server / CLI spelling -> the rule version
 SCOPE_TITLE, SCOPE_CLAUSE = "clause_or_title", "clause"
 SUBJECT_SCOPES: Tuple[str, ...] = (SCOPE_TITLE, SCOPE_CLAUSE)
 DEFAULT_SCOPE = SCOPE_TITLE                                    # L-LOOM-190: until the owner answers OP-EV-1 otherwise (he said yes: 2026-10-12)
@@ -508,6 +509,8 @@ def judge_quote(corpus, qu: QuestionUnits, scope: str, sid: int, tier: str, i0: 
     whole word / phrase: not glued to a neighbouring word, no break inside)."""
     if version not in EVIDENCE_VERSIONS:
         raise ValueError("version must be one of %s" % (EVIDENCE_VERSIONS,))
+    if version == EVIDENCE_V4:                                                          # evidence.v4 (L-LOOM-212): its own path (v3 minus R7, plus the subject-chain rule)
+        return _judge_v4(corpus, qu, scope, sid, tier, i0, i1)
     if version == EVIDENCE_V3:                                                          # evidence.v3 (L-LOOM-201): its own path; v1 / v2 below are byte-for-byte the rules they were
         return _judge_v3(corpus, qu, scope, sid, tier, i0, i1)
     v2 = version != EVIDENCE_V1
@@ -933,6 +936,131 @@ def v3_rules_digest() -> str:
              _judge_v3, _m_glued_prefix, _m_alias_arm, _m_alias_head)
     obj = {"version": EVIDENCE_V3, "ids": list(V3_RULE_IDS), "KIND_REL": sorted(KIND_REL), "ALIAS_Y": sorted(ALIAS_Y), "NAMING": sorted(NAMING),
            "brackets": [BRACKET_OPEN, BRACKET_CLOSE], "JOINERS": sorted(JOINERS), "IGNORE": sorted(IGNORE), "sentence": V3_RULE_SENTENCE,
+           "functions": {f.__qualname__: hashlib.sha256(inspect.getsource(f).encode("utf-8")).hexdigest() for f in funcs}}
+    return hashlib.sha256(json.dumps(obj, sort_keys=True, ensure_ascii=False, separators=(",", ":")).encode("utf-8")).hexdigest()
+
+
+# ------------------------------------------------------------------------------------------------------------
+# evidence.v4 (docs/LINE3_PUBLIC_DESIGN.md §5, L-LOOM-212..): v3 minus R7, plus the subject-chain rule.  A separate path ADDED after the v3 code: no function of the frozen v3 digest is
+# edited; `_judge_v3` is called with R7 switched off (its `off` argument) and the chain rule is checked on top of its verdict.
+# ------------------------------------------------------------------------------------------------------------
+V4_RULE_IDS: Tuple[str, ...] = ("R1", "R2", "R3", "R3b", "R4", "R5", "R6", "T1", "T2", "CH")        # v3's ids without R7, plus CH (the subject chain)
+V4_OFF = frozenset({"R7"})
+V4_RULE_SENTENCE = ("The answer may end with the kind word of the question word (○○区 for どの区); a reading in brackets may stand between the answer and its particle; "
+                    "「A ともいう」 answers 別名; 「A が V」 answers 「V した人物/国/…」; 「Y としては A」 reads as 「Y は A」; "
+                    "when the subject is a chain 「XのYの…」 (隣駅の駅番号), every noun of the chain must be in the clause that answers.")
+
+
+def _m_no_chain(s: str, cl: str, sid: int) -> str:
+    return "the noun 「%s」 of the question's subject chain is not in the clause 「%s」 of sentence %d: a statement about another entity does not answer a question about 「%s」" % (s, cl, sid, s)
+
+
+@lru_cache(maxsize=None)
+def _subject_chain(text: str) -> Tuple[str, ...]:
+    """The genitive chain of a PREDICATE question, OUTERMOST noun first (「花園町駅の隣駅の駅番号は」 -> (花園町駅, 隣駅)); () when the question is not a predicate question or
+    Y has no 「X の」 before it.  The same walk as step 7 of `question_units` (L-LOOM-175), which is not touched: the tests pin that the first noun here is `subject[0]` exactly when
+    the cut's `subject_level` is x_chain."""
+    r = gm.read_question(text)
+    t = r.text
+    words = gm.words_of(t)
+    slot = r.slot
+    fallback = False
+    if slot is None:
+        for fr in r.frames:
+            if any(fr.unit.startswith(m) for m in gm.INTERROG):
+                slot = gm.Slot(fr.unit, fr.span, fr.particle, fr.after)
+                fallback = True
+                break
+    p = None if slot is None else slot.particle
+    noun_span: Optional[Tuple[int, int]] = None
+    if slot is not None and p is not None:
+        lab, f, sps = gm.follower(words, slot.span[1])
+        p_end = sps[1] if sps else None
+        if p == "の":
+            j = next((i for i, w in enumerate(words) if w[1] >= p_end), None) if p_end is not None else None
+            if j is not None and words[j][1] == p_end and _content_word(words[j][0]):
+                lab2, f2, sps2 = gm.follower(words, words[j][2])
+                if lab2 == "particle" and f2 != "の":
+                    p, noun_span = f2, (words[j][1], words[j][2])
+    pred = None
+    if slot is not None and not fallback:
+        pred = r.predicate
+    elif slot is not None and fallback and slot.particle is None:
+        pred = gm.predicate_of(words, slot)
+    if pred is None or pred.y is None or (slot is not None and p in P7):
+        return ()
+    kept, runs = _s_runs(t, words)
+    excl: List[Tuple[int, int]] = [slot.span] if slot is not None else []
+    if noun_span is not None:
+        excl.append(noun_span)
+    excl.append(pred.y_span)
+    free = [r_ for r_ in runs if not _overlaps(r_["a"], r_["b"], excl)]
+    cur = pred.y_span[0]
+    chain: List[str] = []
+    while True:
+        hit = next((r_ for r_ in free if r_["after"] == "の" and r_["b"] <= cur and strip_ignore(t[r_["b"]:cur]) == "の"), None)
+        if hit is None:
+            break
+        chain.append(hit["s"])
+        cur = hit["a"]
+    return tuple(reversed(chain))
+
+
+def subject_chain(qu: QuestionUnits) -> Tuple[str, ...]:
+    """evidence.v4: the subject chain of the question cut `qu`, outermost noun first; () when the cut did not read the subject as an x_chain."""
+    if qu.subject_level != "x_chain":
+        return ()
+    return _subject_chain(qu.text)
+
+
+def question_obj(qu: QuestionUnits, scope: Optional[str], version: str) -> dict:
+    """The `question` object of the `begin` row under `version`: `QuestionUnits.to_obj` for v1..v3 (unchanged); v4 = the v3 object labelled evidence.v4 plus `chain`."""
+    if version != EVIDENCE_V4:
+        return qu.to_obj(scope, version)
+    o = qu.to_obj(scope, EVIDENCE_V3)
+    o["evidence"] = EVIDENCE_V4
+    o["chain"] = list(subject_chain(qu))
+    return o
+
+
+def _judge_v4(corpus, qu: QuestionUnits, scope: str, sid: int, tier: str, i0: int, i1: int) -> dict:
+    """`judge_quote` under evidence.v4: the v3 judge with R7 off, and then the CHAIN rule for every reading: each noun of the question's subject chain except the outermost
+    (which the v3 subject check already reads, in the clause or in the article title) must be read in the clause around the answer, disjoint from the answer.  A failure is a
+    `no_subject` failure naming that noun.  The result also carries `chain` (the whole chain, outermost first)."""
+    out = _judge_v3(corpus, qu, scope, sid, tier, i0, i1, V4_OFF)
+    chain = subject_chain(qu)
+    out["chain"] = list(chain)
+    inner = chain[1:]
+    if not inner or out["clause"] is None:
+        return out
+    v = view_of(corpus, sid)
+    sps = corpus.spans().spans(tier, sid)
+    cs, ce = sps[i0][0], sps[i1][1]
+    a0 = next(k for k, s in enumerate(v.spans) if s[0] == cs)
+    a1 = next(k for k, s in enumerate(v.spans) if s[1] == ce)
+    lo, hi = clause_bounds(v, a0, a1, True)
+    cl = clause_text(v, lo, hi)
+    fails = list(out["failures"])
+    for s in inner:
+        if not _read_idx(v.units, v.gap, range(lo, hi + 1), s, (a0, a1), True):
+            fails.append({"code": "no_subject", "message": _m_no_chain(s, cl, sid), "subject": s})
+    if len(fails) == len(out["failures"]):
+        if not fails:
+            out["rules"] = list(out["rules"]) + ["CH"]
+        return out
+    ev = None
+    out["rules"] = []
+    return _done(out, fails, ev)
+
+
+def v4_rules_digest() -> str:
+    """The sha256 of the frozen v4 rules (L-LOOM-212): the v3 digest (so a change to anything v3 froze changes this too), v4's ids, switched-off set and rule sentence, and the source text
+    of every function that carries a v4 rule.  A change is evidence.v5 and needs a new held-out set; the tests pin this digest."""
+    import hashlib
+    import inspect
+    import json
+    funcs = (_m_no_chain, _subject_chain, subject_chain, question_obj, _judge_v4)
+    obj = {"version": EVIDENCE_V4, "v3": v3_rules_digest(), "ids": list(V4_RULE_IDS), "off": sorted(V4_OFF), "sentence": V4_RULE_SENTENCE,
            "functions": {f.__qualname__: hashlib.sha256(inspect.getsource(f).encode("utf-8")).hexdigest() for f in funcs}}
     return hashlib.sha256(json.dumps(obj, sort_keys=True, ensure_ascii=False, separators=(",", ":")).encode("utf-8")).hexdigest()
 

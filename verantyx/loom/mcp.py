@@ -93,7 +93,7 @@ class LoomServer:
         written into each run's `begin` row (v1 writes nothing, as before).  `caps`: the cap profile NEW runs of this server get (state.CAPS_PROFILES: "v1" = the first measurement's numbers, "v2" = the current
         ones; L-LOOM-122).  It is written into each run's `begin` row; a run reloaded from its ledger keeps the profile it was recorded with.
         `evidence`: the reader's evidence gate NEW prose runs of this server get (LOOM-evidence, L-LOOM-170): "v2" (evidence.v2, the default: the reviewed rules), "v1" (evidence.v1, the first build), "v3"
-        (evidence.v3, the widened reach of docs/LINE3_LOOM_REACH_DESIGN.md: selectable, NOT the default until the held-out bank6 passes, OP-RE-2) or "off" (no gate: the demo and the hand-built tests).  `subject_scope`: OP-EV-1, "clause_or_title" (owner: yes, the article title may stand in for the subject) or "clause".  Both are written into each
+        (evidence.v3, the widened reach of docs/LINE3_LOOM_REACH_DESIGN.md: selectable, NOT the default until the held-out bank6 passes, OP-RE-2), "v4" (evidence.v4: v3 without the naming-verb rule R7 and with the subject-chain rule: selectable, NOT the default until the held-out bank7 passes, OP-PUB-6) or "off" (no gate: the demo and the hand-built tests).  `subject_scope`: OP-EV-1, "clause_or_title" (owner: yes, the article title may stand in for the subject) or "clause".  Both are written into each
         prose run's `begin` row; a run reloaded from its ledger keeps the profile it was recorded with."""
         if stability not in STABILITY_MODES:
             raise ValueError("stability must be one of %s" % (STABILITY_MODES,))
@@ -103,8 +103,8 @@ class LoomServer:
         if notes not in notelib.NOTES_VERSIONS:
             raise ValueError("notes must be one of %s" % (notelib.NOTES_VERSIONS,))
         self.notes_profile = notes
-        if evidence not in ("v1", "v2", "v3", "off"):
-            raise ValueError("evidence must be 'v1', 'v2', 'v3' or 'off'")
+        if evidence not in ("v1", "v2", "v3", "v4", "off"):
+            raise ValueError("evidence must be 'v1', 'v2', 'v3', 'v4' or 'off'")
         if subject_scope not in evl.SUBJECT_SCOPES:
             raise ValueError("subject_scope must be one of %s" % (evl.SUBJECT_SCOPES,))
         self.evidence_profile: Optional[tuple] = None if evidence == "off" else (evl.PROFILE_NAMES[evidence], subject_scope)
