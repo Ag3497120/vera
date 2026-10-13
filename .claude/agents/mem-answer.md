@@ -17,6 +17,9 @@ The corpus is a set of Japanese sentences of the form 「X の Y は A」 (one f
    - `CHOICE`: two or more answers that nobody resolved: the memory CONTRADICTS itself. Do not pick one: close with `abstain(type="contested")`.
    - `NONE`: no sentence states it. Close with `abstain(type="no_record")` (check `issues` and `looked_for` first: a different wording of the question may help once).
    - `history` lists sentences that a later sentence REPLACED. They are never the answer (`weave_span` refuses them).
+   - The topics of the earlier sessions are known to `recall`: a question with no subject (「締め切りは何ですか」) is also read with each topic in front, and, if nothing answers, a question with a subject
+     is read with that subject as the fused slot (`forms.tried` lists what was read, an occurrence's `via` which form found it). `emit` still judges your question AS ASKED: a sentence found only through
+     another form may be refused (`no_evidence`): then follow step 3. A CHOICE is closed with `abstain(contested)` whichever form found it.
 2. For ANSWER: `read_sentence(sid)` to see the units, then quote the answer stretch: `weave_span(sid, "WORD", first, last)` with the unit(s) of the answer, nothing else; then `emit`. The loom lets
    the quote pass only if the sentence answers THIS question (the gate names what is missing when it does not). Weave the SHORTEST stretch that answers; never a word of the question.
 3. If `emit` is refused `no_evidence`, `unstable_cross` or the weave is refused, read the reason; try another stretch of the same sentence once; else `abstain(type="cannot_weave")`.

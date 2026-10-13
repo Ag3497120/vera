@@ -157,6 +157,102 @@ def as_answers(passes: Sequence[Pass]) -> List[mn.Answer]:
 
 
 # ------------------------------------------------------------------------------------------------------------
+# the forms of a question (MEM-fix, L-MEM-60): the answer run knows the session topics
+# ------------------------------------------------------------------------------------------------------------
+FORMS_VERSION = "recall.forms.v1"
+FORM_AS_ASKED, FORM_TOPIC, FORM_SUBJECT, FORM_FUSED = "as_asked", "topic", "subject", "fused"
+FORM_ORDER: Tuple[str, ...] = (FORM_AS_ASKED, FORM_TOPIC, FORM_SUBJECT, FORM_FUSED)
+TOPIC_JOINER = "の"                        # the particle the structure puts between the topic and the clause (= memory.TOPIC_PARTICLE; memory imports this module, so it is spelled here)
+
+
+def _overlap(a: str, b: str) -> bool:
+    a, b = ev.strip_ignore(a), ev.strip_ignore(b)
+    return bool(a) and bool(b) and (a in b or b in a)
+
+
+def question_forms(question: str, topics: Sequence[str]) -> Tuple[List[dict], List[dict]]:
+    """(stage 1, stage 2): the questions the gate is asked for ONE question the model asked, each {"form", "question"[, "topic"]}.  The gate is not touched: every form is a question the
+    gate reads like any other.
+      stage 1  as_asked  the question as it is.
+               topic     the question has NO subject (「CDNキャッシュTTLは何秒ですか」: the gate answers `question_has_no_subject` whatever the memory holds) -> 「<topic>の」 in front, one form per
+                         declared topic (a topic the question already holds is skipped).  The memory stores a sentence with no subject as 「<topic>の…」 (L-MEM-45).
+      stage 2  (tried only when stage 1 found no sentence)  the question HAS a subject S (and Y): the memory may hold the fused slot, 「<topic>の<S>は<A>」 or 「<topic>の<S><Y>は<A>」, where the
+               writer left the Y out or glued it to the subject --
+               subject    「<topic>の<S>は何ですか」
+               fused      「<topic>の<S><Y>は何ですか」   (Y is the question's Y as the reader cut it)
+               A topic that holds S or that S holds is skipped (the subject IS the topic: the topic form already is the question).
+    Distinct questions only, in this order; `topics` are the distinct declared topics, first declaration first."""
+    qu = ev.question_units(question)
+    s1: List[dict] = [{"form": FORM_AS_ASKED, "question": question}]
+    s2: List[dict] = []
+    seen = {question}
+
+    def add(stage: List[dict], form: str, topic: str, q: str) -> None:
+        if q not in seen:
+            seen.add(q)
+            stage.append({"form": form, "question": q, "topic": topic})
+
+    if not topics or qu.form == ev.FORM_OPEN:
+        return s1, s2
+    if not qu.subject:
+        for t in topics:
+            if not _overlap(t, question):
+                add(s1, FORM_TOPIC, t, t + TOPIC_JOINER + question)
+    else:
+        subj = qu.subject[0]
+        for t in topics:
+            if _overlap(t, subj):
+                continue
+            add(s2, FORM_SUBJECT, t, t + TOPIC_JOINER + subj + "は" + mn.QUESTION_TAIL)
+            if qu.y:
+                add(s2, FORM_FUSED, t, t + TOPIC_JOINER + subj + qu.y + "は" + mn.QUESTION_TAIL)
+    return s1, s2
+
+
+def judge_forms(corpus: Any, question: str, topics: Sequence[str], version: str = RECALL_VERSION, prefilter: bool = True, subject_guard: bool = False) -> dict:
+    """`judge_memory` over the forms of `question_forms`: stage 1, and stage 2 only if stage 1 passed nothing.  The result is `judge_memory`'s for the question as asked (its `qu`, its
+    `codes`, its `candidates`) with the passes / cut of every form merged (a stretch that passes twice is one pass), plus {"forms": [{"form", "question", "topic"?, "passes"}] in the order
+    tried, "via": {(sid, i0, i1, answer): [form names]}, "judged": the total}.  Pure."""
+    s1, s2 = question_forms(question, topics)
+    out: Optional[dict] = None
+    passes: List[Pass] = []
+    cut: List[Pass] = []
+    via: Dict[Tuple[int, int, int, str], List[str]] = {}
+    tried: List[dict] = []
+    judged = 0
+
+    def run(forms: Sequence[dict]) -> None:
+        nonlocal out, judged
+        for f in forms:
+            j = judge_memory(corpus, f["question"], version, prefilter, subject_guard)
+            judged += j["judged"]
+            if out is None:
+                out = j
+            entry = {"form": f["form"], "question": f["question"], "passes": len(j["passes"])}
+            if "topic" in f:
+                entry["topic"] = f["topic"]
+            tried.append(entry)
+            for lst, src in ((passes, j["passes"]), (cut, j.get("cut", []))):
+                for p in src:
+                    if p not in lst:
+                        lst.append(p)
+            for p in j["passes"]:
+                names = via.setdefault((p.sid, p.i0, p.i1, p.answer), [])
+                if f["form"] not in names:
+                    names.append(f["form"])
+
+    run(s1)
+    if not passes:
+        run(s2)
+    assert out is not None
+    res = dict(out, judged=judged, passes=sorted(passes, key=lambda p: (p.sid, p.i0, p.i1, p.answer)), forms=tried, via=via)
+    if subject_guard:                                               # a sentence is "cut" only if no form read it whole
+        got = {p.sid for p in passes}
+        res["cut"] = [p for p in sorted(cut, key=lambda p: (p.sid, p.i0, p.i1, p.answer)) if p.sid not in got]
+    return res
+
+
+# ------------------------------------------------------------------------------------------------------------
 # door 1: the self-question hook of MEM-b
 # ------------------------------------------------------------------------------------------------------------
 class GateSelfQuestion:
@@ -217,10 +313,11 @@ def cut_entries(corpus: Any, cut: Sequence[Pass]) -> List[dict]:
     return out
 
 
-def analyse(corpus: Any, question: str, version: str = RECALL_VERSION, prefilter: bool = True, subject_guard: bool = False) -> dict:
+def analyse(corpus: Any, question: str, version: str = RECALL_VERSION, prefilter: bool = True, subject_guard: bool = False,
+            topics: Optional[Sequence[str]] = None) -> dict:
     """The judgement of one question WITHOUT any supersession: `judge_memory`'s result + {"sets": {sid: {norm: display}}, "comps": [[sid, ...]], "by_sid": {sid: [Pass]}}.
     `recall` and `supersede` (MEM-d) are both made of it, so the groups a supersede names are exactly the groups a recall shows."""
-    j = judge_memory(corpus, question, version, prefilter, subject_guard)
+    j = judge_forms(corpus, question, topics, version, prefilter, subject_guard) if topics else judge_memory(corpus, question, version, prefilter, subject_guard)
     sets, comps = mn.answer_groups(as_answers(j["passes"]))
     by_sid: Dict[int, List[Pass]] = {}
     for p in j["passes"]:
@@ -229,7 +326,7 @@ def analyse(corpus: Any, question: str, version: str = RECALL_VERSION, prefilter
 
 
 def _group(corpus: Any, sids: Sequence[int], sets: Dict[int, Dict[str, str]], by_sid: Dict[int, List[Pass]], by: Optional[Dict[int, dict]] = None,
-           turns: Optional[Dict[int, str]] = None) -> dict:
+           turns: Optional[Dict[int, str]] = None, via: Optional[Dict[Tuple[int, int, int, str], List[str]]] = None) -> dict:
     """One answer group over the given sentences of a component: {"text", "answers" [longest first], "occurrences" [sid order]}.  With `by` (the supersede record of each
     sid) every occurrence also says who replaced it (history)."""
     occ: List[dict] = []
@@ -240,6 +337,9 @@ def _group(corpus: Any, sids: Sequence[int], sets: Dict[int, Dict[str, str]], by
         for norm, display in sets[sid].items():
             best = max((p for p in by_sid[sid] if mn.norm_answer(p.answer) == norm and p.answer == display), key=lambda p: (p.i1 - p.i0, -p.i0))
             o = {"sid": sid, "source": src, "session": session, "role": role, "answer": display, "span": [best.i0, best.i1], "clause": best.clause}
+            if via is not None:                                        # MEM-fix: which forms of the question read this sentence (the answer run's topic-aware recall)
+                names = sorted({f for p in by_sid[sid] if mn.norm_answer(p.answer) == norm for f in via[(p.sid, p.i0, p.i1, p.answer)]}, key=FORM_ORDER.index)
+                o["via"] = names
             if turns and sid in turns:                                 # MEM-d: the turn id the sentence was written at (a mem.v2 write through a door), so a report can cite it
                 o["turn"] = turns[sid]
             if by is not None:
@@ -253,7 +353,7 @@ def _group(corpus: Any, sids: Sequence[int], sets: Dict[int, Dict[str, str]], by
 
 
 def recall(corpus: Any, question: str, version: str = RECALL_VERSION, prefilter: bool = True, subject_guard: bool = False,
-           superseded: Optional[Dict[int, dict]] = None, turns: Optional[Dict[int, str]] = None) -> dict:
+           superseded: Optional[Dict[int, dict]] = None, turns: Optional[Dict[int, str]] = None, topics: Optional[Sequence[str]] = None) -> dict:
     """The verdict of one question over the whole memory `corpus`.  {"verdict", "question", "evidence", "scope", "sentences", "candidates", "judged", "answers": [group],
     ("codes", "issues", "looked_for" for NONE)} where a group = {"text", "answers": [display, longest first], "occurrences": [{"sid", "source", "session", "role", "answer",
     "span", "clause"}] in sid order}.
@@ -262,10 +362,13 @@ def recall(corpus: Any, question: str, version: str = RECALL_VERSION, prefilter:
     empty: every store before MEM-d) nothing below changes.  With it: the verdict is made of the LIVE sentences only (a component whose sentences are all superseded is
     HISTORY): one live group = ANSWER (the newest as the model resolved it), two or more = CHOICE (still unresolved); the superseded sentences are LISTED under `history`
     (groups of occurrences that each say `superseded_by`), never dropped.  Nothing is ranked by order: a sentence is superseded only because the model said so."""
-    j = analyse(corpus, question, version, prefilter, subject_guard)
+    j = analyse(corpus, question, version, prefilter, subject_guard, topics)
+    via = j.get("via") if topics else None                             # MEM-fix (L-MEM-60): with the declared topics the question is also read in its other forms; `via` says which read what
     qu: ev.QuestionUnits = j["qu"]
     out: Dict[str, Any] = {"verdict": "NONE", "question": qu.to_obj(RECALL_SCOPE, version), "evidence": version, "scope": RECALL_SCOPE,
                            "sentences": j["sentences"], "candidates": len(j["candidates"]), "judged": j["judged"], "answers": []}
+    if topics:
+        out["forms"] = {"version": FORMS_VERSION, "tried": j["forms"]}
     cut = cut_entries(corpus, j.get("cut", []))
     if cut:                                                            # MEM-c2: sentences whose subject is longer than the question's are listed, never answered
         out["subject_cut"] = cut
@@ -278,7 +381,7 @@ def recall(corpus: Any, question: str, version: str = RECALL_VERSION, prefilter:
         out["issues"] = ["subject_cut"]
     sets, comps, by_sid = j["sets"], j["comps"], j["by_sid"]
     if not superseded or not any(s in superseded for comp in comps for s in comp):
-        groups = [_group(corpus, comp, sets, by_sid, None, turns) for comp in comps]
+        groups = [_group(corpus, comp, sets, by_sid, None, turns, via) for comp in comps]
         out["answers"] = groups
         out["verdict"] = "ANSWER" if len(groups) == 1 else "CHOICE"
         return out
@@ -287,11 +390,11 @@ def recall(corpus: Any, question: str, version: str = RECALL_VERSION, prefilter:
         lv = [s for s in comp if s not in superseded]
         old = [s for s in comp if s in superseded]
         if lv:
-            live.append(_group(corpus, lv, sets, by_sid, None, turns))
+            live.append(_group(corpus, lv, sets, by_sid, None, turns, via))
         if old:
-            hist.append(_group(corpus, old, sets, by_sid, superseded, turns))
+            hist.append(_group(corpus, old, sets, by_sid, superseded, turns, via))
     if not live:                                                       # every sentence that answers this question is superseded (by an answer to ANOTHER question): nothing is hidden
-        live = [_group(corpus, comp, sets, by_sid, None, turns) for comp in comps]
+        live = [_group(corpus, comp, sets, by_sid, None, turns, via) for comp in comps]
         out["superseded_all"] = True
     out["answers"] = live
     out["verdict"] = "ANSWER" if len(live) == 1 else "CHOICE"

@@ -21,7 +21,7 @@ write as plain text is discarded unread (only its hash is kept): you act ONLY th
 - `declare_topic(text)`, `write(text)`, `recall(question)`, `supersede(...)`, `read_sentence(sid)`, `status()`, `report(contradictions, bugs)`.
 
 ## The topic
-`declare_topic(text)` once at the start of the session, before the first fact: what the session is about, a noun phrase (at most 24 characters, no particle at the end; e.g. 展示会準備).
+`declare_topic(text)` once at the start of the session, before the first fact: what the session is about, a noun phrase (at most 24 characters, NO particle in it -- の に で と を が: 展示会準備, not 展示会の準備, which the structure cannot use).
 A fact you write WITHOUT a subject (「締め切りは水曜」) is then stored as 「<topic>の締め切りは水曜」 (the result says so under `implicit_topic`). If the subject changes, declare the new one.
 
 ## The form the memory can hold
@@ -37,7 +37,7 @@ so write it right the first time.
 ## Notes (this arm shows them)
 A `write` result may carry `notes`; they never block anything:
 - `SAME_QUESTION`: the memory now answers one question two ways (`variants` list the answers with sid and turn). That is the signal of a contradiction OR an update: decide with the rule below.
-- `REVERSAL`: the pair of words was stored in the other order before (「AはBの前提」 then 「BはAの前提」): report the two turns.
+- `REVERSAL`: the pair of words was stored in the other order before (「AはBの前提」 then 「BはAの前提」): report the two turns -- the note names them (`sentence`, `earlier`; `cite` = the turn pairs to report).
 - `CONFLICT` (arm_contents) usually means a list (広報の期限 / 経理の期限): not a contradiction by itself.
 - `SELF_QUESTION_UNREADABLE`: the structure could not read your sentence as 「X の Y は A」 (its `reason` may say the subject was cut): rewrite it in the form if you can.
 - `UNANCHORED`, `NEW_RELATION`, `IDENTIFIER_FLATTENED`, `NO_RELATION_SEATED`: information only.

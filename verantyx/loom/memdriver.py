@@ -26,7 +26,11 @@ from typing import Any, Dict, List, Optional, Sequence, Tuple
 from verantyx.loom import driver as drv
 from verantyx.loom.driver import NO_TOOL_LIMIT, _get, _sha
 
-MAX_CALLS_PER_TURN = 12
+MAX_CALLS_PER_TURN = 12                 # the limit of the meter v1 (mem.v2): 23 + 14 structure turns ended here with no report
+MAX_CALLS_PER_TURN_V3 = 24              # MEM-fix (L-MEM-62): the limit of the mem.v3 meter, the SAME for every arm
+FORCE_ATTEMPTS = 2                      # MEM-fix (L-MEM-62): how many times the forced final `report` is asked for before the turn is recorded `report_missing`
+FORCE_NOTE = ("This turn has run out of tool calls (or tool-less turns). Call report(contradictions, bugs) NOW to end it: the pairs of turn ids whose statements disagree, [] if none. "
+              "It is the only tool you have left for this turn.")
 SKIPPED = {"ok": False, "refusal": "skipped_after_report", "detail": {"reason": "the turn ended at your report; nothing after it ran"}}
 STORY_REMINDER = ("Your last turn had no tool call. Text is discarded. Continue only by calling a tool; end the turn with report(contradictions, bugs).")
 
@@ -52,9 +56,15 @@ class StoryResult:
 
 
 def run_story_session(client: Any, door: Any, model: str, system: str, intro: str, messages: Sequence[Tuple[str, str]], tools: Sequence[dict], *,
-                      tool_choice: Optional[dict] = None, max_calls: int = MAX_CALLS_PER_TURN, max_tokens: int = drv.MAX_TOKENS, extra: Optional[dict] = None) -> StoryResult:
+                      tool_choice: Optional[dict] = None, max_calls: int = MAX_CALLS_PER_TURN, max_tokens: int = drv.MAX_TOKENS, extra: Optional[dict] = None,
+                      force_report: bool = False) -> StoryResult:
     """Drive one story session.  `messages` = [(turn id "1-1", text shown to the model)], `intro` = the session's first words (the begin result), `tools` = the API tool dicts the door
-    offers (memdoor.api_tools).  `door`: call / harness / set_turn / closed."""
+    offers (memdoor.api_tools).  `door`: call / harness / set_turn / closed.
+
+    `force_report` (MEM-fix, L-MEM-62; the mem.v3 meter, every arm): a turn that ends without an ok report of its own (`turn_limit`, `no_tool_call`) gets ONE more step: the harness row
+    `report_forced` {turn, reason, calls}, then a request that offers ONLY the `report` tool (forced with tool_choice where the model accepts it) -- up to FORCE_ATTEMPTS tries.  An ok report
+    ends the turn `report_forced` (t["forced"] = the reason); if none comes, the harness row `report_missing` is written and the turn ends `report_missing`.  The rule is the driver's and the
+    same for all four arms; without it (the default) the turn ends as in the meter v1."""
     res = StoryResult()
     choice = tool_choice if tool_choice is not None else {"type": "any"}
     res.tool_choice = choice
@@ -66,6 +76,96 @@ def run_story_session(client: Any, door: Any, model: str, system: str, intro: st
     def drop(text: str) -> None:
         res.text_blocks_dropped += 1
         door.harness(None, "free_text_dropped", {"sha256": _sha(text), "chars": len(text)})
+
+    def absorb(resp: Any) -> Tuple[List[Any], List[Any]]:
+        """The accounting of one API response (usage, model, stop reason, thinking dropped, text dropped) -> (content blocks, tool_use blocks)."""
+        res.api_calls += 1
+        res.usage["calls"] += 1
+        us = _get(resp, "usage")
+        for key in ("input_tokens", "output_tokens", "cache_read_input_tokens", "cache_creation_input_tokens"):
+            v = _get(us, key) if us is not None else None
+            if isinstance(v, int) and not isinstance(v, bool):
+                res.usage[key] += v
+        content = list(_get(resp, "content", []) or [])
+        res.stop_reasons.append(str(_get(resp, "stop_reason", "")))
+        rm = _get(resp, "model")
+        if rm and rm not in res.response_models:
+            res.response_models.append(rm)
+        for b in content:
+            if _get(b, "type") in ("thinking", "redacted_thinking"):
+                body = _get(b, "thinking") if _get(b, "type") == "thinking" else _get(b, "data")
+                body = body if isinstance(body, str) else ""
+                td = res.thinking_dropped
+                td["n"] += 1
+                td["chars"] += len(body)
+                td["sha256"].append(_sha(body))
+        for tx in [_get(b, "text", "") or "" for b in content if _get(b, "type") == "text"]:
+            drop(tx)
+        return content, [b for b in content if _get(b, "type") == "tool_use"]
+
+    def api_error(e: Exception, t: dict) -> StoryResult:
+        res.ended, res.error = "api_error", "%s: %s" % (type(e).__name__, str(e)[:300])
+        if door.closed(None) is None:
+            door.harness(None, "abandoned", {"reason": "api_error"})
+        t["ended"] = "api_error"
+        return res
+
+    report_tools = [x for x in tools if x["name"] == "report"]
+    force_choice = {"type": "tool", "name": "report"} if drv.forced_choice_accepted(model) else {"type": "auto"}
+
+    def force(t: dict, reason: str, owed: List[dict]) -> Optional[StoryResult]:
+        """The forced final report of a turn that ended without one (see `run_story_session`).  `owed` = the tool_results the last assistant turn is owed.  Returns the result on an API error,
+        else None; sets t["report"] / t["ended"] / t["forced"] and (via the closure) `pending` / `ended_text_only` for the next message."""
+        nonlocal pending, ended_text_only
+        door.harness(None, "report_forced", {"turn": t["turn"], "reason": reason, "calls": t["calls"]})
+        t["forced"] = reason
+        owed = list(owed)
+        note: Any = FORCE_NOTE
+        for attempt in range(FORCE_ATTEMPTS):
+            if not report_tools:
+                break
+            api.append({"role": "user", "content": (owed + [{"type": "text", "text": note}]) if owed else note})
+            kw = dict(model=model, max_tokens=max_tokens, system=system, tools=list(report_tools), tool_choice=force_choice, messages=list(api))
+            if extra:
+                kw.update(extra)
+            try:
+                resp = client.messages.create(**kw)
+            except Exception as e:                                           # noqa: BLE001
+                return api_error(e, t)
+            content, uses = absorb(resp)
+            api.append({"role": "assistant", "content": content})
+            owed = []
+            ok = False
+            for tu in uses:
+                if ok:                                                         # a call after the ok report of this step: skipped, as in the turn itself
+                    res.calls_skipped_after_report += 1
+                    owed.append({"type": "tool_result", "tool_use_id": _get(tu, "id"), "content": json.dumps(SKIPPED, sort_keys=True)})
+                    continue
+                if _get(tu, "name") != "report":                               # only `report` was offered: anything else is not a tool of this step
+                    nm = _get(tu, "name")
+                    owed.append({"type": "tool_result", "tool_use_id": _get(tu, "id"),
+                                 "content": json.dumps({"ok": False, "refusal": "unknown_tool", "detail": {"tool": nm if isinstance(nm, str) else None}}, ensure_ascii=False, sort_keys=True)})
+                    continue
+                inp = _get(tu, "input")
+                args = dict(inp) if isinstance(inp, dict) else {}
+                args["run_id"] = "-"
+                out = door.call("report", args)
+                res.tool_calls += 1
+                t["calls"] += 1
+                owed.append({"type": "tool_result", "tool_use_id": _get(tu, "id"), "content": json.dumps(out, ensure_ascii=False, sort_keys=True)})
+                if out.get("ok") is True:
+                    ok = True
+                    t["report"], t["ended"] = {"contradictions": out["contradictions"], "bugs": out["bugs"]}, "report_forced"
+            if ok:
+                pending, ended_text_only = owed, False
+                return None
+            note = FORCE_NOTE
+            if not uses:
+                owed = []
+        door.harness(None, "report_missing", {"turn": t["turn"], "reason": reason, "calls": t["calls"]})
+        t["ended"] = "report_missing"
+        pending, ended_text_only = owed, not owed
+        return None
 
     for k, (turn_id, text) in enumerate(messages):
         door.set_turn(turn_id)
@@ -85,34 +185,8 @@ def run_story_session(client: Any, door: Any, model: str, system: str, intro: st
             try:
                 resp = client.messages.create(**kw)
             except Exception as e:                                           # noqa: BLE001  the driver must always leave a closed ledger
-                res.ended, res.error = "api_error", "%s: %s" % (type(e).__name__, str(e)[:300])
-                if door.closed(None) is None:
-                    door.harness(None, "abandoned", {"reason": "api_error"})
-                t["ended"] = "api_error"
-                return res
-            res.api_calls += 1
-            res.usage["calls"] += 1
-            us = _get(resp, "usage")
-            for key in ("input_tokens", "output_tokens", "cache_read_input_tokens", "cache_creation_input_tokens"):
-                v = _get(us, key) if us is not None else None
-                if isinstance(v, int) and not isinstance(v, bool):
-                    res.usage[key] += v
-            content = list(_get(resp, "content", []) or [])
-            res.stop_reasons.append(str(_get(resp, "stop_reason", "")))
-            rm = _get(resp, "model")
-            if rm and rm not in res.response_models:
-                res.response_models.append(rm)
-            uses = [b for b in content if _get(b, "type") == "tool_use"]
-            for b in content:
-                if _get(b, "type") in ("thinking", "redacted_thinking"):
-                    body = _get(b, "thinking") if _get(b, "type") == "thinking" else _get(b, "data")
-                    body = body if isinstance(body, str) else ""
-                    td = res.thinking_dropped
-                    td["n"] += 1
-                    td["chars"] += len(body)
-                    td["sha256"].append(_sha(body))
-            for tx in [_get(b, "text", "") or "" for b in content if _get(b, "type") == "text"]:
-                drop(tx)
+                return api_error(e, t)
+            content, uses = absorb(resp)
             api.append({"role": "assistant", "content": content})             # the API's own blocks, unchanged (L-LOOM-16)
             if not uses:
                 tool_less += 1
@@ -150,5 +224,9 @@ def run_story_session(client: Any, door: Any, model: str, system: str, intro: st
                 break
             api.append({"role": "user", "content": results})
             pending = []
+        if force_report and t["report"] is None and t["ended"] in ("turn_limit", "no_tool_call"):
+            err = force(t, t["ended"], pending if t["ended"] == "turn_limit" else [])
+            if err is not None:
+                return err
     res.ended = "complete"
     return res
