@@ -1,0 +1,101 @@
+{
+ "intake": {
+  "recorded_at": "2026-10-13",
+  "location": "vera-impl/bank8-author/package/ (outside any git worktree)",
+  "note": "sha256 recorded before any Vera system read the bank; no Vera system (gate, reader, loom, model) has read it during authoring or audit",
+  "prompt8_written": "2026-10-13T11:49:15+09:00",
+  "prompt8b_written": "2026-10-13T12:12:17+09:00 (relaunched 12:31:13 after a network failure)"
+ },
+ "package": {
+  "bank8.tsv": {
+   "sha256": "26751d7af2c8513d7e4b2c434571ed6c90baec6c2cd2a1f12625bbfe17e63621"
+  },
+  "README.md": {
+   "sha256": "2d55de3ec3e4332185f90d3e50c535134cfe58f3999b9e3de8ce8de2ecd319be"
+  },
+  "AUDIT8.md": {
+   "sha256": "e019bccac6f949018ab358ca90669c429ca474e65948226d5b4baa858052c962"
+  },
+  "check8.py": {
+   "sha256": "a97b53bca563c056fae3560fe67ab7babc5a09b79cecccadbc76a081938bb4bb"
+  },
+  "check8.txt": {
+   "sha256": "3d8bd92325c2168d3c0c75c6bbf7d58b158463581a3aac793a8c1268e2203ac1"
+  }
+ },
+ "counts": {
+  "rows": 85,
+  "answerable": 35,
+  "unanswerable": 50,
+  "shapes": {
+   "S1-alias": 5,
+   "S2-place": 5,
+   "S3-person": 5,
+   "S4-toshite": 5,
+   "S5-paren": 5,
+   "S6-naming": 5,
+   "S7-near": 5,
+   "S8-chain": 5,
+   "S9-name": 10
+  },
+  "authored": 206,
+  "audit": {
+   "valid": 67,
+   "fixed": 18,
+   "dropped_invalid": 13,
+   "dropped_repeat": 34,
+   "surplus_valid_not_selected": 74
+  },
+  "round1_items_kept": 6,
+  "round2_items_kept": 79
+ },
+ "corpus": {
+  "path": "vera-impl/bank8-author/work8/S300_fulllead.jsonl",
+  "sha256": "d987fdee0e19283e9c69e461b2ae695e5f2681f7a64e2c486572fcd6d4f419ea",
+  "equals_line3_data": true
+ },
+ "author_files": {
+  "round1": {
+   "README8.md": {
+    "path": "vera-impl/bank8-author/original/README8.md",
+    "sha256": "b0d800db1dec4d5d5bec5d78a0dea0a7725a8aa83035387be9ab805ff1c86757"
+   },
+   "bank8.tsv": {
+    "path": "vera-impl/bank8-author/original/bank8.tsv",
+    "sha256": "4dd454f0f69eb21849ee70d455cad9d6805203a32f830a8d860c476c56f82a9d"
+   },
+   "check8.py": {
+    "path": "vera-impl/bank8-author/original/check8.py",
+    "sha256": "018ae730f72a9ef7bb732b6a3f097091abda026779c6106e291d1159ea42a595"
+   },
+   "check8.txt": {
+    "path": "vera-impl/bank8-author/original/check8.txt",
+    "sha256": "7d66cbbcde0747ed049f0e4dda22b053ab3a89c002905c472e0f6e8580190d85"
+   }
+  },
+  "round2": {
+   "bank8b.tsv": {
+    "path": "vera-impl/bank8-author/original_b/bank8b.tsv",
+    "sha256": "f6a1e3ffb3a28a220a944a299cf7accef67273b53c63bb61dd8e430091454447"
+   },
+   "check8b.py": {
+    "path": "vera-impl/bank8-author/original_b/check8b.py",
+    "sha256": "f951b07b18f937e224a1884c8df33a2f5ce4f6ff86139761fb59b7765522fbdf"
+   },
+   "check8b.txt": {
+    "path": "vera-impl/bank8-author/original_b/check8b.txt",
+    "sha256": "f2a562fac44b47f023159c0522b861d23f8f11866d300cb14eedb54a8e8778d8"
+   }
+  },
+  "PROMPT8.md": "6fd9bd6fceea82255c024edff5fa31dbb5dea8333f43112f722914cf6f37ea27",
+  "PROMPT8b.md": "5c9e6504dd66589ef4d07a627a470f9344f2d687110ea6462542316640bffcc1",
+  "EXCLUDED_ARTICLES.txt": "8d8498eabfda3a38b5422a42aa8ce4c19f8df9ea5b2d93c0145357a93fc7b38d",
+  "jobs": "vera-impl/bank2-author/jobs8.tsv, jobs8b.tsv; logs fleet-out8/, fleet-out8b/, failed_attempts8b/ (first failed launch); launcher .claude/vera-audit/fleet.sh"
+ },
+ "provenance": {
+  "author": "codex gpt-6-luna (effort max), 2 rounds, 102 + 104 items",
+  "auditor": "Claude Sonnet 5.5",
+  "audit": "AUDIT8.md",
+  "date": "2026-10-13"
+ }
+}

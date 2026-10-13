@@ -1,0 +1,22 @@
+corpus: 300 articles, 592 sentences; sha256 d987fdee0e19
+rows 85: answerable 35, unanswerable 50; shapes {'S1-alias': 5, 'S2-place': 5, 'S3-person': 5, 'S4-toshite': 5, 'S5-paren': 5, 'S6-naming': 5, 'S7-near': 5, 'S8-chain': 5, 'S9-name': 10}; audit {'fixed': 18, 'valid': 67}
+absence searches: 52 terms over the kept unanswerable items, 0 hits required
+S9 kind words: {'B8b-U51': '大使館', 'B8b-U52': '橋', 'B8b-U54': '神社', 'B8-U55': '神社', 'B8b-U56': '県', 'B8b-U59': '村', 'B8b-U60': '村', 'B8b-U62': '駅', 'B8-U58': '駅', 'B8-U60': '駅'}
+items whose subject article also appears in an earlier bank: 4 (different asked fact; listed in AUDIT8.md)
+question texts repeated: 0; max same-article asked-fact similarity 0.06 (limit 0.4)
+INFO B8-U09: subject article '重山' also in bank3 b3_uk11, bank4 ADV-022
+INFO B8-U39: subject article '2005年アジア野球選手権大会' also in bank4 ADV-006
+INFO B8b-U44: tempting article '花園町駅' also in bank2 I2-004, bank2 UF-004, bank6 B6-A08, bank6 B6-U21, bank6 B6-U35, questions a30
+INFO B8b-U47: tempting article 'ネノ' also in bank7 B7-U02, bank7 B7-U43
+INFO B8b-U48: tempting article 'ネノ' also in bank7 B7-U02, bank7 B7-U43
+INFO B8b-U51: tempting article '在ハイチ日本国大使館' also in bank4 ADV-009, bank6 B6-U33
+INFO B8b-U52: tempting article '奥多摩橋' also in bank4 ADV-021
+INFO B8b-U54: tempting article '千葉神社' also in bank2 I2-013, bank2 I2-014, bank2 UF-011, bank3 b3_pa04, bank3 b3_sc03, bank3 b3_tf08, bank3 b3_uk14, bank6 B6-A26, questions a40, questions u24
+INFO B8-U55: subject article '犂神社' also in questions a50
+INFO B8-U55: tempting article '千葉神社' also in bank2 I2-013, bank2 I2-014, bank2 UF-011, bank3 b3_pa04, bank3 b3_sc03, bank3 b3_tf08, bank3 b3_uk14, bank6 B6-A26, questions a40, questions u24
+INFO B8b-U56: tempting article 'テレゴ県' also in bank2 R2-I018, bank3 b3_tf13, bank4 ADV-030, questions a11
+INFO B8b-U62: tempting article '川原石駅' also in bank2 I2-003, bank2 UF-003, bank4 ADV-018, bank4 ADV-031, bank6 B6-A07, bank6 B6-U02
+INFO B8-U58: tempting article '川原石駅' also in bank2 I2-003, bank2 UF-003, bank4 ADV-018, bank4 ADV-031, bank6 B6-A07, bank6 B6-U02
+INFO B8-U60: subject article '要田駅' also in bank6 B6-A21
+INFO B8-U60: tempting article '海浦駅' also in bank2 I2-006, bank2 UF-006, bank4 ADV-019, bank6 B6-U07, bank6 B6-U36
+PASS (0 errors)
