@@ -174,3 +174,63 @@ def test_written_identity_merges_nothing_but_nfc_forms():
     assert mask.written_id("1・2日") != mask.written_id("12日") and mask.written_id("1 2") != mask.written_id("12") and mask.written_id("V2") != mask.written_id("v2")
     assert mask.written_id("10²") != mask.written_id("102") and mask.written_id("１２") != mask.written_id("12")
     assert mask.written_id("\u30ac") == mask.written_id("\u30ab\u3099")                              # canonical equivalents only
+
+
+# -- memanswer.v9: the value as written in the SOURCE (the fifth review of 7b8f546b) -----------------------------------------------------------------------------
+V9 = ma.ANSWER_V9
+Q = "認証の期限はいつですか？"
+SYMBOLS = ["-5度", "−5度", "+5度", ".5日", "$5", "¥5", "#5", "~5日", "5%", "5％", "(5)日", "（5）日"]   # a combining mark / VS16 next to a digit is refused at WRITE (no_shape: the gap is no particle), so none reaches the memory
+
+
+@pytest.mark.parametrize("v", SYMBOLS)
+def test_a_value_with_a_symbol_next_to_it_is_never_emitted_without_it(tmp_path, v):
+    p = store(tmp_path, ["認証の期限は" + v])
+    r = ma.AnswerSession(p, Q, "o", answer_version=V9).call("recall", {"question": Q})
+    assert r["answers"][0]["answers"] == [v] or r["verdict"] == "NONE"                                  # shown as written (「5)日」 was shown for 「(5)日」)
+    assert attack(p, Q, 1, version=V9) == []
+
+
+@pytest.mark.parametrize("a,b", [("-5度", "5度"), ("−5度", "5度"), ("+5度", "5度"), (".5日", "5日"), ("5%", "5"), ("$5", "5"), ("(5)日", "5日"), ("+3%", "-3%"), ("¥5", "$5")])
+def test_values_that_differ_only_in_a_sign_a_currency_a_percent_a_bracket_or_a_combining_mark_are_a_contradiction(tmp_path, a, b):
+    p = store(tmp_path, ["認証の期限は" + a, "認証の期限は" + b])
+    r = ma.AnswerSession(p, Q, "o", answer_version=V9).call("recall", {"question": Q})
+    assert r["verdict"] == "CHOICE" and len(r["answers"]) == 2
+    assert attack(p, Q, 2, version=V9) == []
+
+
+def test_the_replaced_value_before_a_signed_new_value_is_not_emitted(tmp_path):
+    q = "室温の下限は何度ですか？"
+    p = store(tmp_path, ["室温の下限は5度", "室温の下限は5度から-5度に変更"])
+    r = ma.AnswerSession(p, q, "o", answer_version=V9).call("recall", {"question": q})
+    assert r["verdict"] == "UPDATED" and r["answers"][0]["answers"] == ["-5度"] and r["history"][0]["answers"] == ["5度"]
+    assert attack(p, q, 2, version=V9) == []                                                            # 5度 is replaced, -5度 cannot be quoted without its sign
+    st = new_store(tmp_path, "two")                                                                     # ... also across sessions
+    for w in ("室温の下限は5度", "室温の下限は5度から-5度に変更"):
+        s = st.begin("m", profile=mem.PROFILE_V4, versions=M6C)
+        assert s.write(w)["ok"]
+        s.commit()
+    assert attack(str(tmp_path / "two"), q, 2, version=V9) == []
+    p = store(tmp_path, ["認証の期限は5%", "認証の期限は5に変更"], name="pct")                              # a plain 5 replacing 5% is a different written value: the change wins
+    assert attack(p, Q, 2, version=V9) == [(1, "5", "update")] or attack(p, Q, 2, version=V9) == [(1, "5", None)]
+
+
+def test_v9_keeps_the_clause_marks_and_the_owner_joiners(tmp_path):
+    for w, v in (("認証の期限は12日。", "12日"), ("認証の期限は12日、", "12日"), ("配布ビルドのバージョンは3.2.0-rc2です", "3.2.0-rc2")):
+        p = store(tmp_path, [w], name="k%d" % len(w))
+        q = Q if "期限" in w else "配布ビルドのバージョンは何ですか？"
+        assert (0, v, None) in attack(p, q, 1, version=V9), w
+    b = ma.AnswerSession(store(tmp_path, ["認証の期限は12日"], name="b"), Q, "o", answer_version=V9)
+    assert b.begin_result["mem_answer"]["version"] == "memanswer.v9" and b.begin_result["mem_answer"]["guard"] == "ansguard.v7"
+    r = ma.replay_answer(b.ledger.dir)
+    assert r.run.v9 and r.run.v8
+
+
+def test_source_value_extends_over_symbols_and_not_over_the_clause_marks():
+    from verantyx.loom import memask as mask
+    from verantyx.loom import memory as m
+    from verantyx.loom.memguard import make_source
+    rows = [{"kind": "base", "sent": x, "source": make_source("t", 1, i)} for i, x in enumerate(["認証の期限は-5度。", "認証の期限は(5)日", "認証の期限は5日、"])]
+    c = m.build_corpus(rows)
+    assert mask.source_value(c, 0, 2, 3) == ("-5度", False)
+    assert mask.source_value(c, 1, 2, 2) == ("(5)", False)
+    assert mask.source_value(c, 2, 2, 3) == ("5日", True)

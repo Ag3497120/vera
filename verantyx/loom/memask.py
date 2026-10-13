@@ -26,7 +26,7 @@ from __future__ import annotations
 
 import re
 import unicodedata
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from typing import Any, Dict, List, Optional, Sequence, Tuple
 
 from verantyx.loom import memcross as mx
@@ -306,6 +306,39 @@ def written_id(s: str) -> str:
     return unicodedata.normalize("NFC", s)
 
 
+SENTENCE_PUNCT = "、，。．.!?！？,"            # memanswer.v9: the punctuation that may stand next to a value without belonging to it (clause / sentence end)
+
+
+def _is_symbol(ch: str) -> bool:
+    cat = unicodedata.category(ch)
+    return cat[0] in "SPM" or cat == "Cf"
+
+
+def source_value(corpus: Any, sid: int, i0: int, i1: int) -> Tuple[str, bool]:
+    """memanswer.v9 (L-PUB-96): (the value AS WRITTEN, clean) for the WORD-unit stretch i0..i1 of sentence `sid`: the source slice extended over every adjacent symbol, punctuation (other than the clause / sentence
+    marks of SENTENCE_PUNCT after it), combining mark or format character -- signs, currency, %, #, ~, parentheses, U+0301, U+FE0F ...  The clause parser drops those characters from the value of the index, so the
+    value of the index is not what was written (「-5度」 is 「5度」, 「5%」 is 「5」).  clean = nothing had to be added: only then can the stretch be quoted as it stands."""
+    idx = corpus.spans()
+    sps = idx.spans("WORD", sid)
+    text = idx.text(sid)
+    a, b = sps[i0][0], sps[i1][1]
+    s0, e0 = a, b
+    while a > 0 and _is_symbol(text[a - 1]):
+        a -= 1
+    while b < len(text) and _is_symbol(text[b]) and text[b] not in SENTENCE_PUNCT:
+        b += 1
+    return unicodedata.normalize("NFC", text[a:b]), (a, b) == (s0, e0)
+
+
+def source_entries(corpus: Any, entries: Sequence[mx.Entry]) -> List[mx.Entry]:
+    """The entries with their value replaced by the value as written (`source_value`); an entry whose stretch is unknown keeps its value."""
+    out: List[mx.Entry] = []
+    for e in entries:
+        sp = _unit_span(corpus, e.sid, e.units) if corpus is not None else None
+        out.append(e if sp is None else replace(e, value=source_value(corpus, e.sid, sp[0], sp[1])[0]))
+    return out
+
+
 def _fold(entries: Sequence[mx.Entry], exact: bool = False) -> Tuple[List[List[mx.Entry]], List[Tuple[mx.Entry, dict]]]:
     """(live, history) of the values of ONE position in ONE scope, in slide order.  live = groups of entries with the same normalised value; history = (entry, who replaced it)."""
     live: List[List[mx.Entry]] = []
@@ -518,7 +551,7 @@ def candidates(index: mx.MemIndex, rows: Sequence[dict], question: str, qy: Quer
 
 
 def recall(index: mx.MemIndex, rows: Sequence[dict], corpus: Any, question: str, *, open_nest: Optional[str] = None, ask: str = ASK_VERSION,
-           bridges: Optional[Sequence[mx.Bridge]] = None, exact_values: bool = False) -> dict:
+           bridges: Optional[Sequence[mx.Bridge]] = None, exact_values: bool = False, source_values: bool = False) -> dict:
     """The verdict of one question over the crosses.  `rows` = H (for the source of every sentence), `corpus` = its memory corpus (for the unit stretch to quote; None: no spans),
     `open_nest` = the nest open in the asking session (its statements are preferred).  `ask` ask.v3 (PUB-M6c): see the module doc of that version; `bridges` (ask.v3) = the bridges to use instead of those of
     the index (an answer run adds the ones the model confirmed in it)."""
@@ -582,6 +615,8 @@ def recall(index: mx.MemIndex, rows: Sequence[dict], corpus: Any, question: str,
     hist_all: List[Tuple[mx.Entry, Any, dict]] = []
     same_seat = False
     for pos, es in groups:
+        if source_values:                                                    # memanswer.v9: the value as written, not as the clause parser kept it
+            es = source_entries(corpus, es)
         scopes: List[Optional[str]] = []
         for e in es:
             if e.scope not in scopes:
