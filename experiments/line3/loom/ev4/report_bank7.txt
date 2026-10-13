@@ -1,0 +1,7 @@
+== bank7 (32 answerable + 47 unanswerable), evidence.py sha256 17407dfb4763dd55a80e37d320fe25f1908d4ae4b430d9daabea7b97ce93d3db, 64s
+evidence.v2: answerable reach 1/32 ['B7-A23'] | wrong-admitting 0 [] | unanswerable admissions 1/47 ['B7-U43'] | bank4 traps admitted 0 | per shape -
+    ADMITTED B7-U43 ネノの属するネノ県の人口は何人ですか？ [(504, '20万人', [])]
+evidence.v3: answerable reach 4/32 ['B7-A22', 'B7-A23', 'B7-A25', 'B7-A36'] | wrong-admitting 0 [] | unanswerable admissions 1/47 ['B7-U43'] | bank4 traps admitted 0 | per shape -
+    ADMITTED B7-U43 ネノの属するネノ県の人口は何人ですか？ [(504, '20万人', [])]
+evidence.v4: answerable reach 4/32 ['B7-A22', 'B7-A23', 'B7-A25', 'B7-A36'] | wrong-admitting 0 [] | unanswerable admissions 1/47 ['B7-U43'] | bank4 traps admitted 0 | per shape -
+    ADMITTED B7-U43 ネノの属するネノ県の人口は何人ですか？ [(504, '20万人', [])]
