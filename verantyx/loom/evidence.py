@@ -1203,10 +1203,11 @@ def _judge_v5(corpus, qu: QuestionUnits, scope: str, sid: int, tier: str, i0: in
     (`_tw_recheck`, applied to each reading before one is chosen).  `off`: rule ids ("SU", "TW") switched off -- the ablation of the tests only (all off = `_judge_v4`); the product never passes it."""
     v = view_of(corpus, sid)
     sps = corpus.spans().spans(tier, sid)
-    cs, ce = sps[i0][0], sps[i1][1]
+    in_range = 0 <= i0 <= i1 < len(sps)                                                 # the v5 gate never raises: a stretch outside the sentence is an unaligned stretch
+    cs, ce = (sps[i0][0], sps[i1][1]) if in_range else (0, 0)
     answer = v.text[cs:ce]
-    a0 = next((k for k, s in enumerate(v.spans) if s[0] == cs), None)
-    a1 = next((k for k, s in enumerate(v.spans) if s[1] == ce), None)
+    a0 = next((k for k, s in enumerate(v.spans) if s[0] == cs), None) if in_range else None
+    a1 = next((k for k, s in enumerate(v.spans) if s[1] == ce), None) if in_range else None
     chain = subject_chain(qu)
     out = {"answer": answer, "clause": None, "sid": sid, "source": v.source, "reading": None, "rules": [], "chain": list(chain)}
     qf = _v5_question_failures(qu, off)

@@ -24,8 +24,8 @@ BANK7_TSV = os.path.join(ROOT, "experiments/line3/bank7/bank7.tsv")
 # ---- the freeze (recorded BEFORE any held-out bank8 probe; see L-LOOM-219..; to be recorded in docs/LINE3_LOCAL_DECISIONS.md after the CI run) ---------------------------------------------------------------------------
 FROZEN_V3_RULES_DIGEST = "eca9ccd48aa6ddca8e74f33894acb380cc68667bd34950fd579c4e9bd9cf829d"
 FROZEN_V4_RULES_DIGEST = "dae4c99ad17ee178249f83d3ba734cbb48f0ac1c1c336dd4866ecf0e5f915fc6"
-FROZEN_V5_RULES_DIGEST = "d1934bd39bb4cb711be9a48a2bfe79675511d6b82383319d165e6709200af776"
-FROZEN_V5_EVIDENCE_SHA = "3ae208b5a44b7e944ccf3adc8f75c4ba40ecf65416ed6a5f89d5658f8c86f5ea"
+FROZEN_V5_RULES_DIGEST = "355722c438c9ce917634a2abcaa3cb9ba785d945988af2e0b4aac9ab38c24ff4"
+FROZEN_V5_EVIDENCE_SHA = "712249cc0cb481ea9c9b4dd60f3721b0d8db287062876c58f0cbde347a93efe6"
 
 
 @pytest.fixture(scope="module")
@@ -122,16 +122,16 @@ def test_t_ev5_03_tw_a_kind_word_alone_is_no_subject_and_the_title_stands_in_onl
     c = Corpus.load(open(_toy([("テレゴ県", "人口は20万人である。"), ("花園町駅", "駅番号はY17である。"), ("六日町駅", "駅番号はY17である。"), ("テレゴ山", "標高は3776メートルである。")]), "rb").read())
     assert _passing(c, "県の人口は何人ですか", 0, V4) == ["20万人"] and _passing(c, "県の人口は何人ですか", 0, V5) == []             # the B7-U43 mechanism, without the unreadable name
     assert ev.kind_only_subject(ev.question_units("県の人口は何人ですか")) and not ev.kind_only_subject(ev.question_units("テレゴ県の人口は何人ですか"))
-    r = ev.judge_quote(c, ev.question_units("県の人口は何人ですか"), ev.SCOPE_TITLE, 0, "WORD", 3, 4, V5)
+    r = ev.judge_quote(c, ev.question_units("県の人口は何人ですか"), ev.SCOPE_TITLE, 0, "WORD", 1, 3, V5)                          # 20|万|人
     assert r["codes"] == ["question_has_no_subject"]
     assert _passing(c, "テレゴ県の人口は何人ですか", 0, V5) == ["20万人"]                                                           # the whole title word passes
     assert _passing(c, "花園町駅の駅番号は何ですか", 1, V4) == _passing(c, "花園町駅の駅番号は何ですか", 1, V5) == ["Y17"]
     assert _passing(c, "六日町駅の駅番号は何ですか", 2, V5) == ["Y17"]
     for q in ("六の駅番号は何ですか", "日町駅の駅番号は何ですか"):                                                                  # a piece of the title is a containment
         assert _passing(c, q, 2, V4) == ["Y17"] and _passing(c, q, 2, V5) == []
-        assert ev.judge_quote(c, ev.question_units(q), ev.SCOPE_TITLE, 2, "WORD", 3, 4, V5)["codes"] in (["no_subject"], ["answer_not_word_aligned"], ["no_subject", "no_slot_head"])  # typed refusal
+        assert "no_subject" in ev.judge_quote(c, ev.question_units(q), ev.SCOPE_TITLE, 2, "WORD", 2, 3, V5)["codes"]                  # Y|17: a typed refusal
     assert _passing(c, "六の駅番号は何ですか", 2, V5, ev.SCOPE_CLAUSE) == _passing(c, "六の駅番号は何ですか", 2, V4, ev.SCOPE_CLAUSE)    # the clause scope is not touched
-    r = ev.judge_quote(c, ev.question_units("テレゴ山の標高は何メートルですか"), ev.SCOPE_TITLE, 3, "WORD", 2, 3, V5)
+    r = ev.judge_quote(c, ev.question_units("テレゴ山の標高は何メートルですか"), ev.SCOPE_TITLE, 3, "WORD", 1, 2, V5)                          # 3776|メートル
     assert r["codes"] == [] and r["rules"] == ["TW"] and r["evidence"]["subject"] == [{"run": "テレゴ山", "via": "title"}]
 
 
@@ -146,6 +146,29 @@ def test_t_ev5_03_with_su_and_tw_off_v5_is_v4_byte_for_byte(corpus):
                     a = ev.judge_quote(corpus, qu, ev.SCOPE_TITLE, sid, "WORD", i, j, V4)
                     b = ev._judge_v5(corpus, qu, ev.SCOPE_TITLE, sid, "WORD", i, j, off)
                     assert (a["codes"], a["messages"], a["evidence"], a["rules"], a["clause"], a["answer"], a["chain"]) == (b["codes"], b["messages"], b["evidence"], b["rules"], b["clause"], b["answer"], b["chain"])
+
+
+def test_t_ev5_03_the_v5_gate_never_raises_on_any_stretch_of_the_toy_corpora():
+    """Every stretch (also those outside the sentence) of the toy sentences, for a set of questions, under every version that has its own path of the v5 kind: no exception; an out-of-range
+    stretch is `answer_not_word_aligned`."""
+    sents = [("テレゴ県", "人口は20万人である。"), ("花園町駅", "花園町駅の駅番号はY17である。"), ("六日町駅", "駅番号はY17である。"), ("テレゴ山", "標高は3776メートルである。"), ("花園町駅", "花園町駅の隣駅の駅番号はOR08である。"),
+             ("青葉堂", "青葉堂は松風庵ともいう。")]
+    c = Corpus.load(open(_toy(sents), "rb").read())
+    qs = ["県の人口は何人ですか", "テレゴ県の人口は何人ですか", "ネノの属するネノ県の人口は何人ですか", "六の駅番号は何ですか", "花園町駅の隣駅の駅番号は何ですか", "青葉堂の別名は何ですか", "何年に設立されましたか", "テレゴ山の標高は何メートルですか", ""]
+    n = 0
+    for q in qs:
+        qu = ev.question_units(q)
+        for sid in range(len(sents)):
+            k = len(ev.view_of(c, sid).units)
+            for i in range(-1, k + 2):
+                for j in range(-1, k + 2):
+                    for scope in (ev.SCOPE_TITLE, ev.SCOPE_CLAUSE):
+                        r = ev.judge_quote(c, qu, scope, sid, "WORD", i, j, V5)
+                        n += 1
+                        assert isinstance(r["codes"], list) and (r["evidence"] is None) == bool(r["codes"])
+                        if not (0 <= i <= j < k) and not set(r["codes"]) & {"subject_unreadable", "question_has_no_subject"}:
+                            assert "answer_not_word_aligned" in r["codes"]
+    assert n > 1000
 
 
 # ---- T-EV5-04: a v5 run through the server; the ledger replays -----------------------------------------------------------------------------------------------
@@ -163,9 +186,9 @@ def test_t_ev5_04_a_v5_run_records_its_profile_refuses_and_replays_identically_a
     assert b5["evidence_profile"] == {"version": V5, "subject_scope": "clause_or_title"} and b5["question"]["evidence"] == V5 and b5["question"]["unread"] == []
     assert e5["ok"] and e5["text"] == "Y17" and e5["ev"] == V5
     assert lg.verify(d5)["status"] == "OK" and lg.verify(d5)["replay"]["status"] == "IDENTICAL"
-    _, e4k, d4k = run("v4", "v4k", "toy/kind", 0, "20", "万人")
+    _, e4k, d4k = run("v4", "v4k", "toy/kind", 0, "20", "人")
     assert e4k["ok"] and e4k["text"] == "20万人"                                                                 # v4 emits the other article's population ...
-    _, e5k, d5k = run("v5", "v5k", "toy/kind", 0, "20", "万人")
+    _, e5k, d5k = run("v5", "v5k", "toy/kind", 0, "20", "人")
     assert e5k["ok"] is False and e5k["refusal"] == "no_evidence"                                                # ... v5 refuses it with a typed reason
     assert lg.verify(d5k)["status"] == "OK" and lg.verify(d5k)["replay"]["status"] == "IDENTICAL"
     for d, to in ((d5, V4), (d4k, V5)):                                                                          # a forged relabel is a replay difference
@@ -202,17 +225,23 @@ def test_t_ev5_05_the_probe_outputs_were_made_by_the_frozen_file():
         assert d["evidence_sha"] == FROZEN_V5_EVIDENCE_SHA
 
 
+REACH_V4_DEV129 = ["I2-001", "I2-003", "I2-004", "I2-005", "I2-006", "I2-008", "I2-013", "I2-014", "I2-018", "I2-026", "I2-027", "I2-032", "I2-035", "I2-042", "I2-045", "I2-048",
+                   "R2-I005", "R2-I007", "R2-I008", "R2-I015", "R2-I017"]
+
+
 def test_t_ev5_05_the_stored_probe_numbers_v4_v5():
+    """The committed outputs (experiments/line3/loom/ev5/out_{dev129,bank6,bank7}.json, produced on CI by sweep.py) with the frozen file's sha."""
     R = _report()
-    b6, b7 = R.summary("bank6"), R.summary("bank7")
+    d = R.summary("dev129")                                                        # bank2 (69 answerable) + bank4 (60 unanswerable)
+    assert d[V4]["reach"] == d[V5]["reach"] == REACH_V4_DEV129 and len(d[V5]["reach"]) == 21
+    assert d[V5]["wrong"] == [] and d[V5]["unans"] == [] and d[V5]["traps"] == []
+    assert d["v5-noSU"]["reach"] == d["v5-noTW"]["reach"] == d[V5]["reach"]        # neither rule costs a dev129 item
+    b6 = R.summary("bank6")                                                        # 26 answerable + 34 unanswerable
     assert b6[V5]["reach"] == b6[V4]["reach"] == ["B6-A05", "B6-A13", "B6-A15", "B6-A24", "B6-A27"] and b6[V5]["wrong"] == b6[V4]["wrong"] == ["B6-A05", "B6-A20", "B6-A27"]
-    assert b6[V4]["unans"] == b6[V5]["unans"] == []
-    assert b7[V4]["unans"] == ["B7-U43"] and b7[V5]["unans"] == []                                                # the held-out failure is closed
+    assert b6[V4]["unans"] == b6[V5]["unans"] == [] and b6["v5-noSU"]["reach"] == b6["v5-noTW"]["reach"] == b6[V5]["reach"]
+    b7 = R.summary("bank7")                                                        # 32 answerable + 47 unanswerable (a dev set since the v4 probe)
+    assert b7[V2]["unans"] == b7[V3]["unans"] == b7[V4]["unans"] == ["B7-U43"] and b7[V5]["unans"] == []          # the held-out failure is closed
     assert b7[V5]["reach"] == b7[V4]["reach"] == ["B7-A22", "B7-A23", "B7-A25", "B7-A36"] and b7[V5]["wrong"] == []
-    d = R.summary("dev129")
-    assert d[V5]["unans"] == [] and d[V5]["wrong"] == [] and d[V5]["traps"] == []
-    assert set(d[V5]["reach"]) <= set(d[V4]["reach"])                                                              # v5 only removes admissions
-    assert d["v5-noSU"]["reach"] == d[V5]["reach"]                                                                 # SU fires on no dev129 question
 
 
 # ---- T-EV5-06: byte identity under three hash seeds -------------------------------------------------------------------------------------------------------
