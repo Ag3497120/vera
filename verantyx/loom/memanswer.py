@@ -285,6 +285,10 @@ def write_snapshot(store_path, topics: bool = False, crosses: bool = False, vers
                 raise Refuse("versions_unverified", {"reason": "the committed sessions of the store do not all record one bundle of shape / qwords / ask versions"})
             cdata = crosses_bytes_v4(decls, brs, vs[0])
         else:
+            for e in head["sessions"]:                  # memanswer.v3 rebuilds the index with the bundle of PUB-M2..M6b: a store written with another bundle needs memanswer.v4
+                sv = mem.session_versions(store.sessions_dir / e["run_id"])
+                if sv is not None and sv != mem.V4_VERSIONS_V2:
+                    raise Refuse("versions_unverified", {"reason": "the store was written with versions %s: use memanswer.v4" % (sv,)})
             cdata = crosses_bytes(decls, brs)
         cp = d / crosses_name(hashlib.sha256(cdata).hexdigest())
         if not cp.exists():
