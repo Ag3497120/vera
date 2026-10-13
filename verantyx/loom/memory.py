@@ -114,6 +114,8 @@ def check_versions(versions: Optional[Dict[str, str]]) -> Dict[str, str]:
     return v
 
 
+ONE_FACT_GUIDANCE = ("1 回の write には事実を 1 つ、1 文で書く (one fact per write, in one sentence, no comma continuation, no second clause or sentence): the memory answers only from such a write; "
+                     "a value written together with other statements is kept as evidence but is never an answer.")
 TOPIC_FORBIDDEN = "のにでとをが"                                    # a mem.v3 topic holds none of the arm particles (L-MEM-58): with one inside, 「<topic>の…」 is a nested particle chain and EVERY expansion is refused
 LEAD_PARTICLES = "のにでとをがはもへ"                              # a particle in the lead-in of a clause (text from the start of its token up to the Y) means the clause already has its own subject
 FORCE_OPS: Tuple[str, ...] = ("report_forced", "report_missing")  # MEM-fix (L-MEM-62): the harness rows of a turn that ended without a report of its own (mem.v3 / membase.v2)
@@ -461,6 +463,8 @@ class MemRun(Run):
         if self.v2plus:
             base = MEM_RULES_V4 if self.v4 else MEM_RULES_V3 if self.v3 else MEM_RULES_V2
             rules = base if (self.evidence_version is not None or self.v4) else dict(base, recall=MEM_RULES["recall"])
+        if self.v4 and self.ask_version == mask.ASK_V3:                                    # PUB-M6m (L-PUB-109): the writer guidance of the bundle shape.v3+ / ask.v3
+            rules = dict(rules, write=rules["write"] + " " + ONE_FACT_GUIDANCE)
         if self.evidence_version is not None and self.evidence_version != mr.RECALL_VERSION:       # PUB-M6c: the rule text names the gate the session reads with
             rules = {k: (v.replace(mr.RECALL_VERSION, self.evidence_version) if k == "recall" and isinstance(v, str) else v) for k, v in rules.items()}
         res = {"ok": True, "run_id": self.run_id, "mode": "memory", "task": ops.task_view(self.task, self.caps), "rules": rules, "header": self.header()}

@@ -85,7 +85,8 @@ def _p(typ: str, desc: str, **kw: Any) -> dict:
 _STR_LIST = {"type": "array", "items": {"type": "string"}}
 TOOL_SPECS: Dict[str, dict] = {
     "write": {"description": "Write ONE fact into the memory, as a sentence 「X の Y は A」 (X the whole subject, Y what is asked about, A a noun phrase), at most 64 characters. The structure weaves "
-                             "the whole sentence; a sentence it cannot seat is refused and stores nothing: rewrite it in that form. Returns the sid and, in some arms, notes.",
+                             "the whole sentence; a sentence it cannot seat is refused and stores nothing: rewrite it in that form. 1 回の write には事実を 1 つ、1 文で書く (one fact, one sentence, no comma continuation: "
+                             "a value written together with other statements is never used as an answer). Returns the sid and, in some arms, notes.",
               "properties": {"text": _p("string", "the fact, 「X の Y は A」, at most 64 characters")}, "required": ["text"]},
     "keep_unshaped": {"description": "Keep a sentence the structure could not give a shape (write refused it: no_shape) as plain text: it stays in the memory and can be searched, but it enters no cross and no "
                                      "note fires. Refused (shaped) if write would accept it. Use it only when the sentence cannot be rewritten into a fact.",

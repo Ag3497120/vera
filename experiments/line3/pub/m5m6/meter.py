@@ -35,7 +35,7 @@ JOINER_CHARS = ".,-:/"
 
 
 def answer_version() -> str:
-    return ma.ANSWER_V12 if MODE["m6c"] else ma.ANSWER_V3
+    return ma.ANSWER_V13 if MODE["m6c"] else ma.ANSWER_V3
 
 
 def versions() -> Any:
@@ -284,6 +284,8 @@ def collision_variants(v: str) -> List[str]:
     for pre in ("⁻", "約", "およそ", "最大"):
         add(pre + v)
     for post in ("にし忘れた", "にできる", "になりうる", "にしてみる", "にしそびれた", "にしてもらった", "を間違えた", "らしい", "、と思う", "、と聞いた", "、と田中は言った", "、と誤解していた", "、かもしれない"):       # memanswer.v12: extra morphemes / comma tails
+        add(v + post)
+    for post in ("、正しくは7日", "、以上は誤り", "、の件は却下", "、？", "、！", "。と思う。", "。正しくは7日。", "。けど撤回した。", "、担当は田中", "。担当は田中。"):       # memanswer.v13: a second clause / sentence in the same write
         add(v + post)
     for post in ("にしたい", "になるかも", "になりそう", "でしょう", "だろう", "になったら", "ならば", "を切る", "はかかる", "とかに", "でさえ", "ですら", "から", "まで"):       # memanswer.v11: predicates under which the value is not asserted
         add(v + post)

@@ -422,3 +422,64 @@ def test_v12_keeps_the_plain_assertions_and_replays(tmp_path):
     assert b.begin_result["mem_answer"]["version"] == "memanswer.v12" and b.begin_result["mem_answer"]["guard"] == "ansguard.v10"
     r = ma.replay_answer(b.ledger.dir)
     assert r.run.v12 and r.run.v11
+
+
+# ---- memanswer.v13: ONE FACT PER WRITE (ninth review, L-PUB-108..110) ----
+V13 = ma.ANSWER_V13
+Q = "認証の期限はいつですか？"
+
+
+def _emits(tmp_path, writes, q=Q, name="o13"):
+    p = store(tmp_path, writes, name=name)
+    return [t for (_s, t, _v) in attack(p, q, len(writes), version=V13)]
+
+
+@pytest.mark.parametrize("w", ["認証の期限は5日、正しくは7日", "認証の期限は5日、以上は誤り", "認証の期限は5日、の件は却下", "認証の期限は5日、？",
+                               "認証の期限は5日、！", "認証の期限は5日。と思う。", "認証の期限は5日にした。けど撤回した。", "認証の期限は5日。正しくは7日。",
+                               "認証の期限は5日、担当は田中", "認証の期限は5日。担当は田中。", "認証の期限は5日！"])
+def test_v13_a_write_with_more_than_one_fact_asserts_nothing(tmp_path, w):
+    assert _emits(tmp_path, [w]) == []
+
+
+@pytest.mark.parametrize("w", ["認証の期限は5日", "認証の期限は5日。", "認証の期限は5日です", "認証の期限は5日に変更した", "認証の期限は5日に変更した。"])
+def test_v13_a_one_sentence_one_fact_write_is_still_answered(tmp_path, w):
+    assert _emits(tmp_path, [w]) == ["5日"]
+
+
+def test_v13_a_multi_clause_change_is_no_update(tmp_path):
+    for second in ("認証の期限は5日に変更した。担当は田中。", "認証の期限は5日に変更した、担当は田中"):
+        assert _emits(tmp_path, ["認証の期限は7日", second], name="u" + str(abs(hash(second)) % 999)) in ([], ["7日"]), second
+        assert "5日" not in _emits(tmp_path, ["認証の期限は7日", second], name="v" + str(abs(hash(second)) % 999)), second
+
+
+def test_v13_multi_clause_write_is_contested_evidence_not_an_answer(tmp_path):
+    p = store(tmp_path, ["認証の期限は7日", "認証の期限は5日、担当は田中"])
+    assert attack(p, Q, 2, version=V13) == []
+    a = ma.AnswerSession(p, Q, "o", answer_version=V13)
+    r = a.call("recall", {"question": Q})
+    assert r["verdict"] != "ANSWER"
+
+
+def test_v13_the_same_value_in_a_multi_clause_write_merges_and_the_single_fact_write_answers(tmp_path):
+    assert _emits(tmp_path, ["認証の期限は7日", "認証の期限は7日、担当は田中"]) == ["7日"]
+
+
+def test_v13_the_multi_clause_write_is_visible_to_recall_with_its_flag(tmp_path):
+    p = store(tmp_path, ["認証の期限は5日、担当は田中"])
+    a = ma.AnswerSession(p, Q, "o", answer_version=V13)
+    assert "multi_clause_write" in repr(a.call("recall", {"question": Q}))
+
+
+def test_v13_begin_row_and_writer_guidance(tmp_path):
+    p = store(tmp_path, ["認証の期限は5日"])
+    a = ma.AnswerSession(p, Q, "o", answer_version=V13)
+    assert a.ledger.rows[0]["rules"]["one_fact"] if hasattr(a.ledger, "rows") else True
+    assert "1 回の write には事実を 1 つ" in mem.ONE_FACT_GUIDANCE
+    from verantyx.loom import memdoor
+    assert "1 回の write には事実を 1 つ" in repr(memdoor.TOOL_SPECS)
+
+
+def test_v13_older_runs_replay_unchanged(tmp_path):
+    p = store(tmp_path, ["認証の期限は5日、承認の期限は7日"])
+    a = ma.AnswerSession(p, Q, "o", answer_version=V12)
+    assert a.call("recall", {"question": Q})
