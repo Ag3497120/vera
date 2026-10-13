@@ -83,7 +83,9 @@ CAPS_MEM_V3: Dict[str, int] = dict(CAPS_MEM_V2, writes=240, recalls=240, lookups
 TOPIC_FORBIDDEN = "のにでとをが"                                    # a mem.v3 topic holds none of the arm particles (L-MEM-58): with one inside, 「<topic>の…」 is a nested particle chain and EVERY expansion is refused
 LEAD_PARTICLES = "のにでとをがはもへ"                              # a particle in the lead-in of a clause (text from the start of its token up to the Y) means the clause already has its own subject
 FORCE_OPS: Tuple[str, ...] = ("report_forced", "report_missing")  # MEM-fix (L-MEM-62): the harness rows of a turn that ended without a report of its own (mem.v3 / membase.v2)
-FORCE_REASONS: Tuple[str, ...] = ("turn_limit", "no_tool_call")
+FORCE_REASONS: Tuple[str, ...] = ("turn_limit", "no_tool_call", "cap_turn")      # "cap_turn" (PUB-H1, L-PUB-20): a turn the runaway cap ended is asked for its report too
+CAP_OPS: Tuple[str, ...] = ("cap_turn",)                          # PUB-H1 (L-PUB-14): the harness row of a turn that the runaway cap ended; written only by a run driven with cap.v1 (mem.v3 / membase.v2), never by an older one
+CAP_REASONS: Tuple[str, ...] = ("cap_repeat", "cap_status")
 TOOLS: Tuple[str, ...] = ("write", "recall", "lookup", "read_sentence", "status", "commit")         # the memory session's tools (begin is the store's door)
 V2_OPS: Tuple[str, ...] = ("declare_topic", "supersede", "report")                                 # MEM-d: the ops a `mem.v2` session adds
 TOPIC_MAX_CHARS = 24
@@ -457,6 +459,10 @@ class MemRun(Run):
             if not self.v3:
                 raise ValueError("op %r is not a row of actor %r" % (op, actor))
             return {"actor": actor, "op": op, "args": force_args(args), "result": {"ok": True}, "state_sha": self.mem_state_sha()}
+        if actor == "harness" and op in CAP_OPS:               # PUB-H1: like the forced-report rows, only a mem.v3 session has it
+            if not self.v3:
+                raise ValueError("op %r is not a row of actor %r" % (op, actor))
+            return {"actor": actor, "op": op, "args": cap_args(args), "result": {"ok": True}, "state_sha": self.mem_state_sha()}
         body = super()._outside_step(actor, op, args)
         body["state_sha"] = self.mem_state_sha()
         return body
@@ -788,6 +794,18 @@ def force_args(args: Any) -> dict:
     if not (isinstance(args["turn"], str) and TURN_RX.match(args["turn"]) and args["reason"] in FORCE_REASONS and isinstance(args["calls"], int)
             and not isinstance(args["calls"], bool) and args["calls"] >= 0):
         raise ValueError("report_forced / report_missing: turn is a turn id, reason one of %s, calls a count" % (FORCE_REASONS,))
+    return dict(args)
+
+
+def cap_args(args: Any) -> dict:
+    """The args of a `cap_turn` harness row (PUB-H1, L-PUB-14): {turn (a turn id), reason (cap_repeat | cap_status), cap (the cap version), tool (the tool of the call that was not run; "" if the name was
+    not a string), n (the count that call would have reached), calls (tool calls the turn had used)}.  Raises ValueError, as every malformed harness row does."""
+    if not (isinstance(args, dict) and set(args) == {"turn", "reason", "cap", "tool", "n", "calls"}):
+        raise ValueError("cap_turn: arguments are turn, reason, cap, tool, n, calls")
+    ints = all(isinstance(args[k], int) and not isinstance(args[k], bool) and args[k] >= 0 for k in ("n", "calls"))
+    if not (isinstance(args["turn"], str) and TURN_RX.match(args["turn"]) and args["reason"] in CAP_REASONS and isinstance(args["cap"], str) and re.match(r"^cap\.v[0-9]+$", args["cap"])
+            and isinstance(args["tool"], str) and len(args["tool"]) <= 64 and ints):
+        raise ValueError("cap_turn: turn is a turn id, reason one of %s, cap a cap version, tool a name, n / calls counts" % (CAP_REASONS,))
     return dict(args)
 
 

@@ -14,6 +14,11 @@ the old one is sent again.  Whatever survives a session boundary survives throug
     ledger then simply has none for it (what the model noticed is what its reports say, nothing is filled in).
   - the next message reaches the model in the same user message as the previous turn's tool results (the API wants results first), as one text block.
   - an API error ends the SESSION (`abandoned api_error`); the error text is returned and never enters a ledger.
+  - THE RUNAWAY CAP (PUB-H1, `driver.RUNAWAY_CAPS_V1`, cap.v1; the same for every arm): per delivered message (a TURN is this driver's unit of work, so the counters start again with each message) at most 8
+    consecutive calls of the same tool with the same arguments and at most 20 `status` calls.  The call that would exceed a cap is NOT executed and the TURN ends (the session does not): the harness row
+    `cap_turn` {turn, reason: cap_repeat | cap_status, cap, tool, n, calls}, every call of the turn that did not run gets the synthetic result `skipped_after_cap`, the turn's `ended` is the reason, it has no report
+    of its own (with `force_report` it is asked for the forced final report like any turn: `report_forced` reason `cap_turn`), and the next message is delivered as usual, the session commits normally.  `cap_turn` is a row of mem.v3 / membase.v2 ledgers only (older profiles refuse it).
+    `caps=None` drives without a cap.
 The question phase is `driver.run_episode` itself over an answer door.  This module imports no SDK and no network module (test_loom_enforce reads the imports); the real client is the
 harness's (`make_anthropic_client`), the tests' is `driver.ReplayClient`.
 """
@@ -32,6 +37,7 @@ FORCE_ATTEMPTS = 2                      # MEM-fix (L-MEM-62): how many times the
 FORCE_NOTE = ("This turn has run out of tool calls (or tool-less turns). Call report(contradictions, bugs) NOW to end it: the pairs of turn ids whose statements disagree, [] if none. "
               "It is the only tool you have left for this turn.")
 SKIPPED = {"ok": False, "refusal": "skipped_after_report", "detail": {"reason": "the turn ended at your report; nothing after it ran"}}
+SKIPPED_CAP = {"ok": False, "refusal": "skipped_after_cap", "detail": {"reason": "this turn hit the runaway cap; this call and the rest of the turn did not run"}}
 STORY_REMINDER = ("Your last turn had no tool call. Text is discarded. Continue only by calling a tool; end the turn with report(contradictions, bugs).")
 
 
@@ -49,15 +55,19 @@ class StoryResult:
     error: Optional[str] = None
     tool_choice: Optional[dict] = None
     usage: Dict[str, int] = field(default_factory=lambda: {"calls": 0, "input_tokens": 0, "output_tokens": 0, "cache_read_input_tokens": 0, "cache_creation_input_tokens": 0})
+    caps: Optional[dict] = None                         # PUB-H1: the runaway cap this session was driven with (None: without one)
+    cap_hits: List[dict] = field(default_factory=list)  # one per capped turn: {"turn", "reason", "tool", "n", "calls"}
+    calls_skipped_after_cap: int = 0
 
     def to_obj(self) -> dict:
         return {k: getattr(self, k) for k in ("ended", "turns", "api_calls", "tool_calls", "calls_skipped_after_report", "text_blocks_dropped", "thinking_dropped", "response_models",
-                                              "stop_reasons", "error", "tool_choice", "usage")}
+                                              "stop_reasons", "error", "tool_choice", "usage")} | (
+            {} if self.caps is None else {"caps": self.caps, "cap_hits": self.cap_hits, "turns_capped": len(self.cap_hits), "calls_skipped_after_cap": self.calls_skipped_after_cap})
 
 
 def run_story_session(client: Any, door: Any, model: str, system: str, intro: str, messages: Sequence[Tuple[str, str]], tools: Sequence[dict], *,
                       tool_choice: Optional[dict] = None, max_calls: int = MAX_CALLS_PER_TURN, max_tokens: int = drv.MAX_TOKENS, extra: Optional[dict] = None,
-                      force_report: bool = False) -> StoryResult:
+                      force_report: bool = False, caps: Optional[drv.RunawayCaps] = drv.RUNAWAY_CAPS_V1) -> StoryResult:
     """Drive one story session.  `messages` = [(turn id "1-1", text shown to the model)], `intro` = the session's first words (the begin result), `tools` = the API tool dicts the door
     offers (memdoor.api_tools).  `door`: call / harness / set_turn / closed.
 
@@ -68,6 +78,8 @@ def run_story_session(client: Any, door: Any, model: str, system: str, intro: st
     res = StoryResult()
     choice = tool_choice if tool_choice is not None else {"type": "any"}
     res.tool_choice = choice
+    tracker = drv.CapTracker(caps)
+    res.caps = None if caps is None else caps.to_obj()
     allowed = {t["name"] for t in tools}
     api: List[dict] = []
     pending: List[dict] = []                            # tool_result blocks owed for the last assistant turn
@@ -177,6 +189,7 @@ def run_story_session(client: Any, door: Any, model: str, system: str, intro: st
         pending, ended_text_only = [], False
         t = {"turn": turn_id, "calls": 0, "report": None, "ended": "?"}
         res.turns.append(t)
+        tracker.reset()
         tool_less = 0
         while True:
             kw = dict(model=model, max_tokens=max_tokens, system=system, tools=list(tools), tool_choice=choice, messages=list(api))
@@ -198,12 +211,24 @@ def run_story_session(client: Any, door: Any, model: str, system: str, intro: st
             tool_less = 0
             results: List[dict] = []
             reported = False
-            for tu in uses:
+            capped = None
+            for ku, tu in enumerate(uses):
                 if reported:
                     res.calls_skipped_after_report += 1
                     results.append({"type": "tool_result", "tool_use_id": _get(tu, "id"), "content": json.dumps(SKIPPED, sort_keys=True)})
                     continue
                 name, inp = _get(tu, "name"), _get(tu, "input")
+                why = tracker.admit(name, inp)
+                if why is not None:                                            # PUB-H1: the runaway cap: this call and the rest of the turn do not run; the turn ends, the session goes on
+                    h = dict(tracker.hit or {})
+                    res.calls_skipped_after_cap += len(uses) - ku
+                    row = {"turn": turn_id, "reason": why, "cap": caps.version if caps else "", "tool": h.get("tool") or "", "n": h.get("n", 0), "calls": t["calls"]}
+                    door.harness(None, "cap_turn", row)
+                    res.cap_hits.append({k: row[k] for k in ("turn", "reason", "tool", "n", "calls")})
+                    for rest in uses[ku:]:
+                        results.append({"type": "tool_result", "tool_use_id": _get(rest, "id"), "content": json.dumps(SKIPPED_CAP, sort_keys=True)})
+                    capped = why
+                    break
                 args = dict(inp) if isinstance(inp, dict) else {}
                 args["run_id"] = "-"                                          # the door pops it: the model cannot address another run
                 if name in allowed:
@@ -219,13 +244,17 @@ def run_story_session(client: Any, door: Any, model: str, system: str, intro: st
             pending = results
             if reported:
                 break
+            if capped is not None:
+                t["ended"] = capped
+                break
             if t["calls"] >= max_calls:
                 t["ended"] = "turn_limit"
                 break
             api.append({"role": "user", "content": results})
             pending = []
-        if force_report and t["report"] is None and t["ended"] in ("turn_limit", "no_tool_call"):
-            err = force(t, t["ended"], pending if t["ended"] == "turn_limit" else [])
+        if force_report and t["report"] is None and t["ended"] in ("turn_limit", "no_tool_call") + drv.CAP_REASONS:
+            capped_turn = t["ended"] in drv.CAP_REASONS                       # PUB-H1: a capped turn is forced like a turn_limit one (reason "cap_turn"); its owed results (incl. skipped_after_cap) go with the forced request
+            err = force(t, "cap_turn" if capped_turn else t["ended"], pending if (capped_turn or t["ended"] == "turn_limit") else [])
             if err is not None:
                 return err
     res.ended = "complete"

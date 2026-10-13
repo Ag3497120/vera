@@ -1,0 +1,471 @@
+{
+ "bank5_messages": {
+  "adverbials_attached": 0,
+  "change_clauses": 3,
+  "clauses": 276,
+  "f0_examples": {
+   "gap_is_not_a_particle": [
+    {
+     "clause": "担当表では認証モジュール担当は田中です",
+     "detail": "では",
+     "sentence": "田中です。担当表では認証モジュール担当は田中です。監視当番は佐藤です。"
+    },
+    {
+     "clause": "今朝の一覧ではリリース窓口担当は小林",
+     "detail": "では",
+     "sentence": "今朝の一覧ではリリース窓口担当は小林、翻訳確認は渡辺です。"
+    },
+    {
+     "clause": "一覧ではCDNキャッシュTTLは30秒",
+     "detail": "では",
+     "sentence": "一覧ではCDNキャッシュTTLは30秒、再試行待ちは120秒です。"
+    },
+    {
+     "clause": "会場費上限は8万円から9万円に引き上げる変更になりました",
+     "detail": "から",
+     "sentence": "会場費上限は8万円から9万円に引き上げる変更になりました。"
+    },
+    {
+     "clause": "デモ用イメージはv2.3からv2.4へ更新となりました",
+     "detail": "へ",
+     "sentence": "デモ用イメージはv2.3からv2.4へ更新となりました。"
+    },
+    {
+     "clause": "予算表では会場費9万円",
+     "detail": "では",
+     "sentence": "予算表では会場費9万円、配信費2万円です。試験用APIの監視担当は井上です。共有ドライブは/release/testです。"
+    },
+    {
+     "clause": "工程メモではAPI凍結はフロント統合の前提です",
+     "detail": "では",
+     "sentence": "工程メモではAPI凍結はフロント統合の前提です。"
+    },
+    {
+     "clause": "契約確認表では契約テストは顧客受入テストの前提です",
+     "detail": "では",
+     "sentence": "契約確認表では契約テストは顧客受入テストの前提です。"
+    },
+    {
+     "clause": "受付班の副担当は西村です",
+     "detail": "の副",
+     "sentence": "安全統括は山田です。受付班の副担当は西村です。"
+    },
+    {
+     "clause": "当番表では安全統括は西村です",
+     "detail": "では",
+     "sentence": "当番表では安全統括は西村です。救護連絡の窓口は山田です。"
+    }
+   ],
+   "no_predicate": [
+    {
+     "clause": "名古屋で利用者説明をします",
+     "detail": "説明",
+     "sentence": "東京で切替リハーサルを行い、名古屋で利用者説明をします。"
+    }
+   ],
+   "no_relation": [
+    {
+     "clause": "田中です",
+     "detail": null,
+     "sentence": "田中です。担当表では認証モジュール担当は田中です。監視当番は佐藤です。"
+    },
+    {
+     "clause": "バックエンド進捗です",
+     "detail": null,
+     "sentence": "バックエンド進捗です。認証モジュール担当は佐藤です。決済レビュー担当は田中です。"
+    },
+    {
+     "clause": "配信費2万円です",
+     "detail": null,
+     "sentence": "予算表では会場費9万円、配信費2万円です。試験用APIの監視担当は井上です。共有ドライブは/release/testです。"
+    }
+   ]
+  },
+  "f0_reason": {
+   "gap_is_not_a_particle": 41,
+   "no_predicate": 1,
+   "no_relation": 3
+  },
+  "inputs": 156,
+  "inputs_all_clauses_F1_F4": 114,
+  "inputs_with_an_F0_clause": 42,
+  "inputs_with_some_F1_F4_clause": 127,
+  "inputs_without_clause": 0,
+  "labels_skipped": 1,
+  "shape": {
+   "F0": 45,
+   "F1": 59,
+   "F2": 164,
+   "F3": 7,
+   "F4": 1
+  },
+  "verb_events_with_surface": 3,
+  "via_topic_clauses": 7
+ },
+ "meter_raw_ok_writes": {
+  "adverbials_attached": 0,
+  "change_clauses": 0,
+  "clauses": 633,
+  "distinct": 633,
+  "f0_examples": {
+   "no_predicate": [
+    {
+     "clause": "認証の担当はトークン更新が平井",
+     "detail": "平井",
+     "sentence": "認証の担当はトークン更新が平井"
+    },
+    {
+     "clause": "認証の担当は監査ログが松本",
+     "detail": "松本",
+     "sentence": "認証の担当は監査ログが松本"
+    },
+    {
+     "clause": "認証の担当はトークン更新が松本",
+     "detail": "松本",
+     "sentence": "認証の担当はトークン更新が松本"
+    },
+    {
+     "clause": "認証の担当は出荷照合が平井",
+     "detail": "平井",
+     "sentence": "認証の担当は出荷照合が平井"
+    },
+    {
+     "clause": "ホストの担当はステージングがstg-a.internal",
+     "detail": "internal",
+     "sentence": "ホストの担当はステージングがstg-a.internal"
+    },
+    {
+     "clause": "ホストの担当は負荷試験用がstg-b.internal",
+     "detail": "internal",
+     "sentence": "ホストの担当は負荷試験用がstg-b.internal"
+    },
+    {
+     "clause": "ポートの管理は検証用が8081",
+     "detail": "8081",
+     "sentence": "ポートの管理は検証用が8081"
+    },
+    {
+     "clause": "河合が責任者",
+     "detail": "者",
+     "sentence": "河合が責任者"
+    },
+    {
+     "clause": "点検期限の机はスキャン机で月曜",
+     "detail": "月曜",
+     "sentence": "点検期限の机はスキャン机で月曜"
+    }
+   ],
+   "no_relation": [
+    {
+     "clause": "申請者の安藤",
+     "detail": null,
+     "sentence": "申請者の安藤"
+    },
+    {
+     "clause": "基盤のステージング用ホスト名",
+     "detail": null,
+     "sentence": "基盤のステージング用ホスト名"
+    },
+    {
+     "clause": "見本形式のPNG",
+     "detail": null,
+     "sentence": "見本形式のPNG"
+    },
+    {
+     "clause": "チェックサム4MB",
+     "detail": null,
+     "sentence": "チェックサム4MB"
+    },
+    {
+     "clause": "プレビュー転送ブロック8MB",
+     "detail": null,
+     "sentence": "プレビュー転送ブロック8MB"
+    },
+    {
+     "clause": "プレビュー画像幅800px",
+     "detail": null,
+     "sentence": "プレビュー画像幅800px"
+    },
+    {
+     "clause": "チェックサム8MB",
+     "detail": null,
+     "sentence": "チェックサム8MB"
+    },
+    {
+     "clause": "変換バッチ4MB単位",
+     "detail": null,
+     "sentence": "変換バッチ4MB単位"
+    },
+    {
+     "clause": "冊子索引見出し1,250件",
+     "detail": null,
+     "sentence": "冊子索引見出し1,250件"
+    },
+    {
+     "clause": "スキャン保管用ディスク8TB",
+     "detail": null,
+     "sentence": "スキャン保管用ディスク8TB"
+    }
+   ]
+  },
+  "f0_reason": {
+   "no_predicate": 9,
+   "no_relation": 15
+  },
+  "inputs": 633,
+  "inputs_all_clauses_F1_F4": 609,
+  "inputs_with_an_F0_clause": 24,
+  "inputs_with_some_F1_F4_clause": 609,
+  "inputs_without_clause": 0,
+  "labels_skipped": 0,
+  "rows": 1610,
+  "shape": {
+   "F0": 24,
+   "F1": 515,
+   "F2": 83,
+   "F3": 8,
+   "F4": 3
+  },
+  "verb_events_with_surface": 0,
+  "via_topic_clauses": 8
+ },
+ "meter_refusals": {
+  "adverbials_attached": 0,
+  "change_clauses": 3,
+  "clauses": 273,
+  "distinct": 273,
+  "f0_examples": {
+   "case_before_topic": [
+    {
+     "clause": "認証運用表でトークン更新担当は平井",
+     "detail": "で",
+     "sentence": "認証運用表でトークン更新担当は平井"
+    }
+   ],
+   "gap_is_not_a_particle": [
+    {
+     "clause": "デモ用イメージは v2.3 から v2.4 に更新",
+     "detail": "から",
+     "sentence": "デモ用イメージは v2.3 から v2.4 に更新"
+    },
+    {
+     "clause": "受付班の副担当は西村",
+     "detail": "の副",
+     "sentence": "受付班の副担当は西村"
+    },
+    {
+     "clause": "受付班の副担当者は西村",
+     "detail": "の副",
+     "sentence": "受付班の副担当者は西村"
+    },
+    {
+     "clause": "受付班の副の担当は西村",
+     "detail": "の副の",
+     "sentence": "受付班の副の担当は西村"
+    },
+    {
+     "clause": "受付班の副担当の名前は西村",
+     "detail": "の副",
+     "sentence": "受付班の副担当の名前は西村"
+    },
+    {
+     "clause": "受付班の副担当者の名前は西村",
+     "detail": "の副",
+     "sentence": "受付班の副担当者の名前は西村"
+    },
+    {
+     "clause": "受付の副担当は西村",
+     "detail": "の副",
+     "sentence": "受付の副担当は西村"
+    },
+    {
+     "clause": "入場券の受付開始は9:30へ変更",
+     "detail": "へ",
+     "sentence": "入場券の受付開始は9:30へ変更"
+    },
+    {
+     "clause": "承認会議の日程は11/09から11/10へ延期",
+     "detail": "へ",
+     "sentence": "承認会議の日程は11/09から11/10へ延期"
+    },
+    {
+     "clause": "承認会議の日程は11/09から11/10に延期",
+     "detail": "から",
+     "sentence": "承認会議の日程は11/09から11/10に延期"
+    }
+   ],
+   "no_predicate": [
+    {
+     "clause": "ステージングホストは基盤担当でstg-b.internal",
+     "detail": "internal",
+     "sentence": "ステージングホストは基盤担当でstg-b.internal"
+    }
+   ]
+  },
+  "f0_reason": {
+   "case_before_topic": 1,
+   "gap_is_not_a_particle": 21,
+   "no_predicate": 1
+  },
+  "inputs": 273,
+  "inputs_all_clauses_F1_F4": 250,
+  "inputs_with_an_F0_clause": 23,
+  "inputs_with_some_F1_F4_clause": 250,
+  "inputs_without_clause": 0,
+  "labels_skipped": 0,
+  "refusal_reasons": {
+   "gap_is_not_a_particle": 71,
+   "nested_particle_chain": 656
+  },
+  "rows": 727,
+  "rows_by_refusal_reason": {
+   "gap_is_not_a_particle": {
+    "now_F1_F4": 3,
+    "rows": 71
+   },
+   "nested_particle_chain": {
+    "now_F1_F4": 654,
+    "rows": 656
+   }
+  },
+  "rows_now_all_clauses_F1_F4": 657,
+  "shape": {
+   "F0": 23,
+   "F1": 132,
+   "F2": 113,
+   "F3": 5,
+   "F4": 0
+  },
+  "verb_events_with_surface": 2,
+  "via_topic_clauses": 5
+ },
+ "meter_stored": {
+  "adverbials_attached": 0,
+  "change_clauses": 0,
+  "clauses": 638,
+  "distinct": 638,
+  "f0_examples": {
+   "no_predicate": [
+    {
+     "clause": "認証の担当はトークン更新が平井",
+     "detail": "平井",
+     "sentence": "認証の担当はトークン更新が平井"
+    },
+    {
+     "clause": "認証の担当は監査ログが松本",
+     "detail": "松本",
+     "sentence": "認証の担当は監査ログが松本"
+    },
+    {
+     "clause": "認証の担当はトークン更新が松本",
+     "detail": "松本",
+     "sentence": "認証の担当はトークン更新が松本"
+    },
+    {
+     "clause": "認証の担当は出荷照合が平井",
+     "detail": "平井",
+     "sentence": "認証の担当は出荷照合が平井"
+    },
+    {
+     "clause": "ホストの担当はステージングがstg-a.internal",
+     "detail": "internal",
+     "sentence": "ホストの担当はステージングがstg-a.internal"
+    },
+    {
+     "clause": "ホストの担当は負荷試験用がstg-b.internal",
+     "detail": "internal",
+     "sentence": "ホストの担当は負荷試験用がstg-b.internal"
+    },
+    {
+     "clause": "ポートの管理は検証用が8081",
+     "detail": "8081",
+     "sentence": "ポートの管理は検証用が8081"
+    },
+    {
+     "clause": "河合が責任者",
+     "detail": "者",
+     "sentence": "河合が責任者"
+    },
+    {
+     "clause": "点検期限の机はスキャン机で月曜",
+     "detail": "月曜",
+     "sentence": "点検期限の机はスキャン机で月曜"
+    }
+   ],
+   "no_relation": [
+    {
+     "clause": "申請者の安藤",
+     "detail": null,
+     "sentence": "申請者の安藤"
+    },
+    {
+     "clause": "基盤のステージング用ホスト名",
+     "detail": null,
+     "sentence": "基盤のステージング用ホスト名"
+    },
+    {
+     "clause": "見本形式のPNG",
+     "detail": null,
+     "sentence": "見本形式のPNG"
+    },
+    {
+     "clause": "チェックサム4MB",
+     "detail": null,
+     "sentence": "チェックサム4MB"
+    },
+    {
+     "clause": "プレビュー転送ブロック8MB",
+     "detail": null,
+     "sentence": "プレビュー転送ブロック8MB"
+    },
+    {
+     "clause": "プレビュー画像幅800px",
+     "detail": null,
+     "sentence": "プレビュー画像幅800px"
+    },
+    {
+     "clause": "チェックサム8MB",
+     "detail": null,
+     "sentence": "チェックサム8MB"
+    },
+    {
+     "clause": "変換バッチ4MB単位",
+     "detail": null,
+     "sentence": "変換バッチ4MB単位"
+    },
+    {
+     "clause": "冊子索引見出し1,250件",
+     "detail": null,
+     "sentence": "冊子索引見出し1,250件"
+    },
+    {
+     "clause": "スキャン保管用ディスク8TB",
+     "detail": null,
+     "sentence": "スキャン保管用ディスク8TB"
+    }
+   ]
+  },
+  "f0_reason": {
+   "no_predicate": 9,
+   "no_relation": 15
+  },
+  "inputs": 638,
+  "inputs_all_clauses_F1_F4": 614,
+  "inputs_with_an_F0_clause": 24,
+  "inputs_with_some_F1_F4_clause": 614,
+  "inputs_without_clause": 0,
+  "labels_skipped": 0,
+  "rows": 1610,
+  "shape": {
+   "F0": 24,
+   "F1": 603,
+   "F2": 0,
+   "F3": 8,
+   "F4": 3
+  },
+  "verb_events_with_surface": 0,
+  "via_topic_clauses": 8
+ },
+ "shapes_sha": "1908323f8690db16ebc7ea90ff46e00cb175ba6fd61021b6f31468c72dff7497",
+ "shapes_version": "shape.v1"
+}

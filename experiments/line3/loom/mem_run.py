@@ -345,6 +345,7 @@ def run_one(task: dict, arm: str, repeat: int, *, client: Any, model: str, out_r
     if profile not in PROFILE_CHOICES:
         raise MemRunError("profile must be one of %s" % (PROFILE_CHOICES,), "bad_profile")
     v3 = profile == mem.PROFILE_V3
+    caps = drv.RUNAWAY_CAPS_V1 if v3 else None          # PUB-H1: every mem.v3 run is driven with cap.v1 (the `cap_turn` row is a mem.v3 / membase.v2 row); mem.v2 reproduces the meter v1 as it was
     if max_calls is None:
         max_calls = MAX_CALLS_V3 if v3 else mdrv.MAX_CALLS_PER_TURN
     base_version = md.BASELINE_V2 if v3 else md.BASELINE_VERSION
@@ -370,7 +371,7 @@ def run_one(task: dict, arm: str, repeat: int, *, client: Any, model: str, out_r
         sysp = system_prompt(arm, "story")
         turns = [(turn_id(s, i), render(task, s, i)) for i in range(len(msgs))]
         res = mdrv.run_story_session(client, door, model, sysp, _intro_text(door, task, s), turns, tools, tool_choice=choice, max_calls=max_calls, extra=extra_api,
-                                      force_report=v3)
+                                      force_report=v3, caps=caps)
         committed = None
         if res.ended == "complete":
             committed = door.commit()
@@ -382,6 +383,8 @@ def run_one(task: dict, arm: str, repeat: int, *, client: Any, model: str, out_r
         all_pairs += [p for p in pairs if p not in all_pairs]
         sess: Dict[str, Any] = {"session": s + 1, "run_id": door.run_id, "ledger": os.path.relpath(str(ledger_dir), run_dir), "story": res.to_obj(), "committed": committed is not None,
                                 "reports": md.reports_of(rows), "turns_without_report": [t["turn"] for t in res.turns if t["report"] is None]}
+        if caps is not None:
+            sess["turns_capped"] = [h["turn"] for h in res.cap_hits]                 # PUB-H1: the turns the runaway cap ended (counted per arm in cost.turns_capped)
         if v3:
             sess["turns_forced"] = [t["turn"] for t in res.turns if t.get("forced")]
             sess["turns_report_missing"] = [t["turn"] for t in res.turns if t["ended"] == "report_missing"]
@@ -409,7 +412,7 @@ def run_one(task: dict, arm: str, repeat: int, *, client: Any, model: str, out_r
                   else md.BaselineDoor(store, arm, "question", model, question=q["q"], version=base_version))
             tools = md.api_tools(qd.tool_names, strict, done=True)
             er = drv.run_episode(client, qd, qd.run_id, model, system_prompt(arm, "question"), _first_question_message(qd, qd.begin_result), tools, tool_choice=choice,
-                                 max_turns=ANSWER_MAX_TURNS, extra=extra_api)
+                                 max_turns=ANSWER_MAX_TURNS, extra=extra_api, caps=caps)
             out = qd.output()
             ans = md.answer_of_output(out) if arm in md.STRUCTURE_ARMS else out
             ledger_dir = qd.session.ledger.dir if hasattr(qd, "session") else qd.ledger.dir
@@ -438,6 +441,8 @@ def _cost(result: dict) -> dict:
         c["output_tokens"] += st["usage"]["output_tokens"]
         c["text_blocks_dropped"] += st["text_blocks_dropped"]
         c["turns_without_report"] += len(s["turns_without_report"])
+        if "turns_capped" in s:
+            c["turns_capped"] = c.get("turns_capped", 0) + len(s["turns_capped"])
         if "turns_forced" in s:
             c["reports_forced"] = c.get("reports_forced", 0) + len(s["turns_forced"])
             c["reports_missing"] = c.get("reports_missing", 0) + len(s["turns_report_missing"])

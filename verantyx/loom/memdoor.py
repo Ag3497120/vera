@@ -330,10 +330,12 @@ class BaselineRun:
     def step(self, actor: str, op: str, args: dict, replay_extra: Optional[dict] = None) -> dict:
         if actor == "model":
             return self._model_step(op, args, replay_extra)
-        if actor != "harness" or op not in ("free_text_dropped", "harness_meta", "abandoned", "session_end") + (mem.FORCE_OPS if self.version == BASELINE_V2 else ()):
+        if actor != "harness" or op not in ("free_text_dropped", "harness_meta", "abandoned", "session_end") + (mem.FORCE_OPS + mem.CAP_OPS if self.version == BASELINE_V2 else ()):
             raise ValueError("op %r is not a row of actor %r" % (op, actor))
         if op in mem.FORCE_OPS:
             args = mem.force_args(args)
+        if op in mem.CAP_OPS:
+            args = mem.cap_args(args)
         if op == "abandoned" and self.closed is None:
             self.closed = ["abandoned", str(args.get("reason", "?"))]
         if op == "session_end" and self.closed is None:

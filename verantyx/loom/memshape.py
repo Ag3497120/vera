@@ -1,0 +1,427 @@
+"""PUB-M1: the shape exchanger (docs/LINE3_PUBLIC_DESIGN.md 4.2; owner OP-PUB-2: a sentence that fits no shape is recorded as F0 and may be kept as a sentence without a shape).
+
+`exchange(sentence)` is a PURE FUNCTION of one sentence: it cuts the sentence into clauses with the grammar layer and gives every clause a SHAPE, the centre, the arm seats, the value seat and the
+character span of the clause.  It reads no store, no corpus and no history, writes nothing and is deterministic (no clock, no float, no environment; no output depends on set / dict order).
+
+THE GRAMMAR LAYER IS THE ONLY SOURCE OF UNITS.  The units of a sentence are exactly the loom's WORD-tier units: the tagger cut `granularity._raw_spans` makes (`grammar.words_of`), minus the function
+units of `funcwords.is_function_unit` (L-150).  What lies between two units is their GAP (the letters of the function units between them, as `Corpus.span_gaps`); units that touch (gap "") form one
+PHRASE.  A gap the loom's `weave_span` can write is one of the six arm particles の に で と を が or は; any other gap (では, という, として, も, へ, ...) makes the clause F0 `gap_is_not_a_particle`,
+the very judgement that refuses a `write` today (`span_inexpressible`).  The three differences from today are written down as L-PUB-: a chain 「XのYのZ」 and a case particle after a の-chain
+(`nested_particle_chain` of weave_span) are shapes now; 「から」 is a gap only in a change clause.
+
+THE CLAUSE CUT.  Hard cuts: 。 ． ! ? ！ ？ ; ； and a line break.  Soft cuts: 、 ， and ASCII "," (but not a comma between two digits: 2,400).  A colon (： or :, not between digits) ends a LABEL
+(「監視設定メモ:」): the label is listed in `skipped`, it is not a clause.  A piece without any letter is nothing; a piece with letters but without a unit is F0 `no_unit`.  A LEADING ADVERBIAL (a piece ended by a
+soft cut that is only function words (では、 しかし、 はい、) or only time words (昨日、 来週は、), and is followed by a clause) is not a clause: it is attached to the following clause as `adverbial`.
+
+THE SHAPES (frozen; `SHAPES_SHA` is the sha256 of the version, the constants and the SOURCE of every rule below):
+  F1 属性      「X の Y は A」  centre = the PHRASE Y as it is written (開催地; `centre_units` = its WORD units 開催, 地), arm の = X (a chain 「X の Y の Z は A」: centre Z, arm の = Y whose own arm の = X),
+               value = A (a noun phrase, may hold の); every seat is a phrase (`text`) with its units.
+  F2 主題値    「X は A」      centre = X, no arm, value = A.
+  F3 出来事    case arguments が を に で と + a predicate: centre = the PREDICATE ONLY (a サ変 noun followed by する/し/さ/なる or by 済み, or a verb: the centre of a verb is its DICTIONARY FORM, the lemma of the
+               tokenizer, 開いた -> 開く, and the inflected surface is kept in `surface`: owner, the memory takes inflected verbs in, the output gate does not); arms = the arguments, one per particle; a numeral + counter touching the predicate is the `quantity` seat (52本), other nouns touching it the `object_bare` seat (資料), never part of the centre.  「X は …」 with arguments after the は is F3 whose subject arm が is X (`via_topic`).
+  F4 主語なし  an event clause with no が and no は: the arms are the arguments it has (may be none); the clause goes to the open topic's nest (M3).
+  F0 形なし    anything else; `reason` says why: no_unit | gap_is_not_a_particle | negated | question | no_predicate | no_relation | case_before_topic | two_topics |
+               repeated_case_particle | coordination | value_not_noun.
+  CHANGE       「[X は | Y を] A から B に 変更」: a change clause keeps the shape of its slot (F1 when the slot has a の-arm, else F2; no slot: F4), value = B, `change` = (old A, new B).
+"""
+from __future__ import annotations
+
+import hashlib
+import inspect
+import json
+import unicodedata
+from dataclasses import dataclass, replace
+from typing import Any, Dict, List, Optional, Sequence, Tuple
+
+from verantyx.lang import strip_attribution
+from verantyx.line3 import grammar as gm
+from verantyx.line3 import space as sp
+from verantyx.line3.funcwords import is_function_unit
+
+SHAPES_VERSION = "shape.v1"
+SHAPE_NAMES: Dict[str, str] = {"F1": "属性", "F2": "主題値", "F3": "出来事", "F4": "主語なし", "F0": "形なし"}
+SHAPE_ORDER: Tuple[str, ...] = ("F1", "F2", "F3", "F4", "F0")
+F0_REASONS: Tuple[str, ...] = ("no_unit", "gap_is_not_a_particle", "negated", "question", "no_predicate", "no_relation", "case_before_topic", "two_topics",
+                               "repeated_case_particle", "coordination", "value_not_noun")
+
+ARM_PARTICLES = "のにでとをが"                      # the six arms of the foundation (grammar.ARM_PARTICLES)
+CASE_ARGS = "がをにでと"                            # the argument particles of an event (の is the chain particle, は the topic)
+READ_ORDER = "がをとでにの"                         # OP-LOOM-3: the order the arms are read in (then the centre)
+TOPIC = "は"
+FROM, TO, CHANGE_PREDICATE = "から", "に", "変更"
+HARD_CUTS = "。．!?！？;；\n"
+SOFT_CUTS = "、，,"
+LABEL_CUTS = "：:"
+NEGATION = ("ない", "なかっ", "ません")             # in the tail of a clause: the clause is not an affirmative statement
+VALUE_POS1 = ("名詞", "接尾辞", "記号", "未知語")   # the head of a value (the A of 「X は A」): a noun phrase or a number (F2, 4.2)
+LIGHT_LEMMAS = ("為る", "成る", "居る", "有る", "来る", "出来る", "行く", "置く", "仕舞う", "見る", "呉れる", "遣る", "上げる", "貰う", "下さる", "頂く")   # 非自立可能 verbs that are verb endings, not predicates
+DONE_SUFFIXES = ("済み", "済")                      # 資料送付済み: a サ変 noun + 済み is a finished event of that noun
+COUNTER_POS3 = ("助数詞", "助数詞可能")             # a counter (本, 日, 台, 回) after a numeral
+ADVERBIAL_POS3 = "副詞可能"                         # a noun that is a time word (昨日, 来週, 今朝)
+
+
+# ------------------------------------------------------------------------------------------------------------------------------------------
+# the records
+# ------------------------------------------------------------------------------------------------------------------------------------------
+@dataclass(frozen=True)
+class Seat:
+    """A phrase on a seat: the text of the stretch (from its first unit to its last), the units (the grammar layer's WORD units) and the span in `Exchange.text`."""
+    text: str
+    units: Tuple[str, ...]
+    span: Tuple[int, int]
+
+    def to_obj(self) -> dict:
+        return {"text": self.text, "units": list(self.units), "span": list(self.span)}
+
+
+@dataclass(frozen=True)
+class Arm:
+    """One arm of a centre: the particle, the seat, and the arms of that seat's own centre (the の chain 「X の Y の Z」: Z's arm の is Y, whose arm の is X)."""
+    particle: str
+    seat: Seat
+    arms: Tuple["Arm", ...] = ()
+
+    def to_obj(self) -> dict:
+        return {"particle": self.particle, "seat": self.seat.to_obj(), "arms": [a.to_obj() for a in self.arms]}
+
+
+@dataclass(frozen=True)
+class Change:
+    old: Seat
+    new: Seat
+
+    def to_obj(self) -> dict:
+        return {"old": self.old.to_obj(), "new": self.new.to_obj()}
+
+
+@dataclass(frozen=True)
+class Clause:
+    shape: str                                  # F0..F4
+    span: Tuple[int, int]                       # character span of the clause in `Exchange.text` (first to last letter of the clause, punctuation at the cuts excluded)
+    text: str
+    centre: Optional[str] = None                # the centre as a PHRASE (開催地; for a verb its dictionary form: 開く); None for F0
+    centre_units: Tuple[str, ...] = ()          # the WORD units of the centre phrase (開催, 地; a verb: ..., 開く)
+    arms: Tuple[Arm, ...] = ()                  # in READ_ORDER
+    value: Optional[Seat] = None                # the value seat (F1, F2, a change clause)
+    reason: Optional[str] = None                # F0 only
+    detail: Optional[str] = None                # F0: the gap / unit the reason is about
+    change: Optional[Change] = None
+    via_topic: bool = False                     # F3: the subject arm が is the は-topic
+    tail: str = ""                              # the letters of the function units after the last unit (です, した, ...)
+    surface: Optional[str] = None               # a verb predicate as written (開いた, 遅れている): the provenance of the lemma in `centre`
+    adverbial: Tuple[Seat, ...] = ()            # the leading adverbials that were attached to this clause (昨日、 来週は、 では、)
+    quantity: Optional[Seat] = None             # an event: the numeral + counter touching the predicate (52本 of 52本保管します); never part of the centre
+    object_bare: Optional[Seat] = None          # an event: the other nouns touching the predicate without a particle (資料 of 資料送付済み); never part of the centre
+
+    def to_obj(self) -> dict:
+        return {"shape": self.shape, "span": list(self.span), "text": self.text, "centre": self.centre, "centre_units": list(self.centre_units),
+                "arms": [a.to_obj() for a in self.arms], "value": None if self.value is None else self.value.to_obj(), "reason": self.reason, "detail": self.detail,
+                "change": None if self.change is None else self.change.to_obj(), "via_topic": self.via_topic, "tail": self.tail, "surface": self.surface,
+                "adverbial": [a.to_obj() for a in self.adverbial], "quantity": None if self.quantity is None else self.quantity.to_obj(),
+                "object_bare": None if self.object_bare is None else self.object_bare.to_obj()}
+
+
+@dataclass(frozen=True)
+class Exchange:
+    text: str                                   # the sentence as the exchanger read it: NFC, attribution stripped
+    clauses: Tuple[Clause, ...]
+    skipped: Tuple[Tuple[Tuple[int, int], str], ...]    # ((span, why)): a label ending in a colon
+
+    def shapes(self) -> Tuple[str, ...]:
+        return tuple(c.shape for c in self.clauses)
+
+    def to_obj(self) -> dict:
+        return {"v": SHAPES_VERSION, "text": self.text, "clauses": [c.to_obj() for c in self.clauses], "skipped": [[list(s), w] for s, w in self.skipped]}
+
+
+@dataclass(frozen=True)
+class _Tok:
+    s: str
+    a: int
+    b: int
+    pos1: str
+    pos2: str
+    pos3: str
+    lemma: str
+    cform: str
+    fn: bool                                    # a function unit: the loom's filter on the surface alone, or a particle / auxiliary / light-verb token (助詞 助動詞 非自立可能) as the sentence reads it
+
+
+# ------------------------------------------------------------------------------------------------------------------------------------------
+# the cut (rules, frozen)
+# ------------------------------------------------------------------------------------------------------------------------------------------
+def _tokens(text: str) -> List[_Tok]:
+    """The WORD tokens of `text` with their spans -- the cut of `granularity._raw_spans` / `grammar.words_of` (a token without a letter is dropped) -- with the tagger's features and
+    the function-unit flag of the loom's unit filter.  The features of ALL tokens are read before `is_function_unit` is asked (it runs the same tagger on a unit and would overwrite the
+    sentence's lattice: a feature read after it can be 'BOS/EOS'; and which tokens it had cached would make the answer depend on the process history)."""
+    raw: List[Tuple[str, int, int, str, str, str, str, str]] = []
+    pos = 0
+    for w in sp._get_tagger()(text):
+        i = text.find(w.surface, pos)
+        if i < 0:
+            continue
+        pos = i + len(w.surface)
+        if sp._has_letter(w.surface):
+            f = w.feature
+            raw.append((w.surface, i, pos, str(f.pos1 or ""), str(f.pos2 or ""), str(f.pos3 or ""), str(f.lemma or ""), str(f.cForm or "")))
+    out: List[_Tok] = []
+    for surface, i, j, p1, p2, p3, lemma, cform in raw:
+        fn = bool(is_function_unit(surface, sp.WORD)) or p1 in ("助詞", "助動詞") or (p2 == "非自立可能" and lemma in LIGHT_LEMMAS)      # the loom's rule on the surface, and the tokens of a verb ending as the sentence reads them
+        out.append(_Tok(surface, i, j, p1, p2, p3, lemma, cform, fn))
+    return out
+
+
+def _pieces(text: str) -> List[Tuple[int, int, str]]:
+    """(start, end, terminator) of the pieces between the cuts.  A comma / colon between two digits is no cut."""
+    out: List[Tuple[int, int, str]] = []
+    start = 0
+    for i, ch in enumerate(text):
+        if ch in HARD_CUTS or ch in SOFT_CUTS or ch in LABEL_CUTS:
+            if ch in SOFT_CUTS + LABEL_CUTS and 0 < i < len(text) - 1 and text[i - 1].isdigit() and text[i + 1].isdigit():
+                continue
+            out.append((start, i, ch))
+            start = i + 1
+    out.append((start, len(text), ""))
+    return out
+
+
+def _predicate(head: _Tok, tail: Sequence[_Tok], has_case_arg: bool, done: bool = False) -> bool:
+    """Can `head` (the last unit of the last phrase) be the centre of an event?  A verb the grammar layer keeps (any inflection: its centre is the lemma), a サ変 noun with する / し / さ /
+    に・と + なる after it, or such a noun alone with a case argument before it (体言止め)."""
+    if done or head.pos1 == "動詞":
+        return True
+    if head.pos1 == "名詞" and head.pos3 == "サ変可能":
+        t0 = tail[0] if tail else None
+        if t0 is not None and t0.lemma == "為る":                                  # 延期した, 開催する, 作成された
+            return True
+        if t0 is not None and t0.s in ("に", "と") and len(tail) > 1 and tail[1].lemma == "成る":      # 延期になった
+            return True
+        if t0 is None and has_case_arg:                                               # 体言止め: 「認証の期限を変更」
+            return True
+    return False
+
+
+def _classify(text: str, toks: Sequence[_Tok], term: str) -> Clause:
+    """One piece (its tokens, in order) -> one clause."""
+    span = (toks[0].a, toks[-1].b)
+    units = [t for t in toks if not t.fn]
+    ctext = text[span[0]:span[1]]
+
+    def f0(reason: str, detail: Optional[str] = None, tail: str = "") -> Clause:
+        return Clause("F0", span, ctext, reason=reason, detail=detail, tail=tail)
+
+    if not units:
+        return f0("no_unit")
+    tail_toks = [t for t in toks if t.a >= units[-1].b]
+    tail = "".join(t.s for t in tail_toks)
+    gaps = ["".join(t.s for t in toks if units[k].b <= t.a and t.b <= units[k + 1].a) for k in range(len(units) - 1)]
+    for g in gaps:
+        if g != "" and g != TOPIC and g != FROM and g not in ARM_PARTICLES:
+            return f0("gap_is_not_a_particle", g, tail)
+    if any(n in tail for n in NEGATION):
+        return f0("negated", tail, tail)
+    if (term != "" and term in "?？") or tail.endswith("か"):
+        return f0("question", tail, tail)
+
+    # phrases (touching units) and segments (phrases joined by の; a segment ends at a case gap)
+    phrases: List[List[int]] = [[0]]                                       # indexes into `units`
+    pgaps: List[str] = []
+    for k, g in enumerate(gaps):
+        if g == "":
+            phrases[-1].append(k + 1)
+        else:
+            pgaps.append(g)
+            phrases.append([k + 1])
+    segs: List[List[List[int]]] = [[phrases[0]]]                           # a segment = a list of phrases
+    cs: List[str] = []                                                     # the case gaps between segments
+    for p, g in zip(phrases[1:], pgaps):
+        if g == "の":
+            segs[-1].append(p)
+        else:
+            cs.append(g)
+            segs.append([p])
+    r = len(cs)
+
+    def seat(ph: Sequence[int]) -> Seat:
+        a, b = units[ph[0]].a, units[ph[-1]].b
+        return Seat(text[a:b], tuple(units[i].s for i in ph), (a, b))
+
+    def seat_of_seg(seg: Sequence[Sequence[int]]) -> Seat:                 # the whole chain as one stretch (a value)
+        a, b = units[seg[0][0]].a, units[seg[-1][-1]].b
+        return Seat(text[a:b], tuple(units[i].s for ph in seg for i in ph), (a, b))
+
+    def nest(seg: Sequence[Sequence[int]]) -> Tuple[Arm, ...]:             # 「X の Y の Z」 -> the arms of Z: の = Y (whose arm の = X)
+        if len(seg) < 2:
+            return ()
+        return (Arm("の", seat(seg[-2]), nest(seg[:-1])),)
+
+    def centre_of(seg: Sequence[Sequence[int]]) -> Tuple[str, Tuple[str, ...]]:      # the phrase as written, and its units
+        s = seat(seg[-1])
+        return s.text, s.units
+
+    def predicate_of(seg: Sequence[Sequence[int]]) -> Tuple[str, Tuple[str, ...], Optional[str], Optional[Seat], Optional[Seat]]:
+        """(centre, units, surface, quantity, object_bare) of the predicate phrase `seg[-1]`: the centre is the predicate ONLY (a verb: its lemma, the written form kept in `surface`; a サ変 noun: the noun;
+        a サ変 noun + 済み: the noun).  The units that touch it before it are never part of the centre: numerals with their counters are the `quantity`, any other noun is the `object_bare`."""
+        ph = seg[-1]
+        k = ph.index(hidx)
+        h = units[hidx]
+        pre = ph[:k]
+        num: List[bool] = []
+        for j, i in enumerate(pre):
+            u = units[i]
+            num.append(u.pos2 == "数詞" or (j > 0 and num[j - 1] and (u.pos1 == "接尾辞" or u.pos3 in COUNTER_POS3)))
+
+        def mk(ids: List[int]) -> Optional[Seat]:
+            if not ids:
+                return None
+            a_, b_ = units[ids[0]].a, units[ids[-1]].b
+            return Seat(text[a_:b_], tuple(units[i].s for i in ids), (a_, b_))
+        q, bare = mk([i for i, n in zip(pre, num) if n]), mk([i for i, n in zip(pre, num) if not n])
+        if h.pos1 == "動詞":
+            lemma = h.lemma.split("-")[0] or h.s
+            return lemma, (lemma,), text[h.a:h.b] + tail, q, bare
+        return h.s, (h.s,), (text[h.a:units[ph[-1]].b] + tail) if done else None, q, bare
+
+    def arm_of(c: str, seg: Sequence[Sequence[int]]) -> Arm:
+        return Arm(c, seat(seg[-1]), nest(seg))
+
+    def ordered(arms: Sequence[Arm]) -> Tuple[Arm, ...]:
+        return tuple(sorted(arms, key=lambda a: READ_ORDER.index(a.particle)))
+
+    # -- a change clause: [X は | Y を] A から B に 変更 ---------------------------------------------------------------------------------------
+    last = segs[-1]
+    if (r >= 2 and cs[-2] == FROM and cs[-1] == TO and len(last) == 1 and [units[i].s for i in last[0]] == [CHANGE_PREDICATE] and (r == 2 or (r == 3 and cs[0] in (TOPIC, "を")))):
+        old, new = seat_of_seg(segs[-3]), seat_of_seg(segs[-2])
+        ch = Change(old, new)
+        if r == 2:                                                         # no slot: the change of whatever the open topic's nest holds
+            return Clause("F4", span, ctext, CHANGE_PREDICATE, (CHANGE_PREDICATE,), (), new, change=ch, tail=tail)
+        slot = segs[0]
+        c, cu = centre_of(slot)
+        return Clause("F1" if len(slot) > 1 else "F2", span, ctext, c, cu, nest(slot), new, change=ch, tail=tail)
+    for c in cs:
+        if c == FROM:
+            return f0("gap_is_not_a_particle", FROM, tail)
+
+    args = [c for c in cs if c in CASE_ARGS]
+    for c in CASE_ARGS:
+        if args.count(c) > 1:
+            return f0("repeated_case_particle", c, tail)
+    for i, c in enumerate(cs[:-1]):
+        if c == "と" and cs[i + 1] in ("が", TOPIC, "を"):
+            return f0("coordination", "と", tail)
+    if cs.count(TOPIC) > 1:
+        return f0("two_topics", TOPIC, tail)
+    lastu = units[last[-1][-1]]
+    hidx = last[-1][-1]                                                    # the predicate unit: the last unit, or the サ変 noun before a final 済み
+    done = len(last[-1]) > 1 and lastu.pos1 == "接尾辞" and lastu.s in DONE_SUFFIXES and units[last[-1][-2]].pos1 == "名詞" and units[last[-1][-2]].pos3 == "サ変可能"
+    if done:
+        hidx = last[-1][-2]
+    head = units[hidx]
+
+    def event(subject: Optional[Sequence[Sequence[int]]], rest: Sequence[Tuple[str, Sequence[Sequence[int]]]], via_topic: bool) -> Clause:
+        """The final segment is the predicate; `rest` = the (particle, segment) arguments before it."""
+        has_case = any(c in CASE_ARGS for c, _ in rest)
+        if not _predicate(head, tail_toks, has_case, done) or len(last) != 1:
+            return f0("no_predicate", head.s, tail)
+        arms = [arm_of(c, s) for c, s in rest]
+        if subject is not None:
+            arms.append(arm_of("が", subject))
+        has_subject = any(a.particle == "が" for a in arms)
+        c, cu, sf, qn, ob = predicate_of(last)
+        return Clause("F3" if has_subject else "F4", span, ctext, c, cu, ordered(arms), via_topic=via_topic, tail=tail, surface=sf, quantity=qn, object_bare=ob)
+
+    # -- a topic -----------------------------------------------------------------------------------------------------------------------------
+    if TOPIC in cs:
+        t = cs.index(TOPIC)
+        if t != 0:
+            return f0("case_before_topic", cs[0], tail)
+        subject = segs[0]
+        after = list(zip(cs[1:], segs[1:-1]))
+        if after:
+            return event(subject, after, True)
+        if _predicate(head, tail_toks, False, done) and len(last) == 1:
+            c, cu, sf, qn, ob = predicate_of(last)
+            return Clause("F3", span, ctext, c, cu, (arm_of("が", subject),), via_topic=True, tail=tail, surface=sf, quantity=qn, object_bare=ob)
+        if lastu.pos1 not in VALUE_POS1:
+            return f0("value_not_noun", lastu.s, tail)
+        c, cu = centre_of(subject)
+        return Clause("F1" if len(subject) > 1 else "F2", span, ctext, c, cu, nest(subject), seat_of_seg(last), tail=tail)
+
+    # -- no topic ------------------------------------------------------------------------------------------------------------------------------
+    if r == 0:
+        if _predicate(head, tail_toks, False, done) and len(last) == 1:
+            return event(None, [], False)
+        return f0("no_relation", None, tail)
+    return event(None, list(zip(cs, segs[:-1])), False)
+
+
+def _adverbial(pt: Sequence[_Tok], c: Clause, term: str) -> bool:
+    """A piece ended by a soft cut that is no clause of its own and says only when / how: only function words (では、 しかし、 はい、), or only time words (昨日、 来週は、)."""
+    if term == "" or term not in SOFT_CUTS or c.shape != "F0" or c.reason not in ("no_unit", "no_relation"):
+        return False
+    us = [t for t in pt if not t.fn]
+    return all(t.pos3 == ADVERBIAL_POS3 for t in us) and not any(t.lemma in ("です", "だ", "である") for t in pt)
+
+
+def _exchange(text: str) -> Exchange:
+    toks = _tokens(text)
+    clauses: List[Clause] = []
+    skipped: List[Tuple[Tuple[int, int], str]] = []
+    pending: List[Tuple[Seat, Clause]] = []                                 # leading adverbials waiting for the clause that follows
+
+    def flush() -> None:                                                    # an adverbial with no clause after it stays what it was: a clause of F0
+        clauses.extend(c for _, c in pending)
+        pending.clear()
+
+    for a, b, term in _pieces(text):
+        pt = [t for t in toks if a <= t.a < b]
+        if not pt:
+            if term != "" and term in HARD_CUTS:                            # a sentence ended: an adverbial before it has no clause
+                flush()
+            continue
+        if term != "" and term in LABEL_CUTS:
+            flush()
+            skipped.append(((pt[0].a, pt[-1].b), "label"))
+            continue
+        c = _classify(text, pt, term)
+        if _adverbial(pt, c, term):
+            sp_ = (pt[0].a, pt[-1].b)
+            pending.append((Seat(text[sp_[0]:sp_[1]], tuple(t.s for t in pt if not t.fn), sp_), c))
+            continue
+        if pending:
+            c = replace(c, adverbial=tuple(x for x, _ in pending))
+            pending.clear()
+        clauses.append(c)
+    flush()
+    return Exchange(text, tuple(clauses), tuple(skipped))
+
+
+# ------------------------------------------------------------------------------------------------------------------------------------------
+# the frozen table
+# ------------------------------------------------------------------------------------------------------------------------------------------
+RULES = (_tokens, _pieces, _predicate, _classify, _adverbial, _exchange)
+CONSTANTS: Dict[str, Any] = {"version": SHAPES_VERSION, "shapes": SHAPE_NAMES, "f0": list(F0_REASONS), "arms": ARM_PARTICLES, "case": CASE_ARGS, "read_order": READ_ORDER, "topic": TOPIC,
+                             "change": [FROM, TO, CHANGE_PREDICATE], "hard": HARD_CUTS, "soft": SOFT_CUTS, "label": LABEL_CUTS, "negation": list(NEGATION), "value_pos1": list(VALUE_POS1),
+                             "light": list(LIGHT_LEMMAS), "adverbial": ADVERBIAL_POS3, "done": list(DONE_SUFFIXES), "counter": list(COUNTER_POS3)}
+
+
+def _shapes_sha() -> str:
+    h = hashlib.sha256()
+    h.update(json.dumps(CONSTANTS, ensure_ascii=False, sort_keys=True).encode("utf-8"))
+    for f in RULES:
+        h.update(b"\x00")
+        h.update(inspect.getsource(f).encode("utf-8"))
+    return h.hexdigest()
+
+
+SHAPES_SHA = _shapes_sha()
+
+
+def exchange(sentence: str) -> Exchange:
+    """The shape exchanger: a sentence -> its clauses, each with a shape (F1..F4, or F0 with a reason).  Pure."""
+    text = strip_attribution(unicodedata.normalize("NFC", sentence or ""))
+    return _exchange(text)
+
+
+def shapes_of(sentence: str) -> Tuple[str, ...]:
+    return exchange(sentence).shapes()
