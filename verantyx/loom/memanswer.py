@@ -50,14 +50,16 @@ ANSWER_V2 = "memanswer.v2"          # MEM-fix (L-MEM-59 / 60): the answer run ho
 ANSWER_V3 = "memanswer.v3"          # PUB-M6: the answer run of a mem.v4 store: `recall` reads the memory CROSSES (memask), rebuilt from the snapshot and the file `crosses_<sha12>.json` (nest declarations + bridges) it is paired with
 ANSWER_V4 = "memanswer.v4"          # PUB-M6c: memanswer.v3 + the versions of the store (shape / ask / qwords, in the crosses file) + `bridge` in the run + weave_span.v4 (the source slice is emitted) + `contested_value`
 ANSWER_V5 = "memanswer.v5"          # PUB-M6e: memanswer.v4 with every emit-time safety decision made FROM THE INDEX and the TASK QUESTION, never from the recalls the model chose to make (the review of a6970cd3..67fe932f)
-ANSWER_VERSIONS: Tuple[str, ...] = (ANSWER_VERSION, ANSWER_V2, ANSWER_V3, ANSWER_V4, ANSWER_V5, "memanswer.v6", "memanswer.v7", "memanswer.v8", "memanswer.v9")
+ANSWER_VERSIONS: Tuple[str, ...] = (ANSWER_VERSION, ANSWER_V2, ANSWER_V3, ANSWER_V4, ANSWER_V5, "memanswer.v6", "memanswer.v7", "memanswer.v8", "memanswer.v9", "memanswer.v10")
 ANSWER_V6 = "memanswer.v6"          # PUB-M6f: memanswer.v5 + no completion through a bridge of the run, a CHOICE the run's bridge collapses stays contested, `unindexed_value`
 ANSWER_V7 = "memanswer.v7"          # PUB-M6g (designer): DEFAULT-DENY emit -- the task question recalled WITHOUT the run's bridges must have exactly one live value and the quote must be exactly an occurrence of it
 ANSWER_V8 = "memanswer.v8"          # PUB-M6h: memanswer.v7 with the identity of a value = the value AS WRITTEN (NFC only; 「・」 and spaces are part of it) and a quote that must equal its source text
 ANSWER_V9 = "memanswer.v9"          # PUB-M6i: memanswer.v8 with the value AS WRITTEN in the source (signs, currency, %, brackets, combining marks included) and `value_boundary_symbol`
-V4_PLUS: Tuple[str, ...] = (ANSWER_V4, ANSWER_V5, ANSWER_V6, ANSWER_V7, ANSWER_V8, ANSWER_V9)
+ANSWER_V10 = "memanswer.v10"        # PUB-M6j (designer): the value boundary is DENY-BY-DEFAULT (see memask.source_value(strict=True), L-PUB-99)
+V4_PLUS: Tuple[str, ...] = (ANSWER_V4, ANSWER_V5, ANSWER_V6, ANSWER_V7, ANSWER_V8, ANSWER_V9, ANSWER_V10)
 GUARD_V3 = "ansguard.v1"            # PUB-M6b (L-PUB-54..57; memanswer.v3 only, no v3 ledger was ever recorded with a model): weave_span refuses a stretch that is not verbatim and a value the recall replaced; emit may hand the gate a completed question
 GUARD_V4 = "ansguard.v2"            # PUB-M6c (memanswer.v4): ansguard.v1 with the joiner-aware verbatim check + an emit of one value of a same-seat CHOICE is refused `contested_value`
+GUARD_V10 = "ansguard.v8"           # PUB-M6j (memanswer.v10): deny-by-default value boundary
 GUARD_V9 = "ansguard.v7"            # PUB-M6i (memanswer.v9): source-text values, see L-PUB-96
 GUARD_V8 = "ansguard.v6"            # PUB-M6h (memanswer.v8): written identity, exact quote, see L-PUB-93
 GUARD_V7 = "ansguard.v5"            # PUB-M6g (memanswer.v7): default-deny, see L-PUB-90
@@ -336,7 +338,7 @@ class AnswerRun(Run):
 
     def __init__(self, corpus: Corpus, rows: Sequence[dict], store_id: str, snapshot_name_: str, question: str, model: str, run_id: str,
                  topics: Optional[Sequence[str]] = None, topics_file: Optional[str] = None, crosses: Optional[Tuple[str, Sequence[dict], Sequence[dict]]] = None,
-                 evidence: Optional[Tuple[str, str]] = None, versions: Optional[Dict[str, str]] = None, v5: bool = False, v6: bool = False, v7: bool = False, v8: bool = False, v9: bool = False) -> None:
+                 evidence: Optional[Tuple[str, str]] = None, versions: Optional[Dict[str, str]] = None, v5: bool = False, v6: bool = False, v7: bool = False, v8: bool = False, v9: bool = False, v10: bool = False) -> None:
         mg.check_memory_rows(rows)
         task = {"task_id": ANSWER_TASK_ID, "text": question, "lang": "prose", "mode": "record_only", "tiers": ["WORD"]}
         super().__init__(corpus, task, model, run_id, DEFAULT_STABILITY, None, None, notelib.NOTES_VERSION, tuple(evidence if evidence is not None else ANSWER_EVIDENCE))
@@ -350,7 +352,8 @@ class AnswerRun(Run):
         self.topics_file = topics_file
         self.v3 = crosses is not None                     # memanswer.v3: recall reads the memory crosses of a mem.v4 store (memanswer.v4 too)
         self.v4 = versions is not None                    # memanswer.v4 (and v5): + the store's versions, `bridge`, weave_span.v4, contested_value
-        self.v9 = bool(v9)                                # memanswer.v9 (L-PUB-96)
+        self.v10 = bool(v10)                              # memanswer.v10 (L-PUB-99)
+        self.v9 = bool(v9) or self.v10                                # memanswer.v9 (L-PUB-96)
         self.v8 = bool(v8) or self.v9                                # memanswer.v8 (L-PUB-93)
         self.v7 = bool(v7) or self.v8                                # memanswer.v7 (L-PUB-90)
         self.v6 = bool(v6) or self.v7                                # memanswer.v6 (L-PUB-87)
@@ -404,8 +407,8 @@ class AnswerRun(Run):
             res["mem_answer"].update(crosses_file=self.crosses_file, ask=mask.ASK_VERSION, cross=mx.CROSS_VERSION, guard=GUARD_V3, complete=mask.COMPLETE_VERSION)
             res["rules"] = dict(res["rules"], recall=ANSWER_RULES_V3["recall"])
         if self.v4:
-            res["mem_answer"]["version"] = ANSWER_V9 if self.v9 else ANSWER_V8 if self.v8 else ANSWER_V7 if self.v7 else ANSWER_V6 if self.v6 else ANSWER_V5 if self.v5 else ANSWER_V4
-            res["mem_answer"].update(ask=self.versions["ask"], qwords=self.versions["qwords"], shape=self.versions["shape"], guard=GUARD_V9 if self.v9 else GUARD_V8 if self.v8 else GUARD_V7 if self.v7 else GUARD_V6 if self.v6 else GUARD_V5 if self.v5 else GUARD_V4, readout=ops.WEAVE_SPAN_V4,
+            res["mem_answer"]["version"] = ANSWER_V10 if self.v10 else ANSWER_V9 if self.v9 else ANSWER_V8 if self.v8 else ANSWER_V7 if self.v7 else ANSWER_V6 if self.v6 else ANSWER_V5 if self.v5 else ANSWER_V4
+            res["mem_answer"].update(ask=self.versions["ask"], qwords=self.versions["qwords"], shape=self.versions["shape"], guard=GUARD_V10 if self.v10 else GUARD_V9 if self.v9 else GUARD_V8 if self.v8 else GUARD_V7 if self.v7 else GUARD_V6 if self.v6 else GUARD_V5 if self.v5 else GUARD_V4, readout=ops.WEAVE_SPAN_V4,
                                      bridge_cap=BRIDGE_CAP, evidence=self.evidence[0])
             res["rules"] = dict(res["rules"], recall=ANSWER_RULES_V4["recall"], bridge=ANSWER_RULES_V4["bridge"])
             if self.v5:
@@ -459,7 +462,7 @@ def _h_recall(run: AnswerRun, a: dict, i: int) -> dict:
     mg.check_memory_rows(run.rows)
     if run.v3:
         ix = run.index()
-        res = mask.recall(ix, run.rows, run.corpus, q, ask=run.versions["ask"], bridges=tuple(ix.bridges) + tuple(run.run_bridges), exact_values=run.v8, source_values=run.v9) if run.v4 else mask.recall(ix, run.rows, run.corpus, q)
+        res = mask.recall(ix, run.rows, run.corpus, q, ask=run.versions["ask"], bridges=tuple(ix.bridges) + tuple(run.run_bridges), exact_values=run.v8, source_values=(2 if run.v10 else run.v9)) if run.v4 else mask.recall(ix, run.rows, run.corpus, q)
         res.update(ok=True, text=q)
         _note_recall(run, res, q)
         return res
@@ -570,8 +573,8 @@ def _h_weave_span(run: AnswerRun, a: dict, i: int) -> dict:
                                                     "hint": "the loom reads this stretch out without its punctuation, so emitting it would change the value: abstain (cannot_weave)"})
             n = mn.norm_answer(source)
             key = (tg[0], tg[2], tg[3])
-            if run.v9 and not mask.source_value(run.corpus, tg[0], tg[2], tg[3])[1]:
-                raise Refuse("value_boundary_symbol", {"sid": tg[0], "source": source[:64], "written": mask.source_value(run.corpus, tg[0], tg[2], tg[3])[0][:64],
+            if run.v9 and not mask.source_value(run.corpus, tg[0], tg[2], tg[3], run.v10)[1]:
+                raise Refuse("value_boundary" if run.v10 else "value_boundary_symbol", {"sid": tg[0], "source": source[:64], "written": mask.source_value(run.corpus, tg[0], tg[2], tg[3], run.v10)[0][:64],
                                                        "hint": "a sign, currency mark, %, bracket or combining mark stands next to this value: the value as written is longer than the quote, abstain"})
             if run.v5:                                                       # memanswer.v5: decided from the index history of the stretch's position, whatever was recalled
                 if _stretch_status(run, tg[0], tg[2], tg[3], source)[0] == "replaced":
@@ -584,7 +587,7 @@ def _h_weave_span(run: AnswerRun, a: dict, i: int) -> dict:
 def _task_recall(run: AnswerRun) -> dict:
     """memanswer.v5: the recall of THE TASK QUESTION (the question the run was begun with; the bridges the model confirmed apply), made by the run itself, for the decisions of weave / emit."""
     ix = run.index()
-    return mask.recall(ix, run.rows, run.corpus, run.task["text"], ask=run.versions["ask"], bridges=tuple(ix.bridges) + tuple(run.run_bridges), exact_values=run.v8, source_values=run.v9)
+    return mask.recall(ix, run.rows, run.corpus, run.task["text"], ask=run.versions["ask"], bridges=tuple(ix.bridges) + tuple(run.run_bridges), exact_values=run.v8, source_values=(2 if run.v10 else run.v9))
 
 
 def _stretch_maps(run: AnswerRun) -> Tuple[Dict[Tuple[int, int, int], List[Tuple[Any, Any]]], Dict[int, List[Tuple[str, Any, Any]]]]:
@@ -596,7 +599,7 @@ def _stretch_maps(run: AnswerRun) -> Tuple[Dict[Tuple[int, int, int], List[Tuple
             for e in ix.history_full(p):
                 sp = mask._unit_span(run.corpus, e.sid, e.units)
                 if sp is not None:
-                    st.setdefault((e.sid, sp[0], sp[1]), []).append((p, mask.source_entries(run.corpus, [e])[0] if run.v9 else e))
+                    st.setdefault((e.sid, sp[0], sp[1]), []).append((p, mask.source_entries(run.corpus, [e], run.v10)[0] if run.v9 else e))
                 if e.change is not None and e.change.old:
                     olds.setdefault(e.sid, []).append((_ident(run, e.change.old), p, e.scope))
         run._stretches, run._olds = st, olds
@@ -610,7 +613,7 @@ def _ident(run: AnswerRun, s: str) -> str:
 
 def _entries_at(run: AnswerRun, p: Any, scope: Optional[str]) -> List[Any]:
     es = [x for x in run.index().history_full(p) if x.scope == scope]
-    return mask.source_entries(run.corpus, es) if run.v9 else es
+    return mask.source_entries(run.corpus, es, run.v10) if run.v9 else es
 
 
 def _live_norms_at(run: AnswerRun, p: Any, scope: Optional[str]) -> List[str]:
@@ -659,11 +662,11 @@ def _h_emit_v3(run: AnswerRun, a: dict, i: int) -> dict:
         comps = {(c["sid"], c["span"][0], c["span"][1]): c for c in reversed(mask.completions(run.index(), rt, run.task["text"], run.v6))}
         task0_spans: List[Tuple[int, int, int]] = []
         if run.v6:                                                                              # memanswer.v6: the question as the TASK asks it, without the bridges the run made
-            rt0 = rt if not run.run_bridges else mask.recall(run.index(), run.rows, run.corpus, run.task["text"], ask=run.versions["ask"], bridges=tuple(run.index().bridges), exact_values=run.v8, source_values=run.v9)
+            rt0 = rt if not run.run_bridges else mask.recall(run.index(), run.rows, run.corpus, run.task["text"], ask=run.versions["ask"], bridges=tuple(run.index().bridges), exact_values=run.v8, source_values=(2 if run.v10 else run.v9))
             if rt0.get("verdict") == "CHOICE" and rt0.get("sources", 0) >= 2:
                 task0_spans = _spans_of(rt0.get("answers", ()))[0]
         if run.v7:                                                                              # memanswer.v7: DEFAULT-DENY (designer, L-PUB-90)
-            rt0v = rt if not run.run_bridges else mask.recall(run.index(), run.rows, run.corpus, run.task["text"], ask=run.versions["ask"], bridges=tuple(run.index().bridges), exact_values=run.v8, source_values=run.v9)
+            rt0v = rt if not run.run_bridges else mask.recall(run.index(), run.rows, run.corpus, run.task["text"], ask=run.versions["ask"], bridges=tuple(run.index().bridges), exact_values=run.v8, source_values=(2 if run.v10 else run.v9))
             one = lambda r: r.get("verdict") in ("ANSWER", "UPDATED") and len(r.get("answers", ())) == 1 and (not run.v8 or len({mask.written_id(t) for t in r["answers"][0]["answers"]}) == 1)      # v8: one group of ONE written text
             if one(rt0v):
                 base = rt0v
@@ -684,8 +687,8 @@ def _h_emit_v3(run: AnswerRun, a: dict, i: int) -> dict:
         for wv in evl.intact_weaves(run).values():
             key = (wv["sid"], wv["i0"], wv["i1"])
             _r, source, _v = mask.quote_check(run.corpus, wv["sid"], wv["i0"], wv["i1"], None, True)
-            if run.v9 and not mask.source_value(run.corpus, wv["sid"], wv["i0"], wv["i1"])[1]:
-                raise Refuse("value_boundary_symbol", {"sid": wv["sid"], "text": source[:64], "hint": "a symbol stands next to this value: abstain"})
+            if run.v9 and not mask.source_value(run.corpus, wv["sid"], wv["i0"], wv["i1"], run.v10)[1]:
+                raise Refuse("value_boundary" if run.v10 else "value_boundary_symbol", {"sid": wv["sid"], "text": source[:64], "hint": "a symbol stands next to this value: abstain"})
             st = _stretch_status(run, wv["sid"], wv["i0"], wv["i1"], source)[0]
             if run.v6 and key in task0_spans:
                 raise Refuse("contested_value", {"sid": wv["sid"], "text": source[:64], "hint": "the task question alone has several answers (a CHOICE): a bridge of this run cannot pick one: abstain(type=contested)"})
@@ -794,7 +797,7 @@ class AnswerSession:
             run_id = "a%04d" % k
         if not _RUN_RX.match(run_id) or (d / run_id).exists():
             raise Refuse("bad_run_id", {"run_id": run_id})
-        self.run = AnswerRun(Corpus(data), rows, snap["store_id"], snap["name"], question, model, run_id, topics, topics_file, crosses, evidence, versions, answer_version in (ANSWER_V5, ANSWER_V6, ANSWER_V7, ANSWER_V8, ANSWER_V9), answer_version in (ANSWER_V6, ANSWER_V7, ANSWER_V8, ANSWER_V9), answer_version in (ANSWER_V7, ANSWER_V8, ANSWER_V9), answer_version in (ANSWER_V8, ANSWER_V9), answer_version == ANSWER_V9)
+        self.run = AnswerRun(Corpus(data), rows, snap["store_id"], snap["name"], question, model, run_id, topics, topics_file, crosses, evidence, versions, answer_version in (ANSWER_V5, ANSWER_V6, ANSWER_V7, ANSWER_V8, ANSWER_V9, ANSWER_V10), answer_version in (ANSWER_V6, ANSWER_V7, ANSWER_V8, ANSWER_V9, ANSWER_V10), answer_version in (ANSWER_V7, ANSWER_V8, ANSWER_V9, ANSWER_V10), answer_version in (ANSWER_V8, ANSWER_V9, ANSWER_V10), answer_version in (ANSWER_V9, ANSWER_V10), answer_version == ANSWER_V10)
         self.ledger = lg.Ledger(d / run_id)
         meta = {"store": snap["store_id"], "mode": "memory_answer", "snapshot": snap["name"], "corpus_sha": hashlib.sha256(data).hexdigest()}
         if want_topics:
@@ -911,7 +914,7 @@ def replay_answer(run_dir, store_path=None) -> ReplayResult:
     ep = res0.get("evidence_profile")                    # the gate the run was recorded with (a run before PUB-M6c: evidence.v2)
     evidence = (ep["version"], ep["subject_scope"]) if isinstance(ep, dict) and "version" in ep and "subject_scope" in ep else LEGACY_EVIDENCE
     try:
-        run = AnswerRun(Corpus(data), srows, str(ma["store_id"]), str(ma["snapshot"]), question, model, run_id, topics, topics_file, crosses, evidence, versions, ma["version"] in (ANSWER_V5, ANSWER_V6, ANSWER_V7, ANSWER_V8, ANSWER_V9), ma["version"] in (ANSWER_V6, ANSWER_V7, ANSWER_V8, ANSWER_V9), ma["version"] in (ANSWER_V7, ANSWER_V8, ANSWER_V9), ma["version"] in (ANSWER_V8, ANSWER_V9), ma["version"] == ANSWER_V9)
+        run = AnswerRun(Corpus(data), srows, str(ma["store_id"]), str(ma["snapshot"]), question, model, run_id, topics, topics_file, crosses, evidence, versions, ma["version"] in (ANSWER_V5, ANSWER_V6, ANSWER_V7, ANSWER_V8, ANSWER_V9, ANSWER_V10), ma["version"] in (ANSWER_V6, ANSWER_V7, ANSWER_V8, ANSWER_V9, ANSWER_V10), ma["version"] in (ANSWER_V7, ANSWER_V8, ANSWER_V9, ANSWER_V10), ma["version"] in (ANSWER_V8, ANSWER_V9, ANSWER_V10), ma["version"] in (ANSWER_V9, ANSWER_V10), ma["version"] == ANSWER_V10)
     except (Refuse, ValueError):
         out.status, out.mismatch = "INPUTS", "snapshot_unverified"
         return out

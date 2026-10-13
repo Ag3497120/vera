@@ -314,7 +314,45 @@ def _is_symbol(ch: str) -> bool:
     return cat[0] in "SPM" or cat == "Cf"
 
 
-def source_value(corpus: Any, sid: int, i0: int, i1: int) -> Tuple[str, bool]:
+# memanswer.v10 (L-PUB-99): the boundary of a value is DENY-BY-DEFAULT.  A value (the exact source characters of its parsed units) is CLEAN only if what stands before it is the clause start or the end of a particle /
+# topic marker, and what stands after it is the sentence end, a clause mark or the beginning of a particle / copula / predicate ending.  Whatever else touches it (a qualifier 約 超 ほど くらい 程度 以上 以下 未満
+# 前後 -- listed here only as DOCUMENTATION --, a superscript, a fraction, a modifier letter, 々 ゝ ー 〆, a symbol, a bracket ...) makes it unclean; whatever its Unicode category.
+LEFT_PARTICLES = "はがのにでとをもへ"
+LEFT_SUFFIXES = ("から", "まで", "より")
+RIGHT_STARTS = ("は", "が", "の", "に", "で", "と", "を", "も", "へ", "から", "まで", "より", "だ", "です", "でし", "でも", "である", "ます", "なる", "なっ", "し", "する")
+RIGHT_DENY = ("のみ", "だけ", "ばかり", "しか", "ずつ", "ほど", "くらい", "ぐらい", "など", "でも", "だって", "のくらい")      # particles that restrict or approximate the value: not a boundary
+CLAUSE_MARKS = "、，。．!?！？"
+QUALIFIERS_DOC = ("約", "超", "ほど", "くらい", "ぐらい", "程度", "以上", "以下", "未満", "前後", "弱", "強")      # documentation only
+
+
+def _left_ok(text: str, a: int) -> bool:
+    j = a
+    while j > 0 and text[j - 1] in " \u3000\t":
+        j -= 1
+    if j == 0:
+        return True
+    if text[j - 1] in LEFT_PARTICLES or text[j - 1] in CLAUSE_MARKS or text[j - 1] in ":：":
+        return True
+    return text[max(0, j - 2):j] in LEFT_SUFFIXES
+
+
+def _right_ok(text: str, b: int) -> bool:
+    j = b
+    while j < len(text) and text[j] in " \u3000\t":
+        j += 1
+    if j >= len(text):
+        return True
+    ch = text[j]
+    if ch in CLAUSE_MARKS:
+        return True
+    if ch in ",." and (j + 1 >= len(text) or text[j + 1] in " \u3000\t" or text[j + 1] in CLAUSE_MARKS):
+        return True
+    if any(text.startswith(r, j) for r in RIGHT_DENY):
+        return False
+    return any(text.startswith(r, j) for r in RIGHT_STARTS)
+
+
+def source_value(corpus: Any, sid: int, i0: int, i1: int, strict: bool = False) -> Tuple[str, bool]:
     """memanswer.v9 (L-PUB-96): (the value AS WRITTEN, clean) for the WORD-unit stretch i0..i1 of sentence `sid`: the source slice extended over every adjacent symbol, punctuation (other than the clause / sentence
     marks of SENTENCE_PUNCT after it), combining mark or format character -- signs, currency, %, #, ~, parentheses, U+0301, U+FE0F ...  The clause parser drops those characters from the value of the index, so the
     value of the index is not what was written (「-5度」 is 「5度」, 「5%」 is 「5」).  clean = nothing had to be added: only then can the stretch be quoted as it stands."""
@@ -323,6 +361,12 @@ def source_value(corpus: Any, sid: int, i0: int, i1: int) -> Tuple[str, bool]:
     text = idx.text(sid)
     a, b = sps[i0][0], sps[i1][1]
     s0, e0 = a, b
+    if strict:                                                                  # memanswer.v10: extend to the nearest boundary the rule accepts; clean iff nothing had to be added
+        while a > 0 and not _left_ok(text, a):
+            a -= 1
+        while b < len(text) and not _right_ok(text, b):
+            b += 1
+        return unicodedata.normalize("NFC", text[a:b]), (a, b) == (s0, e0)
     while a > 0 and _is_symbol(text[a - 1]):
         a -= 1
     while b < len(text) and _is_symbol(text[b]) and text[b] not in SENTENCE_PUNCT:
@@ -330,12 +374,12 @@ def source_value(corpus: Any, sid: int, i0: int, i1: int) -> Tuple[str, bool]:
     return unicodedata.normalize("NFC", text[a:b]), (a, b) == (s0, e0)
 
 
-def source_entries(corpus: Any, entries: Sequence[mx.Entry]) -> List[mx.Entry]:
+def source_entries(corpus: Any, entries: Sequence[mx.Entry], strict: bool = False) -> List[mx.Entry]:
     """The entries with their value replaced by the value as written (`source_value`); an entry whose stretch is unknown keeps its value."""
     out: List[mx.Entry] = []
     for e in entries:
         sp = _unit_span(corpus, e.sid, e.units) if corpus is not None else None
-        out.append(e if sp is None else replace(e, value=source_value(corpus, e.sid, sp[0], sp[1])[0]))
+        out.append(e if sp is None else replace(e, value=source_value(corpus, e.sid, sp[0], sp[1], strict)[0]))
     return out
 
 
@@ -616,7 +660,7 @@ def recall(index: mx.MemIndex, rows: Sequence[dict], corpus: Any, question: str,
     same_seat = False
     for pos, es in groups:
         if source_values:                                                    # memanswer.v9: the value as written, not as the clause parser kept it
-            es = source_entries(corpus, es)
+            es = source_entries(corpus, es, source_values == 2)
         scopes: List[Optional[str]] = []
         for e in es:
             if e.scope not in scopes:

@@ -234,3 +234,68 @@ def test_source_value_extends_over_symbols_and_not_over_the_clause_marks():
     assert mask.source_value(c, 0, 2, 3) == ("-5度", False)
     assert mask.source_value(c, 1, 2, 2) == ("(5)", False)
     assert mask.source_value(c, 2, 2, 3) == ("5日", True)
+
+
+# -- memanswer.v10: the value boundary is DENY-BY-DEFAULT (the sixth review of 0e369d3c) ----------------------------------------------------------------------------
+V10 = ma.ANSWER_V10
+
+
+def store_some(tmp_path, writes, name):
+    """The sentences the exchanger accepts (a refused write is skipped); -> (path, how many were written)."""
+    st = new_store(tmp_path, name)
+    s = st.begin("m", profile=mem.PROFILE_V4, versions=M6C)
+    n = sum(1 for w in writes if s.write(w).get("ok"))
+    s.commit()
+    return str(tmp_path / name), n
+
+
+NEIGHBOURS = ["10²", "10³", "1½", "5ª", "5々", "5ゝ", "5ー", "5〆", "5日超", "5日ほど", "5日くらい", "5日ぐらい", "5日程度", "5日以上", "5日未満", "5日前後", "5日のみ", "5日だけ", "約5日", "5日弱", "-5度", "+5度", "5%", "(5)日", "$5"]
+
+
+@pytest.mark.parametrize("v", NEIGHBOURS)
+def test_a_value_with_anything_else_next_to_it_is_never_emitted_shortened(tmp_path, v):
+    p, n = store_some(tmp_path, ["認証の期限は" + v], "one%d" % abs(hash(v)))
+    got = attack(p, Q, n, version=V10)
+    assert all(g[1] == v for g in got), (v, got)                                                      # never a shortened text: either the whole value as written, or nothing
+
+
+@pytest.mark.parametrize("a,b", [("約5日", "5日"), ("5日超", "5日"), ("5日ほど", "5日"), ("5日くらい", "5日"), ("5日程度", "5日"), ("10²", "10"), ("1½", "1"), ("5ª", "5"), ("5々", "5"), ("5ー", "5"), ("5〆", "5"), ("5日のみ", "5日")])
+def test_a_qualified_value_and_the_bare_value_are_a_contradiction_not_one_answer(tmp_path, a, b):
+    p, n = store_some(tmp_path, ["認証の期限は" + a, "認証の期限は" + b], "pair%d" % abs(hash(a)))
+    if n < 2:
+        pytest.skip("the exchanger refuses one of the sentences: nothing to merge")
+    r = ma.AnswerSession(p, Q, "o", answer_version=V10).call("recall", {"question": Q})
+    assert r["verdict"] == "CHOICE" and len(r["answers"]) == 2
+    assert attack(p, Q, 2, version=V10) == []
+
+
+def test_a_change_to_a_qualified_value_does_not_emit_the_bare_value_via_update(tmp_path):
+    for new in ("約5日", "5日超", "5日ほど", "5日くらい"):
+        p, n = store_some(tmp_path, ["認証の期限は5日", "認証の期限は%sに変更" % new], "chg%d" % abs(hash(new)))
+        got = attack(p, Q, n, version=V10)
+        assert (1, "5日", "update") not in got and all(g[1] != "5日" or g[0] == 0 for g in got), (new, got)
+
+
+def test_v10_keeps_the_clean_boundaries_and_replays(tmp_path):
+    for w, v in (("認証の期限は12日", "12日"), ("認証の期限は12日。", "12日"), ("認証の期限は12日、", "12日"), ("認証の期限は12日です", "12日"), ("認証の期限は5日まで", "5日"),
+                 ("配布ビルドのバージョンは3.2.0-rc2です", "3.2.0-rc2")):
+        q = Q if "期限" in w else "配布ビルドのバージョンは何ですか？"
+        p, n = store_some(tmp_path, [w], "ok%d" % abs(hash(w)))
+        assert (0, v, None) in attack(p, q, n, version=V10), w
+    p = store(tmp_path, ["認証の期限は金曜から月曜に変更"], name="chgok")
+    assert attack(p, Q, 1, version=V10) == [(0, "月曜", "update")]
+    b = ma.AnswerSession(p, Q, "o", answer_version=V10)
+    assert b.begin_result["mem_answer"]["version"] == "memanswer.v10" and b.begin_result["mem_answer"]["guard"] == "ansguard.v8"
+    r = ma.replay_answer(b.ledger.dir)
+    assert r.run.v10 and r.run.v9
+
+
+def test_source_value_strict_extends_to_the_boundary_it_accepts():
+    from verantyx.loom import memask as mask
+    from verantyx.loom import memory as m
+    from verantyx.loom.memguard import make_source
+    rows = [{"kind": "base", "sent": x, "source": make_source("t", 1, i)} for i, x in enumerate(["認証の期限は約5日に変更", "認証の期限は5日ほどです", "認証の期限は5日です", "認証の期限は5日。"])]
+    c = m.build_corpus(rows)
+    assert mask.source_value(c, 0, 2, 3, True) == ("約5日", False)
+    assert mask.source_value(c, 1, 2, 3, True)[1] is False and mask.source_value(c, 1, 2, 3, True)[0].startswith("5日ほど")
+    assert mask.source_value(c, 2, 2, 3, True) == ("5日", True) and mask.source_value(c, 3, 2, 3, True) == ("5日", True)
