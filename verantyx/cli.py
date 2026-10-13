@@ -3275,9 +3275,9 @@ def main(argv: Optional[list] = None) -> int:
     q.add_argument("--allow-root", dest="allow_root", action="append", default=None, help="an extra folder the server may READ (repeatable)")
     q.add_argument("--stability", choices=["strict_npa", "strict_np", "report"], default="strict_npa",
                    help="OP-LOOM-1: strict_npa (default, the owner's choice: the full key (n, p, a)) | strict_np | report (annotation only)")
-    q.add_argument("--evidence", choices=["v1", "v2", "v3", "off"], default="v2",
+    q.add_argument("--evidence", choices=["v1", "v2", "v3", "v4", "off"], default="v2",
                    help="LOOM-evidence: the reader's evidence gate NEW prose runs get (v2 = evidence.v2, the default: only an unchanged weave_span quote that the loom reads as an "
-                        "answer to the question can be emitted, as one whole word or phrase; v1 = the first build's rules; v3 = the widened reach (selectable, not the default until the held-out bank6 passes); off = no gate). "
+                        "answer to the question can be emitted, as one whole word or phrase; v1 = the first build's rules; v3 = the widened reach (selectable, not the default until the held-out bank6 passes); v4 = v3 without the naming-verb rule R7, with the subject-chain rule (selectable, not the default until the held-out bank7 passes); off = no gate). "
                         "A run's begin row records it; replay uses the recorded profile")
     q.add_argument("--subject-scope", dest="subject_scope", choices=["clause_or_title", "clause"], default="clause_or_title",
                    help="OP-EV-1: clause_or_title (the owner's answer: the quoted sentence's article title may stand in for a subject word) | clause")

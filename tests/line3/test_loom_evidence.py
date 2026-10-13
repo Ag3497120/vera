@@ -376,8 +376,22 @@ def _stored_run_dirs():
     return dirs
 
 
+def _recorded_evidence(d):
+    """The evidence version the run's `begin` row recorded (None = a ledger made before the gate).  The stored runs are selected by THIS, never by the name of their folder
+    (LOOM-evidence-v4: the evidence.v2 runs h55f / reach_f / unans_f / unans_adv_f are tracked folders of the same shape as the evidence.v1 ones)."""
+    ep = rows(d)[0]["result"].get("evidence_profile")
+    return None if ep is None else ep["version"]
+
+
+def _runs_by_version():
+    out = {}
+    for d in _stored_run_dirs():
+        out.setdefault(_recorded_evidence(d), []).append(d)
+    return out
+
+
 def test_t_ev_07_every_ledger_made_before_the_gate_still_verifies_and_replays_identical():
-    old = [d for d in _stored_run_dirs() if not re.search(r"runs_(h55e|unans_e|unans_adv_e)", d)]
+    old = _runs_by_version().get(None, [])
     assert len(old) >= 390
     bad = []
     for d in old:
@@ -391,13 +405,24 @@ def test_t_ev_07_every_ledger_made_before_the_gate_still_verifies_and_replays_id
 
 
 def test_t_ev_07_the_measurement_ledgers_of_the_gate_verify_and_carry_the_profile():
-    new = [d for d in _stored_run_dirs() if re.search(r"runs_(h55e|unans_e|unans_adv_e)", d)]
+    new = _runs_by_version().get("evidence.v1", [])
     assert len(new) == 140
     for d in new:
         v = lg.verify(d)
         assert v["status"] == "OK" and v["replay"]["status"] == "IDENTICAL", d
         r0 = rows(d)[0]["result"]
         assert r0["evidence_profile"] == {"version": "evidence.v1", "subject_scope": "clause_or_title"} and r0["question"]["evidence"] == "evidence.v1"
+        assert all(r["args"]["wv"] == "weave_span.v3" for r in rows(d) if r["op"] == "weave_span")
+
+
+def test_t_ev_07_the_evidence_v2_ledgers_verify_and_carry_the_profile():
+    new = _runs_by_version().get("evidence.v2", [])
+    assert len(new) == 200
+    for d in new:
+        v = lg.verify(d)
+        assert v["status"] == "OK" and v["replay"]["status"] == "IDENTICAL", d
+        r0 = rows(d)[0]["result"]
+        assert r0["evidence_profile"]["version"] == "evidence.v2" and r0["question"]["evidence"] == "evidence.v2"
         assert all(r["args"]["wv"] == "weave_span.v3" for r in rows(d) if r["op"] == "weave_span")
 
 
@@ -681,7 +706,7 @@ def test_t_ev_15_the_server_defaults_are_the_gate_with_the_title(tmp_path, tasks
     assert srv.evidence_profile == ("evidence.v2", "clause_or_title")                       # evidence.v2 since the review (L-LOOM-191..)
     assert LoomServer(list(tasks.values()), str(tmp_path / "r1"), evidence="v1").evidence_profile == ("evidence.v1", "clause_or_title")
     with pytest.raises(ValueError):
-        LoomServer(list(tasks.values()), str(tmp_path / "r2"), evidence="v4")                  # "v3" is a rule version since LOOM-reach (L-LOOM-201); "v4" is the unknown one
+        LoomServer(list(tasks.values()), str(tmp_path / "r2"), evidence="v5")                  # "v3" is a rule version since LOOM-reach (L-LOOM-201), "v4" since LOOM-evidence-v4 (L-LOOM-212); "v5" is the unknown one
     with pytest.raises(ValueError):
         LoomServer(list(tasks.values()), str(tmp_path / "r3"), subject_scope="title")
 
@@ -1356,12 +1381,12 @@ def test_t_ev_28_v3_is_selectable_and_v2_stays_the_default_everywhere(tmp_path, 
     import inspect
     from verantyx import cli
     from verantyx.loom import mcp as lm
-    assert ev.EVIDENCE_VERSIONS == (V1, V2, V3) and ev.EVIDENCE_LATEST == V2 and ev.PROFILE_NAMES == {"v1": V1, "v2": V2, "v3": V3}
+    assert ev.EVIDENCE_VERSIONS == (V1, V2, V3, "evidence.v4") and ev.EVIDENCE_LATEST == V2 and ev.PROFILE_NAMES == {"v1": V1, "v2": V2, "v3": V3, "v4": "evidence.v4"}
     assert inspect.signature(ev.judge_quote).parameters["version"].default == V2
     assert LoomServer(list(tasks.values()), str(tmp_path / "a")).evidence_profile == (V2, "clause_or_title")                   # OP-RE-2: v2 is the server default
     assert LoomServer(list(tasks.values()), str(tmp_path / "b"), evidence="v3").evidence_profile == (V3, "clause_or_title")
     with pytest.raises(ValueError):
-        LoomServer(list(tasks.values()), str(tmp_path / "c"), evidence="v4")
+        LoomServer(list(tasks.values()), str(tmp_path / "c"), evidence="v5")
     seen = []
     monkeypatch.setattr(lm, "serve", lambda *a, **k: seen.append(a) or 0)
     assert cli.main(["loom", "mcp", "--tasks", "t.jsonl", "--runs-dir", str(tmp_path / "r")]) == 0
@@ -1426,14 +1451,14 @@ def test_t_ev_28_a_ledger_cannot_change_its_rule_version_between_v2_and_v3(tmp_p
 
 
 FROZEN_V3_RULES_DIGEST = "eca9ccd48aa6ddca8e74f33894acb380cc68667bd34950fd579c4e9bd9cf829d"
-FROZEN_V3_EVIDENCE_SHA = "b9ae56b284807c147e314f59e3fb9ec5158cdc82fdde2056ec57cd4e30dd6ab2"
+FROZEN_V3_EVIDENCE_SHA = "b9ae56b284807c147e314f59e3fb9ec5158cdc82fdde2056ec57cd4e30dd6ab2"        # the file as it was when v3 was frozen; evidence.v4 (LOOM-evidence-v4) is added to it, so the file pin moved to test_loom_evidence_v4.py
 
 
 def test_t_ev_28_the_v3_rules_are_frozen_a_change_is_evidence_v4(tmp_path):
     """OP-RE-2 (owner): the rules are frozen before the held-out bank6 is written; the digest covers the closed lists, the rule sentence and the source of every v3 function.
     A rule change is evidence.v4 and needs a new held-out set (docs/LINE3_LOOM_REACH_DESIGN.md §6.2 step 1)."""
     assert ev.v3_rules_digest() == FROZEN_V3_RULES_DIGEST
-    assert hashlib.sha256(open(os.path.join(ROOT, "verantyx/loom/evidence.py"), "rb").read()).hexdigest() == FROZEN_V3_EVIDENCE_SHA
+    assert len(FROZEN_V3_EVIDENCE_SHA) == 64                                         # historical: evidence.py changed when evidence.v4 was added (the v3 digest above did not)
     assert ev.V3_RULE_IDS == ("R1", "R2", "R3", "R3b", "R4", "R5", "R6", "R7", "T1", "T2")
     assert sorted(ev.KIND_REL) == sorted("人物 人 者 国 チーム 選手 団体 施設 会社 組織 都市 街 場所".split()) and sorted(ev.ALIAS_Y) == ["別名", "別称", "異名"]
     assert sorted(ev.NAMING) == sorted("呼ば 呼ぶ 呼び 呼ん 称さ 称し 称する 称 いう 言う 云う".split())

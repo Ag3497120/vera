@@ -38,7 +38,7 @@ def main(argv=None) -> int:
     ap.add_argument("--modes", default=None, help="comma-separated labels to run (default: all of the bank)")
     ap.add_argument("--only", default=None, help="comma-separated bank2 ids / bases to run (default: all)")
     ap.add_argument("--driver", default="api", choices=("api",))
-    ap.add_argument("--evidence", default="v2", choices=("v1", "v2", "v3", "off"), help="LOOM-evidence: the reader's evidence gate of the loom runs (default v2; controls have no loom)")
+    ap.add_argument("--evidence", default="v2", choices=("v1", "v2", "v3", "v4", "off"), help="LOOM-evidence: the reader's evidence gate of the loom runs (default v2; controls have no loom)")
     ap.add_argument("--subject-scope", dest="subject_scope", default="clause_or_title", choices=("clause_or_title", "clause"),
                     help="OP-EV-1: the sentence's article title may stand in for a subject word (the owner's answer: yes)")
     a = ap.parse_args(argv)
