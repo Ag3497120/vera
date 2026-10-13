@@ -1,0 +1,5320 @@
+{
+ "absent": 16,
+ "absent_admitted": 0,
+ "other_blockers": {
+  "fact stored as an event (F3)": 16,
+  "stored sentence F0 (all)": 6,
+  "stored sentence F0 (one of two)": 7
+ },
+ "overlap_route_simulation": {
+  "absent": {
+   "1": {
+    "admitted": 5,
+    "none": 9,
+    "tie": 2
+   },
+   "2": {
+    "none": 16
+   },
+   "3": {
+    "none": 16
+   }
+  },
+  "rephrased": {
+   "1": {
+    "gold": 24,
+    "none": 15,
+    "tie": 8,
+    "wrong": 11
+   },
+   "2": {
+    "gold": 20,
+    "none": 34,
+    "tie": 1,
+    "wrong": 3
+   },
+   "3": {
+    "gold": 10,
+    "none": 46,
+    "tie": 1,
+    "wrong": 1
+   }
+  }
+ },
+ "primary_cause": {
+  "Q1 question not read": 40,
+  "Q2 question read as an event (F3), memory holds an attribute": 7,
+  "Q2 question read as an event (F4), memory holds an attribute": 1,
+  "Q2b question read as an event, memory holds an event": 1,
+  "Q3 attribute question, no position with its slot noun": 9
+ },
+ "question_not_read": {
+  "Q1 question not read (frame_not_read:case_before_topic)": 9,
+  "Q1 question not read (frame_not_read:gap_is_not_a_particle)": 24,
+  "Q1 question not read (frame_not_read:no_predicate)": 1,
+  "Q1 question not read (no_question_word)": 5,
+  "Q1 question not read (several_clauses)": 1
+ },
+ "questions": [
+  {
+   "asked_slot": "認証端末の検収日",
+   "cause": "Q0 reached",
+   "checkpoint": 0,
+   "form": "same",
+   "gold": "2032年10月3日",
+   "issues": null,
+   "kind": "plain",
+   "other": [],
+   "overlap_route_sim": {
+    "1": "gold",
+    "2": "gold",
+    "3": "gold"
+   },
+   "overlap_top": [
+    [
+     4,
+     "検収日",
+     [
+      [
+       "の",
+       "認証端末"
+      ]
+     ],
+     [
+      "2032年10月3日"
+     ]
+    ],
+    [
+     3,
+     "設置日",
+     [
+      [
+       "の",
+       "認証端末"
+      ]
+     ],
+     [
+      "2032年10月2日",
+      "2032年10月4日"
+     ]
+    ]
+   ],
+   "q": "認証端末の検収日はいつですか？",
+   "question_read": {
+    "asked": "は",
+    "centre": "検収日",
+    "frame": "認証端末の検収日はQQ",
+    "ok": true,
+    "path": [
+     [
+      "の",
+      "認証端末"
+     ]
+    ],
+    "reason": null,
+    "shape": "F1"
+   },
+   "qword": "いつ",
+   "route": "exact",
+   "slot_overlap_chars": 8,
+   "stored_sentence": [
+    "認証端末の検収日は2032年10月3日。"
+   ],
+   "stored_shapes": [
+    [
+     "ACC",
+     [
+      "F1"
+     ],
+     []
+    ]
+   ],
+   "stored_slot": "認証端末の検収日",
+   "story": "LS-D01",
+   "verdict": "ANSWER"
+  },
+  {
+   "asked_slot": "新館を開ける日",
+   "cause": "Q1 question not read (frame_not_read:case_before_topic)",
+   "checkpoint": 0,
+   "form": "rephrased",
+   "gold": "矛盾: 2032年11月7日 と 2032年11月8日",
+   "issues": [
+    "question_unparsed:frame_not_read:case_before_topic"
+   ],
+   "kind": "contradiction",
+   "other": [],
+   "overlap_route_sim": {
+    "1": "gold",
+    "2": "gold",
+    "3": "none"
+   },
+   "overlap_top": [
+    [
+     2,
+     "新館開館日",
+     [],
+     [
+      "2032年11月7日",
+      "2032年11月8日"
+     ]
+    ],
+    [
+     1,
+     "第一陣移送日",
+     [
+      [
+       "の",
+       "蔵書"
+      ]
+     ],
+     [
+      "2032年10月15日",
+      "2032年10月16日"
+     ]
+    ]
+   ],
+   "q": "新館を開ける日はいつですか？",
+   "question_read": {
+    "asked": null,
+    "centre": null,
+    "frame": "新館を開ける日はQQ",
+    "ok": false,
+    "path": [],
+    "reason": "frame_not_read:case_before_topic",
+    "shape": null
+   },
+   "qword": "いつ",
+   "route": null,
+   "slot_overlap_chars": 2,
+   "stored_sentence": [
+    "新館開館日は2032年11月7日。",
+    "新館開館日は2032年11月8日。"
+   ],
+   "stored_shapes": [
+    [
+     "ACC",
+     [
+      "F2"
+     ],
+     []
+    ],
+    [
+     "ACC",
+     [
+      "F2"
+     ],
+     []
+    ]
+   ],
+   "stored_slot": "新館開館日",
+   "story": "LS-D01",
+   "verdict": "NONE"
+  },
+  {
+   "asked_slot": "夜間点検を誰が受け持ちますか",
+   "cause": "Q2b question read as an event, memory holds an event",
+   "checkpoint": 0,
+   "form": "absent",
+   "gold": "記録なし",
+   "issues": [
+    "no_position",
+    "no_event_clause"
+   ],
+   "kind": "absent",
+   "other": [],
+   "overlap_route_sim": {
+    "1": "none",
+    "2": "none",
+    "3": "none"
+   },
+   "overlap_top": [],
+   "q": "屋外返却ポストの夜間点検を誰が受け持ちますか？",
+   "question_read": {
+    "asked": "が",
+    "centre": "受け持つ",
+    "frame": "屋外返却ポストの夜間点検をQQが受け持ちます",
+    "ok": true,
+    "path": [],
+    "reason": null,
+    "shape": "F3"
+   },
+   "qword": "誰",
+   "route": null,
+   "slot_overlap_chars": 0,
+   "stored_sentence": [],
+   "stored_shapes": [],
+   "stored_slot": "",
+   "story": "LS-D01",
+   "verdict": "NONE"
+  },
+  {
+   "asked_slot": "確認作業はいつまで",
+   "cause": "Q3 attribute question, no position with its slot noun",
+   "checkpoint": 0,
+   "form": "rephrased",
+   "gold": "2032年9月24日",
+   "issues": [
+    "no_position",
+    "no_slot_noun_matches"
+   ],
+   "kind": "update",
+   "other": [],
+   "overlap_route_sim": {
+    "1": "gold",
+    "2": "gold",
+    "3": "none"
+   },
+   "overlap_top": [
+    [
+     2,
+     "締切",
+     [
+      [
+       "の",
+       "棚ラベル照合"
+      ]
+     ],
+     [
+      "2032年9月22日",
+      "2032年9月24日"
+     ]
+    ]
+   ],
+   "q": "棚ラベルの確認作業はいつまでですか？",
+   "question_read": {
+    "asked": "は",
+    "centre": "確認作業",
+    "frame": "棚ラベルの確認作業はQQまで",
+    "ok": true,
+    "path": [
+     [
+      "の",
+      "棚ラベル"
+     ]
+    ],
+    "reason": null,
+    "shape": "F1"
+   },
+   "qword": "いつ",
+   "route": null,
+   "slot_overlap_chars": 0,
+   "stored_sentence": [
+    "棚ラベル照合の締切は2032年9月22日から2032年9月24日に変更になった。"
+   ],
+   "stored_shapes": [
+    [
+     "ACC",
+     [
+      "F1"
+     ],
+     []
+    ]
+   ],
+   "stored_slot": "棚ラベル照合の締切",
+   "story": "LS-D01",
+   "verdict": "NONE"
+  },
+  {
+   "asked_slot": "鍵は何時に開けます",
+   "cause": "Q2 question read as an event (F3), memory holds an attribute",
+   "checkpoint": 0,
+   "form": "rephrased",
+   "gold": "6時40分",
+   "issues": [
+    "no_position",
+    "no_event_clause"
+   ],
+   "kind": "plain",
+   "other": [],
+   "overlap_route_sim": {
+    "1": "gold",
+    "2": "gold",
+    "3": "gold"
+   },
+   "overlap_top": [
+    [
+     3,
+     "解錠時刻",
+     [
+      [
+       "の",
+       "北側搬入口"
+      ]
+     ],
+     [
+      "6時40分"
+     ]
+    ],
+    [
+     1,
+     "解錠時刻",
+     [
+      [
+       "の",
+       "東側通用口"
+      ]
+     ],
+     [
+      "7時10分"
+     ]
+    ]
+   ],
+   "q": "北側搬入口の鍵は何時に開けますか？",
+   "question_read": {
+    "asked": "に",
+    "centre": "開ける",
+    "frame": "北側搬入口の鍵はQQに開けます",
+    "ok": true,
+    "path": [],
+    "reason": null,
+    "shape": "F3"
+   },
+   "qword": "何時",
+   "route": null,
+   "slot_overlap_chars": 1,
+   "stored_sentence": [
+    "北側搬入口の解錠時刻は6時40分。"
+   ],
+   "stored_shapes": [
+    [
+     "ACC",
+     [
+      "F1"
+     ],
+     []
+    ]
+   ],
+   "stored_slot": "北側搬入口の解錠時刻",
+   "story": "LS-D01",
+   "verdict": "NONE"
+  },
+  {
+   "asked_slot": "蔵書の搬出日はいつ",
+   "cause": "Q3 attribute question, no position with its slot noun",
+   "checkpoint": 0,
+   "form": "rephrased",
+   "gold": "矛盾: 2032年10月15日 と 2032年10月16日",
+   "issues": [
+    "no_position",
+    "no_slot_noun_matches"
+   ],
+   "kind": "contradiction",
+   "other": [],
+   "overlap_route_sim": {
+    "1": "gold",
+    "2": "gold",
+    "3": "none"
+   },
+   "overlap_top": [
+    [
+     2,
+     "第一陣移送日",
+     [
+      [
+       "の",
+       "蔵書"
+      ]
+     ],
+     [
+      "2032年10月15日",
+      "2032年10月16日"
+     ]
+    ],
+    [
+     1,
+     "新館開館日",
+     [],
+     [
+      "2032年11月7日",
+      "2032年11月8日"
+     ]
+    ]
+   ],
+   "q": "最初の蔵書の搬出日はいつですか？",
+   "question_read": {
+    "asked": "は",
+    "centre": "搬出日",
+    "frame": "最初の蔵書の搬出日はQQ",
+    "ok": true,
+    "path": [
+     [
+      "の",
+      "蔵書"
+     ],
+     [
+      "の",
+      "最初"
+     ]
+    ],
+    "reason": null,
+    "shape": "F1"
+   },
+   "qword": "いつ",
+   "route": null,
+   "slot_overlap_chars": 3,
+   "stored_sentence": [
+    "蔵書の第一陣移送日は2032年10月15日。",
+    "蔵書の第一陣移送日は2032年10月16日。"
+   ],
+   "stored_shapes": [
+    [
+     "ACC",
+     [
+      "F1"
+     ],
+     []
+    ],
+    [
+     "ACC",
+     [
+      "F1"
+     ],
+     []
+    ]
+   ],
+   "stored_slot": "蔵書の第一陣移送日",
+   "story": "LS-D01",
+   "verdict": "NONE"
+  },
+  {
+   "asked_slot": "何人で作業しますか",
+   "cause": "Q1 question not read (frame_not_read:case_before_topic)",
+   "checkpoint": 0,
+   "form": "absent",
+   "gold": "記録なし",
+   "issues": [
+    "question_unparsed:frame_not_read:case_before_topic"
+   ],
+   "kind": "absent",
+   "other": [],
+   "overlap_route_sim": {
+    "1": "admitted",
+    "2": "none",
+    "3": "none"
+   },
+   "overlap_top": [
+    [
+     1,
+     "第一陣移送日",
+     [
+      [
+       "の",
+       "蔵書"
+      ]
+     ],
+     [
+      "2032年10月15日",
+      "2032年10月16日"
+     ]
+    ],
+    [
+     1,
+     "蔵書ID照合",
+     [],
+     [
+      "棚割確定の前提"
+     ]
+    ]
+   ],
+   "q": "寄贈資料に押す蔵書印は何人で作業しますか？",
+   "question_read": {
+    "asked": null,
+    "centre": null,
+    "frame": "寄贈資料に押す蔵書印はQQで作業します",
+    "ok": false,
+    "path": [],
+    "reason": "frame_not_read:case_before_topic",
+    "shape": null
+   },
+   "qword": "何人",
+   "route": null,
+   "slot_overlap_chars": 0,
+   "stored_sentence": [],
+   "stored_shapes": [],
+   "stored_slot": "",
+   "story": "LS-D01",
+   "verdict": "NONE"
+  },
+  {
+   "asked_slot": "認証端末の設置日",
+   "cause": "Q0 reached",
+   "checkpoint": 0,
+   "form": "same",
+   "gold": "2032年10月4日",
+   "issues": null,
+   "kind": "update",
+   "other": [],
+   "overlap_route_sim": {
+    "1": "gold",
+    "2": "gold",
+    "3": "gold"
+   },
+   "overlap_top": [
+    [
+     3,
+     "設置日",
+     [
+      [
+       "の",
+       "認証端末"
+      ]
+     ],
+     [
+      "2032年10月2日",
+      "2032年10月4日"
+     ]
+    ],
+    [
+     2,
+     "検収日",
+     [
+      [
+       "の",
+       "認証端末"
+      ]
+     ],
+     [
+      "2032年10月3日"
+     ]
+    ]
+   ],
+   "q": "認証端末の設置日は何日ですか？",
+   "question_read": {
+    "asked": "は",
+    "centre": "設置日",
+    "frame": "認証端末の設置日はQQ",
+    "ok": true,
+    "path": [
+     [
+      "の",
+      "認証端末"
+     ]
+    ],
+    "reason": null,
+    "shape": "F1"
+   },
+   "qword": "何日",
+   "route": "exact",
+   "slot_overlap_chars": 8,
+   "stored_sentence": [
+    "認証端末の設置日は2032年10月2日から2032年10月4日に変更になった。"
+   ],
+   "stored_shapes": [
+    [
+     "ACC",
+     [
+      "F1"
+     ],
+     []
+    ]
+   ],
+   "stored_slot": "認証端末の設置日",
+   "story": "LS-D01",
+   "verdict": "UPDATED"
+  },
+  {
+   "asked_slot": "つなぐ内線は何番",
+   "cause": "Q1 question not read (frame_not_read:gap_is_not_a_particle)",
+   "checkpoint": 0,
+   "form": "rephrased",
+   "gold": "413",
+   "issues": [
+    "question_unparsed:frame_not_read:gap_is_not_a_particle"
+   ],
+   "kind": "plain",
+   "other": [],
+   "overlap_route_sim": {
+    "1": "none",
+    "2": "none",
+    "3": "none"
+   },
+   "overlap_top": [
+    [
+     4,
+     "内線番号",
+     [
+      [
+       "の",
+       "職員休憩室"
+      ]
+     ],
+     [
+      "413"
+     ]
+    ],
+    [
+     1,
+     "イベント定員",
+     [
+      [
+       "の",
+       "閲覧室"
+      ]
+     ],
+     [
+      "120人",
+      "96人"
+     ]
+    ]
+   ],
+   "q": "職員休憩室へつなぐ内線は何番ですか？",
+   "question_read": {
+    "asked": null,
+    "centre": null,
+    "frame": "職員休憩室へつなぐ内線はQQ",
+    "ok": false,
+    "path": [],
+    "reason": "frame_not_read:gap_is_not_a_particle",
+    "shape": null
+   },
+   "qword": "何番",
+   "route": null,
+   "slot_overlap_chars": 2,
+   "stored_sentence": [
+    "職員休憩室の内線番号は413。"
+   ],
+   "stored_shapes": [
+    [
+     "ACC",
+     [
+      "F1"
+     ],
+     []
+    ]
+   ],
+   "stored_slot": "職員休憩室の内線番号",
+   "story": "LS-D01",
+   "verdict": "NONE"
+  },
+  {
+   "asked_slot": "イベントを受け入れる人数",
+   "cause": "Q1 question not read (frame_not_read:case_before_topic)",
+   "checkpoint": 0,
+   "form": "rephrased",
+   "gold": "矛盾: 120人 と 96人",
+   "issues": [
+    "question_unparsed:frame_not_read:case_before_topic"
+   ],
+   "kind": "contradiction",
+   "other": [],
+   "overlap_route_sim": {
+    "1": "gold",
+    "2": "gold",
+    "3": "gold"
+   },
+   "overlap_top": [
+    [
+     3,
+     "イベント定員",
+     [
+      [
+       "の",
+       "閲覧室"
+      ]
+     ],
+     [
+      "120人",
+      "96人"
+     ]
+    ],
+    [
+     1,
+     "イベント設営日",
+     [],
+     [
+      "2032年10月29日"
+     ]
+    ]
+   ],
+   "q": "大閲覧室でイベントを受け入れる人数は何人ですか？",
+   "question_read": {
+    "asked": null,
+    "centre": null,
+    "frame": "大閲覧室でイベントを受け入れる人数はQQ",
+    "ok": false,
+    "path": [],
+    "reason": "frame_not_read:case_before_topic",
+    "shape": null
+   },
+   "qword": "何人",
+   "route": null,
+   "slot_overlap_chars": 4,
+   "stored_sentence": [
+    "大閲覧室のイベント定員は120人。",
+    "大閲覧室のイベント定員は96人。"
+   ],
+   "stored_shapes": [
+    [
+     "ACC",
+     [
+      "F1"
+     ],
+     []
+    ],
+    [
+     "ACC",
+     [
+      "F1"
+     ],
+     []
+    ]
+   ],
+   "stored_slot": "大閲覧室のイベント定員",
+   "story": "LS-D01",
+   "verdict": "NONE"
+  },
+  {
+   "asked_slot": "移送箱は何箱",
+   "cause": "Q3 attribute question, no position with its slot noun",
+   "checkpoint": 1,
+   "form": "rephrased",
+   "gold": "340箱",
+   "issues": [
+    "no_position",
+    "no_slot_noun_matches"
+   ],
+   "kind": "plain",
+   "other": [],
+   "overlap_route_sim": {
+    "1": "gold",
+    "2": "gold",
+    "3": "none"
+   },
+   "overlap_top": [
+    [
+     2,
+     "箱数",
+     [
+      [
+       "の",
+       "一般書"
+      ]
+     ],
+     [
+      "340箱"
+     ]
+    ],
+    [
+     1,
+     "第一陣移送日",
+     [
+      [
+       "の",
+       "蔵書"
+      ]
+     ],
+     [
+      "2032年10月15日",
+      "2032年10月16日"
+     ]
+    ]
+   ],
+   "q": "一般書の移送箱は何箱ですか？",
+   "question_read": {
+    "asked": "は",
+    "centre": "移送箱",
+    "frame": "一般書の移送箱はQQ",
+    "ok": true,
+    "path": [
+     [
+      "の",
+      "一般書"
+     ]
+    ],
+    "reason": null,
+    "shape": "F1"
+   },
+   "qword": "何箱",
+   "route": null,
+   "slot_overlap_chars": 1,
+   "stored_sentence": [
+    "一般書の箱数は340箱。"
+   ],
+   "stored_shapes": [
+    [
+     "ACC",
+     [
+      "F1"
+     ],
+     []
+    ]
+   ],
+   "stored_slot": "一般書の箱数",
+   "story": "LS-D01",
+   "verdict": "NONE"
+  },
+  {
+   "asked_slot": "分室を閉じるのは何日",
+   "cause": "Q1 question not read (frame_not_read:gap_is_not_a_particle)",
+   "checkpoint": 1,
+   "form": "rephrased",
+   "gold": "矛盾: 2032年10月31日 と 2032年11月1日",
+   "issues": [
+    "question_unparsed:frame_not_read:gap_is_not_a_particle"
+   ],
+   "kind": "contradiction",
+   "other": [
+    "stored sentence F0 (all)"
+   ],
+   "overlap_route_sim": {
+    "1": "none",
+    "2": "none",
+    "3": "none"
+   },
+   "overlap_top": [],
+   "q": "珪戸分室を閉じるのは何日ですか？",
+   "question_read": {
+    "asked": null,
+    "centre": null,
+    "frame": "珪戸分室を閉じるのはQQ",
+    "ok": false,
+    "path": [],
+    "reason": "frame_not_read:gap_is_not_a_particle",
+    "shape": null
+   },
+   "qword": "何日",
+   "route": null,
+   "slot_overlap_chars": 2,
+   "stored_sentence": [
+    "珪戸分室の閉室日は2032年10月31日。",
+    "珪戸分室の閉室日は2032年11月1日。"
+   ],
+   "stored_shapes": [
+    [
+     "F0",
+     [
+      "F0"
+     ],
+     [
+      "gap_is_not_a_particle"
+     ]
+    ],
+    [
+     "F0",
+     [
+      "F0"
+     ],
+     [
+      "gap_is_not_a_particle"
+     ]
+    ]
+   ],
+   "stored_slot": "珪戸分室の閉室日",
+   "story": "LS-D01",
+   "verdict": "NONE"
+  },
+  {
+   "asked_slot": "手入れは誰が受け持ちますか",
+   "cause": "Q2b question read as an event, memory holds an event",
+   "checkpoint": 1,
+   "form": "absent",
+   "gold": "記録なし",
+   "issues": [
+    "no_position",
+    "no_event_clause"
+   ],
+   "kind": "absent",
+   "other": [],
+   "overlap_route_sim": {
+    "1": "none",
+    "2": "none",
+    "3": "none"
+   },
+   "overlap_top": [],
+   "q": "携帯型拡大鏡の手入れは誰が受け持ちますか？",
+   "question_read": {
+    "asked": "が",
+    "centre": "受け持つ",
+    "frame": "携帯型拡大鏡の手入れはQQが受け持ちます",
+    "ok": true,
+    "path": [],
+    "reason": null,
+    "shape": "F3"
+   },
+   "qword": "誰",
+   "route": null,
+   "slot_overlap_chars": 0,
+   "stored_sentence": [],
+   "stored_shapes": [],
+   "stored_slot": "",
+   "story": "LS-D01",
+   "verdict": "NONE"
+  },
+  {
+   "asked_slot": "会場準備は何日",
+   "cause": "Q3 attribute question, no position with its slot noun",
+   "checkpoint": 1,
+   "form": "rephrased",
+   "gold": "2032年10月30日",
+   "issues": [
+    "no_position",
+    "no_slot_noun_matches"
+   ],
+   "kind": "update",
+   "other": [],
+   "overlap_route_sim": {
+    "1": "none",
+    "2": "none",
+    "3": "none"
+   },
+   "overlap_top": [],
+   "q": "本の庭開きの会場準備は何日ですか？",
+   "question_read": {
+    "asked": "は",
+    "centre": "会場準備",
+    "frame": "本の庭開きの会場準備はQQ",
+    "ok": true,
+    "path": [
+     [
+      "の",
+      "庭開き"
+     ],
+     [
+      "の",
+      "本"
+     ]
+    ],
+    "reason": null,
+    "shape": "F1"
+   },
+   "qword": "何日",
+   "route": null,
+   "slot_overlap_chars": 1,
+   "stored_sentence": [
+    "イベント設営日は2032年10月29日から2032年10月30日に変更になった。"
+   ],
+   "stored_shapes": [
+    [
+     "ACC",
+     [
+      "F2"
+     ],
+     []
+    ]
+   ],
+   "stored_slot": "イベント設営日",
+   "story": "LS-D01",
+   "verdict": "NONE"
+  },
+  {
+   "asked_slot": "イベント午後枠の定員",
+   "cause": "Q0 reached",
+   "checkpoint": 1,
+   "form": "same",
+   "gold": "24名",
+   "issues": null,
+   "kind": "plain",
+   "other": [],
+   "overlap_route_sim": {
+    "1": "gold",
+    "2": "gold",
+    "3": "gold"
+   },
+   "overlap_top": [
+    [
+     4,
+     "定員",
+     [
+      [
+       "の",
+       "イベント午後枠"
+      ]
+     ],
+     [
+      "24名"
+     ]
+    ],
+    [
+     3,
+     "定員",
+     [
+      [
+       "の",
+       "イベント午前枠"
+      ]
+     ],
+     [
+      "36名"
+     ]
+    ]
+   ],
+   "q": "イベント午後枠の定員は何人ですか？",
+   "question_read": {
+    "asked": "は",
+    "centre": "定員",
+    "frame": "イベント午後枠の定員はQQ",
+    "ok": true,
+    "path": [
+     [
+      "の",
+      "イベント午後枠"
+     ]
+    ],
+    "reason": null,
+    "shape": "F1"
+   },
+   "qword": "何人",
+   "route": "exact",
+   "slot_overlap_chars": 10,
+   "stored_sentence": [
+    "イベント午後枠の定員は24名。"
+   ],
+   "stored_shapes": [
+    [
+     "ACC",
+     [
+      "F1"
+     ],
+     []
+    ]
+   ],
+   "stored_slot": "イベント午後枠の定員",
+   "story": "LS-D01",
+   "verdict": "ANSWER"
+  },
+  {
+   "asked_slot": "台車調達にいくら",
+   "cause": "Q2 question read as an event (F4), memory holds an attribute",
+   "checkpoint": 1,
+   "form": "rephrased",
+   "gold": "矛盾: 486,000円 と 512,000円",
+   "issues": [
+    "no_position",
+    "no_event_clause"
+   ],
+   "kind": "contradiction",
+   "other": [],
+   "overlap_route_sim": {
+    "1": "gold",
+    "2": "none",
+    "3": "none"
+   },
+   "overlap_top": [
+    [
+     1,
+     "購入費",
+     [
+      [
+       "の",
+       "搬送台車"
+      ]
+     ],
+     [
+      "486,000円",
+      "512,000円"
+     ]
+    ]
+   ],
+   "q": "台車調達にいくら計上していますか？",
+   "question_read": {
+    "asked": "object_bare",
+    "centre": "計上",
+    "frame": "台車調達にQQ計上しています",
+    "ok": true,
+    "path": [],
+    "reason": null,
+    "shape": "F4"
+   },
+   "qword": "いくら",
+   "route": null,
+   "slot_overlap_chars": 2,
+   "stored_sentence": [
+    "搬送台車の購入費は486,000円。",
+    "搬送台車の購入費は512,000円。"
+   ],
+   "stored_shapes": [
+    [
+     "ACC",
+     [
+      "F1"
+     ],
+     []
+    ],
+    [
+     "ACC",
+     [
+      "F1"
+     ],
+     []
+    ]
+   ],
+   "stored_slot": "搬送台車の購入費",
+   "story": "LS-D01",
+   "verdict": "NONE"
+  },
+  {
+   "asked_slot": "何人を置きますか",
+   "cause": "Q1 question not read (frame_not_read:gap_is_not_a_particle)",
+   "checkpoint": 1,
+   "form": "absent",
+   "gold": "記録なし",
+   "issues": [
+    "question_unparsed:frame_not_read:gap_is_not_a_particle"
+   ],
+   "kind": "absent",
+   "other": [],
+   "overlap_route_sim": {
+    "1": "none",
+    "2": "none",
+    "3": "none"
+   },
+   "overlap_top": [],
+   "q": "読み聞かせ代読補助には何人を置きますか？",
+   "question_read": {
+    "asked": null,
+    "centre": null,
+    "frame": "読み聞かせ代読補助にはQQを置きます",
+    "ok": false,
+    "path": [],
+    "reason": "frame_not_read:gap_is_not_a_particle",
+    "shape": null
+   },
+   "qword": "何人",
+   "route": null,
+   "slot_overlap_chars": 0,
+   "stored_sentence": [],
+   "stored_shapes": [],
+   "stored_slot": "",
+   "story": "LS-D01",
+   "verdict": "NONE"
+  },
+  {
+   "asked_slot": "参加希望を送る期限",
+   "cause": "Q1 question not read (frame_not_read:case_before_topic)",
+   "checkpoint": 1,
+   "form": "rephrased",
+   "gold": "2032年10月22日",
+   "issues": [
+    "question_unparsed:frame_not_read:case_before_topic"
+   ],
+   "kind": "update",
+   "other": [],
+   "overlap_route_sim": {
+    "1": "none",
+    "2": "none",
+    "3": "none"
+   },
+   "overlap_top": [],
+   "q": "参加希望を送る期限は何日ですか？",
+   "question_read": {
+    "asked": null,
+    "centre": null,
+    "frame": "参加希望を送る期限はQQ",
+    "ok": false,
+    "path": [],
+    "reason": "frame_not_read:case_before_topic",
+    "shape": null
+   },
+   "qword": "何日",
+   "route": null,
+   "slot_overlap_chars": 0,
+   "stored_sentence": [
+    "イベント受付締切は2032年10月20日から2032年10月22日に変更になった。"
+   ],
+   "stored_shapes": [
+    [
+     "ACC",
+     [
+      "F2"
+     ],
+     []
+    ]
+   ],
+   "stored_slot": "イベント受付締切",
+   "story": "LS-D01",
+   "verdict": "NONE"
+  },
+  {
+   "asked_slot": "連絡カードは何枚配布",
+   "cause": "Q2 question read as an event (F3), memory holds an attribute",
+   "checkpoint": 1,
+   "form": "rephrased",
+   "gold": "26枚",
+   "issues": [
+    "no_position",
+    "no_event_clause"
+   ],
+   "kind": "plain",
+   "other": [],
+   "overlap_route_sim": {
+    "1": "gold",
+    "2": "gold",
+    "3": "gold"
+   },
+   "overlap_top": [
+    [
+     3,
+     "配布枚数",
+     [
+      [
+       "の",
+       "災害連絡カード"
+      ]
+     ],
+     [
+      "26枚"
+     ]
+    ],
+    [
+     1,
+     "初回発行数",
+     [
+      [
+       "の",
+       "新館カード"
+      ]
+     ],
+     [
+      "2,400枚"
+     ]
+    ]
+   ],
+   "q": "連絡カードは何枚配布しますか？",
+   "question_read": {
+    "asked": "object_bare",
+    "centre": "配布",
+    "frame": "連絡カードはQQ配布します",
+    "ok": true,
+    "path": [],
+    "reason": null,
+    "shape": "F3"
+   },
+   "qword": "何枚",
+   "route": null,
+   "slot_overlap_chars": 5,
+   "stored_sentence": [
+    "災害連絡カードの配布枚数は26枚。"
+   ],
+   "stored_shapes": [
+    [
+     "ACC",
+     [
+      "F1"
+     ],
+     []
+    ]
+   ],
+   "stored_slot": "災害連絡カードの配布枚数",
+   "story": "LS-D01",
+   "verdict": "NONE"
+  },
+  {
+   "asked_slot": "早番の出勤時刻",
+   "cause": "Q0 reached",
+   "checkpoint": 1,
+   "form": "same",
+   "gold": "矛盾: 8時15分 と 8時30分",
+   "issues": null,
+   "kind": "contradiction",
+   "other": [],
+   "overlap_route_sim": {
+    "1": "gold",
+    "2": "gold",
+    "3": "gold"
+   },
+   "overlap_top": [
+    [
+     3,
+     "出勤時刻",
+     [
+      [
+       "の",
+       "早番"
+      ]
+     ],
+     [
+      "8時15分",
+      "8時30分"
+     ]
+    ],
+    [
+     1,
+     "解錠時刻",
+     [
+      [
+       "の",
+       "北側搬入口"
+      ]
+     ],
+     [
+      "6時40分"
+     ]
+    ]
+   ],
+   "q": "早番の出勤時刻は何時ですか？",
+   "question_read": {
+    "asked": "は",
+    "centre": "出勤時刻",
+    "frame": "早番の出勤時刻はQQ",
+    "ok": true,
+    "path": [
+     [
+      "の",
+      "早番"
+     ]
+    ],
+    "reason": null,
+    "shape": "F1"
+   },
+   "qword": "何時",
+   "route": "exact",
+   "slot_overlap_chars": 7,
+   "stored_sentence": [
+    "早番の出勤時刻は8時15分。",
+    "早番の出勤時刻は8時30分。"
+   ],
+   "stored_shapes": [
+    [
+     "ACC",
+     [
+      "F1"
+     ],
+     []
+    ],
+    [
+     "ACC",
+     [
+      "F1"
+     ],
+     []
+    ]
+   ],
+   "stored_slot": "早番の出勤時刻",
+   "story": "LS-D01",
+   "verdict": "CHOICE"
+  },
+  {
+   "asked_slot": "児童コーナーの書架は何段",
+   "cause": "Q3 attribute question, no position with its slot noun",
+   "checkpoint": 2,
+   "form": "rephrased",
+   "gold": "5段",
+   "issues": [
+    "no_position",
+    "no_slot_noun_matches"
+   ],
+   "kind": "plain",
+   "other": [],
+   "overlap_route_sim": {
+    "1": "gold",
+    "2": "gold",
+    "3": "none"
+   },
+   "overlap_top": [
+    [
+     2,
+     "棚段数",
+     [
+      [
+       "の",
+       "児童書架"
+      ]
+     ],
+     [
+      "5段"
+     ]
+    ],
+    [
+     1,
+     "空調目標",
+     [
+      [
+       "の",
+       "児童室"
+      ]
+     ],
+     [
+      "22度"
+     ]
+    ]
+   ],
+   "q": "児童コーナーの書架は何段ですか？",
+   "question_read": {
+    "asked": "は",
+    "centre": "書架",
+    "frame": "児童コーナーの書架はQQ",
+    "ok": true,
+    "path": [
+     [
+      "の",
+      "児童コーナー"
+     ]
+    ],
+    "reason": null,
+    "shape": "F1"
+   },
+   "qword": "何段",
+   "route": null,
+   "slot_overlap_chars": 2,
+   "stored_sentence": [
+    "児童書架の棚段数は5段。"
+   ],
+   "stored_shapes": [
+    [
+     "ACC",
+     [
+      "F1"
+     ],
+     []
+    ]
+   ],
+   "stored_slot": "児童書架の棚段数",
+   "story": "LS-D01",
+   "verdict": "NONE"
+  },
+  {
+   "asked_slot": "西側看板の取り付け",
+   "cause": "Q2 question read as an event (F3), memory holds an attribute",
+   "checkpoint": 2,
+   "form": "rephrased",
+   "gold": "矛盾: 2032年10月26日 と 2032年10月24日",
+   "issues": [
+    "no_position",
+    "no_event_clause"
+   ],
+   "kind": "contradiction",
+   "other": [],
+   "overlap_route_sim": {
+    "1": "none",
+    "2": "none",
+    "3": "none"
+   },
+   "overlap_top": [],
+   "q": "西側看板の取り付けは何日に予定されていますか？",
+   "question_read": {
+    "asked": "に",
+    "centre": "予定",
+    "frame": "西側看板の取り付けはQQに予定されています",
+    "ok": true,
+    "path": [],
+    "reason": null,
+    "shape": "F3"
+   },
+   "qword": "何日",
+   "route": null,
+   "slot_overlap_chars": 1,
+   "stored_sentence": [
+    "西面サインの設置日は2032年10月26日。",
+    "西面サインの設置日は2032年10月24日。"
+   ],
+   "stored_shapes": [
+    [
+     "ACC",
+     [
+      "F1"
+     ],
+     []
+    ],
+    [
+     "ACC",
+     [
+      "F1"
+     ],
+     []
+    ]
+   ],
+   "stored_slot": "西面サインの設置日",
+   "story": "LS-D01",
+   "verdict": "NONE"
+  },
+  {
+   "asked_slot": "どの風速で閉めますか",
+   "cause": "Q1 question not read (no_question_word)",
+   "checkpoint": 2,
+   "form": "absent",
+   "gold": "記録なし",
+   "issues": [
+    "question_unparsed:no_question_word"
+   ],
+   "kind": "absent",
+   "other": [],
+   "overlap_route_sim": {
+    "1": "admitted",
+    "2": "none",
+    "3": "none"
+   },
+   "overlap_top": [
+    [
+     1,
+     "読書案内台",
+     [
+      [
+       "の",
+       "仮設"
+      ]
+     ],
+     [
+      "燈架新館の南側回廊"
+     ]
+    ]
+   ],
+   "q": "読書テラスの雨天時はどの風速で閉めますか？",
+   "question_read": {
+    "asked": null,
+    "centre": null,
+    "frame": null,
+    "ok": false,
+    "path": [],
+    "reason": "no_question_word",
+    "shape": null
+   },
+   "qword": null,
+   "route": null,
+   "slot_overlap_chars": 0,
+   "stored_sentence": [],
+   "stored_shapes": [],
+   "stored_slot": "",
+   "story": "LS-D01",
+   "verdict": "NONE"
+  },
+  {
+   "asked_slot": "新任向け研修は何分",
+   "cause": "Q2 question read as an event (F3), memory holds an attribute",
+   "checkpoint": 2,
+   "form": "rephrased",
+   "gold": "120分",
+   "issues": [
+    "no_position",
+    "no_event_clause"
+   ],
+   "kind": "update",
+   "other": [],
+   "overlap_route_sim": {
+    "1": "gold",
+    "2": "none",
+    "3": "none"
+   },
+   "overlap_top": [
+    [
+     1,
+     "職員研修時間",
+     [],
+     [
+      "90分",
+      "120分"
+     ]
+    ]
+   ],
+   "q": "新任向け研修は何分で組みますか？",
+   "question_read": {
+    "asked": "で",
+    "centre": "組む",
+    "frame": "新任向け研修はQQで組みます",
+    "ok": true,
+    "path": [],
+    "reason": null,
+    "shape": "F3"
+   },
+   "qword": "何分",
+   "route": null,
+   "slot_overlap_chars": 2,
+   "stored_sentence": [
+    "職員研修時間は90分から120分に変更になった。"
+   ],
+   "stored_shapes": [
+    [
+     "ACC",
+     [
+      "F2"
+     ],
+     []
+    ]
+   ],
+   "stored_slot": "職員研修時間",
+   "story": "LS-D01",
+   "verdict": "NONE"
+  },
+  {
+   "asked_slot": "広報チラシの印刷部数",
+   "cause": "Q0 reached",
+   "checkpoint": 2,
+   "form": "same",
+   "gold": "1,400部",
+   "issues": null,
+   "kind": "plain",
+   "other": [],
+   "overlap_route_sim": {
+    "1": "gold",
+    "2": "gold",
+    "3": "gold"
+   },
+   "overlap_top": [
+    [
+     4,
+     "印刷部数",
+     [
+      [
+       "の",
+       "広報チラシ"
+      ]
+     ],
+     [
+      "1,400部"
+     ]
+    ],
+    [
+     2,
+     "印刷部数",
+     [
+      [
+       "の",
+       "来場アンケート"
+      ]
+     ],
+     [
+      "600部"
+     ]
+    ]
+   ],
+   "q": "広報チラシの印刷部数はいくつですか？",
+   "question_read": {
+    "asked": "は",
+    "centre": "印刷部数",
+    "frame": "広報チラシの印刷部数はQQ",
+    "ok": true,
+    "path": [
+     [
+      "の",
+      "広報チラシ"
+     ]
+    ],
+    "reason": null,
+    "shape": "F1"
+   },
+   "qword": "いくつ",
+   "route": "exact",
+   "slot_overlap_chars": 10,
+   "stored_sentence": [
+    "広報チラシの印刷部数は1,400部。"
+   ],
+   "stored_shapes": [
+    [
+     "ACC",
+     [
+      "F1"
+     ],
+     []
+    ]
+   ],
+   "stored_slot": "広報チラシの印刷部数",
+   "story": "LS-D01",
+   "verdict": "ANSWER"
+  },
+  {
+   "asked_slot": "貸出系を止めるのは何時",
+   "cause": "Q1 question not read (frame_not_read:gap_is_not_a_particle)",
+   "checkpoint": 2,
+   "form": "rephrased",
+   "gold": "矛盾: 19時00分 と 20時00分",
+   "issues": [
+    "question_unparsed:frame_not_read:gap_is_not_a_particle"
+   ],
+   "kind": "contradiction",
+   "other": [],
+   "overlap_route_sim": {
+    "1": "gold",
+    "2": "gold",
+    "3": "none"
+   },
+   "overlap_top": [
+    [
+     2,
+     "開始時刻",
+     [
+      [
+       "の",
+       "貸出系停止"
+      ]
+     ],
+     [
+      "19時00分",
+      "20時00分"
+     ]
+    ],
+    [
+     1,
+     "貸出端末設定",
+     [],
+     [
+      "職員ID登録の前提"
+     ]
+    ]
+   ],
+   "q": "貸出系を止めるのは何時ですか？",
+   "question_read": {
+    "asked": null,
+    "centre": null,
+    "frame": "貸出系を止めるのはQQ",
+    "ok": false,
+    "path": [],
+    "reason": "frame_not_read:gap_is_not_a_particle",
+    "shape": null
+   },
+   "qword": "何時",
+   "route": null,
+   "slot_overlap_chars": 3,
+   "stored_sentence": [
+    "貸出系停止の開始時刻は19時00分。",
+    "貸出系停止の開始時刻は20時00分。"
+   ],
+   "stored_shapes": [
+    [
+     "ACC",
+     [
+      "F1"
+     ],
+     []
+    ],
+    [
+     "ACC",
+     [
+      "F1"
+     ],
+     []
+    ]
+   ],
+   "stored_slot": "貸出系停止の開始時刻",
+   "story": "LS-D01",
+   "verdict": "NONE"
+  },
+  {
+   "asked_slot": "何食用意しますか",
+   "cause": "Q2b question read as an event, memory holds an event",
+   "checkpoint": 2,
+   "form": "absent",
+   "gold": "記録なし",
+   "issues": [
+    "no_position",
+    "no_event_clause"
+   ],
+   "kind": "absent",
+   "other": [],
+   "overlap_route_sim": {
+    "1": "none",
+    "2": "none",
+    "3": "none"
+   },
+   "overlap_top": [
+    [
+     1,
+     "会場",
+     [
+      [
+       "の",
+       "ボランティア説明会"
+      ]
+     ],
+     [
+      "研修室藍",
+      "会議室C"
+     ]
+    ]
+   ],
+   "q": "ボランティア用昼食は何食用意しますか？",
+   "question_read": {
+    "asked": "object_bare",
+    "centre": "用意",
+    "frame": "ボランティア用昼食はQQ用意します",
+    "ok": true,
+    "path": [],
+    "reason": null,
+    "shape": "F3"
+   },
+   "qword": "何食",
+   "route": null,
+   "slot_overlap_chars": 0,
+   "stored_sentence": [],
+   "stored_shapes": [],
+   "stored_slot": "",
+   "story": "LS-D01",
+   "verdict": "NONE"
+  },
+  {
+   "asked_slot": "展示写真の許可確認を終える日",
+   "cause": "Q1 question not read (no_question_word)",
+   "checkpoint": 2,
+   "form": "rephrased",
+   "gold": "2032年10月19日",
+   "issues": [
+    "question_unparsed:no_question_word"
+   ],
+   "kind": "update",
+   "other": [],
+   "overlap_route_sim": {
+    "1": "tie",
+    "2": "none",
+    "3": "none"
+   },
+   "overlap_top": [
+    [
+     1,
+     "新館開館日",
+     [],
+     [
+      "2032年11月7日",
+      "2032年11月8日"
+     ]
+    ],
+    [
+     1,
+     "第一陣移送日",
+     [
+      [
+       "の",
+       "蔵書"
+      ]
+     ],
+     [
+      "2032年10月15日",
+      "2032年10月16日"
+     ]
+    ]
+   ],
+   "q": "展示写真の許可確認を終える日を教えてください？",
+   "question_read": {
+    "asked": null,
+    "centre": null,
+    "frame": null,
+    "ok": false,
+    "path": [],
+    "reason": "no_question_word",
+    "shape": null
+   },
+   "qword": null,
+   "route": null,
+   "slot_overlap_chars": 2,
+   "stored_sentence": [
+    "写真掲示承認の締切は2032年10月18日から2032年10月19日に変更になった。"
+   ],
+   "stored_shapes": [
+    [
+     "ACC",
+     [
+      "F1"
+     ],
+     []
+    ]
+   ],
+   "stored_slot": "写真掲示承認の締切",
+   "story": "LS-D01",
+   "verdict": "NONE"
+  },
+  {
+   "asked_slot": "停電用に予備する蓄電池",
+   "cause": "Q1 question not read (frame_not_read:gap_is_not_a_particle)",
+   "checkpoint": 2,
+   "form": "rephrased",
+   "gold": "3台",
+   "issues": [
+    "question_unparsed:frame_not_read:gap_is_not_a_particle"
+   ],
+   "kind": "plain",
+   "other": [],
+   "overlap_route_sim": {
+    "1": "gold",
+    "2": "gold",
+    "3": "gold"
+   },
+   "overlap_top": [
+    [
+     3,
+     "台数",
+     [
+      [
+       "の",
+       "予備蓄電池"
+      ]
+     ],
+     [
+      "3台"
+     ]
+    ]
+   ],
+   "q": "停電用に予備する蓄電池はいくつありますか？",
+   "question_read": {
+    "asked": null,
+    "centre": null,
+    "frame": "停電用に予備する蓄電池はQQあります",
+    "ok": false,
+    "path": [],
+    "reason": "frame_not_read:gap_is_not_a_particle",
+    "shape": null
+   },
+   "qword": "いくつ",
+   "route": null,
+   "slot_overlap_chars": 3,
+   "stored_sentence": [
+    "予備蓄電池の台数は3台。"
+   ],
+   "stored_shapes": [
+    [
+     "ACC",
+     [
+      "F1"
+     ],
+     []
+    ]
+   ],
+   "stored_slot": "予備蓄電池の台数",
+   "story": "LS-D01",
+   "verdict": "NONE"
+  },
+  {
+   "asked_slot": "説明会はどの部屋",
+   "cause": "Q1 question not read (no_question_word)",
+   "checkpoint": 2,
+   "form": "rephrased",
+   "gold": "矛盾: 研修室藍 と 会議室C",
+   "issues": [
+    "question_unparsed:no_question_word"
+   ],
+   "kind": "contradiction",
+   "other": [],
+   "overlap_route_sim": {
+    "1": "gold",
+    "2": "gold",
+    "3": "gold"
+   },
+   "overlap_top": [
+    [
+     3,
+     "会場",
+     [
+      [
+       "の",
+       "ボランティア説明会"
+      ]
+     ],
+     [
+      "研修室藍",
+      "会議室C"
+     ]
+    ]
+   ],
+   "q": "ボランティア説明会はどの部屋で開きますか？",
+   "question_read": {
+    "asked": null,
+    "centre": null,
+    "frame": null,
+    "ok": false,
+    "path": [],
+    "reason": "no_question_word",
+    "shape": null
+   },
+   "qword": null,
+   "route": null,
+   "slot_overlap_chars": 3,
+   "stored_sentence": [
+    "ボランティア説明会の会場は研修室藍。",
+    "ボランティア説明会の会場は会議室C。"
+   ],
+   "stored_shapes": [
+    [
+     "ACC",
+     [
+      "F1"
+     ],
+     []
+    ],
+    [
+     "ACC",
+     [
+      "F1"
+     ],
+     []
+    ]
+   ],
+   "stored_slot": "ボランティア説明会の会場",
+   "story": "LS-D01",
+   "verdict": "NONE"
+  },
+  {
+   "asked_slot": "蔵書検索画面の切替",
+   "cause": "Q2 question read as an event (F3), memory holds an attribute",
+   "checkpoint": 3,
+   "form": "rephrased",
+   "gold": "18時40分",
+   "issues": [
+    "no_position",
+    "no_event_clause"
+   ],
+   "kind": "plain",
+   "other": [],
+   "overlap_route_sim": {
+    "1": "tie",
+    "2": "none",
+    "3": "none"
+   },
+   "overlap_top": [
+    [
+     3,
+     "版",
+     [
+      [
+       "の",
+       "蔵書検索画面"
+      ]
+     ],
+     [
+      "5.1.0"
+     ]
+    ],
+    [
+     1,
+     "第一陣移送日",
+     [
+      [
+       "の",
+       "蔵書"
+      ]
+     ],
+     [
+      "2032年10月15日",
+      "2032年10月16日"
+     ]
+    ]
+   ],
+   "q": "蔵書検索画面の切替は何時に始まりますか？",
+   "question_read": {
+    "asked": "に",
+    "centre": "始まる",
+    "frame": "蔵書検索画面の切替はQQに始まります",
+    "ok": true,
+    "path": [],
+    "reason": null,
+    "shape": "F3"
+   },
+   "qword": "何時",
+   "route": null,
+   "slot_overlap_chars": 2,
+   "stored_sentence": [
+    "OPAC切替開始時刻は18時40分。"
+   ],
+   "stored_shapes": [
+    [
+     "ACC",
+     [
+      "F2"
+     ],
+     []
+    ]
+   ],
+   "stored_slot": "OPAC切替開始時刻",
+   "story": "LS-D01",
+   "verdict": "NONE"
+  },
+  {
+   "asked_slot": "箱に保つ湿度の上限",
+   "cause": "Q1 question not read (no_question_word)",
+   "checkpoint": 3,
+   "form": "rephrased",
+   "gold": "矛盾: 45% と 48%",
+   "issues": [
+    "question_unparsed:no_question_word"
+   ],
+   "kind": "contradiction",
+   "other": [],
+   "overlap_route_sim": {
+    "1": "wrong",
+    "2": "wrong",
+    "3": "wrong"
+   },
+   "overlap_top": [
+    [
+     5,
+     "保管湿度上限",
+     [
+      [
+       "の",
+       "郷土資料箱"
+      ]
+     ],
+     [
+      "45",
+      "48"
+     ]
+    ],
+    [
+     2,
+     "状態確認",
+     [
+      [
+       "の",
+       "郷土資料"
+      ]
+     ],
+     [
+      "日暮理一"
+     ]
+    ]
+   ],
+   "q": "郷土資料箱に保つ湿度の上限を教えてください？",
+   "question_read": {
+    "asked": null,
+    "centre": null,
+    "frame": null,
+    "ok": false,
+    "path": [],
+    "reason": "no_question_word",
+    "shape": null
+   },
+   "qword": null,
+   "route": null,
+   "slot_overlap_chars": 2,
+   "stored_sentence": [
+    "郷土資料箱の保管湿度上限は45%。",
+    "郷土資料箱の保管湿度上限は48%。"
+   ],
+   "stored_shapes": [
+    [
+     "ACC",
+     [
+      "F1"
+     ],
+     []
+    ],
+    [
+     "ACC",
+     [
+      "F1"
+     ],
+     []
+    ]
+   ],
+   "stored_slot": "郷土資料箱の保管湿度上限",
+   "story": "LS-D01",
+   "verdict": "NONE"
+  },
+  {
+   "asked_slot": "何ルクスまで上げますか",
+   "cause": "Q1 question not read (placeholder_not_asked)",
+   "checkpoint": 3,
+   "form": "absent",
+   "gold": "記録なし",
+   "issues": [
+    "question_unparsed:placeholder_not_asked"
+   ],
+   "kind": "absent",
+   "other": [],
+   "overlap_route_sim": {
+    "1": "none",
+    "2": "none",
+    "3": "none"
+   },
+   "overlap_top": [],
+   "q": "展示窓の照明は何ルクスまで上げますか？",
+   "question_read": {
+    "asked": null,
+    "centre": null,
+    "frame": "展示窓の照明はQQルクスまで上げます",
+    "ok": false,
+    "path": [],
+    "reason": "placeholder_not_asked",
+    "shape": null
+   },
+   "qword": "何",
+   "route": null,
+   "slot_overlap_chars": 0,
+   "stored_sentence": [],
+   "stored_shapes": [],
+   "stored_slot": "",
+   "story": "LS-D01",
+   "verdict": "NONE"
+  },
+  {
+   "asked_slot": "増便分として用意する台車",
+   "cause": "Q1 question not read (frame_not_read:gap_is_not_a_particle)",
+   "checkpoint": 3,
+   "form": "rephrased",
+   "gold": "22台",
+   "issues": [
+    "question_unparsed:frame_not_read:gap_is_not_a_particle"
+   ],
+   "kind": "update",
+   "other": [],
+   "overlap_route_sim": {
+    "1": "tie",
+    "2": "none",
+    "3": "none"
+   },
+   "overlap_top": [
+    [
+     1,
+     "購入費",
+     [
+      [
+       "の",
+       "搬送台車"
+      ]
+     ],
+     [
+      "486,000円",
+      "512,000円"
+     ]
+    ],
+    [
+     1,
+     "追加台車数",
+     [],
+     [
+      "18台",
+      "22台"
+     ]
+    ]
+   ],
+   "q": "増便分として用意する台車は何台ですか？",
+   "question_read": {
+    "asked": null,
+    "centre": null,
+    "frame": "増便分として用意する台車はQQ",
+    "ok": false,
+    "path": [],
+    "reason": "frame_not_read:gap_is_not_a_particle",
+    "shape": null
+   },
+   "qword": "何台",
+   "route": null,
+   "slot_overlap_chars": 2,
+   "stored_sentence": [
+    "追加台車数は18台から22台に変更になった。"
+   ],
+   "stored_shapes": [
+    [
+     "ACC",
+     [
+      "F2"
+     ],
+     []
+    ]
+   ],
+   "stored_slot": "追加台車数",
+   "story": "LS-D01",
+   "verdict": "NONE"
+  },
+  {
+   "asked_slot": "新館カードの有効期間",
+   "cause": "Q0 reached",
+   "checkpoint": 3,
+   "form": "same",
+   "gold": "3年",
+   "issues": null,
+   "kind": "plain",
+   "other": [],
+   "overlap_route_sim": {
+    "1": "gold",
+    "2": "gold",
+    "3": "gold"
+   },
+   "overlap_top": [
+    [
+     4,
+     "有効期間",
+     [
+      [
+       "の",
+       "新館カード"
+      ]
+     ],
+     [
+      "3年"
+     ]
+    ],
+    [
+     2,
+     "初回発行数",
+     [
+      [
+       "の",
+       "新館カード"
+      ]
+     ],
+     [
+      "2,400枚"
+     ]
+    ]
+   ],
+   "q": "新館カードの有効期間は何年ですか？",
+   "question_read": {
+    "asked": "は",
+    "centre": "有効期間",
+    "frame": "新館カードの有効期間はQQ",
+    "ok": true,
+    "path": [
+     [
+      "の",
+      "新館カード"
+     ]
+    ],
+    "reason": null,
+    "shape": "F1"
+   },
+   "qword": "何年",
+   "route": "exact",
+   "slot_overlap_chars": 10,
+   "stored_sentence": [
+    "新館カードの有効期間は3年。"
+   ],
+   "stored_shapes": [
+    [
+     "ACC",
+     [
+      "F1"
+     ],
+     []
+    ]
+   ],
+   "stored_slot": "新館カードの有効期間",
+   "story": "LS-D01",
+   "verdict": "ANSWER"
+  },
+  {
+   "asked_slot": "書架を運ぶ便の出発予定",
+   "cause": "Q1 question not read (frame_not_read:case_before_topic)",
+   "checkpoint": 3,
+   "form": "rephrased",
+   "gold": "矛盾: 7時20分 と 7時35分",
+   "issues": [
+    "question_unparsed:frame_not_read:case_before_topic"
+   ],
+   "kind": "contradiction",
+   "other": [],
+   "overlap_route_sim": {
+    "1": "gold",
+    "2": "gold",
+    "3": "gold"
+   },
+   "overlap_top": [
+    [
+     3,
+     "第一便出発時刻",
+     [
+      [
+       "の",
+       "書架便"
+      ]
+     ],
+     [
+      "7時20分",
+      "7時35分"
+     ]
+    ],
+    [
+     1,
+     "棚段数",
+     [
+      [
+       "の",
+       "児童書架"
+      ]
+     ],
+     [
+      "5段"
+     ]
+    ]
+   ],
+   "q": "書架を運ぶ便の出発予定は何時ですか？",
+   "question_read": {
+    "asked": null,
+    "centre": null,
+    "frame": "書架を運ぶ便の出発予定はQQ",
+    "ok": false,
+    "path": [],
+    "reason": "frame_not_read:case_before_topic",
+    "shape": null
+   },
+   "qword": "何時",
+   "route": null,
+   "slot_overlap_chars": 2,
+   "stored_sentence": [
+    "書架便の第一便出発時刻は7時20分。",
+    "書架便の第一便出発時刻は7時35分。"
+   ],
+   "stored_shapes": [
+    [
+     "ACC",
+     [
+      "F1"
+     ],
+     []
+    ],
+    [
+     "ACC",
+     [
+      "F1"
+     ],
+     []
+    ]
+   ],
+   "stored_slot": "書架便の第一便出発時刻",
+   "story": "LS-D01",
+   "verdict": "NONE"
+  },
+  {
+   "asked_slot": "誰が署名しますか",
+   "cause": "Q2b question read as an event, memory holds an event",
+   "checkpoint": 3,
+   "form": "absent",
+   "gold": "記録なし",
+   "issues": [
+    "no_position",
+    "no_event_clause"
+   ],
+   "kind": "absent",
+   "other": [],
+   "overlap_route_sim": {
+    "1": "admitted",
+    "2": "none",
+    "3": "none"
+   },
+   "overlap_top": [
+    [
+     1,
+     "状態確認",
+     [
+      [
+       "の",
+       "郷土資料"
+      ]
+     ],
+     [
+      "日暮理一"
+     ]
+    ]
+   ],
+   "q": "遅番巡回の終了確認は誰が署名しますか？",
+   "question_read": {
+    "asked": "が",
+    "centre": "署名",
+    "frame": "遅番巡回の終了確認はQQが署名します",
+    "ok": true,
+    "path": [],
+    "reason": null,
+    "shape": "F3"
+   },
+   "qword": "誰",
+   "route": null,
+   "slot_overlap_chars": 0,
+   "stored_sentence": [],
+   "stored_shapes": [],
+   "stored_slot": "",
+   "story": "LS-D01",
+   "verdict": "NONE"
+  },
+  {
+   "asked_slot": "玄関照明の動作確認",
+   "cause": "Q2 question read as an event (F3), memory holds an attribute",
+   "checkpoint": 3,
+   "form": "rephrased",
+   "gold": "17時50分",
+   "issues": [
+    "no_position",
+    "no_event_clause"
+   ],
+   "kind": "update",
+   "other": [],
+   "overlap_route_sim": {
+    "1": "gold",
+    "2": "none",
+    "3": "none"
+   },
+   "overlap_top": [
+    [
+     1,
+     "状態確認",
+     [
+      [
+       "の",
+       "郷土資料"
+      ]
+     ],
+     [
+      "日暮理一"
+     ]
+    ],
+    [
+     1,
+     "玄関灯点検時刻",
+     [],
+     [
+      "17時30分",
+      "17時50分"
+     ]
+    ]
+   ],
+   "q": "玄関照明の動作確認は何時に行いますか？",
+   "question_read": {
+    "asked": "に",
+    "centre": "行う",
+    "frame": "玄関照明の動作確認はQQに行います",
+    "ok": true,
+    "path": [],
+    "reason": null,
+    "shape": "F3"
+   },
+   "qword": "何時",
+   "route": null,
+   "slot_overlap_chars": 2,
+   "stored_sentence": [
+    "玄関灯点検時刻は17時30分から17時50分に変更になった。"
+   ],
+   "stored_shapes": [
+    [
+     "ACC",
+     [
+      "F2"
+     ],
+     []
+    ]
+   ],
+   "stored_slot": "玄関灯点検時刻",
+   "story": "LS-D01",
+   "verdict": "NONE"
+  },
+  {
+   "asked_slot": "優先席を示す色",
+   "cause": "Q1 question not read (frame_not_read:case_before_topic)",
+   "checkpoint": 3,
+   "form": "rephrased",
+   "gold": "若草色",
+   "issues": [
+    "question_unparsed:frame_not_read:case_before_topic"
+   ],
+   "kind": "plain",
+   "other": [],
+   "overlap_route_sim": {
+    "1": "gold",
+    "2": "gold",
+    "3": "gold"
+   },
+   "overlap_top": [
+    [
+     3,
+     "表示色",
+     [
+      [
+       "の",
+       "車いす優先席"
+      ]
+     ],
+     [
+      "若草色"
+     ]
+    ]
+   ],
+   "q": "優先席を示す色は何ですか？",
+   "question_read": {
+    "asked": null,
+    "centre": null,
+    "frame": "優先席を示す色はQQ",
+    "ok": false,
+    "path": [],
+    "reason": "frame_not_read:case_before_topic",
+    "shape": null
+   },
+   "qword": "何",
+   "route": null,
+   "slot_overlap_chars": 3,
+   "stored_sentence": [
+    "車いす優先席の表示色は若草色。"
+   ],
+   "stored_shapes": [
+    [
+     "ACC",
+     [
+      "F1"
+     ],
+     []
+    ]
+   ],
+   "stored_slot": "車いす優先席の表示色",
+   "story": "LS-D01",
+   "verdict": "NONE"
+  },
+  {
+   "asked_slot": "リボンを切る時刻",
+   "cause": "Q1 question not read (frame_not_read:gap_is_not_a_particle)",
+   "checkpoint": 3,
+   "form": "rephrased",
+   "gold": "矛盾: 9時40分 と 10時00分",
+   "issues": [
+    "question_unparsed:frame_not_read:gap_is_not_a_particle"
+   ],
+   "kind": "contradiction",
+   "other": [],
+   "overlap_route_sim": {
+    "1": "gold",
+    "2": "gold",
+    "3": "gold"
+   },
+   "overlap_top": [
+    [
+     3,
+     "テープカット時刻",
+     [
+      [
+       "の",
+       "開館式"
+      ]
+     ],
+     [
+      "9時40分",
+      "10時00分"
+     ]
+    ],
+    [
+     1,
+     "新館開館日",
+     [],
+     [
+      "2032年11月7日",
+      "2032年11月8日"
+     ]
+    ]
+   ],
+   "q": "開館式でリボンを切る時刻は何時ですか？",
+   "question_read": {
+    "asked": null,
+    "centre": null,
+    "frame": "開館式でリボンを切る時刻はQQ",
+    "ok": false,
+    "path": [],
+    "reason": "frame_not_read:gap_is_not_a_particle",
+    "shape": null
+   },
+   "qword": "何時",
+   "route": null,
+   "slot_overlap_chars": 2,
+   "stored_sentence": [
+    "開館式のテープカット時刻は9時40分。",
+    "開館式のテープカット時刻は10時00分。"
+   ],
+   "stored_shapes": [
+    [
+     "ACC",
+     [
+      "F1"
+     ],
+     []
+    ],
+    [
+     "ACC",
+     [
+      "F1"
+     ],
+     []
+    ]
+   ],
+   "stored_slot": "開館式のテープカット時刻",
+   "story": "LS-D01",
+   "verdict": "NONE"
+  },
+  {
+   "asked_slot": "試験用に手配する本数",
+   "cause": "Q1 question not read (frame_not_read:gap_is_not_a_particle)",
+   "checkpoint": 0,
+   "form": "rephrased",
+   "gold": "矛盾: 420本 と 460本",
+   "issues": [
+    "question_unparsed:frame_not_read:gap_is_not_a_particle"
+   ],
+   "kind": "contradiction",
+   "other": [
+    "stored sentence F0 (one of two)",
+    "fact stored as an event (F3)"
+   ],
+   "overlap_route_sim": {
+    "1": "none",
+    "2": "none",
+    "3": "none"
+   },
+   "overlap_top": [
+    [
+     1,
+     "靴カバー",
+     [
+      [
+       "の",
+       "見学用"
+      ]
+     ],
+     [
+      "入口の引き出し"
+     ]
+    ]
+   ],
+   "q": "替えブラシを試験用に手配する本数はいくつですか？",
+   "question_read": {
+    "asked": null,
+    "centre": null,
+    "frame": "替えブラシを試験用に手配する本数はQQ",
+    "ok": false,
+    "path": [],
+    "reason": "frame_not_read:gap_is_not_a_particle",
+    "shape": null
+   },
+   "qword": "いくつ",
+   "route": null,
+   "slot_overlap_chars": 0,
+   "stored_sentence": [
+    "仮発注の交換ブラシは420本で枠を押さえた。",
+    "仮の購買票では交換ブラシを460本と記した。"
+   ],
+   "stored_shapes": [
+    [
+     "ACC",
+     [
+      "F3"
+     ],
+     []
+    ],
+    [
+     "F0",
+     [
+      "F0"
+     ],
+     [
+      "gap_is_not_a_particle"
+     ]
+    ]
+   ],
+   "stored_slot": "仮発注の交換ブラシ",
+   "story": "LS-D02",
+   "verdict": "NONE"
+  },
+  {
+   "asked_slot": "資料を出す日",
+   "cause": "Q1 question not read (frame_not_read:gap_is_not_a_particle)",
+   "checkpoint": 0,
+   "form": "rephrased",
+   "gold": "11月6日",
+   "issues": [
+    "question_unparsed:frame_not_read:gap_is_not_a_particle"
+   ],
+   "kind": "plain",
+   "other": [
+    "fact stored as an event (F3)"
+   ],
+   "overlap_route_sim": {
+    "1": "wrong",
+    "2": "none",
+    "3": "none"
+   },
+   "overlap_top": [
+    [
+     1,
+     "工房出荷日",
+     [
+      [
+       "の",
+       "先行試作"
+      ]
+     ],
+     [
+      "11月5日"
+     ]
+    ]
+   ],
+   "q": "認証審査へ資料を出す日はいつですか？",
+   "question_read": {
+    "asked": null,
+    "centre": null,
+    "frame": "認証審査へ資料を出す日はQQ",
+    "ok": false,
+    "path": [],
+    "reason": "frame_not_read:gap_is_not_a_particle",
+    "shape": null
+   },
+   "qword": "いつ",
+   "route": null,
+   "slot_overlap_chars": 2,
+   "stored_sentence": [
+    "認証資料の提出締切は11月6日と台帳に載せた。"
+   ],
+   "stored_shapes": [
+    [
+     "ACC",
+     [
+      "F3"
+     ],
+     []
+    ]
+   ],
+   "stored_slot": "認証資料の提出締切",
+   "story": "LS-D02",
+   "verdict": "NONE"
+  },
+  {
+   "asked_slot": "最終評価責任者",
+   "cause": "Q3 attribute question, no position with its slot noun",
+   "checkpoint": 0,
+   "form": "absent",
+   "gold": "記録なし",
+   "issues": [
+    "no_position",
+    "no_slot_noun_matches"
+   ],
+   "kind": "absent",
+   "other": [],
+   "overlap_route_sim": {
+    "1": "none",
+    "2": "none",
+    "3": "none"
+   },
+   "overlap_top": [],
+   "q": "段差越え確認の最終評価責任者は誰ですか？",
+   "question_read": {
+    "asked": "は",
+    "centre": "最終評価責任者",
+    "frame": "段差越え確認の最終評価責任者はQQ",
+    "ok": true,
+    "path": [
+     [
+      "の",
+      "段差越え確認"
+     ]
+    ],
+    "reason": null,
+    "shape": "F1"
+   },
+   "qword": "誰",
+   "route": null,
+   "slot_overlap_chars": 0,
+   "stored_sentence": [],
+   "stored_shapes": [],
+   "stored_slot": "",
+   "story": "LS-D02",
+   "verdict": "NONE"
+  },
+  {
+   "asked_slot": "連続運転できる長さ",
+   "cause": "Q1 question not read (frame_not_read:gap_is_not_a_particle)",
+   "checkpoint": 0,
+   "form": "rephrased",
+   "gold": "46分",
+   "issues": [
+    "question_unparsed:frame_not_read:gap_is_not_a_particle"
+   ],
+   "kind": "update",
+   "other": [],
+   "overlap_route_sim": {
+    "1": "gold",
+    "2": "gold",
+    "3": "gold"
+   },
+   "overlap_top": [
+    [
+     3,
+     "連続時間",
+     [
+      [
+       "の",
+       "静音運転"
+      ]
+     ],
+     [
+      "46分"
+     ]
+    ]
+   ],
+   "q": "静音設定で連続運転できる長さはどれくらいですか？",
+   "question_read": {
+    "asked": null,
+    "centre": null,
+    "frame": "静音設定で連続運転できる長さはQQ",
+    "ok": false,
+    "path": [],
+    "reason": "frame_not_read:gap_is_not_a_particle",
+    "shape": null
+   },
+   "qword": "どれくらい",
+   "route": null,
+   "slot_overlap_chars": 2,
+   "stored_sentence": [
+    "静音運転の連続時間は42分から46分に変更になった。"
+   ],
+   "stored_shapes": [
+    [
+     "ACC",
+     [
+      "F1"
+     ],
+     []
+    ]
+   ],
+   "stored_slot": "静音運転の連続時間",
+   "story": "LS-D02",
+   "verdict": "NONE"
+  },
+  {
+   "asked_slot": "駆動部品の保証期間",
+   "cause": "Q3 attribute question, no position with its slot noun",
+   "checkpoint": 0,
+   "form": "rephrased",
+   "gold": "20か月",
+   "issues": [
+    "no_position",
+    "no_slot_noun_matches"
+   ],
+   "kind": "plain",
+   "other": [
+    "fact stored as an event (F3)"
+   ],
+   "overlap_route_sim": {
+    "1": "none",
+    "2": "none",
+    "3": "none"
+   },
+   "overlap_top": [],
+   "q": "駆動部品の保証期間はどれくらいですか？",
+   "question_read": {
+    "asked": "は",
+    "centre": "保証期間",
+    "frame": "駆動部品の保証期間はQQ",
+    "ok": true,
+    "path": [
+     [
+      "の",
+      "駆動部品"
+     ]
+    ],
+    "reason": null,
+    "shape": "F1"
+   },
+   "qword": "どれくらい",
+   "route": null,
+   "slot_overlap_chars": 4,
+   "stored_sentence": [
+    "モーター保証期間は20か月で見積もっている。"
+   ],
+   "stored_shapes": [
+    [
+     "ACC",
+     [
+      "F3"
+     ],
+     []
+    ]
+   ],
+   "stored_slot": "モーター保証期間",
+   "story": "LS-D02",
+   "verdict": "NONE"
+  },
+  {
+   "asked_slot": "場所の温度表示",
+   "cause": "Q1 question not read (frame_not_read:gap_is_not_a_particle)",
+   "checkpoint": 0,
+   "form": "rephrased",
+   "gold": "矛盾: 19.5度 と 21度",
+   "issues": [
+    "question_unparsed:frame_not_read:gap_is_not_a_particle"
+   ],
+   "kind": "contradiction",
+   "other": [
+    "stored sentence F0 (one of two)"
+   ],
+   "overlap_route_sim": {
+    "1": "wrong",
+    "2": "wrong",
+    "3": "none"
+   },
+   "overlap_top": [
+    [
+     2,
+     "室温",
+     [
+      [
+       "の",
+       "朝"
+      ],
+      [
+       "の",
+       "組立室"
+      ]
+     ],
+     [
+      "19.5度"
+     ]
+    ]
+   ],
+   "q": "朝一番に組立作業をする場所の温度表示は何度ですか？",
+   "question_read": {
+    "asked": null,
+    "centre": null,
+    "frame": "朝一番に組立作業をする場所の温度表示はQQ",
+    "ok": false,
+    "path": [],
+    "reason": "frame_not_read:gap_is_not_a_particle",
+    "shape": null
+   },
+   "qword": "何度",
+   "route": null,
+   "slot_overlap_chars": 1,
+   "stored_sentence": [
+    "組立室の朝の室温は19.5度だった。",
+    "組立室の朝は温度表示が21度だった。"
+   ],
+   "stored_shapes": [
+    [
+     "ACC",
+     [
+      "F1"
+     ],
+     []
+    ],
+    [
+     "F0",
+     [
+      "F0"
+     ],
+     [
+      "no_predicate"
+     ]
+    ]
+   ],
+   "stored_slot": "組立室の朝の室温",
+   "story": "LS-D02",
+   "verdict": "NONE"
+  },
+  {
+   "asked_slot": "工房を出る日程",
+   "cause": "Q1 question not read (frame_not_read:case_before_topic)",
+   "checkpoint": 0,
+   "form": "rephrased",
+   "gold": "11月5日",
+   "issues": [
+    "question_unparsed:frame_not_read:case_before_topic"
+   ],
+   "kind": "update",
+   "other": [],
+   "overlap_route_sim": {
+    "1": "gold",
+    "2": "gold",
+    "3": "none"
+   },
+   "overlap_top": [
+    [
+     2,
+     "工房出荷日",
+     [
+      [
+       "の",
+       "先行試作"
+      ]
+     ],
+     [
+      "11月5日"
+     ]
+    ]
+   ],
+   "q": "先行機が工房を出る日程はいつですか？",
+   "question_read": {
+    "asked": null,
+    "centre": null,
+    "frame": "先行機が工房を出る日程はQQ",
+    "ok": false,
+    "path": [],
+    "reason": "frame_not_read:case_before_topic",
+    "shape": null
+   },
+   "qword": "いつ",
+   "route": null,
+   "slot_overlap_chars": 2,
+   "stored_sentence": [
+    "先行試作の工房出荷日は11月3日から11月5日に変更になった。"
+   ],
+   "stored_shapes": [
+    [
+     "ACC",
+     [
+      "F1"
+     ],
+     []
+    ]
+   ],
+   "stored_slot": "先行試作の工房出荷日",
+   "story": "LS-D02",
+   "verdict": "NONE"
+  },
+  {
+   "asked_slot": "一個あたりの購入価格",
+   "cause": "Q3 attribute question, no position with its slot noun",
+   "checkpoint": 0,
+   "form": "absent",
+   "gold": "記録なし",
+   "issues": [
+    "no_position",
+    "no_slot_noun_matches"
+   ],
+   "kind": "absent",
+   "other": [],
+   "overlap_route_sim": {
+    "1": "none",
+    "2": "none",
+    "3": "none"
+   },
+   "overlap_top": [],
+   "q": "交換ブラシ一個あたりの購入価格はいくらですか？",
+   "question_read": {
+    "asked": "は",
+    "centre": "購入価格",
+    "frame": "交換ブラシ一個あたりの購入価格はQQ",
+    "ok": true,
+    "path": [
+     [
+      "の",
+      "交換ブラシ一個あたり"
+     ]
+    ],
+    "reason": null,
+    "shape": "F1"
+   },
+   "qword": "いくら",
+   "route": null,
+   "slot_overlap_chars": 0,
+   "stored_sentence": [],
+   "stored_shapes": [],
+   "stored_slot": "",
+   "story": "LS-D02",
+   "verdict": "NONE"
+  },
+  {
+   "asked_slot": "ごみ容器が乾くまでの目安",
+   "cause": "Q1 question not read (frame_not_read:gap_is_not_a_particle)",
+   "checkpoint": 0,
+   "form": "rephrased",
+   "gold": "17分",
+   "issues": [
+    "question_unparsed:frame_not_read:gap_is_not_a_particle"
+   ],
+   "kind": "plain",
+   "other": [
+    "stored sentence F0 (all)"
+   ],
+   "overlap_route_sim": {
+    "1": "none",
+    "2": "none",
+    "3": "none"
+   },
+   "overlap_top": [],
+   "q": "洗ったごみ容器が乾くまでの目安は何分ですか？",
+   "question_read": {
+    "asked": null,
+    "centre": null,
+    "frame": "洗ったごみ容器が乾くまでの目安はQQ",
+    "ok": false,
+    "path": [],
+    "reason": "frame_not_read:gap_is_not_a_particle",
+    "shape": null
+   },
+   "qword": "何分",
+   "route": null,
+   "slot_overlap_chars": 1,
+   "stored_sentence": [
+    "ケースを水洗いした後の乾燥時間は17分だった。"
+   ],
+   "stored_shapes": [
+    [
+     "F0",
+     [
+      "F0"
+     ],
+     [
+      "gap_is_not_a_particle"
+     ]
+    ]
+   ],
+   "stored_slot": "ケースを水洗いした後の乾燥時間",
+   "story": "LS-D02",
+   "verdict": "NONE"
+  },
+  {
+   "asked_slot": "粉の混ぜ方",
+   "cause": "Q1 question not read (no_question_word)",
+   "checkpoint": 0,
+   "form": "rephrased",
+   "gold": "矛盾: 8対2 と 7対3",
+   "issues": [
+    "question_unparsed:no_question_word"
+   ],
+   "kind": "contradiction",
+   "other": [
+    "fact stored as an event (F3)"
+   ],
+   "overlap_route_sim": {
+    "1": "none",
+    "2": "none",
+    "3": "none"
+   },
+   "overlap_top": [],
+   "q": "床材を再現する粉の混ぜ方はどう記録されていますか？",
+   "question_read": {
+    "asked": null,
+    "centre": null,
+    "frame": null,
+    "ok": false,
+    "path": [],
+    "reason": "no_question_word",
+    "shape": null
+   },
+   "qword": null,
+   "route": null,
+   "slot_overlap_chars": 1,
+   "stored_sentence": [
+    "模擬砂の配合比は8対2で試験票を作った。",
+    "模擬砂の比率は7対3と試験帳に残っていた。"
+   ],
+   "stored_shapes": [
+    [
+     "ACC",
+     [
+      "F3"
+     ],
+     []
+    ],
+    [
+     "ACC",
+     [
+      "F3"
+     ],
+     []
+    ]
+   ],
+   "stored_slot": "模擬砂の配合比",
+   "story": "LS-D02",
+   "verdict": "NONE"
+  },
+  {
+   "asked_slot": "購入検討者向けの説明会場",
+   "cause": "Q3 attribute question, no position with its slot noun",
+   "checkpoint": 1,
+   "form": "rephrased",
+   "gold": "繭輪市の殻間広場",
+   "issues": [
+    "no_position",
+    "no_slot_noun_matches"
+   ],
+   "kind": "plain",
+   "other": [
+    "fact stored as an event (F3)"
+   ],
+   "overlap_route_sim": {
+    "1": "tie",
+    "2": "none",
+    "3": "none"
+   },
+   "overlap_top": [
+    [
+     1,
+     "開発会場",
+     [],
+     [
+      "汀環技研の青篭区汐路工房"
+     ]
+    ],
+    [
+     1,
+     "一次確認者",
+     [
+      [
+       "の",
+       "安全審査書類"
+      ]
+     ],
+     [
+      "鳳来玲"
+     ]
+    ]
+   ],
+   "q": "購入検討者向けの説明会場はどこですか？",
+   "question_read": {
+    "asked": "は",
+    "centre": "説明会場",
+    "frame": "購入検討者向けの説明会場はQQ",
+    "ok": true,
+    "path": [
+     [
+      "の",
+      "購入検討者向け"
+     ]
+    ],
+    "reason": null,
+    "shape": "F1"
+   },
+   "qword": "どこ",
+   "route": null,
+   "slot_overlap_chars": 3,
+   "stored_sentence": [
+    "販売説明会の開催地は繭輪市の殻間広場に決まった。"
+   ],
+   "stored_shapes": [
+    [
+     "ACC",
+     [
+      "F3"
+     ],
+     []
+    ]
+   ],
+   "stored_slot": "販売説明会の開催地",
+   "story": "LS-D02",
+   "verdict": "NONE"
+  },
+  {
+   "asked_slot": "試験後の箱を運送会社が回収する日",
+   "cause": "Q1 question not read (frame_not_read:gap_is_not_a_particle)",
+   "checkpoint": 1,
+   "form": "rephrased",
+   "gold": "矛盾: 11月17日 と 11月19日",
+   "issues": [
+    "question_unparsed:frame_not_read:gap_is_not_a_particle"
+   ],
+   "kind": "contradiction",
+   "other": [
+    "stored sentence F0 (one of two)",
+    "fact stored as an event (F3)"
+   ],
+   "overlap_route_sim": {
+    "1": "tie",
+    "2": "none",
+    "3": "none"
+   },
+   "overlap_top": [
+    [
+     1,
+     "乾燥台",
+     [
+      [
+       "の",
+       "水洗い後"
+      ]
+     ],
+     [
+      "作業台の脇"
+     ]
+    ],
+    [
+     1,
+     "工房出荷日",
+     [
+      [
+       "の",
+       "先行試作"
+      ]
+     ],
+     [
+      "11月5日"
+     ]
+    ]
+   ],
+   "q": "試験後の箱を運送会社が回収する日はいつですか？",
+   "question_read": {
+    "asked": null,
+    "centre": null,
+    "frame": "試験後の箱を運送会社が回収する日はQQ",
+    "ok": false,
+    "path": [],
+    "reason": "frame_not_read:gap_is_not_a_particle",
+    "shape": null
+   },
+   "qword": "いつ",
+   "route": null,
+   "slot_overlap_chars": 1,
+   "stored_sentence": [
+    "返却用箱の集荷日は11月17日で輸送票に書いた。",
+    "返却用箱の集荷日は11月19日と輸送表にある。"
+   ],
+   "stored_shapes": [
+    [
+     "ACC",
+     [
+      "F3"
+     ],
+     []
+    ],
+    [
+     "F0",
+     [
+      "F0"
+     ],
+     [
+      "no_predicate"
+     ]
+    ]
+   ],
+   "stored_slot": "返却用箱の集荷日",
+   "story": "LS-D02",
+   "verdict": "NONE"
+  },
+  {
+   "asked_slot": "組付け確認の集まり",
+   "cause": "Q2 question read as an event (F3), memory holds an attribute",
+   "checkpoint": 1,
+   "form": "rephrased",
+   "gold": "11月14日",
+   "issues": [
+    "no_position",
+    "no_event_clause"
+   ],
+   "kind": "update",
+   "other": [],
+   "overlap_route_sim": {
+    "1": "gold",
+    "2": "gold",
+    "3": "none"
+   },
+   "overlap_top": [
+    [
+     2,
+     "組付け確認会",
+     [],
+     [
+      "11月14日"
+     ]
+    ],
+    [
+     1,
+     "確認日",
+     [
+      [
+       "の",
+       "表面処理"
+      ]
+     ],
+     [
+      "11月10日"
+     ]
+    ]
+   ],
+   "q": "組付け確認の集まりは何日に開かれますか？",
+   "question_read": {
+    "asked": "に",
+    "centre": "開く",
+    "frame": "組付け確認の集まりはQQに開かれます",
+    "ok": true,
+    "path": [],
+    "reason": null,
+    "shape": "F3"
+   },
+   "qword": "何日",
+   "route": null,
+   "slot_overlap_chars": 5,
+   "stored_sentence": [
+    "組付け確認会は11月12日から11月14日に変更になった。"
+   ],
+   "stored_shapes": [
+    [
+     "ACC",
+     [
+      "F2"
+     ],
+     []
+    ]
+   ],
+   "stored_slot": "組付け確認会",
+   "story": "LS-D02",
+   "verdict": "NONE"
+  },
+  {
+   "asked_slot": "試験場所に据える",
+   "cause": "Q1 question not read (frame_not_read:gap_is_not_a_particle)",
+   "checkpoint": 1,
+   "form": "absent",
+   "gold": "記録なし",
+   "issues": [
+    "question_unparsed:frame_not_read:gap_is_not_a_particle"
+   ],
+   "kind": "absent",
+   "other": [],
+   "overlap_route_sim": {
+    "1": "admitted",
+    "2": "none",
+    "3": "none"
+   },
+   "overlap_top": [
+    [
+     1,
+     "防滴試験",
+     [],
+     [
+      "試作Aの前提"
+     ]
+    ]
+   ],
+   "q": "段差板を試験場所に据えるのは誰ですか？",
+   "question_read": {
+    "asked": null,
+    "centre": null,
+    "frame": "段差板を試験場所に据えるのはQQ",
+    "ok": false,
+    "path": [],
+    "reason": "frame_not_read:gap_is_not_a_particle",
+    "shape": null
+   },
+   "qword": "誰",
+   "route": null,
+   "slot_overlap_chars": 0,
+   "stored_sentence": [],
+   "stored_shapes": [],
+   "stored_slot": "",
+   "story": "LS-D02",
+   "verdict": "NONE"
+  },
+  {
+   "asked_slot": "持ち手の試作品",
+   "cause": "Q1 question not read (no_question_word)",
+   "checkpoint": 1,
+   "form": "rephrased",
+   "gold": "再生ABS樹脂",
+   "issues": [
+    "question_unparsed:no_question_word"
+   ],
+   "kind": "plain",
+   "other": [],
+   "overlap_route_sim": {
+    "1": "gold",
+    "2": "gold",
+    "3": "none"
+   },
+   "overlap_top": [
+    [
+     2,
+     "試作品素材",
+     [
+      [
+       "の",
+       "天面取っ手"
+      ]
+     ],
+     [
+      "再生ABS樹脂"
+     ]
+    ],
+    [
+     1,
+     "試作A",
+     [],
+     [
+      "防滴試験の前提"
+     ]
+    ]
+   ],
+   "q": "持ち手の試作品にはどの樹脂を使いましたか？",
+   "question_read": {
+    "asked": null,
+    "centre": null,
+    "frame": null,
+    "ok": false,
+    "path": [],
+    "reason": "no_question_word",
+    "shape": null
+   },
+   "qword": null,
+   "route": null,
+   "slot_overlap_chars": 5,
+   "stored_sentence": [
+    "天面取っ手の試作品素材は再生ABS樹脂だった。"
+   ],
+   "stored_shapes": [
+    [
+     "ACC",
+     [
+      "F1"
+     ],
+     []
+    ]
+   ],
+   "stored_slot": "天面取っ手の試作品素材",
+   "story": "LS-D02",
+   "verdict": "NONE"
+  },
+  {
+   "asked_slot": "展示に使う試作機",
+   "cause": "Q1 question not read (frame_not_read:case_before_topic)",
+   "checkpoint": 1,
+   "form": "rephrased",
+   "gold": "矛盾: 2台 と 3台",
+   "issues": [
+    "question_unparsed:frame_not_read:case_before_topic"
+   ],
+   "kind": "contradiction",
+   "other": [
+    "fact stored as an event (F3)"
+   ],
+   "overlap_route_sim": {
+    "1": "tie",
+    "2": "none",
+    "3": "none"
+   },
+   "overlap_top": [
+    [
+     1,
+     "試作A",
+     [],
+     [
+      "防滴試験の前提"
+     ]
+    ],
+    [
+     1,
+     "工房出荷日",
+     [
+      [
+       "の",
+       "先行試作"
+      ]
+     ],
+     [
+      "11月5日"
+     ]
+    ]
+   ],
+   "q": "展示に使う試作機は何台と数えられていますか？",
+   "question_read": {
+    "asked": null,
+    "centre": null,
+    "frame": "展示に使う試作機はQQと数えられています",
+    "ok": false,
+    "path": [],
+    "reason": "frame_not_read:case_before_topic",
+    "shape": null
+   },
+   "qword": "何台",
+   "route": null,
+   "slot_overlap_chars": 3,
+   "stored_sentence": [
+    "展示向けの試作機台数は2台で組んである。",
+    "展示向け試作機は3台と資材控えに載っていた。"
+   ],
+   "stored_shapes": [
+    [
+     "ACC",
+     [
+      "F3"
+     ],
+     []
+    ],
+    [
+     "ACC",
+     [
+      "F3"
+     ],
+     []
+    ]
+   ],
+   "stored_slot": "展示向けの試作機台数",
+   "story": "LS-D02",
+   "verdict": "NONE"
+  },
+  {
+   "asked_slot": "売り場で評価してもらう機体",
+   "cause": "Q1 question not read (frame_not_read:gap_is_not_a_particle)",
+   "checkpoint": 1,
+   "form": "rephrased",
+   "gold": "10台",
+   "issues": [
+    "question_unparsed:frame_not_read:gap_is_not_a_particle"
+   ],
+   "kind": "update",
+   "other": [],
+   "overlap_route_sim": {
+    "1": "gold",
+    "2": "none",
+    "3": "none"
+   },
+   "overlap_top": [
+    [
+     1,
+     "割当数",
+     [
+      [
+       "の",
+       "店頭評価機"
+      ]
+     ],
+     [
+      "10台"
+     ]
+    ]
+   ],
+   "q": "売り場で評価してもらう機体はいくつですか？",
+   "question_read": {
+    "asked": null,
+    "centre": null,
+    "frame": "売り場で評価してもらう機体はQQ",
+    "ok": false,
+    "path": [],
+    "reason": "frame_not_read:gap_is_not_a_particle",
+    "shape": null
+   },
+   "qword": "いくつ",
+   "route": null,
+   "slot_overlap_chars": 2,
+   "stored_sentence": [
+    "店頭評価機の割当数は12台から10台に変更になった。"
+   ],
+   "stored_shapes": [
+    [
+     "ACC",
+     [
+      "F1"
+     ],
+     []
+    ]
+   ],
+   "stored_slot": "店頭評価機の割当数",
+   "story": "LS-D02",
+   "verdict": "NONE"
+  },
+  {
+   "asked_slot": "床から測った高さ",
+   "cause": "Q1 question not read (frame_not_read:gap_is_not_a_particle)",
+   "checkpoint": 1,
+   "form": "rephrased",
+   "gold": "9.4センチ",
+   "issues": [
+    "question_unparsed:frame_not_read:gap_is_not_a_particle"
+   ],
+   "kind": "plain",
+   "other": [
+    "fact stored as an event (F3)"
+   ],
+   "overlap_route_sim": {
+    "1": "wrong",
+    "2": "none",
+    "3": "none"
+   },
+   "overlap_top": [
+    [
+     1,
+     "割当数",
+     [
+      [
+       "の",
+       "店頭評価機"
+      ]
+     ],
+     [
+      "10台"
+     ]
+    ]
+   ],
+   "q": "二号機を床から測った高さは何センチですか？",
+   "question_read": {
+    "asked": null,
+    "centre": null,
+    "frame": "二号機を床から測った高さはQQ",
+    "ok": false,
+    "path": [],
+    "reason": "frame_not_read:gap_is_not_a_particle",
+    "shape": null
+   },
+   "qword": "何センチ",
+   "route": null,
+   "slot_overlap_chars": 1,
+   "stored_sentence": [
+    "二号機の全高は9.4センチに収まった。"
+   ],
+   "stored_shapes": [
+    [
+     "ACC",
+     [
+      "F3"
+     ],
+     []
+    ]
+   ],
+   "stored_slot": "二号機の全高",
+   "story": "LS-D02",
+   "verdict": "NONE"
+  },
+  {
+   "asked_slot": "購入金額",
+   "cause": "Q3 attribute question, no position with its slot noun",
+   "checkpoint": 1,
+   "form": "absent",
+   "gold": "記録なし",
+   "issues": [
+    "no_position",
+    "no_slot_noun_matches"
+   ],
+   "kind": "absent",
+   "other": [],
+   "overlap_route_sim": {
+    "1": "none",
+    "2": "none",
+    "3": "none"
+   },
+   "overlap_top": [],
+   "q": "電池固定治具の購入金額はいくらですか？",
+   "question_read": {
+    "asked": "は",
+    "centre": "購入金額",
+    "frame": "電池固定治具の購入金額はQQ",
+    "ok": true,
+    "path": [
+     [
+      "の",
+      "電池固定治具"
+     ]
+    ],
+    "reason": null,
+    "shape": "F1"
+   },
+   "qword": "いくら",
+   "route": null,
+   "slot_overlap_chars": 0,
+   "stored_sentence": [],
+   "stored_shapes": [],
+   "stored_slot": "",
+   "story": "LS-D02",
+   "verdict": "NONE"
+  },
+  {
+   "asked_slot": "予備の蓄電池",
+   "cause": "Q1 question not read (frame_not_read:no_predicate)",
+   "checkpoint": 1,
+   "form": "rephrased",
+   "gold": "矛盾: 18日 と 24日",
+   "issues": [
+    "question_unparsed:frame_not_read:no_predicate"
+   ],
+   "kind": "contradiction",
+   "other": [
+    "stored sentence F0 (all)"
+   ],
+   "overlap_route_sim": {
+    "1": "none",
+    "2": "none",
+    "3": "none"
+   },
+   "overlap_top": [
+    [
+     1,
+     "予備電源",
+     [],
+     [
+      "会場の奥"
+     ]
+    ]
+   ],
+   "q": "予備の蓄電池は何日に届く見込みですか？",
+   "question_read": {
+    "asked": null,
+    "centre": null,
+    "frame": "予備の蓄電池はQQに届く見込み",
+    "ok": false,
+    "path": [],
+    "reason": "frame_not_read:no_predicate",
+    "shape": null
+   },
+   "qword": "何日",
+   "route": null,
+   "slot_overlap_chars": 2,
+   "stored_sentence": [
+    "予備電池の納入見込みは18日と問屋から返ってきた。",
+    "予備電池は問屋の予定表で24日着になっていた。"
+   ],
+   "stored_shapes": [
+    [
+     "F0",
+     [
+      "F0"
+     ],
+     [
+      "gap_is_not_a_particle"
+     ]
+    ],
+    [
+     "F0",
+     [
+      "F0"
+     ],
+     [
+      "no_predicate"
+     ]
+    ]
+   ],
+   "stored_slot": "予備電池の納入見込み",
+   "story": "LS-D02",
+   "verdict": "NONE"
+  },
+  {
+   "asked_slot": "掃除機からマイクまで",
+   "cause": "Q1 question not read (several_clauses)",
+   "checkpoint": 2,
+   "form": "rephrased",
+   "gold": "矛盾: 1.0メートル と 1.2メートル",
+   "issues": [
+    "question_unparsed:several_clauses"
+   ],
+   "kind": "contradiction",
+   "other": [
+    "fact stored as an event (F3)"
+   ],
+   "overlap_route_sim": {
+    "1": "wrong",
+    "2": "none",
+    "3": "none"
+   },
+   "overlap_top": [
+    [
+     1,
+     "割当数",
+     [
+      [
+       "の",
+       "店頭評価機"
+      ]
+     ],
+     [
+      "10台"
+     ]
+    ]
+   ],
+   "q": "音を測る際、掃除機からマイクまで何メートル離しますか？",
+   "question_read": {
+    "asked": null,
+    "centre": null,
+    "frame": "音を測る際、掃除機からマイクまでQQ離します",
+    "ok": false,
+    "path": [],
+    "reason": "several_clauses",
+    "shape": null
+   },
+   "qword": "何メートル",
+   "route": null,
+   "slot_overlap_chars": 0,
+   "stored_sentence": [
+    "吸引音の評価距離は1.0メートルに固定した。",
+    "吸引音の評価距離は1.2メートルと試験帳の別紙に書いてあった。"
+   ],
+   "stored_shapes": [
+    [
+     "ACC",
+     [
+      "F3"
+     ],
+     []
+    ],
+    [
+     "ACC",
+     [
+      "F3"
+     ],
+     []
+    ]
+   ],
+   "stored_slot": "吸引音の評価距離",
+   "story": "LS-D02",
+   "verdict": "NONE"
+  },
+  {
+   "asked_slot": "蓄電池の経時確認",
+   "cause": "Q1 question not read (frame_not_read:gap_is_not_a_particle)",
+   "checkpoint": 2,
+   "form": "rephrased",
+   "gold": "11月18日",
+   "issues": [
+    "question_unparsed:frame_not_read:gap_is_not_a_particle"
+   ],
+   "kind": "plain",
+   "other": [
+    "stored sentence F0 (all)"
+   ],
+   "overlap_route_sim": {
+    "1": "tie",
+    "2": "none",
+    "3": "none"
+   },
+   "overlap_top": [
+    [
+     1,
+     "確認日",
+     [
+      [
+       "の",
+       "表面処理"
+      ]
+     ],
+     [
+      "11月10日"
+     ]
+    ],
+    [
+     1,
+     "一次確認者",
+     [
+      [
+       "の",
+       "安全審査書類"
+      ]
+     ],
+     [
+      "鳳来玲"
+     ]
+    ]
+   ],
+   "q": "蓄電池の経時確認はいつ始める予定ですか？",
+   "question_read": {
+    "asked": null,
+    "centre": null,
+    "frame": "蓄電池の経時確認はQQ始める予定",
+    "ok": false,
+    "path": [],
+    "reason": "frame_not_read:gap_is_not_a_particle",
+    "shape": null
+   },
+   "qword": "いつ",
+   "route": null,
+   "slot_overlap_chars": 6,
+   "stored_sentence": [
+    "蓄電池の経時試験開始日は11月18日に仮置きした。"
+   ],
+   "stored_shapes": [
+    [
+     "F0",
+     [
+      "F0"
+     ],
+     [
+      "no_predicate"
+     ]
+    ]
+   ],
+   "stored_slot": "蓄電池の経時試験開始日",
+   "story": "LS-D02",
+   "verdict": "NONE"
+  },
+  {
+   "asked_slot": "充電耐久で許容する上限回数",
+   "cause": "Q1 question not read (frame_not_read:gap_is_not_a_particle)",
+   "checkpoint": 2,
+   "form": "rephrased",
+   "gold": "60サイクル",
+   "issues": [
+    "question_unparsed:frame_not_read:gap_is_not_a_particle"
+   ],
+   "kind": "update",
+   "other": [],
+   "overlap_route_sim": {
+    "1": "tie",
+    "2": "tie",
+    "3": "tie"
+   },
+   "overlap_top": [
+    [
+     3,
+     "上限",
+     [
+      [
+       "の",
+       "充電耐久"
+      ]
+     ],
+     [
+      "48サイクル"
+     ]
+    ],
+    [
+     3,
+     "充電耐久上限",
+     [],
+     [
+      "60サイクル"
+     ]
+    ]
+   ],
+   "q": "充電耐久で許容する上限回数はいくつですか？",
+   "question_read": {
+    "asked": null,
+    "centre": null,
+    "frame": "充電耐久で許容する上限回数はQQ",
+    "ok": false,
+    "path": [],
+    "reason": "frame_not_read:gap_is_not_a_particle",
+    "shape": null
+   },
+   "qword": "いくつ",
+   "route": null,
+   "slot_overlap_chars": 4,
+   "stored_sentence": [
+    "充電耐久上限は48サイクルから60サイクルに変更になった。"
+   ],
+   "stored_shapes": [
+    [
+     "ACC",
+     [
+      "F2"
+     ],
+     []
+    ]
+   ],
+   "stored_slot": "充電耐久上限",
+   "story": "LS-D02",
+   "verdict": "NONE"
+  },
+  {
+   "asked_slot": "夜間の連続運転試験で残す電池残量",
+   "cause": "Q1 question not read (frame_not_read:case_before_topic)",
+   "checkpoint": 2,
+   "form": "absent",
+   "gold": "記録なし",
+   "issues": [
+    "question_unparsed:frame_not_read:case_before_topic"
+   ],
+   "kind": "absent",
+   "other": [],
+   "overlap_route_sim": {
+    "1": "none",
+    "2": "none",
+    "3": "none"
+   },
+   "overlap_top": [
+    [
+     2,
+     "連続時間",
+     [
+      [
+       "の",
+       "静音運転"
+      ]
+     ],
+     [
+      "46分"
+     ]
+    ],
+    [
+     1,
+     "防滴試験",
+     [],
+     [
+      "試作Aの前提"
+     ]
+    ]
+   ],
+   "q": "夜間の連続運転試験で残す電池残量は何％ですか？",
+   "question_read": {
+    "asked": null,
+    "centre": null,
+    "frame": "夜間の連続運転試験で残す電池残量はQQ",
+    "ok": false,
+    "path": [],
+    "reason": "frame_not_read:case_before_topic",
+    "shape": null
+   },
+   "qword": "何％",
+   "route": null,
+   "slot_overlap_chars": 0,
+   "stored_sentence": [],
+   "stored_shapes": [],
+   "stored_slot": "",
+   "story": "LS-D02",
+   "verdict": "NONE"
+  },
+  {
+   "asked_slot": "二号機を持ち上げた時の重さ",
+   "cause": "Q1 question not read (frame_not_read:gap_is_not_a_particle)",
+   "checkpoint": 2,
+   "form": "rephrased",
+   "gold": "3.1キロ",
+   "issues": [
+    "question_unparsed:frame_not_read:gap_is_not_a_particle"
+   ],
+   "kind": "plain",
+   "other": [
+    "fact stored as an event (F3)"
+   ],
+   "overlap_route_sim": {
+    "1": "none",
+    "2": "none",
+    "3": "none"
+   },
+   "overlap_top": [
+    [
+     1,
+     "割当数",
+     [
+      [
+       "の",
+       "店頭評価機"
+      ]
+     ],
+     [
+      "10台"
+     ]
+    ],
+    [
+     1,
+     "持ち上げ試験",
+     [],
+     [
+      "電池仮組みの前提"
+     ]
+    ]
+   ],
+   "q": "二号機を持ち上げた時の重さはいくらですか？",
+   "question_read": {
+    "asked": null,
+    "centre": null,
+    "frame": "二号機を持ち上げた時の重さはQQ",
+    "ok": false,
+    "path": [],
+    "reason": "frame_not_read:gap_is_not_a_particle",
+    "shape": null
+   },
+   "qword": "いくら",
+   "route": null,
+   "slot_overlap_chars": 3,
+   "stored_sentence": [
+    "二号機の重量は3.1キロで台帳に残した。"
+   ],
+   "stored_shapes": [
+    [
+     "ACC",
+     [
+      "F3"
+     ],
+     []
+    ]
+   ],
+   "stored_slot": "二号機の重量",
+   "story": "LS-D02",
+   "verdict": "NONE"
+  },
+  {
+   "asked_slot": "最初の量産分に用意する梱包箱",
+   "cause": "Q1 question not read (frame_not_read:gap_is_not_a_particle)",
+   "checkpoint": 2,
+   "form": "rephrased",
+   "gold": "矛盾: 720箱 と 760箱",
+   "issues": [
+    "question_unparsed:frame_not_read:gap_is_not_a_particle"
+   ],
+   "kind": "contradiction",
+   "other": [
+    "stored sentence F0 (one of two)",
+    "fact stored as an event (F3)"
+   ],
+   "overlap_route_sim": {
+    "1": "none",
+    "2": "none",
+    "3": "none"
+   },
+   "overlap_top": [
+    [
+     1,
+     "箱ラベル確定",
+     [],
+     [
+      "出荷連絡の前提"
+     ]
+    ],
+    [
+     1,
+     "試作箱",
+     [],
+     [
+      "別の色札"
+     ]
+    ]
+   ],
+   "q": "最初の量産分に用意する梱包箱はいくつですか？",
+   "question_read": {
+    "asked": null,
+    "centre": null,
+    "frame": "最初の量産分に用意する梱包箱はQQ",
+    "ok": false,
+    "path": [],
+    "reason": "frame_not_read:gap_is_not_a_particle",
+    "shape": null
+   },
+   "qword": "いくつ",
+   "route": null,
+   "slot_overlap_chars": 2,
+   "stored_sentence": [
+    "初回量産用の箱は720箱で資材票に置いた。",
+    "初回量産用の箱は760箱で資材表に記入されていた。"
+   ],
+   "stored_shapes": [
+    [
+     "F0",
+     [
+      "F0"
+     ],
+     [
+      "no_predicate"
+     ]
+    ],
+    [
+     "ACC",
+     [
+      "F3"
+     ],
+     []
+    ]
+   ],
+   "stored_slot": "初回量産用の箱",
+   "story": "LS-D02",
+   "verdict": "NONE"
+  },
+  {
+   "asked_slot": "校正原稿",
+   "cause": "Q1 question not read (frame_not_read:gap_is_not_a_particle)",
+   "checkpoint": 2,
+   "form": "rephrased",
+   "gold": "11月22日",
+   "issues": [
+    "question_unparsed:frame_not_read:gap_is_not_a_particle"
+   ],
+   "kind": "update",
+   "other": [],
+   "overlap_route_sim": {
+    "1": "gold",
+    "2": "gold",
+    "3": "gold"
+   },
+   "overlap_top": [
+    [
+     3,
+     "校正返却日",
+     [
+      [
+       "の",
+       "取扱説明書"
+      ]
+     ],
+     [
+      "11月22日"
+     ]
+    ],
+    [
+     1,
+     "校正票",
+     [
+      [
+       "の",
+       "振動計"
+      ]
+     ],
+     [
+      "共有庫の「凪棚",
+      "共有庫の「凪棚",
+      "共有庫の「凪棚"
+     ]
+    ]
+   ],
+   "q": "説明書の校正原稿はいつまでに戻しますか？",
+   "question_read": {
+    "asked": null,
+    "centre": null,
+    "frame": "説明書の校正原稿はQQまでに戻します",
+    "ok": false,
+    "path": [],
+    "reason": "frame_not_read:gap_is_not_a_particle",
+    "shape": null
+   },
+   "qword": "いつ",
+   "route": null,
+   "slot_overlap_chars": 2,
+   "stored_sentence": [
+    "取扱説明書の校正返却日は11月20日から11月22日に変更になった。"
+   ],
+   "stored_shapes": [
+    [
+     "ACC",
+     [
+      "F1"
+     ],
+     []
+    ]
+   ],
+   "stored_slot": "説明書の校正返却日",
+   "story": "LS-D02",
+   "verdict": "NONE"
+  },
+  {
+   "asked_slot": "問屋が示した合計",
+   "cause": "Q1 question not read (frame_not_read:gap_is_not_a_particle)",
+   "checkpoint": 2,
+   "form": "rephrased",
+   "gold": "143,000円",
+   "issues": [
+    "question_unparsed:frame_not_read:gap_is_not_a_particle"
+   ],
+   "kind": "plain",
+   "other": [
+    "fact stored as an event (F3)"
+   ],
+   "overlap_route_sim": {
+    "1": "none",
+    "2": "none",
+    "3": "none"
+   },
+   "overlap_top": [
+    [
+     1,
+     "靴カバー",
+     [
+      [
+       "の",
+       "見学用"
+      ]
+     ],
+     [
+      "入口の引き出し"
+     ]
+    ],
+    [
+     1,
+     "在庫案内",
+     [
+      [
+       "の",
+       "交換部品"
+      ]
+     ],
+     [
+      "短い言葉"
+     ]
+    ]
+   ],
+   "q": "交換用の駆動輪について問屋が示した合計はいくらですか？",
+   "question_read": {
+    "asked": null,
+    "centre": null,
+    "frame": "交換用の駆動輪について問屋が示した合計はQQ",
+    "ok": false,
+    "path": [],
+    "reason": "frame_not_read:gap_is_not_a_particle",
+    "shape": null
+   },
+   "qword": "いくら",
+   "route": null,
+   "slot_overlap_chars": 0,
+   "stored_sentence": [
+    "部品交換の見積総額は143,000円で問屋に届いている。"
+   ],
+   "stored_shapes": [
+    [
+     "ACC",
+     [
+      "F3"
+     ],
+     []
+    ]
+   ],
+   "stored_slot": "部品交換の見積総額",
+   "story": "LS-D02",
+   "verdict": "NONE"
+  },
+  {
+   "asked_slot": "内箱の最終承認者",
+   "cause": "Q1 question not read (frame_not_read:case_before_topic)",
+   "checkpoint": 2,
+   "form": "absent",
+   "gold": "記録なし",
+   "issues": [
+    "question_unparsed:frame_not_read:case_before_topic"
+   ],
+   "kind": "absent",
+   "other": [],
+   "overlap_route_sim": {
+    "1": "admitted",
+    "2": "none",
+    "3": "none"
+   },
+   "overlap_top": [
+    [
+     1,
+     "一次確認者",
+     [
+      [
+       "の",
+       "安全審査書類"
+      ]
+     ],
+     [
+      "鳳来玲"
+     ]
+    ]
+   ],
+   "q": "梱包手順で使う内箱の最終承認者は誰ですか？",
+   "question_read": {
+    "asked": null,
+    "centre": null,
+    "frame": "梱包手順で使う内箱の最終承認者はQQ",
+    "ok": false,
+    "path": [],
+    "reason": "frame_not_read:case_before_topic",
+    "shape": null
+   },
+   "qword": "誰",
+   "route": null,
+   "slot_overlap_chars": 0,
+   "stored_sentence": [],
+   "stored_shapes": [],
+   "stored_slot": "",
+   "story": "LS-D02",
+   "verdict": "NONE"
+  },
+  {
+   "asked_slot": "基板の試作品を受け取る",
+   "cause": "Q1 question not read (frame_not_read:gap_is_not_a_particle)",
+   "checkpoint": 2,
+   "form": "rephrased",
+   "gold": "矛盾: 11月2日 と 11月4日",
+   "issues": [
+    "question_unparsed:frame_not_read:gap_is_not_a_particle"
+   ],
+   "kind": "contradiction",
+   "other": [
+    "stored sentence F0 (one of two)",
+    "fact stored as an event (F3)"
+   ],
+   "overlap_route_sim": {
+    "1": "wrong",
+    "2": "none",
+    "3": "none"
+   },
+   "overlap_top": [
+    [
+     2,
+     "試作品素材",
+     [
+      [
+       "の",
+       "天面取っ手"
+      ]
+     ],
+     [
+      "再生ABS樹脂"
+     ]
+    ],
+    [
+     1,
+     "試作A",
+     [],
+     [
+      "防滴試験の前提"
+     ]
+    ]
+   ],
+   "q": "基板の試作品を受け取るのは何日ですか？",
+   "question_read": {
+    "asked": null,
+    "centre": null,
+    "frame": "基板の試作品を受け取るのはQQ",
+    "ok": false,
+    "path": [],
+    "reason": "frame_not_read:gap_is_not_a_particle",
+    "shape": null
+   },
+   "qword": "何日",
+   "route": null,
+   "slot_overlap_chars": 5,
+   "stored_sentence": [
+    "基板の試作受取日は11月2日で便を頼んだ。",
+    "基板の試作受取日は11月4日だと便名に書き込まれている。"
+   ],
+   "stored_shapes": [
+    [
+     "ACC",
+     [
+      "F3"
+     ],
+     []
+    ],
+    [
+     "F0",
+     [
+      "F0"
+     ],
+     [
+      "gap_is_not_a_particle"
+     ]
+    ]
+   ],
+   "stored_slot": "基板の試作受取日",
+   "story": "LS-D02",
+   "verdict": "NONE"
+  },
+  {
+   "asked_slot": "取材向けの資料一式",
+   "cause": "Q1 question not read (frame_not_read:gap_is_not_a_particle)",
+   "checkpoint": 3,
+   "form": "rephrased",
+   "gold": "12月18日",
+   "issues": [
+    "question_unparsed:frame_not_read:gap_is_not_a_particle"
+   ],
+   "kind": "plain",
+   "other": [],
+   "overlap_route_sim": {
+    "1": "gold",
+    "2": "gold",
+    "3": "none"
+   },
+   "overlap_top": [
+    [
+     2,
+     "閲覧開始日",
+     [
+      [
+       "の",
+       "報道資料セット"
+      ]
+     ],
+     [
+      "12月18日"
+     ]
+    ],
+    [
+     1,
+     "説明札",
+     [
+      [
+       "の",
+       "小売向け"
+      ]
+     ],
+     [
+      "別の紙色"
+     ]
+    ]
+   ],
+   "q": "取材向けの資料一式はいつから閲覧できますか？",
+   "question_read": {
+    "asked": null,
+    "centre": null,
+    "frame": "取材向けの資料一式はQQから閲覧できます",
+    "ok": false,
+    "path": [],
+    "reason": "frame_not_read:gap_is_not_a_particle",
+    "shape": null
+   },
+   "qword": "いつ",
+   "route": null,
+   "slot_overlap_chars": 2,
+   "stored_sentence": [
+    "報道資料セットの閲覧開始日は12月18日にした。"
+   ],
+   "stored_shapes": [
+    [
+     "ACC",
+     [
+      "F1"
+     ],
+     []
+    ]
+   ],
+   "stored_slot": "報道資料セットの閲覧開始日",
+   "story": "LS-D02",
+   "verdict": "NONE"
+  },
+  {
+   "asked_slot": "売り場用の見本機を何台配る",
+   "cause": "Q2b question read as an event, memory holds an event",
+   "checkpoint": 3,
+   "form": "rephrased",
+   "gold": "矛盾: 36台 と 40台",
+   "issues": [
+    "no_position",
+    "no_event_clause"
+   ],
+   "kind": "contradiction",
+   "other": [
+    "fact stored as an event (F3)"
+   ],
+   "overlap_route_sim": {
+    "1": "wrong",
+    "2": "none",
+    "3": "none"
+   },
+   "overlap_top": [
+    [
+     1,
+     "靴カバー",
+     [
+      [
+       "の",
+       "見学用"
+      ]
+     ],
+     [
+      "入口の引き出し"
+     ]
+    ],
+    [
+     1,
+     "割当数",
+     [
+      [
+       "の",
+       "店頭評価機"
+      ]
+     ],
+     [
+      "10台"
+     ]
+    ]
+   ],
+   "q": "売り場用の見本機を何台配る計画ですか？",
+   "question_read": {
+    "asked": "object_bare",
+    "centre": "計画",
+    "frame": "売り場用の見本機をQQ配る計画",
+    "ok": true,
+    "path": [],
+    "reason": null,
+    "shape": "F4"
+   },
+   "qword": "何台",
+   "route": null,
+   "slot_overlap_chars": 2,
+   "stored_sentence": [
+    "店頭見本の配布台数は36台で案内票を作った。",
+    "営業用見本機の準備数は40台と手配表に載った。"
+   ],
+   "stored_shapes": [
+    [
+     "ACC",
+     [
+      "F3"
+     ],
+     []
+    ],
+    [
+     "ACC",
+     [
+      "F3"
+     ],
+     []
+    ]
+   ],
+   "stored_slot": "店頭見本の配布台数",
+   "story": "LS-D02",
+   "verdict": "NONE"
+  },
+  {
+   "asked_slot": "新型機の販売開始日",
+   "cause": "Q3 attribute question, no position with its slot noun",
+   "checkpoint": 3,
+   "form": "rephrased",
+   "gold": "1月22日",
+   "issues": [
+    "no_position",
+    "no_slot_noun_matches"
+   ],
+   "kind": "update",
+   "other": [],
+   "overlap_route_sim": {
+    "1": "wrong",
+    "2": "wrong",
+    "3": "none"
+   },
+   "overlap_top": [
+    [
+     2,
+     "閲覧開始日",
+     [
+      [
+       "の",
+       "報道資料セット"
+      ]
+     ],
+     [
+      "12月18日"
+     ]
+    ],
+    [
+     1,
+     "工房出荷日",
+     [
+      [
+       "の",
+       "先行試作"
+      ]
+     ],
+     [
+      "11月5日"
+     ]
+    ]
+   ],
+   "q": "新型機の販売開始日はいつですか？",
+   "question_read": {
+    "asked": "は",
+    "centre": "販売開始日",
+    "frame": "新型機の販売開始日はQQ",
+    "ok": true,
+    "path": [
+     [
+      "の",
+      "新型機"
+     ]
+    ],
+    "reason": null,
+    "shape": "F1"
+   },
+   "qword": "いつ",
+   "route": null,
+   "slot_overlap_chars": 1,
+   "stored_sentence": [
+    "発売日は1月15日から1月22日に変更になった。"
+   ],
+   "stored_shapes": [
+    [
+     "ACC",
+     [
+      "F2"
+     ],
+     []
+    ]
+   ],
+   "stored_slot": "発売日",
+   "story": "LS-D02",
+   "verdict": "NONE"
+  },
+  {
+   "asked_slot": "実演に入れる人数",
+   "cause": "Q1 question not read (frame_not_read:case_before_topic)",
+   "checkpoint": 3,
+   "form": "absent",
+   "gold": "記録なし",
+   "issues": [
+    "question_unparsed:frame_not_read:case_before_topic"
+   ],
+   "kind": "absent",
+   "other": [],
+   "overlap_route_sim": {
+    "1": "tie",
+    "2": "none",
+    "3": "none"
+   },
+   "overlap_top": [
+    [
+     1,
+     "上限",
+     [
+      [
+       "の",
+       "充電耐久"
+      ]
+     ],
+     [
+      "48サイクル"
+     ]
+    ],
+    [
+     1,
+     "充電耐久上限",
+     [],
+     [
+      "60サイクル"
+     ]
+    ]
+   ],
+   "q": "殻間広場の実演に入れる人数の上限はいくつですか？",
+   "question_read": {
+    "asked": null,
+    "centre": null,
+    "frame": "殻間広場の実演に入れる人数の上限はQQ",
+    "ok": false,
+    "path": [],
+    "reason": "frame_not_read:case_before_topic",
+    "shape": null
+   },
+   "qword": "いくつ",
+   "route": null,
+   "slot_overlap_chars": 0,
+   "stored_sentence": [],
+   "stored_shapes": [],
+   "stored_slot": "",
+   "story": "LS-D02",
+   "verdict": "NONE"
+  },
+  {
+   "asked_slot": "販売の場で示す金額",
+   "cause": "Q1 question not read (frame_not_read:case_before_topic)",
+   "checkpoint": 3,
+   "form": "rephrased",
+   "gold": "48,600円",
+   "issues": [
+    "question_unparsed:frame_not_read:case_before_topic"
+   ],
+   "kind": "plain",
+   "other": [],
+   "overlap_route_sim": {
+    "1": "none",
+    "2": "none",
+    "3": "none"
+   },
+   "overlap_top": [],
+   "q": "販売の場で示す金額はいくらですか？",
+   "question_read": {
+    "asked": null,
+    "centre": null,
+    "frame": "販売の場で示す金額はQQ",
+    "ok": false,
+    "path": [],
+    "reason": "frame_not_read:case_before_topic",
+    "shape": null
+   },
+   "qword": "いくら",
+   "route": null,
+   "slot_overlap_chars": 0,
+   "stored_sentence": [
+    "店頭想定価格は48,600円に置いた。"
+   ],
+   "stored_shapes": [
+    [
+     "ACC",
+     [
+      "F2"
+     ],
+     []
+    ]
+   ],
+   "stored_slot": "店頭想定価格",
+   "story": "LS-D02",
+   "verdict": "NONE"
+  },
+  {
+   "asked_slot": "安全相談窓口へかける内線番号",
+   "cause": "Q1 question not read (frame_not_read:gap_is_not_a_particle)",
+   "checkpoint": 3,
+   "form": "rephrased",
+   "gold": "矛盾: 4316 と 4318",
+   "issues": [
+    "question_unparsed:frame_not_read:gap_is_not_a_particle"
+   ],
+   "kind": "contradiction",
+   "other": [
+    "stored sentence F0 (one of two)",
+    "fact stored as an event (F3)"
+   ],
+   "overlap_route_sim": {
+    "1": "wrong",
+    "2": "none",
+    "3": "none"
+   },
+   "overlap_top": [
+    [
+     1,
+     "乾燥台",
+     [
+      [
+       "の",
+       "水洗い後"
+      ]
+     ],
+     [
+      "作業台の脇"
+     ]
+    ],
+    [
+     1,
+     "一次確認者",
+     [
+      [
+       "の",
+       "安全審査書類"
+      ]
+     ],
+     [
+      "鳳来玲"
+     ]
+    ]
+   ],
+   "q": "発売後の安全相談窓口へかける内線番号はいくつですか？",
+   "question_read": {
+    "asked": null,
+    "centre": null,
+    "frame": "発売後の安全相談窓口へかける内線番号はQQ",
+    "ok": false,
+    "path": [],
+    "reason": "frame_not_read:gap_is_not_a_particle",
+    "shape": null
+   },
+   "qword": "いくつ",
+   "route": null,
+   "slot_overlap_chars": 2,
+   "stored_sentence": [
+    "発売時の安全窓口内線は4316で申請票に入れた。",
+    "発売時の安全窓口内線は4318だと運用表の控えにある。"
+   ],
+   "stored_shapes": [
+    [
+     "ACC",
+     [
+      "F3"
+     ],
+     []
+    ],
+    [
+     "F0",
+     [
+      "F0"
+     ],
+     [
+      "gap_is_not_a_particle"
+     ]
+    ]
+   ],
+   "stored_slot": "発売時の安全窓口内線",
+   "story": "LS-D02",
+   "verdict": "NONE"
+  },
+  {
+   "asked_slot": "販売店への先行分",
+   "cause": "Q1 question not read (frame_not_read:gap_is_not_a_particle)",
+   "checkpoint": 3,
+   "form": "rephrased",
+   "gold": "1月11日",
+   "issues": [
+    "question_unparsed:frame_not_read:gap_is_not_a_particle"
+   ],
+   "kind": "update",
+   "other": [
+    "stored sentence F0 (all)"
+   ],
+   "overlap_route_sim": {
+    "1": "wrong",
+    "2": "none",
+    "3": "none"
+   },
+   "overlap_top": [
+    [
+     1,
+     "工房出荷日",
+     [
+      [
+       "の",
+       "先行試作"
+      ]
+     ],
+     [
+      "11月5日"
+     ]
+    ]
+   ],
+   "q": "販売店への先行分は何日に納めますか？",
+   "question_read": {
+    "asked": null,
+    "centre": null,
+    "frame": "販売店への先行分はQQに納めます",
+    "ok": false,
+    "path": [],
+    "reason": "frame_not_read:gap_is_not_a_particle",
+    "shape": null
+   },
+   "qword": "何日",
+   "route": null,
+   "slot_overlap_chars": 4,
+   "stored_sentence": [
+    "販売拠点への先行納入日は1月8日から1月11日に変更になった。"
+   ],
+   "stored_shapes": [
+    [
+     "F0",
+     [
+      "F0"
+     ],
+     [
+      "gap_is_not_a_particle"
+     ]
+    ]
+   ],
+   "stored_slot": "販売拠点への先行納入日",
+   "story": "LS-D02",
+   "verdict": "NONE"
+  },
+  {
+   "asked_slot": "初版で選べる言語",
+   "cause": "Q1 question not read (frame_not_read:case_before_topic)",
+   "checkpoint": 3,
+   "form": "rephrased",
+   "gold": "日本語と英語",
+   "issues": [
+    "question_unparsed:frame_not_read:case_before_topic"
+   ],
+   "kind": "plain",
+   "other": [
+    "stored sentence F0 (all)"
+   ],
+   "overlap_route_sim": {
+    "1": "none",
+    "2": "none",
+    "3": "none"
+   },
+   "overlap_top": [],
+   "q": "操作ガイドの初版で選べる言語は何ですか？",
+   "question_read": {
+    "asked": null,
+    "centre": null,
+    "frame": "操作ガイドの初版で選べる言語はQQ",
+    "ok": false,
+    "path": [],
+    "reason": "frame_not_read:case_before_topic",
+    "shape": null
+   },
+   "qword": "何",
+   "route": null,
+   "slot_overlap_chars": 2,
+   "stored_sentence": [
+    "操作ガイドの初版対応言語は日本語と英語にした。"
+   ],
+   "stored_shapes": [
+    [
+     "F0",
+     [
+      "F0"
+     ],
+     [
+      "no_predicate"
+     ]
+    ]
+   ],
+   "stored_slot": "操作ガイドの初版対応言語",
+   "story": "LS-D02",
+   "verdict": "NONE"
+  },
+  {
+   "asked_slot": "ノズル落下試験の合否判定",
+   "cause": "Q2b question read as an event, memory holds an event",
+   "checkpoint": 3,
+   "form": "absent",
+   "gold": "記録なし",
+   "issues": [
+    "no_position",
+    "no_event_clause"
+   ],
+   "kind": "absent",
+   "other": [],
+   "overlap_route_sim": {
+    "1": "tie",
+    "2": "none",
+    "3": "none"
+   },
+   "overlap_top": [
+    [
+     1,
+     "防滴試験",
+     [],
+     [
+      "試作Aの前提"
+     ]
+    ],
+    [
+     1,
+     "持ち上げ試験",
+     [],
+     [
+      "電池仮組みの前提"
+     ]
+    ]
+   ],
+   "q": "ノズル落下試験の合否判定は誰が行いますか？",
+   "question_read": {
+    "asked": "が",
+    "centre": "行う",
+    "frame": "ノズル落下試験の合否判定はQQが行います",
+    "ok": true,
+    "path": [],
+    "reason": null,
+    "shape": "F3"
+   },
+   "qword": "誰",
+   "route": null,
+   "slot_overlap_chars": 0,
+   "stored_sentence": [],
+   "stored_shapes": [],
+   "stored_slot": "",
+   "story": "LS-D02",
+   "verdict": "NONE"
+  },
+  {
+   "asked_slot": "販促映像の再生時間",
+   "cause": "Q3 attribute question, no position with its slot noun",
+   "checkpoint": 3,
+   "form": "rephrased",
+   "gold": "矛盾: 74秒 と 82秒",
+   "issues": [
+    "no_position",
+    "no_slot_noun_matches"
+   ],
+   "kind": "contradiction",
+   "other": [
+    "stored sentence F0 (one of two)",
+    "fact stored as an event (F3)"
+   ],
+   "overlap_route_sim": {
+    "1": "wrong",
+    "2": "none",
+    "3": "none"
+   },
+   "overlap_top": [
+    [
+     1,
+     "連続時間",
+     [
+      [
+       "の",
+       "静音運転"
+      ]
+     ],
+     [
+      "46分"
+     ]
+    ]
+   ],
+   "q": "販促映像の再生時間は何秒ですか？",
+   "question_read": {
+    "asked": "は",
+    "centre": "再生時間",
+    "frame": "販促映像の再生時間はQQ",
+    "ok": true,
+    "path": [
+     [
+      "の",
+      "販促映像"
+     ]
+    ],
+    "reason": null,
+    "shape": "F1"
+   },
+   "qword": "何秒",
+   "route": null,
+   "slot_overlap_chars": 2,
+   "stored_sentence": [
+    "販促用の短い動画は74秒で編集卓に入っていた。",
+    "販促用の短い動画は82秒だと編集控えに残っていた。"
+   ],
+   "stored_shapes": [
+    [
+     "ACC",
+     [
+      "F3"
+     ],
+     []
+    ],
+    [
+     "F0",
+     [
+      "F0"
+     ],
+     [
+      "gap_is_not_a_particle"
+     ]
+    ]
+   ],
+   "stored_slot": "販促用の短い動画",
+   "story": "LS-D02",
+   "verdict": "NONE"
+  }
+ ],
+ "rephrased": 58,
+ "rephrased_reached": 0,
+ "same_form": 6,
+ "same_form_reached": 6
+}

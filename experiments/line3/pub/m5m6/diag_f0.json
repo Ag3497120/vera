@@ -1,0 +1,446 @@
+{
+ "accepted": 581,
+ "clause_shapes": {
+  "F0": 989,
+  "F1": 83,
+  "F2": 39,
+  "F3": 119,
+  "F4": 694
+ },
+ "constructions": [
+  {
+   "change": "a gap that holds an inflected verb (+ た・る・ない) joins the phrases around it into ONE seat (the whole 「開封した緩衝材」 is the subject seat; the centre stays the last unit)",
+   "clauses": 157,
+   "cost": "medium-high: the seat holds a clause inside it, who-does-what is lost, a quoted value would span a non-particle gap (weave_span refuses it: span_inexpressible) so such a seat can be a subject/owner but never a value",
+   "examples": [
+    "来館者が迷いそうな角を洗い出した",
+    "移行する書誌項目を読み上げた",
+    "気になる箇所だけ戻った"
+   ],
+   "fact_clauses": 9,
+   "id": "VERB_NP",
+   "kind": "meaning",
+   "name": "連体修飾の動詞 (開封した緩衝材は…, 移行する書誌項目を…)",
+   "sole": 116,
+   "writes": 149
+  },
+  {
+   "change": "read 「へ」 as the arm 「に」 (the surface 「へ」 is kept in the provenance); 「への」 as 「の」",
+   "clauses": 120,
+   "cost": "low: wrong seat only when へ and に differ in role (rare); the foundation has no arm 「へ」",
+   "examples": [
+    "窓口の掲示を机へ戻しておく",
+    "薄い袋へ入れた",
+    "次の確認箇所へ進む"
+   ],
+   "fact_clauses": 12,
+   "id": "HE",
+   "kind": "meaning",
+   "name": "方向格 へ・への (机へ戻す, 近隣への案内)",
+   "sole": 105,
+   "writes": 119
+  },
+  {
+   "change": "cut the clause at a 接続助詞 「て」 like at 「、」 (the subject / topic is NOT carried over: the second piece goes to the nest as F4)",
+   "clauses": 89,
+   "cost": "low-medium: two clauses, the shared subject lost (same as after 「、」)",
+   "examples": [
+    "次の実査で現物を見て詰める",
+    "正面玄関の視界を歩いて確かめ",
+    "確認を済ませてから戻した"
+   ],
+   "fact_clauses": 2,
+   "id": "TE",
+   "kind": "meaning",
+   "name": "て形の連なり (歩いて確かめ, 見てから戻す)",
+   "sole": 59,
+   "writes": 89
+  },
+  {
+   "change": "「にも・でも」 -> 「に」「で」 arm; a bare 「も」 as the topic 「は」 would assign が / を wrongly: keep F0",
+   "clauses": 82,
+   "cost": "「にも・でも」 low; bare 「も」 high (subject or object?)",
+   "examples": [
+    "排水溝の清掃手順も確認した",
+    "裏面もひっくり返した",
+    "手触りの違いも確かめた"
+   ],
+   "fact_clauses": 6,
+   "id": "MO",
+   "kind": "meaning",
+   "name": "も (清掃手順も確認した, 施設写真にも印を入れた)",
+   "sole": 70,
+   "writes": 82
+  },
+  {
+   "change": "none recommended: the particle carries the meaning (only / up to), dropping it stores a different statement",
+   "clauses": 75,
+   "cost": "high if dropped",
+   "examples": [
+    "搬入口から児童室までの曲がり角が多い",
+    "机の端まで拭いた",
+    "端から端まで読み合わせた"
+   ],
+   "fact_clauses": 3,
+   "id": "LIMITER",
+   "kind": "keep F0",
+   "name": "副助詞 だけ・まで・ずつ・ほど (机の端まで拭いた)",
+   "sole": 61,
+   "writes": 75
+  },
+  {
+   "change": "the 非自立可能 light verbs of LIGHT_LEMMAS are verb ENDINGS only after a 「て」 (見てみる, 置いておく); right after a case particle or a noun they are the predicate (centre = lemma)",
+   "clauses": 73,
+   "cost": "low-medium: the verb list stays, only the position test is new; affects clauses that are F0 today",
+   "examples": [
+    "初回会合を始めた",
+    "照合用の紙を見ながら",
+    "そのまま次の束を見た"
+   ],
+   "fact_clauses": 1,
+   "id": "LIGHT_PRED",
+   "kind": "artefact",
+   "name": "軽動詞が述語 (次の束を見た, 原本をしまった, 初回会合を始めた)",
+   "sole": 46,
+   "writes": 73
+  },
+  {
+   "change": "same as LIGHT_PRED (the predicate is a light verb after a case-marked noun: 「通す・つける・出す」) plus the 「ことにした」 nominal",
+   "clauses": 64,
+   "cost": "low-medium",
+   "examples": [
+    "試験用カードに目を通してから",
+    "作業用手袋に目印をつけ",
+    "本番データに触る前の確認手順を"
+   ],
+   "fact_clauses": 8,
+   "id": "NOUN_HEAD",
+   "kind": "artefact",
+   "name": "述語になる語がない (目に通してから, 目印をつけ, 先に取り出すことにした)",
+   "sole": 49,
+   "writes": 64
+  },
+  {
+   "change": "adverbs 副詞 inside a gap are skipped and kept as `adverbial` of the clause (the field exists for leading adverbials)",
+   "clauses": 50,
+   "cost": "low-medium: negating or restricting adverbs (まだ, 全く, 決して) would be stored without their effect",
+   "examples": [
+    "見取り図をひとまず読み直す",
+    "勤務希望を小さな付箋に分け",
+    "現場でもう一度見る"
+   ],
+   "fact_clauses": 1,
+   "id": "ADVERB",
+   "kind": "meaning",
+   "name": "副詞 (ひとまず・少し・もう・しばらく)",
+   "sole": 39,
+   "writes": 50
+  },
+  {
+   "change": "none recommended: a negated modifier inside a seat stores the opposite of the writer's point if the seat is read as a statement",
+   "clauses": 47,
+   "cost": "high",
+   "examples": [
+    "通常便と混ぜない方針を置いた",
+    "言い切れない箇所へ鉛筆で印を残した",
+    "取り違えない位置へ置いた"
+   ],
+   "fact_clauses": 0,
+   "id": "NEGREL",
+   "kind": "keep F0",
+   "name": "ないの連体 (混ぜない方針, 取り違えない位置)",
+   "sole": 35,
+   "writes": 47
+  },
+  {
+   "change": "same as LIGHT_PRED / NOUN_HEAD",
+   "clauses": 44,
+   "cost": "low-medium",
+   "examples": [
+    "緩衝材の袋を脇に置き",
+    "返却かごを渡す前に",
+    "議事メモを回す前に"
+   ],
+   "fact_clauses": 4,
+   "id": "NI_LIGHT",
+   "kind": "artefact",
+   "name": "N に置き・した・なる (脇に置き, 渡す前に)",
+   "sole": 26,
+   "writes": 44
+  },
+  {
+   "change": "an ablative arm 「から」: not one of the six arms of the foundation; as an adverbial of the clause (like a leading adverbial), kept as text",
+   "clauses": 39,
+   "cost": "medium: a new kind of seat",
+   "examples": [
+    "配架表から先に目を通す",
+    "端末の台紙を手元から離さず",
+    "説明用の画面から要点を拾い"
+   ],
+   "fact_clauses": 2,
+   "id": "KARA",
+   "kind": "meaning",
+   "name": "から (変更でない: 配架表から先に目を通す)",
+   "sole": 31,
+   "writes": 39
+  },
+  {
+   "change": "「Xでは」 / 「Xには」 as a TOPIC of the clause with a locative role: read as 「X で」 + 「は」, the clause as the nest-less F4 of 「X」",
+   "clauses": 25,
+   "cost": "medium: the role (where / for whom) is guessed",
+   "examples": [
+    "現場では通りやすかった",
+    "運用窓口では購入後の問い合わせ項目を先に洗い出した",
+    "週次表には家庭内の段差越え確認も足しておいた"
+   ],
+   "fact_clauses": 6,
+   "id": "CASE_TOPIC",
+   "kind": "meaning",
+   "name": "格助詞+は (には・では・とは: 現場では通りやすかった)",
+   "sole": 24,
+   "writes": 25
+  },
+  {
+   "change": "a 接尾辞 token touching a unit extends the PHRASE (not the units): 「読みにくさ」 is one seat",
+   "clauses": 19,
+   "cost": "low (the seat text gets longer)",
+   "examples": [
+    "読みにくさを探した",
+    "掲示を貼る高さを仮置きした",
+    "棚の高さを変えてみると"
+   ],
+   "fact_clauses": 2,
+   "id": "SUFFIX_SA",
+   "kind": "artefact",
+   "name": "派生名詞「〜さ」の接尾辞が単位の外 (読みにくさを探した)",
+   "sole": 13,
+   "writes": 19
+  },
+  {
+   "change": "a 「と」-list of nouns as ONE seat 「A と B」",
+   "clauses": 12,
+   "cost": "medium: a list is two seats, not one; 「AとBが」 is ambiguous with 「と」 as an arm",
+   "examples": [
+    "受入票と控えを突き合わせ",
+    "窓口と館内案内の往復を追った",
+    "作業用手袋と控えを突き合わせ"
+   ],
+   "fact_clauses": 1,
+   "id": "COORD",
+   "kind": "meaning",
+   "name": "並列 AとB (受入票と控えを突き合わせ)",
+   "sole": 11,
+   "writes": 12
+  },
+  {
+   "change": "see VERB_NP",
+   "clauses": 12,
+   "cost": "see VERB_NP",
+   "examples": [
+    "棚札を貼る位置を一度試し",
+    "廃材を寄せる場所を決めると",
+    "書架の角を曲がる余裕を確かめた"
+   ],
+   "fact_clauses": 2,
+   "id": "REL",
+   "kind": "meaning",
+   "name": "連体修飾節 (同じ格助詞の反復: 棚札を貼る位置を一度試し)",
+   "sole": 7,
+   "writes": 12
+  },
+  {
+   "change": "the counter 「つ」 is a 助数詞 unit, not a function word",
+   "clauses": 12,
+   "cost": "low",
+   "examples": [
+    "日暮とひとつずつ照合した",
+    "ひとつずつ音声案内を聞き",
+    "受付で使う筆記具を一つずつ試し"
+   ],
+   "fact_clauses": 0,
+   "id": "COUNTER_TSU",
+   "kind": "artefact",
+   "name": "つ・ひとつ・二つ (一つ足した)",
+   "sole": 10,
+   "writes": 12
+  },
+  {
+   "change": "-",
+   "clauses": 11,
+   "cost": "-",
+   "examples": [
+    "仮置き予定の書架を思い浮かべながら",
+    "色付きのテープを床に置き",
+    "遠くからの見え方を共有した"
+   ],
+   "fact_clauses": 1,
+   "id": "OTHER",
+   "kind": "-",
+   "name": "その他",
+   "sole": 7,
+   "writes": 11
+  },
+  {
+   "change": "a piece that ends in 「は」 and a soft cut joins the next piece as its topic",
+   "clauses": 10,
+   "cost": "low: a punctuation split (「、」 after the topic)",
+   "examples": [
+    "寄贈資料の受け入れ方は",
+    "開館準備の掲示文は",
+    "読み聞かせ代読補助の動きは"
+   ],
+   "fact_clauses": 0,
+   "id": "FRAG_TOPIC",
+   "kind": "artefact",
+   "name": "主題だけで切れた (…は、)",
+   "sole": 2,
+   "writes": 10
+  },
+  {
+   "change": "「N だと」 / 「N と」 + a reporting verb (書く・載る・ある・残る) as the quotative: 「X は A と V」 -> F2 X は A with the reporting verb as the source, not as the predicate",
+   "clauses": 10,
+   "cost": "medium: a statement ABOUT a record, stored as the fact itself; wrong seat if the record is not the writer's own view",
+   "examples": [
+    "現物との違いを書き留めた",
+    "前面の帯は砂青色だと樹脂見本が落ち着いて見えた",
+    "基板の試作受取日は11月4日だと便名に書き込まれている"
+   ],
+   "fact_clauses": 6,
+   "id": "QUOTE_TO",
+   "kind": "meaning",
+   "name": "だと・からと・との (…と便名に書き込まれている)",
+   "sole": 10,
+   "writes": 10
+  },
+  {
+   "change": "none: negation is not stored as a positive statement",
+   "clauses": 9,
+   "cost": "-",
+   "examples": [
+    "隣の資料と取り違えないようにした",
+    "係の視線が散らないか見た",
+    "当日の朝に迷わないよう"
+   ],
+   "fact_clauses": 0,
+   "id": "NEG",
+   "kind": "keep F0",
+   "name": "否定・ないよう",
+   "sole": 7,
+   "writes": 9
+  },
+  {
+   "change": "see VERB_NP (the topic seat is the whole noun phrase, centre = Y)",
+   "clauses": 9,
+   "cost": "see VERB_NP",
+   "examples": [
+    "搬出前に試作機の写真を撮る段取りは保っている",
+    "基板の反りを測る台は工房に一台だけある",
+    "箱を組む作業者は二人一組で考える"
+   ],
+   "fact_clauses": 2,
+   "id": "REL_TOPIC",
+   "kind": "meaning",
+   "name": "連体修飾節つき主題 (X を V する Y は …)",
+   "sole": 9,
+   "writes": 9
+  },
+  {
+   "change": "a piece with no case particle and no predicate is an adverbial of the next clause (the leading-adverbial rule, extended to 「ため」)",
+   "clauses": 6,
+   "cost": "low",
+   "examples": [
+    "念のため",
+    "清掃"
+   ],
+   "fact_clauses": 1,
+   "id": "FRAG_ADV",
+   "kind": "artefact",
+   "name": "副詞的な断片 (念のため)",
+   "sole": 0,
+   "writes": 6
+  },
+  {
+   "change": "none recommended",
+   "clauses": 5,
+   "cost": "-",
+   "examples": [
+    "担当ごとの控えをそろえた",
+    "調達審査は部材番号ごとに安全資料を紐づける",
+    "席札は部材の区分ごとに色を変える"
+   ],
+   "fact_clauses": 2,
+   "id": "DISTRIB",
+   "kind": "keep F0",
+   "name": "ごとに・おきに",
+   "sole": 4,
+   "writes": 5
+  },
+  {
+   "change": "a 接頭辞 token touching the next unit extends the PHRASE: 「閉室日」 is the centre",
+   "clauses": 4,
+   "cost": "low; but a VALUE that starts with a dropped prefix cannot be quoted whole (the answer run refuses it: quote_check compares the read-out with the value)",
+   "examples": [
+    "珪戸分室の閉室日は2032年10月31日",
+    "珪戸分室の閉室日は2032年11月1日",
+    "マイクの試音では"
+   ],
+   "fact_clauses": 3,
+   "id": "PREFIX",
+   "kind": "artefact",
+   "name": "接頭辞が単位の外 (閉室日)",
+   "sole": 3,
+   "writes": 4
+  },
+  {
+   "change": "same as LIGHT_PRED (ある is a light verb); the clause is an F3 / F4 with centre 有る",
+   "clauses": 3,
+   "cost": "low-medium",
+   "examples": [
+    "現場の端に屋外返却ポストがあり",
+    "交換部品の呼び名は説明書と揃える必要がある",
+    "返却用箱の集荷日は11月19日と輸送表にある"
+   ],
+   "fact_clauses": 1,
+   "id": "EXIST_ARU",
+   "kind": "artefact",
+   "name": "…に ある (輸送表にある)",
+   "sole": 2,
+   "writes": 3
+  },
+  {
+   "change": "none",
+   "clauses": 2,
+   "cost": "-",
+   "examples": [
+    "録音は同じ長さで切る",
+    "箱数の欄は空のまま持っていく"
+   ],
+   "fact_clauses": 0,
+   "id": "VAL",
+   "kind": "keep F0",
+   "name": "値が名詞でない (同じ長さで切る)",
+   "sole": 2,
+   "writes": 2
+  }
+ ],
+ "dev_writes": 1445,
+ "f0_reasons": {
+  "case_before_topic": 9,
+  "coordination": 12,
+  "gap_is_not_a_particle": 745,
+  "negated": 9,
+  "no_predicate": 111,
+  "no_relation": 89,
+  "repeated_case_particle": 12,
+  "value_not_noun": 2
+ },
+ "fact_writes": 251,
+ "fact_writes_refused": 74,
+ "marks": {
+  "comma_cut_pieces": 14,
+  "paren": 0,
+  "quote_open": 3
+ },
+ "refused": 864,
+ "refused_pct": 59.8
+}

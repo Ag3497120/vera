@@ -26,6 +26,17 @@ DEV = os.path.join(K.ROOT, "experiments", "line3", "bank_ls", "dev", "stories.js
 ASK_KIND = {"plain": "plain", "contradiction": "contradicted", "update": "updated"}
 
 
+def topic_of(title: str) -> str:
+    """The topic a session declares (PUB-M6b, L-PUB-62).  `declare_topic` refuses a topic longer than `mem.TOPIC_MAX_CHARS` (24): LS-D02's title is 25 characters, so in the first measurement every one of its 14
+    sessions ran WITHOUT a nest (`declare:bad_topic` 14).  A title that is too long is cut before its first 「――」 / 「—」 / 「：」 / 「:」 (a sub-title), else at 24 characters; a short title is declared as it is."""
+    if len(title) <= mem.TOPIC_MAX_CHARS:
+        return title
+    for sep in ("――", "—", "：", ":"):
+        if sep in title and 0 < title.index(sep) <= mem.TOPIC_MAX_CHARS:
+            return title[:title.index(sep)]
+    return title[:mem.TOPIC_MAX_CHARS]
+
+
 def run_story(args: Any) -> Dict[str, Any]:
     story, verify = args
     m2 = K.load_m2()
@@ -45,7 +56,7 @@ def run_story(args: Any) -> Dict[str, Any]:
         stamps: List[float] = []
         for si, msgs in enumerate(story["sessions"]):
             s = st.begin("measure", profile=mem.PROFILE_V4)
-            r = s.call("declare_topic", {"text": story["title"]})
+            r = s.call("declare_topic", {"text": topic_of(story["title"])})
             if r.get("ok"):
                 tally.topics += 1
             else:
