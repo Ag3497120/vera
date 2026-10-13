@@ -32,16 +32,18 @@ EVIDENCE_V1 = "evidence.v1"
 EVIDENCE_V2 = "evidence.v2"                                    # the review's fixes (L-LOOM-191..): a subject-less predicate question is refused, the answer's extent is checked, one answer only
 EVIDENCE_V3 = "evidence.v3"                                    # LOOM-reach (L-LOOM-201..): v2 + the safe set R1..R7 and the tightenings T1 / T2 of docs/LINE3_LOOM_REACH_DESIGN.md; selectable, NOT the default (OP-RE-2)
 EVIDENCE_V4 = "evidence.v4"                                    # LOOM-evidence-v4 (L-LOOM-212..): v3 minus R7 (the naming verb 「いう」 of 「という」) plus the subject-chain rule; selectable, NOT the default (OP-PUB-6: only after the held-out bank7)
-EVIDENCE_VERSIONS: Tuple[str, ...] = (EVIDENCE_V1, EVIDENCE_V2, EVIDENCE_V3, EVIDENCE_V4)
+EVIDENCE_V5 = "evidence.v5"                                    # LOOM-evidence-v5 (L-LOOM-219..): v4 plus SU (a question whose subject phrase the cut could not read in full is refused) and TW (the article title stands in for a subject word only as a whole word of the title; a kind word alone is no subject); selectable, NOT the default
+EVIDENCE_VERSIONS: Tuple[str, ...] = (EVIDENCE_V1, EVIDENCE_V2, EVIDENCE_V3, EVIDENCE_V4, EVIDENCE_V5)
 EVIDENCE_LATEST = EVIDENCE_V2                                  # the rule NEW prose runs get; a ledger replays under the version its begin row recorded.  Stays v2 until the held-out bank6 passes (OP-RE-2)
-PROFILE_NAMES: Dict[str, str] = {"v1": EVIDENCE_V1, "v2": EVIDENCE_V2, "v3": EVIDENCE_V3, "v4": EVIDENCE_V4}     # the server / CLI spelling -> the rule version
+PROFILE_NAMES: Dict[str, str] = {"v1": EVIDENCE_V1, "v2": EVIDENCE_V2, "v3": EVIDENCE_V3, "v4": EVIDENCE_V4, "v5": EVIDENCE_V5}     # the server / CLI spelling -> the rule version
 SCOPE_TITLE, SCOPE_CLAUSE = "clause_or_title", "clause"
 SUBJECT_SCOPES: Tuple[str, ...] = (SCOPE_TITLE, SCOPE_CLAUSE)
 DEFAULT_SCOPE = SCOPE_TITLE                                    # L-LOOM-190: until the owner answers OP-EV-1 otherwise (he said yes: 2026-10-12)
 
 CODES: Tuple[str, ...] = ("not_quoted", "constructed_unit", "answer_not_word_aligned", "question_form_open", "question_has_no_subject", "no_subject",
                           "wrong_arm", "no_slot_head", "not_copular", "answer_holds_question_unit",
-                          "answer_glued", "answer_crosses_break", "multiple_answers")          # the last three are evidence.v2 only
+                          "answer_glued", "answer_crosses_break", "multiple_answers",          # the last three are evidence.v2 only
+                          "subject_unreadable")                                                # evidence.v5 only (SU)
 IGNORE = frozenset("「」『』“”\"'・· 　\t")                  # L-LOOM-177
 P7 = gm.P7
 ARMS = ("の", "に", "で", "と", "を", "が")                        # the six arm particles (は is the centre relation)
@@ -509,6 +511,8 @@ def judge_quote(corpus, qu: QuestionUnits, scope: str, sid: int, tier: str, i0: 
     whole word / phrase: not glued to a neighbouring word, no break inside)."""
     if version not in EVIDENCE_VERSIONS:
         raise ValueError("version must be one of %s" % (EVIDENCE_VERSIONS,))
+    if version == EVIDENCE_V5:                                                          # evidence.v5 (L-LOOM-219): its own path (v4 plus SU and TW)
+        return _judge_v5(corpus, qu, scope, sid, tier, i0, i1)
     if version == EVIDENCE_V4:                                                          # evidence.v4 (L-LOOM-212): its own path (v3 minus R7, plus the subject-chain rule)
         return _judge_v4(corpus, qu, scope, sid, tier, i0, i1)
     if version == EVIDENCE_V3:                                                          # evidence.v3 (L-LOOM-201): its own path; v1 / v2 below are byte-for-byte the rules they were
@@ -1061,6 +1065,198 @@ def v4_rules_digest() -> str:
     import json
     funcs = (_m_no_chain, _subject_chain, subject_chain, question_obj, _judge_v4)
     obj = {"version": EVIDENCE_V4, "v3": v3_rules_digest(), "ids": list(V4_RULE_IDS), "off": sorted(V4_OFF), "sentence": V4_RULE_SENTENCE,
+           "functions": {f.__qualname__: hashlib.sha256(inspect.getsource(f).encode("utf-8")).hexdigest() for f in funcs}}
+    return hashlib.sha256(json.dumps(obj, sort_keys=True, ensure_ascii=False, separators=(",", ":")).encode("utf-8")).hexdigest()
+
+
+# ------------------------------------------------------------------------------------------------------------
+# evidence.v5 (L-LOOM-219..): v4 plus SU and TW.  A separate path ADDED after the v4 code: no function of the frozen v3 / v4 digests is edited; `_v3_reading` is called as `_judge_v3`
+# calls it (R7 off), the chain rule is the v4 one, and the two new rules are checked on top.  Cause (bank7, B7-U43 「ネノの属するネノ県の人口は何人ですか？」): the katakana name ネノ
+# drops out of the question cut, the subject becomes the bare kind noun 県, and the title 「テレゴ県」 of another article read it as a word of the title.
+# ------------------------------------------------------------------------------------------------------------
+V5_RULE_IDS: Tuple[str, ...] = V4_RULE_IDS + ("SU", "TW")
+V5_OFF = V4_OFF
+# TW: the kind / suffix nouns.  The v3 list KIND_REL (the kind heads of a relative-clause question) plus the place / line / time / thing suffixes; a CLOSED list (extending it is a new version).
+KIND_SUFFIX: frozenset = KIND_REL | frozenset("県 市 区 町 村 都 道 府 郡 駅 線 社 年 月 日 島 山 川 湖 海 語 号 局 校 館 院 園 部 課 店".split())
+V5_RULE_SENTENCE = (V4_RULE_SENTENCE + " A question whose subject phrase holds a name the reader could not read (a katakana, kanji or Latin piece the question cut dropped) is refused; "
+                    "the article title stands in for a subject word only as a whole word of the title, and a kind word alone (県 市 駅 線 ...) is no subject.")
+
+
+def _m_unreadable(unread: Sequence[str], q: str) -> str:
+    return "the subject phrase of the question 「%s」 holds %s that the reader could not read as a word, so no sentence can be tied to its subject" % (q, "、".join("「%s」" % u for u in unread))
+
+
+def _m_kind_only(subject: Sequence[str], q: str) -> str:
+    return "the only subject word of the question 「%s」 is the kind word %s: a kind word names no entity, so a sentence cannot be tied to it" % (q, "、".join("「%s」" % s for s in subject))
+
+
+def _m_no_subject_whole(s: str, cl: str, sid: int, title: str) -> str:
+    return "the subject 「%s」 of the question is not in the clause 「%s」 of sentence %d, and it is not a whole word of its article title 「%s」" % (s, cl, sid, title)
+
+
+@lru_cache(maxsize=None)
+def _subject_unread(text: str, slot_phrase: Optional[str]) -> Tuple[str, ...]:
+    """SU (L-LOOM-219): the characters of the question's SUBJECT PHRASE that the cut neither keeps nor reads as grammar, grouped in runs.  The subject phrase is the text before the
+    predicate's 「は / が」: before the question word (the slot phrase, else the first interrogative WORD), the last 「は」 or 「が」 word; with none, the text up to the question word.  It holds the whole
+    の-chain and every relative clause.  A character is READ when a kept RUN unit of the cut (`_s_runs`) covers it or a function RUN unit does; a hiragana character is grammar (the tail of 使われた,
+    の する) and is never reported; the ignorable characters and the punctuation are not content.  What is left is a name the cut dropped (the katakana ネノ: its pieces are no content WORD)."""
+    ws = gm.words_of(text)
+    s = text.find(slot_phrase) if slot_phrase else -1
+    if s < 0:
+        q = next((w for w in ws if w[0] in gm.INTERROG), None)
+        if q is None:
+            return ()
+        s = q[1]
+    piv = max([w[1] for w in ws if w[0] in ("は", "が") and w[2] <= s], default=s)
+    cov = set()
+    for _u, a, b in _s_runs(text, ws)[0]:
+        cov.update(range(a, b))
+    for u, a, b in _raw_spans(sp.RUN, text):
+        if is_function_unit(u, sp.RUN):
+            cov.update(range(a, b))
+    out: List[str] = []
+    cur = ""
+    for k in range(piv):
+        c = text[k]
+        if k not in cov and c.isalnum() and not ("぀" <= c <= "ゟ") and c not in IGNORE:
+            cur += c
+        else:
+            if cur:
+                out.append(cur)
+            cur = ""
+    if cur:
+        out.append(cur)
+    return tuple(out)
+
+
+def subject_unread(qu: QuestionUnits) -> Tuple[str, ...]:
+    """evidence.v5 SU: the unread pieces of the question's subject phrase; () = the whole subject phrase is read."""
+    return _subject_unread(qu.text, qu.slot_phrase)
+
+
+def kind_only_subject(qu: QuestionUnits) -> bool:
+    """evidence.v5 TW: the question has subject words and every one of them is a kind / suffix noun (県, 市, 駅, ...)."""
+    return bool(qu.subject) and all(strip_ignore(s) in KIND_SUFFIX for s in qu.subject)
+
+
+@lru_cache(maxsize=None)
+def _title_run_strings(title: str) -> frozenset:
+    """TW: the WHOLE words of an article title as the question cut reads a name: the merged S-runs of the title (`_s_runs`, the machinery that builds the question's subject runs: touching
+    content units are one run, 「花園町駅」 not 「花園町」 + 「駅」), with the runs joined across joiner punctuation (R6: 「U-17ワールドカップ」) merged into one string.  A subject unit is a word of
+    the title only if it spells exactly one of these strings; a piece of one (県 of 「テレゴ県」, 六 of 「六日町駅」) is a containment and is not."""
+    runs = _s_runs(title, gm.words_of(title))[1]
+    out: List[List] = []
+    for r in runs:
+        if out:
+            g = strip_ignore(title[out[-1][2]:r["a"]])
+            if all(ch in JOINERS for ch in g):
+                out[-1][0] += g + r["s"]
+                out[-1][2] = r["b"]
+                continue
+        out.append([r["s"], r["a"], r["b"]])
+    return frozenset(o[0] for o in out)
+
+
+def _tw_recheck(v: "SentenceView", fails: List[dict], evd: Optional[dict], used: List[str], sid: int) -> Tuple[List[dict], Optional[dict], List[str]]:
+    """TW on one passing reading of v3: every subject word read through the article TITLE must be a whole word of the title (`_title_run_strings`), else a `no_subject` failure."""
+    if fails or evd is None:
+        return fails, evd, used
+    fails = list(fails)
+    via_title = False
+    for e in evd["subject"]:
+        if e["via"] == "title":
+            if strip_ignore(e["run"]) in _title_run_strings(v.title):
+                via_title = True
+            else:
+                fails.append({"code": "no_subject", "message": _m_no_subject_whole(e["run"], evd["clause"], sid, v.title), "subject": e["run"]})
+    if fails:
+        return fails, None, []
+    return fails, evd, (used + ["TW"] if via_title and "TW" not in used else used)
+
+
+def _v5_question_failures(qu: QuestionUnits, off: frozenset) -> List[dict]:
+    """The failures that belong to the QUESTION and not to a stretch: SU `subject_unreadable`, TW `question_has_no_subject` for a kind word alone."""
+    fails: List[dict] = []
+    if "SU" not in off:
+        un = subject_unread(qu)
+        if un:
+            fails.append({"code": "subject_unreadable", "message": _m_unreadable(un, qu.text), "unread": list(un)})
+    if "TW" not in off and kind_only_subject(qu):
+        fails.append({"code": "question_has_no_subject", "message": _m_kind_only(qu.subject, qu.text)})
+    return fails
+
+
+def begin_question_obj(qu: QuestionUnits, scope: Optional[str], version: str) -> dict:
+    """The `question` object of the `begin` row under `version` (ops.Run.begin): `question_obj` for v1..v4 (unchanged), and for v5 the v4 object labelled evidence.v5 plus `unread` (the pieces of
+    the subject phrase the cut could not read; [] = none)."""
+    if version != EVIDENCE_V5:
+        return question_obj(qu, scope, version)
+    o = question_obj(qu, scope, EVIDENCE_V4)
+    o["evidence"] = EVIDENCE_V5
+    o["unread"] = list(subject_unread(qu))
+    return o
+
+
+def _judge_v5(corpus, qu: QuestionUnits, scope: str, sid: int, tier: str, i0: int, i1: int, off: frozenset = frozenset()) -> dict:
+    """`judge_quote` under evidence.v5 = the v4 judge (v3 with R7 off, and the chain rule CH) with two additions.  SU: a question whose subject phrase holds an unread piece is refused for
+    every stretch (`subject_unreadable`).  TW: a kind word alone is no subject (`question_has_no_subject`), and a subject word may stand in the article title only as a whole word of it
+    (`_tw_recheck`, applied to each reading before one is chosen).  `off`: rule ids ("SU", "TW") switched off -- the ablation of the tests only (all off = `_judge_v4`); the product never passes it."""
+    v = view_of(corpus, sid)
+    sps = corpus.spans().spans(tier, sid)
+    in_range = 0 <= i0 <= i1 < len(sps)                                                 # the v5 gate never raises: a stretch outside the sentence is an unaligned stretch
+    cs, ce = (sps[i0][0], sps[i1][1]) if in_range else (0, 0)
+    answer = v.text[cs:ce]
+    a0 = next((k for k, s in enumerate(v.spans) if s[0] == cs), None) if in_range else None
+    a1 = next((k for k, s in enumerate(v.spans) if s[1] == ce), None) if in_range else None
+    chain = subject_chain(qu)
+    out = {"answer": answer, "clause": None, "sid": sid, "source": v.source, "reading": None, "rules": [], "chain": list(chain)}
+    qf = _v5_question_failures(qu, off)
+    if qf:
+        if qu.form == FORM_OPEN:
+            qf.append({"code": "question_form_open", "message": _m_open(qu.text)})
+        return _done(out, qf, None)
+    if not (a0 is not None and a1 is not None and a0 <= a1):
+        fails = [{"code": "answer_not_word_aligned", "message": _m_not_aligned(answer, sid)}]
+        if qu.form == FORM_OPEN:
+            fails.append({"code": "question_form_open", "message": _m_open(qu.text)})
+        return _done(out, fails, None)
+    best = None
+    for rd in _v3_readings(qu, V5_OFF):
+        fails, evd, cl, used = _v3_reading(corpus, v, qu, rd, scope, sid, a0, a1, answer, V5_OFF)
+        if "TW" not in off:
+            fails, evd, used = _tw_recheck(v, fails, evd, used, sid)
+        k = len({f["code"] for f in fails})
+        if best is None or k < best[0]:
+            best = (k, rd, fails, evd, cl, used)
+        if not fails:
+            break
+    _k, rd, fails, evd, cl, used = best
+    out["clause"], out["reading"] = cl, rd.tag
+    fails = list(fails)
+    n0 = len(fails)
+    inner = chain[1:]
+    if inner:                                                                           # CH, exactly as `_judge_v4`
+        lo, hi = clause_bounds(v, a0, a1, True)
+        cl2 = clause_text(v, lo, hi)
+        for s in inner:
+            if not _read_idx(v.units, v.gap, range(lo, hi + 1), s, (a0, a1), True):
+                fails.append({"code": "no_subject", "message": _m_no_chain(s, cl2, sid), "subject": s})
+    if len(fails) > n0:
+        out["rules"] = []
+        return _done(out, fails, None)
+    out["rules"] = [] if fails else (list(used) + (["CH"] if inner else []))
+    return _done(out, fails, evd)
+
+
+def v5_rules_digest() -> str:
+    """The sha256 of the frozen v5 rules (L-LOOM-219): the v4 digest (so a change to anything v3 or v4 froze changes this too), v5's ids, switched-off set, kind-noun list and rule sentence, and the
+    source text of every function that carries a v5 rule.  A change is evidence.v6 and needs a new held-out set; the tests pin this digest."""
+    import hashlib
+    import inspect
+    import json
+    funcs = (_m_unreadable, _m_kind_only, _m_no_subject_whole, _subject_unread, subject_unread, kind_only_subject, _title_run_strings, _tw_recheck, _v5_question_failures, begin_question_obj,
+             _judge_v5)
+    obj = {"version": EVIDENCE_V5, "v4": v4_rules_digest(), "ids": list(V5_RULE_IDS), "off": sorted(V5_OFF), "KIND_SUFFIX": sorted(KIND_SUFFIX), "sentence": V5_RULE_SENTENCE,
            "functions": {f.__qualname__: hashlib.sha256(inspect.getsource(f).encode("utf-8")).hexdigest() for f in funcs}}
     return hashlib.sha256(json.dumps(obj, sort_keys=True, ensure_ascii=False, separators=(",", ":")).encode("utf-8")).hexdigest()
 

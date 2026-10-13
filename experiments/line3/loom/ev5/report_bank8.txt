@@ -1,0 +1,9 @@
+done bank8 712249cc0cb481ea9c9b4dd60f3721b0d8db287062876c58f0cbde347a93efe6 465
+evidence.py 712249cc0cb481ea9c9b4dd60f3721b0d8db287062876c58f0cbde347a93efe6
+evidence.v2 reach 3/35 ['B8b-A05', 'B8b-A07', 'B8b-A19'] | wrong-admitting 2 ['B8b-A23', 'B8b-A28'] | unanswerable admissions 0/50
+evidence.v3 reach 3/35 ['B8b-A05', 'B8b-A07', 'B8b-A19'] | wrong-admitting 2 ['B8b-A23', 'B8b-A28'] | unanswerable admissions 1/50
+   ADMITTED B8b-U20 S4-toshite PDF-XChangeはPDF閲覧ソフトとしては、どのOSに対応していますか？ [(281, '日本語ほかの多言語'), (281, '多言語')]
+evidence.v4 reach 3/35 ['B8b-A05', 'B8b-A07', 'B8b-A19'] | wrong-admitting 2 ['B8b-A23', 'B8b-A28'] | unanswerable admissions 1/50
+   ADMITTED B8b-U20 S4-toshite PDF-XChangeはPDF閲覧ソフトとしては、どのOSに対応していますか？ [(281, '日本語ほかの多言語'), (281, '多言語')]
+evidence.v5 reach 3/35 ['B8b-A05', 'B8b-A07', 'B8b-A19'] | wrong-admitting 2 ['B8b-A23', 'B8b-A28'] | unanswerable admissions 1/50
+   ADMITTED B8b-U20 S4-toshite PDF-XChangeはPDF閲覧ソフトとしては、どのOSに対応していますか？ [(281, '日本語ほかの多言語'), (281, '多言語')]

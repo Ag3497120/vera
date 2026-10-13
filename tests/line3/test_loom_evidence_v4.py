@@ -51,7 +51,7 @@ def _passing(c, q, sid, version, scope=ev.SCOPE_TITLE):
 def test_t_ev4_01_the_v3_rules_are_untouched_and_v4_is_frozen():
     assert ev.v3_rules_digest() == FROZEN_V3_RULES_DIGEST                                                    # v4 added code; no function the v3 digest covers changed
     assert ev.v4_rules_digest() == FROZEN_V4_RULES_DIGEST
-    assert hashlib.sha256(open(os.path.join(ROOT, "verantyx/loom/evidence.py"), "rb").read()).hexdigest() == FROZEN_V4_EVIDENCE_SHA
+    assert len(FROZEN_V4_EVIDENCE_SHA) == 64                                                                 # historical: evidence.py changed when evidence.v5 was added (the v3 and v4 digests above did not); the file pin moved to test_loom_evidence_v5.py
     assert ev.V4_RULE_IDS == ("R1", "R2", "R3", "R3b", "R4", "R5", "R6", "T1", "T2", "CH") and ev.V4_OFF == frozenset({"R7"})
     assert set(ev.V4_RULE_IDS) - {"CH"} == set(ev.V3_RULE_IDS) - {"R7"}
     assert ev.V4_RULE_SENTENCE.startswith(ev.V3_RULE_SENTENCE.rstrip(".").rsplit(";", 1)[0])             # the v3 sentence's rules, then the chain sentence
@@ -62,7 +62,7 @@ def test_t_ev4_01_v4_is_selectable_and_v2_stays_the_default_everywhere(tmp_path,
     from verantyx import cli
     from verantyx.loom import mcp as lm
     from verantyx.loom.ops import EVIDENCE_RULE_V2, EVIDENCE_RULE_V4, EVIDENCE_RULES
-    assert ev.EVIDENCE_VERSIONS == (ev.EVIDENCE_V1, V2, V3, V4) and ev.EVIDENCE_LATEST == V2 and ev.PROFILE_NAMES["v4"] == V4
+    assert ev.EVIDENCE_VERSIONS == (ev.EVIDENCE_V1, V2, V3, V4, ev.EVIDENCE_V5) and ev.EVIDENCE_LATEST == V2 and ev.PROFILE_NAMES["v4"] == V4
     assert inspect.signature(ev.judge_quote).parameters["version"].default == V2
     assert EVIDENCE_RULES[V4] == EVIDENCE_RULE_V4 == EVIDENCE_RULE_V2 + " " + ev.V4_RULE_SENTENCE
     t = [{"task_id": "x", "text": "花園町駅の隣駅の駅番号は何ですか", "lang": "prose", "mode": "record_only", "corpus": CORPUS}]
