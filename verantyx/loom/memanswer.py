@@ -33,10 +33,12 @@ from verantyx.loom import ledger as lg
 from verantyx.loom import memask as mask
 from verantyx.loom import memcross as mx
 from verantyx.loom import memguard as mg
+from verantyx.loom import memnotes as mn
 from verantyx.loom import memory as mem
 from verantyx.loom import memrecall as mr
 from verantyx.loom import notes as notelib
 from verantyx.loom import ops
+from verantyx.loom import read as rd
 from verantyx.loom.corpus import Corpus
 from verantyx.loom.ledger import ReplayResult
 from verantyx.loom.ops import Run, refusal
@@ -47,6 +49,7 @@ ANSWER_VERSION = "memanswer.v1"
 ANSWER_V2 = "memanswer.v2"          # MEM-fix (L-MEM-59 / 60): the answer run holds the store's declared topics (read from a file the snapshot is paired with) and `recall` reads the question in its other forms
 ANSWER_V3 = "memanswer.v3"          # PUB-M6: the answer run of a mem.v4 store: `recall` reads the memory CROSSES (memask), rebuilt from the snapshot and the file `crosses_<sha12>.json` (nest declarations + bridges) it is paired with
 ANSWER_VERSIONS: Tuple[str, ...] = (ANSWER_VERSION, ANSWER_V2, ANSWER_V3)
+GUARD_V3 = "ansguard.v1"            # PUB-M6b (L-PUB-54..57; memanswer.v3 only, no v3 ledger was ever recorded with a model): weave_span refuses a stretch that is not verbatim and a value the recall replaced; emit may hand the gate a completed question
 ANSWER_TASK_ID = "answer"
 ANSWER_EVIDENCE = (evl.EVIDENCE_V2, evl.SCOPE_CLAUSE)          # the gate of every memory use: evidence.v2, scope clause (L-MEM-12)
 RECALL_CAP = 20
@@ -71,7 +74,10 @@ ANSWER_RULES_V2: Dict[str, str] = {
 ANSWER_RULES_V3: Dict[str, str] = {
     "recall": "recall(question) reads the question with the shape exchanger and answers from the memory CROSSES: ANSWER (one value), UPDATED (the latest value + `history`), CHOICE (two or more values at one "
               "place: nothing is ranked), NONE (`issues` say why). Each value comes with its sentence (`sid`) and the units of the stretch to quote (`span`): weave_span that stretch and emit. "
-              "emit still judges the quote against the question AS ASKED: a value found through a bridge or a slot-noun class may be refused (no_evidence).",
+              "emit still judges the quote against the question AS ASKED: a value found through a bridge or a slot-noun class may be refused (no_evidence). "
+              "weave_span refuses a stretch the loom would read out without its punctuation (quote_not_verbatim: 「v2.4」 would be emitted as 「v24」) and a value recall listed under `history` "
+              "(replaced_value); abstain (cannot_weave) then. A subject-less question whose value came through a nest, and the new value of a change clause, are judged by the same gate against the "
+              "question completed by the nest centre (via: nest) or the form of the change (via: update).",
 }
 
 
@@ -265,6 +271,11 @@ class AnswerRun(Run):
         self.decls: List[dict] = [] if crosses is None else [dict(d) for d in crosses[1]]
         self.bridges: List[dict] = [] if crosses is None else [dict(b) for b in crosses[2]]
         self._index: Optional[mx.MemIndex] = None
+        self.live_spans: List[Tuple[int, int, int]] = []                 # (sid, first unit, last unit) of every live occurrence the recalls of this run returned
+        self.hist_spans: List[Tuple[int, int, int]] = []                 # ... of every replaced (history) occurrence
+        self.live_norms: List[str] = []                                  # the normalised live / replaced values
+        self.hist_norms: List[str] = []
+        self.completions: Dict[Tuple[int, int, int], dict] = {}          # (sid, first, last) -> the question the gate may be handed for that stretch (memask.completions)
 
     def index(self) -> "mx.MemIndex":
         """The memory crosses of the snapshot (memanswer.v3): the full rebuild `build_index` over its rows, the nest declarations and the bridges of its crosses file (cached by the names of both files:
@@ -288,7 +299,7 @@ class AnswerRun(Run):
             res["rules"] = dict(res["rules"], recall=ANSWER_RULES_V2["recall"])
         if self.v3:
             res["mem_answer"]["version"] = ANSWER_V3
-            res["mem_answer"].update(crosses_file=self.crosses_file, ask=mask.ASK_VERSION, cross=mx.CROSS_VERSION)
+            res["mem_answer"].update(crosses_file=self.crosses_file, ask=mask.ASK_VERSION, cross=mx.CROSS_VERSION, guard=GUARD_V3, complete=mask.COMPLETE_VERSION)
             res["rules"] = dict(res["rules"], recall=ANSWER_RULES_V3["recall"])
         res["tools"] = list(ANSWER_TOOLS)
         return b
@@ -298,6 +309,8 @@ class AnswerRun(Run):
             return _h_recall
         if op == "weave_span":
             return _h_weave_span
+        if op == "emit" and self.v3:
+            return _h_emit_v3
         return super()._handler(op)
 
     def _precheck(self, op: str) -> None:
@@ -325,6 +338,7 @@ def _h_recall(run: AnswerRun, a: dict, i: int) -> dict:
     if run.v3:
         res = mask.recall(run.index(), run.rows, run.corpus, q)
         res.update(ok=True, text=q)
+        _note_recall(run, res, q)
         return res
     turns = {k: r["turn"] for k, r in enumerate(run.rows) if "turn" in r}
     res = mr.recall(run.corpus, q, evl.EVIDENCE_V2, subject_guard=True, superseded=run.superseded or None, turns=turns or None, topics=run.topics or None)
@@ -332,12 +346,121 @@ def _h_recall(run: AnswerRun, a: dict, i: int) -> dict:
     return res
 
 
+def _spans_of(groups: Sequence[dict]) -> Tuple[List[Tuple[int, int, int]], List[str]]:
+    spans: List[Tuple[int, int, int]] = []
+    norms: List[str] = []
+    for g in groups:
+        for a in g["answers"]:
+            n = mn.norm_answer(a)
+            if n not in norms:
+                norms.append(n)
+        for o in g["occurrences"]:
+            if o.get("span"):
+                k = (o["sid"], o["span"][0], o["span"][1])
+                if k not in spans:
+                    spans.append(k)
+    return spans, norms
+
+
+def _note_recall(run: AnswerRun, res: dict, question: str) -> None:
+    """What the recalls of this run returned, for the guards of `weave_span` (a replaced value is never a quote) and the completions of `emit`.  A pure function of the recall results, which the replay
+    re-executes, so it is the same on replay."""
+    sp, nr = _spans_of(res.get("answers", ()))
+    for k in sp:
+        if k not in run.live_spans:
+            run.live_spans.append(k)
+    for n in nr:
+        if n not in run.live_norms:
+            run.live_norms.append(n)
+    hsp, hnr = _spans_of(res.get("history", ()))
+    for k in hsp:
+        if k not in run.hist_spans:
+            run.hist_spans.append(k)
+    for n in hnr:
+        if n not in run.hist_norms:
+            run.hist_norms.append(n)
+    for c in mask.completions(run.index(), res, question):
+        run.completions.setdefault((c["sid"], c["span"][0], c["span"][1]), c)
+
+
+def _weave_target(run: AnswerRun, a: Any) -> Optional[Tuple[int, str, int, int]]:
+    """(sid, tier, first unit, last unit) of a well-formed weave_span call, else None (the loom's own refusal then says what is wrong)."""
+    try:
+        if not isinstance(a, dict) or not isinstance(a.get("sid"), int) or isinstance(a.get("sid"), bool) or not 0 <= a["sid"] < run.corpus.n_sentences or a.get("tier") != "WORD":
+            return None
+        units = list(run.corpus.tier("WORD").sentence_units[a["sid"]])
+        i0 = ops._unit_index(units, a["from"], "from")
+        i1 = ops._unit_index(units, a["to"], "to", i0)
+    except (Refuse, KeyError, TypeError):
+        return None
+    return (a["sid"], "WORD", i0, i1) if i0 <= i1 else None
+
+
 def _h_weave_span(run: AnswerRun, a: dict, i: int) -> dict:
     sid = a.get("sid") if isinstance(a, dict) else None
     if isinstance(sid, int) and not isinstance(sid, bool) and sid in run.superseded:
         s = run.superseded[sid]
         raise Refuse("superseded_sentence", {"sid": sid, "by": s["by"], "reason": s["reason"], "hint": "history is not a quote: weave the sentence that replaced it"})
+    if run.v3:
+        tg = _weave_target(run, a)
+        if tg is not None:
+            readout, source, verbatim = mask.quote_check(run.corpus, tg[0], tg[2], tg[3])
+            if not verbatim:                      # PUB-M6b (L-PUB-54): an emit is the READ-OUT of the thread, which has no punctuation: 「v2.4」 would be emitted as 「v24」, a value nobody wrote
+                raise Refuse("quote_not_verbatim", {"sid": tg[0], "source": source[:64], "readout": readout[:64],
+                                                    "hint": "the loom reads this stretch out without its punctuation, so emitting it would change the value: abstain (cannot_weave)"})
+            n = mn.norm_answer(source)
+            key = (tg[0], tg[2], tg[3])
+            if (key in run.hist_spans and key not in run.live_spans) or (n in run.hist_norms and n not in run.live_norms):
+                raise Refuse("replaced_value", {"sid": tg[0], "text": source[:64], "hint": "the memory replaced this value (recall `history`): only the latest value is a quote"})
     return ops.h_weave_span(run, a, i)
+
+
+def _h_emit_v3(run: AnswerRun, a: dict, i: int) -> dict:
+    """`emit` of a memanswer.v3 run: the loom's own emit, and, only when the evidence gate refuses the quote against the question as asked, ONE more judgement of the SAME gate (evidence.py unchanged)
+    against the question the recall named for that very stretch (`memask.completions`; PUB-M6b, OP-PUB-4): the question completed by the centre of the nest the value was reached through
+    (`via: nest`), or the form of the change for the new value of a change clause at the question's own position (`via: update`).  The completion is recorded on the emit row; a refusal says what the
+    completed question was refused for (`completion`)."""
+    ops._args(a, {})
+    ev = rd.evaluate(run)
+    used: Optional[dict] = None
+    tried: Optional[dict] = None
+    intact = evl.intact_weaves(run) if ev["refusals"] else {}
+    if ev["refusals"] and len(ev["refusals"]) == 1 and ev["refusals"][0]["type"] == "no_evidence" and len(intact) == 1:
+        wv = next(iter(intact.values()))
+        comp = run.completions.get((wv["sid"], wv["i0"], wv["i1"]))
+        if comp is not None:
+            saved = run.question_units
+            run.question_units = evl.question_units(comp["question"])
+            try:
+                ev2 = rd.evaluate(run)
+            finally:
+                run.question_units = saved
+            if not ev2["refusals"]:
+                ev, used = ev2, comp
+            else:
+                codes: List[str] = []
+                for rf in ev2["refusals"]:
+                    for w in rf.get("weaves", []):
+                        for c in w.get("codes", []):
+                            if c not in codes:
+                                codes.append(c)
+                tried = {"via": comp["via"], "question": comp["question"], "codes": codes}
+    if ev["refusals"]:
+        detail: Dict[str, Any] = {"refusals": ev["refusals"], "stability": ev["stability"]}
+        if tried is not None:
+            detail["completion"] = tried
+        raise Refuse(ev["refusals"][0]["type"], detail)
+    run.state.closed = ["emitted", ev["output_sha"]]
+    out: Dict[str, Any] = {"ok": True, "status": "emitted", "text": ev["text"], "annotated": ev["annotated"], "output_sha": ev["output_sha"], "shares": ev["shares"], "stability": ev["stability"]}
+    if run.evidence is not None:
+        out.update(ev=run.evidence[0], evidence=ev["evidence"])
+    if used is not None:
+        out["via"] = used["via"]
+        out["completed_question"] = used["question"]
+        out["position"] = used["position"]
+        if used["via"] == "nest":
+            out["nest"] = used["nest"]
+    return out
 
 
 # ------------------------------------------------------------------------------------------------------------
@@ -538,7 +661,12 @@ def answer_output(run_dir, store_path=None) -> dict:
                for r in rows if r["actor"] == "model" and r["op"] == "recall" and r["result"].get("ok") is True]
     for r in rows:
         if r["actor"] == "model" and r["op"] == "emit" and r["result"].get("ok") is True:
-            return {"status": "emitted", "text": r["result"]["text"], "output_sha": r["result"]["output_sha"], "recalls": recalls}
+            out = {"status": "emitted", "text": r["result"]["text"], "output_sha": r["result"]["output_sha"], "recalls": recalls}
+            if "via" in r["result"]:                                                  # PUB-M6b: the value was judged against a completed question (nest) or the form of a change (update)
+                out.update(via=r["result"]["via"], completed_question=r["result"]["completed_question"])
+                if "nest" in r["result"]:
+                    out["nest"] = r["result"]["nest"]
+            return out
         if r["actor"] == "model" and r["op"] == "abstain" and r["result"].get("ok") is True:
             return {"status": "abstained", "type": r["result"]["type"], "recalls": recalls}
     return {"status": "open", "recalls": recalls}

@@ -80,7 +80,9 @@ def classify(plants: Sequence[dict], n: dict, this_turn: Optional[str], earlier_
 
 
 def emit_attempt(ses: Any, res: dict, kind: str, gold_vals: Sequence[str]) -> Dict[str, Any]:
-    """Quote the found value and emit it, through the answer run's own ops (weave_span, emit): the output gate is unchanged."""
+    """Quote the found value and emit it, through the answer run's own ops (weave_span, emit): the output gate is unchanged.  status: emitted_right | emitted_wrong | emit_refused | weave_refused (the guards
+    of PUB-M6b: `quote_not_verbatim` = the loom would read the value out without its punctuation, `replaced_value`) | no_span | not_found.  An emit that went through a completed question carries `via`
+    (nest | update); a refused emit that tried one carries `completion` = {via, question, codes}."""
     if kind == "contradicted":
         return {"status": "contested_available" if res["verdict"] == "CHOICE" else "not_applicable"}
     grp = None
@@ -101,8 +103,37 @@ def emit_attempt(ses: Any, res: dict, kind: str, gold_vals: Sequence[str]) -> Di
     e = ses.call("emit", {})
     if e.get("ok"):
         right = any(C.match(gv, e["text"], True) for gv in gold_vals)
-        return {"status": "emitted_right" if right else "emitted_wrong", "text": e["text"]}
-    return {"status": "emit_refused", "why": "%s:%s" % (e.get("refusal", "?"), refusal_codes(e.get("detail")))}
+        out = {"status": "emitted_right" if right else "emitted_wrong", "text": e["text"]}
+        if "via" in e:
+            out.update(via=e["via"], completed_question=e["completed_question"])
+        return out
+    out = {"status": "emit_refused", "why": "%s:%s" % (e.get("refusal", "?"), refusal_codes(e.get("detail")))}
+    if isinstance(e.get("detail"), dict) and "completion" in e["detail"]:
+        out["completion"] = e["detail"]["completion"]
+    return out
+
+
+def old_value_attempt(make: Any, question: str, n_history: int) -> Dict[str, Any]:
+    """The red team of an UPDATED verdict: for every REPLACED value (a history group), a fresh answer run (`make()` -> AnswerSession over the same snapshot) recalls the question, weaves the replaced value from
+    its latest sentence and tries to emit it.  Each must end in a refusal (`replaced_value`; `quote_not_verbatim` for a value with punctuation; or a gate refusal); `EMITTED_OLD` is a wrong emit of an older value."""
+    out: Dict[str, Any] = {"tried": 0, "status": []}
+    for k in range(n_history):
+        ses = make()
+        res = ses.call("recall", {"question": question})
+        hist = res.get("history") or []
+        if k >= len(hist):
+            break
+        occ = max(hist[k]["occurrences"], key=lambda o: o["sid"])
+        if not occ["span"]:
+            continue
+        out["tried"] += 1
+        w = ses.call("weave_span", {"sid": occ["sid"], "tier": "WORD", "first": occ["span"][0], "last": occ["span"][1]})
+        if not w.get("ok"):
+            out["status"].append("weave_refused:" + str(w.get("refusal", "?")))
+            continue
+        e = ses.call("emit", {})
+        out["status"].append("EMITTED_OLD:" + str(e.get("text")) if e.get("ok") else "emit_refused")
+    return out
 
 
 def refusal_codes(detail: Any) -> str:
@@ -143,6 +174,8 @@ def measure_run(run_dir: str) -> Dict[str, Any]:
             for mode, lenient in (("strict", False), ("lenient", True)):
                 q[mode] = K.judge_recall(res, a["kind"], gv, lenient)
             q["emit"] = emit_attempt(ses, res, a["kind"], gv) if q["lenient"]["reached"] else {"status": "not_found"}
+            if res["verdict"] == "UPDATED":                              # PUB-M6b red team: the replaced value must never be emitted (a fresh answer run, the same snapshot)
+                q["old_value"] = old_value_attempt(lambda: ma.AnswerSession(store, a["q"], "oracle", snapshot=snap, answer_version=ma.ANSWER_V3), a["q"], len(res.get("history", [])))
             qs.append(q)
         # -- (b) detection --------------------------------------------------------------------------------------------------------------------------
         by_type: Dict[str, Dict[str, int]] = {t: collections.Counter() for t in list(EXPECT) + list(OLD_NOTES)}
@@ -212,6 +245,9 @@ def tally_recall(runs: Sequence[dict]) -> dict:
     verdicts, routes, issues = collections.Counter(), collections.Counter(), collections.Counter()
     emit = collections.Counter()
     emit_why = collections.Counter()
+    emit_via = collections.Counter()
+    completion_tried = collections.Counter()
+    old_value = collections.Counter()
     for r in runs:
         for q in r["questions"]:
             verdicts[(q["kind"], q["verdict"])] += 1
@@ -230,11 +266,25 @@ def tally_recall(runs: Sequence[dict]) -> dict:
                 emit[(q["kind"], st)] += 1
                 if "why" in q["emit"]:
                     emit_why[q["emit"]["why"]] += 1
+                if "via" in q["emit"]:
+                    emit_via[q["emit"]["via"]] += 1
+                if "completion" in q["emit"]:
+                    c_ = q["emit"]["completion"]
+                    completion_tried["%s:%s" % (c_["via"], ",".join(c_["codes"]))] += 1
+            ov = q.get("old_value")
+            if ov is not None:
+                old_value["questions"] += 1
+                old_value["tried"] += ov["tried"]
+                for x in ov["status"]:
+                    old_value[x.split(":")[0] if x.startswith("EMITTED_OLD") else x] += 1
     out["verdicts"] = {"%s/%s" % k: v for k, v in sorted(verdicts.items())}
     out["routes"] = dict(sorted(routes.items()))
     out["issues"] = dict(sorted(issues.items()))
     out["emit"] = {"%s/%s" % k: v for k, v in sorted(emit.items())}
     out["emit_why"] = dict(sorted(emit_why.items()))
+    out["emit_via"] = dict(sorted(emit_via.items()))
+    out["completion_refused"] = dict(sorted(completion_tried.items()))
+    out["old_value_red_team"] = dict(sorted(old_value.items()))
     return out
 
 
@@ -292,7 +342,9 @@ def md_recall(t: dict, mf: Optional[dict], n_runs: int) -> str:
         c = t["lenient"][k]
         out.append("| %s | %d | %d | %d | %d |" % (names[k], c["n"], c["reached"], c["exact"], c["extra"]))
     out += ["", "verdict（種類/verdict）: %s" % t["verdicts"], "", "route: %s" % t["routes"], "", "issues（NONE の理由）: %s" % t["issues"], "",
-            "### 見つかった値は出せるか（到達した問いだけ。出口の門は変えていない: weave_span で引用 → emit）", "", "%s" % t["emit"], "", "出せなかった理由: %s" % t["emit_why"], ""]
+            "### 見つかった値は出せるか（到達した問いだけ。出口の門は変えていない: weave_span で引用 → emit）", "", "%s" % t["emit"], "", "出せなかった理由: %s" % t["emit_why"], "",
+            "完成した問い（via）で出せた: %s。完成した問いでも門が断った理由: %s" % (t["emit_via"], t["completion_refused"]), "",
+            "置き換えられた値の赤チーム（UPDATED の問いごとに、history の各値を引用して emit を試す。`EMITTED_OLD` が古い値の誤出力）: %s" % t["old_value_red_team"], ""]
     return "\n".join(out) + "\n"
 
 

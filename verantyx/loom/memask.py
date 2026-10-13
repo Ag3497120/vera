@@ -257,6 +257,26 @@ def _unit_span(corpus: Any, sid: int, units: Sequence[str]) -> Optional[List[int
     return None if last is None else [last, last + n - 1]
 
 
+def _squash(s: str) -> str:
+    """The loom's own text equivalence (T9, L-LOOM-144): whitespace and 「・」 / 「·」 are not part of a text.  Nothing else is dropped: a full stop, a hyphen, a slash or a colon IS."""
+    return "".join(ch for ch in s if not ch.isspace() and ch not in "・·")
+
+
+def quote_check(corpus: Any, sid: int, i0: int, i1: int) -> Tuple[str, str, bool]:
+    """(readout, source, verbatim) of the WORD-unit stretch i0..i1 of sentence `sid`.  `readout` is what `weave_span` would read out (the units with the LETTERS of the gaps between them: the loom writes no
+    punctuation, so 「v2.4」 reads out as 「v24」, 「6.5万円」 as 「65万円」, 「6/14」 as 「614」), `source` the characters of the sentence from the first unit to the last, `verbatim` iff they are the same text
+    (`_squash`).  An emit is the read-out of the thread, so a stretch that is not verbatim cannot be emitted without changing the value (PUB-M6b, L-PUB-54)."""
+    t = corpus.tier("WORD")
+    units = t.sentence_units[sid]
+    ok, gaps = corpus.span_gaps("WORD", sid, i0, i1)
+    surf = units[i0:i1 + 1]
+    readout = "".join(surf[k] + (gaps[k] if k < len(surf) - 1 else "") for k in range(len(surf)))
+    idx = corpus.spans()
+    sps = idx.spans("WORD", sid)
+    source = idx.text(sid)[sps[i0][0]:sps[i1][1]]
+    return readout, source, bool(ok) and _squash(readout) == _squash(source)
+
+
 def _occurrence(index: mx.MemIndex, rows: Sequence[dict], corpus: Any, e: mx.Entry, route: str, position: Any) -> dict:
     row = rows[e.sid]
     _, session, _, role = parse_source(row["source"])
@@ -264,6 +284,14 @@ def _occurrence(index: mx.MemIndex, rows: Sequence[dict], corpus: Any, e: mx.Ent
     o: Dict[str, Any] = {"sid": e.sid, "source": row["source"], "session": session, "role": role, "answer": e.value, "span": _unit_span(corpus, e.sid, e.units),
                          "clause": cr.text if cr is not None else row["sent"], "via": [route], "scope": e.scope, "kind": e.kind,
                          "position": [position[0], position[1], [list(p) for p in position[2]]]}
+    if o["span"] is not None:                                      # PUB-M6b: can the stretch be emitted as it stands?  (a value with punctuation inside is read out without it)
+        try:
+            readout, _source, verbatim = quote_check(corpus, e.sid, o["span"][0], o["span"][1])
+        except (IndexError, KeyError):
+            readout, verbatim = "", False
+        o["verbatim"] = verbatim
+        if not verbatim:
+            o["readout"] = readout
     if e.turn is not None:
         o["turn"] = e.turn
     if e.change is not None:
@@ -386,4 +414,72 @@ def recall(index: mx.MemIndex, rows: Sequence[dict], corpus: Any, question: str,
         out["choice_kind"] = "same_seat" if same_seat else ("scopes" if len(scopes_seen) > 1 else "positions")
     else:
         out["verdict"] = "UPDATED" if hist_all else "ANSWER"
+    return out
+
+
+# ------------------------------------------------------------------------------------------------------------
+# PUB-M6b: the question the gate is handed when the recall went through a nest, or when the value is the new value of a change clause (OP-PUB-4; local decisions L-PUB-56, L-PUB-57)
+# ------------------------------------------------------------------------------------------------------------
+CHANGE_WORDS: Dict[str, str] = {"henkou": "変更", "koushin": "更新", "enki": "延期"}
+COMPLETE_VERSION = "complete.v1"
+
+
+def _change_word(form: str) -> Optional[str]:
+    """The predicate of a change form that ends in 「に」 (kara_ni_henkou, ni_koushin, ...): 「変更」 / 「更新」 / 「延期」.  kara_he (「へ」, no predicate) and the 「へ」 forms have none: the gate has no slot for them."""
+    parts = form.split("_")
+    if parts and parts[0] == "kara" and len(parts) == 3 and parts[1] == "ni":
+        return CHANGE_WORDS.get(parts[2])
+    if len(parts) == 2 and parts[0] == "ni":
+        return CHANGE_WORDS.get(parts[1])
+    return None
+
+
+def _same_place(q: dict, position: Sequence[Any]) -> bool:
+    """Is `position` (tank, centre, path) the place the question asked: the very position, or the same words read as one phrase (the `flat` route)?"""
+    qpath = tuple((p, ph) for p, ph in q["path"])
+    ppath = tuple((p, ph) for p, ph in position[2])
+    if position[1] == q["centre"] and ppath == qpath:
+        return True
+    a, b = _flat(qpath, q["centre"] or ""), _flat(ppath, position[1])
+    return a is not None and a == b
+
+
+def completions(index: mx.MemIndex, res: dict, text: str) -> List[dict]:
+    """The questions the evidence gate may be handed INSTEAD of the one asked, for the live occurrences of ONE answer (ANSWER / UPDATED; a CHOICE has none), each only for a stretch that can be emitted
+    verbatim.  The gate itself is not changed; only the question text is.
+      via nest    a SUBJECT-LESS question (no 「X の」) whose value was reached through a nest (route `nest`: the owner of the position is the centre of a declared nest, or a seat written while a nest was
+                  open): the question completed by the centre of that nest, 「新製品」 + 「締め切りはいつですか」 -> 「新製品の締め切りはいつですか」.  The gate then reads the nest centre as the subject, so
+                  the clause has to hold it.
+      via update  the NEW value of a change clause (「6/12 から 6/14 に変更」: the clause of the value is 「6/14 に変更」, it has no subject) at the very position the question asked (route exact or flat):
+                  the position is the check the gate cannot make, so the gate is handed the form of the change itself, 「変更は何に変更」 (subject and head are the change word, both in the clause).
+    -> [{sid, span, via, question, nest?, centre?, scope, position}] in the order of the occurrences."""
+    if res.get("verdict") not in ("ANSWER", "UPDATED") or len(res.get("answers", ())) != 1:
+        return []
+    q = res.get("question") or {}
+    if not q.get("ok") or q.get("shape") not in ("F1", "F2") or q.get("asked") != mx.VALUE:
+        return []
+    route = res.get("route")
+    asked = unicodedata.normalize("NFC", text).strip()
+    out: List[dict] = []
+    for o in res["answers"][0]["occurrences"]:
+        span = o.get("span")
+        if span is None or o.get("verbatim") is not True:
+            continue
+        ch = o.get("change")
+        if ch is not None:
+            word = _change_word(ch["form"])
+            if word is not None and route in ("exact", "flat") and _same_place(q, o["position"]):
+                out.append({"sid": o["sid"], "span": list(span), "via": "update", "question": "%sは何に%s" % (word, word), "scope": o["scope"], "position": o["position"]})
+            continue
+        if q["path"]:                                              # the question names its owner: the gate has its subject
+            continue
+        nest = None
+        if route == "nest" and o["position"][2]:
+            owner = o["position"][2][0][1]
+            nest = next((n for n in index.nests if n.centre == owner), None)
+        elif o["scope"] is not None:
+            nest = next((n for n in index.nests if n.id == o["scope"]), None)
+        if nest is not None:
+            out.append({"sid": o["sid"], "span": list(span), "via": "nest", "nest": nest.id, "centre": nest.centre, "question": nest.centre + "の" + asked, "scope": o["scope"],
+                        "position": o["position"]})
     return out
