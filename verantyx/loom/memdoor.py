@@ -32,6 +32,7 @@ from typing import Any, Dict, List, Optional, Sequence, Tuple
 from verantyx.ledger_events import GENESIS, args_sha256, redact_obj
 from verantyx.loom import ledger as lg
 from verantyx.loom import memanswer as ma
+from verantyx.loom import memview as mview
 from verantyx.loom import memory as mem
 from verantyx.loom import ops
 from verantyx.loom.ops import _oversize, refusal
@@ -59,18 +60,26 @@ LOG_READ_LINES = 30
 ANSWER_KINDS = ("value", "contested", "none")
 
 
-def story_tools(arm: str, profile: str = mem.PROFILE_V2) -> Tuple[str, ...]:
-    """The story-phase tools of an arm under a profile: the table above, plus `keep_unshaped` (right after `write`) for the structure arms of a mem.v4 session (PUB-M2)."""
+def story_tools(arm: str, profile: str = mem.PROFILE_V2, view: bool = False) -> Tuple[str, ...]:
+    """The story-phase tools of an arm under a profile: the table above, plus `keep_unshaped` (right after `write`) for the structure arms of a mem.v4 session (PUB-M2); with `view` (PUB-M7, view.v1)
+    also `view` and `view_nest` (after `bridge`)."""
     names = STORY_TOOLS[arm]
     if profile == mem.PROFILE_V4 and arm in STRUCTURE_ARMS:
         i = names.index("write") + 1
-        return names[:i] + mem.V4_OPS + mem.V4_BRIDGE + names[i:]
+        return names[:i] + mem.V4_OPS + mem.V4_BRIDGE + (mem.VIEW_OPS if view else ()) + names[i:]
     return names
 ANSWER_VALUE_CHARS = 32
 BASELINE_VERSION = "membase.v1"
 BASELINE_V2 = "membase.v2"          # MEM-fix: LOG_CAPS_V2 and the harness rows `report_forced` / `report_missing` (L-MEM-62); membase.v1 ledgers replay as they were
-BASELINE_VERSIONS: Tuple[str, ...] = (BASELINE_VERSION, BASELINE_V2)
-CAPS_OF_BASELINE: Dict[str, Dict[str, int]] = {BASELINE_VERSION: LOG_CAPS, BASELINE_V2: LOG_CAPS_V2}
+# PUB-M7 / PUB-M10 (A1 under the budget): membase.v3 = membase.v2 + the log tools of the long-story meter (`log_grep(terms, max_lines)`, `log_read(start, end)`; `log_append` as before) + the per-turn BUDGET recorded in the begin row
+# (header.budget) and the harness row `budget_turn`.  membase.v1 / v2 ledgers are verified exactly as before.
+BASELINE_V3 = "membase.v3"
+BASELINE_VERSIONS: Tuple[str, ...] = (BASELINE_VERSION, BASELINE_V2, BASELINE_V3)
+LOG_CAPS_V3 = dict(LOG_CAPS_V2, greps=240)
+CAPS_OF_BASELINE: Dict[str, Dict[str, int]] = {BASELINE_VERSION: LOG_CAPS, BASELINE_V2: LOG_CAPS_V2, BASELINE_V3: LOG_CAPS_V3}
+STORY_TOOLS_V3: Dict[str, Tuple[str, ...]] = {"context": ("report",), "log": ("log_append", "log_grep", "log_read", "report")}
+QUESTION_TOOLS_V3: Dict[str, Tuple[str, ...]] = {"context": ("answer",), "log": ("log_grep", "log_read", "answer")}
+LOG_GREP_TERMS, LOG_GREP_TERM_CHARS, LOG_GREP_MAX_LINES, LOG_READ_SPAN = 4, 32, 30, 30
 
 
 # ------------------------------------------------------------------------------------------------------------
@@ -124,6 +133,15 @@ TOOL_SPECS: Dict[str, dict] = {
                    "properties": {"text": _p("string", "the line")}, "required": ["text"]},
     "log_read": {"description": "Read the log: every line, or only the lines that contain `grep` (plain substring). At most 30 lines (the latest), each with its number.",
                  "properties": {"grep": _p("string", "optional substring, at most 32 characters")}, "required": []},
+    # PUB-M7: the structure window (view.v1) and the log tools of membase.v3
+    "view": {"description": "Show the memory's crosses whose centre is `centre` (the phrase as the memory writes it, e.g. 開催地): every seat with its provenance (sid, turn, session, record | constructed), "
+                            "the history of each position in order (first / update / other). At most 40 lines; the last line says how many were left out. Read-only.",
+             "properties": {"centre": _p("string", "a centre phrase, at most 40 characters")}, "required": ["centre"]},
+    "view_nest": {"description": "Show the nest of a topic you declared (or, in a table without nests, the rows written under that topic): the clauses that belong to it, with their sids. At most 40 lines. Read-only.",
+                  "properties": {"topic": _p("string", "a declared topic, at most 24 characters")}, "required": ["topic"]},
+    "log_grep": {"description": "Search the log: the lines that contain ANY of `terms` (plain substrings, at most 4 terms of at most 32 characters), the lines with the most terms first, the later line first on a tie. "
+                                "At most max_lines (1 to 30) lines, each with its number and session. The log is the only thing that survives the end of this session.",
+                 "properties": {"terms": dict(_STR_LIST, description="1 to 4 substrings"), "max_lines": _p("integer", "how many lines at most, 1 to 30")}, "required": ["terms", "max_lines"]},
     "answer": {"description": "Give your final answer to the question and end. kind = value (values = [the answer]), contested (the earlier sessions state two different answers: values = [first, "
                               "second]), none (nothing in what you can see answers it: values = []). Each value at most 32 characters.",
                "properties": {"kind": _p("string", "value | contested | none", enum=list(ANSWER_KINDS)), "values": dict(_STR_LIST, description="the answer value(s)")}, "required": ["kind", "values"]},
@@ -142,11 +160,16 @@ TOOL_SPECS: Dict[str, dict] = {
 }
 
 
-def api_tools(names: Sequence[str], strict: bool = False, done: bool = False) -> List[dict]:
-    """The `tools` array of the Messages API for a toolset: exactly the names given, in order, with the schemas of TOOL_SPECS (+ the driver's `done` when asked)."""
+TOOL_SPECS_V3: Dict[str, dict] = dict(TOOL_SPECS, log_read={
+    "description": "Read the log by line number: lines `start` to `end` inclusive (0-based; at most 30 lines per call), each with its number and session. Use log_grep to find lines by a word.",
+    "properties": {"start": _p("integer", "first line number"), "end": _p("integer", "last line number (inclusive)")}, "required": ["start", "end"]})
+
+
+def api_tools(names: Sequence[str], strict: bool = False, done: bool = False, specs: Optional[Dict[str, dict]] = None) -> List[dict]:
+    """The `tools` array of the Messages API for a toolset: exactly the names given, in order, with the schemas of TOOL_SPECS (`specs` = TOOL_SPECS_V3 for a membase.v3 log arm; + the driver's `done` when asked)."""
     out = []
     for n in names:
-        sp = TOOL_SPECS[n]
+        sp = (specs or TOOL_SPECS)[n]
         d = {"name": n, "description": sp["description"],
              "input_schema": {"type": "object", "properties": json.loads(json.dumps(sp["properties"])), "additionalProperties": False}}
         if sp["required"]:
@@ -218,7 +241,7 @@ class StructureDoor(_Door):
     phase = "story"
 
     def __init__(self, store_path, arm: str, model: str, *, hook: Any = mem.LATEST, kind_policy: Optional[str] = None, profile: str = mem.PROFILE_V2,
-                 versions: Optional[Dict[str, str]] = None) -> None:
+                 versions: Optional[Dict[str, str]] = None, view: Optional[Dict[str, Any]] = None) -> None:
         if arm not in STRUCTURE_ARMS:
             raise ValueError("a StructureDoor is the structure arms' (blind | notes)")
         if profile not in mem.V2_PLUS:
@@ -226,13 +249,14 @@ class StructureDoor(_Door):
         super().__init__(arm)
         self.profile = profile
         self.store = mem.MemStore(store_path)
-        self.session = self.store.begin(model, profile=profile, self_question=hook, kind_policy=kind_policy, versions=versions)
+        self.session = self.store.begin(model, profile=profile, self_question=hook, kind_policy=kind_policy, versions=versions, view=view)
+        self.view = self.session.run.view                         # PUB-M7: the view block of the begin row (None: the cross JSON is the write result, as before)
         self.run_id = self.session.run_id
         self.begin_result: dict = self.session.rows()[0]["result"]
 
     @property
     def tool_names(self) -> Tuple[str, ...]:
-        return story_tools(self.arm, self.profile)
+        return story_tools(self.arm, self.profile, self.view is not None)
 
     def intro(self) -> dict:
         b = self.begin_result
@@ -252,7 +276,10 @@ class StructureDoor(_Door):
         elif tool in ("write",) + mem.V4_OPS and self.turn is not None:
             a["turn"] = self.turn                                   # the sentence is stored with the turn it was written at: a later recall names it, a report can cite it (keep_unshaped: mem.v4)
         res = self.session.call(tool, a)
-        return _blind(res) if self.arm == "blind" else res
+        res = _blind(res) if self.arm == "blind" else res
+        if self.view is not None and tool in ("write",) + mem.V4_OPS:                     # PUB-M7: the model sees the short lines; the ledger row keeps the full result
+            res = mview.compact_write(self.session.run.builder.index(), res, drop_key_route=self.session.run.flat)
+        return res
 
     def harness(self, run_id: Any, op: str, args: dict) -> dict:
         return self.session.harness(op, args)
@@ -322,19 +349,26 @@ class BaselineRun:
     `entries_before` = the log lines of the earlier sessions (A1; [] for A0).  Never reads a file."""
 
     def __init__(self, arm: str, phase: str, run_id: str, model: str, session_no: int, entries_before: Sequence[dict] = (), question: Optional[str] = None,
-                 version: str = BASELINE_VERSION) -> None:
+                 version: str = BASELINE_VERSION, budget: Optional[int] = None) -> None:
         if arm not in ("context", "log") or phase not in ("story", "question"):
             raise ValueError("BaselineRun: arm context | log, phase story | question")
         if version not in BASELINE_VERSIONS:
             raise ValueError("BaselineRun: version one of %s" % (BASELINE_VERSIONS,))
+        if budget is not None and version != BASELINE_V3:
+            raise ValueError("BaselineRun: only membase.v3 records a budget")
+        if budget is not None:
+            mview.check_view({"version": mview.VIEW_V1, "budget": budget, "lines": mview.LINES_DEFAULT})
+        self.budget = budget
         self.version, self.caps = version, dict(CAPS_OF_BASELINE[version])
         self.arm, self.phase, self.run_id, self.model, self.session_no, self.question = arm, phase, run_id, model, session_no, question
         self.entries: List[dict] = [dict(e) for e in entries_before]
         self.n_before = len(self.entries)
         self.counts = {"appends": 0, "reads": 0, "reports": 0, "answers": 0}
+        if version == BASELINE_V3:
+            self.counts["greps"] = 0                                 # membase.v3 only: so that the state hash of a v1 / v2 log run is as it was
         self.closed: Optional[List[str]] = None
         self.i, self.head = 0, GENESIS
-        self.tools = (STORY_TOOLS if phase == "story" else QUESTION_TOOLS)[arm]
+        self.tools = ((STORY_TOOLS_V3 if version == BASELINE_V3 else STORY_TOOLS) if phase == "story" else (QUESTION_TOOLS_V3 if version == BASELINE_V3 else QUESTION_TOOLS))[arm]
 
     # -- state / begin -----------------------------------------------------------------------------------------------
     def log_sha(self) -> str:
@@ -347,6 +381,8 @@ class BaselineRun:
         res = {"ok": True, "run_id": self.run_id, "mode": "baseline", "arm": self.arm, "phase": self.phase, "tools": list(self.tools), "caps": dict(self.caps),
                "header": {"baseline_version": self.version, "arm": self.arm, "phase": self.phase, "session_no": self.session_no, "declared_model": self.model,
                           "log_sha_before": self.log_sha(), "log_lines_before": self.n_before}}
+        if self.budget is not None:                                  # membase.v3: the per-turn budget (characters of tool results a turn may be delivered), the same for every arm
+            res["header"]["budget"] = {"version": mview.VIEW_V1, "budget": self.budget}
         if self.question is not None:
             res["question"] = self.question
         return {"actor": "model", "op": "begin", "args": {"task_id": "story" if self.phase == "story" else "answer", "model": self.model}, "result": res,
@@ -360,8 +396,11 @@ class BaselineRun:
     def step(self, actor: str, op: str, args: dict, replay_extra: Optional[dict] = None) -> dict:
         if actor == "model":
             return self._model_step(op, args, replay_extra)
-        if actor != "harness" or op not in ("free_text_dropped", "harness_meta", "abandoned", "session_end") + (mem.FORCE_OPS + mem.CAP_OPS if self.version == BASELINE_V2 else ()):
+        if actor != "harness" or op not in ("free_text_dropped", "harness_meta", "abandoned", "session_end") + (mem.FORCE_OPS + mem.CAP_OPS if self.version in (BASELINE_V2, BASELINE_V3) else ()) + (
+                mem.BUDGET_OPS if self.budget is not None else ()):
             raise ValueError("op %r is not a row of actor %r" % (op, actor))
+        if op in mem.BUDGET_OPS:
+            args = mview.budget_args(args, {"budget": self.budget})
         if op in mem.FORCE_OPS:
             args = mem.force_args(args)
         if op in mem.CAP_OPS:
@@ -401,7 +440,7 @@ class BaselineRun:
                 raise Refuse("args_too_large", {"chars": extra["args_chars"], "limit": ARGS_CHARS_CAP, "string_limit": ARG_STR_CAP})
             if n:
                 raise Refuse("secret_shaped_entry", {"redacted": n})
-            result = getattr(self, "_h_" + op)(args)
+            result = getattr(self, "_h_" + op + ("_v3" if (op == "log_read" and self.version == BASELINE_V3) else ""))(args)
         except Refuse as r:
             result = refusal(r.type, r.detail)
         body = {"actor": "model", "op": op, "args": stored, "result": result, "state_sha": self.state_sha()}
@@ -432,6 +471,38 @@ class BaselineRun:
         hits = [{"n": k, "session": e["session"], "text": e["text"]} for k, e in enumerate(self.entries) if g in e["text"]]
         shown = hits[-LOG_READ_LINES:]
         return {"ok": True, "lines": len(self.entries), "matched": len(hits), "more": len(hits) - len(shown), "entries": shown}
+
+    def _line_view(self, k: int) -> dict:
+        e = self.entries[k]
+        return {"n": k, "s": e["session"], "t": e["text"]}
+
+    def _h_log_grep(self, a: dict) -> dict:
+        """membase.v3: the lines that contain ANY of the terms, most terms first, the later line first on a tie; at most `max_lines`; shown in line order."""
+        a = ops._args(a, {"terms": (list, True), "max_lines": (int, True)})
+        self._count("greps")
+        terms = [unicodedata.normalize("NFC", t) if isinstance(t, str) else None for t in a["terms"]]
+        if not 1 <= len(terms) <= LOG_GREP_TERMS or any(t is None or not 1 <= len(t) <= LOG_GREP_TERM_CHARS for t in terms):
+            raise Refuse("bad_grep", {"reason": "1 to %d terms of 1 to %d characters" % (LOG_GREP_TERMS, LOG_GREP_TERM_CHARS)})
+        if isinstance(a["max_lines"], bool) or not 1 <= a["max_lines"] <= LOG_GREP_MAX_LINES:
+            raise Refuse("bad_grep", {"field": "max_lines", "reason": "1 to %d" % LOG_GREP_MAX_LINES})
+        scored = []
+        for k, e in enumerate(self.entries):
+            h = sum(1 for t in terms if t in e["text"])
+            if h:
+                scored.append((-h, -k, k))
+        scored.sort()
+        shown = sorted(x[2] for x in scored[:a["max_lines"]])
+        return {"ok": True, "lines": len(self.entries), "matched": len(scored), "more": len(scored) - len(shown), "entries": [self._line_view(k) for k in shown]}
+
+    def _h_log_read_v3(self, a: dict) -> dict:
+        a = ops._args(a, {"start": (int, True), "end": (int, True)})
+        self._count("reads")
+        st, en = a["start"], a["end"]
+        if isinstance(st, bool) or isinstance(en, bool) or st < 0 or en < st:
+            raise Refuse("bad_range", {"reason": "0 <= start <= end"})
+        en2 = min(en, st + LOG_READ_SPAN - 1, len(self.entries) - 1)
+        shown = list(range(st, en2 + 1)) if st < len(self.entries) else []
+        return {"ok": True, "lines": len(self.entries), "from": st, "to": en2 if shown else st - 1, "more": max(0, en - en2) if shown else 0, "entries": [self._line_view(k) for k in shown]}
 
     def _h_report(self, a: dict) -> dict:
         a = ops._args(a, {"turn": (str, True), "contradictions": (list, True), "bugs": (list, False)})
@@ -498,7 +569,7 @@ class BaselineDoor(_Door):
     """A0 / A1, either phase: a `BaselineRun` with its ledger.  `call` = one row; `commit()` ends a story session (a `session_end` harness row and, for A1, `log.txt`)."""
 
     def __init__(self, store_path, arm: str, phase: str, model: str, question: Optional[str] = None, session_no: Optional[int] = None,
-                 version: str = BASELINE_VERSION) -> None:
+                 version: str = BASELINE_VERSION, budget: Optional[int] = None) -> None:
         if arm not in ("context", "log"):
             raise ValueError("a BaselineDoor is the baseline arms' (context | log)")
         super().__init__(arm)
@@ -507,7 +578,7 @@ class BaselineDoor(_Door):
         before = self.store.entries() if arm == "log" else []
         n_story = sum(1 for d in self.store.story_dirs() if _read_rows(d)[-1]["op"] == "session_end")
         d, rid = self.store.next_dir(phase)
-        self.run = BaselineRun(arm, phase, rid, model, session_no if session_no is not None else n_story + 1, before, question, version)
+        self.run = BaselineRun(arm, phase, rid, model, session_no if session_no is not None else n_story + 1, before, question, version, budget)
         self.run_id = rid
         self.ledger = lg.Ledger(d)
         self.ledger.create({"mode": "baseline", "arm": arm, "phase": phase})
@@ -515,6 +586,10 @@ class BaselineDoor(_Door):
         with self.ledger.locked() as lk:
             self.run.advance(lk.append(self.run.begin_body(), 0))
         self.begin_result: dict = _read_rows(d)[0]["result"]
+
+    @property
+    def tool_names(self) -> Tuple[str, ...]:
+        return tuple(self.run.tools)                                # membase.v3 has its own log tools (log_grep, log_read(start, end)); v1 / v2: the tables above
 
     def intro(self) -> dict:
         h = self.begin_result["header"]
@@ -583,7 +658,7 @@ def verify_baseline(run_dir) -> dict:
     if h.get("baseline_version", BASELINE_VERSION) not in BASELINE_VERSIONS:
         return {"status": "REPLAY_DIFFERS", "first_diff": {"i": 0, "field": "baseline_version"}}
     run = BaselineRun(arm, phase, rows[0]["result"]["run_id"], rows[0]["args"]["model"], h["session_no"], before, rows[0]["result"].get("question"),
-                      h.get("baseline_version", BASELINE_VERSION))
+                      h.get("baseline_version", BASELINE_VERSION), (h.get("budget") or {}).get("budget"))
     prev = GENESIS
     for idx, orig in enumerate(rows):
         try:

@@ -49,6 +49,7 @@ from verantyx.loom.memguard import parse_source
 from verantyx.loom.state import SPEC, canonical, sha256_text
 
 CROSS_VERSION = "cross.v2"      # cross.v1 (PUB-M2..M4) + seat scope, `context` members, notes, bridges (no cross.v1 data was ever recorded with a model)
+FLAT_VERSION = "flat.v1"        # PUB-M8 (A3f): the FLAT TABLE index -- the same exchanger, tanks, seats, provenance, notes and answer path, with the geometry taken out (see `IndexBuilder(flat=True)`)
 TANKS: Tuple[str, ...] = ("F1", "F2", "F3", "F4")
 F0_TANK = "F0"
 ARMS: Tuple[str, ...] = tuple(SPEC.arms)                  # の に で と を が: the ladder order of foundation.LADDER[1:]
@@ -454,8 +455,10 @@ class IndexBuilder:
     """The fold.  `declare` / `add_row` / `supersede` / `bridge` are called in the order of the ledger; `index()` is the derived `MemIndex` (cached until the next call).  Everything is kept per part with its
     cached view and canonical JSON, so a call dirties only what it touched."""
 
-    def __init__(self, shape_version: str = ms.SHAPES_V2) -> None:
+    def __init__(self, shape_version: str = ms.SHAPES_V2, flat: bool = False) -> None:
         self.shape_version = shape_version
+        self.flat = bool(flat)                               # PUB-M8: the flat table (no nests, no slide edges, no (n, p, a) key, no key swap); False = the crosses, byte for byte as before
+        self._topic: Dict[int, str] = {}                     # flat only: session -> the topic declared in it, a PLAIN COLUMN (it is the scope of the seats, nothing more)
         self.n = 0
         self._sessions: List[int] = []
         self._sess: List[List[int]] = []
@@ -492,6 +495,11 @@ class IndexBuilder:
         head = topic_head(topic)
         if head is None:
             raise ValueError("a topic needs a word unit")
+        if self.flat:                                        # PUB-M8: no nest.  The topic is a plain column: the scope of the seats written after it in this session (a string, no structure)
+            reopened = self._topic.get(session) == topic
+            self._topic[session] = topic
+            self._ver += 1
+            return {"id": None, "topic": topic, "centre": None, "arms": [], "prefix": "", "reopened": reopened, "flat": True}
         nr = self._by_topic.get(topic)
         reopened = nr is not None
         if nr is None:
@@ -541,6 +549,8 @@ class IndexBuilder:
         return e
 
     def open_nest_id(self, session: int) -> Optional[str]:
+        if self.flat:
+            return None                                      # PUB-M8: there is no nest to prefer
         nr = self._open.get(session)
         return None if nr is None else nr.id
 
@@ -581,7 +591,7 @@ class IndexBuilder:
             self._sess[-1][2] = sid
         else:
             self._sess.append([session, sid, sid])
-        if sid > 0:
+        if sid > 0 and not self.flat:                         # PUB-M8: the flat table has no slide order (updates are read by sid order only)
             self._edges.append("[%d,%d,%d]" % (sid - 1, sid, 1 if self._sessions[sid - 1] != session else 0))
         self._ver += 1
         self.last_notes = []
@@ -592,6 +602,8 @@ class IndexBuilder:
             self._f0_json.append(canonical(e.to_obj()))
         nr = self._open.get(session)
         open_id = None if nr is None else nr.id
+        if self.flat:
+            nr, open_id = None, self._topic.get(session)      # PUB-M8: the topic column is the scope; no nest completes an F4 clause
         out: List[ClauseRec] = []
         notes: List[dict] = []
         for k, c in enumerate(ex.clauses):
@@ -648,7 +660,7 @@ class IndexBuilder:
             self._seat_n[tank] += 1
             seat_head = units[-1] if units else phrase
             r = _Rec(slot=slot, phrase=phrase, units=tuple(units), sid=sid, k=k, seq=self._seq, turn=turn, session=session, origin=origin_of(corpus, units),
-                     key=seat_key(corpus, slot, centre_head, seat_head), path=p, children=[], via=v, nest=nid, change=change, surface=phrase, scope=open_id, written=written)
+                     key=(0, 0, 0) if self.flat else seat_key(corpus, slot, centre_head, seat_head), path=p, children=[], via=v, nest=nid, change=change, surface=phrase, scope=open_id, written=written)
             for a in sub:
                 r.children.append((a.particle, rec(a.particle, a.seat.text, a.seat.units, seat_head, a.arms, v, nid, None, p + ((slot, phrase),), a.written)))
             return r
@@ -689,7 +701,7 @@ class IndexBuilder:
             notes += self._det.observe_event(tank=tank, centre=c.centre or "", arms=[(a.particle, a.seat.text) for a in arms], scope=open_id, sid=sid, k=k, turn=turn)
         for rl in _relations(c, arms, tank):
             notes += self._det.observe_relation(kind=rl[0], label=rl[1], first=rl[2], second=rl[3], particle=rl[4], first_units=rl[5], second_units=rl[6], sid=sid, k=k, turn=turn,
-                                                judge=lambda particle, fu, su: pair_key(corpus, particle, fu, su) if fu and su else None)
+                                                judge=None if self.flat else (lambda particle, fu, su: pair_key(corpus, particle, fu, su) if fu and su else None))
         return (ClauseRec(sid, k, session, turn, c.shape, tank, c.centre, c.text, via, nest_id, open_id, path, None if c.value is None else c.value.text, ch,
                           tuple(a.text for a in c.adverbial), None), notes)
 
@@ -754,7 +766,7 @@ class IndexBuilder:
         return '{"bridges":[%s],"clauses":[%s],"edges":[%s],"f0":[%s],"n":%d,"nests":[%s],"notes":[%s],"positions":[%s],"sessions":%s,"shape":%s,"tanks":%s,"v":%s}' % (
             ",".join(canonical(b.to_obj()) for b in self._bridges), ",".join(self._clause_json), ",".join(self._edges), ",".join(self._f0_json), self.n,
             ",".join(self._nest_json(nr) for nr in self._nests), ",".join(self._note_json), ",".join(self._pos_json(p) for p in self._pos_order), canonical(self._sess),
-            canonical(self.shape_version), tanks, canonical(CROSS_VERSION))
+            canonical(self.shape_version), tanks, canonical(FLAT_VERSION if self.flat else CROSS_VERSION))
 
     def _snapshot(self) -> "MemIndex":
         crosses = tuple(self._cross_view(self._crosses[k]) for k in self._cross_order)
@@ -763,7 +775,7 @@ class IndexBuilder:
         sha = sha256_text(self._assemble())
         return MemIndex(self.shape_version, self.n, tuple(self._sessions), crosses, tuple(self._f0), nests, tuple(self._clauses), dict(self._marks),
                         hist={p: self._pos[p].entries for p in self._pos_order}, positions=tuple(self._pos_order), notes=tuple(self._notes), bridges=tuple(self._bridges),
-                        counts=counts, sha=sha)
+                        counts=counts, sha=sha, flat=self.flat)
 
 
 def _relations(c: ms.Clause, arms: Sequence[ms.Arm], tank: str) -> List[tuple]:
@@ -802,7 +814,8 @@ class MemIndex:
 
     def __init__(self, shape_version: str, n: int, sessions: Tuple[int, ...], crosses: Tuple[Cross, ...], f0: Tuple[F0Entry, ...], nests: Tuple[Nest, ...],
                  clauses: Tuple[ClauseRec, ...], marks: Dict[int, Mark], *, hist: Dict[Position, Tuple[Entry, ...]], positions: Tuple[Position, ...], notes: Tuple[dict, ...] = (),
-                 bridges: Tuple[Bridge, ...] = (), counts: Optional[dict] = None, sha: Optional[str] = None) -> None:
+                 bridges: Tuple[Bridge, ...] = (), counts: Optional[dict] = None, sha: Optional[str] = None, flat: bool = False) -> None:
+        self.flat = bool(flat)
         self.shape_version, self.n, self.sessions = shape_version, n, sessions
         self.crosses, self.f0, self.nests, self.clauses = crosses, f0, nests, clauses
         self.notes, self.bridges = notes, bridges
@@ -830,7 +843,7 @@ class MemIndex:
     @property
     def edges(self) -> Tuple[Tuple[int, int, int], ...]:
         if self._edges is None:
-            self._edges = tuple((i, i + 1, 1 if self.sessions[i] != self.sessions[i + 1] else 0) for i in range(self.n - 1))
+            self._edges = () if self.flat else tuple((i, i + 1, 1 if self.sessions[i] != self.sessions[i + 1] else 0) for i in range(self.n - 1))
         return self._edges
 
     def seats(self, cross: Cross, arm_path: Any) -> Tuple[Seat, ...]:
@@ -968,7 +981,7 @@ class MemIndex:
                 sess.append([s, i, i])
             else:
                 sess[-1][2] = i
-        return {"v": CROSS_VERSION, "shape": self.shape_version, "n": self.n, "sessions": sess,
+        return {"v": FLAT_VERSION if self.flat else CROSS_VERSION, "shape": self.shape_version, "n": self.n, "sessions": sess,
                 "tanks": [[t, [c.to_obj() for c in self.tank(t)]] for t in TANKS], "f0": [e.to_obj() for e in self.f0], "nests": [n.to_obj() for n in self.nests],
                 "clauses": [c.to_obj() for c in self.clauses], "edges": [list(e) for e in self.edges],
                 "positions": [[t, c, [list(p) for p in path], [e.to_obj() for e in self._hist[(t, c, path)]]] for t, c, path in self.positions],
@@ -1050,10 +1063,10 @@ def render_cross(c: Cross) -> str:
 # the pure function of H (the FULL REBUILD: replay / verify run it and require it to equal the incremental index byte for byte)
 # ------------------------------------------------------------------------------------------------------------
 def build_index(rows: Sequence[dict], decls: Sequence[dict] = (), superseded: Optional[Dict[int, dict]] = None, shape_version: str = ms.SHAPES_V2,
-                bridges: Sequence[dict] = ()) -> MemIndex:
+                bridges: Sequence[dict] = (), flat: bool = False) -> MemIndex:
     """The index of the memory rows `rows` (each {sent, source, kind?, turn?, unshaped?}), the topic declarations `decls` ([{session, at, topic}]: `at` = how many sentences H held when it was declared),
     the supersede marks `superseded` ({sid: {by, reason, session}}) and the bridges `bridges` ([{session, at, qword, phrase}]).  Builds the memory corpus of every prefix itself (Corpus, never Corpus.load)."""
-    b = IndexBuilder(shape_version)
+    b = IndexBuilder(shape_version, flat)
     order = sorted(range(len(decls)), key=lambda i: (decls[i]["at"], i))
     di = 0
     prev = Corpus(b"")

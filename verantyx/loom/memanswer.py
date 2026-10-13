@@ -203,6 +203,8 @@ def crosses_bytes_v4(decls: Sequence[dict], bridges: Sequence[dict], versions: D
     """The crosses file of a memanswer.v4 snapshot: crosses_bytes + the versions {shape, qwords, ask} the store's sessions were written with (the index is rebuilt from the snapshot with them)."""
     obj = json.loads(crosses_bytes(decls, bridges).decode("utf-8"))
     obj["versions"] = {"ask": versions["ask"], "qwords": versions["qwords"], "shape": versions["shape"]}
+    if versions.get("index") == mem.INDEX_FLAT:         # PUB-M8: only the flat table says so; a crosses file of the crosses is the three keys, byte for byte as before
+        obj["versions"]["index"] = mem.INDEX_FLAT
     return (canonical(obj) + "\n").encode("utf-8")
 
 
@@ -215,7 +217,8 @@ def read_crosses_v4(path) -> Tuple[bytes, List[dict], List[dict], Dict[str, str]
     try:
         obj = json.loads(data.decode("utf-8"))
         versions = obj.pop("versions")
-        if not (isinstance(versions, dict) and set(versions) == {"ask", "qwords", "shape"} and all(isinstance(v, str) for v in versions.values())):
+        if not (isinstance(versions, dict) and set(versions) in ({"ask", "qwords", "shape"}, {"ask", "qwords", "shape", "index"}) and all(isinstance(v, str) for v in versions.values())
+                and versions.get("index", mem.INDEX_FLAT) == mem.INDEX_FLAT):
             raise ValueError("versions")
         mem.check_versions(versions)
         ok = _crosses_ok(obj)
@@ -414,7 +417,8 @@ class AnswerRun(Run):
             key = (self.snapshot, self.crosses_file)
             ix = _INDEX_CACHE.get(key)
             if ix is None:
-                ix = _INDEX_CACHE[key] = mx.build_index(self.rows, self.decls, self.superseded, shape_version=self.versions["shape"], bridges=self.bridges)
+                ix = _INDEX_CACHE[key] = mx.build_index(self.rows, self.decls, self.superseded, shape_version=self.versions["shape"], bridges=self.bridges,
+                                                           flat=self.versions.get("index") == mem.INDEX_FLAT)
             self._index = ix
         return self._index
 
@@ -440,6 +444,8 @@ class AnswerRun(Run):
                 res["rules"]["decide"] = ANSWER_RULES_V5["decide"]
             if self.v13:
                 res["rules"]["one_fact"] = ONE_FACT_RULE
+            if self.versions.get("index") == mem.INDEX_FLAT:       # PUB-M8: the answer run over the FLAT TABLE (A3f); absent for the crosses, so every stored answer run begins as it did
+                res["mem_answer"]["index"] = mem.INDEX_FLAT
         res["tools"] = list(ANSWER_TOOLS_V4 if self.v4 else ANSWER_TOOLS)
         return b
 

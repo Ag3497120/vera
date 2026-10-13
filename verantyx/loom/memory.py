@@ -63,6 +63,7 @@ from verantyx.loom import memask as mask
 from verantyx.loom import memcross as mx
 from verantyx.loom import memdetect as mdt
 from verantyx.loom import memnotes as mn
+from verantyx.loom import memview as mview
 from verantyx.loom import memqwords as qw
 from verantyx.loom import memrecall as mr
 from verantyx.loom import notes as notelib
@@ -100,12 +101,24 @@ V4_VERSIONS_V2: Dict[str, str] = {"shape": ms.SHAPES_V2, "qwords": qw.QWORDS_VER
 V4_VERSIONS_M6C: Dict[str, str] = {"shape": ms.SHAPES_V3, "qwords": qw.QWORDS_V2, "ask": mask.ASK_V3}
 V4_VERSIONS_M6D: Dict[str, str] = dict(V4_VERSIONS_M6C, shape=ms.SHAPES_V4)             # PUB-M6d: the bundle of M6C with stage 2 of the shape table (「へ」 read like 「に」)
 V4_ASK_QWORDS: Dict[str, str] = {mask.ASK_VERSION: qw.QWORDS_VERSION, mask.ASK_V3: qw.QWORDS_V2}      # an ask version reads one question-word table
+# PUB-M8 (A3f): the optional key "index" of a mem.v4 bundle.  Absent (or the crosses' own version) = the crosses, as before; `flat.v1` = the flat table (memcross.IndexBuilder(flat=True)).  It is recorded in
+# the begin row (`header.index`) ONLY when it is the flat table, so every stored header, ledger and crosses file is as it was.
+INDEX_CROSS, INDEX_FLAT = mx.CROSS_VERSION, mx.FLAT_VERSION
+VIEW_OPS: Tuple[str, ...] = mview.VIEW_OPS                         # PUB-M7: the ops a session with `view` (view.v1) adds: view(centre), view_nest(topic)
+BUDGET_OPS: Tuple[str, ...] = ("budget_turn",)                     # PUB-M7: the harness row of a result cut by the per-turn budget (a session with `view` only)
+CAPS_MEM_V4_VIEW: Dict[str, int] = dict(CAPS_MEM_V4, views=240)    # PUB-M7: + at most 240 views a session (recorded in the begin row's task caps only for a session with `view`)
 
 
 def check_versions(versions: Optional[Dict[str, str]]) -> Dict[str, str]:
     """The versions of a mem.v4 session: the default bundle with the given keys replaced; `Refuse bad_policy` for an unknown version or an ask version with the wrong question-word table."""
     v = dict(V4_VERSIONS_V2)
     for k, x in (versions or {}).items():
+        if k == "index":                                          # PUB-M8: optional; the crosses' own version is the default and is not carried
+            if x not in (INDEX_CROSS, INDEX_FLAT):
+                raise Refuse("bad_policy", {"policy": "versions", "value": "index", "allowed": [INDEX_CROSS, INDEX_FLAT]})
+            if x == INDEX_FLAT:
+                v["index"] = x
+            continue
         if k not in v:
             raise Refuse("bad_policy", {"policy": "versions", "value": k, "allowed": sorted(v)})
         v[k] = x
@@ -140,12 +153,14 @@ MEM_RULES: Dict[str, Any] = {
     "recall": "reserved (MEM-c): recall_unavailable until the evidence gate is merged.",     # a session WITHOUT an evidence version (stub / no hook): byte-identical to MEM-a/b
     "close": "commit closes the session; an uncommitted session is not part of the memory.",
 }
-def caps_of(profile: str) -> Dict[str, int]:
+def caps_of(profile: str, view: bool = False) -> Dict[str, int]:
+    if view and profile == PROFILE_V4:
+        return CAPS_MEM_V4_VIEW
     return CAPS_MEM_V4 if profile == PROFILE_V4 else CAPS_MEM_V3 if profile in V3_PLUS else CAPS_MEM_V2 if profile == PROFILE_V2 else CAPS_MEM_V1
 
 
-def tools_of(profile: str) -> Tuple[str, ...]:
-    return TOOLS + V2_OPS + (V4_OPS + V4_BRIDGE if profile == PROFILE_V4 else ()) if profile in V2_PLUS else TOOLS
+def tools_of(profile: str, view: bool = False) -> Tuple[str, ...]:
+    return TOOLS + V2_OPS + (V4_OPS + V4_BRIDGE + (VIEW_OPS if view else ()) if profile == PROFILE_V4 else ()) if profile in V2_PLUS else TOOLS
 
 
 MEM_RULES_GATE: Dict[str, Any] = dict(MEM_RULES, recall="recall(question) asks the evidence gate (scope clause, " + mr.RECALL_VERSION + ") of the WHOLE memory: ANSWER (one "
@@ -311,7 +326,7 @@ class MemRun(Run):
 
     def __init__(self, store_id: str, session_no: int, run_id: str, model: str, *, store_head_before: str = GENESIS, kind_policy: str = "a",
                  contradiction_policy: str = "a", unseatable_policy: str = "a", self_question: Optional[mn.SelfQuestionFn] = None,
-                 profile: str = PROFILE_V1, versions: Optional[Dict[str, str]] = None) -> None:
+                 profile: str = PROFILE_V1, versions: Optional[Dict[str, str]] = None, view: Optional[Dict[str, Any]] = None) -> None:
         if profile not in PROFILES:
             raise Refuse("bad_policy", {"policy": "profile", "value": profile, "allowed": list(PROFILES)})
         if kind_policy not in KIND_POLICIES:
@@ -334,12 +349,18 @@ class MemRun(Run):
         self.versions: Dict[str, str] = check_versions(versions) if self.v4 else {}
         self.shape_version: str = self.versions.get("shape", ms.SHAPES_V2)
         self.ask_version: str = self.versions.get("ask", mask.ASK_VERSION)
-        self.builder = mx.IndexBuilder(self.shape_version) if self.v4 else None
+        self.flat: bool = self.versions.get("index") == INDEX_FLAT        # PUB-M8: the flat table (A3f)
+        self.builder = mx.IndexBuilder(self.shape_version, self.flat) if self.v4 else None
+        if view is not None and not self.v4:
+            raise Refuse("bad_policy", {"policy": "view", "value": "only a mem.v4 session has a view", "allowed": []})
+        self.view: Optional[Dict[str, Any]] = None if view is None else mview.check_view(view)        # PUB-M7: {version, budget, lines}, recorded in the begin row
         self.decls: List[dict] = []                    # mem.v4: the topic declarations [{session, at, topic}] of every earlier v4 session and this one (the ledger is their source)
         self.notes_profile = mn.MEM_NOTES_V4 if self.v4 else mn.MEM_NOTES_V2 if self.v3 else mn.MEM_NOTES_VERSION
         self.bridge_log: List[dict] = []                # mem.v4: the bridges [{session, at, qword, phrase}] of every earlier v4 session and this one (the ledger is their source)
         self.counts4: Dict[str, int] = {"bridges": 0}   # kept apart from counts2 so that the state of a mem.v2 / v3 session is as it was
-        self.caps = dict(caps_of(profile))
+        if self.view is not None:
+            self.counts4["views"] = 0                    # PUB-M7: only a session with `view` counts them (its state hash has the count)
+        self.caps = dict(caps_of(profile, self.view is not None))
         self.store_id, self.session_no = store_id, session_no
         self.store_head_before = store_head_before
         self.kind_policy, self.contradiction_policy, self.unseatable_policy = kind_policy, contradiction_policy, unseatable_policy
@@ -455,6 +476,10 @@ class MemRun(Run):
                 h["qwords"] = {"version": self.versions["qwords"], "sha": qw.QWORDS_SHAS[self.versions["qwords"]]}        # PUB-M6: the question-word tank (frozen)
                 h["detect"] = {"version": mdt.DETECT_VERSION}                              # PUB-M5: the detections on the crosses
                 h["ask"] = {"version": self.ask_version}                                   # PUB-M6: recall on the crosses
+                if self.flat:
+                    h["index"] = {"version": INDEX_FLAT}                                    # PUB-M8: the flat table (absent for the crosses: every stored header is as it was)
+                if self.view is not None:
+                    h["view"] = dict(self.view)                                             # PUB-M7: the model-facing view and the per-turn budget (characters of tool results a turn may be delivered)
             self._begin_header = h
         return self._begin_header
 
@@ -469,7 +494,7 @@ class MemRun(Run):
             rules = {k: (v.replace(mr.RECALL_VERSION, self.evidence_version) if k == "recall" and isinstance(v, str) else v) for k, v in rules.items()}
         res = {"ok": True, "run_id": self.run_id, "mode": "memory", "task": ops.task_view(self.task, self.caps), "rules": rules, "header": self.header()}
         if self.v2plus:
-            res["tools"] = list(tools_of(self.profile))
+            res["tools"] = list(tools_of(self.profile, self.view is not None))
         return {"actor": "model", "op": "begin", "args": {"task_id": self.task["task_id"], "model": self.model}, "result": res, "state_sha": self.mem_state_sha()}
 
     def mem_state_sha(self) -> str:
@@ -481,6 +506,8 @@ class MemRun(Run):
             mem["superseded"] = [[k, v["by"], v["session"], v["reason"]] for k, v in sorted(self.superseded.items())]
         if self.v4:                                            # the memory crosses are derived from H, the declarations and the marks: their sha is part of every row's state (a replay must rebuild them identically)
             mem["v4"] = {"index": self.builder.index().index_sha, "bridges": self.counts4["bridges"]}
+            if self.view is not None:
+                mem["v4"]["views"] = self.counts4["views"]
         return sha256_text(canonical({"loom": self.state.to_obj(), "mem": mem}))
 
     # -- one call = one body ---------------------------------------------------------------------------------------------
@@ -490,7 +517,7 @@ class MemRun(Run):
         return list(self._pending)
 
     def _executable(self, op: Any) -> bool:
-        return isinstance(op, str) and (op in TOOLS or op in FROZEN_OPS or (self.v2plus and op in V2_OPS) or (self.v4 and (op in V4_OPS or op in V4_BRIDGE)))
+        return isinstance(op, str) and (op in TOOLS or op in FROZEN_OPS or (self.v2plus and op in V2_OPS) or (self.v4 and (op in V4_OPS or op in V4_BRIDGE)) or (self.view is not None and op in VIEW_OPS))
 
     def _precheck(self, op: str) -> None:
         st = self.state
@@ -503,6 +530,8 @@ class MemRun(Run):
             raise Refuse("recall_cap", {"limit": self.caps["recalls"]})
         if op in V4_BRIDGE and self.counts4["bridges"] >= self.caps["bridges"]:
             raise Refuse("bridge_cap", {"limit": self.caps["bridges"]})
+        if op in VIEW_OPS and self.counts4["views"] >= self.caps["views"]:
+            raise Refuse("view_cap", {"limit": self.caps["views"]})
         for v2op, cnt, refusal_name in (("declare_topic", "topics", "topic_cap"), ("supersede", "supersedes", "supersede_cap"), ("report", "reports", "report_cap")):
             if op == v2op and self.counts2[cnt] >= self.caps[cnt]:
                 raise Refuse(refusal_name, {"limit": self.caps[cnt]})
@@ -516,6 +545,8 @@ class MemRun(Run):
             self.counts["recalls"] += 1
         if op in V4_BRIDGE:
             self.counts4["bridges"] += 1
+        if op in VIEW_OPS:
+            self.counts4["views"] += 1
         if op == "declare_topic":
             self.counts2["topics"] += 1
         if op == "supersede":
@@ -583,6 +614,10 @@ class MemRun(Run):
             if not self.v3:
                 raise ValueError("op %r is not a row of actor %r" % (op, actor))
             return {"actor": actor, "op": op, "args": force_args(args), "result": {"ok": True}, "state_sha": self.mem_state_sha()}
+        if actor == "harness" and op in BUDGET_OPS:            # PUB-M7: only a session with a `view` (its begin row records the budget) has it
+            if self.view is None:
+                raise ValueError("op %r is not a row of actor %r" % (op, actor))
+            return {"actor": actor, "op": op, "args": mview.budget_args(args, self.view), "result": {"ok": True}, "state_sha": self.mem_state_sha()}
         if actor == "harness" and op in CAP_OPS:               # PUB-H1: like the forced-report rows, only a mem.v3 session has it
             if not self.v3:
                 raise ValueError("op %r is not a row of actor %r" % (op, actor))
@@ -980,6 +1015,20 @@ def h_bridge(run: MemRun, a: dict, i: int) -> dict:
     return res
 
 
+def h_view(run: MemRun, a: dict, i: int) -> dict:
+    """PUB-M7 (view.v1): view(centre) -- the crosses (the table rows, for the flat table) of one centre phrase, seats with provenance, capped at `lines` lines.  Read-only; a ledger row."""
+    a = ops._args(a, {"centre": (str, True)})
+    ph = _plain_text(a["centre"], "centre", 1, 40, "bad_centre")
+    return mview.view_centre(run.builder.index(), ph, int(run.view["lines"]))
+
+
+def h_view_nest(run: MemRun, a: dict, i: int) -> dict:
+    """PUB-M7 (view.v1): view_nest(topic) -- the nest of a declared topic and the clauses that belong to it (for the flat table: the rows whose topic column is the topic), capped at `lines` lines."""
+    a = ops._args(a, {"topic": (str, True)})
+    t = _plain_text(a["topic"], "topic", 1, TOPIC_MAX_CHARS, "bad_topic")
+    return mview.view_nest(run.builder.index(), t, int(run.view["lines"]))
+
+
 def h_lookup(run: MemRun, a: dict, i: int) -> dict:
     return ops.h_lookup(run, a, i)
 
@@ -1183,7 +1232,8 @@ def _frozen_handler(op: str):
 
 
 _HANDLERS = {"write": h_write, "recall": h_recall, "lookup": h_lookup, "read_sentence": h_read_sentence, "status": h_status, "commit": h_commit,
-             "declare_topic": h_declare_topic, "supersede": h_supersede, "report": h_report, "keep_unshaped": h_keep_unshaped, "bridge": h_bridge}
+             "declare_topic": h_declare_topic, "supersede": h_supersede, "report": h_report, "keep_unshaped": h_keep_unshaped, "bridge": h_bridge,
+             "view": h_view, "view_nest": h_view_nest}
 _HANDLERS.update({op: _frozen_handler(op) for op in FROZEN_OPS})
 
 
@@ -1297,9 +1347,22 @@ def session_versions(run_dir) -> Optional[Dict[str, str]]:
     if hdr.get("mem_profile") != PROFILE_V4:
         return None
     try:
-        return {"shape": hdr["shape"]["version"], "qwords": hdr["qwords"]["version"], "ask": hdr["ask"]["version"]}
+        v = {"shape": hdr["shape"]["version"], "qwords": hdr["qwords"]["version"], "ask": hdr["ask"]["version"]}
+        if isinstance(hdr.get("index"), dict) and hdr["index"].get("version") == INDEX_FLAT:      # PUB-M8: only the flat table says so; the crosses' bundle is the three keys, as before
+            v["index"] = INDEX_FLAT
+        return v
     except (KeyError, TypeError):
         return None
+
+
+def session_view(run_dir) -> Optional[Dict[str, Any]]:
+    """PUB-M7: the `view` block ({version, budget, lines}) the begin row of a mem.v4 session ledger records; None if it has none."""
+    lines, _ = lg.read_raw_lines(run_dir)
+    if not lines:
+        return None
+    hdr = lg._parse_line(lines[0])["result"]["header"]
+    v = hdr.get("view")
+    return dict(v) if hdr.get("mem_profile") == PROFILE_V4 and isinstance(v, dict) else None
 
 
 class MemStore:
@@ -1406,7 +1469,8 @@ class MemStore:
 
     # -- sessions -----------------------------------------------------------------------------------------------------
     def begin(self, model: str, *, kind_policy: Optional[str] = None, contradiction_policy: str = "a", unseatable_policy: str = "a",
-              self_question: Any = DEFAULT, profile: str = DEFAULT_PROFILE, versions: Optional[Dict[str, str]] = None) -> "MemSession":
+              self_question: Any = DEFAULT, profile: str = DEFAULT_PROFILE, versions: Optional[Dict[str, str]] = None,
+              view: Optional[Dict[str, Any]] = None) -> "MemSession":
         """Open a memory session: the store's lock, the cheap verification, the carried state, the `begin` row (L-MEM-18).  Raises `Refuse` (store_locked,
         store_unverified, bad_model_id, policy_mismatch, ...).  The defaults are the owner's choices: OP-MEM-1 (a), OP-MEM-2 (a), OP-MEM-3 (a).
         `self_question`: DEFAULT = the gate hook `gate.evidence.v2` (MEM-c, L-MEM-29); `StubSelfQuestion()` the stub; None no hook (no SAME_QUESTION, no recall).
@@ -1433,7 +1497,7 @@ class MemStore:
                 k += 1
             run_id = "s%04d" % k
             run = MemRun(self.store_id, n_sess + 1, run_id, model, store_head_before=head_sha(head), kind_policy=policy,
-                         contradiction_policy=contradiction_policy, unseatable_policy=unseatable_policy, self_question=self_question, profile=profile, versions=versions)
+                         contradiction_policy=contradiction_policy, unseatable_policy=unseatable_policy, self_question=self_question, profile=profile, versions=versions, view=view)
             sup: Dict[int, dict] = {}
             decls: List[dict] = []
             brs: List[dict] = []
@@ -1479,7 +1543,7 @@ class MemStore:
             decls += session_nest_decls(self.sessions_dir / e["run_id"])
             brs += session_bridges(self.sessions_dir / e["run_id"])
             vs = session_versions(self.sessions_dir / e["run_id"]) or vs
-        return mx.build_index(rows, decls, sup, shape_version=(vs or V4_VERSIONS_V2)["shape"], bridges=brs)
+        return mx.build_index(rows, decls, sup, shape_version=(vs or V4_VERSIONS_V2)["shape"], bridges=brs, flat=(vs or {}).get("index") == INDEX_FLAT)
 
     def replay(self, self_question: Any = FROM_HEADER) -> "MemReplay":
         return replay_store(self.path, self_question)
@@ -1630,7 +1694,7 @@ def replay_store(path, self_question: Any = FROM_HEADER) -> MemReplay:
         if profile not in PROFILES:
             out.status, out.mismatch = "INPUTS", "mem_profile_unknown"
             return out
-        if r0.get("op") != "begin" or hdr.get("mem_version") != MEM_VERSION or hdr.get("caps") != MEM_VERSION or res0["task"].get("caps") != caps_of(profile):
+        if r0.get("op") != "begin" or hdr.get("mem_version") != MEM_VERSION or hdr.get("caps") != MEM_VERSION or res0["task"].get("caps") != caps_of(profile, isinstance(hdr.get("view"), dict)):
             out.status, out.mismatch = "INPUTS", "mem_version_unknown"
             return out
         hook = resolve_hook(self_question, hdr.get("self_question"))
@@ -1646,7 +1710,8 @@ def replay_store(path, self_question: Any = FROM_HEADER) -> MemReplay:
                 out.status, out.mismatch = "INPUTS", "versions_unknown"
                 return out
         try:
-            run = MemRun(hdr["store_id"], hdr["session_no"], run_id, model, store_head_before=before, self_question=hook, profile=profile, versions=versions, **opts)
+            run = MemRun(hdr["store_id"], hdr["session_no"], run_id, model, store_head_before=before, self_question=hook, profile=profile, versions=versions,
+                         view=(session_view(d) if profile == PROFILE_V4 else None), **opts)
             run.carry(H, S, D, B)
         except Refuse:
             out.status, out.first_diff = "DIFFERS", {"session": e["run_id"], "i": 0, "field": "carry"}
@@ -1666,7 +1731,7 @@ def replay_store(path, self_question: Any = FROM_HEADER) -> MemReplay:
         if not rows or rows[-1]["op"] != "commit" or rows[-1]["result"].get("ok") is not True:
             out.status, out.first_diff = "DIFFERS", {"session": e["run_id"], "i": len(rows) - 1, "field": "commit_missing"}
             return out
-        if run.v4 and mx.build_index(run.rows, run.decls, run.superseded, shape_version=run.shape_version, bridges=run.bridge_log).index_sha != run.builder.index().index_sha:     # the memory crosses must be rebuilt identically from H alone
+        if run.v4 and mx.build_index(run.rows, run.decls, run.superseded, shape_version=run.shape_version, bridges=run.bridge_log, flat=run.flat).index_sha != run.builder.index().index_sha:     # the memory crosses must be rebuilt identically from H alone
             out.status, out.first_diff = "DIFFERS", {"session": e["run_id"], "i": None, "field": "index"}
             return out
         H = list(run.rows)
