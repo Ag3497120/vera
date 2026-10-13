@@ -1,0 +1,72 @@
+{
+ "accepted": 960,
+ "batches": [
+  {
+   "accepted_so_far": 96,
+   "seconds_per_write": 0.0515,
+   "writes_so_far": 100
+  },
+  {
+   "accepted_so_far": 192,
+   "seconds_per_write": 0.1056,
+   "writes_so_far": 200
+  },
+  {
+   "accepted_so_far": 288,
+   "seconds_per_write": 0.1722,
+   "writes_so_far": 300
+  },
+  {
+   "accepted_so_far": 384,
+   "seconds_per_write": 0.2259,
+   "writes_so_far": 400
+  },
+  {
+   "accepted_so_far": 480,
+   "seconds_per_write": 0.3075,
+   "writes_so_far": 500
+  },
+  {
+   "accepted_so_far": 576,
+   "seconds_per_write": 0.4053,
+   "writes_so_far": 600
+  },
+  {
+   "accepted_so_far": 672,
+   "seconds_per_write": 0.538,
+   "writes_so_far": 700
+  },
+  {
+   "accepted_so_far": 768,
+   "seconds_per_write": 0.6434,
+   "writes_so_far": 800
+  },
+  {
+   "accepted_so_far": 864,
+   "seconds_per_write": 0.7759,
+   "writes_so_far": 900
+  },
+  {
+   "accepted_so_far": 960,
+   "seconds_per_write": 0.9248,
+   "writes_so_far": 1000
+  }
+ ],
+ "incremental_equals_rebuild": {
+  "assemble_equals_canonical": true,
+  "same_json": true,
+  "same_sha": true,
+  "sentences": 288,
+  "sha": "6f924da9a29338893888241ad243f87826d5d5b6bcea7d87c1a5deedf14006d6"
+ },
+ "n": 1000,
+ "per_session": 200,
+ "profile_last_20_writes": "         28293361 function calls (28218637 primitive calls) in 25.298 seconds\n\n   Ordered by: cumulative time\n   List reduced from 659 to 25 due to restriction <25>\n\n   ncalls  tottime  percall  cumtime  percall filename:lineno(function)\n       21    0.001    0.000   25.783    1.228 /home/runner/work/vera/vera/verantyx/loom/memory.py:1422(call)\n       40    0.000    0.000   24.061    0.602 /home/runner/work/vera/vera/verantyx/loom/ops.py:320(step)\n       21    0.001    0.000   17.784    0.847 /home/runner/work/vera/vera/verantyx/loom/memory.py:482(_model_step)\n       40    0.250    0.006   12.794    0.320 /home/runner/work/vera/vera/verantyx/loom/memory.py:427(mem_state_sha)\n       20    0.049    0.002   11.259    0.563 /home/runner/work/vera/vera/verantyx/loom/memory.py:563(h_write)\n       20    0.005    0.000   11.210    0.561 /home/runner/work/vera/vera/verantyx/loom/memory.py:677(_write_v4)\n       40    0.002    0.000    7.329    0.183 /home/runner/work/vera/vera/verantyx/loom/state.py:322(to_obj)\n       40    0.094    0.002    6.288    0.157 /home/runner/work/vera/vera/verantyx/loom/state.py:324(<dictcomp>)\n       19    0.000    0.000    6.276    0.330 /home/runner/work/vera/vera/verantyx/loom/memory.py:525(_outside_step)\n   233660    0.207    0.000    6.195    0.000 /home/runner/work/vera/vera/verantyx/loom/state.py:225(to_obj)\n   233660    5.988    0.000    5.988    0.000 /home/runner/work/vera/vera/verantyx/loom/state.py:227(<listcomp>)\n       19    0.000    0.000    5.489    0.289 /home/runner/work/vera/vera/verantyx/loom/memory.py:233(build_corpus)\n       19    0.023    0.001    5.322    0.280 /home/runner/work/vera/vera/verantyx/loom/corpus.py:30(__init__)\n    74970    0.067    0.000    5.249    0.000 /opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/json/__init__.py:183(dumps)\n    74970    0.058    0.000    5.158    0.000 /opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/json/encoder.py:183(encode)\n    74659    0.027    0.000    5.128    0.000 /home/runner/work/vera/vera/verantyx/loom/state.py:85(canonical)\n    74780    5.015    0.000    5.015    0.000 /opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/json/encoder.py:205(iterencode)\n       19    0.001    0.000    4.459    0.235 /home/runner/work/vera/vera/verantyx/loom/memnotes.py:372(compute_write_notes)\n       19    0.001    0.000    3.274    0.172 /home/runner/work/vera/vera/verantyx/line3/foundation.py:392(adhesions_of_space)\n       22    0.114    0.005    3.232    0.147 /home/runner/work/vera/vera/verantyx/loom/memrecall.py:128(judge_memory)\n    65702    0.617    0.000    2.984    0.000 /home/runner/work/vera/vera/verantyx/loom/evidence.py:505(judge_quote)\n       19    0.000    0.000    2.835    0.149 /home/runner/work/vera/vera/verantyx/loom/memrecall.py:265(__call__)\n       19    0.000    0.000    2.298    0.121 /home/runner/work/vera/vera/verantyx/line3/grammar.py:284(records_of_space)\n       19    0.291    0.015    2.293    0.121 /home/runner/work/vera/vera/verantyx/line3/grammar.py:290(_build)\n       40    0.002    0.000    1.719    0.043 /home/runner/work/vera/vera/verantyx/loom/ledger.py:131(append)\n\n\n",
+ "recall_seconds_every_250": [
+  0.1406,
+  0.0552,
+  0.0942,
+  0.5263
+ ],
+ "sessions": 5
+}

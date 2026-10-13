@@ -1,0 +1,3080 @@
+{
+ "meter": "experiments/line3/mem/meter_v1",
+ "not_verified": [],
+ "old_reversal": {
+  "classes": {
+   "no_pair": 7,
+   "no_plant": 168,
+   "other_plant": 123,
+   "reversal": 13
+  },
+  "firing_sentences": 310,
+  "firings": 311,
+  "other_kinds": {
+   "contradiction": 90,
+   "list_trap": 0,
+   "repeat": 33,
+   "update": 0
+  },
+  "precision": 0.042,
+  "reversal_plants": 72,
+  "reversal_plants_cited": 12,
+  "runs": 36,
+  "sentences": 1610,
+  "share_of_sentences": 0.193
+ },
+ "per_run": [
+  {
+   "agree": {
+    "REVERSAL": {},
+    "REVERSAL_X": {},
+    "SAME_QUESTION": {
+     "agree": 2,
+     "sq_only": 10
+    },
+    "SAME_SEAT": {
+     "agree": 2,
+     "unreadable": 3
+    }
+   },
+   "arm": "A2b",
+   "extra": {
+    "enumeration_arm_owner": 1,
+    "same_seat_F1": 2,
+    "same_seat_F2": 3
+   },
+   "label": "MEM-T01/blind/r01",
+   "notes": {
+    "ENUMERATION": {
+     "no_plant": 1,
+     "total": 1
+    },
+    "REVERSAL": {},
+    "REVERSAL_X": {},
+    "SAME_QUESTION": {
+     "hit": 4,
+     "no_pair": 2,
+     "no_plant": 4,
+     "other:reversal": 2,
+     "total": 12
+    },
+    "SAME_SEAT": {
+     "hit": 3,
+     "no_pair": 2,
+     "total": 5
+    },
+    "UPDATE": {}
+   },
+   "plant_coverage": {
+    "ENUMERATION": {
+     "found": 0,
+     "plants": 4
+    },
+    "REVERSAL": {
+     "found": 0,
+     "plants": 2
+    },
+    "REVERSAL_X": {
+     "found": 0,
+     "plants": 2
+    },
+    "SAME_QUESTION": {
+     "found": 2,
+     "plants": 6
+    },
+    "SAME_SEAT": {
+     "found": 3,
+     "plants": 6
+    },
+    "UPDATE": {
+     "found": 0,
+     "plants": 3
+    }
+   },
+   "planted": {
+    "contradiction": 6,
+    "list_trap": 4,
+    "repeat": 2,
+    "reversal": 2,
+    "update": 3
+   },
+   "sentences": 47,
+   "task": "MEM-T01"
+  },
+  {
+   "agree": {
+    "REVERSAL": {},
+    "REVERSAL_X": {},
+    "SAME_QUESTION": {
+     "agree": 2,
+     "sq_only": 3
+    },
+    "SAME_SEAT": {
+     "agree": 2,
+     "unreadable": 1
+    }
+   },
+   "arm": "A2b",
+   "extra": {
+    "enumeration_arm_owner": 12,
+    "same_seat_F1": 2,
+    "same_seat_F2": 1,
+    "update_first": 1
+   },
+   "label": "MEM-T01/blind/r02",
+   "notes": {
+    "ENUMERATION": {
+     "no_pair": 3,
+     "no_plant": 6,
+     "other:contradiction": 3,
+     "total": 12
+    },
+    "REVERSAL": {},
+    "REVERSAL_X": {},
+    "SAME_QUESTION": {
+     "hit": 2,
+     "no_pair": 2,
+     "no_plant": 1,
+     "total": 5
+    },
+    "SAME_SEAT": {
+     "hit": 3,
+     "total": 3
+    },
+    "UPDATE": {
+     "hit": 1,
+     "total": 1
+    }
+   },
+   "plant_coverage": {
+    "ENUMERATION": {
+     "found": 0,
+     "plants": 4
+    },
+    "REVERSAL": {
+     "found": 0,
+     "plants": 2
+    },
+    "REVERSAL_X": {
+     "found": 0,
+     "plants": 2
+    },
+    "SAME_QUESTION": {
+     "found": 2,
+     "plants": 6
+    },
+    "SAME_SEAT": {
+     "found": 3,
+     "plants": 6
+    },
+    "UPDATE": {
+     "found": 1,
+     "plants": 3
+    }
+   },
+   "planted": {
+    "contradiction": 6,
+    "list_trap": 4,
+    "repeat": 2,
+    "reversal": 2,
+    "update": 3
+   },
+   "sentences": 44,
+   "task": "MEM-T01"
+  },
+  {
+   "agree": {
+    "REVERSAL": {
+     "rev_only": 1
+    },
+    "REVERSAL_X": {},
+    "SAME_QUESTION": {
+     "agree": 4,
+     "sq_only": 10
+    },
+    "SAME_SEAT": {
+     "agree": 4
+    }
+   },
+   "arm": "A2b",
+   "extra": {
+    "enumeration_arm_owner": 12,
+    "enumeration_nest": 1,
+    "same_seat_F1": 4,
+    "update_with_prior": 1
+   },
+   "label": "MEM-T01/blind/r03",
+   "notes": {
+    "ENUMERATION": {
+     "no_pair": 3,
+     "no_plant": 4,
+     "other:contradiction": 4,
+     "other:reversal": 2,
+     "total": 13
+    },
+    "REVERSAL": {
+     "hit": 1,
+     "total": 1
+    },
+    "REVERSAL_X": {},
+    "SAME_QUESTION": {
+     "hit": 4,
+     "no_pair": 7,
+     "no_plant": 3,
+     "total": 14
+    },
+    "SAME_SEAT": {
+     "hit": 3,
+     "no_pair": 1,
+     "total": 4
+    },
+    "UPDATE": {
+     "hit": 1,
+     "total": 1
+    }
+   },
+   "plant_coverage": {
+    "ENUMERATION": {
+     "found": 0,
+     "plants": 4
+    },
+    "REVERSAL": {
+     "found": 1,
+     "plants": 2
+    },
+    "REVERSAL_X": {
+     "found": 0,
+     "plants": 2
+    },
+    "SAME_QUESTION": {
+     "found": 4,
+     "plants": 6
+    },
+    "SAME_SEAT": {
+     "found": 3,
+     "plants": 6
+    },
+    "UPDATE": {
+     "found": 1,
+     "plants": 3
+    }
+   },
+   "planted": {
+    "contradiction": 6,
+    "list_trap": 4,
+    "repeat": 2,
+    "reversal": 2,
+    "update": 3
+   },
+   "sentences": 49,
+   "task": "MEM-T01"
+  },
+  {
+   "agree": {
+    "REVERSAL": {},
+    "REVERSAL_X": {},
+    "SAME_QUESTION": {
+     "agree": 2,
+     "sq_only": 12
+    },
+    "SAME_SEAT": {
+     "agree": 2,
+     "cross_only": 3
+    }
+   },
+   "arm": "A2",
+   "extra": {
+    "enumeration_arm_owner": 4,
+    "same_seat_F1": 5
+   },
+   "label": "MEM-T01/notes/r01",
+   "notes": {
+    "ENUMERATION": {
+     "no_pair": 1,
+     "no_plant": 1,
+     "other:contradiction": 2,
+     "total": 4
+    },
+    "REVERSAL": {},
+    "REVERSAL_X": {},
+    "SAME_QUESTION": {
+     "hit": 6,
+     "no_pair": 4,
+     "no_plant": 4,
+     "total": 14
+    },
+    "SAME_SEAT": {
+     "hit": 2,
+     "no_pair": 1,
+     "other:reversal": 2,
+     "total": 5
+    },
+    "UPDATE": {}
+   },
+   "plant_coverage": {
+    "ENUMERATION": {
+     "found": 0,
+     "plants": 4
+    },
+    "REVERSAL": {
+     "found": 0,
+     "plants": 2
+    },
+    "REVERSAL_X": {
+     "found": 0,
+     "plants": 2
+    },
+    "SAME_QUESTION": {
+     "found": 4,
+     "plants": 6
+    },
+    "SAME_SEAT": {
+     "found": 2,
+     "plants": 6
+    },
+    "UPDATE": {
+     "found": 0,
+     "plants": 3
+    }
+   },
+   "planted": {
+    "contradiction": 6,
+    "list_trap": 4,
+    "repeat": 2,
+    "reversal": 2,
+    "update": 3
+   },
+   "sentences": 46,
+   "task": "MEM-T01"
+  },
+  {
+   "agree": {
+    "REVERSAL": {},
+    "REVERSAL_X": {},
+    "SAME_QUESTION": {
+     "agree": 3,
+     "sq_only": 4
+    },
+    "SAME_SEAT": {
+     "agree": 3,
+     "unreadable": 1
+    }
+   },
+   "arm": "A2",
+   "extra": {
+    "enumeration_arm_owner": 10,
+    "same_seat_F1": 3,
+    "same_seat_F2": 1
+   },
+   "label": "MEM-T01/notes/r02",
+   "notes": {
+    "ENUMERATION": {
+     "no_pair": 4,
+     "no_plant": 4,
+     "other:contradiction": 2,
+     "total": 10
+    },
+    "REVERSAL": {},
+    "REVERSAL_X": {},
+    "SAME_QUESTION": {
+     "hit": 3,
+     "no_pair": 1,
+     "no_plant": 1,
+     "other:reversal": 2,
+     "total": 7
+    },
+    "SAME_SEAT": {
+     "hit": 4,
+     "total": 4
+    },
+    "UPDATE": {}
+   },
+   "plant_coverage": {
+    "ENUMERATION": {
+     "found": 0,
+     "plants": 4
+    },
+    "REVERSAL": {
+     "found": 0,
+     "plants": 2
+    },
+    "REVERSAL_X": {
+     "found": 0,
+     "plants": 2
+    },
+    "SAME_QUESTION": {
+     "found": 3,
+     "plants": 6
+    },
+    "SAME_SEAT": {
+     "found": 4,
+     "plants": 6
+    },
+    "UPDATE": {
+     "found": 0,
+     "plants": 3
+    }
+   },
+   "planted": {
+    "contradiction": 6,
+    "list_trap": 4,
+    "repeat": 2,
+    "reversal": 2,
+    "update": 3
+   },
+   "sentences": 46,
+   "task": "MEM-T01"
+  },
+  {
+   "agree": {
+    "REVERSAL": {
+     "rev_only": 1
+    },
+    "REVERSAL_X": {},
+    "SAME_QUESTION": {
+     "agree": 1,
+     "sq_only": 4
+    },
+    "SAME_SEAT": {
+     "agree": 1,
+     "unreadable": 2
+    }
+   },
+   "arm": "A2",
+   "extra": {
+    "enumeration_arm_owner": 12,
+    "same_seat_F1": 1,
+    "same_seat_F2": 2,
+    "update_first": 1
+   },
+   "label": "MEM-T01/notes/r03",
+   "notes": {
+    "ENUMERATION": {
+     "no_pair": 2,
+     "no_plant": 6,
+     "other:contradiction": 3,
+     "other:reversal": 1,
+     "total": 12
+    },
+    "REVERSAL": {
+     "hit": 1,
+     "total": 1
+    },
+    "REVERSAL_X": {},
+    "SAME_QUESTION": {
+     "hit": 1,
+     "no_plant": 3,
+     "other:reversal": 1,
+     "total": 5
+    },
+    "SAME_SEAT": {
+     "hit": 2,
+     "no_pair": 1,
+     "total": 3
+    },
+    "UPDATE": {
+     "hit": 1,
+     "total": 1
+    }
+   },
+   "plant_coverage": {
+    "ENUMERATION": {
+     "found": 0,
+     "plants": 4
+    },
+    "REVERSAL": {
+     "found": 1,
+     "plants": 2
+    },
+    "REVERSAL_X": {
+     "found": 0,
+     "plants": 2
+    },
+    "SAME_QUESTION": {
+     "found": 1,
+     "plants": 6
+    },
+    "SAME_SEAT": {
+     "found": 2,
+     "plants": 6
+    },
+    "UPDATE": {
+     "found": 1,
+     "plants": 3
+    }
+   },
+   "planted": {
+    "contradiction": 6,
+    "list_trap": 4,
+    "repeat": 2,
+    "reversal": 2,
+    "update": 3
+   },
+   "sentences": 50,
+   "task": "MEM-T01"
+  },
+  {
+   "agree": {
+    "REVERSAL": {},
+    "REVERSAL_X": {
+     "cross_only": 1
+    },
+    "SAME_QUESTION": {
+     "agree": 4
+    },
+    "SAME_SEAT": {
+     "agree": 4
+    }
+   },
+   "arm": "A2b",
+   "extra": {
+    "enumeration_arm_owner": 9,
+    "reversal_x_key_agrees": 1,
+    "reversal_x_value": 1,
+    "same_seat_F1": 4
+   },
+   "label": "MEM-T02/blind/r01",
+   "notes": {
+    "ENUMERATION": {
+     "no_pair": 5,
+     "no_plant": 1,
+     "other:contradiction": 3,
+     "total": 9
+    },
+    "REVERSAL": {},
+    "REVERSAL_X": {
+     "hit": 1,
+     "total": 1
+    },
+    "SAME_QUESTION": {
+     "hit": 4,
+     "total": 4
+    },
+    "SAME_SEAT": {
+     "hit": 4,
+     "total": 4
+    },
+    "UPDATE": {}
+   },
+   "plant_coverage": {
+    "ENUMERATION": {
+     "found": 0,
+     "plants": 4
+    },
+    "REVERSAL": {
+     "found": 0,
+     "plants": 2
+    },
+    "REVERSAL_X": {
+     "found": 1,
+     "plants": 2
+    },
+    "SAME_QUESTION": {
+     "found": 4,
+     "plants": 6
+    },
+    "SAME_SEAT": {
+     "found": 4,
+     "plants": 6
+    },
+    "UPDATE": {
+     "found": 0,
+     "plants": 3
+    }
+   },
+   "planted": {
+    "contradiction": 6,
+    "list_trap": 4,
+    "repeat": 2,
+    "reversal": 2,
+    "update": 3
+   },
+   "sentences": 55,
+   "task": "MEM-T02"
+  },
+  {
+   "agree": {
+    "REVERSAL": {},
+    "REVERSAL_X": {},
+    "SAME_QUESTION": {
+     "agree": 2,
+     "sq_only": 1
+    },
+    "SAME_SEAT": {
+     "agree": 2,
+     "unreadable": 1
+    }
+   },
+   "arm": "A2b",
+   "extra": {
+    "enumeration_arm_owner": 11,
+    "same_seat_F1": 3
+   },
+   "label": "MEM-T02/blind/r02",
+   "notes": {
+    "ENUMERATION": {
+     "no_pair": 6,
+     "no_plant": 2,
+     "other:contradiction": 3,
+     "total": 11
+    },
+    "REVERSAL": {},
+    "REVERSAL_X": {},
+    "SAME_QUESTION": {
+     "hit": 3,
+     "total": 3
+    },
+    "SAME_SEAT": {
+     "hit": 3,
+     "total": 3
+    },
+    "UPDATE": {}
+   },
+   "plant_coverage": {
+    "ENUMERATION": {
+     "found": 0,
+     "plants": 4
+    },
+    "REVERSAL": {
+     "found": 0,
+     "plants": 2
+    },
+    "REVERSAL_X": {
+     "found": 0,
+     "plants": 2
+    },
+    "SAME_QUESTION": {
+     "found": 3,
+     "plants": 6
+    },
+    "SAME_SEAT": {
+     "found": 3,
+     "plants": 6
+    },
+    "UPDATE": {
+     "found": 0,
+     "plants": 3
+    }
+   },
+   "planted": {
+    "contradiction": 6,
+    "list_trap": 4,
+    "repeat": 2,
+    "reversal": 2,
+    "update": 3
+   },
+   "sentences": 51,
+   "task": "MEM-T02"
+  },
+  {
+   "agree": {
+    "REVERSAL": {},
+    "REVERSAL_X": {},
+    "SAME_QUESTION": {},
+    "SAME_SEAT": {
+     "unreadable": 4
+    }
+   },
+   "arm": "A2b",
+   "extra": {
+    "enumeration_arm_owner": 13,
+    "same_seat_F1": 4
+   },
+   "label": "MEM-T02/blind/r03",
+   "notes": {
+    "ENUMERATION": {
+     "no_pair": 5,
+     "no_plant": 3,
+     "other:contradiction": 5,
+     "total": 13
+    },
+    "REVERSAL": {},
+    "REVERSAL_X": {},
+    "SAME_QUESTION": {},
+    "SAME_SEAT": {
+     "hit": 3,
+     "no_pair": 1,
+     "total": 4
+    },
+    "UPDATE": {}
+   },
+   "plant_coverage": {
+    "ENUMERATION": {
+     "found": 0,
+     "plants": 4
+    },
+    "REVERSAL": {
+     "found": 0,
+     "plants": 2
+    },
+    "REVERSAL_X": {
+     "found": 0,
+     "plants": 2
+    },
+    "SAME_QUESTION": {
+     "found": 0,
+     "plants": 6
+    },
+    "SAME_SEAT": {
+     "found": 3,
+     "plants": 6
+    },
+    "UPDATE": {
+     "found": 0,
+     "plants": 3
+    }
+   },
+   "planted": {
+    "contradiction": 6,
+    "list_trap": 4,
+    "repeat": 2,
+    "reversal": 2,
+    "update": 3
+   },
+   "sentences": 52,
+   "task": "MEM-T02"
+  },
+  {
+   "agree": {
+    "REVERSAL": {},
+    "REVERSAL_X": {},
+    "SAME_QUESTION": {
+     "agree": 3,
+     "sq_only": 1
+    },
+    "SAME_SEAT": {
+     "agree": 3,
+     "unreadable": 1
+    }
+   },
+   "arm": "A2",
+   "extra": {
+    "enumeration_arm_owner": 12,
+    "same_seat_F1": 3,
+    "same_seat_F2": 1
+   },
+   "label": "MEM-T02/notes/r01",
+   "notes": {
+    "ENUMERATION": {
+     "no_pair": 6,
+     "no_plant": 3,
+     "other:contradiction": 3,
+     "total": 12
+    },
+    "REVERSAL": {},
+    "REVERSAL_X": {},
+    "SAME_QUESTION": {
+     "hit": 3,
+     "no_pair": 1,
+     "total": 4
+    },
+    "SAME_SEAT": {
+     "hit": 3,
+     "no_pair": 1,
+     "total": 4
+    },
+    "UPDATE": {}
+   },
+   "plant_coverage": {
+    "ENUMERATION": {
+     "found": 0,
+     "plants": 4
+    },
+    "REVERSAL": {
+     "found": 0,
+     "plants": 2
+    },
+    "REVERSAL_X": {
+     "found": 0,
+     "plants": 2
+    },
+    "SAME_QUESTION": {
+     "found": 3,
+     "plants": 6
+    },
+    "SAME_SEAT": {
+     "found": 3,
+     "plants": 6
+    },
+    "UPDATE": {
+     "found": 0,
+     "plants": 3
+    }
+   },
+   "planted": {
+    "contradiction": 6,
+    "list_trap": 4,
+    "repeat": 2,
+    "reversal": 2,
+    "update": 3
+   },
+   "sentences": 56,
+   "task": "MEM-T02"
+  },
+  {
+   "agree": {
+    "REVERSAL": {
+     "rev_only": 1
+    },
+    "REVERSAL_X": {},
+    "SAME_QUESTION": {
+     "agree": 1
+    },
+    "SAME_SEAT": {
+     "agree": 1,
+     "unreadable": 2
+    }
+   },
+   "arm": "A2",
+   "extra": {
+    "enumeration_arm_owner": 12,
+    "same_seat_F1": 2,
+    "same_seat_F2": 1
+   },
+   "label": "MEM-T02/notes/r02",
+   "notes": {
+    "ENUMERATION": {
+     "no_pair": 6,
+     "no_plant": 2,
+     "other:contradiction": 3,
+     "other:reversal": 1,
+     "total": 12
+    },
+    "REVERSAL": {
+     "hit": 1,
+     "total": 1
+    },
+    "REVERSAL_X": {},
+    "SAME_QUESTION": {
+     "no_pair": 1,
+     "total": 1
+    },
+    "SAME_SEAT": {
+     "hit": 2,
+     "no_pair": 1,
+     "total": 3
+    },
+    "UPDATE": {}
+   },
+   "plant_coverage": {
+    "ENUMERATION": {
+     "found": 0,
+     "plants": 4
+    },
+    "REVERSAL": {
+     "found": 1,
+     "plants": 2
+    },
+    "REVERSAL_X": {
+     "found": 0,
+     "plants": 2
+    },
+    "SAME_QUESTION": {
+     "found": 0,
+     "plants": 6
+    },
+    "SAME_SEAT": {
+     "found": 2,
+     "plants": 6
+    },
+    "UPDATE": {
+     "found": 0,
+     "plants": 3
+    }
+   },
+   "planted": {
+    "contradiction": 6,
+    "list_trap": 4,
+    "repeat": 2,
+    "reversal": 2,
+    "update": 3
+   },
+   "sentences": 54,
+   "task": "MEM-T02"
+  },
+  {
+   "agree": {
+    "REVERSAL": {},
+    "REVERSAL_X": {},
+    "SAME_QUESTION": {
+     "agree": 2
+    },
+    "SAME_SEAT": {
+     "agree": 2,
+     "unreadable": 2
+    }
+   },
+   "arm": "A2",
+   "extra": {
+    "enumeration_arm_owner": 11,
+    "same_seat_F1": 4
+   },
+   "label": "MEM-T02/notes/r03",
+   "notes": {
+    "ENUMERATION": {
+     "no_pair": 5,
+     "no_plant": 2,
+     "other:contradiction": 4,
+     "total": 11
+    },
+    "REVERSAL": {},
+    "REVERSAL_X": {},
+    "SAME_QUESTION": {
+     "hit": 2,
+     "total": 2
+    },
+    "SAME_SEAT": {
+     "hit": 3,
+     "no_pair": 1,
+     "total": 4
+    },
+    "UPDATE": {}
+   },
+   "plant_coverage": {
+    "ENUMERATION": {
+     "found": 0,
+     "plants": 4
+    },
+    "REVERSAL": {
+     "found": 0,
+     "plants": 2
+    },
+    "REVERSAL_X": {
+     "found": 0,
+     "plants": 2
+    },
+    "SAME_QUESTION": {
+     "found": 2,
+     "plants": 6
+    },
+    "SAME_SEAT": {
+     "found": 3,
+     "plants": 6
+    },
+    "UPDATE": {
+     "found": 0,
+     "plants": 3
+    }
+   },
+   "planted": {
+    "contradiction": 6,
+    "list_trap": 4,
+    "repeat": 2,
+    "reversal": 2,
+    "update": 3
+   },
+   "sentences": 54,
+   "task": "MEM-T02"
+  },
+  {
+   "agree": {
+    "REVERSAL": {},
+    "REVERSAL_X": {},
+    "SAME_QUESTION": {
+     "agree": 2,
+     "sq_only": 3
+    },
+    "SAME_SEAT": {
+     "agree": 2,
+     "unreadable": 3
+    }
+   },
+   "arm": "A2b",
+   "extra": {
+    "enumeration_arm_owner": 8,
+    "same_seat_F1": 2,
+    "same_seat_F2": 3
+   },
+   "label": "MEM-T03/blind/r01",
+   "notes": {
+    "ENUMERATION": {
+     "no_pair": 2,
+     "no_plant": 3,
+     "other:contradiction": 3,
+     "total": 8
+    },
+    "REVERSAL": {},
+    "REVERSAL_X": {},
+    "SAME_QUESTION": {
+     "hit": 2,
+     "no_pair": 2,
+     "no_plant": 1,
+     "total": 5
+    },
+    "SAME_SEAT": {
+     "hit": 4,
+     "no_pair": 1,
+     "total": 5
+    },
+    "UPDATE": {}
+   },
+   "plant_coverage": {
+    "ENUMERATION": {
+     "found": 0,
+     "plants": 4
+    },
+    "REVERSAL": {
+     "found": 0,
+     "plants": 2
+    },
+    "REVERSAL_X": {
+     "found": 0,
+     "plants": 2
+    },
+    "SAME_QUESTION": {
+     "found": 2,
+     "plants": 6
+    },
+    "SAME_SEAT": {
+     "found": 4,
+     "plants": 6
+    },
+    "UPDATE": {
+     "found": 0,
+     "plants": 3
+    }
+   },
+   "planted": {
+    "contradiction": 6,
+    "list_trap": 4,
+    "repeat": 2,
+    "reversal": 2,
+    "update": 3
+   },
+   "sentences": 49,
+   "task": "MEM-T03"
+  },
+  {
+   "agree": {
+    "REVERSAL": {},
+    "REVERSAL_X": {},
+    "SAME_QUESTION": {
+     "agree": 2,
+     "sq_only": 4
+    },
+    "SAME_SEAT": {
+     "agree": 2,
+     "unreadable": 2
+    }
+   },
+   "arm": "A2b",
+   "extra": {
+    "enumeration_arm_owner": 8,
+    "same_seat_F1": 2,
+    "same_seat_F2": 2
+   },
+   "label": "MEM-T03/blind/r02",
+   "notes": {
+    "ENUMERATION": {
+     "no_pair": 2,
+     "no_plant": 3,
+     "other:contradiction": 3,
+     "total": 8
+    },
+    "REVERSAL": {},
+    "REVERSAL_X": {},
+    "SAME_QUESTION": {
+     "hit": 2,
+     "no_pair": 2,
+     "no_plant": 1,
+     "other:reversal": 1,
+     "total": 6
+    },
+    "SAME_SEAT": {
+     "hit": 4,
+     "total": 4
+    },
+    "UPDATE": {}
+   },
+   "plant_coverage": {
+    "ENUMERATION": {
+     "found": 0,
+     "plants": 4
+    },
+    "REVERSAL": {
+     "found": 0,
+     "plants": 2
+    },
+    "REVERSAL_X": {
+     "found": 0,
+     "plants": 2
+    },
+    "SAME_QUESTION": {
+     "found": 2,
+     "plants": 6
+    },
+    "SAME_SEAT": {
+     "found": 4,
+     "plants": 6
+    },
+    "UPDATE": {
+     "found": 0,
+     "plants": 3
+    }
+   },
+   "planted": {
+    "contradiction": 6,
+    "list_trap": 4,
+    "repeat": 2,
+    "reversal": 2,
+    "update": 3
+   },
+   "sentences": 51,
+   "task": "MEM-T03"
+  },
+  {
+   "agree": {
+    "REVERSAL": {
+     "rev_only": 2
+    },
+    "REVERSAL_X": {},
+    "SAME_QUESTION": {
+     "agree": 4,
+     "sq_only": 5
+    },
+    "SAME_SEAT": {
+     "agree": 4,
+     "unreadable": 1
+    }
+   },
+   "arm": "A2b",
+   "extra": {
+    "enumeration_arm_owner": 7,
+    "same_seat_F1": 4,
+    "same_seat_F2": 1
+   },
+   "label": "MEM-T03/blind/r03",
+   "notes": {
+    "ENUMERATION": {
+     "no_pair": 2,
+     "no_plant": 3,
+     "other:contradiction": 2,
+     "total": 7
+    },
+    "REVERSAL": {
+     "hit": 1,
+     "no_plant": 1,
+     "total": 2
+    },
+    "REVERSAL_X": {},
+    "SAME_QUESTION": {
+     "hit": 5,
+     "no_pair": 3,
+     "no_plant": 1,
+     "total": 9
+    },
+    "SAME_SEAT": {
+     "hit": 5,
+     "total": 5
+    },
+    "UPDATE": {}
+   },
+   "plant_coverage": {
+    "ENUMERATION": {
+     "found": 0,
+     "plants": 4
+    },
+    "REVERSAL": {
+     "found": 1,
+     "plants": 2
+    },
+    "REVERSAL_X": {
+     "found": 0,
+     "plants": 2
+    },
+    "SAME_QUESTION": {
+     "found": 4,
+     "plants": 6
+    },
+    "SAME_SEAT": {
+     "found": 5,
+     "plants": 6
+    },
+    "UPDATE": {
+     "found": 0,
+     "plants": 3
+    }
+   },
+   "planted": {
+    "contradiction": 6,
+    "list_trap": 4,
+    "repeat": 2,
+    "reversal": 2,
+    "update": 3
+   },
+   "sentences": 46,
+   "task": "MEM-T03"
+  },
+  {
+   "agree": {
+    "REVERSAL": {},
+    "REVERSAL_X": {},
+    "SAME_QUESTION": {
+     "agree": 3,
+     "sq_only": 2
+    },
+    "SAME_SEAT": {
+     "agree": 3,
+     "unreadable": 3
+    }
+   },
+   "arm": "A2",
+   "extra": {
+    "enumeration_arm_owner": 11,
+    "same_seat_F1": 3,
+    "same_seat_F2": 3
+   },
+   "label": "MEM-T03/notes/r01",
+   "notes": {
+    "ENUMERATION": {
+     "no_pair": 2,
+     "no_plant": 6,
+     "other:contradiction": 3,
+     "total": 11
+    },
+    "REVERSAL": {},
+    "REVERSAL_X": {},
+    "SAME_QUESTION": {
+     "hit": 3,
+     "no_pair": 2,
+     "total": 5
+    },
+    "SAME_SEAT": {
+     "hit": 5,
+     "no_pair": 1,
+     "total": 6
+    },
+    "UPDATE": {}
+   },
+   "plant_coverage": {
+    "ENUMERATION": {
+     "found": 0,
+     "plants": 4
+    },
+    "REVERSAL": {
+     "found": 0,
+     "plants": 2
+    },
+    "REVERSAL_X": {
+     "found": 0,
+     "plants": 2
+    },
+    "SAME_QUESTION": {
+     "found": 3,
+     "plants": 6
+    },
+    "SAME_SEAT": {
+     "found": 5,
+     "plants": 6
+    },
+    "UPDATE": {
+     "found": 0,
+     "plants": 3
+    }
+   },
+   "planted": {
+    "contradiction": 6,
+    "list_trap": 4,
+    "repeat": 2,
+    "reversal": 2,
+    "update": 3
+   },
+   "sentences": 53,
+   "task": "MEM-T03"
+  },
+  {
+   "agree": {
+    "REVERSAL": {},
+    "REVERSAL_X": {},
+    "SAME_QUESTION": {
+     "agree": 3,
+     "sq_only": 2
+    },
+    "SAME_SEAT": {
+     "agree": 3,
+     "unreadable": 3
+    }
+   },
+   "arm": "A2",
+   "extra": {
+    "enumeration_arm_owner": 11,
+    "same_seat_F1": 3,
+    "same_seat_F2": 3,
+    "update_first": 1
+   },
+   "label": "MEM-T03/notes/r02",
+   "notes": {
+    "ENUMERATION": {
+     "no_pair": 2,
+     "no_plant": 6,
+     "other:contradiction": 3,
+     "total": 11
+    },
+    "REVERSAL": {},
+    "REVERSAL_X": {},
+    "SAME_QUESTION": {
+     "hit": 3,
+     "no_pair": 2,
+     "total": 5
+    },
+    "SAME_SEAT": {
+     "hit": 5,
+     "no_pair": 1,
+     "total": 6
+    },
+    "UPDATE": {
+     "hit": 1,
+     "total": 1
+    }
+   },
+   "plant_coverage": {
+    "ENUMERATION": {
+     "found": 0,
+     "plants": 4
+    },
+    "REVERSAL": {
+     "found": 0,
+     "plants": 2
+    },
+    "REVERSAL_X": {
+     "found": 0,
+     "plants": 2
+    },
+    "SAME_QUESTION": {
+     "found": 3,
+     "plants": 6
+    },
+    "SAME_SEAT": {
+     "found": 5,
+     "plants": 6
+    },
+    "UPDATE": {
+     "found": 1,
+     "plants": 3
+    }
+   },
+   "planted": {
+    "contradiction": 6,
+    "list_trap": 4,
+    "repeat": 2,
+    "reversal": 2,
+    "update": 3
+   },
+   "sentences": 54,
+   "task": "MEM-T03"
+  },
+  {
+   "agree": {
+    "REVERSAL": {
+     "rev_only": 2
+    },
+    "REVERSAL_X": {},
+    "SAME_QUESTION": {
+     "agree": 3,
+     "sq_only": 2
+    },
+    "SAME_SEAT": {
+     "agree": 3,
+     "unreadable": 2
+    }
+   },
+   "arm": "A2",
+   "extra": {
+    "enumeration_arm_owner": 12,
+    "same_seat_F1": 3,
+    "same_seat_F2": 2,
+    "update_with_prior": 1
+   },
+   "label": "MEM-T03/notes/r03",
+   "notes": {
+    "ENUMERATION": {
+     "no_pair": 2,
+     "no_plant": 4,
+     "other:contradiction": 4,
+     "other:reversal": 2,
+     "total": 12
+    },
+    "REVERSAL": {
+     "hit": 2,
+     "total": 2
+    },
+    "REVERSAL_X": {},
+    "SAME_QUESTION": {
+     "hit": 3,
+     "no_pair": 2,
+     "total": 5
+    },
+    "SAME_SEAT": {
+     "hit": 5,
+     "total": 5
+    },
+    "UPDATE": {
+     "hit": 1,
+     "total": 1
+    }
+   },
+   "plant_coverage": {
+    "ENUMERATION": {
+     "found": 0,
+     "plants": 4
+    },
+    "REVERSAL": {
+     "found": 2,
+     "plants": 2
+    },
+    "REVERSAL_X": {
+     "found": 0,
+     "plants": 2
+    },
+    "SAME_QUESTION": {
+     "found": 3,
+     "plants": 6
+    },
+    "SAME_SEAT": {
+     "found": 5,
+     "plants": 6
+    },
+    "UPDATE": {
+     "found": 1,
+     "plants": 3
+    }
+   },
+   "planted": {
+    "contradiction": 6,
+    "list_trap": 4,
+    "repeat": 2,
+    "reversal": 2,
+    "update": 3
+   },
+   "sentences": 51,
+   "task": "MEM-T03"
+  },
+  {
+   "agree": {
+    "REVERSAL": {
+     "agree": 1,
+     "rev_only": 2
+    },
+    "REVERSAL_X": {
+     "agree": 1,
+     "cross_only": 1
+    },
+    "SAME_QUESTION": {
+     "agree": 3,
+     "sq_only": 6
+    },
+    "SAME_SEAT": {
+     "agree": 3,
+     "unreadable": 2
+    }
+   },
+   "arm": "A2b",
+   "extra": {
+    "enumeration_arm_owner": 15,
+    "reversal_x_key_agrees": 1,
+    "reversal_x_key_disagrees": 1,
+    "reversal_x_の": 2,
+    "same_seat_F1": 3,
+    "same_seat_F2": 2
+   },
+   "label": "MEM-T04/blind/r01",
+   "notes": {
+    "ENUMERATION": {
+     "no_pair": 7,
+     "no_plant": 4,
+     "other:contradiction": 4,
+     "total": 15
+    },
+    "REVERSAL": {
+     "no_pair": 1,
+     "other:contradiction": 2,
+     "total": 3
+    },
+    "REVERSAL_X": {
+     "no_pair": 1,
+     "other:contradiction": 1,
+     "total": 2
+    },
+    "SAME_QUESTION": {
+     "hit": 3,
+     "no_pair": 6,
+     "total": 9
+    },
+    "SAME_SEAT": {
+     "hit": 5,
+     "total": 5
+    },
+    "UPDATE": {}
+   },
+   "plant_coverage": {
+    "ENUMERATION": {
+     "found": 0,
+     "plants": 4
+    },
+    "REVERSAL": {
+     "found": 0,
+     "plants": 2
+    },
+    "REVERSAL_X": {
+     "found": 0,
+     "plants": 2
+    },
+    "SAME_QUESTION": {
+     "found": 3,
+     "plants": 6
+    },
+    "SAME_SEAT": {
+     "found": 5,
+     "plants": 6
+    },
+    "UPDATE": {
+     "found": 0,
+     "plants": 3
+    }
+   },
+   "planted": {
+    "contradiction": 6,
+    "list_trap": 4,
+    "repeat": 2,
+    "reversal": 2,
+    "update": 3
+   },
+   "sentences": 86,
+   "task": "MEM-T04"
+  },
+  {
+   "agree": {
+    "REVERSAL": {
+     "rev_only": 1
+    },
+    "REVERSAL_X": {},
+    "SAME_QUESTION": {
+     "agree": 5,
+     "sq_only": 9
+    },
+    "SAME_SEAT": {
+     "agree": 5,
+     "unavailable": 1,
+     "unreadable": 2
+    }
+   },
+   "arm": "A2b",
+   "extra": {
+    "enumeration_arm_owner": 20,
+    "same_seat_F1": 6,
+    "same_seat_F2": 2,
+    "update_first": 1
+   },
+   "label": "MEM-T04/blind/r02",
+   "notes": {
+    "ENUMERATION": {
+     "no_pair": 8,
+     "no_plant": 6,
+     "other:contradiction": 6,
+     "total": 20
+    },
+    "REVERSAL": {
+     "other:contradiction": 1,
+     "total": 1
+    },
+    "REVERSAL_X": {},
+    "SAME_QUESTION": {
+     "hit": 7,
+     "no_pair": 7,
+     "total": 14
+    },
+    "SAME_SEAT": {
+     "hit": 7,
+     "no_pair": 1,
+     "total": 8
+    },
+    "UPDATE": {
+     "hit": 1,
+     "total": 1
+    }
+   },
+   "plant_coverage": {
+    "ENUMERATION": {
+     "found": 0,
+     "plants": 4
+    },
+    "REVERSAL": {
+     "found": 0,
+     "plants": 2
+    },
+    "REVERSAL_X": {
+     "found": 0,
+     "plants": 2
+    },
+    "SAME_QUESTION": {
+     "found": 4,
+     "plants": 6
+    },
+    "SAME_SEAT": {
+     "found": 5,
+     "plants": 6
+    },
+    "UPDATE": {
+     "found": 1,
+     "plants": 3
+    }
+   },
+   "planted": {
+    "contradiction": 6,
+    "list_trap": 4,
+    "repeat": 2,
+    "reversal": 2,
+    "update": 3
+   },
+   "sentences": 88,
+   "task": "MEM-T04"
+  },
+  {
+   "agree": {
+    "REVERSAL": {
+     "rev_only": 1
+    },
+    "REVERSAL_X": {},
+    "SAME_QUESTION": {
+     "agree": 6,
+     "sq_only": 8
+    },
+    "SAME_SEAT": {
+     "agree": 6,
+     "unreadable": 1
+    }
+   },
+   "arm": "A2b",
+   "extra": {
+    "enumeration_arm_owner": 20,
+    "same_seat_F1": 6,
+    "same_seat_F2": 1,
+    "update_first": 1
+   },
+   "label": "MEM-T04/blind/r03",
+   "notes": {
+    "ENUMERATION": {
+     "no_pair": 8,
+     "no_plant": 6,
+     "other:contradiction": 6,
+     "total": 20
+    },
+    "REVERSAL": {
+     "other:contradiction": 1,
+     "total": 1
+    },
+    "REVERSAL_X": {},
+    "SAME_QUESTION": {
+     "hit": 7,
+     "no_pair": 7,
+     "total": 14
+    },
+    "SAME_SEAT": {
+     "hit": 6,
+     "no_pair": 1,
+     "total": 7
+    },
+    "UPDATE": {
+     "hit": 1,
+     "total": 1
+    }
+   },
+   "plant_coverage": {
+    "ENUMERATION": {
+     "found": 0,
+     "plants": 4
+    },
+    "REVERSAL": {
+     "found": 0,
+     "plants": 2
+    },
+    "REVERSAL_X": {
+     "found": 0,
+     "plants": 2
+    },
+    "SAME_QUESTION": {
+     "found": 4,
+     "plants": 6
+    },
+    "SAME_SEAT": {
+     "found": 5,
+     "plants": 6
+    },
+    "UPDATE": {
+     "found": 1,
+     "plants": 3
+    }
+   },
+   "planted": {
+    "contradiction": 6,
+    "list_trap": 4,
+    "repeat": 2,
+    "reversal": 2,
+    "update": 3
+   },
+   "sentences": 68,
+   "task": "MEM-T04"
+  },
+  {
+   "agree": {
+    "REVERSAL": {},
+    "REVERSAL_X": {},
+    "SAME_QUESTION": {
+     "agree": 3,
+     "sq_only": 9
+    },
+    "SAME_SEAT": {
+     "agree": 3,
+     "unreadable": 1
+    }
+   },
+   "arm": "A2",
+   "extra": {
+    "enumeration_arm_owner": 23,
+    "same_seat_F1": 3,
+    "same_seat_F2": 1,
+    "update_first": 2,
+    "update_with_prior": 1
+   },
+   "label": "MEM-T04/notes/r01",
+   "notes": {
+    "ENUMERATION": {
+     "no_pair": 9,
+     "no_plant": 6,
+     "other:contradiction": 8,
+     "total": 23
+    },
+    "REVERSAL": {},
+    "REVERSAL_X": {},
+    "SAME_QUESTION": {
+     "hit": 4,
+     "no_pair": 8,
+     "total": 12
+    },
+    "SAME_SEAT": {
+     "hit": 3,
+     "no_pair": 1,
+     "total": 4
+    },
+    "UPDATE": {
+     "hit": 3,
+     "total": 3
+    }
+   },
+   "plant_coverage": {
+    "ENUMERATION": {
+     "found": 0,
+     "plants": 4
+    },
+    "REVERSAL": {
+     "found": 0,
+     "plants": 2
+    },
+    "REVERSAL_X": {
+     "found": 0,
+     "plants": 2
+    },
+    "SAME_QUESTION": {
+     "found": 3,
+     "plants": 6
+    },
+    "SAME_SEAT": {
+     "found": 2,
+     "plants": 6
+    },
+    "UPDATE": {
+     "found": 3,
+     "plants": 3
+    }
+   },
+   "planted": {
+    "contradiction": 6,
+    "list_trap": 4,
+    "repeat": 2,
+    "reversal": 2,
+    "update": 3
+   },
+   "sentences": 69,
+   "task": "MEM-T04"
+  },
+  {
+   "agree": {
+    "REVERSAL": {
+     "rev_only": 2
+    },
+    "REVERSAL_X": {},
+    "SAME_QUESTION": {
+     "agree": 1,
+     "sq_only": 10
+    },
+    "SAME_SEAT": {
+     "agree": 1,
+     "unavailable": 1,
+     "unreadable": 2
+    }
+   },
+   "arm": "A2",
+   "extra": {
+    "enumeration_arm_owner": 22,
+    "same_seat_F1": 2,
+    "same_seat_F2": 2,
+    "update_first": 1
+   },
+   "label": "MEM-T04/notes/r02",
+   "notes": {
+    "ENUMERATION": {
+     "no_pair": 11,
+     "no_plant": 5,
+     "other:contradiction": 6,
+     "total": 22
+    },
+    "REVERSAL": {
+     "no_pair": 1,
+     "other:contradiction": 1,
+     "total": 2
+    },
+    "REVERSAL_X": {},
+    "SAME_QUESTION": {
+     "hit": 3,
+     "no_pair": 8,
+     "total": 11
+    },
+    "SAME_SEAT": {
+     "hit": 4,
+     "total": 4
+    },
+    "UPDATE": {
+     "hit": 1,
+     "total": 1
+    }
+   },
+   "plant_coverage": {
+    "ENUMERATION": {
+     "found": 0,
+     "plants": 4
+    },
+    "REVERSAL": {
+     "found": 0,
+     "plants": 2
+    },
+    "REVERSAL_X": {
+     "found": 0,
+     "plants": 2
+    },
+    "SAME_QUESTION": {
+     "found": 2,
+     "plants": 6
+    },
+    "SAME_SEAT": {
+     "found": 3,
+     "plants": 6
+    },
+    "UPDATE": {
+     "found": 1,
+     "plants": 3
+    }
+   },
+   "planted": {
+    "contradiction": 6,
+    "list_trap": 4,
+    "repeat": 2,
+    "reversal": 2,
+    "update": 3
+   },
+   "sentences": 81,
+   "task": "MEM-T04"
+  },
+  {
+   "agree": {
+    "REVERSAL": {},
+    "REVERSAL_X": {},
+    "SAME_QUESTION": {
+     "agree": 3,
+     "sq_only": 6
+    },
+    "SAME_SEAT": {
+     "agree": 3,
+     "unavailable": 1,
+     "unreadable": 3
+    }
+   },
+   "arm": "A2",
+   "extra": {
+    "enumeration_arm_owner": 21,
+    "same_seat_F1": 4,
+    "same_seat_F2": 3
+   },
+   "label": "MEM-T04/notes/r03",
+   "notes": {
+    "ENUMERATION": {
+     "no_pair": 11,
+     "no_plant": 5,
+     "other:contradiction": 5,
+     "total": 21
+    },
+    "REVERSAL": {},
+    "REVERSAL_X": {},
+    "SAME_QUESTION": {
+     "hit": 4,
+     "no_pair": 5,
+     "total": 9
+    },
+    "SAME_SEAT": {
+     "hit": 6,
+     "no_pair": 1,
+     "total": 7
+    },
+    "UPDATE": {}
+   },
+   "plant_coverage": {
+    "ENUMERATION": {
+     "found": 0,
+     "plants": 4
+    },
+    "REVERSAL": {
+     "found": 0,
+     "plants": 2
+    },
+    "REVERSAL_X": {
+     "found": 0,
+     "plants": 2
+    },
+    "SAME_QUESTION": {
+     "found": 4,
+     "plants": 6
+    },
+    "SAME_SEAT": {
+     "found": 4,
+     "plants": 6
+    },
+    "UPDATE": {
+     "found": 0,
+     "plants": 3
+    }
+   },
+   "planted": {
+    "contradiction": 6,
+    "list_trap": 4,
+    "repeat": 2,
+    "reversal": 2,
+    "update": 3
+   },
+   "sentences": 84,
+   "task": "MEM-T04"
+  },
+  {
+   "agree": {
+    "REVERSAL": {
+     "rev_only": 2
+    },
+    "REVERSAL_X": {},
+    "SAME_QUESTION": {
+     "agree": 3,
+     "sq_only": 6
+    },
+    "SAME_SEAT": {
+     "agree": 3
+    }
+   },
+   "arm": "A2b",
+   "extra": {
+    "enumeration_arm_owner": 14,
+    "same_seat_F1": 3
+   },
+   "label": "MEM-T05/blind/r01",
+   "notes": {
+    "ENUMERATION": {
+     "no_pair": 6,
+     "no_plant": 3,
+     "other:contradiction": 5,
+     "total": 14
+    },
+    "REVERSAL": {
+     "no_pair": 2,
+     "total": 2
+    },
+    "REVERSAL_X": {},
+    "SAME_QUESTION": {
+     "hit": 5,
+     "no_pair": 3,
+     "no_plant": 1,
+     "total": 9
+    },
+    "SAME_SEAT": {
+     "hit": 3,
+     "total": 3
+    },
+    "UPDATE": {}
+   },
+   "plant_coverage": {
+    "ENUMERATION": {
+     "found": 0,
+     "plants": 4
+    },
+    "REVERSAL": {
+     "found": 0,
+     "plants": 2
+    },
+    "REVERSAL_X": {
+     "found": 0,
+     "plants": 2
+    },
+    "SAME_QUESTION": {
+     "found": 4,
+     "plants": 6
+    },
+    "SAME_SEAT": {
+     "found": 3,
+     "plants": 6
+    },
+    "UPDATE": {
+     "found": 0,
+     "plants": 3
+    }
+   },
+   "planted": {
+    "contradiction": 6,
+    "list_trap": 4,
+    "repeat": 2,
+    "reversal": 2,
+    "update": 3
+   },
+   "sentences": 44,
+   "task": "MEM-T05"
+  },
+  {
+   "agree": {
+    "REVERSAL": {},
+    "REVERSAL_X": {},
+    "SAME_QUESTION": {
+     "agree": 4,
+     "sq_only": 9
+    },
+    "SAME_SEAT": {
+     "agree": 4
+    }
+   },
+   "arm": "A2b",
+   "extra": {
+    "enumeration_arm_owner": 11,
+    "same_seat_F1": 4
+   },
+   "label": "MEM-T05/blind/r02",
+   "notes": {
+    "ENUMERATION": {
+     "no_pair": 7,
+     "no_plant": 1,
+     "other:contradiction": 3,
+     "total": 11
+    },
+    "REVERSAL": {},
+    "REVERSAL_X": {},
+    "SAME_QUESTION": {
+     "hit": 6,
+     "no_pair": 5,
+     "no_plant": 2,
+     "total": 13
+    },
+    "SAME_SEAT": {
+     "hit": 3,
+     "no_pair": 1,
+     "total": 4
+    },
+    "UPDATE": {}
+   },
+   "plant_coverage": {
+    "ENUMERATION": {
+     "found": 0,
+     "plants": 4
+    },
+    "REVERSAL": {
+     "found": 0,
+     "plants": 2
+    },
+    "REVERSAL_X": {
+     "found": 0,
+     "plants": 2
+    },
+    "SAME_QUESTION": {
+     "found": 4,
+     "plants": 6
+    },
+    "SAME_SEAT": {
+     "found": 3,
+     "plants": 6
+    },
+    "UPDATE": {
+     "found": 0,
+     "plants": 3
+    }
+   },
+   "planted": {
+    "contradiction": 6,
+    "list_trap": 4,
+    "repeat": 2,
+    "reversal": 2,
+    "update": 3
+   },
+   "sentences": 48,
+   "task": "MEM-T05"
+  },
+  {
+   "agree": {
+    "REVERSAL": {
+     "rev_only": 1
+    },
+    "REVERSAL_X": {},
+    "SAME_QUESTION": {
+     "agree": 2,
+     "sq_only": 8
+    },
+    "SAME_SEAT": {
+     "agree": 2
+    }
+   },
+   "arm": "A2b",
+   "extra": {
+    "enumeration_arm_owner": 15,
+    "same_seat_F1": 2
+   },
+   "label": "MEM-T05/blind/r03",
+   "notes": {
+    "ENUMERATION": {
+     "no_pair": 7,
+     "no_plant": 3,
+     "other:contradiction": 5,
+     "total": 15
+    },
+    "REVERSAL": {
+     "no_pair": 1,
+     "total": 1
+    },
+    "REVERSAL_X": {},
+    "SAME_QUESTION": {
+     "hit": 4,
+     "no_pair": 5,
+     "no_plant": 1,
+     "total": 10
+    },
+    "SAME_SEAT": {
+     "hit": 2,
+     "total": 2
+    },
+    "UPDATE": {}
+   },
+   "plant_coverage": {
+    "ENUMERATION": {
+     "found": 0,
+     "plants": 4
+    },
+    "REVERSAL": {
+     "found": 0,
+     "plants": 2
+    },
+    "REVERSAL_X": {
+     "found": 0,
+     "plants": 2
+    },
+    "SAME_QUESTION": {
+     "found": 3,
+     "plants": 6
+    },
+    "SAME_SEAT": {
+     "found": 2,
+     "plants": 6
+    },
+    "UPDATE": {
+     "found": 0,
+     "plants": 3
+    }
+   },
+   "planted": {
+    "contradiction": 6,
+    "list_trap": 4,
+    "repeat": 2,
+    "reversal": 2,
+    "update": 3
+   },
+   "sentences": 48,
+   "task": "MEM-T05"
+  },
+  {
+   "agree": {
+    "REVERSAL": {
+     "rev_only": 3
+    },
+    "REVERSAL_X": {},
+    "SAME_QUESTION": {
+     "agree": 6
+    },
+    "SAME_SEAT": {
+     "agree": 6,
+     "unreadable": 1
+    }
+   },
+   "arm": "A2",
+   "extra": {
+    "enumeration_arm_owner": 14,
+    "same_seat_F1": 6,
+    "same_seat_F2": 1
+   },
+   "label": "MEM-T05/notes/r01",
+   "notes": {
+    "ENUMERATION": {
+     "no_pair": 8,
+     "no_plant": 2,
+     "other:contradiction": 2,
+     "other:reversal": 2,
+     "total": 14
+    },
+    "REVERSAL": {
+     "hit": 2,
+     "no_pair": 1,
+     "total": 3
+    },
+    "REVERSAL_X": {},
+    "SAME_QUESTION": {
+     "hit": 5,
+     "no_pair": 1,
+     "total": 6
+    },
+    "SAME_SEAT": {
+     "hit": 6,
+     "no_pair": 1,
+     "total": 7
+    },
+    "UPDATE": {}
+   },
+   "plant_coverage": {
+    "ENUMERATION": {
+     "found": 0,
+     "plants": 4
+    },
+    "REVERSAL": {
+     "found": 2,
+     "plants": 2
+    },
+    "REVERSAL_X": {
+     "found": 0,
+     "plants": 2
+    },
+    "SAME_QUESTION": {
+     "found": 5,
+     "plants": 6
+    },
+    "SAME_SEAT": {
+     "found": 6,
+     "plants": 6
+    },
+    "UPDATE": {
+     "found": 0,
+     "plants": 3
+    }
+   },
+   "planted": {
+    "contradiction": 6,
+    "list_trap": 4,
+    "repeat": 2,
+    "reversal": 2,
+    "update": 3
+   },
+   "sentences": 48,
+   "task": "MEM-T05"
+  },
+  {
+   "agree": {
+    "REVERSAL": {
+     "rev_only": 1
+    },
+    "REVERSAL_X": {},
+    "SAME_QUESTION": {
+     "agree": 3,
+     "sq_only": 7
+    },
+    "SAME_SEAT": {
+     "agree": 3
+    }
+   },
+   "arm": "A2",
+   "extra": {
+    "enumeration_arm_owner": 17,
+    "same_seat_F1": 3
+   },
+   "label": "MEM-T05/notes/r02",
+   "notes": {
+    "ENUMERATION": {
+     "no_pair": 7,
+     "no_plant": 6,
+     "other:contradiction": 4,
+     "total": 17
+    },
+    "REVERSAL": {
+     "no_pair": 1,
+     "total": 1
+    },
+    "REVERSAL_X": {},
+    "SAME_QUESTION": {
+     "hit": 4,
+     "no_pair": 5,
+     "no_plant": 1,
+     "total": 10
+    },
+    "SAME_SEAT": {
+     "hit": 3,
+     "total": 3
+    },
+    "UPDATE": {}
+   },
+   "plant_coverage": {
+    "ENUMERATION": {
+     "found": 0,
+     "plants": 4
+    },
+    "REVERSAL": {
+     "found": 0,
+     "plants": 2
+    },
+    "REVERSAL_X": {
+     "found": 0,
+     "plants": 2
+    },
+    "SAME_QUESTION": {
+     "found": 3,
+     "plants": 6
+    },
+    "SAME_SEAT": {
+     "found": 3,
+     "plants": 6
+    },
+    "UPDATE": {
+     "found": 0,
+     "plants": 3
+    }
+   },
+   "planted": {
+    "contradiction": 6,
+    "list_trap": 4,
+    "repeat": 2,
+    "reversal": 2,
+    "update": 3
+   },
+   "sentences": 48,
+   "task": "MEM-T05"
+  },
+  {
+   "agree": {
+    "REVERSAL": {
+     "rev_only": 2
+    },
+    "REVERSAL_X": {},
+    "SAME_QUESTION": {
+     "agree": 4,
+     "sq_only": 10
+    },
+    "SAME_SEAT": {
+     "agree": 4
+    }
+   },
+   "arm": "A2",
+   "extra": {
+    "enumeration_arm_owner": 12,
+    "same_seat_F1": 4,
+    "update_with_prior": 1
+   },
+   "label": "MEM-T05/notes/r03",
+   "notes": {
+    "ENUMERATION": {
+     "no_pair": 4,
+     "no_plant": 3,
+     "other:contradiction": 3,
+     "other:reversal": 2,
+     "total": 12
+    },
+    "REVERSAL": {
+     "hit": 2,
+     "total": 2
+    },
+    "REVERSAL_X": {},
+    "SAME_QUESTION": {
+     "hit": 5,
+     "no_pair": 5,
+     "no_plant": 4,
+     "total": 14
+    },
+    "SAME_SEAT": {
+     "hit": 3,
+     "no_pair": 1,
+     "total": 4
+    },
+    "UPDATE": {
+     "other:contradiction": 1,
+     "total": 1
+    }
+   },
+   "plant_coverage": {
+    "ENUMERATION": {
+     "found": 0,
+     "plants": 4
+    },
+    "REVERSAL": {
+     "found": 2,
+     "plants": 2
+    },
+    "REVERSAL_X": {
+     "found": 0,
+     "plants": 2
+    },
+    "SAME_QUESTION": {
+     "found": 3,
+     "plants": 6
+    },
+    "SAME_SEAT": {
+     "found": 3,
+     "plants": 6
+    },
+    "UPDATE": {
+     "found": 0,
+     "plants": 3
+    }
+   },
+   "planted": {
+    "contradiction": 6,
+    "list_trap": 4,
+    "repeat": 2,
+    "reversal": 2,
+    "update": 3
+   },
+   "sentences": 46,
+   "task": "MEM-T05"
+  },
+  {
+   "agree": {
+    "REVERSAL": {},
+    "REVERSAL_X": {},
+    "SAME_QUESTION": {
+     "agree": 4,
+     "sq_only": 3
+    },
+    "SAME_SEAT": {
+     "agree": 4,
+     "unreadable": 2
+    }
+   },
+   "arm": "A2b",
+   "extra": {
+    "enumeration_arm_owner": 15,
+    "same_seat_F1": 4,
+    "same_seat_F2": 2,
+    "update_first": 1
+   },
+   "label": "MEM-T06/blind/r01",
+   "notes": {
+    "ENUMERATION": {
+     "no_pair": 6,
+     "no_plant": 5,
+     "other:contradiction": 4,
+     "total": 15
+    },
+    "REVERSAL": {},
+    "REVERSAL_X": {},
+    "SAME_QUESTION": {
+     "hit": 6,
+     "no_pair": 1,
+     "total": 7
+    },
+    "SAME_SEAT": {
+     "hit": 5,
+     "no_pair": 1,
+     "total": 6
+    },
+    "UPDATE": {
+     "hit": 1,
+     "total": 1
+    }
+   },
+   "plant_coverage": {
+    "ENUMERATION": {
+     "found": 0,
+     "plants": 4
+    },
+    "REVERSAL": {
+     "found": 0,
+     "plants": 2
+    },
+    "REVERSAL_X": {
+     "found": 0,
+     "plants": 2
+    },
+    "SAME_QUESTION": {
+     "found": 5,
+     "plants": 6
+    },
+    "SAME_SEAT": {
+     "found": 4,
+     "plants": 6
+    },
+    "UPDATE": {
+     "found": 1,
+     "plants": 3
+    }
+   },
+   "planted": {
+    "contradiction": 6,
+    "list_trap": 4,
+    "repeat": 2,
+    "reversal": 2,
+    "update": 3
+   },
+   "sentences": 95,
+   "task": "MEM-T06"
+  },
+  {
+   "agree": {
+    "REVERSAL": {
+     "rev_only": 3
+    },
+    "REVERSAL_X": {},
+    "SAME_QUESTION": {
+     "agree": 4,
+     "sq_only": 5
+    },
+    "SAME_SEAT": {
+     "agree": 4,
+     "unreadable": 2
+    }
+   },
+   "arm": "A2b",
+   "extra": {
+    "enumeration_arm_owner": 18,
+    "same_seat_F1": 4,
+    "same_seat_F2": 2
+   },
+   "label": "MEM-T06/blind/r02",
+   "notes": {
+    "ENUMERATION": {
+     "no_pair": 8,
+     "no_plant": 6,
+     "other:contradiction": 4,
+     "total": 18
+    },
+    "REVERSAL": {
+     "no_pair": 3,
+     "total": 3
+    },
+    "REVERSAL_X": {},
+    "SAME_QUESTION": {
+     "hit": 6,
+     "no_pair": 2,
+     "no_plant": 1,
+     "total": 9
+    },
+    "SAME_SEAT": {
+     "hit": 5,
+     "no_pair": 1,
+     "total": 6
+    },
+    "UPDATE": {}
+   },
+   "plant_coverage": {
+    "ENUMERATION": {
+     "found": 0,
+     "plants": 4
+    },
+    "REVERSAL": {
+     "found": 0,
+     "plants": 2
+    },
+    "REVERSAL_X": {
+     "found": 0,
+     "plants": 2
+    },
+    "SAME_QUESTION": {
+     "found": 5,
+     "plants": 6
+    },
+    "SAME_SEAT": {
+     "found": 4,
+     "plants": 6
+    },
+    "UPDATE": {
+     "found": 0,
+     "plants": 3
+    }
+   },
+   "planted": {
+    "contradiction": 6,
+    "list_trap": 4,
+    "repeat": 2,
+    "reversal": 2,
+    "update": 3
+   },
+   "sentences": 96,
+   "task": "MEM-T06"
+  },
+  {
+   "agree": {
+    "REVERSAL": {},
+    "REVERSAL_X": {},
+    "SAME_QUESTION": {
+     "agree": 4,
+     "sq_only": 7
+    },
+    "SAME_SEAT": {
+     "agree": 4,
+     "unreadable": 2
+    }
+   },
+   "arm": "A2b",
+   "extra": {
+    "enumeration_arm_owner": 14,
+    "same_seat_F1": 4,
+    "same_seat_F2": 2
+   },
+   "label": "MEM-T06/blind/r03",
+   "notes": {
+    "ENUMERATION": {
+     "no_pair": 7,
+     "no_plant": 5,
+     "other:contradiction": 2,
+     "total": 14
+    },
+    "REVERSAL": {},
+    "REVERSAL_X": {},
+    "SAME_QUESTION": {
+     "hit": 4,
+     "no_pair": 6,
+     "other:repeat": 1,
+     "total": 11
+    },
+    "SAME_SEAT": {
+     "hit": 4,
+     "no_pair": 1,
+     "other:repeat": 1,
+     "total": 6
+    },
+    "UPDATE": {}
+   },
+   "plant_coverage": {
+    "ENUMERATION": {
+     "found": 0,
+     "plants": 4
+    },
+    "REVERSAL": {
+     "found": 0,
+     "plants": 2
+    },
+    "REVERSAL_X": {
+     "found": 0,
+     "plants": 2
+    },
+    "SAME_QUESTION": {
+     "found": 4,
+     "plants": 6
+    },
+    "SAME_SEAT": {
+     "found": 4,
+     "plants": 6
+    },
+    "UPDATE": {
+     "found": 0,
+     "plants": 3
+    }
+   },
+   "planted": {
+    "contradiction": 6,
+    "list_trap": 4,
+    "repeat": 2,
+    "reversal": 2,
+    "update": 3
+   },
+   "sentences": 100,
+   "task": "MEM-T06"
+  },
+  {
+   "agree": {
+    "REVERSAL": {
+     "rev_only": 1
+    },
+    "REVERSAL_X": {},
+    "SAME_QUESTION": {
+     "agree": 4,
+     "sq_only": 4
+    },
+    "SAME_SEAT": {
+     "agree": 4,
+     "unreadable": 2
+    }
+   },
+   "arm": "A2",
+   "extra": {
+    "enumeration_arm_owner": 11,
+    "same_seat_F1": 4,
+    "same_seat_F2": 2,
+    "update_first": 1
+   },
+   "label": "MEM-T06/notes/r01",
+   "notes": {
+    "ENUMERATION": {
+     "no_pair": 5,
+     "no_plant": 5,
+     "other:contradiction": 1,
+     "total": 11
+    },
+    "REVERSAL": {
+     "no_plant": 1,
+     "total": 1
+    },
+    "REVERSAL_X": {},
+    "SAME_QUESTION": {
+     "hit": 4,
+     "no_pair": 3,
+     "other:repeat": 1,
+     "total": 8
+    },
+    "SAME_SEAT": {
+     "hit": 6,
+     "total": 6
+    },
+    "UPDATE": {
+     "hit": 1,
+     "total": 1
+    }
+   },
+   "plant_coverage": {
+    "ENUMERATION": {
+     "found": 0,
+     "plants": 4
+    },
+    "REVERSAL": {
+     "found": 0,
+     "plants": 2
+    },
+    "REVERSAL_X": {
+     "found": 0,
+     "plants": 2
+    },
+    "SAME_QUESTION": {
+     "found": 4,
+     "plants": 6
+    },
+    "SAME_SEAT": {
+     "found": 6,
+     "plants": 6
+    },
+    "UPDATE": {
+     "found": 1,
+     "plants": 3
+    }
+   },
+   "planted": {
+    "contradiction": 6,
+    "list_trap": 4,
+    "repeat": 2,
+    "reversal": 2,
+    "update": 3
+   },
+   "sentences": 96,
+   "task": "MEM-T06"
+  },
+  {
+   "agree": {
+    "REVERSAL": {
+     "rev_only": 2
+    },
+    "REVERSAL_X": {},
+    "SAME_QUESTION": {
+     "agree": 7,
+     "sq_only": 6
+    },
+    "SAME_SEAT": {
+     "agree": 7,
+     "unreadable": 3
+    }
+   },
+   "arm": "A2",
+   "extra": {
+    "enumeration_arm_owner": 17,
+    "same_seat_F1": 7,
+    "same_seat_F2": 3,
+    "update_first": 1
+   },
+   "label": "MEM-T06/notes/r02",
+   "notes": {
+    "ENUMERATION": {
+     "no_pair": 7,
+     "no_plant": 4,
+     "other:contradiction": 4,
+     "other:reversal": 2,
+     "total": 17
+    },
+    "REVERSAL": {
+     "hit": 2,
+     "total": 2
+    },
+    "REVERSAL_X": {},
+    "SAME_QUESTION": {
+     "hit": 5,
+     "no_pair": 7,
+     "other:repeat": 1,
+     "total": 13
+    },
+    "SAME_SEAT": {
+     "hit": 6,
+     "no_pair": 3,
+     "other:repeat": 1,
+     "total": 10
+    },
+    "UPDATE": {
+     "hit": 1,
+     "total": 1
+    }
+   },
+   "plant_coverage": {
+    "ENUMERATION": {
+     "found": 0,
+     "plants": 4
+    },
+    "REVERSAL": {
+     "found": 2,
+     "plants": 2
+    },
+    "REVERSAL_X": {
+     "found": 0,
+     "plants": 2
+    },
+    "SAME_QUESTION": {
+     "found": 5,
+     "plants": 6
+    },
+    "SAME_SEAT": {
+     "found": 6,
+     "plants": 6
+    },
+    "UPDATE": {
+     "found": 1,
+     "plants": 3
+    }
+   },
+   "planted": {
+    "contradiction": 6,
+    "list_trap": 4,
+    "repeat": 2,
+    "reversal": 2,
+    "update": 3
+   },
+   "sentences": 102,
+   "task": "MEM-T06"
+  },
+  {
+   "agree": {
+    "REVERSAL": {
+     "agree": 1,
+     "rev_only": 2
+    },
+    "REVERSAL_X": {
+     "agree": 1
+    },
+    "SAME_QUESTION": {
+     "agree": 6,
+     "sq_only": 1
+    },
+    "SAME_SEAT": {
+     "agree": 6,
+     "unreadable": 2
+    }
+   },
+   "arm": "A2",
+   "extra": {
+    "enumeration_arm_owner": 16,
+    "reversal_x_key_agrees": 1,
+    "reversal_x_の": 1,
+    "same_seat_F1": 6,
+    "same_seat_F2": 2
+   },
+   "label": "MEM-T06/notes/r03",
+   "notes": {
+    "ENUMERATION": {
+     "no_pair": 7,
+     "no_plant": 5,
+     "other:contradiction": 4,
+     "total": 16
+    },
+    "REVERSAL": {
+     "no_pair": 2,
+     "other:contradiction": 1,
+     "total": 3
+    },
+    "REVERSAL_X": {
+     "no_pair": 1,
+     "total": 1
+    },
+    "SAME_QUESTION": {
+     "hit": 6,
+     "other:repeat": 1,
+     "total": 7
+    },
+    "SAME_SEAT": {
+     "hit": 7,
+     "other:repeat": 1,
+     "total": 8
+    },
+    "UPDATE": {}
+   },
+   "plant_coverage": {
+    "ENUMERATION": {
+     "found": 0,
+     "plants": 4
+    },
+    "REVERSAL": {
+     "found": 0,
+     "plants": 2
+    },
+    "REVERSAL_X": {
+     "found": 0,
+     "plants": 2
+    },
+    "SAME_QUESTION": {
+     "found": 6,
+     "plants": 6
+    },
+    "SAME_SEAT": {
+     "found": 6,
+     "plants": 6
+    },
+    "UPDATE": {
+     "found": 0,
+     "plants": 3
+    }
+   },
+   "planted": {
+    "contradiction": 6,
+    "list_trap": 4,
+    "repeat": 2,
+    "reversal": 2,
+    "update": 3
+   },
+   "sentences": 90,
+   "task": "MEM-T06"
+  }
+ ],
+ "runs": 36,
+ "total": {
+  "agree": {
+   "REVERSAL": {
+    "agree": 2,
+    "rev_only": 30
+   },
+   "REVERSAL_X": {
+    "agree": 2,
+    "cross_only": 2
+   },
+   "SAME_QUESTION": {
+    "agree": 115,
+    "sq_only": 177
+   },
+   "SAME_SEAT": {
+    "agree": 115,
+    "cross_only": 3,
+    "unavailable": 3,
+    "unreadable": 56
+   }
+  },
+  "extra": {
+   "enumeration_arm_owner": 471,
+   "enumeration_nest": 1,
+   "reversal_x_key_agrees": 3,
+   "reversal_x_key_disagrees": 1,
+   "reversal_x_value": 1,
+   "reversal_x_の": 3,
+   "same_seat_F1": 129,
+   "same_seat_F2": 48,
+   "update_first": 11,
+   "update_with_prior": 4
+  },
+  "firing_sentences": {
+   "ENUMERATION": 472,
+   "REVERSAL": 32,
+   "REVERSAL_X": 4,
+   "SAME_QUESTION": 292,
+   "SAME_SEAT": 177,
+   "UPDATE": 15
+  },
+  "notes": {
+   "ENUMERATION": {
+    "no_pair": 191,
+    "no_plant": 140,
+    "other:contradiction": 129,
+    "other:reversal": 12,
+    "total": 472
+   },
+   "REVERSAL": {
+    "hit": 12,
+    "no_pair": 12,
+    "no_plant": 2,
+    "other:contradiction": 6,
+    "total": 32
+   },
+   "REVERSAL_X": {
+    "hit": 1,
+    "no_pair": 2,
+    "other:contradiction": 1,
+    "total": 4
+   },
+   "SAME_QUESTION": {
+    "hit": 138,
+    "no_pair": 115,
+    "no_plant": 29,
+    "other:repeat": 4,
+    "other:reversal": 6,
+    "total": 292
+   },
+   "SAME_SEAT": {
+    "hit": 147,
+    "no_pair": 25,
+    "other:repeat": 3,
+    "other:reversal": 2,
+    "total": 177
+   },
+   "UPDATE": {
+    "hit": 14,
+    "other:contradiction": 1,
+    "total": 15
+   }
+  },
+  "plant_coverage": {
+   "ENUMERATION": {
+    "found": 0,
+    "plants": 144
+   },
+   "REVERSAL": {
+    "found": 12,
+    "plants": 72
+   },
+   "REVERSAL_X": {
+    "found": 1,
+    "plants": 72
+   },
+   "SAME_QUESTION": {
+    "found": 116,
+    "plants": 216
+   },
+   "SAME_SEAT": {
+    "found": 137,
+    "plants": 216
+   },
+   "UPDATE": {
+    "found": 14,
+    "plants": 108
+   }
+  },
+  "planted": {
+   "contradiction": 216,
+   "list_trap": 144,
+   "repeat": 72,
+   "reversal": 72,
+   "update": 108
+  },
+  "runs": 36,
+  "sentences": 2245
+ }
+}
