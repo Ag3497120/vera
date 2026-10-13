@@ -1,6 +1,6 @@
 # Vera line 3 on GitHub-hosted runners (owner 2026-10-13: 「一時計測を中断して。別セッションでcpuを使うのでgithubのciで回して」).
 # Two modes, started from the Actions tab or `gh workflow run line3-ci.yml --ref <branch> -f mode=... `:
-#   mode=tests  the line-3 pytest suite selected by -k (default "loom or mem or pub"), sharded by test file, under PYTHONHASHSEED 0, 1 and 12345,
+#   mode=tests  the line-3 pytest suite (minus .github/line3-ci-macos-only.txt) selected by -k (default "loom or mem or pub"), sharded by test file, under PYTHONHASHSEED 0, 1 and 12345,
 #               plus the stored-ledger replay (experiments/line3/mem/memfix/verify_stores.py --loom --mem). Junit XML is uploaded per job.
 #   mode=run    one command (input cmd) on one 4-vCPU runner; every path matched by input outputs is uploaded as the artifact run-output.
 # Linux runners have no sandbox-exec: the macOS OS-isolation tests (test_loom_isolate and the isolation probes) are expected to fail here and are
@@ -80,7 +80,8 @@ jobs:
           N=$(python -c "import json; print(len(json.loads('${{ needs.plan.outputs.shards }}')))")
           FILES=$(ls tests/line3/test_*.py | sort | awk -v n="$N" -v s="${{ matrix.shard }}" 'NR % n == s')
           echo "$FILES"
-          python -m pytest -q -p no:cacheprovider -k "${{ inputs.k }}" --junitxml=junit.xml $FILES || rc=$?
+          DESEL=$(grep -v '^#' .github/line3-ci-macos-only.txt | sed 's/^/--deselect /' | tr '\n' ' ')
+          python -m pytest -q -p no:cacheprovider -k "${{ inputs.k }}" --junitxml=junit.xml $DESEL $FILES || rc=$?
           rc=${rc:-0}; [ "$rc" = 5 ] && rc=0   # 5 = no test selected in this shard
           exit $rc
       - if: always()
@@ -123,10 +124,15 @@ jobs:
         env:
           CMD: ${{ inputs.cmd }}
         run: bash -c "$CMD" 2>&1 | tee run.log; exit ${PIPESTATUS[0]}
+      - name: output list
+        if: always()
+        id: outs
+        env:
+          OUTS: ${{ inputs.outputs }}
+        run: |
+          { echo "paths<<EOF"; echo run.log; for p in $OUTS; do echo "$p"; done; echo EOF; } >> "$GITHUB_OUTPUT"
       - if: always()
         uses: actions/upload-artifact@v4
         with:
           name: run-output
-          path: |
-            run.log
-            ${{ inputs.outputs }}
+          path: ${{ steps.outs.outputs.paths }}
