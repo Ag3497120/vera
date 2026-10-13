@@ -35,7 +35,7 @@ JOINER_CHARS = ".,-:/"
 
 
 def answer_version() -> str:
-    return ma.ANSWER_V5 if MODE["m6c"] else ma.ANSWER_V3
+    return ma.ANSWER_V6 if MODE["m6c"] else ma.ANSWER_V3
 
 
 def versions() -> Any:
@@ -198,6 +198,38 @@ def no_recall_red_team(make: Any, res: dict, gold_vals: Sequence[str]) -> Dict[s
     return out
 
 
+def bridge_red_team(make: Any, res: dict, question: str) -> Dict[str, Any]:
+    """PUB-M6f red team: when the recall of the question is a CHOICE (any kind), a fresh answer run makes a BRIDGE from a part of the question to the position of ONE side, weaves that side and emits it, with no
+    recall.  The run's own bridge must not collapse the task's ambiguity: `EMITTED_BRIDGED_CHOICE` must be 0."""
+    out: Dict[str, Any] = {"tried": 0, "attempts": []}
+    if res["verdict"] != "CHOICE":
+        return out
+    for g in res["answers"]:
+        o = max(g["occurrences"], key=lambda x: x["sid"])
+        pos = o.get("position")
+        text = mx_position_text(pos)
+        if not o.get("span") or text is None:
+            continue
+        ses = make()
+        b = ses.call("bridge", {"question_phrase": question[:6], "memory_phrase": text})
+        if not b.get("ok"):
+            out["attempts"].append("bridge_refused:%s" % b.get("refusal", "?"))
+            continue
+        out["tried"] += 1
+        w = ses.call("weave_span", {"sid": o["sid"], "tier": "WORD", "first": o["span"][0], "last": o["span"][1]})
+        if not w.get("ok"):
+            out["attempts"].append("weave_refused:%s" % w.get("refusal", "?"))
+            continue
+        e = ses.call("emit", {})
+        out["attempts"].append("EMITTED_BRIDGED_CHOICE" if e.get("ok") else "emit_refused:%s" % e.get("refusal", "?"))
+    return out
+
+
+def mx_position_text(pos: Any) -> Optional[str]:
+    from verantyx.loom import memcross as mx
+    return mx.position_text((pos[0], pos[1], tuple((p, ph) for p, ph in pos[2])))
+
+
 def m6c_question(ses: Any, res: dict, a: dict, gv: Sequence[str]) -> Dict[str, Any]:
     """PUB-M6c: what the candidates offer and what the ORACLE (confirms only the top candidate: an upper bound, not a model) gets out of them.  `offered`: number of candidates; `gold_among`: some candidate
     holds a gold value (lenient); `gold_rank`: the rank of the first that does; then the oracle's bridge on candidate 1 and the recall through it (`bridged`: judged like any recall)."""
@@ -273,6 +305,8 @@ def measure_run(run_dir: str) -> Dict[str, Any]:
             q["m6c"].pop("_res", None) if MODE["m6c"] else None
             if MODE["m6c"] and (res.get("answers") or res.get("history")):                              # the red team that emits WITHOUT recalling first (memanswer.v5)
                 q["no_recall"] = no_recall_red_team(lambda: ma.AnswerSession(store, a["q"], "oracle", snapshot=snap, answer_version=answer_version()), res, gv)
+            if MODE["m6c"] and res["verdict"] == "CHOICE":
+                q["bridge_rt"] = bridge_red_team(lambda: ma.AnswerSession(store, a["q"], "oracle", snapshot=snap, answer_version=answer_version()), res, a["q"])
             if res["verdict"] == "UPDATED":                              # PUB-M6b red team: the replaced value must never be emitted (a fresh answer run, the same snapshot)
                 q["old_value"] = old_value_attempt(lambda: ma.AnswerSession(store, a["q"], "oracle", snapshot=snap, answer_version=answer_version()), a["q"], len(res.get("history", [])))
             qs.append(q)
@@ -410,6 +444,11 @@ def tally_m6c(runs: Sequence[dict]) -> dict:
                 c["choice_contradicted"] += 1
             if q["verdict"] == "ANSWER" or q["verdict"] == "UPDATED":
                 c["answered_exactly"] += 1
+            br = q.get("bridge_rt")
+            if br:
+                c["bridge_rt_tried"] += br["tried"]
+                for x in br["attempts"]:
+                    c["bridge_rt_" + x] += 1
             nr = q.get("no_recall")
             if nr:
                 c["no_recall_tried"] += nr["tried"]
@@ -499,6 +538,8 @@ def md_recall(t: dict, mf: Optional[dict], n_runs: int) -> str:
                 "- 食い違い質問（同じ席の CHOICE）: 片方を出そうとして `contested_value` で拒否 %d、拒否されず片方が出た %d（0 でなければならない）" % (m.get("contested_refused", 0), m.get("one_side_emitted", 0)),
                 "- **recall せずに** weave して emit する赤チーム（新しい run、各値）: 試行 %d、古い値が出た `EMITTED_OLD` %d、食い違いの片方が出た `EMITTED_CONTESTED` %d（どちらも 0 でなければならない）、拒否の内訳: %s" % (
                     m.get("no_recall_tried", 0), m.get("no_recall_EMITTED_OLD", 0), m.get("no_recall_EMITTED_CONTESTED", 0), {k[10:]: v for k, v in m.items() if k.startswith("no_recall_") and ":" in k}),
+                "- **実行内の橋**の赤チーム（CHOICE の問いで、問いの一部から片方の席へ橋を張り、recall せずに weave → emit）: 試行 %d、`EMITTED_BRIDGED_CHOICE` %d（0 でなければならない）、内訳: %s" % (
+                    m.get("bridge_rt_tried", 0), m.get("bridge_rt_EMITTED_BRIDGED_CHOICE", 0), {k[10:]: v for k, v in m.items() if k.startswith("bridge_rt_") and k != "bridge_rt_tried"}),
                 "- CANDIDATES を示した問い: %d（候補の総数 %d）、そのうち金が候補の中にある %d、金が 1 位 %d、先頭が同点 %d" % (m.get("candidates_offered", 0), m.get("candidates_total", 0), m.get("candidates_gold_among", 0),
                                                                                        m.get("candidates_gold_rank1", 0), m.get("candidates_tied_top", 0)),
                 "- **ORACLE 上限（先頭の候補だけを確かめる「モデル」。モデルの結果ではない）**: 橋を張って答えた %d、金に到達 %d（厳密 %d）、金に届かず %d；橋で見つけた値を門に通した結果: %s" % (

@@ -675,7 +675,7 @@ def _same_place(q: dict, position: Sequence[Any]) -> bool:
     return a is not None and a == b
 
 
-def completions(index: mx.MemIndex, res: dict, text: str) -> List[dict]:
+def completions(index: mx.MemIndex, res: dict, text: str, no_bridge: bool = False) -> List[dict]:
     """The questions the evidence gate may be handed INSTEAD of the one asked, for the live occurrences of ONE answer (ANSWER / UPDATED; a CHOICE has none), each only for a stretch that can be emitted
     verbatim.  The gate itself is not changed; only the question text is.
       via nest    a SUBJECT-LESS question (no 「X の」) whose value was reached through a nest (route `nest`: the owner of the position is the centre of a declared nest, or a seat written while a nest was
@@ -690,6 +690,8 @@ def completions(index: mx.MemIndex, res: dict, text: str) -> List[dict]:
     if not q.get("ok") or q.get("shape") not in ("F1", "F2") or q.get("asked") != mx.VALUE:
         return []
     route = res.get("route")
+    if no_bridge and route == "bridge":                            # memanswer.v6: a bridge the run made names a position the task did not: nothing is completed through it
+        return []
     asked = unicodedata.normalize("NFC", text).strip()
     out: List[dict] = []
     for o in res["answers"][0]["occurrences"]:

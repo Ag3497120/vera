@@ -354,7 +354,7 @@ def run_one(task: dict, arm: str, repeat: int, *, client: Any, model: str, out_r
     if m6c:                                              # PUB-M6c: the bundle shape.v3 / ask.v3 / qwords.v2, the answer run memanswer.v4 (candidates + bridge, source slice, contested_value)
         if profile != mem.PROFILE_V4:
             raise MemRunError("m6c needs the profile mem.v4", "bad_profile")
-        versions, answer_version = mem.V4_VERSIONS_M6C, ma.ANSWER_V5
+        versions, answer_version = mem.V4_VERSIONS_M6C, ma.ANSWER_V6
     run_dir = os.path.join(out_root, task["id"], arm + (("." + tag) if tag else ""), "r%02d" % repeat)
     if os.path.exists(run_dir):
         raise MemRunError("run folder exists (never overwritten): %s" % run_dir, "run_exists")
