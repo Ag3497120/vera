@@ -87,11 +87,15 @@ class Arm:
 
 @dataclass(frozen=True)
 class Change:
-    old: Seat
+    old: Optional[Seat]                         # None in shape.v2 for a change form that names no old value (「B に更新」)
     new: Seat
+    form: str = ""                              # shape.v2: the id of the change form in CHANGE_FORMS_V2 ("" in shape.v1)
 
     def to_obj(self) -> dict:
-        return {"old": self.old.to_obj(), "new": self.new.to_obj()}
+        d = {"old": None if self.old is None else self.old.to_obj(), "new": self.new.to_obj()}
+        if self.form:
+            d["form"] = self.form
+        return d
 
 
 @dataclass(frozen=True)
@@ -126,12 +130,13 @@ class Exchange:
     text: str                                   # the sentence as the exchanger read it: NFC, attribution stripped
     clauses: Tuple[Clause, ...]
     skipped: Tuple[Tuple[Tuple[int, int], str], ...]    # ((span, why)): a label ending in a colon
+    version: str = SHAPES_VERSION               # the table that cut it: shape.v1 (default) or shape.v2
 
     def shapes(self) -> Tuple[str, ...]:
         return tuple(c.shape for c in self.clauses)
 
     def to_obj(self) -> dict:
-        return {"v": SHAPES_VERSION, "text": self.text, "clauses": [c.to_obj() for c in self.clauses], "skipped": [[list(s), w] for s, w in self.skipped]}
+        return {"v": self.version, "text": self.text, "clauses": [c.to_obj() for c in self.clauses], "skipped": [[list(s), w] for s, w in self.skipped]}
 
 
 @dataclass(frozen=True)
@@ -417,11 +422,175 @@ def _shapes_sha() -> str:
 SHAPES_SHA = _shapes_sha()
 
 
-def exchange(sentence: str) -> Exchange:
-    """The shape exchanger: a sentence -> its clauses, each with a shape (F1..F4, or F0 with a reason).  Pure."""
+# ------------------------------------------------------------------------------------------------------------------------------------------
+# shape.v2 (PUB-M4, L-PUB-24..): the SAME table plus more CHANGE FORMS.  shape.v1 above is not edited (its SHAPES_SHA and every test stay); a clause is first read by the v1 rules, and a clause
+# that is one of the change forms below is then read as a change clause instead.  Every form is recorded in CHANGE_FORMS_V2 (hashed).
+#   [X は | Y を] A から B {に | へ} {変更 | 更新 | 延期}     old A -> new B        (kara_{ni,he}_{henkou,koushin,enki}; kara_ni_henkou is the v1 form)
+#   [X は | Y を] A から B へ                                 old A -> new B        (kara_he: no predicate; the slot is required)
+#   [X は | Y を] B に {変更 | 更新 | 延期}                    new B, no old value    (ni_{henkou,koushin,enki})
+# The slot X / Y gives the clause the shape of its slot (F1 when it has a の arm, else F2; value = B); with no slot the clause is F4 with the predicate as its centre (the form that needs a slot
+# is then not a change clause).  Negated and questioned clauses are never change clauses.  Any tail (した, になりました, されました) is allowed after the predicate.
+# ------------------------------------------------------------------------------------------------------------------------------------------
+SHAPES_V2 = "shape.v2"
+CHANGE_PREDICATES = ("変更", "更新", "延期")
+FROM_TO_PARTICLES = ("に", "へ")
+TO_ONLY_PARTICLE = "に"
+BARE_TO = "へ"
+SLOT_PARTICLES = ("は", "を")
+_TO_ID = {"に": "ni", "へ": "he"}
+_PRED_ID = {"変更": "henkou", "更新": "koushin", "延期": "enki"}
+CHANGE_FORMS_V2 = tuple(["kara_%s_%s" % (_TO_ID[t], _PRED_ID[p]) for p in CHANGE_PREDICATES for t in FROM_TO_PARTICLES] + ["kara_he"]
+                        + ["ni_%s" % _PRED_ID[p] for p in CHANGE_PREDICATES])
+CONSTANTS_V2: Dict[str, Any] = dict(CONSTANTS, version=SHAPES_V2, change_forms=list(CHANGE_FORMS_V2), change_predicates=list(CHANGE_PREDICATES), from_to=list(FROM_TO_PARTICLES),
+                                    to_only=TO_ONLY_PARTICLE, bare_to=BARE_TO, slot=list(SLOT_PARTICLES))
+
+
+def _segments_v2(units: Sequence[_Tok], gaps: Sequence[str]) -> Tuple[List[List[List[int]]], List[str]]:
+    """The segments of a clause (phrases joined by の) and the case gaps between them -- the same cut as `_classify`."""
+    phrases: List[List[int]] = [[0]]
+    pgaps: List[str] = []
+    for k, g in enumerate(gaps):
+        if g == "":
+            phrases[-1].append(k + 1)
+        else:
+            pgaps.append(g)
+            phrases.append([k + 1])
+    segs: List[List[List[int]]] = [[phrases[0]]]
+    cs: List[str] = []
+    for p, g in zip(phrases[1:], pgaps):
+        if g == "の":
+            segs[-1].append(p)
+        else:
+            cs.append(g)
+            segs.append([p])
+    return segs, cs
+
+
+def _change_v2(text: str, toks: Sequence[_Tok], term: str) -> Optional[Clause]:
+    """The change forms of shape.v2 (see the block comment above): a Clause, or None when the piece is none of them."""
+    units = [t for t in toks if not t.fn]
+    if not units:
+        return None
+    tail = "".join(t.s for t in toks if t.a >= units[-1].b)
+    gaps = ["".join(t.s for t in toks if units[k].b <= t.a and t.b <= units[k + 1].a) for k in range(len(units) - 1)]
+    for g in gaps:
+        if g != "" and g != "の" and g != TOPIC and g != "を" and g != FROM and g not in FROM_TO_PARTICLES:
+            return None
+    if any(n in tail for n in NEGATION) or (term != "" and term in "?？") or tail.endswith("か"):
+        return None
+    segs, cs = _segments_v2(units, gaps)
+    r = len(cs)
+    last = segs[-1]
+    lastu = units[last[-1][-1]]
+    pred = lastu.s if len(last) == 1 and len(last[0]) == 1 and lastu.s in CHANGE_PREDICATES else None
+    slot: Optional[List[List[int]]] = None
+    old_seg: Optional[List[List[int]]] = None
+    form = ""
+    if pred is not None and r >= 2 and cs[-2] == FROM and cs[-1] in FROM_TO_PARTICLES and (r == 2 or (r == 3 and cs[0] in SLOT_PARTICLES)):
+        old_seg, new_seg = segs[-3], segs[-2]
+        slot = segs[0] if r == 3 else None
+        form = "kara_%s_%s" % (_TO_ID[cs[-1]], _PRED_ID[pred])
+    elif pred is not None and r >= 1 and cs[-1] == TO_ONLY_PARTICLE and FROM not in cs and (r == 1 or (r == 2 and cs[0] in SLOT_PARTICLES)):
+        new_seg = segs[-2]
+        slot = segs[0] if r == 2 else None
+        form = "ni_%s" % _PRED_ID[pred]
+    elif pred is None and r == 2 and cs[0] in SLOT_PARTICLES and cs[1] == FROM and tail.startswith(BARE_TO):
+        slot, old_seg, new_seg = segs[0], segs[1], segs[2]
+        form = "kara_he"
+    else:
+        return None
+    span = (toks[0].a, toks[-1].b)
+    ctext = text[span[0]:span[1]]
+
+    def seat(ph: Sequence[int]) -> Seat:
+        a, b = units[ph[0]].a, units[ph[-1]].b
+        return Seat(text[a:b], tuple(units[i].s for i in ph), (a, b))
+
+    def seat_of_seg(seg: Sequence[Sequence[int]]) -> Seat:
+        a, b = units[seg[0][0]].a, units[seg[-1][-1]].b
+        return Seat(text[a:b], tuple(units[i].s for ph in seg for i in ph), (a, b))
+
+    def nest(seg: Sequence[Sequence[int]]) -> Tuple[Arm, ...]:
+        if len(seg) < 2:
+            return ()
+        return (Arm("の", seat(seg[-2]), nest(seg[:-1])),)
+
+    new = seat_of_seg(new_seg)
+    ch = Change(None if old_seg is None else seat_of_seg(old_seg), new, form)
+    if slot is None:
+        return Clause("F4", span, ctext, pred, (pred,), (), new, change=ch, tail=tail)
+    s = seat(slot[-1])
+    return Clause("F1" if len(slot) > 1 else "F2", span, ctext, s.text, s.units, nest(slot), new, change=ch, tail=tail)
+
+
+def _classify_v2(text: str, toks: Sequence[_Tok], term: str) -> Clause:
+    """shape.v2: the v1 reading of the piece, unless the piece is one of the change forms."""
+    c = _classify(text, toks, term)
+    ch = _change_v2(text, toks, term)
+    return c if ch is None else ch
+
+
+def _exchange_v2(text: str) -> Exchange:
+    toks = _tokens(text)
+    clauses: List[Clause] = []
+    skipped: List[Tuple[Tuple[int, int], str]] = []
+    pending: List[Tuple[Seat, Clause]] = []
+
+    def flush() -> None:
+        clauses.extend(c for _, c in pending)
+        pending.clear()
+
+    for a, b, term in _pieces(text):
+        pt = [t for t in toks if a <= t.a < b]
+        if not pt:
+            if term != "" and term in HARD_CUTS:
+                flush()
+            continue
+        if term != "" and term in LABEL_CUTS:
+            flush()
+            skipped.append(((pt[0].a, pt[-1].b), "label"))
+            continue
+        c = _classify_v2(text, pt, term)
+        if _adverbial(pt, c, term):
+            sp_ = (pt[0].a, pt[-1].b)
+            pending.append((Seat(text[sp_[0]:sp_[1]], tuple(t.s for t in pt if not t.fn), sp_), c))
+            continue
+        if pending:
+            c = replace(c, adverbial=tuple(x for x, _ in pending))
+            pending.clear()
+        clauses.append(c)
+    flush()
+    return Exchange(text, tuple(clauses), tuple(skipped), SHAPES_V2)
+
+
+RULES_V2 = RULES + (_segments_v2, _change_v2, _classify_v2, _exchange_v2)
+
+
+def _shapes_sha_v2() -> str:
+    h = hashlib.sha256()
+    h.update(json.dumps(CONSTANTS_V2, ensure_ascii=False, sort_keys=True).encode("utf-8"))
+    for f in RULES_V2:
+        h.update(b"\x00")
+        h.update(inspect.getsource(f).encode("utf-8"))
+    return h.hexdigest()
+
+
+SHAPES_SHA_V2 = _shapes_sha_v2()
+SHAPE_TABLES: Dict[str, str] = {SHAPES_VERSION: SHAPES_SHA, SHAPES_V2: SHAPES_SHA_V2}      # version -> sha: what a ledger header records
+
+
+
+
+def exchange(sentence: str, version: str = SHAPES_VERSION) -> Exchange:
+    """The shape exchanger: a sentence -> its clauses, each with a shape (F1..F4, or F0 with a reason).  Pure.  `version`: shape.v1 (default: the table of PUB-M1, unchanged) or shape.v2 (PUB-M4: the
+    change forms of CHANGE_FORMS_V2 are clauses of their own)."""
     text = strip_attribution(unicodedata.normalize("NFC", sentence or ""))
-    return _exchange(text)
+    if version == SHAPES_VERSION:
+        return _exchange(text)
+    if version == SHAPES_V2:
+        return _exchange_v2(text)
+    raise ValueError("unknown shape version %r (one of %s)" % (version, (SHAPES_VERSION, SHAPES_V2)))
 
 
-def shapes_of(sentence: str) -> Tuple[str, ...]:
-    return exchange(sentence).shapes()
+def shapes_of(sentence: str, version: str = SHAPES_VERSION) -> Tuple[str, ...]:
+    return exchange(sentence, version).shapes()

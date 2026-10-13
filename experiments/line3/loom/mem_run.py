@@ -6,7 +6,7 @@
   python experiments/line3/loom/mem_run.py --task MEM-T01 --arm notes --repeat 2 [--model claude-haiku-5-5] [--out DIR]     # ONE run: repeat number 2 of (task, arm)
   python experiments/line3/loom/mem_run.py --task MEM-T01 --arm notes --repeats 3          # repeats 1, 2, 3 in turn
   python experiments/line3/loom/mem_run.py --score DIR/MEM-T01/notes/r02                   # the raw mechanical reading of a finished run (no API)
-  python experiments/line3/loom/mem_run.py --task ... --arm ... [--profile mem.v2|mem.v3]  # mem.v3 (the default, MEM-fix) or mem.v2 = the meter v1's settings (12 calls a turn, no forced report)
+  python experiments/line3/loom/mem_run.py --task ... --arm ... [--profile mem.v2|mem.v3|mem.v4]  # mem.v3 (the default, MEM-fix), mem.v4 (PUB-M2..M4: mem.v3 + shape exchanger, memory crosses, nests) or mem.v2 = the meter v1's settings (12 calls a turn, no forced report)
 
 THE TASK (the bank5 schema, bank2-author/PROMPT5.md): {id, title, sessions: [[{speaker, text}, ...] x3], plants: [{kind, fact, values, message_refs: [[s, i], ...], note}],
 questions: [{q, gold, kind, refs}]}.  The model never sees plants, golds or kinds.  `--bank` defaults to the audited bank5 (`experiments/line3/bank5/bank5.jsonl`) when it exists, then the toy task
@@ -56,7 +56,7 @@ AGENTS_DIR = os.path.join(ROOT, ".claude", "agents")
 DEFAULT_MODEL = "claude-haiku-5-5"
 SCHEMA = "mem-run-1"
 SCHEMA_V3 = "mem-run-2"                                  # MEM-fix: a mem.v3 run (result.json also says profile, turn_limit, forced / missing reports)
-PROFILE_CHOICES = (mem.PROFILE_V2, mem.PROFILE_V3)
+PROFILE_CHOICES = (mem.PROFILE_V2, mem.PROFILE_V3, mem.PROFILE_V4)
 MAX_CALLS_V3 = mdrv.MAX_CALLS_PER_TURN_V3
 STORY_AGENT = {"context": "mem-plain", "log": "mem-log", "blind": "mem-blind", "notes": "mem-writer"}
 QUESTION_AGENT = {"context": "mem-plain", "log": "mem-log", "blind": "mem-answer", "notes": "mem-answer"}
@@ -344,7 +344,7 @@ def run_one(task: dict, arm: str, repeat: int, *, client: Any, model: str, out_r
         raise MemRunError("arm must be one of %s" % (md.ARMS,), "bad_arm")
     if profile not in PROFILE_CHOICES:
         raise MemRunError("profile must be one of %s" % (PROFILE_CHOICES,), "bad_profile")
-    v3 = profile == mem.PROFILE_V3
+    v3 = profile in mem.V3_PLUS                           # mem.v4 = mem.v3 + the shape exchanger, the memory crosses and the nests (PUB-M2..M4): the harness rules of mem.v3 apply
     caps = drv.RUNAWAY_CAPS_V1 if v3 else None          # PUB-H1: every mem.v3 run is driven with cap.v1 (the `cap_turn` row is a mem.v3 / membase.v2 row); mem.v2 reproduces the meter v1 as it was
     if max_calls is None:
         max_calls = MAX_CALLS_V3 if v3 else mdrv.MAX_CALLS_PER_TURN
@@ -359,7 +359,7 @@ def run_one(task: dict, arm: str, repeat: int, *, client: Any, model: str, out_r
     t0 = time.monotonic_ns()
     result: Dict[str, Any] = {"schema": SCHEMA_V3 if v3 else SCHEMA, "task_id": task["id"], "arm": arm, "arm_label": md.ARM_LABEL[arm], "repeat": repeat, "model": model, "tool_choice": choice,
                               "system_prompt_sha256": {"story": agent_sha(arm, "story"), "question": agent_sha(arm, "question")},
-                              "tools": {"story": list(md.STORY_TOOLS[arm]), "question": list(md.QUESTION_TOOLS[arm])}, "sessions": [], "answers": []}
+                              "tools": {"story": list(md.story_tools(arm, profile)), "question": list(md.QUESTION_TOOLS[arm])}, "sessions": [], "answers": []}
     if v3:
         result.update(profile=profile, turn_limit=max_calls, baseline_version=base_version, answer_version=answer_version)
     all_pairs: List[List[str]] = []
@@ -488,9 +488,9 @@ def score_run(run_dir: str, task: dict) -> dict:
 # ------------------------------------------------------------------------------------------------------------
 def prepare(task: dict, arm: str, model: str, out_root: str, repeat: int = 1, profile: str = mem.PROFILE_V2) -> dict:
     """What a run would do.  Writes nothing."""
-    return {"profile": profile, "turn_limit": MAX_CALLS_V3 if profile == mem.PROFILE_V3 else mdrv.MAX_CALLS_PER_TURN, "task_id": task["id"], "arm": arm, "arm_label": md.ARM_LABEL[arm], "model": model, "repeat": repeat, "run_dir": os.path.join(out_root, task["id"], arm, "r%02d" % repeat),
+    return {"profile": profile, "turn_limit": MAX_CALLS_V3 if profile in mem.V3_PLUS else mdrv.MAX_CALLS_PER_TURN, "task_id": task["id"], "arm": arm, "arm_label": md.ARM_LABEL[arm], "model": model, "repeat": repeat, "run_dir": os.path.join(out_root, task["id"], arm, "r%02d" % repeat),
             "sessions": [len(s) for s in task["sessions"]], "questions": len(task["questions"]),
-            "story": {"agent": STORY_AGENT[arm], "tools": [TOOL_PREFIX + n for n in md.STORY_TOOLS[arm]], "system_prompt_sha256": agent_sha(arm, "story")},
+            "story": {"agent": STORY_AGENT[arm], "tools": [TOOL_PREFIX + n for n in md.story_tools(arm, profile)], "system_prompt_sha256": agent_sha(arm, "story")},
             "question": {"agent": QUESTION_AGENT[arm], "tools": [TOOL_PREFIX + n for n in md.QUESTION_TOOLS[arm]], "system_prompt_sha256": agent_sha(arm, "question")},
             "command": "python experiments/line3/loom/mem_run.py --task %s --arm %s --repeat %d --model %s --profile %s" % (task["id"], arm, repeat, model, profile)}
 
@@ -531,7 +531,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     ap.add_argument("--script", default=None, help="--driver replay: the recorded turns (JSON)")
     ap.add_argument("--tag", default="")
     ap.add_argument("--profile", default=mem.PROFILE_V3, choices=PROFILE_CHOICES,
-                    help="mem.v3 (default, MEM-fix: topic rule v2, cited REVERSAL, topic-aware answer recall, 24 tool calls a turn + forced final report for every arm, long-story caps) or mem.v2 (the meter v1)")
+                    help="mem.v3 (default, MEM-fix: topic rule v2, cited REVERSAL, topic-aware answer recall, 24 tool calls a turn + forced final report for every arm, long-story caps), mem.v4 (PUB-M2..M4: mem.v3 + the shape exchanger decides writes, keep_unshaped, memory crosses, nests; the answer run is mem.v3's) or mem.v2 (the meter v1)")
     ns = ap.parse_args(list(sys.argv[1:] if argv is None else argv))
     try:
         if ns.list:

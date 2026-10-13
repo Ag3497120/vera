@@ -36,6 +36,11 @@ MEM-fix (owner 2026-10-13 「不具合を直し、長い物語で測る」, L-ME
 subject: never twice, never before a subject of its own; a topic holding a particle is refused; a sentence with its own subject whose clause starts inside a token is asked from the start
 of that token: `clause_at`), REVERSAL notes that cite the two sentences (notes `mem.v2`), the harness rows `report_forced` / `report_missing`, and the long-story caps `CAPS_MEM_V3`.  Every
 older session replays under the profile its header records.
+PUB-M2..M4 (owner 2026-10-13, OP-PUB-1..8; docs/LINE3_PUBLIC_DESIGN.md 4): the PROFILE `mem.v4` = mem.v3 + (a) WRITE ACCEPTANCE BY THE SHAPE EXCHANGER (`memshape.exchange`, table shape.v2): a write is accepted
+iff every clause is F1-F4; an F0 clause refuses it (`no_shape`, the reasons in the result) and the model may keep the sentence unshaped with `keep_unshaped(text)` (in H, searchable as text, in no cross, no note); the
+`weave_span` thread is still attempted for every accepted write and a refusal is recorded on the row (`weave: refused(...)`, the row field `weave_refused`), the sentence is stored anyway; (b) the MEMORY CROSSES
+(`memcross`: one tank per shape, one cross per centre phrase, seats with provenance, derived from H and never stored as truth: its sha is part of every row's state); (c) NESTS: `declare_topic` opens a nest, an F4 clause
+is completed by the nest's centre and NOTHING is put in front of any text (the mem.v3 prefix is not applied); (d) the slide order and the updates (shape.v2 change forms).  mem.v1..v3 are not touched.
 """
 from __future__ import annotations
 
@@ -54,9 +59,11 @@ from typing import Any, Dict, List, Optional, Sequence, Tuple
 from verantyx.ledger_events import GENESIS, args_sha256, redact, redact_obj
 from verantyx.loom import ledger as lg
 from verantyx.loom import evidence
+from verantyx.loom import memcross as mx
 from verantyx.loom import memnotes as mn
 from verantyx.loom import memrecall as mr
 from verantyx.loom import notes as notelib
+from verantyx.loom import memshape as ms
 from verantyx.loom import ops
 from verantyx.loom import read as rd
 from verantyx.loom.corpus import Corpus
@@ -72,9 +79,11 @@ ROLES: Tuple[str, ...] = ("model", "user")
 CROSS_UNCAPPED = 1 << 30                                   # L-MEM-14: no cross cap across sessions (a session's writes are capped instead)
 CAPS_MEM_V1: Dict[str, int] = {"writes": 60, "recalls": 60, "lookups": 60, "ops": 300, "reads": 0, "emit_attempts": 0, "constructed": 0, "unit_chars": 8,
                                "max_L": 2, "crosses": CROSS_UNCAPPED, "max_depth": 0}
-PROFILE_V1, PROFILE_V2, PROFILE_V3 = "mem.v1", "mem.v2", "mem.v3"
-PROFILES: Tuple[str, ...] = (PROFILE_V1, PROFILE_V2, PROFILE_V3)
-V2_PLUS: Tuple[str, ...] = (PROFILE_V2, PROFILE_V3)              # the profiles that have declare_topic / supersede / report and the door-supplied turn
+PROFILE_V1, PROFILE_V2, PROFILE_V3, PROFILE_V4 = "mem.v1", "mem.v2", "mem.v3", "mem.v4"
+PROFILES: Tuple[str, ...] = (PROFILE_V1, PROFILE_V2, PROFILE_V3, PROFILE_V4)
+V2_PLUS: Tuple[str, ...] = (PROFILE_V2, PROFILE_V3, PROFILE_V4)  # the profiles that have declare_topic / supersede / report and the door-supplied turn
+V3_PLUS: Tuple[str, ...] = (PROFILE_V3, PROFILE_V4)              # the profiles with the mem.v3 rules (clause_at, cited REVERSAL, the long-story caps, notes mem.v2, the forced / capped turn rows)
+V4_OPS: Tuple[str, ...] = ("keep_unshaped",)                     # PUB-M2: the op a mem.v4 session adds (the F0 tank)
 DEFAULT_PROFILE = PROFILE_V1                     # the API default: every store and test before MEM-d. The meter's doors (memdoor) ask for PROFILE_V2.
 CAPS_MEM_V2: Dict[str, int] = dict(CAPS_MEM_V1, topics=8, supersedes=30, reports=60)
 # MEM-fix (L-MEM-63): the caps of a LONG story (a session of 100+ messages must not run into 60 reports / 60 writes: the arms would stop being comparable).  Every count is the
@@ -94,7 +103,7 @@ REASON_MAX_CHARS = 40
 TURN_RX = re.compile(r"^([1-9][0-9]?)-([1-9][0-9]{0,2})$")        # a turn id "<session>-<message>", 1-based (the harness names every message so)
 REPORT_MAX_PAIRS, REPORT_MAX_BUGS = 10, 5
 FROZEN_OPS: Tuple[str, ...] = ("unseat", "swap", "extend", "topic", "set_depth", "link", "unlink", "drop")
-OPS_CLASS: Tuple[str, ...] = ("write",) + FROZEN_OPS         # the calls the `ops` cap counts
+OPS_CLASS: Tuple[str, ...] = ("write",) + V4_OPS + FROZEN_OPS         # the calls the `ops` cap counts
 MEM_RULES: Dict[str, Any] = {
     "output": "A memory session never emits: its only product is the sentences it writes. Plain text is discarded unread.",
     "write": "write(text, role) weaves the WHOLE sentence (WORD tier, weave_span.v2) into the memory. A sentence the structure cannot seat is refused and stores "
@@ -105,11 +114,11 @@ MEM_RULES: Dict[str, Any] = {
     "close": "commit closes the session; an uncommitted session is not part of the memory.",
 }
 def caps_of(profile: str) -> Dict[str, int]:
-    return CAPS_MEM_V3 if profile == PROFILE_V3 else CAPS_MEM_V2 if profile == PROFILE_V2 else CAPS_MEM_V1
+    return CAPS_MEM_V3 if profile in V3_PLUS else CAPS_MEM_V2 if profile == PROFILE_V2 else CAPS_MEM_V1
 
 
 def tools_of(profile: str) -> Tuple[str, ...]:
-    return TOOLS + V2_OPS if profile in V2_PLUS else TOOLS
+    return TOOLS + V2_OPS + (V4_OPS if profile == PROFILE_V4 else ()) if profile in V2_PLUS else TOOLS
 
 
 MEM_RULES_GATE: Dict[str, Any] = dict(MEM_RULES, recall="recall(question) asks the evidence gate (scope clause, " + mr.RECALL_VERSION + ") of the WHOLE memory: ANSWER (one "
@@ -139,6 +148,18 @@ MEM_RULES_V3: Dict[str, Any] = dict(
           "names the topic) is stored AS WRITTEN: the topic is never added twice. Declare it again when the subject changes.",
     report="report(contradictions, bugs) ends EVERY turn: contradictions = pairs of turn ids (\"1-3\" = session 1, message 3) whose statements disagree, [] if none; bugs = [] here. A REVERSAL "
            "note names the two sentences it is about (`sentence`, `earlier`, and `cite`: the turn pairs you can report).")
+
+
+MEM_RULES_V4: Dict[str, Any] = dict(
+    MEM_RULES_V3,
+    write="write(text, role) puts the sentence through the SHAPE EXCHANGER (at most 64 characters). Every clause must have a shape: F1 「X の Y は A」, F2 「Y は A」, F3 an event with が を に で と, F4 an event with no "
+          "subject (it is completed by the open nest). A clause with no shape (F0: " + ", ".join(ms.F0_REASONS) + ") refuses the whole sentence, stores nothing and says why: rewrite it, or keep it with keep_unshaped. "
+          "An accepted sentence is also woven (weave_span) when the loom can; if it cannot, it is stored anyway and the result says weave: refused(...).",
+    keep_unshaped="keep_unshaped(text, role) stores a sentence that has no shape (the F0 tank): it is in the memory and can be searched as text, it enters no cross and fires no note. Refused (shaped) if every clause has a shape: use write.",
+    topic="declare_topic(text) opens a NEST: what the following sentences are about (a noun phrase, at most 24 characters; particles are allowed: A社のB事業 is the nest B事業 with the の-arm A社). An event with no subject "
+          "(「資料を送付した」) is placed in the open nest and its subject is the nest's centre; nothing is added to your text. Declare it again when the subject changes. A new session declares its own.",
+    form="Write each fact as one sentence: 「X の Y は A」 (X the whole subject, Y what is asked about, A a noun phrase) or an event 「X が Y を V」; a change as 「Y は A から B に変更」 or 「Y は B に更新」. One fact per sentence.",
+)
 
 
 class _Sentinel:
@@ -182,6 +203,10 @@ def row_line(row: dict) -> str:
         d["clause_at"] = row["clause_at"]
     if "turn" in row:                      # MEM-d: the turn id the door told the session ("1-3"): only a mem.v2 write that was given one has it
         d["turn"] = row["turn"]
+    if row.get("unshaped") is True:        # PUB-M2 (mem.v4): a sentence kept in the F0 tank; only such a row has it
+        d["unshaped"] = True
+    if "weave_refused" in row:             # PUB-M2 (mem.v4): an accepted sentence the loom's weave_span refused (the reason); only such a row has it
+        d["weave_refused"] = row["weave_refused"]
     return canonical(d) + "\n"
 
 
@@ -251,7 +276,10 @@ class MemRun(Run):
         super().__init__(Corpus(b""), task, model, run_id, "report", None, None, "notes.v1")
         self.profile = profile
         self.v2plus = profile in V2_PLUS               # declare_topic / supersede / report, the door-supplied turn, the v2 state; mem.v3 adds the topic rule `topic.v2`, cited REVERSALs, the long-story caps
-        self.v3 = profile == PROFILE_V3
+        self.v3 = profile in V3_PLUS
+        self.v4 = profile == PROFILE_V4                # PUB-M2..M4: the shape exchanger accepts writes, memory crosses, nests, slide order
+        self.builder = mx.IndexBuilder(ms.SHAPES_V2) if self.v4 else None
+        self.decls: List[dict] = []                    # mem.v4: the topic declarations [{session, at, topic}] of every earlier v4 session and this one (the ledger is their source)
         self.notes_profile = mn.MEM_NOTES_V2 if self.v3 else mn.MEM_NOTES_VERSION
         self.caps = dict(caps_of(profile))
         self.store_id, self.session_no = store_id, session_no
@@ -278,17 +306,28 @@ class MemRun(Run):
         self._begin_header: Optional[dict] = None
 
     # -- the carried state (the frozen-stack fold) ------------------------------------------------------------------
-    def carry(self, rows: Sequence[dict], superseded: Optional[Dict[int, dict]] = None) -> None:
+    def carry(self, rows: Sequence[dict], superseded: Optional[Dict[int, dict]] = None, decls: Optional[Sequence[dict]] = None) -> None:
         """Weave every earlier sentence, in order, against its own prefix corpus: the cumulative state of the sessions before (a pure function of H).  The same code
         path as a live write minus the notes; a row that no longer weaves means the store is not what it says (`store_unverified`)."""
         rows = list(rows)
         prev = Corpus(b"")
+        ds = list(decls or []) if self.v4 else []
+        order = sorted(range(len(ds)), key=lambda i: (ds[i]["at"], i))
+        di = 0
         for t in range(len(rows)):
             c_t = build_corpus(rows[:t + 1])
-            try:
-                self._weave_row(t, prev, c_t)
-            except Refuse as r:
-                raise Refuse("store_unverified", {"reason": "carried_sentence_does_not_weave", "sid": t, "refusal": r.type})
+            if self.v4:                                                  # mem.v4: the nests declared before sentence t are open for it; a kept-unshaped / weave-refused row is not woven (the row says so)
+                while di < len(order) and ds[order[di]]["at"] <= t:
+                    d = ds[order[di]]
+                    self.builder.declare(d["session"], d["at"], d["topic"])
+                    di += 1
+            if not (self.v4 and (rows[t].get("unshaped") is True or "weave_refused" in rows[t])):
+                try:
+                    self._weave_row(t, prev, c_t)
+                except Refuse as r:
+                    raise Refuse("store_unverified", {"reason": "carried_sentence_does_not_weave", "sid": t, "refusal": r.type})
+            if self.v4:
+                self.builder.add_row(t, rows[t], prev)
             prev = c_t
             if "topic_at" in rows[t]:
                 self.starts[t] = rows[t]["topic_at"]
@@ -298,6 +337,14 @@ class MemRun(Run):
         if any(not 0 <= k < len(rows) or not 0 <= v["by"] < len(rows) for k, v in sup.items()):
             raise Refuse("store_unverified", {"reason": "supersede_names_no_sentence"})
         self.superseded = sup
+        if self.v4:
+            while di < len(order):
+                d = ds[order[di]]
+                self.builder.declare(d["session"], d["at"], d["topic"])
+                di += 1
+            self.decls = [dict(d) for d in ds]
+            for k in sorted(sup):
+                self.builder.supersede(k, sup[k]["by"], sup[k]["reason"], sup[k]["session"])
         self.rows = rows
         self.rows0 = len(rows)
         self.corpus = self.corpus_cur = prev
@@ -341,13 +388,16 @@ class MemRun(Run):
                       "contradiction_policy": self.contradiction_policy, "unseatable_policy": self.unseatable_policy, "self_question": self.hook_id})
             if self.v2plus:                                   # absent in a mem.v1 header: every earlier begin row is as it was
                 h["mem_profile"] = self.profile
+            if self.v4:                                       # PUB-M2: the frozen shape table and the version of the memory cross serialisation this session reads / writes
+                h["shape"] = {"version": ms.SHAPES_V2, "sha": ms.SHAPES_SHA_V2}
+                h["cross"] = {"version": mx.CROSS_VERSION}
             self._begin_header = h
         return self._begin_header
 
     def begin_body(self) -> dict:
         rules = MEM_RULES if self.evidence_version is None else MEM_RULES_GATE
         if self.v2plus:
-            base = MEM_RULES_V3 if self.v3 else MEM_RULES_V2
+            base = MEM_RULES_V4 if self.v4 else MEM_RULES_V3 if self.v3 else MEM_RULES_V2
             rules = base if self.evidence_version is not None else dict(base, recall=MEM_RULES["recall"])
         res = {"ok": True, "run_id": self.run_id, "mode": "memory", "task": ops.task_view(self.task, self.caps), "rules": rules, "header": self.header()}
         if self.v2plus:
@@ -361,6 +411,8 @@ class MemRun(Run):
             mem["v2"] = {"topic": self.topic, **self.counts2}
         if self.superseded:
             mem["superseded"] = [[k, v["by"], v["session"], v["reason"]] for k, v in sorted(self.superseded.items())]
+        if self.v4:                                            # the memory crosses are derived from H, the declarations and the marks: their sha is part of every row's state (a replay must rebuild them identically)
+            mem["v4"] = {"index": self.builder.index().index_sha}
         return sha256_text(canonical({"loom": self.state.to_obj(), "mem": mem}))
 
     # -- one call = one body ---------------------------------------------------------------------------------------------
@@ -370,14 +422,14 @@ class MemRun(Run):
         return list(self._pending)
 
     def _executable(self, op: Any) -> bool:
-        return isinstance(op, str) and (op in TOOLS or op in FROZEN_OPS or (self.v2plus and op in V2_OPS))
+        return isinstance(op, str) and (op in TOOLS or op in FROZEN_OPS or (self.v2plus and op in V2_OPS) or (self.v4 and op in V4_OPS))
 
     def _precheck(self, op: str) -> None:
         st = self.state
         if st.closed is not None:
             st.guards["closed_calls"] += 1
             raise Refuse("run_closed", {"closed": list(st.closed)})
-        if op == "write" and self.counts["writes"] >= self.caps["writes"]:
+        if (op == "write" or op in V4_OPS) and self.counts["writes"] >= self.caps["writes"]:          # keep_unshaped is a write for the cap
             raise Refuse("write_cap", {"limit": self.caps["writes"]})
         if op == "recall" and self.counts["recalls"] >= self.caps["recalls"]:
             raise Refuse("recall_cap", {"limit": self.caps["recalls"]})
@@ -388,7 +440,7 @@ class MemRun(Run):
             raise Refuse("ops_cap", {"limit": self.caps["ops"]})
         if op in ("lookup", "read_sentence") and st.counters["lookups"] >= self.caps["lookups"]:
             raise Refuse("lookup_cap", {"limit": self.caps["lookups"]})
-        if op == "write":
+        if op == "write" or op in V4_OPS:
             self.counts["writes"] += 1
         if op == "recall":
             self.counts["recalls"] += 1
@@ -436,11 +488,11 @@ class MemRun(Run):
             if trunc:
                 raise Refuse("args_too_large", {"chars": extra["args_chars"], "limit": ARGS_CHARS_CAP, "string_limit": ARG_STR_CAP})
             if n:
-                raise Refuse("secret_shaped_sentence" if op == "write" else "secret_shaped_unit", {"redacted": n})
+                raise Refuse("secret_shaped_sentence" if op == "write" or op in V4_OPS else "secret_shaped_unit", {"redacted": n})
             result = _HANDLERS[op](self, args, self.i)
         except Refuse as r:
             result = refusal(r.type, r.detail)
-            if op == "write":
+            if op == "write" or op in V4_OPS:
                 self.tally["refused"][r.type] = self.tally["refused"].get(r.type, 0) + 1
         body = {"actor": "model", "op": op, "args": stored, "result": result, "state_sha": self.mem_state_sha()}
         body.update(extra)
@@ -485,6 +537,8 @@ def _marked(wv_crosses: Sequence[dict], new_uids: set) -> str:
 
 
 def h_write(run: MemRun, a: dict, i: int) -> dict:
+    if run.v4:
+        return _write_v4(run, a, i)
     a = ops._args(a, {"text": (str, True), "role": (str, False), **({"turn": (str, False)} if run.v2plus else {})})
     turn = a.get("turn")
     if turn is not None and not TURN_RX.match(turn):
@@ -556,6 +610,147 @@ def h_write(run: MemRun, a: dict, i: int) -> dict:
         res["turn"] = turn
     if notes:
         res["notes"] = notes
+    return res
+
+
+def _model_text(a: dict, run: MemRun) -> Tuple[str, str, Optional[str]]:
+    """(text, role, turn) of a mem.v4 `write` / `keep_unshaped`: the checks of `h_write`, shared."""
+    a = ops._args(a, {"text": (str, True), "role": (str, False), "turn": (str, False)})
+    turn = a.get("turn")
+    if turn is not None and not TURN_RX.match(turn):
+        raise Refuse("bad_turn", {"turn": turn[:16]})
+    role = a.get("role", "model")
+    if role not in ROLES:
+        raise Refuse("bad_args", {"field": "role", "reason": "one of %s" % (list(ROLES),)})
+    text = unicodedata.normalize("NFC", a["text"])
+    if not 1 <= len(text) <= ARG_STR_CAP or any(unicodedata.category(ch) in ("Cc", "Zl", "Zp") for ch in text):
+        raise Refuse("bad_sentence", {"reason": "1 to %d characters, no newline / NUL / control character" % ARG_STR_CAP})
+    return text, role, turn
+
+
+def _clause_summary(c: mx.ClauseRec) -> dict:
+    d: Dict[str, Any] = {"k": c.k, "shape": c.shape, "text": c.text[:32]}
+    if c.tank is None:
+        d["reason"] = c.reason
+        return d
+    d.update(tank=c.tank, centre=c.centre, via=c.via, nest=c.nest, value=c.value, change=None if c.change is None else c.change.form)
+    return d
+
+
+def _index_view(run: MemRun) -> dict:
+    ix = run.builder.index()
+    st = ix.stats()
+    return {"sha": ix.index_sha, "crosses": sum(st[t]["crosses"] for t in mx.TANKS), "seats": sum(st[t]["seats"] for t in mx.TANKS), "f0": st[mx.F0_TANK]["sentences"], "nests": st["nests"]}
+
+
+def _no_shape(ex: ms.Exchange) -> Refuse:
+    bad = [c for c in ex.clauses if c.shape == "F0"]
+    return Refuse("no_shape", {"shape": "F0", "reason": bad[0].reason if bad else "no_clause", "n_clauses": len(ex.clauses),
+                               "clauses": [{"text": c.text[:32], "reason": c.reason, "detail": (c.detail or "")[:16]} for c in bad[:8]],
+                               "hint": "rewrite it so that every clause has a shape (X の Y は A / Y は A / an event with が を に で と), or keep_unshaped(text)"})
+
+
+def _write_v4(run: MemRun, a: dict, i: int) -> dict:
+    """mem.v4 (PUB-M2, L-PUB-26): the shape exchanger decides.  Accepted iff every clause is F1-F4 (an F0 clause: `no_shape`, nothing stored).  An accepted sentence is stored; the `weave_span` thread of the loom
+    is attempted for it, and if it is refused the sentence is stored anyway with `weave: refused(...)` (the tanks hold it, the thread does not).  Nothing is put in front of the text."""
+    text, role, turn = _model_text(a, run)
+    ex = ms.exchange(text, ms.SHAPES_V2)
+    if not ex.clauses or any(c.shape == "F0" for c in ex.clauses):
+        raise _no_shape(ex)
+    t = len(run.rows)
+    row = {"kind": kind_of(run.kind_policy), "sent": text, "source": make_source(run.store_id, run.session_no, run.session_written, role)}
+    if turn is not None:
+        row["turn"] = turn
+    rows_after = run.rows + [row]
+    c_before = run.corpus_cur
+    c_t = build_corpus(rows_after)
+    wv: Optional[dict] = None
+    wr: Optional[str] = None
+    try:
+        wv = run._weave_row(t, c_before, c_t)                          # a Refuse here changes nothing (weave_span refuses before it touches the state)
+    except Refuse as r:
+        why = r.detail.get("reason")
+        wr = "%s:%s" % (r.type, why) if isinstance(why, str) and why else r.type
+        row["weave_refused"] = wr
+        c_t = build_corpus(rows_after)                                 # the row changed after c_t was built from it: the live corpus is the corpus of memory.jsonl's bytes
+    # -- committed from here on ------------------------------------------------------------------------------------------------------------------
+    rows_before = run.rows
+    run.rows = rows_after
+    run.corpus_cur = run.corpus = c_t
+    run.session_written += 1
+    placed = run.builder.add_row(t, row, c_before)
+    st = run.state
+    c_key = c_before if run.kind_policy != "c" else build_corpus(_key_rows(rows_before, "c", run.session_no))
+    res: Dict[str, Any] = {"ok": True, "sid": t, "source": row["source"], "kind": row["kind"], "role": role, "text": text, "tier": "WORD"}
+    if wv is not None:
+        cs = clause_run_start(c_t, t, text, wv)                        # MEM-fix (L-MEM-58), as in mem.v3
+        if cs is not None:
+            row["clause_at"] = cs
+            run.starts[t] = cs
+            c_t = run.corpus_cur = run.corpus = build_corpus(rows_after)
+        new_crosses = [st.crosses[c["cid"]] for c in wv["crosses"]]
+        linked = [st.crosses[cid] for cid in st.thread]
+        notes, extra = mn.compute_write_notes(t=t, row=row, rows_before=rows_before, rows_after=rows_after, corpus_key=c_key, corpus_before=c_before, corpus_after=c_t,
+                                              state=st, linked=linked, new_crosses=new_crosses, weave=wv, contradiction_policy=run.contradiction_policy,
+                                              self_question=run.hook, superseded=run.superseded or None, clause_start=run.starts.get(t), cite=True)
+        run._pending = notes
+        for n in notes:
+            run.tally["notes"][n["type"]] += 1
+        units: List[dict] = []
+        new_uids = set()
+        for c in wv["crosses"]:
+            for s_ in c["seated"]:
+                units.append({"uid": s_["uid"], "surface": s_["surface"], "cid": c["cid"], "seat": s_["seat"]})
+            units.append({"uid": c["centre"]["uid"], "surface": c["centre"]["surface"], "cid": c["cid"], "seat": "centre"})
+        for u in units:
+            pv = st.units[u["uid"]].prov
+            u["origin"], u["history_n"] = pv["origin"], pv["history_n"]
+            if pv["origin"] == "new":
+                new_uids.add(u["uid"])
+        read_back = "".join(sg["s"] for cr in new_crosses for sg in rd.read_prose(st, cr))
+        res.update({"from": wv["from"], "to": wv["to"], "crosses": wv["crosses"], "units": units, "readback": {"text": read_back, "same": read_back == wv["text"]},
+                    "marked": _marked(wv["crosses"], new_uids), "history": {"sentences": t, "corpus_sha": c_key.corpus_sha}, "keys": extra["keys"], "clause": extra["clause"],
+                    "thread_length": len(st.thread), "weave": "ok"})
+        if "clause_at" in row:
+            res["clause_at"] = row["clause_at"]
+        if notes:
+            res["notes"] = notes
+    else:
+        run._pending = []
+        res.update({"from": None, "to": None, "crosses": [], "units": [], "readback": {"text": "", "same": True}, "marked": "", "history": {"sentences": t, "corpus_sha": c_key.corpus_sha},
+                    "keys": [], "clause": None, "thread_length": len(st.thread), "weave": "refused(%s)" % wr, "weave_refused": wr})
+    res["shape"] = {"v": ms.SHAPES_V2, "clauses": [_clause_summary(c) for c in placed]}
+    res["index"] = _index_view(run)
+    if turn is not None:
+        res["turn"] = turn
+    return res
+
+
+def h_keep_unshaped(run: MemRun, a: dict, i: int) -> dict:
+    """mem.v4 (OP-PUB-2, L-PUB-27): store a sentence that has no shape in the F0 tank.  It is in H (the memory corpus: searchable as text, `lookup` / `recall` read it as any sentence) but enters no cross, is not
+    woven, fires no note; its row says `unshaped`.  Refused `shaped` when every clause has a shape (use `write`) and `bad_sentence` when there is no letter in it."""
+    text, role, turn = _model_text(a, run)
+    if not any(ch.isalnum() for ch in text):
+        raise Refuse("bad_sentence", {"reason": "no letter in the sentence"})
+    ex = ms.exchange(text, ms.SHAPES_V2)
+    if ex.clauses and all(c.shape != "F0" for c in ex.clauses):
+        raise Refuse("shaped", {"shapes": list(ex.shapes()), "hint": "every clause has a shape: use write"})
+    t = len(run.rows)
+    row = {"kind": kind_of(run.kind_policy), "sent": text, "source": make_source(run.store_id, run.session_no, run.session_written, role), "unshaped": True}
+    if turn is not None:
+        row["turn"] = turn
+    rows_after = run.rows + [row]
+    c_before = run.corpus_cur
+    c_t = build_corpus(rows_after)
+    run._pending = []
+    run.rows = rows_after
+    run.corpus_cur = run.corpus = c_t
+    run.session_written += 1
+    run.builder.add_row(t, row, c_before)
+    res: Dict[str, Any] = {"ok": True, "sid": t, "source": row["source"], "kind": row["kind"], "role": role, "text": text, "tank": mx.F0_TANK, "unshaped": True, "weave": "none",
+                           "shape": {"v": ms.SHAPES_V2, "shapes": list(ex.shapes()), "reasons": [c.reason for c in ex.clauses if c.shape == "F0"]}, "index": _index_view(run)}
+    if turn is not None:
+        res["turn"] = turn
     return res
 
 
@@ -652,6 +847,8 @@ def h_status(run: MemRun, a: dict, i: int) -> dict:
     if run.v2plus:
         res.update(profile=run.profile, topic=run.topic, topics=run.counts2["topics"], supersedes=run.counts2["supersedes"], reports=run.counts2["reports"],
                    superseded=len(run.superseded))
+    if run.v4:
+        res["index"] = _index_view(run)
     return res
 
 
@@ -675,6 +872,17 @@ def h_declare_topic(run: MemRun, a: dict, i: int) -> dict:
     declared again (the newest applies from then on; each is a row); `at_start` says whether nothing was written yet."""
     a = ops._args(a, {"text": (str, True)})
     t = _plain_text(a["text"], "text", 1, TOPIC_MAX_CHARS, "bad_topic")
+    if run.v4:                                                          # PUB-M3 (OP-PUB-3): the topic opens a NEST; particles inside it are allowed (A社のB事業), nothing is put in front of any text
+        if t[-1] in "のはがをにでともへ" or any(ch in t for ch in "。、．，"):
+            raise Refuse("bad_topic", {"field": "text", "reason": "a noun phrase: no particle at the end, no 。 or 、"})
+        if mx.topic_head(t) is None or not mn.word_units(t):
+            raise Refuse("bad_topic", {"field": "text", "reason": "no word unit"})
+        at = len(run.rows)
+        info = run.builder.declare(run.session_no, at, t)
+        run.decls.append({"session": run.session_no, "at": at, "topic": t})
+        prev = run.topic
+        run.topic = t
+        return {"ok": True, "topic": t, "units": mn.word_units(t), "previous": prev, "at_start": run.session_written == 0, "at": at, "nest": info}
     if t[-1] in "のはがをにでともへ" or any(ch in t for ch in "。、．，"):
         raise Refuse("bad_topic", {"field": "text", "reason": "a noun phrase: no particle at the end (the structure adds の), no 。 or 、"})
     if run.v3 and any(ch in TOPIC_FORBIDDEN for ch in t):
@@ -740,6 +948,8 @@ def h_supersede(run: MemRun, a: dict, i: int) -> dict:
         raise Refuse("already_superseded", {"sids": comps[old_k], "question": question})
     for s in targets:
         run.superseded[s] = {"by": new_sid, "reason": reason, "session": run.session_no}
+        if run.v4:
+            run.builder.supersede(s, new_sid, reason, run.session_no)         # the mark only: the seats of the sentence stay (history kept)
     after = mr.recall(run.corpus_cur, question, run.evidence_version, True, guard, run.superseded, run.turns() or None)
     return {"ok": True, "question": question, "new_sid": new_sid, "reason": reason, "session": run.session_no,
             "superseded": [dict({"sid": s, "source": run.rows[s]["source"], "answers": list(sets[s].values())}, **({"turn": run.rows[s]["turn"]} if "turn" in run.rows[s] else {}))
@@ -821,7 +1031,7 @@ def _frozen_handler(op: str):
 
 
 _HANDLERS = {"write": h_write, "recall": h_recall, "lookup": h_lookup, "read_sentence": h_read_sentence, "status": h_status, "commit": h_commit,
-             "declare_topic": h_declare_topic, "supersede": h_supersede, "report": h_report}
+             "declare_topic": h_declare_topic, "supersede": h_supersede, "report": h_report, "keep_unshaped": h_keep_unshaped}
 _HANDLERS.update({op: _frozen_handler(op) for op in FROZEN_OPS})
 
 
@@ -847,7 +1057,7 @@ def session_memory_rows(run_dir) -> Tuple[List[dict], bool, Optional[dict]]:
         r = lg._parse_line(ln)
         if k == 0:
             begin = r.get("result")
-        if r["actor"] == "model" and r["op"] == "write" and r["result"].get("ok") is True:
+        if r["actor"] == "model" and r["op"] in ("write", "keep_unshaped") and r["result"].get("ok") is True:
             res = r["result"]
             out.append({"kind": res["kind"], "sent": res["text"], "source": res["source"]})
             if "implicit_topic" in res:
@@ -856,6 +1066,10 @@ def session_memory_rows(run_dir) -> Tuple[List[dict], bool, Optional[dict]]:
                 out[-1]["clause_at"] = res["clause_at"]
             if "turn" in res:
                 out[-1]["turn"] = res["turn"]
+            if res.get("unshaped") is True:
+                out[-1]["unshaped"] = True
+            if "weave_refused" in res:
+                out[-1]["weave_refused"] = res["weave_refused"]
         committed = (k == len(lines) - 1 and r["actor"] == "model" and r["op"] == "commit" and r["result"].get("ok") is True)
     return out, committed, begin
 
@@ -886,6 +1100,23 @@ def session_topics(run_dir) -> List[dict]:
             session = r["result"]["header"]["session_no"]
         if r["actor"] == "model" and r["op"] == "declare_topic" and r["result"].get("ok") is True:
             out.append({"session": session, "topic": r["result"]["topic"]})
+    return out
+
+
+def session_nest_decls(run_dir) -> List[dict]:
+    """PUB-M3: [{"session", "at", "topic"}] -- the ok `declare_topic` rows of a mem.v4 session ledger, in order (`at` = how many sentences H held when it was declared).  Another profile's topics are not nests (a
+    mem.v3 topic was put in front of the sentences it was about): [] for them."""
+    lines, _ = lg.read_raw_lines(run_dir)
+    out: List[dict] = []
+    session = None
+    v4 = False
+    for k, ln in enumerate(lines):
+        r = lg._parse_line(ln)
+        if k == 0:
+            hdr = r["result"]["header"]
+            session, v4 = hdr["session_no"], hdr.get("mem_profile") == PROFILE_V4
+        if v4 and r["actor"] == "model" and r["op"] == "declare_topic" and r["result"].get("ok") is True:
+            out.append({"session": session, "at": r["result"]["at"], "topic": r["result"]["topic"]})
     return out
 
 
@@ -1022,9 +1253,12 @@ class MemStore:
             run = MemRun(self.store_id, n_sess + 1, run_id, model, store_head_before=head_sha(head), kind_policy=policy,
                          contradiction_policy=contradiction_policy, unseatable_policy=unseatable_policy, self_question=self_question, profile=profile)
             sup: Dict[int, dict] = {}
+            decls: List[dict] = []
             for e in (head["sessions"] if head else []):
                 sup.update(session_supersedes(self.sessions_dir / e["run_id"]))
-            run.carry(rows, sup)
+                if profile == PROFILE_V4:
+                    decls += session_nest_decls(self.sessions_dir / e["run_id"])
+            run.carry(rows, sup, decls)
             led = lg.Ledger(self.sessions_dir / run_id)
             led.create({"store": self.store_id, "mode": "memory", "session_no": n_sess + 1})
             with led.locked() as lk:
@@ -1045,6 +1279,16 @@ class MemStore:
 
     def verify(self, self_question: Any = DEFAULT) -> dict:
         return verify_store(self.path, self_question)
+
+    def index(self) -> "mx.MemIndex":
+        """PUB-M2: the memory crosses of the committed sessions, derived from the verified ledgers (never stored): `memcross.build_index(H, the nest declarations, the supersede marks)`."""
+        head, rows = self.check()
+        sup: Dict[int, dict] = {}
+        decls: List[dict] = []
+        for e in (head["sessions"] if head else []):
+            sup.update(session_supersedes(self.sessions_dir / e["run_id"]))
+            decls += session_nest_decls(self.sessions_dir / e["run_id"])
+        return mx.build_index(rows, decls, sup)
 
     def replay(self, self_question: Any = DEFAULT) -> "MemReplay":
         return replay_store(self.path, self_question)
@@ -1173,6 +1417,7 @@ def replay_store(path, self_question: Any = DEFAULT) -> MemReplay:
             pass
         return out
     H: List[dict] = []
+    D: List[dict] = []                        # mem.v4: the nest declarations of the earlier sessions, as RE-derived by this replay
     S: Dict[int, dict] = {}                   # what the earlier sessions' supersede ops marked, as RE-derived by this replay
     sessions: List[dict] = []
     before = GENESIS
@@ -1202,7 +1447,7 @@ def replay_store(path, self_question: Any = DEFAULT) -> MemReplay:
             return out
         try:
             run = MemRun(hdr["store_id"], hdr["session_no"], run_id, model, store_head_before=before, self_question=hook, profile=profile, **opts)
-            run.carry(H, S)
+            run.carry(H, S, D)
         except Refuse:
             out.status, out.first_diff = "DIFFERS", {"session": e["run_id"], "i": 0, "field": "carry"}
             return out
@@ -1221,7 +1466,12 @@ def replay_store(path, self_question: Any = DEFAULT) -> MemReplay:
         if not rows or rows[-1]["op"] != "commit" or rows[-1]["result"].get("ok") is not True:
             out.status, out.first_diff = "DIFFERS", {"session": e["run_id"], "i": len(rows) - 1, "field": "commit_missing"}
             return out
+        if run.v4 and mx.build_index(run.rows, run.decls, run.superseded).index_sha != run.builder.index().index_sha:     # the memory crosses must be rebuilt identically from H alone
+            out.status, out.first_diff = "DIFFERS", {"session": e["run_id"], "i": None, "field": "index"}
+            return out
         H = list(run.rows)
+        if run.v4:
+            D = [dict(d) for d in run.decls]
         S = dict(run.superseded)
         ent = {"run_id": e["run_id"], "session_no": run.session_no, "head": rows[-1]["sha"], "rows": len(rows), "sentences_after": len(H)}
         if ent != e:

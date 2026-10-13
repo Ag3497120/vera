@@ -1,0 +1,300 @@
+{
+ "bank5": {
+  "acceptance": {
+   "accepted": 129,
+   "accepted_clauses_by_shape": {
+    "F1": 56,
+    "F2": 165,
+    "F3": 7
+   },
+   "accepted_pct": 81.1,
+   "change_clauses": 15,
+   "completed_by_nest": 0,
+   "f0": 30,
+   "f0_pct": 18.9,
+   "f0_reasons": {
+    "gap_is_not_a_particle": 29,
+    "no_predicate": 1,
+    "no_relation": 3
+   },
+   "other_refused": {},
+   "topics_declared": 18,
+   "weave_refused_but_accepted": 78,
+   "weave_refused_pct_of_accepted": 60.5,
+   "weave_refused_reasons": {
+    "span_inexpressible:gap_is_not_a_particle": 78
+   },
+   "writes": 159
+  },
+  "index": {
+   "f0_tank_sentences": 0,
+   "history_other": 38,
+   "history_updates": 0,
+   "nest_completed": 0,
+   "nest_members": 0,
+   "nest_under": 228,
+   "nests": 6,
+   "positions": 183,
+   "tanks": {
+    "F1": {
+     "crosses": 34,
+     "max_L": 6,
+     "seats": 112,
+     "seats_by_slot": {
+      "の": 56,
+      "は": 56
+     }
+    },
+    "F2": {
+     "crosses": 137,
+     "max_L": 1,
+     "seats": 165,
+     "seats_by_slot": {
+      "は": 165
+     }
+    },
+    "F3": {
+     "crosses": 7,
+     "max_L": 2,
+     "seats": 14,
+     "seats_by_slot": {
+      "quantity": 3,
+      "が": 7,
+      "で": 2,
+      "に": 2
+     }
+    },
+    "F4": {
+     "crosses": 0,
+     "max_L": 0,
+     "seats": 0,
+     "seats_by_slot": {}
+    }
+   }
+  },
+  "index_sha": {
+   "MEM-T01": "7dba87985932715cc08715256139fbfe7c5a657068803dd52f1df1ebe34ffd68",
+   "MEM-T02": "60e8ea76d071869c41072cf65bd458710adf1a10be9a1d5fa5e1ee11902afcb6",
+   "MEM-T03": "8499edb51b7421f56ed237b2d80198cc3752397b37116cfe6798a0be307065d8",
+   "MEM-T04": "93e2e174c81d6d4a5983b1e05787be33d35399d934f417a42988251b2b58e1b3",
+   "MEM-T05": "e38d8659a1ce40c058b447cee283c3817298b91f5cfb4039f433f510f7487e9d",
+   "MEM-T06": "1a7419b6467f8ce3905ca1e3fdbe7e7292661fd70c167de8b30ef86123669874"
+  },
+  "stories": 6,
+  "verify": {
+   "MEM-T01": [
+    "OK",
+    "IDENTICAL"
+   ],
+   "MEM-T02": [
+    "OK",
+    "IDENTICAL"
+   ],
+   "MEM-T03": [
+    "OK",
+    "IDENTICAL"
+   ],
+   "MEM-T04": [
+    "OK",
+    "IDENTICAL"
+   ],
+   "MEM-T05": [
+    "OK",
+    "IDENTICAL"
+   ],
+   "MEM-T06": [
+    "OK",
+    "IDENTICAL"
+   ]
+  }
+ },
+ "checks": {},
+ "cross_version": "cross.v1",
+ "meter_v1_raw_writes": {
+  "acceptance": {
+   "accepted": 2245,
+   "accepted_clauses_by_shape": {
+    "F1": 1682,
+    "F2": 560,
+    "F3": 2,
+    "F4": 1
+   },
+   "accepted_pct": 96.1,
+   "change_clauses": 23,
+   "completed_by_nest": 1,
+   "f0": 92,
+   "f0_pct": 3.9,
+   "f0_reasons": {
+    "case_before_topic": 1,
+    "gap_is_not_a_particle": 64,
+    "no_predicate": 10,
+    "no_relation": 17
+   },
+   "other_refused": {},
+   "topics_declared": 110,
+   "weave_refused_but_accepted": 72,
+   "weave_refused_pct_of_accepted": 3.2,
+   "weave_refused_reasons": {
+    "span_inexpressible:gap_is_not_a_particle": 7,
+    "span_inexpressible:nested_particle_chain": 65
+   },
+   "writes": 2337
+  },
+  "index": {
+   "f0_tank_sentences": 0,
+   "history_other": 348,
+   "history_updates": 12,
+   "nest_completed": 1,
+   "nest_members": 400,
+   "nest_under": 1855,
+   "nests": 41,
+   "positions": 1882,
+   "tanks": {
+    "F1": {
+     "crosses": 904,
+     "max_L": 13,
+     "seats": 3814,
+     "seats_by_slot": {
+      "の": 1682,
+      "は": 1682
+     }
+    },
+    "F2": {
+     "crosses": 428,
+     "max_L": 1,
+     "seats": 560,
+     "seats_by_slot": {
+      "は": 560
+     }
+    },
+    "F3": {
+     "crosses": 3,
+     "max_L": 2,
+     "seats": 8,
+     "seats_by_slot": {
+      "が": 3,
+      "で": 2,
+      "に": 1,
+      "を": 1
+     }
+    },
+    "F4": {
+     "crosses": 0,
+     "max_L": 0,
+     "seats": 0,
+     "seats_by_slot": {}
+    }
+   }
+  },
+  "not_verified": [],
+  "stores": 36
+ },
+ "meter_v1_stored_sentences": {
+  "clauses_by_shape": {
+   "F0": 26,
+   "F1": 1582,
+   "F2": 1,
+   "F4": 1
+  },
+  "index": {
+   "f0_tank_sentences": 0,
+   "history_other": 196,
+   "history_updates": 7,
+   "nest_completed": 0,
+   "nest_members": 0,
+   "nest_under": 0,
+   "nests": 0,
+   "positions": 1380,
+   "tanks": {
+    "F1": {
+     "crosses": 861,
+     "max_L": 13,
+     "seats": 4477,
+     "seats_by_slot": {
+      "の": 1582,
+      "は": 1582
+     }
+    },
+    "F2": {
+     "crosses": 1,
+     "max_L": 1,
+     "seats": 1,
+     "seats_by_slot": {
+      "は": 1
+     }
+    },
+    "F3": {
+     "crosses": 0,
+     "max_L": 0,
+     "seats": 0,
+     "seats_by_slot": {}
+    },
+    "F4": {
+     "crosses": 1,
+     "max_L": 2,
+     "seats": 2,
+     "seats_by_slot": {
+      "に": 1,
+      "を": 1
+     }
+    }
+   }
+  },
+  "sentences": 1610,
+  "stores": 36
+ },
+ "samples": [
+  {
+   "store": "meter_v1/MEM-T02/blind/r03",
+   "tank": "F1",
+   "text": "[F1] 所要時間  (L=7, written 6 times)\n  の: 登壇者説明(s22){の:運営準備(s22){の:町なか映画祭(s22)}} | 舞台音響チェック(s23){の:運営準備(s23){の:町なか映画祭(s23)}} | 道案内確認(s25){の:運営準備(s25){の:町なか映画祭(s25)}} | 舞台音響チェック(s20){の:運営準備(s20){の:町なか映画祭(s20)}} | 記者説明(s21){の:運営準備(s21){の:町なか映画祭(s21)}} | 確認(s24){の:道案内(s24){の:運営準備(s24){の:町なか映画祭(s24)}}}\n  は: 45分(s25) | 45分(s24) | 60分(s23) | 60分(s22) | 30分(s21) | 45分(s20)"
+  },
+  {
+   "store": "meter_v1/MEM-T01/blind/r02",
+   "tank": "F1",
+   "text": "[F1] 担当  (L=13, written 12 times)\n  の: 文言確認(s9) | 認証モジュール(s2) | リリース窓口(s6) | 手順書確認(s7) | 試験用API監視(s32) | 認証モジュール(s0) | 監視当番(s1) | 決済レビュー(s3) | リリース窓口(s4) | 翻訳確認(s5) | 端末テスト責任者(s8) | スクリーンショット撮影(s18)\n  は: 森(s18) | 小林(s7) | 渡辺(s6) | 田中(s3) | 佐藤(s2) | 井上(s32) | 高橋(s9) | 森(s8) | 渡辺(s5) | 小林(s4) | 佐藤(s1) | 田中(s0)"
+  },
+  {
+   "store": "meter_v1/MEM-T06/blind/r02",
+   "tank": "F1",
+   "text": "[F1] 担当  (L=11, written 10 times)\n  の: 撮影年確認(s7) | 権利確認(s6) | スキャン卓A(s14) | 画像確認係(s15) | チェックサム(s91) | 権利確認(s0){の:メタデータ表(s0)} | 台帳照合(s1){の:メタデータ表(s1)} | スキャン卓A(s8) | 記録係(s13) | 保存形式(s18)\n  は: 保存担当(s18) | 前田(s7) | 大谷(s6) | 長谷川(s15) | 三浦(s14) | 河合(s91) | 三浦(s13) | 長谷川(s8) | 大谷(s1) | 前田(s0)"
+  },
+  {
+   "store": "meter_v1/MEM-T06/blind/r03",
+   "tank": "F2",
+   "text": "[F2] 原本フォルダ  (L=1, written 5 times)\n  は: archive/raw/1950s(s98) | archive/raw/1950s(s74) | archive/raw/1950s(s71) | archive/raw/1950s(s29) | archive/raw/1950s(s27)"
+  },
+  {
+   "store": "meter_v1/MEM-T06/notes/r01",
+   "tank": "F2",
+   "text": "[F2] マスター画像形式  (L=1, written 4 times)\n  は: PNG(s48) | PNG(s46) | PNG(s42) | TIFF(s22)"
+  },
+  {
+   "store": "meter_v1/MEM-T04/notes/r02",
+   "tank": "F3",
+   "text": "[F3] 設定  (L=2, written 1 times)\n  に: 7万円(s53)\n  を: 端末試験用予算(s53)\n  が: リリース(s53){の:倉庫在庫アプリ3.2(s53)[via nest]}[via nest]"
+  },
+  {
+   "store": "bank5/MEM-T01",
+   "tank": "F3",
+   "text": "[F3] 行う  (L=2, written 1 times)\n  で: 大阪(s9)\n  が: 障害訓練(s9)"
+  },
+  {
+   "store": "bank5/MEM-T02",
+   "tank": "F3",
+   "text": "[F3] 印刷  (L=2, written 1 times)\n  が: プログラム(s12)\n  quantity: 450部(s12)"
+  },
+  {
+   "store": "meter_v1/MEM-T04/blind/r02",
+   "tank": "F1",
+   "text": "[F1] 担当  (L=11, written 10 times)\n  の: 認証運用(s10) | 認証運用(s7) | 認証運用(s6) | 認証運用(s4) | ストア申請(s15) | ログダッシュボード(s74) | ストア申請(s11) | FAQ確認(s12) | 翻訳レビュー(s14) | ログダッシュボード(s63)\n  は: 出荷照合平井(s10) | トークン更新松本(s7) | 監査ログ松本(s6) | トークン更新平井(s4) | 西田(s74) | 安藤(s15) | 石田(s14) | 西田(s63) | 安藤(s12) | 石田(s11)"
+  },
+  {
+   "store": "meter_v1/MEM-T06/notes/r03",
+   "tank": "F1",
+   "text": "[F1] 記録係  (L=11, written 10 times)\n  の: B(s21) | スキャン卓B(s20) | 卓B(s19) | スキャン卓B(s18) | スキャン卓B(s17) | B(s16) | スキャン卓B(s15) | 卓B(s13) | スキャン卓B(s12) | スキャン卓B(s11)\n  は: 三浦(s21) | 三浦(s20) | 三浦(s19) | 三浦(s18) | 三浦(s17) | 三浦(s16) | 三浦(s15) | 三浦(s13) | 三浦(s12) | 三浦(s11)"
+  }
+ ],
+ "shape_table": "shape.v2",
+ "shapes_sha": "7c4e3d08d76e59fab592339bdf20ccfaad556a61b2492a47726251a3dd69f9fc"
+}

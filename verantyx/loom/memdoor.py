@@ -57,6 +57,15 @@ LOG_CAPS = {"appends": 60, "reads": 60, "reports": 60, "answers": 3}
 LOG_CAPS_V2 = {"appends": 240, "reads": 240, "reports": 240, "answers": 3}            # MEM-fix (L-MEM-63): the long-story caps of membase.v2, the same x4 as the structure's mem.v3
 LOG_READ_LINES = 30
 ANSWER_KINDS = ("value", "contested", "none")
+
+
+def story_tools(arm: str, profile: str = mem.PROFILE_V2) -> Tuple[str, ...]:
+    """The story-phase tools of an arm under a profile: the table above, plus `keep_unshaped` (right after `write`) for the structure arms of a mem.v4 session (PUB-M2)."""
+    names = STORY_TOOLS[arm]
+    if profile == mem.PROFILE_V4 and arm in STRUCTURE_ARMS:
+        i = names.index("write") + 1
+        return names[:i] + mem.V4_OPS + names[i:]
+    return names
 ANSWER_VALUE_CHARS = 32
 BASELINE_VERSION = "membase.v1"
 BASELINE_V2 = "membase.v2"          # MEM-fix: LOG_CAPS_V2 and the harness rows `report_forced` / `report_missing` (L-MEM-62); membase.v1 ledgers replay as they were
@@ -78,6 +87,9 @@ TOOL_SPECS: Dict[str, dict] = {
     "write": {"description": "Write ONE fact into the memory, as a sentence 「X の Y は A」 (X the whole subject, Y what is asked about, A a noun phrase), at most 64 characters. The structure weaves "
                              "the whole sentence; a sentence it cannot seat is refused and stores nothing: rewrite it in that form. Returns the sid and, in some arms, notes.",
               "properties": {"text": _p("string", "the fact, 「X の Y は A」, at most 64 characters")}, "required": ["text"]},
+    "keep_unshaped": {"description": "Keep a sentence the structure could not give a shape (write refused it: no_shape) as plain text: it stays in the memory and can be searched, but it enters no cross and no "
+                                     "note fires. Refused (shaped) if write would accept it. Use it only when the sentence cannot be rewritten into a fact.",
+                      "properties": {"text": _p("string", "the sentence, at most 64 characters")}, "required": ["text"]},
     "declare_topic": {"description": "Say what this session is about (a noun phrase, at most 24 characters, no particle in it: の に で と を が). A fact you write with no subject (「締め切りは水曜」) is "
                                      "stored as 「<topic>の締め切りは水曜」. Call it first; declare it again when the subject changes.",
                       "properties": {"text": _p("string", "the topic, e.g. 展示会準備")}, "required": ["text"]},
@@ -204,10 +216,15 @@ class StructureDoor(_Door):
         if profile not in mem.V2_PLUS:
             raise ValueError("a StructureDoor's profile is one of %s" % (mem.V2_PLUS,))
         super().__init__(arm)
+        self.profile = profile
         self.store = mem.MemStore(store_path)
         self.session = self.store.begin(model, profile=profile, self_question=hook, kind_policy=kind_policy)
         self.run_id = self.session.run_id
         self.begin_result: dict = self.session.rows()[0]["result"]
+
+    @property
+    def tool_names(self) -> Tuple[str, ...]:
+        return story_tools(self.arm, self.profile)
 
     def intro(self) -> dict:
         b = self.begin_result
@@ -224,8 +241,8 @@ class StructureDoor(_Door):
             if self.turn is None:
                 return refusal("no_turn", {"reason": "no message has been delivered"})
             a["turn"] = self.turn
-        elif tool == "write" and self.turn is not None:
-            a["turn"] = self.turn                                   # the sentence is stored with the turn it was written at: a later recall names it, a report can cite it
+        elif tool in ("write",) + mem.V4_OPS and self.turn is not None:
+            a["turn"] = self.turn                                   # the sentence is stored with the turn it was written at: a later recall names it, a report can cite it (keep_unshaped: mem.v4)
         res = self.session.call(tool, a)
         return _blind(res) if self.arm == "blind" else res
 

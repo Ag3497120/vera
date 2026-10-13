@@ -49,6 +49,7 @@ SELF_QUESTION_UNREADABLE, IDENTIFIER_FLATTENED, NO_RELATION_SEATED = "SELF_QUEST
 NOTE_TYPES: Tuple[str, ...] = (CONFLICT, UNANCHORED, REVERSAL, NEW_RELATION, SAME_QUESTION, SELF_QUESTION_UNREADABLE, IDENTIFIER_FLATTENED, NO_RELATION_SEATED)
 NOTE_OP, NOTE_ACTOR = notelib.NOTE_OP, notelib.NOTE_ACTOR
 SHAPE = "SHAPE"                        # the event class of a refused `span_inexpressible` write (a ledger event, not a note row)
+SHAPE_REFUSALS: Tuple[str, ...] = ("span_inexpressible", "no_shape")      # a write the structure could not seat: the loom's refusal (mem.v1..v3) and the shape exchanger's F0 refusal (mem.v4, PUB-M2)
 EVENT_CLASSES: Tuple[str, ...] = NOTE_TYPES + (SHAPE,)           # the `mem.v1` profile: the five of the design + the three informations; SHAPE read from the refusals
 
 # OP-MEM-2: which note types are COUNTED as structural detections.  (a) the new reading, (b) the existing arm CONFLICT only, (c) both.
@@ -497,7 +498,7 @@ def session_events(rows: Sequence[dict], contradiction_policy: str = "a", unseat
                 n_notes[n["type"]] += 1
         else:
             refused[res["refusal"]] = refused.get(res["refusal"], 0) + 1
-            if res["refusal"] == "span_inexpressible":
+            if res["refusal"] in SHAPE_REFUSALS:
                 reasons[res["detail"].get("reason", "")] = reasons.get(res["detail"].get("reason", ""), 0) + 1
     reseats: List[dict] = []
     for k, r in enumerate(ops):
@@ -506,7 +507,7 @@ def session_events(rows: Sequence[dict], contradiction_policy: str = "a", unseat
         res = r["result"]
         trig: Optional[dict] = None
         if res.get("ok") is not True:
-            if res["refusal"] != "span_inexpressible":
+            if res["refusal"] not in SHAPE_REFUSALS:
                 continue
         else:
             trig_notes = [n for n in notes_by_row.get(r["i"], []) if n["type"] in counted]
@@ -524,7 +525,7 @@ def session_events(rows: Sequence[dict], contradiction_policy: str = "a", unseat
             if res.get("ok") is True:
                 if any(_content_changed(n, r, w) for n in trig_notes):
                     kind = "content"
-            reseats.append({"trigger_i": r["i"], "trigger": "span_inexpressible" if res.get("ok") is not True else trig_notes[0]["type"], "to_i": w["i"], "kind": kind})
+            reseats.append({"trigger_i": r["i"], "trigger": res["refusal"] if res.get("ok") is not True else trig_notes[0]["type"], "to_i": w["i"], "kind": kind})
             break
     content = sum(1 for x in reseats if x["kind"] == "content")
     shape = len(reseats) - content
@@ -549,7 +550,7 @@ def op_counts(ops: Sequence[dict]) -> dict:
     Absent keys are zeros: a ledger of a session before MEM-d has none of these ops."""
     rewritten = 0
     # a refused write is "rewritten" iff a RESEAT (session_events) pairs it; recomputed here so op_counts needs only the model rows
-    seat_refused = [k for k, r in enumerate(ops) if r["op"] == "write" and r["result"].get("ok") is not True and r["result"].get("refusal") == "span_inexpressible"]
+    seat_refused = [k for k, r in enumerate(ops) if r["op"] == "write" and r["result"].get("ok") is not True and r["result"].get("refusal") in SHAPE_REFUSALS]
     for k in seat_refused:
         u1 = {u for u in _units_of_write(ops[k]) if len(u) >= MIN_OVERLAP_CHARS}
         for w in ops[k + 1:k + 1 + RESEAT_WINDOW]:

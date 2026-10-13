@@ -68,6 +68,10 @@ def build(door: Any):
         return out("write", {"text": text})
 
     @reg
+    def keep_unshaped(text: str) -> str:
+        return out("keep_unshaped", {"text": text})
+
+    @reg
     def declare_topic(text: str) -> str:
         return out("declare_topic", {"text": text})
 
