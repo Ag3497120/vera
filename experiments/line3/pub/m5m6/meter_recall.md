@@ -28,7 +28,11 @@ issues（NONE の理由）: {'no_event_clause': 5, 'no_position': 100, 'no_slot_
 
 ### 見つかった値は出せるか（到達した問いだけ。出口の門は変えていない: weave_span で引用 → emit）
 
-{'contradicted/contested_available': 75, 'plain/emit_refused': 47, 'plain/emitted_right': 28, 'updated/emit_refused': 37, 'updated/emitted_right': 14, 'updated/emitted_wrong': 16}
+{'contradicted/contested_available': 75, 'plain/emit_refused': 43, 'plain/emitted_right': 32, 'updated/emit_refused': 5, 'updated/emitted_right': 16, 'updated/weave_refused': 46}
 
-出せなかった理由: {'no_evidence:no_slot_head': 8, 'no_evidence:no_subject': 6, 'no_evidence:question_has_no_subject': 54, 'no_evidence:question_has_no_subject,no_slot_head': 1, 'no_evidence:question_has_no_subject,not_copular': 5, 'no_evidence:wrong_arm,no_slot_head': 10}
+出せなかった理由: {'no_evidence:no_slot_head': 5, 'no_evidence:no_subject': 6, 'no_evidence:question_has_no_subject': 24, 'no_evidence:question_has_no_subject,not_copular': 3, 'no_evidence:wrong_arm,no_slot_head': 10, 'quote_not_verbatim:': 46}
+
+完成した問い（via）で出せた: {'nest': 6}。完成した問いでも門が断った理由: {'nest:no_subject': 23}
+
+置き換えられた値の赤チーム（UPDATED の問いごとに、history の各値を引用して emit を試す。`EMITTED_OLD` が古い値の誤出力）: {'questions': 2, 'tried': 2, 'weave_refused:quote_not_verbatim': 1, 'weave_refused:replaced_value': 1}
 

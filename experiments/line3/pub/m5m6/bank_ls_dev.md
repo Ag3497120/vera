@@ -4,8 +4,8 @@
 
 | 物語 | セッション | メッセージ | 書き込み | 受理 | F0 | 他の拒否 | 織りの拒否（受理のうち） | 記憶の文 | 秒 |
 |---|---|---|---|---|---|---|---|---|---|
-| LS-D01 | 16 | 160 | 640 | 237 (37.0 %) | 403 (63.0 %) | {} | 137 (57.8 %) | 237 | 43.8 |
-| LS-D02 | 14 | 115 | 805 | 344 (42.7 %) | 461 (57.3 %) | {'declare:bad_topic': 14} | 115 (33.4 %) | 344 | 61.0 |
+| LS-D01 | 16 | 160 | 640 | 237 (37.0 %) | 403 (63.0 %) | {} | 137 (57.8 %) | 237 | 59.3 |
+| LS-D02 | 14 | 115 | 805 | 344 (42.7 %) | 461 (57.3 %) | {} | 115 (33.4 %) | 344 | 82.8 |
 
 F0 の理由（節）: {'case_before_topic': 9, 'coordination': 12, 'gap_is_not_a_particle': 745, 'negated': 9, 'no_predicate': 111, 'no_relation': 89, 'repeated_case_particle': 12, 'value_not_noun': 2}
 
@@ -23,6 +23,6 @@ F0 の理由（節）: {'case_before_topic': 9, 'coordination': 12, 'gap_is_not_
 ## 想起（チェックポイントの問い）
 
 - absent: {'admitted': 0, 'n': 16, 'parsed': 8, 'route_None': 16, 'verdict_NONE': 16}
-- contradiction: {'form_rephrased_n': 23, 'form_rephrased_reached': 0, 'form_same_n': 1, 'form_same_reached': 1, 'lenient_exact': 1, 'lenient_extra': 0, 'lenient_reached': 1, 'n': 24, 'parsed': 5, 'route_None': 23, 'route_exact': 1, 'strict_exact': 1, 'strict_extra': 0, 'strict_reached': 1, 'verdict_CHOICE': 1, 'verdict_NONE': 23}
-- plain: {'form_rephrased_n': 20, 'form_rephrased_reached': 0, 'form_same_n': 4, 'form_same_reached': 3, 'lenient_exact': 3, 'lenient_extra': 0, 'lenient_reached': 3, 'n': 24, 'parsed': 8, 'route_None': 21, 'route_exact': 3, 'strict_exact': 3, 'strict_extra': 0, 'strict_reached': 3, 'verdict_ANSWER': 3, 'verdict_NONE': 21}
-- update: {'form_rephrased_n': 15, 'form_rephrased_reached': 0, 'form_same_n': 1, 'form_same_reached': 0, 'lenient_exact': 0, 'lenient_extra': 0, 'lenient_reached': 0, 'n': 16, 'parsed': 4, 'route_None': 16, 'strict_exact': 0, 'strict_extra': 0, 'strict_reached': 0, 'verdict_NONE': 16}
+- contradiction: {'form_rephrased_n': 23, 'form_rephrased_reached': 0, 'form_same_n': 1, 'form_same_reached': 1, 'lenient_exact': 1, 'lenient_extra': 0, 'lenient_reached': 1, 'n': 24, 'parsed': 6, 'route_None': 23, 'route_exact': 1, 'strict_exact': 1, 'strict_extra': 0, 'strict_reached': 1, 'verdict_CHOICE': 1, 'verdict_NONE': 23}
+- plain: {'form_rephrased_n': 20, 'form_rephrased_reached': 0, 'form_same_n': 4, 'form_same_reached': 4, 'lenient_exact': 4, 'lenient_extra': 0, 'lenient_reached': 4, 'n': 24, 'parsed': 11, 'route_None': 20, 'route_exact': 4, 'strict_exact': 4, 'strict_extra': 0, 'strict_reached': 4, 'verdict_ANSWER': 4, 'verdict_NONE': 20}
+- update: {'form_rephrased_n': 15, 'form_rephrased_reached': 0, 'form_same_n': 1, 'form_same_reached': 1, 'lenient_exact': 1, 'lenient_extra': 0, 'lenient_reached': 1, 'n': 16, 'parsed': 7, 'route_None': 15, 'route_exact': 1, 'strict_exact': 1, 'strict_extra': 0, 'strict_reached': 1, 'verdict_NONE': 15, 'verdict_UPDATED': 1}

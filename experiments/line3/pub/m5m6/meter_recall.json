@@ -256,8 +256,8 @@
     {
      "choice_kind": null,
      "emit": {
-      "status": "emit_refused",
-      "why": "no_evidence:question_has_no_subject"
+      "status": "weave_refused",
+      "why": "quote_not_verbatim:"
      },
      "gold": [
       "6/14"
@@ -428,6 +428,13 @@
     {
      "choice_kind": null,
      "emit": {
+      "completion": {
+       "codes": [
+        "no_subject"
+       ],
+       "question": "小規模リリースのAPIタイムアウト値は何秒ですか？",
+       "via": "nest"
+      },
       "status": "emit_refused",
       "why": "no_evidence:question_has_no_subject"
      },
@@ -613,8 +620,8 @@
     {
      "choice_kind": null,
      "emit": {
-      "status": "emit_refused",
-      "why": "no_evidence:question_has_no_subject"
+      "status": "weave_refused",
+      "why": "quote_not_verbatim:"
      },
      "gold": [
       "6/14"
@@ -681,8 +688,8 @@
     {
      "choice_kind": null,
      "emit": {
-      "status": "emitted_wrong",
-      "text": "v24"
+      "status": "weave_refused",
+      "why": "quote_not_verbatim:"
      },
      "gold": [
       "v2.4"
@@ -783,6 +790,13 @@
     {
      "choice_kind": null,
      "emit": {
+      "completion": {
+       "codes": [
+        "no_subject"
+       ],
+       "question": "小規模リリースのAPIタイムアウト値は何秒ですか？",
+       "via": "nest"
+      },
       "status": "emit_refused",
       "why": "no_evidence:question_has_no_subject"
      },
@@ -970,8 +984,8 @@
     {
      "choice_kind": "same_seat",
      "emit": {
-      "status": "emit_refused",
-      "why": "no_evidence:question_has_no_subject"
+      "status": "weave_refused",
+      "why": "quote_not_verbatim:"
      },
      "gold": [
       "6/14"
@@ -1140,8 +1154,10 @@
     {
      "choice_kind": null,
      "emit": {
-      "status": "emit_refused",
-      "why": "no_evidence:question_has_no_subject"
+      "completed_question": "小規模リリースのAPIタイムアウト値は何秒ですか？",
+      "status": "emitted_right",
+      "text": "30秒",
+      "via": "nest"
      },
      "gold": [
       "30秒"
@@ -1318,8 +1334,8 @@
     {
      "choice_kind": null,
      "emit": {
-      "status": "emit_refused",
-      "why": "no_evidence:question_has_no_subject"
+      "status": "weave_refused",
+      "why": "quote_not_verbatim:"
      },
      "gold": [
       "6/14"
@@ -1480,8 +1496,10 @@
     {
      "choice_kind": null,
      "emit": {
-      "status": "emit_refused",
-      "why": "no_evidence:question_has_no_subject"
+      "completed_question": "小規模リリースのAPIタイムアウト値は何秒ですか？",
+      "status": "emitted_right",
+      "text": "30秒",
+      "via": "nest"
      },
      "gold": [
       "30秒"
@@ -1667,8 +1685,8 @@
     {
      "choice_kind": null,
      "emit": {
-      "status": "emit_refused",
-      "why": "no_evidence:question_has_no_subject"
+      "status": "weave_refused",
+      "why": "quote_not_verbatim:"
      },
      "gold": [
       "6/14"
@@ -1735,8 +1753,8 @@
     {
      "choice_kind": null,
      "emit": {
-      "status": "emitted_wrong",
-      "text": "v24"
+      "status": "weave_refused",
+      "why": "quote_not_verbatim:"
      },
      "gold": [
       "v2.4"
@@ -1837,6 +1855,13 @@
     {
      "choice_kind": null,
      "emit": {
+      "completion": {
+       "codes": [
+        "no_subject"
+       ],
+       "question": "小規模リリースのAPIタイムアウト値は何秒ですか？",
+       "via": "nest"
+      },
       "status": "emit_refused",
       "why": "no_evidence:question_has_no_subject"
      },
@@ -2019,8 +2044,8 @@
     {
      "choice_kind": null,
      "emit": {
-      "status": "emit_refused",
-      "why": "no_evidence:question_has_no_subject,not_copular"
+      "status": "weave_refused",
+      "why": "quote_not_verbatim:"
      },
      "gold": [
       "6/14"
@@ -2193,6 +2218,13 @@
     {
      "choice_kind": null,
      "emit": {
+      "completion": {
+       "codes": [
+        "no_subject"
+       ],
+       "question": "小規模リリースのAPIタイムアウト値は何秒ですか？",
+       "via": "nest"
+      },
       "status": "emit_refused",
       "why": "no_evidence:question_has_no_subject"
      },
@@ -2378,8 +2410,8 @@
     {
      "choice_kind": null,
      "emit": {
-      "status": "emit_refused",
-      "why": "no_evidence:question_has_no_subject"
+      "status": "weave_refused",
+      "why": "quote_not_verbatim:"
      },
      "gold": [
       "9:30"
@@ -2412,6 +2444,13 @@
     {
      "choice_kind": null,
      "emit": {
+      "completion": {
+       "codes": [
+        "no_subject"
+       ],
+       "question": "運営準備の会場利用料はいくらですか？",
+       "via": "nest"
+      },
       "status": "emit_refused",
       "why": "no_evidence:question_has_no_subject"
      },
@@ -2446,8 +2485,8 @@
     {
      "choice_kind": null,
      "emit": {
-      "status": "emit_refused",
-      "why": "no_evidence:no_slot_head"
+      "status": "weave_refused",
+      "why": "quote_not_verbatim:"
      },
      "gold": [
       "v1.2"
@@ -2726,8 +2765,8 @@
     {
      "choice_kind": null,
      "emit": {
-      "status": "emit_refused",
-      "why": "no_evidence:question_has_no_subject"
+      "status": "weave_refused",
+      "why": "quote_not_verbatim:"
      },
      "gold": [
       "9:30"
@@ -2760,6 +2799,13 @@
     {
      "choice_kind": null,
      "emit": {
+      "completion": {
+       "codes": [
+        "no_subject"
+       ],
+       "question": "運営準備の会場利用料はいくらですか？",
+       "via": "nest"
+      },
       "status": "emit_refused",
       "why": "no_evidence:question_has_no_subject"
      },
@@ -2794,8 +2840,8 @@
     {
      "choice_kind": null,
      "emit": {
-      "status": "emit_refused",
-      "why": "no_evidence:no_slot_head"
+      "status": "weave_refused",
+      "why": "quote_not_verbatim:"
      },
      "gold": [
       "v1.2"
@@ -3073,8 +3119,8 @@
     {
      "choice_kind": "same_seat",
      "emit": {
-      "status": "emit_refused",
-      "why": "no_evidence:question_has_no_subject"
+      "status": "weave_refused",
+      "why": "quote_not_verbatim:"
      },
      "gold": [
       "9:30"
@@ -3113,8 +3159,10 @@
     {
      "choice_kind": null,
      "emit": {
-      "status": "emit_refused",
-      "why": "no_evidence:question_has_no_subject"
+      "completed_question": "運営準備の会場利用料はいくらですか？",
+      "status": "emitted_right",
+      "text": "13万円",
+      "via": "nest"
      },
      "gold": [
       "13万円"
@@ -3455,6 +3503,13 @@
     {
      "choice_kind": null,
      "emit": {
+      "completion": {
+       "codes": [
+        "no_subject"
+       ],
+       "question": "運営準備の会場利用料はいくらですか？",
+       "via": "nest"
+      },
       "status": "emit_refused",
       "why": "no_evidence:question_has_no_subject"
      },
@@ -3489,8 +3544,8 @@
     {
      "choice_kind": null,
      "emit": {
-      "status": "emit_refused",
-      "why": "no_evidence:no_slot_head"
+      "status": "weave_refused",
+      "why": "quote_not_verbatim:"
      },
      "gold": [
       "v1.2"
@@ -3800,8 +3855,10 @@
     {
      "choice_kind": null,
      "emit": {
-      "status": "emit_refused",
-      "why": "no_evidence:question_has_no_subject"
+      "completed_question": "運営準備の会場利用料はいくらですか？",
+      "status": "emitted_right",
+      "text": "13万円",
+      "via": "nest"
      },
      "gold": [
       "13万円"
@@ -4460,8 +4517,8 @@
     {
      "choice_kind": null,
      "emit": {
-      "status": "emit_refused",
-      "why": "no_evidence:question_has_no_subject"
+      "status": "weave_refused",
+      "why": "quote_not_verbatim:"
      },
      "gold": [
       "11/04"
@@ -4494,8 +4551,8 @@
     {
      "choice_kind": "same_seat",
      "emit": {
-      "status": "emitted_wrong",
-      "text": "65万円"
+      "status": "weave_refused",
+      "why": "quote_not_verbatim:"
      },
      "gold": [
       "6.5万円"
@@ -4600,6 +4657,13 @@
     {
      "choice_kind": null,
      "emit": {
+      "completion": {
+       "codes": [
+        "no_subject"
+       ],
+       "question": "共同実験の遠心待機時間は何分ですか？",
+       "via": "nest"
+      },
       "status": "emit_refused",
       "why": "no_evidence:question_has_no_subject"
      },
@@ -4634,6 +4698,13 @@
     {
      "choice_kind": null,
      "emit": {
+      "completion": {
+       "codes": [
+        "no_subject"
+       ],
+       "question": "共同実験の出張予算はいくらですか？",
+       "via": "nest"
+      },
       "status": "emit_refused",
       "why": "no_evidence:question_has_no_subject"
      },
@@ -4824,8 +4895,8 @@
     {
      "choice_kind": null,
      "emit": {
-      "status": "emit_refused",
-      "why": "no_evidence:question_has_no_subject"
+      "status": "weave_refused",
+      "why": "quote_not_verbatim:"
      },
      "gold": [
       "11/04"
@@ -4858,8 +4929,8 @@
     {
      "choice_kind": null,
      "emit": {
-      "status": "emitted_wrong",
-      "text": "65万円"
+      "status": "weave_refused",
+      "why": "quote_not_verbatim:"
      },
      "gold": [
       "6.5万円"
@@ -4958,6 +5029,13 @@
     {
      "choice_kind": null,
      "emit": {
+      "completion": {
+       "codes": [
+        "no_subject"
+       ],
+       "question": "共同実験の遠心待機時間は何分ですか？",
+       "via": "nest"
+      },
       "status": "emit_refused",
       "why": "no_evidence:question_has_no_subject"
      },
@@ -4992,6 +5070,13 @@
     {
      "choice_kind": null,
      "emit": {
+      "completion": {
+       "codes": [
+        "no_subject"
+       ],
+       "question": "共同実験の出張予算はいくらですか？",
+       "via": "nest"
+      },
       "status": "emit_refused",
       "why": "no_evidence:question_has_no_subject"
      },
@@ -5182,8 +5267,8 @@
     {
      "choice_kind": null,
      "emit": {
-      "status": "emit_refused",
-      "why": "no_evidence:question_has_no_subject"
+      "status": "weave_refused",
+      "why": "quote_not_verbatim:"
      },
      "gold": [
       "11/04"
@@ -5314,8 +5399,10 @@
     {
      "choice_kind": null,
      "emit": {
-      "status": "emit_refused",
-      "why": "no_evidence:question_has_no_subject"
+      "completed_question": "共同実験の遠心待機時間は何分ですか？",
+      "status": "emitted_right",
+      "text": "4分",
+      "via": "nest"
      },
      "gold": [
       "4分"
@@ -5348,8 +5435,10 @@
     {
      "choice_kind": null,
      "emit": {
-      "status": "emit_refused",
-      "why": "no_evidence:question_has_no_subject"
+      "completed_question": "共同実験の出張予算はいくらですか？",
+      "status": "emitted_right",
+      "text": "2万円",
+      "via": "nest"
      },
      "gold": [
       "2万円"
@@ -5538,8 +5627,8 @@
     {
      "choice_kind": "same_seat",
      "emit": {
-      "status": "emit_refused",
-      "why": "no_evidence:question_has_no_subject"
+      "status": "weave_refused",
+      "why": "quote_not_verbatim:"
      },
      "gold": [
       "11/04"
@@ -5578,8 +5667,8 @@
     {
      "choice_kind": null,
      "emit": {
-      "status": "emitted_wrong",
-      "text": "65万円"
+      "status": "weave_refused",
+      "why": "quote_not_verbatim:"
      },
      "gold": [
       "6.5万円"
@@ -5678,6 +5767,13 @@
     {
      "choice_kind": null,
      "emit": {
+      "completion": {
+       "codes": [
+        "no_subject"
+       ],
+       "question": "共同実験の遠心待機時間は何分ですか？",
+       "via": "nest"
+      },
       "status": "emit_refused",
       "why": "no_evidence:question_has_no_subject"
      },
@@ -5712,6 +5808,13 @@
     {
      "choice_kind": null,
      "emit": {
+      "completion": {
+       "codes": [
+        "no_subject"
+       ],
+       "question": "共同実験の出張予算はいくらですか？",
+       "via": "nest"
+      },
       "status": "emit_refused",
       "why": "no_evidence:question_has_no_subject"
      },
@@ -5902,8 +6005,8 @@
     {
      "choice_kind": "same_seat",
      "emit": {
-      "status": "emit_refused",
-      "why": "no_evidence:question_has_no_subject"
+      "status": "weave_refused",
+      "why": "quote_not_verbatim:"
      },
      "gold": [
       "11/04"
@@ -5942,8 +6045,8 @@
     {
      "choice_kind": null,
      "emit": {
-      "status": "emitted_wrong",
-      "text": "65万円"
+      "status": "weave_refused",
+      "why": "quote_not_verbatim:"
      },
      "gold": [
       "6.5万円"
@@ -6042,6 +6145,13 @@
     {
      "choice_kind": null,
      "emit": {
+      "completion": {
+       "codes": [
+        "no_subject"
+       ],
+       "question": "共同実験の遠心待機時間は何分ですか？",
+       "via": "nest"
+      },
       "status": "emit_refused",
       "why": "no_evidence:question_has_no_subject"
      },
@@ -6076,6 +6186,13 @@
     {
      "choice_kind": null,
      "emit": {
+      "completion": {
+       "codes": [
+        "no_subject"
+       ],
+       "question": "共同実験の出張予算はいくらですか？",
+       "via": "nest"
+      },
       "status": "emit_refused",
       "why": "no_evidence:question_has_no_subject"
      },
@@ -6266,8 +6383,8 @@
     {
      "choice_kind": null,
      "emit": {
-      "status": "emit_refused",
-      "why": "no_evidence:question_has_no_subject"
+      "status": "weave_refused",
+      "why": "quote_not_verbatim:"
      },
      "gold": [
       "11/04"
@@ -6283,6 +6400,12 @@
       "exact": true,
       "extra": [],
       "reached": true
+     },
+     "old_value": {
+      "status": [
+       "weave_refused:quote_not_verbatim"
+      ],
+      "tried": 1
      },
      "parsed": true,
      "q": "採取日はいつですか？",
@@ -6300,8 +6423,8 @@
     {
      "choice_kind": null,
      "emit": {
-      "status": "emitted_wrong",
-      "text": "65万円"
+      "status": "weave_refused",
+      "why": "quote_not_verbatim:"
      },
      "gold": [
       "6.5万円"
@@ -6400,6 +6523,13 @@
     {
      "choice_kind": null,
      "emit": {
+      "completion": {
+       "codes": [
+        "no_subject"
+       ],
+       "question": "共同実験の遠心待機時間は何分ですか？",
+       "via": "nest"
+      },
       "status": "emit_refused",
       "why": "no_evidence:question_has_no_subject"
      },
@@ -6434,6 +6564,13 @@
     {
      "choice_kind": null,
      "emit": {
+      "completion": {
+       "codes": [
+        "no_subject"
+       ],
+       "question": "共同実験の出張予算はいくらですか？",
+       "via": "nest"
+      },
       "status": "emit_refused",
       "why": "no_evidence:question_has_no_subject"
      },
@@ -6675,8 +6812,8 @@
     {
      "choice_kind": null,
      "emit": {
-      "status": "emitted_wrong",
-      "text": "320rc2"
+      "status": "weave_refused",
+      "why": "quote_not_verbatim:"
      },
      "gold": [
       "3.2.0-rc2"
@@ -7018,8 +7155,8 @@
     {
      "choice_kind": null,
      "emit": {
-      "status": "emitted_wrong",
-      "text": "320rc2"
+      "status": "weave_refused",
+      "why": "quote_not_verbatim:"
      },
      "gold": [
       "3.2.0-rc2"
@@ -7363,8 +7500,8 @@
     {
      "choice_kind": null,
      "emit": {
-      "status": "emitted_wrong",
-      "text": "320rc2"
+      "status": "weave_refused",
+      "why": "quote_not_verbatim:"
      },
      "gold": [
       "3.2.0-rc2"
@@ -8667,8 +8804,8 @@
     {
      "choice_kind": null,
      "emit": {
-      "status": "emit_refused",
-      "why": "no_evidence:question_has_no_subject"
+      "status": "weave_refused",
+      "why": "quote_not_verbatim:"
      },
      "gold": [
       "13:30"
@@ -9014,8 +9151,8 @@
     {
      "choice_kind": "same_seat",
      "emit": {
-      "status": "emit_refused",
-      "why": "no_evidence:question_has_no_subject"
+      "status": "weave_refused",
+      "why": "quote_not_verbatim:"
      },
      "gold": [
       "13:30"
@@ -9364,8 +9501,8 @@
     {
      "choice_kind": null,
      "emit": {
-      "status": "emit_refused",
-      "why": "no_evidence:question_has_no_subject"
+      "status": "weave_refused",
+      "why": "quote_not_verbatim:"
      },
      "gold": [
       "13:30"
@@ -9713,8 +9850,8 @@
     {
      "choice_kind": null,
      "emit": {
-      "status": "emit_refused",
-      "why": "no_evidence:question_has_no_subject,not_copular"
+      "status": "weave_refused",
+      "why": "quote_not_verbatim:"
      },
      "gold": [
       "13:30"
@@ -10065,8 +10202,8 @@
     {
      "choice_kind": null,
      "emit": {
-      "status": "emit_refused",
-      "why": "no_evidence:question_has_no_subject"
+      "status": "weave_refused",
+      "why": "quote_not_verbatim:"
      },
      "gold": [
       "13:30"
@@ -10391,6 +10528,12 @@
       "extra": [],
       "reached": false
      },
+     "old_value": {
+      "status": [
+       "weave_refused:replaced_value"
+      ],
+      "tried": 1
+     },
      "parsed": true,
      "q": "弁当の単価はいくらですか？",
      "route": "exact",
@@ -10407,8 +10550,8 @@
     {
      "choice_kind": "same_seat",
      "emit": {
-      "status": "emit_refused",
-      "why": "no_evidence:question_has_no_subject"
+      "status": "weave_refused",
+      "why": "quote_not_verbatim:"
      },
      "gold": [
       "13:30"
@@ -10762,8 +10905,8 @@
     {
      "choice_kind": null,
      "emit": {
-      "status": "emit_refused",
-      "why": "no_evidence:question_has_no_subject"
+      "status": "weave_refused",
+      "why": "quote_not_verbatim:"
      },
      "gold": [
       "12/05"
@@ -10830,8 +10973,8 @@
     {
      "choice_kind": null,
      "emit": {
-      "status": "emitted_wrong",
-      "text": "v09"
+      "status": "weave_refused",
+      "why": "quote_not_verbatim:"
      },
      "gold": [
       "v0.9"
@@ -10929,6 +11072,13 @@
     {
      "choice_kind": null,
      "emit": {
+      "completion": {
+       "codes": [
+        "no_subject"
+       ],
+       "question": "移行のOCR外注費はいくらですか？",
+       "via": "nest"
+      },
       "status": "emit_refused",
       "why": "no_evidence:question_has_no_subject"
      },
@@ -11112,8 +11262,8 @@
     {
      "choice_kind": null,
      "emit": {
-      "status": "emit_refused",
-      "why": "no_evidence:question_has_no_subject"
+      "status": "weave_refused",
+      "why": "quote_not_verbatim:"
      },
      "gold": [
       "12/05"
@@ -11186,8 +11336,8 @@
     {
      "choice_kind": null,
      "emit": {
-      "status": "emitted_wrong",
-      "text": "v09"
+      "status": "weave_refused",
+      "why": "quote_not_verbatim:"
      },
      "gold": [
       "v0.9"
@@ -11285,6 +11435,13 @@
     {
      "choice_kind": null,
      "emit": {
+      "completion": {
+       "codes": [
+        "no_subject"
+       ],
+       "question": "移行のOCR外注費はいくらですか？",
+       "via": "nest"
+      },
       "status": "emit_refused",
       "why": "no_evidence:question_has_no_subject"
      },
@@ -11468,8 +11625,8 @@
     {
      "choice_kind": null,
      "emit": {
-      "status": "emit_refused",
-      "why": "no_evidence:question_has_no_subject"
+      "status": "weave_refused",
+      "why": "quote_not_verbatim:"
      },
      "gold": [
       "12/05"
@@ -11536,8 +11693,8 @@
     {
      "choice_kind": null,
      "emit": {
-      "status": "emitted_wrong",
-      "text": "v09"
+      "status": "weave_refused",
+      "why": "quote_not_verbatim:"
      },
      "gold": [
       "v0.9"
@@ -11635,6 +11792,13 @@
     {
      "choice_kind": null,
      "emit": {
+      "completion": {
+       "codes": [
+        "no_subject"
+       ],
+       "question": "移行のOCR外注費はいくらですか？",
+       "via": "nest"
+      },
       "status": "emit_refused",
       "why": "no_evidence:question_has_no_subject"
      },
@@ -11820,8 +11984,8 @@
     {
      "choice_kind": null,
      "emit": {
-      "status": "emit_refused",
-      "why": "no_evidence:question_has_no_subject"
+      "status": "weave_refused",
+      "why": "quote_not_verbatim:"
      },
      "gold": [
       "12/05"
@@ -11888,8 +12052,8 @@
     {
      "choice_kind": null,
      "emit": {
-      "status": "emitted_wrong",
-      "text": "v09"
+      "status": "weave_refused",
+      "why": "quote_not_verbatim:"
      },
      "gold": [
       "v0.9"
@@ -11987,6 +12151,13 @@
     {
      "choice_kind": null,
      "emit": {
+      "completion": {
+       "codes": [
+        "no_subject"
+       ],
+       "question": "移行のOCR外注費はいくらですか？",
+       "via": "nest"
+      },
       "status": "emit_refused",
       "why": "no_evidence:question_has_no_subject"
      },
@@ -12170,8 +12341,8 @@
     {
      "choice_kind": null,
      "emit": {
-      "status": "emit_refused",
-      "why": "no_evidence:question_has_no_subject,no_slot_head"
+      "status": "weave_refused",
+      "why": "quote_not_verbatim:"
      },
      "gold": [
       "12/05"
@@ -12244,8 +12415,8 @@
     {
      "choice_kind": null,
      "emit": {
-      "status": "emitted_wrong",
-      "text": "v09"
+      "status": "weave_refused",
+      "why": "quote_not_verbatim:"
      },
      "gold": [
       "v0.9"
@@ -12343,6 +12514,13 @@
     {
      "choice_kind": null,
      "emit": {
+      "completion": {
+       "codes": [
+        "no_subject"
+       ],
+       "question": "移行のOCR外注費はいくらですか？",
+       "via": "nest"
+      },
       "status": "emit_refused",
       "why": "no_evidence:question_has_no_subject"
      },
@@ -12528,8 +12706,8 @@
     {
      "choice_kind": null,
      "emit": {
-      "status": "emit_refused",
-      "why": "no_evidence:question_has_no_subject"
+      "status": "weave_refused",
+      "why": "quote_not_verbatim:"
      },
      "gold": [
       "12/05"
@@ -12596,8 +12774,8 @@
     {
      "choice_kind": null,
      "emit": {
-      "status": "emitted_wrong",
-      "text": "v09"
+      "status": "weave_refused",
+      "why": "quote_not_verbatim:"
      },
      "gold": [
       "v0.9"
@@ -12695,6 +12873,13 @@
     {
      "choice_kind": null,
      "emit": {
+      "completion": {
+       "codes": [
+        "no_subject"
+       ],
+       "question": "移行のOCR外注費はいくらですか？",
+       "via": "nest"
+      },
       "status": "emit_refused",
       "why": "no_evidence:question_has_no_subject"
      },
@@ -12733,21 +12918,27 @@
  ],
  "runs": 36,
  "total": {
+  "completion_refused": {
+   "nest:no_subject": 23
+  },
   "emit": {
    "contradicted/contested_available": 75,
-   "plain/emit_refused": 47,
-   "plain/emitted_right": 28,
-   "updated/emit_refused": 37,
-   "updated/emitted_right": 14,
-   "updated/emitted_wrong": 16
+   "plain/emit_refused": 43,
+   "plain/emitted_right": 32,
+   "updated/emit_refused": 5,
+   "updated/emitted_right": 16,
+   "updated/weave_refused": 46
+  },
+  "emit_via": {
+   "nest": 6
   },
   "emit_why": {
-   "no_evidence:no_slot_head": 8,
+   "no_evidence:no_slot_head": 5,
    "no_evidence:no_subject": 6,
-   "no_evidence:question_has_no_subject": 54,
-   "no_evidence:question_has_no_subject,no_slot_head": 1,
-   "no_evidence:question_has_no_subject,not_copular": 5,
-   "no_evidence:wrong_arm,no_slot_head": 10
+   "no_evidence:question_has_no_subject": 24,
+   "no_evidence:question_has_no_subject,not_copular": 3,
+   "no_evidence:wrong_arm,no_slot_head": 10,
+   "quote_not_verbatim:": 46
   },
   "issues": {
    "no_event_clause": 5,
@@ -12780,6 +12971,12 @@
     "n": 108,
     "reached": 67
    }
+  },
+  "old_value_red_team": {
+   "questions": 2,
+   "tried": 2,
+   "weave_refused:quote_not_verbatim": 1,
+   "weave_refused:replaced_value": 1
   },
   "routes": {
    "class": 58,

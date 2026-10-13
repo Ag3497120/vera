@@ -78,7 +78,7 @@
    "lenient_extra": 0,
    "lenient_reached": 1,
    "n": 24,
-   "parsed": 5,
+   "parsed": 6,
    "route_None": 23,
    "route_exact": 1,
    "strict_exact": 1,
@@ -91,41 +91,43 @@
    "form_rephrased_n": 20,
    "form_rephrased_reached": 0,
    "form_same_n": 4,
-   "form_same_reached": 3,
-   "lenient_exact": 3,
+   "form_same_reached": 4,
+   "lenient_exact": 4,
    "lenient_extra": 0,
-   "lenient_reached": 3,
+   "lenient_reached": 4,
    "n": 24,
-   "parsed": 8,
-   "route_None": 21,
-   "route_exact": 3,
-   "strict_exact": 3,
+   "parsed": 11,
+   "route_None": 20,
+   "route_exact": 4,
+   "strict_exact": 4,
    "strict_extra": 0,
-   "strict_reached": 3,
-   "verdict_ANSWER": 3,
-   "verdict_NONE": 21
+   "strict_reached": 4,
+   "verdict_ANSWER": 4,
+   "verdict_NONE": 20
   },
   "update": {
    "form_rephrased_n": 15,
    "form_rephrased_reached": 0,
    "form_same_n": 1,
-   "form_same_reached": 0,
-   "lenient_exact": 0,
+   "form_same_reached": 1,
+   "lenient_exact": 1,
    "lenient_extra": 0,
-   "lenient_reached": 0,
+   "lenient_reached": 1,
    "n": 16,
-   "parsed": 4,
-   "route_None": 16,
-   "strict_exact": 0,
+   "parsed": 7,
+   "route_None": 15,
+   "route_exact": 1,
+   "strict_exact": 1,
    "strict_extra": 0,
-   "strict_reached": 0,
-   "verdict_NONE": 16
+   "strict_reached": 1,
+   "verdict_NONE": 15,
+   "verdict_UPDATED": 1
   }
  },
  "stories": [
   {
    "bridges": 0,
-   "elapsed_s": 43.8,
+   "elapsed_s": 59.3,
    "extra": {
     "enumeration_arm_owner": 10,
     "reversal_x_key_agrees": 4,
@@ -370,26 +372,28 @@
      "checkpoint": 0,
      "form": "same",
      "gold": "2032年10月4日",
-     "issues": [
-      "question_unparsed:placeholder_not_asked"
-     ],
+     "issues": [],
      "kind": "update",
      "lenient": {
-      "answers": [],
-      "exact": false,
+      "answers": [
+       "2032年10月4日"
+      ],
+      "exact": true,
       "extra": [],
-      "reached": false
+      "reached": true
      },
-     "parsed": false,
+     "parsed": true,
      "q": "認証端末の設置日は何日ですか？",
-     "route": null,
+     "route": "exact",
      "strict": {
-      "answers": [],
-      "exact": false,
+      "answers": [
+       "2032年10月4日"
+      ],
+      "exact": true,
       "extra": [],
-      "reached": false
+      "reached": true
      },
-     "verdict": "NONE"
+     "verdict": "UPDATED"
     },
     {
      "checkpoint": 0,
@@ -446,7 +450,8 @@
      "form": "rephrased",
      "gold": "340箱",
      "issues": [
-      "question_unparsed:placeholder_not_asked"
+      "no_position",
+      "no_slot_noun_matches"
      ],
      "kind": "plain",
      "lenient": {
@@ -455,7 +460,7 @@
       "extra": [],
       "reached": false
      },
-     "parsed": false,
+     "parsed": true,
      "q": "一般書の移送箱は何箱ですか？",
      "route": null,
      "strict": {
@@ -511,7 +516,8 @@
      "form": "rephrased",
      "gold": "2032年10月30日",
      "issues": [
-      "question_unparsed:placeholder_not_asked"
+      "no_position",
+      "no_slot_noun_matches"
      ],
      "kind": "update",
      "lenient": {
@@ -520,7 +526,7 @@
       "extra": [],
       "reached": false
      },
-     "parsed": false,
+     "parsed": true,
      "q": "本の庭開きの会場準備は何日ですか？",
      "route": null,
      "strict": {
@@ -683,7 +689,8 @@
      "form": "rephrased",
      "gold": "5段",
      "issues": [
-      "question_unparsed:placeholder_not_asked"
+      "no_position",
+      "no_slot_noun_matches"
      ],
      "kind": "plain",
      "lenient": {
@@ -692,7 +699,7 @@
       "extra": [],
       "reached": false
      },
-     "parsed": false,
+     "parsed": true,
      "q": "児童コーナーの書架は何段ですか？",
      "route": null,
      "strict": {
@@ -708,7 +715,8 @@
      "form": "rephrased",
      "gold": "矛盾: 2032年10月26日 と 2032年10月24日",
      "issues": [
-      "question_unparsed:placeholder_not_asked"
+      "no_position",
+      "no_event_clause"
      ],
      "kind": "contradiction",
      "lenient": {
@@ -717,7 +725,7 @@
       "extra": [],
       "reached": false
      },
-     "parsed": false,
+     "parsed": true,
      "q": "西側看板の取り付けは何日に予定されていますか？",
      "route": null,
      "strict": {
@@ -1004,26 +1012,28 @@
      "checkpoint": 3,
      "form": "same",
      "gold": "3年",
-     "issues": [
-      "question_unparsed:placeholder_not_asked"
-     ],
+     "issues": [],
      "kind": "plain",
      "lenient": {
-      "answers": [],
-      "exact": false,
+      "answers": [
+       "3年"
+      ],
+      "exact": true,
       "extra": [],
-      "reached": false
+      "reached": true
      },
-     "parsed": false,
+     "parsed": true,
      "q": "新館カードの有効期間は何年ですか？",
-     "route": null,
+     "route": "exact",
      "strict": {
-      "answers": [],
-      "exact": false,
+      "answers": [
+       "3年"
+      ],
+      "exact": true,
       "extra": [],
-      "reached": false
+      "reached": true
      },
-     "verdict": "NONE"
+     "verdict": "ANSWER"
     },
     {
      "checkpoint": 3,
@@ -1143,12 +1153,12 @@
     }
    ],
    "seconds_at_every_100_writes": [
-    2.6,
-    4.7,
-    9.4,
-    15.0,
-    26.3,
-    37.4
+    1.3,
+    4.3,
+    10.9,
+    18.6,
+    34.5,
+    50.2
    ],
    "sentences_in_memory": 237,
    "sessions": 16,
@@ -1190,7 +1200,7 @@
   },
   {
    "bridges": 0,
-   "elapsed_s": 61.0,
+   "elapsed_s": 82.8,
    "extra": {
     "reversal_x_key_agrees": 4,
     "update_first": 8
@@ -1211,19 +1221,19 @@
      "seats": 16
     },
     "F3": {
-     "crosses": 55,
-     "max_L": 5,
-     "seats": 305
+     "crosses": 140,
+     "max_L": 15,
+     "seats": 846
     },
     "F4": {
-     "crosses": 102,
-     "max_L": 11,
-     "seats": 330
+     "crosses": 0,
+     "max_L": 0,
+     "seats": 0
     },
-    "nests": 0,
+    "nests": 1,
     "positions": 42
    },
-   "index_sha": "4ff3c2c39ab588b306dcdc9af6c372d2c672296be86c2ae3c00b6f0ccc4354f4",
+   "index_sha": "d4892c00e67cda34ea8eb7324f222e19f2d59e9854d068864b03c37f9139c127",
    "messages": 115,
    "notes": {
     "ENUMERATION": {},
@@ -1554,7 +1564,8 @@
      "form": "rephrased",
      "gold": "11月14日",
      "issues": [
-      "question_unparsed:placeholder_not_asked"
+      "no_position",
+      "no_event_clause"
      ],
      "kind": "update",
      "lenient": {
@@ -1563,7 +1574,7 @@
       "extra": [],
       "reached": false
      },
-     "parsed": false,
+     "parsed": true,
      "q": "組付け確認の集まりは何日に開かれますか？",
      "route": null,
      "strict": {
@@ -2190,14 +2201,14 @@
     }
    ],
    "seconds_at_every_100_writes": [
-    2.3,
-    3.9,
-    7.2,
-    11.0,
-    20.1,
-    31.9,
-    49.4,
-    60.9
+    0.9,
+    3.3,
+    8.1,
+    13.0,
+    24.7,
+    41.1,
+    65.8,
+    82.5
    ],
    "sentences_in_memory": 344,
    "sessions": 14,
@@ -2215,7 +2226,7 @@
     },
     "accepted_pct": 42.7,
     "change_clauses": 8,
-    "completed_by_nest": 0,
+    "completed_by_nest": 211,
     "f0": 461,
     "f0_pct": 57.3,
     "f0_reasons": {
@@ -2228,10 +2239,8 @@
      "repeated_case_particle": 6,
      "value_not_noun": 2
     },
-    "other_refused": {
-     "declare:bad_topic": 14
-    },
-    "topics_declared": 0,
+    "other_refused": {},
+    "topics_declared": 14,
     "weave_refused_but_accepted": 115,
     "weave_refused_pct_of_accepted": 33.4,
     "weave_refused_reasons": {
