@@ -30,6 +30,8 @@ from typing import Any, Dict, List, Optional, Sequence, Tuple
 from verantyx.ledger_events import GENESIS
 from verantyx.loom import evidence as evl
 from verantyx.loom import ledger as lg
+from verantyx.loom import memask as mask
+from verantyx.loom import memcross as mx
 from verantyx.loom import memguard as mg
 from verantyx.loom import memory as mem
 from verantyx.loom import memrecall as mr
@@ -43,7 +45,8 @@ from verantyx.loom.state import ABSTAIN_TYPES, ARG_STR_CAP, Refuse, canonical, s
 
 ANSWER_VERSION = "memanswer.v1"
 ANSWER_V2 = "memanswer.v2"          # MEM-fix (L-MEM-59 / 60): the answer run holds the store's declared topics (read from a file the snapshot is paired with) and `recall` reads the question in its other forms
-ANSWER_VERSIONS: Tuple[str, ...] = (ANSWER_VERSION, ANSWER_V2)
+ANSWER_V3 = "memanswer.v3"          # PUB-M6: the answer run of a mem.v4 store: `recall` reads the memory CROSSES (memask), rebuilt from the snapshot and the file `crosses_<sha12>.json` (nest declarations + bridges) it is paired with
+ANSWER_VERSIONS: Tuple[str, ...] = (ANSWER_VERSION, ANSWER_V2, ANSWER_V3)
 ANSWER_TASK_ID = "answer"
 ANSWER_EVIDENCE = (evl.EVIDENCE_V2, evl.SCOPE_CLAUSE)          # the gate of every memory use: evidence.v2, scope clause (L-MEM-12)
 RECALL_CAP = 20
@@ -65,6 +68,13 @@ ANSWER_RULES_V2: Dict[str, str] = {
 }
 
 
+ANSWER_RULES_V3: Dict[str, str] = {
+    "recall": "recall(question) reads the question with the shape exchanger and answers from the memory CROSSES: ANSWER (one value), UPDATED (the latest value + `history`), CHOICE (two or more values at one "
+              "place: nothing is ranked), NONE (`issues` say why). Each value comes with its sentence (`sid`) and the units of the stretch to quote (`span`): weave_span that stretch and emit. "
+              "emit still judges the quote against the question AS ASKED: a value found through a bridge or a slot-noun class may be refused (no_evidence).",
+}
+
+
 # ------------------------------------------------------------------------------------------------------------
 # the snapshot
 # ------------------------------------------------------------------------------------------------------------
@@ -76,6 +86,10 @@ def snapshot_rows(rows: Sequence[dict], superseded: Dict[int, dict]) -> List[dic
             d["topic_at"] = r["topic_at"]
         if "turn" in r:
             d["turn"] = r["turn"]
+        if r.get("unshaped") is True:                # mem.v4 rows only
+            d["unshaped"] = True
+        if "weave_refused" in r:
+            d["weave_refused"] = r["weave_refused"]
         if sid in superseded:
             d["superseded_by"] = {"by": superseded[sid]["by"], "reason": superseded[sid]["reason"], "session": superseded[sid]["session"]}
         out.append(d)
@@ -107,6 +121,36 @@ def topics_name(sha256: str) -> str:
     return "topics_%s.json" % sha256[:12]
 
 
+def crosses_name(sha256: str) -> str:
+    return "crosses_%s.json" % sha256[:12]
+
+
+def crosses_bytes(decls: Sequence[dict], bridges: Sequence[dict]) -> bytes:
+    """The file a memanswer.v3 snapshot is paired with: the nest declarations [{session, at, topic}] and the bridges [{session, at, qword, phrase}] of the committed sessions, canonical."""
+    return (canonical({"bridges": [{"at": b["at"], "phrase": b["phrase"], "qword": b["qword"], "session": b["session"]} for b in bridges],
+                       "decls": [{"at": d["at"], "session": d["session"], "topic": d["topic"]} for d in decls]}) + "\n").encode("utf-8")
+
+
+def read_crosses(path) -> Tuple[bytes, List[dict], List[dict]]:
+    """(bytes, decls, bridges) of a crosses file: its name must be the sha256 of its bytes (`crosses_unverified`), the content the canonical form of what it holds."""
+    p = Path(path)
+    data = p.read_bytes()
+    if p.name != crosses_name(hashlib.sha256(data).hexdigest()):
+        raise Refuse("crosses_unverified", {"reason": "the file name is not the sha256 of its bytes"})
+    try:
+        obj = json.loads(data.decode("utf-8"))
+        decls, bridges = obj["decls"], obj["bridges"]
+        ok = (isinstance(obj, dict) and set(obj) == {"bridges", "decls"} and all(isinstance(d, dict) and set(d) == {"at", "session", "topic"} and isinstance(d["at"], int) and isinstance(d["session"], int)
+                                                                                 and isinstance(d["topic"], str) and 1 <= len(d["topic"]) <= mem.TOPIC_MAX_CHARS for d in decls)
+              and all(isinstance(b, dict) and set(b) == {"at", "phrase", "qword", "session"} and isinstance(b["at"], int) and isinstance(b["session"], int) and isinstance(b["phrase"], str)
+                      and isinstance(b["qword"], str) for b in bridges))
+    except (ValueError, KeyError, TypeError):
+        ok = False
+    if not ok or data != crosses_bytes(decls, bridges):
+        raise Refuse("crosses_unverified", {"reason": "not the canonical bytes of a list of declarations and bridges"})
+    return data, decls, bridges
+
+
 def distinct_topics(entries: Sequence[dict]) -> List[str]:
     """The distinct topic texts of the declarations [{session, topic}], first declaration first."""
     out: List[str] = []
@@ -136,7 +180,7 @@ def read_topics(path) -> Tuple[bytes, List[dict]]:
     return data, ents
 
 
-def write_snapshot(store_path, topics: bool = False) -> dict:
+def write_snapshot(store_path, topics: bool = False, crosses: bool = False) -> dict:
     """`mem snapshot`: verify the store (the chain of every listed session, memory.jsonl against the ledgers), derive H and the supersede marks from the ledgers, write
     `<store>/snapshots/memory_<sha12>.jsonl` (never overwritten with other bytes).  -> {"path", "name", "sha256", "sentences", "superseded", "store_id"}.  An empty store has no
     snapshot (`empty_store`)."""
@@ -167,6 +211,17 @@ def write_snapshot(store_path, topics: bool = False) -> dict:
         if not tp.exists():
             mem._atomic_write(tp, tdata)
         out.update(topics_path=str(tp), topics_name=tp.name, topics=distinct_topics(ents))
+    if crosses:                                         # PUB-M6 (memanswer.v3): the nest declarations and the bridges of the committed sessions, from the verified ledgers
+        decls: List[dict] = []
+        brs: List[dict] = []
+        for e in head["sessions"]:
+            decls += mem.session_nest_decls(store.sessions_dir / e["run_id"])
+            brs += mem.session_bridges(store.sessions_dir / e["run_id"])
+        cdata = crosses_bytes(decls, brs)
+        cp = d / crosses_name(hashlib.sha256(cdata).hexdigest())
+        if not cp.exists():
+            mem._atomic_write(cp, cdata)
+        out.update(crosses_path=str(cp), crosses_name=cp.name)
     return out
 
 
@@ -193,7 +248,7 @@ class AnswerRun(Run):
     ABSTAIN = ANSWER_ABSTAIN
 
     def __init__(self, corpus: Corpus, rows: Sequence[dict], store_id: str, snapshot_name_: str, question: str, model: str, run_id: str,
-                 topics: Optional[Sequence[str]] = None, topics_file: Optional[str] = None) -> None:
+                 topics: Optional[Sequence[str]] = None, topics_file: Optional[str] = None, crosses: Optional[Tuple[str, Sequence[dict], Sequence[dict]]] = None) -> None:
         mg.check_memory_rows(rows)
         task = {"task_id": ANSWER_TASK_ID, "text": question, "lang": "prose", "mode": "record_only", "tiers": ["WORD"]}
         super().__init__(corpus, task, model, run_id, DEFAULT_STABILITY, None, None, notelib.NOTES_VERSION, ANSWER_EVIDENCE)
@@ -205,6 +260,22 @@ class AnswerRun(Run):
         self.v2 = topics is not None                      # memanswer.v2: the declared topics are known (possibly none: a store whose sessions declared none)
         self.topics: Tuple[str, ...] = tuple(topics or ())
         self.topics_file = topics_file
+        self.v3 = crosses is not None                     # memanswer.v3: recall reads the memory crosses of a mem.v4 store
+        self.crosses_file: Optional[str] = None if crosses is None else crosses[0]
+        self.decls: List[dict] = [] if crosses is None else [dict(d) for d in crosses[1]]
+        self.bridges: List[dict] = [] if crosses is None else [dict(b) for b in crosses[2]]
+        self._index: Optional[mx.MemIndex] = None
+
+    def index(self) -> "mx.MemIndex":
+        """The memory crosses of the snapshot (memanswer.v3): the full rebuild `build_index` over its rows, the nest declarations and the bridges of its crosses file (cached by the names of both files:
+        a pure function of the bytes)."""
+        if self._index is None:
+            key = (self.snapshot, self.crosses_file)
+            ix = _INDEX_CACHE.get(key)
+            if ix is None:
+                ix = _INDEX_CACHE[key] = mx.build_index(self.rows, self.decls, self.superseded, bridges=self.bridges)
+            self._index = ix
+        return self._index
 
     def begin_body(self) -> dict:
         b = super().begin_body()
@@ -215,6 +286,10 @@ class AnswerRun(Run):
         if self.v2:
             res["mem_answer"].update(topics=list(self.topics), topics_file=self.topics_file, forms=mr.FORMS_VERSION)
             res["rules"] = dict(res["rules"], recall=ANSWER_RULES_V2["recall"])
+        if self.v3:
+            res["mem_answer"]["version"] = ANSWER_V3
+            res["mem_answer"].update(crosses_file=self.crosses_file, ask=mask.ASK_VERSION, cross=mx.CROSS_VERSION)
+            res["rules"] = dict(res["rules"], recall=ANSWER_RULES_V3["recall"])
         res["tools"] = list(ANSWER_TOOLS)
         return b
 
@@ -238,12 +313,19 @@ class AnswerRun(Run):
         super()._precheck(op)
 
 
+_INDEX_CACHE: Dict[Tuple[str, Optional[str]], "mx.MemIndex"] = {}      # (snapshot name, crosses file name) -> its index: a pure cache
+
+
 def _h_recall(run: AnswerRun, a: dict, i: int) -> dict:
     a = ops._args(a, {"question": (str, True)})
     q = unicodedata.normalize("NFC", a["question"])
     if not 1 <= len(q) <= ARG_STR_CAP or any(unicodedata.category(ch) in ("Cc", "Zl", "Zp") for ch in q):
         raise Refuse("bad_question", {"reason": "1 to %d characters, no newline / NUL / control character" % ARG_STR_CAP})
     mg.check_memory_rows(run.rows)
+    if run.v3:
+        res = mask.recall(run.index(), run.rows, run.corpus, q)
+        res.update(ok=True, text=q)
+        return res
     turns = {k: r["turn"] for k, r in enumerate(run.rows) if "turn" in r}
     res = mr.recall(run.corpus, q, evl.EVIDENCE_V2, subject_guard=True, superseded=run.superseded or None, turns=turns or None, topics=run.topics or None)
     res.update(ok=True, text=q)
@@ -277,10 +359,17 @@ class AnswerSession:
         if answer_version not in ANSWER_VERSIONS:
             raise Refuse("bad_answer_version", {"allowed": list(ANSWER_VERSIONS)})
         want_topics = answer_version == ANSWER_V2
-        snap = snapshot if snapshot is not None else write_snapshot(store_path, topics=want_topics)
+        want_crosses = answer_version == ANSWER_V3
+        snap = snapshot if snapshot is not None else write_snapshot(store_path, topics=want_topics, crosses=want_crosses)
         if want_topics and "topics_name" not in snap:                 # a snapshot handed in without its topics file is refused, never replaced by a fresh snapshot of the store as it is now
             raise Refuse("snapshot_without_topics", {"reason": "memanswer.v2 needs the snapshot dict of write_snapshot(store, topics=True)", "snapshot": snap.get("name")})
+        if want_crosses and "crosses_name" not in snap:
+            raise Refuse("snapshot_without_crosses", {"reason": "memanswer.v3 needs the snapshot dict of write_snapshot(store, crosses=True)", "snapshot": snap.get("name")})
         data, rows = read_snapshot(snap["path"])
+        crosses = None
+        if want_crosses:
+            _, cdecls, cbridges = read_crosses(snap["crosses_path"])
+            crosses = (snap["crosses_name"], cdecls, cbridges)
         topics = topics_file = None
         if want_topics:
             _, tents = read_topics(snap["topics_path"])
@@ -295,11 +384,13 @@ class AnswerSession:
             run_id = "a%04d" % k
         if not _RUN_RX.match(run_id) or (d / run_id).exists():
             raise Refuse("bad_run_id", {"run_id": run_id})
-        self.run = AnswerRun(Corpus(data), rows, snap["store_id"], snap["name"], question, model, run_id, topics, topics_file)
+        self.run = AnswerRun(Corpus(data), rows, snap["store_id"], snap["name"], question, model, run_id, topics, topics_file, crosses)
         self.ledger = lg.Ledger(d / run_id)
         meta = {"store": snap["store_id"], "mode": "memory_answer", "snapshot": snap["name"], "corpus_sha": hashlib.sha256(data).hexdigest()}
         if want_topics:
             meta["topics"] = topics_file
+        if want_crosses:
+            meta["crosses"] = snap["crosses_name"]
         self.ledger.create(meta)
         self.t0 = time.monotonic_ns()
         with self.ledger.locked() as lk:
@@ -390,8 +481,21 @@ def replay_answer(run_dir, store_path=None) -> ReplayResult:
         if ma.get("topics") != topics:
             out.status, out.mismatch = "INPUTS", "topics_unverified"
             return out
+    crosses = None
+    if ma["version"] == ANSWER_V3:                       # the crosses file the begin row names (nest declarations + bridges) must be there and be what its name says
+        cf = str(ma.get("crosses_file"))
+        cp = store_path / "snapshots" / cf
+        if not re.fullmatch(r"crosses_[0-9a-f]{12}\.json", cf) or not cp.is_file():
+            out.status, out.mismatch = "INPUTS", "crosses_missing"
+            return out
+        try:
+            _, cdecls, cbridges = read_crosses(cp)
+        except (Refuse, OSError, ValueError, KeyError, UnicodeDecodeError):
+            out.status, out.mismatch = "INPUTS", "crosses_unverified"
+            return out
+        crosses = (cf, cdecls, cbridges)
     try:
-        run = AnswerRun(Corpus(data), srows, str(ma["store_id"]), str(ma["snapshot"]), question, model, run_id, topics, topics_file)
+        run = AnswerRun(Corpus(data), srows, str(ma["store_id"]), str(ma["snapshot"]), question, model, run_id, topics, topics_file, crosses)
     except (Refuse, ValueError):
         out.status, out.mismatch = "INPUTS", "snapshot_unverified"
         return out

@@ -168,7 +168,7 @@ def pool(indexes):
         for n in ix.nests:
             members += len(n.members)
             completed += sum(1 for m in n.members if m.kind == "completed")
-            under += len(n.under)
+            under += sum(1 for m in n.members if m.kind == "context")           # PUB-M5 (L-PUB-39): `under` became the members of kind `context`
         positions += len(ix.positions)
         for pos in ix.positions:
             for e in ix.history_full(pos):

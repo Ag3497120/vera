@@ -63,7 +63,7 @@ def test_an_f4_clause_is_completed_by_the_nest_centre_and_nothing_is_prepended(t
     assert subj.via == "nest" and subj.nest == "N1" and subj.prov.sid == 0 and subj.prov.session == 1 and subj.prov.surface == "新製品"
     assert cr.seats_of("を")[0].via is None
     n = ix.nest("新製品")
-    assert [(m.sid, m.kind, m.tank, m.centre, m.exact) for m in n.members] == [(0, "completed", "F3", "送付", True)] and n.under == ()
+    assert [(m.sid, m.kind, m.tank, m.centre, m.exact) for m in n.members] == [(0, "completed", "F3", "送付", True)]
 
 
 def test_the_nest_centre_seat_carries_the_arms_of_the_topic_and_the_text_is_untouched(tmp_path):
@@ -92,8 +92,8 @@ def test_members_are_the_crosses_whose_centre_or_no_arm_path_holds_the_nest_cent
     ix = mx.build_index(rows(["新製品は来月発売です", "新製品の担当は田中です", "締め切りは水曜", "広報の締め切りは金曜", "資料を送付した", "会議の参加者は佐藤です"]),
                         [{"session": 1, "at": 0, "topic": "新製品"}])
     n = ix.nest("新製品")
-    assert [(m.sid, m.kind) for m in n.members] == [(0, "centre"), (1, "path"), (4, "completed")]
-    assert n.under == ((2, 0, "F2", "締め切り"), (3, 0, "F1", "締め切り"), (5, 0, "F1", "参加者"))              # written under the nest, not members: a bare 「Y は A」 is NOT completed (conservative)
+    assert [(m.sid, m.kind, m.exact) for m in n.members] == [(0, "centre", True), (1, "path", True), (2, "context", False), (3, "context", False), (4, "completed", True), (5, "context", False)]
+    # designer decision (L-PUB-39): a clause written while the nest is open is a member of kind `context` (its text and subject are not changed); a bare 「Y は A」 is still NOT completed
     assert ix.cross("F2", "締め切り").seats_of("は")[0].via is None and ix.cross("F2", "締め切り").seats_of("が") == ()
 
 
@@ -168,5 +168,5 @@ def test_the_nest_declarations_are_read_from_the_ledger_and_survive_replay(tmp_p
     assert [d["topic"] for e in st.head()["sessions"] for d in mem.session_nest_decls(st.sessions_dir / e["run_id"])] == ["新製品", "A社のB事業", "新製品"]
     assert mem.replay_store(str(tmp_path / "mem"), mem.FROM_HEADER).identical
     ix = st.index()
-    assert [n.id for n in ix.nests] == ["N1", "N2"] and [len(n.members) for n in ix.nests] == [2, 1]
+    assert [n.id for n in ix.nests] == ["N1", "N2"] and [len(n.members) for n in ix.nests] == [4, 2]
     assert [e.kind for e in ix.history_full(("F1", "期限", (("の", "認証"),)))] == ["first", "update", "update"]

@@ -40,10 +40,10 @@ def refusal(res):
 # -- the profile -------------------------------------------------------------------------------------------------------------------------------
 def test_the_profile_is_mem_v4_and_the_older_ones_are_untouched():
     assert V4 == "mem.v4" and mem.PROFILES == ("mem.v1", "mem.v2", "mem.v3", "mem.v4") and mem.V2_PLUS == ("mem.v2", "mem.v3", "mem.v4")
-    assert mem.tools_of("mem.v3") == mem.TOOLS + mem.V2_OPS and mem.tools_of(V4) == mem.TOOLS + mem.V2_OPS + ("keep_unshaped",) and mem.tools_of("mem.v1") == mem.TOOLS
+    assert mem.tools_of("mem.v3") == mem.TOOLS + mem.V2_OPS and mem.tools_of(V4) == mem.TOOLS + mem.V2_OPS + ("keep_unshaped", "bridge") and mem.tools_of("mem.v1") == mem.TOOLS
     assert mx.ARMS == fd.LADDER[1:] == ("の", "に", "で", "と", "を", "が") and mx.VALUE == fd.LADDER[0] == "は" and mx.SLOTS == mx.ARMS + ("は", "quantity", "object_bare")
-    assert mem.caps_of(V4) == mem.CAPS_MEM_V3 and mem.caps_of("mem.v3") is mem.CAPS_MEM_V3
-    assert md.story_tools("notes", V4) == ("write", "keep_unshaped", "declare_topic", "supersede", "recall", "read_sentence", "report", "status")
+    assert mem.caps_of(V4) == dict(mem.CAPS_MEM_V3, bridges=60) and mem.caps_of("mem.v3") is mem.CAPS_MEM_V3
+    assert md.story_tools("notes", V4) == ("write", "keep_unshaped", "bridge", "declare_topic", "supersede", "recall", "read_sentence", "report", "status")
     assert md.story_tools("notes", "mem.v3") == md.STORY_TOOLS["notes"] and md.story_tools("log", V4) == md.STORY_TOOLS["log"] and "keep_unshaped" in md.TOOL_SPECS
     # a row of an older profile serialises as it always did
     assert mem.row_line({"kind": "base", "sent": "a", "source": "mem:t/1#0"}) == '{"kind":"base","sent":"a","source":"mem:t/1#0"}\n'

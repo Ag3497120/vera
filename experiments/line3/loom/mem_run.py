@@ -349,7 +349,7 @@ def run_one(task: dict, arm: str, repeat: int, *, client: Any, model: str, out_r
     if max_calls is None:
         max_calls = MAX_CALLS_V3 if v3 else mdrv.MAX_CALLS_PER_TURN
     base_version = md.BASELINE_V2 if v3 else md.BASELINE_VERSION
-    answer_version = ma.ANSWER_V2 if v3 else ma.ANSWER_VERSION
+    answer_version = ma.ANSWER_V3 if profile == mem.PROFILE_V4 else ma.ANSWER_V2 if v3 else ma.ANSWER_VERSION      # mem.v4: the answer run reads the memory crosses (PUB-M6)
     run_dir = os.path.join(out_root, task["id"], arm + (("." + tag) if tag else ""), "r%02d" % repeat)
     if os.path.exists(run_dir):
         raise MemRunError("run folder exists (never overwritten): %s" % run_dir, "run_exists")
@@ -401,7 +401,7 @@ def run_one(task: dict, arm: str, repeat: int, *, client: Any, model: str, out_r
     result["false_pairs"] = false_pairs(task, all_pairs)
     # -- the question phase: one conversation per question ---------------------------------------------------------------
     if result["ended"] == "story_complete":
-        snap = ma.write_snapshot(store, topics=v3) if arm in md.STRUCTURE_ARMS else None
+        snap = ma.write_snapshot(store, topics=v3 and profile != mem.PROFILE_V4, crosses=profile == mem.PROFILE_V4) if arm in md.STRUCTURE_ARMS else None
         if snap is not None:
             result["snapshot"] = {k: snap[k] for k in ("name", "sha256", "sentences", "superseded")}
         order = question_order(task["id"], repeat, len(task["questions"]))

@@ -1,0 +1,346 @@
+"""PUB-M5/M6 offline measurement on the meter v1 (36 structure runs, 360 questions, 6 tasks x 6 stores; no model, no API):
+
+  (a) RECALL.  The 36 stores are rebuilt as mem.v4 stores from the model's raw write calls (ok and refused, as the ledgers hold them, with their turns and topics; the same replay as
+      experiments/line3/pub/m2/measure.py).  Every recorded question is asked of the answer run memanswer.v3 over the rebuilt store (`recall` on the crosses): gold reached / exact / extra values, per kind
+      of question, next to the memfix numbers (the gate-based recall: 61 reached before the topics, 144 of 360 after).  For every question whose gold value was found, the oracle then quotes the value (weave_span
+      on the unit stretch the occurrence names) and emits it: how often a FOUND value cannot be EMITTED, and why.
+  (b) DETECTION.  The notes made on the crosses (SAME_SEAT, REVERSAL_X, UPDATE, ENUMERATION) against the plants of the bank: hits vs plants, the plants found, false alarms by type, the agreement with the two
+      second witnesses (SAME_QUESTION, the old REVERSAL), next to the old REVERSAL (13 of 311 firings on a planted reversal, 12 of 72 reversal plants cited).
+
+  PYTHONPATH=. PYTHONHASHSEED=0 python experiments/line3/pub/m5m6/meter.py [--workers 4] [--limit N]      -> meter_recall.{json,md}, meter_detect.{json,md}
+"""
+from __future__ import annotations
+
+import argparse
+import collections
+import json
+import os
+import shutil
+import tempfile
+from typing import Any, Dict, List, Optional, Sequence
+
+import common as K
+from common import C, ma, mem, mask
+
+EXPECT = {"SAME_SEAT": "contradiction", "REVERSAL_X": "reversal", "UPDATE": "update", "ENUMERATION": "list_trap"}
+OLD_NOTES = ("REVERSAL", "SAME_QUESTION")
+WANT = dict(EXPECT, REVERSAL="reversal", SAME_QUESTION="contradiction")           # the plant kind each note type is for (the old routes too)
+
+
+def turns_of_sids(rows: Sequence[dict], sids: Sequence[int]) -> List[str]:
+    return [rows[s]["turn"] for s in sids if 0 <= s < len(rows) and rows[s].get("turn")]
+
+
+def cited_turns(n: dict, rows: Sequence[dict]) -> List[str]:
+    """The turns of the earlier sentences a note cites."""
+    t = n["type"]
+    if t in ("SAME_SEAT", "UPDATE", "REVERSAL_X"):
+        return turns_of_sids(rows, [e["sid"] for e in n.get("earlier", [])])
+    if t == "ENUMERATION":
+        return turns_of_sids(rows, [e["sid"] for e in n.get("others", [])])
+    if t == "REVERSAL":
+        return [e["turn"] for e in n.get("earlier", []) if e.get("turn")]
+    if t == "SAME_QUESTION":
+        me = n.get("sentence_turn")
+        out = []
+        for v in n.get("variants", []):
+            for o in v["occurrences"]:
+                if o.get("turn") and o.get("turn") != me and o["turn"] not in out:
+                    out.append(o["turn"])
+        return out
+    return []
+
+
+def classify(plants: Sequence[dict], n: dict, this_turn: Optional[str], earlier_turns: Sequence[str]) -> Dict[str, Any]:
+    """{'class': hit | other:<kind> | no_plant | no_pair, 'plants': [indices of the plants of the expected kind it touches]}.  hit = the pair (this turn, an earlier turn) lies in a plant of the kind this
+    note type is for (UPDATE: this turn lies in an update plant: the plant names the changing message)."""
+    want = WANT.get(n["type"])
+    if n["type"] == "UPDATE":
+        hits = [k for k, p in enumerate(plants) if p["kind"] == "update" and this_turn in p["turns"]]
+        if hits:
+            return {"class": "hit", "plants": hits}
+        kinds = sorted({p["kind"] for p in plants if this_turn in p["turns"]})
+        return {"class": ("other:" + kinds[0]) if kinds else "no_plant", "plants": []}
+    pairs = [(e, this_turn) for e in earlier_turns if this_turn and e and e != this_turn]
+    if not pairs:
+        return {"class": "no_pair", "plants": []}
+    hit: List[int] = []
+    kinds: List[str] = []
+    for e, t in pairs:
+        for k in C.classify_pair(plants, e, t):
+            if plants[k]["kind"] == want:
+                if k not in hit:
+                    hit.append(k)
+            elif plants[k]["kind"] not in kinds:
+                kinds.append(plants[k]["kind"])
+    if hit:
+        return {"class": "hit", "plants": sorted(hit)}
+    kinds.sort()
+    return {"class": ("other:" + kinds[0]) if kinds else "no_plant", "plants": []}
+
+
+def emit_attempt(ses: Any, res: dict, kind: str, gold_vals: Sequence[str]) -> Dict[str, Any]:
+    """Quote the found value and emit it, through the answer run's own ops (weave_span, emit): the output gate is unchanged."""
+    if kind == "contradicted":
+        return {"status": "contested_available" if res["verdict"] == "CHOICE" else "not_applicable"}
+    grp = None
+    for g in res["answers"]:
+        if any(C.match(gv, a, True) for gv in gold_vals for a in g["answers"]):
+            grp = g
+            break
+    if grp is None:
+        return {"status": "not_found"}
+    occ = max(grp["occurrences"], key=lambda o: o["sid"])
+    if not occ["span"]:
+        return {"status": "no_span"}
+    w = ses.call("weave_span", {"sid": occ["sid"], "tier": "WORD", "first": occ["span"][0], "last": occ["span"][1]})
+    if not w.get("ok"):
+        why = w.get("refusal", "?")
+        d = w.get("detail") or {}
+        return {"status": "weave_refused", "why": "%s:%s" % (why, d.get("reason", "")) if isinstance(d, dict) else why}
+    e = ses.call("emit", {})
+    if e.get("ok"):
+        right = any(C.match(gv, e["text"], True) for gv in gold_vals)
+        return {"status": "emitted_right" if right else "emitted_wrong", "text": e["text"]}
+    return {"status": "emit_refused", "why": "%s:%s" % (e.get("refusal", "?"), refusal_codes(e.get("detail")))}
+
+
+def refusal_codes(detail: Any) -> str:
+    """The gate codes of the first refused weave of an emit refusal ('question_has_no_subject,no_slot_head'), else the refusal types."""
+    try:
+        refs = detail["refusals"]
+        codes: List[str] = []
+        for rf in refs:
+            for w in rf.get("weaves", []):
+                for c in w.get("codes", []):
+                    if c not in codes:
+                        codes.append(c)
+        return ",".join(codes) if codes else ",".join(rf.get("type", "?") for rf in refs)
+    except (KeyError, TypeError, AttributeError):
+        return json.dumps(detail, ensure_ascii=False, sort_keys=True)[:60]
+
+
+def measure_run(run_dir: str) -> Dict[str, Any]:
+    m2 = K.load_m2()
+    label = C.label(run_dir)
+    r = C.load_result(run_dir)
+    task = C.mem_run.find_task(r["task_id"])
+    plants = C.plant_sets(task)
+    tmp = tempfile.mkdtemp(prefix="m5m6_")
+    try:
+        store = os.path.join(tmp, "store")
+        tally, ix, vstat, rstat = m2.drive(store, m2.meter_sessions(os.path.join(run_dir, "store")))
+        rows = mem.MemStore(store).rows()
+        # -- (a) recall through the answer run ------------------------------------------------------------------------------------------------------
+        snap = ma.write_snapshot(store, crosses=True)
+        qs = []
+        for a in sorted(r["answers"], key=lambda a: a["index"]):
+            gk, gv = C.mem_run.gold_values(a["gold"])
+            ses = ma.AnswerSession(store, a["q"], "oracle", snapshot=snap, answer_version=ma.ANSWER_V3)
+            res = ses.call("recall", {"question": a["q"]})
+            q = {"index": a["index"], "q": a["q"], "kind": a["kind"], "gold": gv, "verdict": res["verdict"], "route": res.get("route"), "choice_kind": res.get("choice_kind"),
+                 "issues": res.get("issues", []), "history": len(res.get("history", [])), "parsed": res["question"]["ok"]}
+            for mode, lenient in (("strict", False), ("lenient", True)):
+                q[mode] = K.judge_recall(res, a["kind"], gv, lenient)
+            q["emit"] = emit_attempt(ses, res, a["kind"], gv) if q["lenient"]["reached"] else {"status": "not_found"}
+            qs.append(q)
+        # -- (b) detection --------------------------------------------------------------------------------------------------------------------------
+        by_type: Dict[str, Dict[str, int]] = {t: collections.Counter() for t in list(EXPECT) + list(OLD_NOTES)}
+        covered: Dict[str, List[int]] = {t: [] for t in by_type}
+        firing_sids: Dict[str, List[int]] = {t: [] for t in by_type}
+        extra = collections.Counter()
+        for n in ix.notes:
+            t = n["type"]
+            this = n.get("turn")
+            c = classify(plants, n, this, cited_turns(n, rows))
+            by_type[t][c["class"]] += 1
+            by_type[t]["total"] += 1
+            for k in c["plants"]:
+                if k not in covered[t]:
+                    covered[t].append(k)
+            if n["sid"] not in firing_sids[t]:
+                firing_sids[t].append(n["sid"])
+            if t == "UPDATE":
+                extra["update_first" if n["first"] else "update_with_prior"] += 1
+                if n.get("old_matches") is False:
+                    extra["update_old_mismatch"] += 1
+            if t == "ENUMERATION":
+                extra["enumeration_" + n["reason"]] += 1
+            if t == "REVERSAL_X":
+                extra["reversal_x_key_" + ("agrees" if n["key"] and n["key"]["agrees"] else "disagrees")] += 1
+                extra["reversal_x_" + n["relation"]] += 1
+            if t == "SAME_SEAT":
+                extra["same_seat_" + n["tank"]] += 1
+        # the old routes and the agreement with them, from the notes the ledgers hold (witness annotations; SAME_QUESTION / REVERSAL as the write returned them)
+        agree = {"SAME_SEAT": collections.Counter(), "REVERSAL_X": collections.Counter(), "SAME_QUESTION": collections.Counter(), "REVERSAL": collections.Counter()}
+        for _run_id, srows in C.session_ledger_rows(store):
+            for w in C.written_with_notes(srows):
+                for n in w["notes"]:
+                    t = n["type"]
+                    if t in OLD_NOTES:
+                        n = dict(n, sentence_turn=w["turn"])
+                        c = classify(plants, dict(n, type=t), w["turn"], cited_turns(n, rows))
+                        by_type[t][c["class"]] += 1
+                        by_type[t]["total"] += 1
+                        for k in c["plants"]:
+                            if k not in covered[t]:
+                                covered[t].append(k)
+                        if w["sid"] not in firing_sids[t]:
+                            firing_sids[t].append(w["sid"])
+                    if "witness" in n:
+                        agree[t][n["witness"]["state"]] += 1
+        planted = collections.Counter(p["kind"] for p in plants)
+        cov = {}
+        for t, want in WANT.items():
+            idxs = [k for k, p in enumerate(plants) if p["kind"] == want]
+            cov[t] = {"plants": len(idxs), "found": len([k for k in covered[t] if k in idxs])}
+        return {"label": label, "arm": r["arm_label"], "task": r["task_id"], "sentences": len(rows), "writes": tally.to_obj(), "verify": [vstat, rstat], "index_sha": ix.index_sha,
+                "questions": qs, "notes": {t: dict(c) for t, c in by_type.items()}, "plant_coverage": cov, "planted": dict(planted), "firing_sentences": {t: len(v) for t, v in firing_sids.items()},
+                "extra": dict(extra), "agree": {t: dict(c) for t, c in agree.items()}}
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+
+
+# ------------------------------------------------------------------------------------------------------------
+# tables
+# ------------------------------------------------------------------------------------------------------------
+def tally_recall(runs: Sequence[dict]) -> dict:
+    out: Dict[str, Any] = {}
+    for mode in ("strict", "lenient"):
+        for kind in ("contradicted", "updated", "plain", "all"):
+            out.setdefault(mode, {})[kind] = {"n": 0, "reached": 0, "exact": 0, "extra": 0}
+    verdicts, routes, issues = collections.Counter(), collections.Counter(), collections.Counter()
+    emit = collections.Counter()
+    emit_why = collections.Counter()
+    for r in runs:
+        for q in r["questions"]:
+            verdicts[(q["kind"], q["verdict"])] += 1
+            routes[q["route"] or "none"] += 1
+            for i in q["issues"]:
+                issues[i.split(":")[0] + (":" + i.split(":")[1] if i.startswith("question_unparsed") else "")] += 1
+            for mode in ("strict", "lenient"):
+                for kind in (q["kind"], "all"):
+                    c = out[mode][kind]
+                    c["n"] += 1
+                    c["reached"] += 1 if q[mode]["reached"] else 0
+                    c["exact"] += 1 if q[mode]["exact"] else 0
+                    c["extra"] += 1 if q[mode]["extra"] else 0
+            st = q["emit"]["status"]
+            if q["lenient"]["reached"]:
+                emit[(q["kind"], st)] += 1
+                if "why" in q["emit"]:
+                    emit_why[q["emit"]["why"]] += 1
+    out["verdicts"] = {"%s/%s" % k: v for k, v in sorted(verdicts.items())}
+    out["routes"] = dict(sorted(routes.items()))
+    out["issues"] = dict(sorted(issues.items()))
+    out["emit"] = {"%s/%s" % k: v for k, v in sorted(emit.items())}
+    out["emit_why"] = dict(sorted(emit_why.items()))
+    return out
+
+
+def tally_detect(runs: Sequence[dict]) -> dict:
+    notes: Dict[str, collections.Counter] = {}
+    cov: Dict[str, collections.Counter] = {}
+    fs = collections.Counter()
+    ex = collections.Counter()
+    agree: Dict[str, collections.Counter] = {}
+    planted = collections.Counter()
+    sentences = 0
+    for r in runs:
+        sentences += r["sentences"]
+        for t, c in r["notes"].items():
+            notes.setdefault(t, collections.Counter()).update(c)
+        for t, c in r["plant_coverage"].items():
+            cov.setdefault(t, collections.Counter()).update(c)
+        for t, n in r["firing_sentences"].items():
+            fs[t] += n
+        ex.update(r["extra"])
+        for t, c in r["agree"].items():
+            agree.setdefault(t, collections.Counter()).update(c)
+        planted.update(r["planted"])
+    return {"runs": len(runs), "sentences": sentences, "notes": {t: dict(c) for t, c in notes.items()}, "plant_coverage": {t: dict(c) for t, c in cov.items()}, "firing_sentences": dict(fs),
+            "extra": dict(sorted(ex.items())), "agree": {t: dict(c) for t, c in agree.items()}, "planted": dict(sorted(planted.items()))}
+
+
+def memfix_reach() -> Optional[dict]:
+    p = os.path.join(C.ROOT, "experiments", "line3", "mem", "memfix", "results", "reach_report.json")
+    if not os.path.isfile(p):
+        return None
+    return json.load(open(p, encoding="utf-8"))["total"]
+
+
+def old_reversal() -> Optional[dict]:
+    p = os.path.join(C.ROOT, "experiments", "line3", "mem", "memfix", "results", "reversal_precision.json")
+    if not os.path.isfile(p):
+        return None
+    return json.load(open(p, encoding="utf-8"))["total"]
+
+
+def md_recall(t: dict, mf: Optional[dict], n_runs: int) -> str:
+    names = {"contradicted": "矛盾質問", "updated": "更新質問", "plain": "平文質問", "all": "**全体**"}
+    out = ["# PUB-M6 想起（十字）の到達 — meter v1（offline, API なし）", "",
+           "meter v1 の構造 arm %d run（%d 問）の書き込みを mem.v4 の store に流し直し（モデルの raw write をそのまま、turn つき）、回答 run memanswer.v3 の `recall` を質問文のまま呼ぶ oracle。" % (n_runs, t["strict"]["all"]["n"]), "",
+           "### 厳密一致の照合", "", "| 質問の種類 | n | 到達 | 厳密一致 | 余計な値あり |" + (" memfix 到達 前 | memfix 到達 後 |" if mf else ""), "|---|---|---|---|---|" + ("---|---|" if mf else "")]
+    for k in ("contradicted", "updated", "plain", "all"):
+        c = t["strict"][k]
+        line = "| %s | %d | %d | %d | %d |" % (names[k], c["n"], c["reached"], c["exact"], c["extra"])
+        if mf:
+            line += " %d | %d |" % (mf["before"]["strict"][k]["reached"], mf["after"]["strict"][k]["reached"])
+        out.append(line)
+    out += ["", "### 寛容な照合（数値の後ろの単位の差を許す）", "", "| 質問の種類 | n | 到達 | 厳密一致 | 余計な値あり |", "|---|---|---|---|---|"]
+    for k in ("contradicted", "updated", "plain", "all"):
+        c = t["lenient"][k]
+        out.append("| %s | %d | %d | %d | %d |" % (names[k], c["n"], c["reached"], c["exact"], c["extra"]))
+    out += ["", "verdict（種類/verdict）: %s" % t["verdicts"], "", "route: %s" % t["routes"], "", "issues（NONE の理由）: %s" % t["issues"], "",
+            "### 見つかった値は出せるか（到達した問いだけ。出口の門は変えていない: weave_span で引用 → emit）", "", "%s" % t["emit"], "", "出せなかった理由: %s" % t["emit_why"], ""]
+    return "\n".join(out) + "\n"
+
+
+def md_detect(t: dict, old: Optional[dict]) -> str:
+    out = ["# PUB-M5 十字の検知 — meter v1 の仕掛けとの照合（offline, API なし）", "",
+           "%d store の保存文 %d。仕掛け: %s。注記の引用（sid → turn）の組が、その注記の種類に合う仕掛けの2通に入れば hit。" % (t["runs"], t["sentences"], t["planted"]), "",
+           "| 注記 | 発火 | 発火した文 | hit | 他の仕掛け | 仕掛けなし | 対なし | 適合率 | 見つかった仕掛け |", "|---|---|---|---|---|---|---|---|---|"]
+    for ty in ("SAME_SEAT", "REVERSAL_X", "UPDATE", "ENUMERATION", "REVERSAL", "SAME_QUESTION"):
+        c = t["notes"].get(ty, {})
+        tot = c.get("total", 0)
+        other = sum(v for k, v in c.items() if k.startswith("other:"))
+        cv = t["plant_coverage"].get(ty, {"plants": 0, "found": 0})
+        out.append("| %s | %d | %d | %d | %d | %d | %d | %s | %d / %d |" % (ty, tot, t["firing_sentences"].get(ty, 0), c.get("hit", 0), other, c.get("no_plant", 0), c.get("no_pair", 0),
+                                                                          "%.3f" % (c.get("hit", 0) / tot) if tot else "-", cv.get("found", 0), cv.get("plants", 0)))
+    out += ["", "「他の仕掛け」の内訳（種類別）:"]
+    for ty in ("SAME_SEAT", "REVERSAL_X", "UPDATE", "ENUMERATION", "REVERSAL", "SAME_QUESTION"):
+        c = t["notes"].get(ty, {})
+        out.append("- %s: %s" % (ty, {k[6:]: v for k, v in sorted(c.items()) if k.startswith("other:")}))
+    out += ["", "内訳: %s" % t["extra"], "", "二つの証人の一致（注記の `witness`）: %s" % t["agree"], ""]
+    if old:
+        c = old["classes"]
+        out += ["旧 REVERSAL（memfix 保存済み台帳, mem.v3）: 発火 %d（仕掛けの反転に当たる %d、適合率 %s）、仕掛けの反転が引用された %d / %d。" % (old["firings"], c["reversal"], old["precision"], old["reversal_plants_cited"], old["reversal_plants"]), ""]
+    return "\n".join(out) + "\n"
+
+
+def main(argv: Optional[Sequence[str]] = None) -> int:
+    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("--meter", default=C.METER_V1)
+    ap.add_argument("--workers", type=int, default=K.DEFAULT_WORKERS)
+    ap.add_argument("--limit", type=int, default=0, help="only the first N runs (a smoke test)")
+    ns = ap.parse_args(argv)
+    dirs = C.structure_runs(ns.meter)
+    if ns.limit:
+        dirs = dirs[:ns.limit]
+    runs = K.pmap(measure_run, dirs, ns.workers)
+    runs.sort(key=lambda r: r["label"])
+    rec, det = tally_recall(runs), tally_detect(runs)
+    mf, old = memfix_reach(), old_reversal()
+    out = {"meter": os.path.relpath(ns.meter, C.ROOT), "runs": len(runs), "not_verified": [[r["label"]] + r["verify"] for r in runs if r["verify"] != ["OK", "IDENTICAL"]]}
+    K.write_json(os.path.join(K.OUT, "meter_recall.json"), dict(out, total=rec, memfix=mf, per_run=[{k: r[k] for k in ("label", "arm", "task", "sentences", "index_sha", "questions")} for r in runs]))
+    K.write_json(os.path.join(K.OUT, "meter_detect.json"), dict(out, total=det, old_reversal=old,
+                                                                  per_run=[{k: r[k] for k in ("label", "arm", "task", "sentences", "notes", "plant_coverage", "planted", "extra", "agree")} for r in runs]))
+    K.write_text(os.path.join(K.OUT, "meter_recall.md"), md_recall(rec, mf, len(runs)))
+    K.write_text(os.path.join(K.OUT, "meter_detect.md"), md_detect(det, old))
+    print(md_recall(rec, mf, len(runs)))
+    print(md_detect(det, old))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

@@ -59,8 +59,11 @@ from typing import Any, Dict, List, Optional, Sequence, Tuple
 from verantyx.ledger_events import GENESIS, args_sha256, redact, redact_obj
 from verantyx.loom import ledger as lg
 from verantyx.loom import evidence
+from verantyx.loom import memask as mask
 from verantyx.loom import memcross as mx
+from verantyx.loom import memdetect as mdt
 from verantyx.loom import memnotes as mn
+from verantyx.loom import memqwords as qw
 from verantyx.loom import memrecall as mr
 from verantyx.loom import notes as notelib
 from verantyx.loom import memshape as ms
@@ -84,11 +87,13 @@ PROFILES: Tuple[str, ...] = (PROFILE_V1, PROFILE_V2, PROFILE_V3, PROFILE_V4)
 V2_PLUS: Tuple[str, ...] = (PROFILE_V2, PROFILE_V3, PROFILE_V4)  # the profiles that have declare_topic / supersede / report and the door-supplied turn
 V3_PLUS: Tuple[str, ...] = (PROFILE_V3, PROFILE_V4)              # the profiles with the mem.v3 rules (clause_at, cited REVERSAL, the long-story caps, notes mem.v2, the forced / capped turn rows)
 V4_OPS: Tuple[str, ...] = ("keep_unshaped",)                     # PUB-M2: the op a mem.v4 session adds (the F0 tank)
+V4_BRIDGE: Tuple[str, ...] = ("bridge",)                          # PUB-M6: the op a mem.v4 session adds to bridge a question word to a memory phrase
 DEFAULT_PROFILE = PROFILE_V1                     # the API default: every store and test before MEM-d. The meter's doors (memdoor) ask for PROFILE_V2.
 CAPS_MEM_V2: Dict[str, int] = dict(CAPS_MEM_V1, topics=8, supersedes=30, reports=60)
 # MEM-fix (L-MEM-63): the caps of a LONG story (a session of 100+ messages must not run into 60 reports / 60 writes: the arms would stop being comparable).  Every count is the
 # v2 one times 4; the shape caps (unit_chars, max_L, crosses, max_depth) are unchanged.  The baselines' log caps move the same way (memdoor.LOG_CAPS_V2).
 CAPS_MEM_V3: Dict[str, int] = dict(CAPS_MEM_V2, writes=240, recalls=240, lookups=240, ops=1200, topics=32, supersedes=120, reports=240)
+CAPS_MEM_V4: Dict[str, int] = dict(CAPS_MEM_V3, bridges=60)          # PUB-M6: + at most 60 bridges a session
 TOPIC_FORBIDDEN = "のにでとをが"                                    # a mem.v3 topic holds none of the arm particles (L-MEM-58): with one inside, 「<topic>の…」 is a nested particle chain and EVERY expansion is refused
 LEAD_PARTICLES = "のにでとをがはもへ"                              # a particle in the lead-in of a clause (text from the start of its token up to the Y) means the clause already has its own subject
 FORCE_OPS: Tuple[str, ...] = ("report_forced", "report_missing")  # MEM-fix (L-MEM-62): the harness rows of a turn that ended without a report of its own (mem.v3 / membase.v2)
@@ -103,7 +108,7 @@ REASON_MAX_CHARS = 40
 TURN_RX = re.compile(r"^([1-9][0-9]?)-([1-9][0-9]{0,2})$")        # a turn id "<session>-<message>", 1-based (the harness names every message so)
 REPORT_MAX_PAIRS, REPORT_MAX_BUGS = 10, 5
 FROZEN_OPS: Tuple[str, ...] = ("unseat", "swap", "extend", "topic", "set_depth", "link", "unlink", "drop")
-OPS_CLASS: Tuple[str, ...] = ("write",) + V4_OPS + FROZEN_OPS         # the calls the `ops` cap counts
+OPS_CLASS: Tuple[str, ...] = ("write",) + V4_OPS + V4_BRIDGE + FROZEN_OPS         # the calls the `ops` cap counts
 MEM_RULES: Dict[str, Any] = {
     "output": "A memory session never emits: its only product is the sentences it writes. Plain text is discarded unread.",
     "write": "write(text, role) weaves the WHOLE sentence (WORD tier, weave_span.v2) into the memory. A sentence the structure cannot seat is refused and stores "
@@ -114,11 +119,11 @@ MEM_RULES: Dict[str, Any] = {
     "close": "commit closes the session; an uncommitted session is not part of the memory.",
 }
 def caps_of(profile: str) -> Dict[str, int]:
-    return CAPS_MEM_V3 if profile in V3_PLUS else CAPS_MEM_V2 if profile == PROFILE_V2 else CAPS_MEM_V1
+    return CAPS_MEM_V4 if profile == PROFILE_V4 else CAPS_MEM_V3 if profile in V3_PLUS else CAPS_MEM_V2 if profile == PROFILE_V2 else CAPS_MEM_V1
 
 
 def tools_of(profile: str) -> Tuple[str, ...]:
-    return TOOLS + V2_OPS + (V4_OPS if profile == PROFILE_V4 else ()) if profile in V2_PLUS else TOOLS
+    return TOOLS + V2_OPS + (V4_OPS + V4_BRIDGE if profile == PROFILE_V4 else ()) if profile in V2_PLUS else TOOLS
 
 
 MEM_RULES_GATE: Dict[str, Any] = dict(MEM_RULES, recall="recall(question) asks the evidence gate (scope clause, " + mr.RECALL_VERSION + ") of the WHOLE memory: ANSWER (one "
@@ -159,6 +164,13 @@ MEM_RULES_V4: Dict[str, Any] = dict(
     topic="declare_topic(text) opens a NEST: what the following sentences are about (a noun phrase, at most 24 characters; particles are allowed: A社のB事業 is the nest B事業 with the の-arm A社). An event with no subject "
           "(「資料を送付した」) is placed in the open nest and its subject is the nest's centre; nothing is added to your text. Declare it again when the subject changes. A new session declares its own.",
     form="Write each fact as one sentence: 「X の Y は A」 (X the whole subject, Y what is asked about, A a noun phrase) or an event 「X が Y を V」; a change as 「Y は A から B に変更」 or 「Y は B に更新」. One fact per sentence.",
+    supersede="A write whose value differs from an earlier value at the SAME place (the same Y of the same X, in the same nest) shows a SAME_SEAT note, a change clause an UPDATE note, a pair of phrases in opposite roles "
+              "a REVERSAL_X note, another owner of the same attribute an ENUMERATION note (information only); each names the sentences it is about. If the later statement REPLACES the earlier one, call "
+              "supersede(new_sid, old_sid or old_answer, reason): recall then answers with the newest and lists the old as history. A real contradiction is left alone: recall shows CHOICE.",
+    recall="recall(question) reads the question with the same shape exchanger as a write and answers from the CROSSES: ANSWER (one value), UPDATED (the latest value + `history`), CHOICE (two or more values at one place: "
+           "nothing is ranked), NONE (`issues` say why). Every value comes with the sentence that wrote it (`sid`, `span`): quote that stretch and emit.",
+    bridge="bridge(question_word, memory_phrase) when a question names a slot in words the memory does not use (the question says 開ける日, the memory has 開館日): it adds the mapping, marked as constructed, "
+           "and recall uses it. The memory phrase must be the centre of a cross the memory holds.",
 )
 
 
@@ -280,7 +292,9 @@ class MemRun(Run):
         self.v4 = profile == PROFILE_V4                # PUB-M2..M4: the shape exchanger accepts writes, memory crosses, nests, slide order
         self.builder = mx.IndexBuilder(ms.SHAPES_V2) if self.v4 else None
         self.decls: List[dict] = []                    # mem.v4: the topic declarations [{session, at, topic}] of every earlier v4 session and this one (the ledger is their source)
-        self.notes_profile = mn.MEM_NOTES_V2 if self.v3 else mn.MEM_NOTES_VERSION
+        self.notes_profile = mn.MEM_NOTES_V4 if self.v4 else mn.MEM_NOTES_V2 if self.v3 else mn.MEM_NOTES_VERSION
+        self.bridge_log: List[dict] = []                # mem.v4: the bridges [{session, at, qword, phrase}] of every earlier v4 session and this one (the ledger is their source)
+        self.counts4: Dict[str, int] = {"bridges": 0}   # kept apart from counts2 so that the state of a mem.v2 / v3 session is as it was
         self.caps = dict(caps_of(profile))
         self.store_id, self.session_no = store_id, session_no
         self.store_head_before = store_head_before
@@ -301,12 +315,12 @@ class MemRun(Run):
         self.superseded: Dict[int, dict] = {}          # MEM-d: {sid: {"by", "reason", "session"}} -- carried from the ledgers of the earlier sessions, extended by `supersede`
         self.starts: Dict[int, int] = {}               # MEM-d: {sid: topic_at} of the sentences stored with a declared topic (from the rows, so it survives the session)
         self.shapes: Dict[int, List[dict]] = {}        # MEM-d: per sentence the woven crosses' shape (cid, topic, seat names): what `sentence_clause` reads, for `supersede`
-        self.tally: Dict[str, Any] = {"notes": {t: 0 for t in mn.NOTE_TYPES}, "refused": {}}
+        self.tally: Dict[str, Any] = {"notes": {t: 0 for t in (mn.NOTE_TYPES_V4 if self.v4 else mn.NOTE_TYPES)}, "refused": {}}
         self._pending: List[dict] = []
         self._begin_header: Optional[dict] = None
 
     # -- the carried state (the frozen-stack fold) ------------------------------------------------------------------
-    def carry(self, rows: Sequence[dict], superseded: Optional[Dict[int, dict]] = None, decls: Optional[Sequence[dict]] = None) -> None:
+    def carry(self, rows: Sequence[dict], superseded: Optional[Dict[int, dict]] = None, decls: Optional[Sequence[dict]] = None, bridges: Optional[Sequence[dict]] = None) -> None:
         """Weave every earlier sentence, in order, against its own prefix corpus: the cumulative state of the sessions before (a pure function of H).  The same code
         path as a live write minus the notes; a row that no longer weaves means the store is not what it says (`store_unverified`)."""
         rows = list(rows)
@@ -345,6 +359,9 @@ class MemRun(Run):
             self.decls = [dict(d) for d in ds]
             for k in sorted(sup):
                 self.builder.supersede(k, sup[k]["by"], sup[k]["reason"], sup[k]["session"])
+            self.bridge_log = [dict(b) for b in (bridges or [])]
+            for b in self.bridge_log:
+                self.builder.bridge(b["session"], b["at"], b["qword"], b["phrase"])
         self.rows = rows
         self.rows0 = len(rows)
         self.corpus = self.corpus_cur = prev
@@ -391,6 +408,9 @@ class MemRun(Run):
             if self.v4:                                       # PUB-M2: the frozen shape table and the version of the memory cross serialisation this session reads / writes
                 h["shape"] = {"version": ms.SHAPES_V2, "sha": ms.SHAPES_SHA_V2}
                 h["cross"] = {"version": mx.CROSS_VERSION}
+                h["qwords"] = {"version": qw.QWORDS_VERSION, "sha": qw.QWORDS_SHA}        # PUB-M6: the question-word tank (frozen)
+                h["detect"] = {"version": mdt.DETECT_VERSION}                              # PUB-M5: the detections on the crosses
+                h["ask"] = {"version": mask.ASK_VERSION}                                   # PUB-M6: recall on the crosses
             self._begin_header = h
         return self._begin_header
 
@@ -398,7 +418,7 @@ class MemRun(Run):
         rules = MEM_RULES if self.evidence_version is None else MEM_RULES_GATE
         if self.v2plus:
             base = MEM_RULES_V4 if self.v4 else MEM_RULES_V3 if self.v3 else MEM_RULES_V2
-            rules = base if self.evidence_version is not None else dict(base, recall=MEM_RULES["recall"])
+            rules = base if (self.evidence_version is not None or self.v4) else dict(base, recall=MEM_RULES["recall"])
         res = {"ok": True, "run_id": self.run_id, "mode": "memory", "task": ops.task_view(self.task, self.caps), "rules": rules, "header": self.header()}
         if self.v2plus:
             res["tools"] = list(tools_of(self.profile))
@@ -412,17 +432,17 @@ class MemRun(Run):
         if self.superseded:
             mem["superseded"] = [[k, v["by"], v["session"], v["reason"]] for k, v in sorted(self.superseded.items())]
         if self.v4:                                            # the memory crosses are derived from H, the declarations and the marks: their sha is part of every row's state (a replay must rebuild them identically)
-            mem["v4"] = {"index": self.builder.index().index_sha}
+            mem["v4"] = {"index": self.builder.index().index_sha, "bridges": self.counts4["bridges"]}
         return sha256_text(canonical({"loom": self.state.to_obj(), "mem": mem}))
 
     # -- one call = one body ---------------------------------------------------------------------------------------------
     def notes_due(self) -> List[dict]:
-        if self._prev != ("model", "write", True):
+        if self._prev != ("model", "write", True) and not (self.v4 and self._prev == ("model", "keep_unshaped", True)):       # mem.v4: a kept sentence's F1-F4 clauses make cross notes too (L-PUB-42)
             return []
         return list(self._pending)
 
     def _executable(self, op: Any) -> bool:
-        return isinstance(op, str) and (op in TOOLS or op in FROZEN_OPS or (self.v2plus and op in V2_OPS) or (self.v4 and op in V4_OPS))
+        return isinstance(op, str) and (op in TOOLS or op in FROZEN_OPS or (self.v2plus and op in V2_OPS) or (self.v4 and (op in V4_OPS or op in V4_BRIDGE)))
 
     def _precheck(self, op: str) -> None:
         st = self.state
@@ -433,6 +453,8 @@ class MemRun(Run):
             raise Refuse("write_cap", {"limit": self.caps["writes"]})
         if op == "recall" and self.counts["recalls"] >= self.caps["recalls"]:
             raise Refuse("recall_cap", {"limit": self.caps["recalls"]})
+        if op in V4_BRIDGE and self.counts4["bridges"] >= self.caps["bridges"]:
+            raise Refuse("bridge_cap", {"limit": self.caps["bridges"]})
         for v2op, cnt, refusal_name in (("declare_topic", "topics", "topic_cap"), ("supersede", "supersedes", "supersede_cap"), ("report", "reports", "report_cap")):
             if op == v2op and self.counts2[cnt] >= self.caps[cnt]:
                 raise Refuse(refusal_name, {"limit": self.caps[cnt]})
@@ -444,6 +466,8 @@ class MemRun(Run):
             self.counts["writes"] += 1
         if op == "recall":
             self.counts["recalls"] += 1
+        if op in V4_BRIDGE:
+            self.counts4["bridges"] += 1
         if op == "declare_topic":
             self.counts2["topics"] += 1
         if op == "supersede":
@@ -505,7 +529,7 @@ class MemRun(Run):
             notes = self.notes_due()
             if not notes:
                 raise ValueError("note: no notes are due after the previous row")
-            return {"actor": actor, "op": op, "args": {"after": self.i - 1, "of": "write", "notes": notes, "nv": self.notes_profile},
+            return {"actor": actor, "op": op, "args": {"after": self.i - 1, "of": self._prev[1], "notes": notes, "nv": self.notes_profile},
                     "result": {"ok": True}, "state_sha": self.mem_state_sha()}
         if actor == "harness" and op in FORCE_OPS:             # MEM-fix (L-MEM-62): only a mem.v3 session has them; any other session refuses them as it always did
             if not self.v3:
@@ -640,7 +664,7 @@ def _clause_summary(c: mx.ClauseRec) -> dict:
 def _index_view(run: MemRun) -> dict:
     ix = run.builder.index()
     st = ix.stats()
-    return {"sha": ix.index_sha, "crosses": sum(st[t]["crosses"] for t in mx.TANKS), "seats": sum(st[t]["seats"] for t in mx.TANKS), "f0": st[mx.F0_TANK]["sentences"], "nests": st["nests"]}
+    return {"sha": ix.index_sha, "crosses": sum(st[t]["crosses"] for t in mx.TANKS), "seats": sum(st[t]["seats"] for t in mx.TANKS), "f0": st[mx.F0_TANK]["sentences"], "nests": st["nests"], "bridges": len(ix.bridges)}
 
 
 def _no_shape(ex: ms.Exchange) -> Refuse:
@@ -672,30 +696,30 @@ def _write_v4(run: MemRun, a: dict, i: int) -> dict:
         why = r.detail.get("reason")
         wr = "%s:%s" % (r.type, why) if isinstance(why, str) and why else r.type
         row["weave_refused"] = wr
-        c_t = build_corpus(rows_after)                                 # the row changed after c_t was built from it: the live corpus is the corpus of memory.jsonl's bytes
+        c_t = c_t.rebased(rows_bytes(rows_after))                      # the row changed after c_t was built from it: the live corpus is the corpus of memory.jsonl's bytes (the space does not read the flag: no second build, L-PUB-41)
     # -- committed from here on ------------------------------------------------------------------------------------------------------------------
     rows_before = run.rows
     run.rows = rows_after
     run.corpus_cur = run.corpus = c_t
     run.session_written += 1
     placed = run.builder.add_row(t, row, c_before)
+    cross_notes = [dict(n, counted=n["type"] in mn.COUNTED_V4) for n in run.builder.last_notes]      # PUB-M5: made on the crosses, never blocking
     st = run.state
     c_key = c_before if run.kind_policy != "c" else build_corpus(_key_rows(rows_before, "c", run.session_no))
     res: Dict[str, Any] = {"ok": True, "sid": t, "source": row["source"], "kind": row["kind"], "role": role, "text": text, "tier": "WORD"}
+    old_notes: List[dict] = []
     if wv is not None:
         cs = clause_run_start(c_t, t, text, wv)                        # MEM-fix (L-MEM-58), as in mem.v3
         if cs is not None:
             row["clause_at"] = cs
             run.starts[t] = cs
-            c_t = run.corpus_cur = run.corpus = build_corpus(rows_after)
+            c_t = run.corpus_cur = run.corpus = c_t.rebased(rows_bytes(rows_after))
         new_crosses = [st.crosses[c["cid"]] for c in wv["crosses"]]
         linked = [st.crosses[cid] for cid in st.thread]
         notes, extra = mn.compute_write_notes(t=t, row=row, rows_before=rows_before, rows_after=rows_after, corpus_key=c_key, corpus_before=c_before, corpus_after=c_t,
                                               state=st, linked=linked, new_crosses=new_crosses, weave=wv, contradiction_policy=run.contradiction_policy,
                                               self_question=run.hook, superseded=run.superseded or None, clause_start=run.starts.get(t), cite=True)
-        run._pending = notes
-        for n in notes:
-            run.tally["notes"][n["type"]] += 1
+        old_notes = [dict(n, counted=n["type"] in mn.COUNTED_V4) for n in notes]               # notes profile mem.v4: the mem.v3 notes are second witnesses, only the cross notes are counted
         units: List[dict] = []
         new_uids = set()
         for c in wv["crosses"]:
@@ -713,17 +737,55 @@ def _write_v4(run: MemRun, a: dict, i: int) -> dict:
                     "thread_length": len(st.thread), "weave": "ok"})
         if "clause_at" in row:
             res["clause_at"] = row["clause_at"]
-        if notes:
-            res["notes"] = notes
     else:
-        run._pending = []
         res.update({"from": None, "to": None, "crosses": [], "units": [], "readback": {"text": "", "same": True}, "marked": "", "history": {"sentences": t, "corpus_sha": c_key.corpus_sha},
                     "keys": [], "clause": None, "thread_length": len(st.thread), "weave": "refused(%s)" % wr, "weave_refused": wr})
+    all_notes = _witness(old_notes, cross_notes, wv is not None)
+    run._pending = all_notes
+    for n in all_notes:
+        run.tally["notes"][n["type"]] += 1
+    if all_notes:
+        res["notes"] = all_notes
     res["shape"] = {"v": ms.SHAPES_V2, "clauses": [_clause_summary(c) for c in placed]}
     res["index"] = _index_view(run)
     if turn is not None:
         res["turn"] = turn
     return res
+
+
+def _witness(old: List[dict], cross: List[dict], woven: bool) -> List[dict]:
+    """The notes of a mem.v4 write: the mem.v3 notes (in the order they came) and then the cross notes (in theirs), each of the two routes annotated with whether the other agreed.  SAME_SEAT (cross) and
+    SAME_QUESTION (the evidence-gate route) are two witnesses of one fact: `witness` = {by, state}.  state: agree | cross_only | sq_only | unavailable (the sentence was not woven: no self-question) |
+    unreadable (the gate could not read the clause) | not_applicable (an event position: the self-question asks 「Y は…」 only).  REVERSAL_X is compared with the old REVERSAL the same way."""
+    sq = [n for n in old if n["type"] == mn.SAME_QUESTION]
+    unreadable = [n for n in old if n["type"] == mn.SELF_QUESTION_UNREADABLE]
+    rev = [n for n in old if n["type"] == mn.REVERSAL]
+    seat = [n for n in cross if n["type"] == mdt.SAME_SEAT]
+    revx = [n for n in cross if n["type"] == mdt.REVERSAL_X]
+    out: List[dict] = []
+    for n in old:
+        if n["type"] == mn.SAME_QUESTION:
+            n = dict(n, witness={"by": mdt.SAME_SEAT, "state": "agree" if seat else "sq_only"})
+        elif n["type"] == mn.REVERSAL:
+            n = dict(n, witness={"by": mdt.REVERSAL_X, "state": "agree" if revx else "rev_only"})
+        out.append(n)
+    for n in cross:
+        if n["type"] == mdt.SAME_SEAT:
+            if not woven:
+                st = "unavailable"
+            elif n["tank"] == "F3":
+                st = "not_applicable"
+            elif sq:
+                st = "agree"
+            elif unreadable:
+                st = "unreadable"
+            else:
+                st = "cross_only"
+            n = dict(n, witness={"by": mn.SAME_QUESTION, "state": st})
+        elif n["type"] == mdt.REVERSAL_X:
+            n = dict(n, witness={"by": mn.REVERSAL, "state": "unavailable" if not woven else ("agree" if rev else "cross_only")})
+        out.append(n)
+    return out
 
 
 def h_keep_unshaped(run: MemRun, a: dict, i: int) -> dict:
@@ -742,13 +804,19 @@ def h_keep_unshaped(run: MemRun, a: dict, i: int) -> dict:
     rows_after = run.rows + [row]
     c_before = run.corpus_cur
     c_t = build_corpus(rows_after)
-    run._pending = []
     run.rows = rows_after
     run.corpus_cur = run.corpus = c_t
     run.session_written += 1
-    run.builder.add_row(t, row, c_before)
+    placed = run.builder.add_row(t, row, c_before)                       # L-PUB-42: the F1-F4 clauses of the sentence enter the crosses, the F0 clause does not
+    all_notes = _witness([], [dict(n, counted=n["type"] in mn.COUNTED_V4) for n in run.builder.last_notes], False)
+    run._pending = all_notes
+    for n in all_notes:
+        run.tally["notes"][n["type"]] += 1
     res: Dict[str, Any] = {"ok": True, "sid": t, "source": row["source"], "kind": row["kind"], "role": role, "text": text, "tank": mx.F0_TANK, "unshaped": True, "weave": "none",
-                           "shape": {"v": ms.SHAPES_V2, "shapes": list(ex.shapes()), "reasons": [c.reason for c in ex.clauses if c.shape == "F0"]}, "index": _index_view(run)}
+                           "shape": {"v": ms.SHAPES_V2, "shapes": list(ex.shapes()), "reasons": [c.reason for c in ex.clauses if c.shape == "F0"], "indexed": [_clause_summary(c) for c in placed if c.tank is not None]},
+                           "index": _index_view(run)}
+    if all_notes:
+        res["notes"] = all_notes
     if turn is not None:
         res["turn"] = turn
     return res
@@ -817,15 +885,38 @@ def h_recall(run: MemRun, a: dict, i: int) -> dict:
     evidence version (stub / no hook) refuses exactly as MEM-a/b did."""
     a = ops._args(a, {"question": (str, True)})
     q = unicodedata.normalize("NFC", a["question"])
-    if run.evidence_version is None:
+    if run.evidence_version is None and not run.v4:
         raise Refuse("recall_unavailable", dict(RECALL_UNAVAILABLE))
     if not 1 <= len(q) <= ARG_STR_CAP or any(unicodedata.category(ch) in ("Cc", "Zl", "Zp") for ch in q):
         raise Refuse("bad_question", {"reason": "1 to %d characters, no newline / NUL / control character" % ARG_STR_CAP})
     check_memory_rows(run.rows)
+    if run.v4:                                                          # PUB-M6: the question is read by the shape exchanger and answered from the crosses (memask); the gate judges only the emitted quote
+        res = mask.recall(run.builder.index(), run.rows, run.corpus_cur, q, open_nest=run.builder.open_nest_id(run.session_no))
+        res.update(ok=True, text=q)
+        return res
     res = mr.recall(run.corpus_cur, q, run.evidence_version, subject_guard=bool(getattr(run.hook, "subject_guard", False)), superseded=run.superseded or None,
                     turns=run.turns() or None)
     res.update(ok=True, text=q)
     return res
+
+
+def h_bridge(run: MemRun, a: dict, i: int) -> dict:
+    """mem.v4 (PUB-M6, OP-PUB-7): bridge(question_word, memory_phrase) -- the model adds a mapping the question-word tank lacks: the question word / phrase stands for a phrase the memory holds as the centre of a
+    cross.  A CONSTRUCTED, marked, ledgered entry of the index (`origin: constructed`) that recall then uses (route `bridge`).  Refused: bad_bridge, unknown_phrase (no cross has that centre), bridge_exists."""
+    a = ops._args(a, {"question_word": (str, True), "memory_phrase": (str, True)})
+    qwd = _plain_text(a["question_word"], "question_word", 1, 16, "bad_bridge")
+    ph = _plain_text(a["memory_phrase"], "memory_phrase", 1, 24, "bad_bridge")
+    if qwd == ph:
+        raise Refuse("bad_bridge", {"field": "memory_phrase", "reason": "the question word and the memory phrase are the same"})
+    if not run.builder.has_centre(ph):
+        raise Refuse("unknown_phrase", {"memory_phrase": ph, "reason": "no cross of the memory has this phrase as its centre: give the phrase as the memory writes it"})
+    at = len(run.rows)
+    if not run.builder.bridge(run.session_no, at, qwd, ph):
+        raise Refuse("bridge_exists", {"question_word": qwd, "memory_phrase": ph})
+    run.bridge_log.append({"session": run.session_no, "at": at, "qword": qwd, "phrase": ph})
+    ix = run.builder.index()
+    return {"ok": True, "question_word": qwd, "memory_phrase": ph, "origin": "constructed", "session": run.session_no, "at": at,
+            "tanks": [t for t in mx.TANKS if ix.cross(t, ph) is not None], "bridges": len(ix.bridges)}
 
 
 def h_lookup(run: MemRun, a: dict, i: int) -> dict:
@@ -1031,7 +1122,7 @@ def _frozen_handler(op: str):
 
 
 _HANDLERS = {"write": h_write, "recall": h_recall, "lookup": h_lookup, "read_sentence": h_read_sentence, "status": h_status, "commit": h_commit,
-             "declare_topic": h_declare_topic, "supersede": h_supersede, "report": h_report, "keep_unshaped": h_keep_unshaped}
+             "declare_topic": h_declare_topic, "supersede": h_supersede, "report": h_report, "keep_unshaped": h_keep_unshaped, "bridge": h_bridge}
 _HANDLERS.update({op: _frozen_handler(op) for op in FROZEN_OPS})
 
 
@@ -1117,6 +1208,22 @@ def session_nest_decls(run_dir) -> List[dict]:
             session, v4 = hdr["session_no"], hdr.get("mem_profile") == PROFILE_V4
         if v4 and r["actor"] == "model" and r["op"] == "declare_topic" and r["result"].get("ok") is True:
             out.append({"session": session, "at": r["result"]["at"], "topic": r["result"]["topic"]})
+    return out
+
+
+def session_bridges(run_dir) -> List[dict]:
+    """PUB-M6: [{"session", "at", "qword", "phrase"}] -- the ok `bridge` rows of a mem.v4 session ledger, in order.  The ledger is their source; [] for another profile."""
+    lines, _ = lg.read_raw_lines(run_dir)
+    out: List[dict] = []
+    session = None
+    v4 = False
+    for k, ln in enumerate(lines):
+        r = lg._parse_line(ln)
+        if k == 0:
+            hdr = r["result"]["header"]
+            session, v4 = hdr["session_no"], hdr.get("mem_profile") == PROFILE_V4
+        if v4 and r["actor"] == "model" and r["op"] == "bridge" and r["result"].get("ok") is True:
+            out.append({"session": session, "at": r["result"]["at"], "qword": r["result"]["question_word"], "phrase": r["result"]["memory_phrase"]})
     return out
 
 
@@ -1254,11 +1361,13 @@ class MemStore:
                          contradiction_policy=contradiction_policy, unseatable_policy=unseatable_policy, self_question=self_question, profile=profile)
             sup: Dict[int, dict] = {}
             decls: List[dict] = []
+            brs: List[dict] = []
             for e in (head["sessions"] if head else []):
                 sup.update(session_supersedes(self.sessions_dir / e["run_id"]))
                 if profile == PROFILE_V4:
                     decls += session_nest_decls(self.sessions_dir / e["run_id"])
-            run.carry(rows, sup, decls)
+                    brs += session_bridges(self.sessions_dir / e["run_id"])
+            run.carry(rows, sup, decls, brs)
             led = lg.Ledger(self.sessions_dir / run_id)
             led.create({"store": self.store_id, "mode": "memory", "session_no": n_sess + 1})
             with led.locked() as lk:
@@ -1285,10 +1394,12 @@ class MemStore:
         head, rows = self.check()
         sup: Dict[int, dict] = {}
         decls: List[dict] = []
+        brs: List[dict] = []
         for e in (head["sessions"] if head else []):
             sup.update(session_supersedes(self.sessions_dir / e["run_id"]))
             decls += session_nest_decls(self.sessions_dir / e["run_id"])
-        return mx.build_index(rows, decls, sup)
+            brs += session_bridges(self.sessions_dir / e["run_id"])
+        return mx.build_index(rows, decls, sup, bridges=brs)
 
     def replay(self, self_question: Any = DEFAULT) -> "MemReplay":
         return replay_store(self.path, self_question)
@@ -1352,7 +1463,7 @@ class MemSession:
 
     def events(self) -> dict:
         r = self.run
-        return mn.session_events(self.rows(), r.contradiction_policy, r.unseatable_policy)
+        return mn.session_events(self.rows(), r.contradiction_policy, r.unseatable_policy, r.notes_profile if r.v4 else None)
 
     def close(self) -> None:
         if self._fd is not None:
@@ -1418,6 +1529,7 @@ def replay_store(path, self_question: Any = DEFAULT) -> MemReplay:
         return out
     H: List[dict] = []
     D: List[dict] = []                        # mem.v4: the nest declarations of the earlier sessions, as RE-derived by this replay
+    B: List[dict] = []                        # mem.v4: the bridges of the earlier sessions, as RE-derived by this replay
     S: Dict[int, dict] = {}                   # what the earlier sessions' supersede ops marked, as RE-derived by this replay
     sessions: List[dict] = []
     before = GENESIS
@@ -1447,7 +1559,7 @@ def replay_store(path, self_question: Any = DEFAULT) -> MemReplay:
             return out
         try:
             run = MemRun(hdr["store_id"], hdr["session_no"], run_id, model, store_head_before=before, self_question=hook, profile=profile, **opts)
-            run.carry(H, S, D)
+            run.carry(H, S, D, B)
         except Refuse:
             out.status, out.first_diff = "DIFFERS", {"session": e["run_id"], "i": 0, "field": "carry"}
             return out
@@ -1466,12 +1578,13 @@ def replay_store(path, self_question: Any = DEFAULT) -> MemReplay:
         if not rows or rows[-1]["op"] != "commit" or rows[-1]["result"].get("ok") is not True:
             out.status, out.first_diff = "DIFFERS", {"session": e["run_id"], "i": len(rows) - 1, "field": "commit_missing"}
             return out
-        if run.v4 and mx.build_index(run.rows, run.decls, run.superseded).index_sha != run.builder.index().index_sha:     # the memory crosses must be rebuilt identically from H alone
+        if run.v4 and mx.build_index(run.rows, run.decls, run.superseded, bridges=run.bridge_log).index_sha != run.builder.index().index_sha:     # the memory crosses must be rebuilt identically from H alone
             out.status, out.first_diff = "DIFFERS", {"session": e["run_id"], "i": None, "field": "index"}
             return out
         H = list(run.rows)
         if run.v4:
             D = [dict(d) for d in run.decls]
+            B = [dict(b) for b in run.bridge_log]
         S = dict(run.superseded)
         ent = {"run_id": e["run_id"], "session_no": run.session_no, "head": rows[-1]["sha"], "rows": len(rows), "sentences_after": len(H)}
         if ent != e:
@@ -1557,7 +1670,9 @@ def store_events(path, contradiction_policy: str = "a", unseatable_policy: str =
     out = {}
     for e in (head["sessions"] if head else []):
         lines, _ = lg.read_raw_lines(store.sessions_dir / e["run_id"])
-        out[e["run_id"]] = mn.session_events([lg._parse_line(ln) for ln in lines], contradiction_policy, unseatable_policy)
+        parsed = [lg._parse_line(ln) for ln in lines]
+        np_ = parsed[0]["result"]["header"].get("notes_profile") if parsed else None
+        out[e["run_id"]] = mn.session_events(parsed, contradiction_policy, unseatable_policy, np_ if np_ == mn.MEM_NOTES_V4 else None)
     return out
 
 

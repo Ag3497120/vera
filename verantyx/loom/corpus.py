@@ -38,6 +38,17 @@ class Corpus:
         self._spans: Optional[gr.SpanIndex] = None
         self._follow: Dict[str, Dict[int, Dict[Tuple[int, int], str]]] = {}
 
+    def rebased(self, data: bytes) -> "Corpus":
+        """The corpus of `data` when `data` differs from the bytes this corpus was built from ONLY in keys the space does not read (a row flag such as `weave_refused`, `clause_at`): the space, the adhesion
+        tables and every cache are shared, `corpus_sha` is the sha256 of `data`.  Not a build: the rows of `data` must give the same (sent, source, kind) as the rows of this corpus (checked)."""
+        a = parse_rows(data)
+        if len(a) != self.space.N or any((r["sent"], r.get("source") or "", r.get("kind") or "base") != (self.space.sentences[i][0], self.space.sentences[i][1], self.space.kinds[i]) for i, r in enumerate(a)):
+            raise ValueError("rebased: the rows differ in what the space reads")
+        c = object.__new__(Corpus)
+        c.__dict__.update(self.__dict__)
+        c.corpus_sha = hashlib.sha256(data).hexdigest()
+        return c
+
     @staticmethod
     def load(data: bytes) -> "Corpus":
         sha = hashlib.sha256(data).hexdigest()

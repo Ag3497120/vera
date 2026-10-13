@@ -5,7 +5,7 @@ stored as truth, and a replay must rebuild it identically (`index_sha`).  It rea
 memory corpus of the sentences BEFORE the one that wrote the seat (the history rule L-MEM-06: a sentence never confirms itself).
 
 TANKS (M2).  One tank per shape: F1 attribute (「X の Y は A」), F2 topic-value (「Y は A」), F3 event, F4 an event clause that no nest could complete (kept uncompleted, see M3).  The F0 tank holds the
-sentences the model chose to keep unshaped (OP-PUB-2): they are in H and searchable as text, they enter no cross.  In each tank ONE CROSS per CENTRE PHRASE (the phrase as written: 開催地, 認証モジュール担当; for an
+sentences the model chose to keep unshaped (OP-PUB-2): they are in H and searchable as text; their F0 clauses enter no cross, their F1-F4 clauses do (designer decision L-PUB-42).  In each tank ONE CROSS per CENTRE PHRASE (the phrase as written: 開催地, 認証モジュール担当; for an
 event the predicate: a verb's dictionary form, or the サ変 noun).  A cross has the arms of the foundation (の に で と を が, the ladder order of `foundation.LADDER`), the centre relation は = the VALUE seats, and the
 two seats the exchanger names besides (`quantity`, `object_bare`).  A SEAT is (phrase, units, provenance), provenance = (sid, turn, session, origin record | constructed, surface, clause).  A chain 「X の Y の Z」 nests:
 Z's の-arm seat Y carries Y's own の-arm seat X (a path).  FAITHFUL: no seat is ever dropped.  An arm that holds m seats needs m data rings and the foundation ring (the innermost seat of an arm is the particle,
@@ -23,6 +23,14 @@ SLIDE ORDER (M4).  The order edges sentence N -> N+1 (by sid, a session boundary
 order, are the value seats of that position.  `history(position)` -> [(value, sid, kind)], kind = first | update | other; an UPDATE is a later value written by a change clause (memshape's change forms) or one the model
 superseded explicitly.  Detection itself (same seat / different value, reversal, enumeration) is ticket M5; this module only keeps what M5 needs (every value with its change, marks and provenance).
 
+PUB-M5 / M6 (this file's additions).  A seat remembers the SCOPE it was written in (the nest that was open: None = no nest); a clause written while a nest is open is a MEMBER of it (kind `context`
+when it is neither completed, nor on the nest centre, nor under it: designer decision L-PUB-39), so the list `under` is gone.  The index holds the NOTES of the detections (memdetect: SAME_SEAT, UPDATE,
+REVERSAL_X, ENUMERATION; they are made by the same fold and are part of `index_sha`) and the BRIDGES the model added (`bridge`: a question word -> a memory phrase, constructed, marked, ledgered).
+
+THE INDEX IS INCREMENTAL (designer decision L-PUB-40).  The builder keeps, per cross, per position, per nest, per clause and per note, the view and the canonical JSON of that part; a write dirties only
+the parts it touched, and `index_sha` is the sha256 of the parts joined in the order `MemIndex.to_obj()` serialises them -- byte for byte the sha256 of `canonical(MemIndex.to_obj())`, which is what the
+full rebuild (`build_index`, run at replay / verify) computes; a test compares the two.
+
 Pure and deterministic: no clock, float, process, environment, no set / dict iteration order in any output (lists are built and sorted explicitly).
 """
 from __future__ import annotations
@@ -33,13 +41,14 @@ from typing import Any, Dict, Iterable, List, Optional, Sequence, Tuple
 
 from verantyx.line3 import foundation as fd
 from verantyx.line3 import geometry as geo
+from verantyx.loom import memdetect as mdt
 from verantyx.loom import memshape as ms
 from verantyx.loom import read as rd
 from verantyx.loom.corpus import Corpus
 from verantyx.loom.memguard import parse_source
 from verantyx.loom.state import SPEC, canonical, sha256_text
 
-CROSS_VERSION = "cross.v1"
+CROSS_VERSION = "cross.v2"      # cross.v1 (PUB-M2..M4) + seat scope, `context` members, notes, bridges (no cross.v1 data was ever recorded with a model)
 TANKS: Tuple[str, ...] = ("F1", "F2", "F3", "F4")
 F0_TANK = "F0"
 ARMS: Tuple[str, ...] = tuple(SPEC.arms)                  # の に で と を が: the ladder order of foundation.LADDER[1:]
@@ -140,11 +149,12 @@ class Seat:
     nest: Optional[str]
     change: Optional[ChangeRec]                  # a value written by a change clause
     marks: Tuple[Mark, ...]
+    scope: Optional[str] = None                  # PUB-M5: the nest that was open when the clause was written (None: no nest)
 
     def to_obj(self) -> dict:
         return {"slot": self.slot, "phrase": self.phrase, "units": list(self.units), "prov": self.prov.to_obj(), "key": list(self.key), "rank": self.rank, "ring": self.ring,
                 "path": [list(p) for p in self.path], "arms": [[p, s.to_obj()] for p, s in self.arms], "via": self.via, "nest": self.nest,
-                "change": None if self.change is None else self.change.to_obj(), "marks": [m.to_obj() for m in self.marks]}
+                "change": None if self.change is None else self.change.to_obj(), "marks": [m.to_obj() for m in self.marks], "scope": self.scope}
 
 
 @dataclass(frozen=True)
@@ -218,11 +228,14 @@ class Member:
     k: int
     tank: str
     centre: str
-    kind: str                                    # completed | centre | path
+    kind: str                                    # completed | centre | path | context
     exact: bool
 
     def to_obj(self) -> dict:
         return {"sid": self.sid, "k": self.k, "tank": self.tank, "centre": self.centre, "kind": self.kind, "exact": self.exact}
+
+
+MEMBER_KINDS: Tuple[str, ...] = ("completed", "centre", "path", "context")
 
 
 @dataclass(frozen=True)
@@ -234,12 +247,24 @@ class Nest:
     arms: Path                                   # the topic's own arms ((の, A社),): the nest's centre seat carries them
     prefix: str                                  # the text of the topic before its head phrase when it is not a の chain (kept, never dropped)
     declared: Tuple[Tuple[int, int], ...]        # (session, at) of every declaration that opened it
-    members: Tuple[Member, ...]
-    under: Tuple[Tuple[int, int, str, Optional[str]], ...]       # (sid, k, shape, centre) of the clauses written while it was open that are not members
+    members: Tuple[Member, ...]                  # every placed clause that belongs to it: completed by it, on its centre, under its centre in a の chain, or written while it was open (`context`)
 
     def to_obj(self) -> dict:
         return {"id": self.id, "topic": self.topic, "centre": self.centre, "centre_units": list(self.centre_units), "arms": [list(a) for a in self.arms], "prefix": self.prefix,
-                "declared": [list(d) for d in self.declared], "members": [m.to_obj() for m in self.members], "under": [list(u) for u in self.under]}
+                "declared": [list(d) for d in self.declared], "members": [m.to_obj() for m in self.members]}
+
+
+@dataclass(frozen=True)
+class Bridge:
+    """PUB-M6: a mapping the model added: the question word / phrase `qword` stands for the memory phrase `phrase` (a centre the memory holds).  Constructed (the structure did not have it), marked, ledgered."""
+    qword: str
+    phrase: str
+    session: int
+    at: int                                      # |H| when it was added
+    origin: str = "constructed"
+
+    def to_obj(self) -> dict:
+        return {"qword": self.qword, "phrase": self.phrase, "session": self.session, "at": self.at, "origin": self.origin}
 
 
 @dataclass(frozen=True)
@@ -254,10 +279,12 @@ class Entry:
     change: Optional[ChangeRec]
     old_matches: Optional[bool]                  # a change clause: does its old value equal the value before it at this position (None: no old value named / no earlier value)
     marks: Tuple[Mark, ...]
+    scope: Optional[str] = None                  # PUB-M5: the nest open when it was written
+    units: Tuple[str, ...] = ()                  # PUB-M6: the WORD units of the value phrase (recall quotes the stretch of the sentence they make)
 
     def to_obj(self) -> dict:
-        return {"value": self.value, "sid": self.sid, "k": self.k, "session": self.session, "turn": self.turn, "kind": self.kind,
-                "change": None if self.change is None else self.change.to_obj(), "old_matches": self.old_matches, "marks": [m.to_obj() for m in self.marks]}
+        return {"units": list(self.units), "value": self.value, "sid": self.sid, "k": self.k, "session": self.session, "turn": self.turn, "kind": self.kind,
+                "change": None if self.change is None else self.change.to_obj(), "old_matches": self.old_matches, "marks": [m.to_obj() for m in self.marks], "scope": self.scope}
 
 
 # ------------------------------------------------------------------------------------------------------------
@@ -306,10 +333,10 @@ def _flatten(arms: Sequence[ms.Arm]) -> Path:
 
 
 # ------------------------------------------------------------------------------------------------------------
-# the builder (a fold over the sentences)
+# the builder (a fold over the sentences, incremental)
 # ------------------------------------------------------------------------------------------------------------
 class _Rec:
-    __slots__ = ("slot", "phrase", "units", "sid", "k", "seq", "turn", "session", "origin", "key", "path", "children", "via", "nest", "change", "surface")
+    __slots__ = ("slot", "phrase", "units", "sid", "k", "seq", "turn", "session", "origin", "key", "path", "children", "via", "nest", "change", "surface", "scope")
 
     def __init__(self, **kw: Any) -> None:
         for k, v in kw.items():
@@ -317,47 +344,146 @@ class _Rec:
 
 
 class _CrossRec:
-    __slots__ = ("tank", "centre", "centre_units", "recs", "occ")
+    __slots__ = ("tank", "centre", "centre_units", "recs", "occ", "view", "json", "arm_n")
 
     def __init__(self, tank: str, centre: str, centre_units: Tuple[str, ...]) -> None:
         self.tank, self.centre, self.centre_units = tank, centre, centre_units
         self.recs: List[_Rec] = []
         self.occ: List[Prov] = []
+        self.view: Optional[Cross] = None
+        self.json: Optional[str] = None
+        self.arm_n: Dict[str, int] = {}
 
 
 class _NestRec:
-    __slots__ = ("id", "topic", "head", "declared")
+    __slots__ = ("id", "topic", "head", "declared", "apx", "members", "mjson", "view", "json")
 
     def __init__(self, id_: str, topic: str, head: TopicHead) -> None:
         self.id, self.topic, self.head = id_, topic, head
         self.declared: List[Tuple[int, int]] = []
+        self.apx: Tuple[str, ...] = tuple(ph for _, ph in _flatten(head.arms))
+        self.members: List[Member] = []
+        self.mjson: List[str] = []
+        self.view: Optional[Nest] = None
+        self.json: Optional[str] = None
+
+
+class _PosRec:
+    __slots__ = ("pos", "recs", "entries", "json")
+
+    def __init__(self, pos: Position) -> None:
+        self.pos = pos
+        self.recs: List[_Rec] = []
+        self.entries: Tuple[Entry, ...] = ()
+        self.json: Optional[str] = None
 
 
 def _change_rec(c: ms.Change) -> ChangeRec:
     return ChangeRec(None if c.old is None else c.old.text, () if c.old is None else tuple(c.old.units), c.new.text, c.form)
 
 
+def _entries_of(recs: Sequence[_Rec], marks: Dict[int, Mark]) -> Tuple[Entry, ...]:
+    """The values of a position in slide order (sid, then clause), each with its kind (first | update | other), whether a change clause's old value is the value before it, and the mark of its sentence."""
+    ents: List[Entry] = []
+    replaced_by: Dict[int, bool] = {}                      # the sentences that replaced an earlier value of this position (looked up, never iterated)
+    for j, r in enumerate(recs):
+        m = marks.get(r.sid)
+        superseded_here = r.sid in replaced_by
+        if j == 0:
+            kind = "first"
+        elif r.change is not None or superseded_here:
+            kind = "update"
+        else:
+            kind = "other"
+        om: Optional[bool] = None
+        if r.change is not None and r.change.old is not None and j > 0:
+            om = r.change.old == ents[-1].value
+        ents.append(Entry(r.phrase, r.sid, r.k, r.session, r.turn, kind, r.change, om, () if m is None else (m,), r.scope, r.units))
+        if m is not None:
+            replaced_by[m.by] = True
+    return tuple(ents)
+
+
+def pair_head(corpus: Any, units: Sequence[str]) -> str:
+    """The unit that stands for a phrase in the key swap: the RAREST unit of the phrase in the history C_<sid (fewest sentences, at least one), the earliest on a tie; the last unit if none of them is in the
+    history.  (The last unit is a suffix too often: 甲社 / 乙社 would both be 社.)"""
+    t = corpus.tier("WORD")
+    best: Optional[Tuple[int, int]] = None
+    for i, u in enumerate(units):
+        n = len(t.postings.get(u, ()))
+        if n > 0 and (best is None or n < best[0]):
+            best = (n, i)
+    return units[best[1]] if best is not None else units[-1]
+
+
+def pair_key(corpus: Any, particle: str, first_units: Sequence[str], second_units: Sequence[str]) -> dict:
+    """The EXISTING key swap (`read.loom_key`, the move of `geometry.moves_swap` between the centre and its only arm unit) for a pair of phrases, against the memory corpus `corpus` = C_<sid: the cross as the
+    sentence wrote it (arm unit = the phrase written first, on `particle`; centre = the phrase written second; each phrase by its `pair_head`) against the cross with centre and arm unit swapped.  `agrees` =
+    the swap improves (n, p): the history holds the pair in the other order (the REVERSAL of mem.v1, here asked of the pair the structure found in opposite roles)."""
+    t, adh, w = corpus.tier("WORD"), corpus.adhesion["WORD"], corpus.weights("WORD")
+    first_head, second_head = pair_head(corpus, first_units), pair_head(corpus, second_units)
+
+    def mk(centre: str, seat: str) -> Any:
+        arms: List[List[Optional[str]]] = [[None, fd.token(p)] for p in SPEC.arms]
+        arms[SPEC.arms.index(particle)][0] = seat
+        return geo.Cross.make(L=2, center=centre, arms=arms)
+
+    base = rd.loom_key(t, adh, mk(second_head, first_head), w, False)
+    swapped = rd.loom_key(t, adh, mk(first_head, second_head), w, False)
+    return {"base": [int(x) for x in base], "swapped": [int(x) for x in swapped], "agrees": bool(rd._cmp_key(swapped, "strict_np") > rd._cmp_key(base, "strict_np"))}
+
+
+def _split_units(units: Sequence[str], text: str, cut: int) -> Optional[int]:
+    """How many of `units` lie in text[:cut] (their lengths add up to exactly `cut` characters once the function characters of the gap are left out); None if no such prefix."""
+    n = 0
+    total = 0
+    for i, u in enumerate(units):
+        total += len(u)
+        if total == cut:
+            return i + 1
+        if total > cut:
+            return None
+    return None
+
+
 class IndexBuilder:
-    """The fold.  `declare` / `add_row` / `supersede` are called in the order of the ledger; `index()` is the derived `MemIndex` (cached until the next call)."""
+    """The fold.  `declare` / `add_row` / `supersede` / `bridge` are called in the order of the ledger; `index()` is the derived `MemIndex` (cached until the next call).  Everything is kept per part with its
+    cached view and canonical JSON, so a call dirties only what it touched."""
 
     def __init__(self, shape_version: str = ms.SHAPES_V2) -> None:
         self.shape_version = shape_version
         self.n = 0
         self._sessions: List[int] = []
+        self._sess: List[List[int]] = []
+        self._edges: List[str] = []
         self._nests: List[_NestRec] = []
         self._open: Dict[int, _NestRec] = {}                 # session -> the nest open in it (looked up, never iterated)
         self._by_topic: Dict[str, _NestRec] = {}             # looked up, never iterated
         self._crosses: Dict[Tuple[str, str], _CrossRec] = {}  # looked up, never iterated
         self._cross_order: List[Tuple[str, str]] = []
+        self._tank_cross: Dict[str, List[Tuple[str, str]]] = {t: [] for t in TANKS}
+        self._sid_cross: Dict[int, List[Tuple[str, str]]] = {}
+        self._seat_n: Dict[str, int] = {t: 0 for t in TANKS}
+        self._max_L: Dict[str, int] = {t: 0 for t in TANKS}
         self._clauses: List[ClauseRec] = []
+        self._clause_json: List[str] = []
         self._f0: List[F0Entry] = []
+        self._f0_json: List[str] = []
         self._marks: Dict[int, Mark] = {}                    # looked up, never iterated
+        self._pos: Dict[Position, _PosRec] = {}              # looked up, never iterated
+        self._pos_order: List[Position] = []
+        self._sid_pos: Dict[int, List[Position]] = {}
+        self._det = mdt.Detector()
+        self._notes: List[dict] = []
+        self._note_json: List[str] = []
+        self._bridges: List[Bridge] = []
+        self.last_notes: List[dict] = []                     # the notes the last add_row made
         self._seq = 0
         self._ver = 0
         self._cache: Optional[Tuple[int, "MemIndex"]] = None
         self._exch: Dict[str, ms.Exchange] = {}
 
-    # -- declarations and marks --------------------------------------------------------------------------------------
+    # -- declarations, bridges and marks -----------------------------------------------------------------------------
     def declare(self, session: int, at: int, topic: str) -> dict:
         head = topic_head(topic)
         if head is None:
@@ -368,13 +494,39 @@ class IndexBuilder:
             nr = _NestRec("N%d" % (len(self._nests) + 1), topic, head)
             self._nests.append(nr)
             self._by_topic[topic] = nr
+            for c in self._clauses:                          # the clauses written before it that sit on its centre / under it
+                m = self._member(c, nr)
+                if m is not None:
+                    nr.members.append(m)
+                    nr.mjson.append(canonical(m.to_obj()))
         nr.declared.append((session, at))
+        nr.view = nr.json = None
         self._open[session] = nr
         self._ver += 1
         return {"id": nr.id, "topic": topic, "centre": head.centre, "arms": [list(a) for a in _flatten(head.arms)], "prefix": head.prefix, "reopened": reopened}
 
+    def bridge(self, session: int, at: int, qword: str, phrase: str) -> bool:
+        """Add the bridge (qword -> phrase).  False if it is already there (nothing changes)."""
+        for b in self._bridges:
+            if b.qword == qword and b.phrase == phrase:
+                return False
+        self._bridges.append(Bridge(qword, phrase, session, at))
+        self._ver += 1
+        return True
+
+    def has_centre(self, phrase: str) -> bool:
+        return any((t, phrase) in self._crosses for t in TANKS)
+
     def supersede(self, sid: int, by: int, reason: str, session: int) -> None:
         self._marks[sid] = Mark(MARK_SUPERSEDED, by, reason, session)
+        for key in self._sid_cross.get(sid, ()):
+            cr = self._crosses[key]
+            cr.view = cr.json = None
+        for s in (sid, by):
+            for pos in self._sid_pos.get(s, ()):
+                pr = self._pos[pos]
+                pr.entries = _entries_of(pr.recs, self._marks)
+                pr.json = None
         self._ver += 1
 
     # -- one sentence -----------------------------------------------------------------------------------------------
@@ -388,8 +540,30 @@ class IndexBuilder:
         nr = self._open.get(session)
         return None if nr is None else nr.id
 
+    def _member(self, c: ClauseRec, nr: _NestRec) -> Optional[Member]:
+        if c.tank is None:
+            return None
+        if c.via == NEST_VIA and c.nest == nr.id:
+            kind = "completed"
+        elif c.centre == nr.head.centre:
+            kind = "centre"
+        elif any(p == "の" and ph == nr.head.centre for p, ph in c.path):
+            kind = "path"
+        elif c.open_nest == nr.id:
+            kind = "context"                                 # L-PUB-39: written while the nest was open, no other tie
+        else:
+            return None
+        if kind == "completed":
+            exact = True
+        elif kind == "context":
+            exact = False
+        else:
+            have = [ph for _, ph in c.path] + [c.centre or ""]
+            exact = all(a in have for a in nr.apx)
+        return Member(c.sid, c.k, c.tank, c.centre or "", kind, exact)
+
     def add_row(self, sid: int, row: dict, corpus_before: Any) -> Tuple[ClauseRec, ...]:
-        """Place the sentence `sid` (the next one).  `corpus_before` = the memory corpus of the sentences before it (C_<sid).  -> the clause records it made."""
+        """Place the sentence `sid` (the next one).  `corpus_before` = the memory corpus of the sentences before it (C_<sid).  -> the clause records it made; the notes it fired are in `last_notes`."""
         if sid != self.n:
             raise ValueError("sentences are added in order: expected %d, got %d" % (self.n, sid))
         p = parse_source(row["source"])
@@ -399,22 +573,52 @@ class IndexBuilder:
         turn = row.get("turn")
         self.n += 1
         self._sessions.append(session)
+        if self._sess and self._sess[-1][0] == session:
+            self._sess[-1][2] = sid
+        else:
+            self._sess.append([session, sid, sid])
+        if sid > 0:
+            self._edges.append("[%d,%d,%d]" % (sid - 1, sid, 1 if self._sessions[sid - 1] != session else 0))
         self._ver += 1
+        self.last_notes = []
         ex = self._exchange(row["sent"])
-        if row.get("unshaped") is True:                       # the F0 tank: in H, searchable as text, no cross
-            self._f0.append(F0Entry(sid, session, turn, row["sent"], ex.shapes(), tuple(c.reason or "" for c in ex.clauses if c.shape == "F0")))
-            return ()
+        if row.get("unshaped") is True:                       # the F0 tank: in H, searchable as text.  Designer decision L-PUB-42: its F1-F4 clauses are still indexed (below); only the F0 clause itself stays unshaped
+            e = F0Entry(sid, session, turn, row["sent"], ex.shapes(), tuple(c.reason or "" for c in ex.clauses if c.shape == "F0"))
+            self._f0.append(e)
+            self._f0_json.append(canonical(e.to_obj()))
         nr = self._open.get(session)
         open_id = None if nr is None else nr.id
         out: List[ClauseRec] = []
+        notes: List[dict] = []
         for k, c in enumerate(ex.clauses):
-            out.append(self._place(sid, k, session, turn, c, nr, open_id, corpus_before))
-        self._clauses.extend(out)
+            cr, nn = self._place(sid, k, session, turn, c, nr, open_id, corpus_before)
+            out.append(cr)
+            notes += nn
+        for cr in out:
+            self._clauses.append(cr)
+            self._clause_json.append(canonical(cr.to_obj()))
+            for n_ in self._nests:
+                m = self._member(cr, n_)
+                if m is not None:
+                    n_.members.append(m)
+                    n_.mjson.append(canonical(m.to_obj()))
+                    n_.view = n_.json = None
+        notes = mdt.order_notes(notes)
+        for n in notes:
+            self._notes.append(n)
+            self._note_json.append(canonical(n))
+        self.last_notes = notes
         return tuple(out)
 
-    def _place(self, sid: int, k: int, session: int, turn: Optional[str], c: ms.Clause, nr: Optional[_NestRec], open_id: Optional[str], corpus: Any) -> ClauseRec:
+    def _touch(self, key: Tuple[str, str], cr: _CrossRec, sid: int) -> None:
+        cr.view = cr.json = None
+        lst = self._sid_cross.setdefault(sid, [])
+        if not lst or lst[-1] != key:
+            lst.append(key)
+
+    def _place(self, sid: int, k: int, session: int, turn: Optional[str], c: ms.Clause, nr: Optional[_NestRec], open_id: Optional[str], corpus: Any) -> Tuple[ClauseRec, List[dict]]:
         if c.shape == "F0":
-            return ClauseRec(sid, k, session, turn, "F0", None, None, c.text, None, None, open_id, (), None, None, tuple(a.text for a in c.adverbial), c.reason)
+            return ClauseRec(sid, k, session, turn, "F0", None, None, c.text, None, None, open_id, (), None, None, tuple(a.text for a in c.adverbial), c.reason), []
         tank, via, nest_id = c.shape, None, None
         arms: Tuple[ms.Arm, ...] = c.arms
         if c.shape == "F4" and nr is not None:               # M3: completed structurally by the nest: nothing is prepended to the text
@@ -426,6 +630,8 @@ class IndexBuilder:
         if cr is None:
             cr = self._crosses[key] = _CrossRec(tank, c.centre or "", tuple(c.centre_units))
             self._cross_order.append(key)
+            self._tank_cross[tank].append(key)
+        self._touch(key, cr, sid)
         head = c.centre_units[-1] if c.centre_units else (c.centre or "")
         ch = None if c.change is None else _change_rec(c.change)
         surface = c.surface if c.surface is not None else (c.centre or "")
@@ -435,30 +641,59 @@ class IndexBuilder:
         def rec(slot: str, phrase: str, units: Tuple[str, ...], centre_head: str, sub: Sequence[ms.Arm], v: Optional[str], nid: Optional[str], change: Optional[ChangeRec], p: Path) -> _Rec:
             """One seat (and, below it, the seats of its own arms: the chain).  `p` = its path: an arm seat's ancestors, a value seat's position."""
             self._seq += 1
+            self._seat_n[tank] += 1
             seat_head = units[-1] if units else phrase
             r = _Rec(slot=slot, phrase=phrase, units=tuple(units), sid=sid, k=k, seq=self._seq, turn=turn, session=session, origin=origin_of(corpus, units),
-                     key=seat_key(corpus, slot, centre_head, seat_head), path=p, children=[], via=v, nest=nid, change=change, surface=phrase)
+                     key=seat_key(corpus, slot, centre_head, seat_head), path=p, children=[], via=v, nest=nid, change=change, surface=phrase, scope=open_id)
             for a in sub:
                 r.children.append((a.particle, rec(a.particle, a.seat.text, a.seat.units, seat_head, a.arms, v, nid, None, p + ((slot, phrase),))))
             return r
 
+        def top(r: _Rec) -> None:
+            cr.recs.append(r)
+            if r.slot in ARMS:
+                cr.arm_n[r.slot] = cr.arm_n.get(r.slot, 0) + 1
+                self._max_L[tank] = max(self._max_L[tank], 1 + max(cr.arm_n.values()))
+            else:
+                self._max_L[tank] = max(self._max_L[tank], 1)
+
         for a in arms:
             is_nest = via == NEST_VIA and a.particle == NEST_ARM
-            cr.recs.append(rec(a.particle, a.seat.text, a.seat.units, head, a.arms, via if is_nest else None, nest_id if is_nest else None, None, ()))
+            top(rec(a.particle, a.seat.text, a.seat.units, head, a.arms, via if is_nest else None, nest_id if is_nest else None, None, ()))
+        notes: List[dict] = []
         if c.value is not None:
-            cr.recs.append(rec(VALUE, c.value.text, c.value.units, head, (), None, None, ch, path))
+            vr = rec(VALUE, c.value.text, c.value.units, head, (), None, None, ch, path)
+            top(vr)
+            pos: Position = (tank, c.centre or "", path)
+            pr = self._pos.get(pos)
+            if pr is None:
+                pr = self._pos[pos] = _PosRec(pos)
+                self._pos_order.append(pos)
+            pr.recs.append(vr)
+            pr.entries = _entries_of(pr.recs, self._marks)
+            pr.json = None
+            lst = self._sid_pos.setdefault(sid, [])
+            if pos not in lst:
+                lst.append(pos)
+            notes += self._det.observe_value(tank=tank, centre=c.centre or "", path=path, scope=open_id, value=c.value.text, sid=sid, k=k, turn=turn,
+                                             change=None if ch is None else {"old": ch.old, "form": ch.form})
         if c.quantity is not None:
-            cr.recs.append(rec("quantity", c.quantity.text, c.quantity.units, head, (), None, None, None, ()))
+            top(rec("quantity", c.quantity.text, c.quantity.units, head, (), None, None, None, ()))
         if c.object_bare is not None:
-            cr.recs.append(rec("object_bare", c.object_bare.text, c.object_bare.units, head, (), None, None, None, ()))
-        return ClauseRec(sid, k, session, turn, c.shape, tank, c.centre, c.text, via, nest_id, open_id, path, None if c.value is None else c.value.text, ch,
-                         tuple(a.text for a in c.adverbial), None)
+            top(rec("object_bare", c.object_bare.text, c.object_bare.units, head, (), None, None, None, ()))
+        if tank in ("F3", "F4") and c.value is None:
+            notes += self._det.observe_event(tank=tank, centre=c.centre or "", arms=[(a.particle, a.seat.text) for a in arms], scope=open_id, sid=sid, k=k, turn=turn)
+        for rl in _relations(c, arms, tank):
+            notes += self._det.observe_relation(kind=rl[0], label=rl[1], first=rl[2], second=rl[3], particle=rl[4], first_units=rl[5], second_units=rl[6], sid=sid, k=k, turn=turn,
+                                                judge=lambda particle, fu, su: pair_key(corpus, particle, fu, su) if fu and su else None)
+        return (ClauseRec(sid, k, session, turn, c.shape, tank, c.centre, c.text, via, nest_id, open_id, path, None if c.value is None else c.value.text, ch,
+                          tuple(a.text for a in c.adverbial), None), notes)
 
     # -- the derived index -------------------------------------------------------------------------------------------
     def index(self) -> "MemIndex":
         if self._cache is not None and self._cache[0] == self._ver:
             return self._cache[1]
-        idx = self._finish()
+        idx = self._snapshot()
         self._cache = (self._ver, idx)
         return idx
 
@@ -466,71 +701,132 @@ class IndexBuilder:
         m = self._marks.get(r.sid)
         kids = tuple((p, self._seat_view(ch, 0, 1)) for p, ch in r.children)
         return Seat(r.slot, r.phrase, r.units, Prov(r.sid, r.turn, r.session, r.origin, r.surface, r.k), r.key, rank, ring, r.path, kids, r.via, r.nest, r.change,
-                    () if m is None else (m,))
+                    () if m is None else (m,), r.scope)
 
-    def _finish(self) -> "MemIndex":
-        crosses: List[Cross] = []
-        for key in self._cross_order:
-            cr = self._crosses[key]
-            slots: List[Tuple[str, Tuple[Seat, ...]]] = []
-            longest = 0
-            for slot in SLOTS:
-                recs = [r for r in cr.recs if r.slot == slot]
-                if not recs:
-                    continue
-                recs.sort(key=lambda r: (-r.key[0], -r.key[1], -r.key[2], r.sid, r.k, r.seq))
-                on_arm = slot in ARMS
-                slots.append((slot, tuple(self._seat_view(r, i, i + 1 if on_arm else 0) for i, r in enumerate(recs))))
-                if on_arm:
-                    longest = max(longest, len(recs))
-            occ = tuple(sorted(cr.occ, key=lambda o: (o.sid, o.clause)))
-            crosses.append(Cross(cr.tank, cr.centre, cr.centre_units, 1 + longest, tuple(slots), occ))
-        nests: List[Nest] = []
-        for nr in self._nests:
-            apx = tuple(ph for _, ph in _flatten(nr.head.arms))
-            members: List[Member] = []
-            under: List[Tuple[int, int, str, Optional[str]]] = []
-            for c in self._clauses:
-                kind: Optional[str] = None
-                if c.tank is not None:
-                    if c.via == NEST_VIA and c.nest == nr.id:
-                        kind = "completed"
-                    elif c.centre == nr.head.centre:
-                        kind = "centre"
-                    elif any(p == "の" and ph == nr.head.centre for p, ph in c.path):
-                        kind = "path"
-                if kind is not None:
-                    have = [ph for _, ph in c.path] + [c.centre or ""]
-                    members.append(Member(c.sid, c.k, c.tank or "", c.centre or "", kind, kind == "completed" or all(a in have for a in apx)))
-                elif c.open_nest == nr.id:
-                    under.append((c.sid, c.k, c.shape, c.centre))
-            nests.append(Nest(nr.id, nr.topic, nr.head.centre, nr.head.centre_units, _flatten(nr.head.arms), nr.head.prefix, tuple(nr.declared), tuple(members), tuple(under)))
-        return MemIndex(self.shape_version, self.n, tuple(self._sessions), tuple(crosses), tuple(self._f0), tuple(nests), tuple(self._clauses), dict(self._marks))
+    def _cross_view(self, cr: _CrossRec) -> Cross:
+        if cr.view is not None:
+            return cr.view
+        slots: List[Tuple[str, Tuple[Seat, ...]]] = []
+        longest = 0
+        for slot in SLOTS:
+            recs = [r for r in cr.recs if r.slot == slot]
+            if not recs:
+                continue
+            recs.sort(key=lambda r: (-r.key[0], -r.key[1], -r.key[2], r.sid, r.k, r.seq))
+            on_arm = slot in ARMS
+            slots.append((slot, tuple(self._seat_view(r, i, i + 1 if on_arm else 0) for i, r in enumerate(recs))))
+            if on_arm:
+                longest = max(longest, len(recs))
+        occ = tuple(sorted(cr.occ, key=lambda o: (o.sid, o.clause)))
+        cr.view = Cross(cr.tank, cr.centre, cr.centre_units, 1 + longest, tuple(slots), occ)
+        return cr.view
+
+    def _cross_json(self, cr: _CrossRec) -> str:
+        if cr.json is None:
+            cr.json = canonical(self._cross_view(cr).to_obj())
+        return cr.json
+
+    def _nest_view(self, nr: _NestRec) -> Nest:
+        if nr.view is None:
+            nr.view = Nest(nr.id, nr.topic, nr.head.centre, nr.head.centre_units, _flatten(nr.head.arms), nr.head.prefix, tuple(nr.declared), tuple(nr.members))
+        return nr.view
+
+    def _nest_json(self, nr: _NestRec) -> str:
+        if nr.json is None:
+            nr.json = '{"arms":%s,"centre":%s,"centre_units":%s,"declared":%s,"id":%s,"members":[%s],"prefix":%s,"topic":%s}' % (
+                canonical([list(a) for a in _flatten(nr.head.arms)]), canonical(nr.head.centre), canonical(list(nr.head.centre_units)), canonical([list(d) for d in nr.declared]),
+                canonical(nr.id), ",".join(nr.mjson), canonical(nr.head.prefix), canonical(nr.topic))
+        return nr.json
+
+    def _pos_json(self, pos: Position) -> str:
+        pr = self._pos[pos]
+        if pr.json is None:
+            pr.json = canonical([pos[0], pos[1], [list(p) for p in pos[2]], [e.to_obj() for e in pr.entries]])
+        return pr.json
+
+    def _assemble(self) -> str:
+        """The canonical JSON of the index, assembled from the cached parts in the order (sorted keys) `MemIndex.to_obj()` has: byte for byte `canonical(to_obj())`."""
+        tanks = "[" + ",".join("[%s,[%s]]" % (canonical(t), ",".join(self._cross_json(self._crosses[k]) for k in self._tank_cross[t])) for t in TANKS) + "]"
+        return '{"bridges":[%s],"clauses":[%s],"edges":[%s],"f0":[%s],"n":%d,"nests":[%s],"notes":[%s],"positions":[%s],"sessions":%s,"shape":%s,"tanks":%s,"v":%s}' % (
+            ",".join(canonical(b.to_obj()) for b in self._bridges), ",".join(self._clause_json), ",".join(self._edges), ",".join(self._f0_json), self.n,
+            ",".join(self._nest_json(nr) for nr in self._nests), ",".join(self._note_json), ",".join(self._pos_json(p) for p in self._pos_order), canonical(self._sess),
+            canonical(self.shape_version), tanks, canonical(CROSS_VERSION))
+
+    def _snapshot(self) -> "MemIndex":
+        crosses = tuple(self._cross_view(self._crosses[k]) for k in self._cross_order)
+        nests = tuple(self._nest_view(nr) for nr in self._nests)
+        counts = {t: {"crosses": len(self._tank_cross[t]), "seats": self._seat_n[t], "max_L": self._max_L[t]} for t in TANKS}
+        sha = sha256_text(self._assemble())
+        return MemIndex(self.shape_version, self.n, tuple(self._sessions), crosses, tuple(self._f0), nests, tuple(self._clauses), dict(self._marks),
+                        hist={p: self._pos[p].entries for p in self._pos_order}, positions=tuple(self._pos_order), notes=tuple(self._notes), bridges=tuple(self._bridges),
+                        counts=counts, sha=sha)
+
+
+def _relations(c: ms.Clause, arms: Sequence[ms.Arm], tank: str) -> List[tuple]:
+    """The relations a clause writes, each (kind, label, first, second, particle, first_units, second_units) with `first` written before `second`: the two ends of every の link (「X の Y」: X, Y), the
+    が / を pair of an event (label: the centre), and 「A は P の Q」 (label Q; A = the centre, P = the part of the value before の)."""
+    out: List[tuple] = []
+
+    def links(owned_text: str, owned_units: Tuple[str, ...], sub: Sequence[ms.Arm]) -> None:
+        for a in sub:
+            if a.particle == "の":
+                out.append(("の", "", a.seat.text, owned_text, "の", tuple(a.seat.units), tuple(owned_units)))
+                links(a.seat.text, tuple(a.seat.units), a.arms)
+
+    if c.shape in ("F1", "F2") and c.centre:
+        links(c.centre, tuple(c.centre_units), arms)
+    if c.shape == "F2" and c.centre and c.value is not None and c.change is None:
+        v = c.value
+        i = v.text.find("の")
+        if 0 < i < len(v.text) - 1 and v.text.count("の") == 1:
+            n_p = _split_units(v.units, v.text, i)
+            if n_p is not None and n_p < len(v.units):
+                out.append(("value", v.text[i + 1:], c.centre, v.text[:i], "の", tuple(c.centre_units), tuple(v.units[:n_p])))
+    if tank in ("F3", "F4") and c.value is None:
+        subj = [a for a in arms if a.particle == "が"]
+        obj = [a for a in arms if a.particle == "を"]
+        if len(subj) == 1 and len(obj) == 1:
+            out.append(("event", c.centre or "", subj[0].seat.text, obj[0].seat.text, "が", tuple(subj[0].seat.units), tuple(obj[0].seat.units)))
+    return out
 
 
 # ------------------------------------------------------------------------------------------------------------
 # the index
 # ------------------------------------------------------------------------------------------------------------
 class MemIndex:
-    """The derived index: tanks, nests, clauses, the slide order.  Immutable after construction; `index_sha` is the sha256 of its canonical serialisation."""
+    """The derived index: tanks, nests, clauses, the slide order, the notes, the bridges.  A snapshot, immutable after construction; `index_sha` is the sha256 of its canonical serialisation."""
 
     def __init__(self, shape_version: str, n: int, sessions: Tuple[int, ...], crosses: Tuple[Cross, ...], f0: Tuple[F0Entry, ...], nests: Tuple[Nest, ...],
-                 clauses: Tuple[ClauseRec, ...], marks: Dict[int, Mark]) -> None:
+                 clauses: Tuple[ClauseRec, ...], marks: Dict[int, Mark], *, hist: Dict[Position, Tuple[Entry, ...]], positions: Tuple[Position, ...], notes: Tuple[dict, ...] = (),
+                 bridges: Tuple[Bridge, ...] = (), counts: Optional[dict] = None, sha: Optional[str] = None) -> None:
         self.shape_version, self.n, self.sessions = shape_version, n, sessions
         self.crosses, self.f0, self.nests, self.clauses = crosses, f0, nests, clauses
+        self.notes, self.bridges = notes, bridges
         self._marks = marks                                  # looked up only
-        self._by_key: Dict[Tuple[str, str], Cross] = {(c.tank, c.centre): c for c in crosses}
-        self.edges: Tuple[Tuple[int, int, int], ...] = tuple((i, i + 1, 1 if sessions[i] != sessions[i + 1] else 0) for i in range(n - 1))
-        self._hist: Dict[Position, Tuple[Entry, ...]] = {}
-        self.positions: Tuple[Position, ...] = self._positions()
-        self._sha: Optional[str] = None
+        self._hist = hist
+        self.positions = positions
+        self._counts = counts
+        self._by_key: Optional[Dict[Tuple[str, str], Cross]] = None
+        self._edges: Optional[Tuple[Tuple[int, int, int], ...]] = None
+        self._by_centre: Optional[Dict[str, List[Position]]] = None
+        self._flat: Optional[Dict[str, List[Position]]] = None
+        self._clause_at: Optional[Dict[Tuple[int, int], ClauseRec]] = None
+        self._sha: Optional[str] = sha
 
     # -- M2 queries -------------------------------------------------------------------------------------------------
     def tank(self, tank: str) -> Tuple[Cross, ...]:
         return tuple(c for c in self.crosses if c.tank == tank)
 
     def cross(self, tank: str, centre: str) -> Optional[Cross]:
+        if self._by_key is None:
+            self._by_key = {(c.tank, c.centre): c for c in self.crosses}
         return self._by_key.get((tank, centre))
+
+    @property
+    def edges(self) -> Tuple[Tuple[int, int, int], ...]:
+        if self._edges is None:
+            self._edges = tuple((i, i + 1, 1 if self.sessions[i] != self.sessions[i + 1] else 0) for i in range(self.n - 1))
+        return self._edges
 
     def seats(self, cross: Cross, arm_path: Any) -> Tuple[Seat, ...]:
         """The seats on an arm of `cross`, in rank order.  `arm_path`: "の" (the の arm), or a sequence of steps to go through the arms of the seats on the way, each step a particle or
@@ -578,42 +874,15 @@ class MemIndex:
     def nests_of(self, centre: str) -> Tuple[Nest, ...]:
         return tuple(n for n in self.nests if n.centre == centre)
 
-    # -- M4 queries -------------------------------------------------------------------------------------------------
-    def _positions(self) -> Tuple[Position, ...]:
-        order: List[Position] = []
-        groups: List[List[Seat]] = []
-        where: Dict[Position, int] = {}
-        for c in self.crosses:
-            for s in c.seats_of(VALUE):
-                pos = (c.tank, c.centre, s.path)
-                i = where.get(pos)
-                if i is None:
-                    where[pos] = len(order)
-                    order.append(pos)
-                    groups.append([])
-                    i = len(order) - 1
-                groups[i].append(s)
-        for seats in groups:
-            seats.sort(key=lambda s: (s.prov.sid, s.prov.clause))
-        ranked = sorted(range(len(order)), key=lambda i: (groups[i][0].prov.sid, groups[i][0].prov.clause, order[i][0], order[i][1]))      # positions in the order they first got a value
-        order, groups = [order[i] for i in ranked], [groups[i] for i in ranked]
-        for pos, seats in zip(order, groups):
-            ents: List[Entry] = []
-            for j, s in enumerate(seats):
-                superseded_here = any(self._marks.get(e.sid) is not None and self._marks[e.sid].by == s.prov.sid for e in ents)
-                if j == 0:
-                    kind = "first"
-                elif s.change is not None or superseded_here:
-                    kind = "update"
-                else:
-                    kind = "other"
-                om: Optional[bool] = None
-                if s.change is not None and s.change.old is not None and j > 0:
-                    om = s.change.old == ents[-1].value
-                ents.append(Entry(s.phrase, s.prov.sid, s.prov.clause, s.prov.session, s.prov.turn, kind, s.change, om, s.marks))
-            self._hist[pos] = tuple(ents)
-        return tuple(order)
+    def nest_by_id(self, nid: Optional[str]) -> Optional[Nest]:
+        if nid is None:
+            return None
+        for n in self.nests:
+            if n.id == nid:
+                return n
+        return None
 
+    # -- M4 queries -------------------------------------------------------------------------------------------------
     def history(self, position: Any) -> List[Tuple[str, int, str]]:
         """[(value, sid, kind)] of a position (tank, centre, path) in slide order; kind = first | update | other.  An unknown position: []."""
         return [(e.value, e.sid, e.kind) for e in self.history_full(position)]
@@ -621,15 +890,58 @@ class MemIndex:
     def history_full(self, position: Any) -> Tuple[Entry, ...]:
         return self._hist.get(_position(position), ())
 
+    # -- M6 queries -------------------------------------------------------------------------------------------------
+    def positions_of(self, centre: str, tanks: Sequence[str] = TANKS) -> Tuple[Position, ...]:
+        """Every position whose centre is `centre`, in the order the positions got their first value."""
+        if self._by_centre is None:
+            d: Dict[str, List[Position]] = {}
+            for p in self.positions:
+                d.setdefault(p[1], []).append(p)
+            self._by_centre = d
+        return tuple(p for p in self._by_centre.get(centre, ()) if p[0] in tanks)
+
+    def positions_flat(self, flat: str) -> Tuple[Position, ...]:
+        """The positions of F1 / F2 whose phrase read as ONE string equals `flat`: the owner phrases from the outermost to the centre, joined (「認証モジュール」「担当」 -> 認証モジュール担当).  This is what lets a
+        question 「認証モジュール担当」 meet the sentence 「認証モジュールの担当は…」 and the other way round."""
+        if self._flat is None:
+            d: Dict[str, List[Position]] = {}
+            for p in self.positions:
+                f = flat_of(p)
+                if f is not None:
+                    d.setdefault(f, []).append(p)
+            self._flat = d
+        return tuple(self._flat.get(flat, ()))
+
+    def clause_rec(self, sid: int, k: int) -> Optional[ClauseRec]:
+        if self._clause_at is None:
+            self._clause_at = {(c.sid, c.k): c for c in self.clauses}
+        return self._clause_at.get((sid, k))
+
+    def mark_of(self, sid: int) -> Optional[Mark]:
+        return self._marks.get(sid)
+
+    @property
+    def marks(self) -> Dict[int, Mark]:
+        return dict(self._marks)
+
     # -- numbers ----------------------------------------------------------------------------------------------------
     def stats(self) -> dict:
         out: Dict[str, Any] = {}
         for t in TANKS:
-            cs = self.tank(t)
-            out[t] = {"crosses": len(cs), "seats": sum(c.n_seats() for c in cs), "max_L": max([c.L for c in cs], default=0)}
+            if self._counts is not None:
+                out[t] = dict(self._counts[t])
+            else:
+                cs = self.tank(t)
+                out[t] = {"crosses": len(cs), "seats": sum(c.n_seats() for c in cs), "max_L": max([c.L for c in cs], default=0)}
         out[F0_TANK] = {"sentences": len(self.f0)}
         out["nests"] = len(self.nests)
         out["positions"] = len(self.positions)
+        return out
+
+    def note_counts(self) -> Dict[str, int]:
+        out: Dict[str, int] = {t: 0 for t in mdt.CROSS_NOTE_TYPES}
+        for n in self.notes:
+            out[n["type"]] += 1
         return out
 
     # -- serialisation ----------------------------------------------------------------------------------------------
@@ -643,7 +955,8 @@ class MemIndex:
         return {"v": CROSS_VERSION, "shape": self.shape_version, "n": self.n, "sessions": sess,
                 "tanks": [[t, [c.to_obj() for c in self.tank(t)]] for t in TANKS], "f0": [e.to_obj() for e in self.f0], "nests": [n.to_obj() for n in self.nests],
                 "clauses": [c.to_obj() for c in self.clauses], "edges": [list(e) for e in self.edges],
-                "positions": [[t, c, [list(p) for p in path], [e.to_obj() for e in self._hist[(t, c, path)]]] for t, c, path in self.positions]}
+                "positions": [[t, c, [list(p) for p in path], [e.to_obj() for e in self._hist[(t, c, path)]]] for t, c, path in self.positions],
+                "notes": list(self.notes), "bridges": [b.to_obj() for b in self.bridges]}
 
     @property
     def index_sha(self) -> str:
@@ -653,6 +966,14 @@ class MemIndex:
 
     def render(self, cross: Cross) -> str:
         return render_cross(cross)
+
+
+def flat_of(position: Position) -> Optional[str]:
+    """The phrase of an F1 / F2 position as one string (owners outermost first, then the centre); None for an event position or a path that holds a particle other than の."""
+    tank, centre, path = position
+    if tank not in ("F1", "F2") or any(p != "の" for p, _ in path):
+        return None
+    return "".join(ph for _, ph in reversed(path)) + centre
 
 
 def _steps(arm_path: Any) -> List[Tuple[str, Optional[str]]]:
@@ -701,11 +1022,12 @@ def render_cross(c: Cross) -> str:
 
 
 # ------------------------------------------------------------------------------------------------------------
-# the pure function of H
+# the pure function of H (the FULL REBUILD: replay / verify run it and require it to equal the incremental index byte for byte)
 # ------------------------------------------------------------------------------------------------------------
-def build_index(rows: Sequence[dict], decls: Sequence[dict] = (), superseded: Optional[Dict[int, dict]] = None, shape_version: str = ms.SHAPES_V2) -> MemIndex:
-    """The index of the memory rows `rows` (each {sent, source, kind?, turn?, unshaped?}), the topic declarations `decls` ([{session, at, topic}]: `at` = how many sentences H held when it was declared) and the
-    supersede marks `superseded` ({sid: {by, reason, session}}).  Builds the memory corpus of every prefix itself (Corpus, never Corpus.load)."""
+def build_index(rows: Sequence[dict], decls: Sequence[dict] = (), superseded: Optional[Dict[int, dict]] = None, shape_version: str = ms.SHAPES_V2,
+                bridges: Sequence[dict] = ()) -> MemIndex:
+    """The index of the memory rows `rows` (each {sent, source, kind?, turn?, unshaped?}), the topic declarations `decls` ([{session, at, topic}]: `at` = how many sentences H held when it was declared),
+    the supersede marks `superseded` ({sid: {by, reason, session}}) and the bridges `bridges` ([{session, at, qword, phrase}]).  Builds the memory corpus of every prefix itself (Corpus, never Corpus.load)."""
     b = IndexBuilder(shape_version)
     order = sorted(range(len(decls)), key=lambda i: (decls[i]["at"], i))
     di = 0
@@ -724,6 +1046,8 @@ def build_index(rows: Sequence[dict], decls: Sequence[dict] = (), superseded: Op
     for sid in sorted(superseded or {}):
         v = (superseded or {})[sid]
         b.supersede(sid, v["by"], v["reason"], v["session"])
+    for br in bridges:
+        b.bridge(br["session"], br["at"], br["qword"], br["phrase"])
     return b.index()
 
 

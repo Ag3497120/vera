@@ -72,6 +72,10 @@ def build(door: Any):
         return out("keep_unshaped", {"text": text})
 
     @reg
+    def bridge(question_word: str, memory_phrase: str) -> str:
+        return out("bridge", {"question_word": question_word, "memory_phrase": memory_phrase})
+
+    @reg
     def declare_topic(text: str) -> str:
         return out("declare_topic", {"text": text})
 

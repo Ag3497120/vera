@@ -64,7 +64,7 @@ def story_tools(arm: str, profile: str = mem.PROFILE_V2) -> Tuple[str, ...]:
     names = STORY_TOOLS[arm]
     if profile == mem.PROFILE_V4 and arm in STRUCTURE_ARMS:
         i = names.index("write") + 1
-        return names[:i] + mem.V4_OPS + names[i:]
+        return names[:i] + mem.V4_OPS + mem.V4_BRIDGE + names[i:]
     return names
 ANSWER_VALUE_CHARS = 32
 BASELINE_VERSION = "membase.v1"
@@ -90,6 +90,10 @@ TOOL_SPECS: Dict[str, dict] = {
     "keep_unshaped": {"description": "Keep a sentence the structure could not give a shape (write refused it: no_shape) as plain text: it stays in the memory and can be searched, but it enters no cross and no "
                                      "note fires. Refused (shaped) if write would accept it. Use it only when the sentence cannot be rewritten into a fact.",
                       "properties": {"text": _p("string", "the sentence, at most 64 characters")}, "required": ["text"]},
+    "bridge": {"description": "Tell the memory that a word of YOUR question stands for a phrase the memory already uses (the question says 開ける日, the memory has 開館日): recall then uses the mapping. Marked as "
+                              "constructed and kept in the log. The memory_phrase must be the centre of a fact already written (a thing you wrote as 「X の Y は A」 with that Y).",
+               "properties": {"question_word": _p("string", "the word or phrase the question uses, at most 16 characters"), "memory_phrase": _p("string", "the phrase the memory uses, at most 24 characters")},
+               "required": ["question_word", "memory_phrase"]},
     "declare_topic": {"description": "Say what this session is about (a noun phrase, at most 24 characters, no particle in it: の に で と を が). A fact you write with no subject (「締め切りは水曜」) is "
                                      "stored as 「<topic>の締め切りは水曜」. Call it first; declare it again when the subject changes.",
                       "properties": {"text": _p("string", "the topic, e.g. 展示会準備")}, "required": ["text"]},

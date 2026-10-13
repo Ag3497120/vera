@@ -41,12 +41,15 @@ from verantyx.loom.state import AXES, SPEC, LoomCross, canonical, fmt_seat
 
 MEM_NOTES_VERSION = "mem.v1"
 MEM_NOTES_V2 = "mem.v2"                # MEM-fix (L-MEM-61): mem.v1 + a REVERSAL note CITES the two sentences (sid, turn) it is about; recorded as header.notes_profile of a mem.v3 session
-MEM_NOTES_VERSIONS: Tuple[str, ...] = (MEM_NOTES_VERSION, MEM_NOTES_V2)
+MEM_NOTES_V4 = "mem.v4"                # PUB-M5: mem.v2 + the notes made on the memory crosses (SAME_SEAT, UPDATE, REVERSAL_X, ENUMERATION: memdetect); SAME_QUESTION / REVERSAL / CONFLICT stay as second witnesses
+MEM_NOTES_VERSIONS: Tuple[str, ...] = (MEM_NOTES_VERSION, MEM_NOTES_V2, MEM_NOTES_V4)
 REVERSAL_CITE_MAX = 8                  # the earlier sentences a REVERSAL note lists (the count is in `earlier_n`)
 CONFLICT, UNANCHORED = notelib.CONFLICT, notelib.UNANCHORED
 REVERSAL, NEW_RELATION, SAME_QUESTION = "REVERSAL", "NEW_RELATION", "SAME_QUESTION"
 SELF_QUESTION_UNREADABLE, IDENTIFIER_FLATTENED, NO_RELATION_SEATED = "SELF_QUESTION_UNREADABLE", "IDENTIFIER_FLATTENED", "NO_RELATION_SEATED"
 NOTE_TYPES: Tuple[str, ...] = (CONFLICT, UNANCHORED, REVERSAL, NEW_RELATION, SAME_QUESTION, SELF_QUESTION_UNREADABLE, IDENTIFIER_FLATTENED, NO_RELATION_SEATED)
+NOTE_TYPES_V4: Tuple[str, ...] = NOTE_TYPES + ("SAME_SEAT", "UPDATE", "REVERSAL_X", "ENUMERATION")      # the notes of the profile mem.v4 (memdetect.CROSS_NOTE_TYPES are the last four)
+COUNTED_V4: Tuple[str, ...] = ("SAME_SEAT", "REVERSAL_X")                                              # what the meter counts under notes mem.v4 (UPDATE in a column of its own); the v3 notes are witnesses
 NOTE_OP, NOTE_ACTOR = notelib.NOTE_OP, notelib.NOTE_ACTOR
 SHAPE = "SHAPE"                        # the event class of a refused `span_inexpressible` write (a ledger event, not a note row)
 SHAPE_REFUSALS: Tuple[str, ...] = ("span_inexpressible", "no_shape")      # a write the structure could not seat: the loom's refusal (mem.v1..v3) and the shape exchanger's F0 refusal (mem.v4, PUB-M2)
@@ -467,7 +470,7 @@ def _content_changed(trigger_note: dict, w1: dict, w2: dict) -> bool:
     return False
 
 
-def session_events(rows: Sequence[dict], contradiction_policy: str = "a", unseatable_policy: str = "a") -> dict:
+def session_events(rows: Sequence[dict], contradiction_policy: str = "a", unseatable_policy: str = "a", notes_profile: Optional[str] = None) -> dict:
     """Everything a session's ledger says about the structure, from the rows alone:
       notes          {type: count} over the ok writes' note rows;  counted {type: count} for the types the policy counts
       unseatable     {"total", "by_reason": {reason: n}}  (writes refused `span_inexpressible`)
@@ -477,26 +480,27 @@ def session_events(rows: Sequence[dict], contradiction_policy: str = "a", unseat
       detections     {"notes": counted notes, "reseat_content": n, "headline": ...}   cost: {"unseatable", "reseat_shape", "unreadable"}
     A RESEAT needs: a trigger (a refused span_inexpressible write, or an ok write with a COUNTED note) and, in the next RESEAT_WINDOW model ops, an ok write
     with a different text that shares a WORD unit of >= MIN_OVERLAP_CHARS characters.  The headline is OP-MEM-3's: (a) notes + content RESEATs, (b) + shape."""
-    counted = counted_types(contradiction_policy)
+    v4 = notes_profile == MEM_NOTES_V4
+    counted = COUNTED_V4 if v4 else counted_types(contradiction_policy)
     notes_by_row = _notes_after(rows)
     ops = _model_ops(rows)
-    n_notes = {t: 0 for t in NOTE_TYPES}
+    n_notes = {t: 0 for t in (NOTE_TYPES_V4 if v4 else NOTE_TYPES)}
     refused: Dict[str, int] = {}
     reasons: Dict[str, int] = {}
     new_u = rec_u = 0
     for r in ops:
-        if r["op"] != "write":
+        if r["op"] != "write" and not (v4 and r["op"] == "keep_unshaped"):
             continue
         res = r["result"]
         if res.get("ok") is True:
-            for u in res["units"]:
+            for u in res.get("units", ()):
                 if u["origin"] == "new":
                     new_u += 1
                 else:
                     rec_u += 1
             for n in notes_by_row.get(r["i"], []):
                 n_notes[n["type"]] += 1
-        else:
+        elif r["op"] == "write":
             refused[res["refusal"]] = refused.get(res["refusal"], 0) + 1
             if res["refusal"] in SHAPE_REFUSALS:
                 reasons[res["detail"].get("reason", "")] = reasons.get(res["detail"].get("reason", ""), 0) + 1
