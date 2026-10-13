@@ -5,6 +5,10 @@ A thin, FROZEN vocabulary of the initial layout: for each kind of question word,
 word that is not here is added by the model with `bridge(question_word, memory_phrase)` (constructed, marked, ledgered), never by editing this table.  An edit is a new version (`qwords.v2`) and a new
 `QWORDS_SHA` -- the sha256 of the version and the canonical table -- which a mem.v4 begin row records.
 
+qwords.v2 (PUB-M6c, L-PUB-72) = qwords.v1 (the classes below, unchanged) + the question word 「どの<名詞>」 (「どの部屋で」, 「どのブランチに」): the interrogative 「どの」 and the noun that touches it are one
+question word (the noun is read by the tagger in memask, like the counter of 「何日」); it has no class (like the bare 「何」: the slot is named by the question).  General vocabulary only, written
+from the Japanese language, not from any bank, story or gold.  qwords.v1 stays selectable and its `QWORDS_SHA` pinned: a begin row records the version it reads.
+
 How recall uses it (memask): a question 「X の Y は <question word>」 whose Y is not what the memory calls the slot is tried with the other nouns of the class of the question word (Y first, then the
 model's bridges, then this table in this order); a question 「X は <question word>…」 with no slot noun at all is tried with every noun of the class as the slot of X.  Exact surface only: a compound
 (副担当, 設置場所) is another noun.
@@ -16,6 +20,9 @@ import json
 from typing import Dict, List, Optional, Tuple
 
 QWORDS_VERSION = "qwords.v1"
+QWORDS_V2 = "qwords.v2"
+QWORDS_VERSIONS = (QWORDS_VERSION, QWORDS_V2)
+WHICH = "どの"                                     # qwords.v2: 「どの<名詞>」
 
 # (class id, the question words (longest match wins), the slot nouns in the order they are tried)
 QWORD_CLASSES: Tuple[Tuple[str, Tuple[str, ...], Tuple[str, ...]], ...] = (
@@ -34,8 +41,13 @@ QWORD_CLASSES: Tuple[Tuple[str, Tuple[str, ...], Tuple[str, ...]], ...] = (
 BARE_WHAT = "何"                                   # the bare 「何」 (「Y は何ですか」): no class, the slot is named in the question
 
 
-def table_obj() -> dict:
-    return {"version": QWORDS_VERSION, "classes": [{"id": c, "words": list(w), "slots": list(s)} for c, w, s in QWORD_CLASSES], "bare": BARE_WHAT}
+def table_obj(version: str = QWORDS_VERSION) -> dict:
+    d = {"version": QWORDS_VERSION, "classes": [{"id": c, "words": list(w), "slots": list(s)} for c, w, s in QWORD_CLASSES], "bare": BARE_WHAT}
+    if version == QWORDS_V2:
+        d = dict(d, version=QWORDS_V2, which=WHICH)
+    elif version != QWORDS_VERSION:
+        raise ValueError("unknown question-word table %r (one of %s)" % (version, QWORDS_VERSIONS))
+    return d
 
 
 def table_entries() -> int:
@@ -43,7 +55,13 @@ def table_entries() -> int:
     return sum(len(w) + len(s) for _, w, s in QWORD_CLASSES)
 
 
-QWORDS_SHA = hashlib.sha256(json.dumps(table_obj(), sort_keys=True, ensure_ascii=False, separators=(",", ":")).encode("utf-8")).hexdigest()
+def _sha(version: str) -> str:
+    return hashlib.sha256(json.dumps(table_obj(version), sort_keys=True, ensure_ascii=False, separators=(",", ":")).encode("utf-8")).hexdigest()
+
+
+QWORDS_SHA = _sha(QWORDS_VERSION)                  # qwords.v1 (pinned: PUB-M6)
+QWORDS_SHA_V2 = _sha(QWORDS_V2)
+QWORDS_SHAS = {QWORDS_VERSION: QWORDS_SHA, QWORDS_V2: QWORDS_SHA_V2}      # version -> sha: what a begin row records
 
 _BY_WORD: Dict[str, int] = {}
 for _i, (_c, _ws, _ss) in enumerate(QWORD_CLASSES):
@@ -62,13 +80,18 @@ def slots_of_word(word: str) -> Tuple[str, ...]:
     return () if i is None else QWORD_CLASSES[i][2]
 
 
-def find_word(text: str) -> Optional[Tuple[int, str]]:
-    """The leftmost question word in `text` (the longest at that place; the bare 何 last): (index, word) or None."""
+def find_word(text: str, version: str = QWORDS_VERSION) -> Optional[Tuple[int, str]]:
+    """The leftmost question word in `text` (the longest at that place; the bare 何 last): (index, word) or None.  qwords.v2 also finds 「どの」 (the word is 「どの」 alone here: memask adds the noun that
+    touches it); where 「どの」 and a word of the table start at the same place the longer is taken, and a word of the table that starts further left wins over 「どの」."""
     best: Optional[Tuple[int, str]] = None
     for w in WORDS_LONGEST_FIRST:
         i = text.find(w)
         if i >= 0 and (best is None or i < best[0]):
             best = (i, w)
+    if version == QWORDS_V2:
+        i = text.find(WHICH)
+        if i >= 0 and (best is None or i < best[0]):
+            best = (i, WHICH)
     if best is None:
         i = text.find(BARE_WHAT)
         if i >= 0:

@@ -810,6 +810,7 @@ class MemIndex:
         self._edges: Optional[Tuple[Tuple[int, int, int], ...]] = None
         self._by_centre: Optional[Dict[str, List[Position]]] = None
         self._flat: Optional[Dict[str, List[Position]]] = None
+        self._text: Optional[Dict[str, List[Position]]] = None
         self._clause_at: Optional[Dict[Tuple[int, int], ClauseRec]] = None
         self._sha: Optional[str] = sha
 
@@ -912,6 +913,17 @@ class MemIndex:
             self._flat = d
         return tuple(self._flat.get(flat, ()))
 
+    def positions_text(self, text: str) -> Tuple[Position, ...]:
+        """PUB-M6c: the F1 / F2 positions whose phrase is `text`, written with 「の」 (`position_text`) or without (`flat_of`), in the order the positions got their first value."""
+        if self._text is None:
+            d: Dict[str, List[Position]] = {}
+            for p in self.positions:
+                for t in (position_text(p), flat_of(p)):
+                    if t is not None and (t not in d or p not in d[t]):
+                        d.setdefault(t, []).append(p)
+            self._text = d
+        return tuple(self._text.get(text, ()))
+
     def clause_rec(self, sid: int, k: int) -> Optional[ClauseRec]:
         if self._clause_at is None:
             self._clause_at = {(c.sid, c.k): c for c in self.clauses}
@@ -966,6 +978,15 @@ class MemIndex:
 
     def render(self, cross: Cross) -> str:
         return render_cross(cross)
+
+
+def position_text(position: Position) -> Optional[str]:
+    """PUB-M6c: the phrase of an F1 / F2 position as the memory writes it, owners outermost first, joined by 「の」 (認証モジュールの担当; an F2 position: its centre); None for an event position or a path
+    that holds a particle other than の.  What `recall` shows as a candidate and what `bridge(question_phrase, memory_phrase)` takes."""
+    tank, centre, path = position
+    if tank not in ("F1", "F2") or any(p != "の" for p, _ in path):
+        return None
+    return "の".join([ph for _, ph in reversed(path)] + [centre])
 
 
 def flat_of(position: Position) -> Optional[str]:

@@ -576,20 +576,162 @@ def _shapes_sha_v2() -> str:
 
 
 SHAPES_SHA_V2 = _shapes_sha_v2()
-SHAPE_TABLES: Dict[str, str] = {SHAPES_VERSION: SHAPES_SHA, SHAPES_V2: SHAPES_SHA_V2}      # version -> sha: what a ledger header records
 
 
+# ------------------------------------------------------------------------------------------------------------------------------------------
+# shape.v3 (PUB-M6c, stage 1 of the owner's staged shape table, L-PUB-64..): the SAME table as shape.v2 plus the constructions that were F0 only because of how the tokenizer / the unit filter cut the
+# sentence ("artefacts": no meaning is dropped or guessed).  shape.v1 / shape.v2 above are not edited (their SHAPES_SHA and every test stay).  THE RULE OF THE VERSION: a clause that shape.v2 reads as
+# F1-F4 is read EXACTLY the same by shape.v3; only a piece that shape.v2 gives F0 is read again, with its tokens rewritten as below, and if the new reading is still F0 the v2 clause (with its v2 reason)
+# stays.  Everything that makes a clause F0 for what it MEANS is untouched (a gap that is not a particle: も だけ まで へ ごとに ない-relative clauses; negation; questions; 「と」-lists; two topics ...).
+#   R2 AFFIXES (SUFFIX_SA, COUNTER_TSU, PREFIX)  a function-unit suffix 「さ」 / 「つ」 touching the unit before it (読みにくさ, ひとつ) and a prefix touching the unit after it (閉室日, 試音, 大閲覧室) extend the
+#                                                SPAN of that unit, so the phrase is written whole (読みにくさ, 閉室日); the units stay the loom's own (にく, 室): the affix is not a unit and is not in `units`.
+#   R1 LIGHT-VERB PREDICATE (LIGHT_PRED, NOUN_HEAD, NI_LIGHT, EXIST_ARU)  a verb the unit filter takes for a verb ending (見 置き しまっ つけ 通し あり ...) that stands right after a case particle
+#                                                (を に が で と, or は) which follows a unit -- or touches a noun unit (仮置き) -- is the PREDICATE, not an ending: 「次の束を見た」 「脇に置き」 「輸送表にある」 「目に通して」.  Its centre
+#                                                is the dictionary form (見る 置く 有る).  Not for する (サ変 is read by shape.v1) and できる; after a verb ending or a て (見てみる, 置いておく) the token stays an ending.
+#   FRAGMENTS (FRAG_TOPIC, FRAG_ADV)             a piece that is only a topic (「寄贈資料の受け入れ方は、」) joins the piece after it, so the topic is the topic of that clause; a piece with no particle,
+#                                                no predicate and nothing after its last unit, ended by a soft cut (「念のため、」 「清掃、」), is an adverbial of the clause that follows (as the leading adverbials of v1).
+# NOT in this version (owner: each stage is measured before the next): 「へ」 read as 「に」 (stage 2), 「X は A だと…」 (stage 3), 「ことにした」, も, だけ, 連体修飾 verbs.
+# ------------------------------------------------------------------------------------------------------------------------------------------
+SHAPES_V3 = "shape.v3"
+AFFIX_SUFFIXES = ("さ", "つ")                       # R2: the function-unit suffixes that extend the phrase of the unit before them
+LIGHT_CASE = "がをにでと"                           # R1: the case particles after which a verb-ending token is the predicate (は too)
+LIGHT_EXCLUDED = ("為る", "出来る")                 # R1: する is read by the サ変 rule of shape.v1; できる is a potential ending
+FORMAL_NOUN = "事"                                 # R1: not after 「こと」 (ことになった / ことがある are modalities of the clause before them, not events of their own)
+FRAG_SOFT = SOFT_CUTS
+CONSTANTS_V3: Dict[str, Any] = dict(CONSTANTS_V2, version=SHAPES_V3, affix_suffixes=list(AFFIX_SUFFIXES), light_case=LIGHT_CASE, light_excluded=list(LIGHT_EXCLUDED), formal_noun=FORMAL_NOUN,
+                                    rules=["R2_affix", "R1_light_predicate", "frag_topic", "frag_adverbial"])
+
+
+def _rewrite_v3(toks: Sequence[_Tok]) -> List[_Tok]:
+    """The tokens of a piece with the artefacts of shape.v3 repaired (see the block comment above): affixes extend the span of the unit they touch, light verbs after a case particle become units."""
+    suf: List[_Tok] = []
+    for t in toks:                                                          # R2: a suffix 「さ」 / 「つ」 extends the unit before it
+        if t.fn and t.pos1 == "接尾辞" and t.s in AFFIX_SUFFIXES and suf and not suf[-1].fn and suf[-1].b == t.a:
+            suf[-1] = replace(suf[-1], b=t.b)
+            continue
+        suf.append(t)
+    pre: List[_Tok] = []
+    i = 0
+    while i < len(suf):                                                     # R2: a prefix extends the unit after it
+        t = suf[i]
+        if t.fn and t.pos1 == "接頭辞" and i + 1 < len(suf) and not suf[i + 1].fn and suf[i + 1].a == t.b:
+            pre.append(replace(suf[i + 1], a=t.a))
+            i += 2
+            continue
+        pre.append(t)
+        i += 1
+    out = list(pre)
+    for k, t in enumerate(pre):                                             # R1: a verb ending right after a case particle (which follows a unit) or touching a noun unit is the predicate
+        if k == 0 or not (t.fn and t.pos1 == "動詞") or t.lemma in LIGHT_EXCLUDED:
+            continue
+        p = pre[k - 1]
+        after_case = p.pos1 == "助詞" and ((p.pos2 == "格助詞" and p.s in LIGHT_CASE) or (p.pos2 == "係助詞" and p.s == TOPIC)) and k >= 2 and not pre[k - 2].fn and pre[k - 2].lemma != FORMAL_NOUN
+        after_noun = (not p.fn) and p.pos1 == "名詞" and p.b == t.a
+        if after_case or after_noun:
+            out[k] = replace(t, fn=False)
+    return out
+
+
+def _classify_v3(text: str, toks: Sequence[_Tok], term: str) -> Clause:
+    """shape.v3: the v2 reading of the piece; only if that is F0, the piece is read again with `_rewrite_v3`'s tokens, and the new reading is kept iff it is not F0."""
+    c = _classify_v2(text, toks, term)
+    if c.shape != "F0":
+        return c
+    toks2 = _rewrite_v3(toks)
+    if toks2 == list(toks):
+        return c
+    c2 = _classify_v2(text, toks2, term)
+    if c2.shape == "F0" or sum(1 for x in c2.arms if x.particle == "が") > 1:                  # a new reading never has two subjects
+        return c
+    if c2.shape in ("F1", "F2") and c2.change is None:                                         # a value clause ends in a noun (+ です / だ ...): a verb after it (維持できている) makes it no value
+        units = [t for t in toks2 if not t.fn]
+        if any(t.pos1 == "動詞" for t in toks2 if t.a >= units[-1].b):
+            return c
+    return c2
+
+
+def _frag_topic(c: Clause, term: str) -> bool:
+    """A piece that is only a topic (「X は」 and nothing after) ended by a soft cut."""
+    return c.shape == "F0" and c.reason == "no_relation" and c.tail == TOPIC and term != "" and term in FRAG_SOFT
+
+
+def _adverbial_v3(pt: Sequence[_Tok], c: Clause, term: str) -> bool:
+    """shape.v2's leading adverbials, and a soft-cut piece of units only (nothing after the last unit, no particle, no predicate): 「念のため、」 「清掃、」."""
+    if _adverbial(pt, c, term):
+        return True
+    return c.shape == "F0" and c.reason == "no_relation" and c.tail == "" and term != "" and term in FRAG_SOFT
+
+
+def _exchange_v3(text: str) -> Exchange:
+    toks = _tokens(text)
+    clauses: List[Clause] = []
+    skipped: List[Tuple[Tuple[int, int], str]] = []
+    pending: List[Tuple[Seat, Clause]] = []
+    pieces = [(a, b, term, [t for t in toks if a <= t.a < b]) for a, b, term in _pieces(text)]
+
+    def flush() -> None:
+        clauses.extend(c for _, c in pending)
+        pending.clear()
+
+    k = 0
+    while k < len(pieces):
+        a, b, term, pt = pieces[k]
+        k += 1
+        if not pt:
+            if term != "" and term in HARD_CUTS:
+                flush()
+            continue
+        if term != "" and term in LABEL_CUTS:
+            flush()
+            skipped.append(((pt[0].a, pt[-1].b), "label"))
+            continue
+        c = _classify_v3(text, pt, term)
+        if _frag_topic(c, term) and k < len(pieces) and pieces[k][3] and not (pieces[k][2] != "" and pieces[k][2] in LABEL_CUTS):
+            merged = pt + pieces[k][3]                                       # the topic joins the piece after it
+            c2 = _classify_v3(text, merged, pieces[k][2])
+            if c2.shape != "F0" and sum(1 for x in c2.arms if x.particle == "が") <= 1:         # not when the next piece has a subject of its own (two が arms)
+                c, pt, term = c2, merged, pieces[k][2]
+                k += 1
+        if _adverbial_v3(pt, c, term):
+            sp_ = (pt[0].a, pt[-1].b)
+            pending.append((Seat(text[sp_[0]:sp_[1]], tuple(t.s for t in pt if not t.fn), sp_), c))
+            continue
+        if pending:
+            c = replace(c, adverbial=tuple(x for x, _ in pending))
+            pending.clear()
+        clauses.append(c)
+    flush()
+    return Exchange(text, tuple(clauses), tuple(skipped), SHAPES_V3)
+
+
+RULES_V3 = RULES_V2 + (_rewrite_v3, _classify_v3, _frag_topic, _adverbial_v3, _exchange_v3)
+
+
+def _shapes_sha_v3() -> str:
+    h = hashlib.sha256()
+    h.update(json.dumps(CONSTANTS_V3, ensure_ascii=False, sort_keys=True).encode("utf-8"))
+    for f in RULES_V3:
+        h.update(b"\x00")
+        h.update(inspect.getsource(f).encode("utf-8"))
+    return h.hexdigest()
+
+
+SHAPES_SHA_V3 = _shapes_sha_v3()
+SHAPE_TABLES: Dict[str, str] = {SHAPES_VERSION: SHAPES_SHA, SHAPES_V2: SHAPES_SHA_V2, SHAPES_V3: SHAPES_SHA_V3}      # version -> sha: what a ledger header records
+SHAPE_VERSIONS: Tuple[str, ...] = (SHAPES_VERSION, SHAPES_V2, SHAPES_V3)
 
 
 def exchange(sentence: str, version: str = SHAPES_VERSION) -> Exchange:
-    """The shape exchanger: a sentence -> its clauses, each with a shape (F1..F4, or F0 with a reason).  Pure.  `version`: shape.v1 (default: the table of PUB-M1, unchanged) or shape.v2 (PUB-M4: the
-    change forms of CHANGE_FORMS_V2 are clauses of their own)."""
+    """The shape exchanger: a sentence -> its clauses, each with a shape (F1..F4, or F0 with a reason).  Pure.  `version`: shape.v1 (default: the table of PUB-M1, unchanged), shape.v2 (PUB-M4: the
+    change forms of CHANGE_FORMS_V2 are clauses of their own) or shape.v3 (PUB-M6c: v2 plus the artefacts of stage 1, see above)."""
     text = strip_attribution(unicodedata.normalize("NFC", sentence or ""))
     if version == SHAPES_VERSION:
         return _exchange(text)
     if version == SHAPES_V2:
         return _exchange_v2(text)
-    raise ValueError("unknown shape version %r (one of %s)" % (version, (SHAPES_VERSION, SHAPES_V2)))
+    if version == SHAPES_V3:
+        return _exchange_v3(text)
+    raise ValueError("unknown shape version %r (one of %s)" % (version, SHAPE_VERSIONS))
 
 
 def shapes_of(sentence: str, version: str = SHAPES_VERSION) -> Tuple[str, ...]:
