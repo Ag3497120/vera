@@ -39,6 +39,10 @@ class AnthropicBackend:
             self._client = anthropic.Anthropic(**kw)
         return self._client
 
+    def ready(self) -> None:
+        """Build the SDK client now (SDK present, key found) so that a configuration error stops the command before any run exists."""
+        self.client()
+
     def tool_choice(self) -> Tuple[dict, bool]:
         return api_forced_choice(self.model, self.forced)
 

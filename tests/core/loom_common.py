@@ -1,4 +1,4 @@
-"""Shared helpers of the loom tests (tests/line3/test_loom_*.py): the corpus, the task bank and a server on a temp folder."""
+"""Shared helpers of the loom tests (tests/core/test_loom_*.py): the corpus, the task bank and a server on a temp folder."""
 import json
 import os
 

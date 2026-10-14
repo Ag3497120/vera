@@ -203,6 +203,7 @@ def ask(question: str, docs: str, backend: Backend, runs_dir: str = DEFAULT_RUNS
     question = (question or "").strip()
     if not question:
         raise HarnessError("the question is empty", "bad_question")
+    backend.ready()
     try:
         data, sents = dc.build_corpus(docs)
     except dc.DocsError as e:
@@ -275,11 +276,33 @@ def _corpus_of(run_dir: str) -> Optional[str]:
     return c if os.path.isfile(c) else None
 
 
+def _corpus_mismatch(run_dir: str, corpus_path: Optional[str]) -> Optional[str]:
+    """A typed mismatch when the corpus beside the ledger is not the bytes the run began on (checked before anything parses it): the begin row records its sha256."""
+    if corpus_path is None:
+        return None
+    try:
+        with open(os.path.join(run_dir, "ops.jsonl"), encoding="utf-8") as f:
+            want = json.loads(f.readline())["result"]["header"]["corpus_sha"]
+        got = hashlib.sha256(open(corpus_path, "rb").read()).hexdigest()
+    except (OSError, ValueError, KeyError, TypeError):
+        return "corpus_unreadable"
+    return None if got == want else "corpus_sha_mismatch"
+
+
 def verify_path(path: str) -> dict:
     """The chain, then the replay, of a run folder or a memory store: {"kind", "status", ...}.  status "OK" or a typed failure (TAMPERED, TORN_TAIL, REPLAY_DIFFERS, ...)."""
     k = kind_of(path)
     if k == "loom":
-        v = lg.verify(path, corpus_path=_corpus_of(path))
+        cp = _corpus_of(path)
+        chain = lg.verify_chain(path)
+        mm = _corpus_mismatch(path, cp) if chain["status"] == "OK" else None
+        if mm:
+            return {"kind": k, "status": "REPLAY_INPUTS_MISMATCH", "rows": chain.get("n"), "head": chain.get("head"), "replay": {"status": "INPUTS", "mismatch": mm}, "problems": None}
+        try:
+            v = lg.verify(path, corpus_path=cp)
+        except (KeyError, ValueError, OSError) as e:
+            return {"kind": k, "status": "REPLAY_INPUTS_MISMATCH", "rows": chain.get("n"), "head": chain.get("head"), "replay": {"status": "INPUTS", "mismatch": "corpus_unreadable"},
+                    "problems": [{"error": type(e).__name__}]}
         return {"kind": k, "status": v["status"], "rows": v.get("n"), "head": v.get("head"), "replay": v.get("replay"), "problems": v.get("problems")}
     if k == "mem_answer":
         store = os.path.dirname(os.path.dirname(os.path.abspath(path)))
@@ -287,7 +310,7 @@ def verify_path(path: str) -> dict:
         return {"kind": k, "status": v["status"], "rows": v.get("n"), "head": v.get("head"), "replay": v.get("replay"), "problems": v.get("problems")}
     if k == "mem_store":
         v = mem.verify_store(path, mem.FROM_HEADER)
-        out = {"kind": k, "status": v["status"], "sessions": v.get("sessions"), "sentences": v.get("sentences"), "problems": v.get("problems")}
+        out = {"kind": k, "status": v["status"], "sessions": v.get("sessions"), "sentences": v.get("sentences"), "replay": v.get("replay"), "problems": v.get("problems")}
         adir = os.path.join(path, "answers")
         if v["status"] == "OK" and os.path.isdir(adir):
             bad = []
@@ -308,7 +331,14 @@ def replay_path(path: str) -> dict:
     """Re-execute the run from its inputs and compare every row byte for byte: {"kind", "status": IDENTICAL | DIFFERS | INPUTS, "rows", "text", ...}."""
     k = kind_of(path)
     if k == "loom":
-        r = lg.replay(path, corpus_path=_corpus_of(path))
+        cp = _corpus_of(path)
+        mm = _corpus_mismatch(path, cp)
+        if mm:
+            return {"kind": k, "status": "INPUTS", "identical": False, "rows": None, "mismatch": mm}
+        try:
+            r = lg.replay(path, corpus_path=cp)
+        except (KeyError, ValueError, OSError):
+            return {"kind": k, "status": "INPUTS", "identical": False, "rows": None, "mismatch": "corpus_unreadable"}
     elif k == "mem_answer":
         r = ma.replay_answer(path, os.path.dirname(os.path.dirname(os.path.abspath(path))))
     elif k == "mem_store":
@@ -370,6 +400,7 @@ def mem_say(store: str, messages: Sequence[str], backend: Backend, *, budget: in
     msgs = [m.strip() for m in messages if m and m.strip()]
     if not msgs:
         raise HarnessError("no message to remember", "no_message")
+    backend.ready()
     model = backend.model
     door = md.StructureDoor(store, "notes", model, profile=mem.PROFILE_V4, versions=dict(MEM_BUNDLE), view=mview.make_view(budget))
     wd = mview.BudgetDoor(door, budget, ledger=True)
@@ -400,6 +431,7 @@ def mem_ask(store: str, question: str, backend: Backend, *, budget: int = mview.
     if not question:
         raise HarnessError("the question is empty", "bad_question")
     store = os.path.abspath(store)
+    backend.ready()
     try:
         snap = ma.write_snapshot(store, topics=False, crosses=True, versions=True)
     except Refuse as r:

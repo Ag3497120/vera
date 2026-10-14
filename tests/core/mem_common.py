@@ -1,4 +1,4 @@
-"""Shared helpers of the memory tests (tests/line3/test_mem_*.py): a store on a temp folder, writes, the probes of docs/LINE3_LOOM_MEMORY_DESIGN.md 2 and the
+"""Shared helpers of the memory tests (tests/core/test_mem_*.py): a store on a temp folder, writes, the probes of docs/LINE3_LOOM_MEMORY_DESIGN.md 2 and the
 deterministic filler that grows a memory to a given number of seated units."""
 import json
 import os

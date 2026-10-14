@@ -68,6 +68,10 @@ class Backend(Protocol):
     def send(self, *, system: str, messages: Sequence[dict], tools: Sequence[dict], max_tokens: int, tool_choice: Optional[dict] = None,
              extra: Optional[dict] = None) -> Turn: ...
 
+    def ready(self) -> None:
+        """Build the SDK client now (raises BackendError sdk_missing / no_api_key): a configuration error stops the command before a run exists."""
+        ...
+
     def tool_choice(self) -> Tuple[dict, bool]:
         """(tool_choice, strict) this backend asks for: forced tool use where the server accepts it."""
         ...

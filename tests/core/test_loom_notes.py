@@ -825,7 +825,7 @@ SCRIPT = textwrap.dedent("""
     d = pathlib.Path(tempfile.mkdtemp())
     srv, w, r, e = T.build_noted_run(d)
     print(json.dumps({"notes": r["notes"], "head": (d / "runs" / "n" / "HEAD").read_text().strip()}, sort_keys=True, ensure_ascii=False))
-""" % os.path.join(ROOT, "tests/line3"))
+""" % os.path.join(ROOT, "tests/core"))
 
 
 def test_notes_and_the_ledger_head_are_the_same_under_other_hash_seeds(tmp_path):

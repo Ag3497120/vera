@@ -1,0 +1,5 @@
+# The versions the stored ledgers were made with (the Pro environment of the research tree); the tokenizer decides the units, so it is pinned.
+fugashi==1.5.2
+unidic-lite==1.0.8
+pytest==9.1.1
+mcp==1.28.1

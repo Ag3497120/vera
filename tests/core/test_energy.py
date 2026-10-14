@@ -169,7 +169,7 @@ def test_deterministic_across_hashseeds():
     code = (
         "from verantyx.line3 import energy as en\n"
         "from verantyx.line3.geometry import Cross\n"
-        "from tests.line3.test_energy import tier, EX, ex_cross\n"
+        "from tests.core.test_energy import tier, EX, ex_cross\n"
         "t=tier(EX); c=ex_cross(); v=en.three_ratios(t,c,['C'])\n"
         "print(repr(v)); print(sorted(en.edge_flow(t,c,['C']).items()))\n"
     )

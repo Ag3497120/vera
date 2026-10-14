@@ -747,7 +747,7 @@ def test_old_gate_hook_stores_are_byte_identical_and_replay(tmp_path, name):
 
 _SCRIPT = r"""
 import sys, hashlib, os, json, pathlib
-sys.path.insert(0, os.path.join(%(root)r, "tests", "line3"))
+sys.path.insert(0, os.path.join(%(root)r, "tests", "core"))
 from test_mem_recall import run_story, GATE, SUBJ, digest_of
 
 for h in (GATE, SUBJ):

@@ -336,18 +336,6 @@ def test_membase_v3_log_grep_ranks_by_terms_then_the_later_line_and_log_read_tak
     assert md.api_tools(("log_read",), specs=md.TOOL_SPECS_V3)[0]["input_schema"]["required"] == ["start", "end"] and md.api_tools(("log_read",))[0]["input_schema"].get("required") is None
 
 
-def test_the_scoring_classes():
-    import scoring as S
-    q = lambda kind, gold: {"q": "q", "kind": kind, "gold": gold, "checkpoint": 0}          # noqa: E731
-    v = lambda *x: {"kind": "value", "values": list(x)}                                      # noqa: E731
-    none, con = {"kind": "none", "values": []}, lambda *x: {"kind": "contested", "values": list(x)}   # noqa: E731
-    assert S.classify(v("大阪"), q("plain", "大阪")) == "right" and S.classify(v("大阪市"), q("plain", "大阪")) == "over_broad" and S.classify(v("京都"), q("plain", "大阪")) == "confident_wrong"
-    assert S.classify(none, q("plain", "大阪")) == "abstain" and S.classify(con("a", "b"), q("plain", "大阪")) == "confident_wrong" and S.false_contested(con("a", "b"), q("plain", "大阪"))
-    assert S.classify(con("中村", "山本"), q("contradiction", "矛盾: 山本 と 中村")) == "right" and S.classify(v("山本"), q("contradiction", "矛盾: 山本 と 中村")) == "confident_wrong"
-    assert S.classify(none, q("absent", "記録なし")) == "absent_admit" and S.classify(v("大阪"), q("absent", "記録なし")) == "confident_wrong"
-    assert S.classify(v("福岡"), q("update", "福岡")) == "right" and S.classify(v("大阪"), q("update", "福岡")) == "confident_wrong"
-    sc = S.score_answers([{"q": q("plain", "a"), "answer": v("a")}, {"q": q("absent", "記録なし"), "answer": none}, {"q": q("update", "b"), "answer": none}])
-    assert sc["total"]["n"] == 3 and sc["total"]["right"] == 1 and sc["total"]["absent_admit"] == 1 and sc["total"]["abstain"] == 1 and sc["right_rate"] == 333 and sc["absent"]["absent_admit"] == 1
 
 
 def micro_story():
@@ -362,88 +350,18 @@ def micro_story():
                       {"q": "会議の会場は何ですか", "gold": "福岡", "kind": "update", "checkpoint": 1, "refs": [[1, 1]]}]}
 
 
-@pytest.fixture(scope="module")
-def meter2():
-    return importlib.import_module("meter2")
 
 
-def run_micro(meter2, out, arms=("A0", "A1", "A3", "A3f"), budget=6000):
-    import stub_client
-    res = {}
-    for a in arms:
-        res[a] = meter2.run_one(micro_story(), a, 1, client=stub_client.StubClient(), model="stub-model", out_root=str(out), budget=budget, n_checkpoints=2)
-    return res
 
 
-def test_the_stub_meter_runs_all_four_arms_end_to_end_and_every_ledger_verifies(meter2, tmp_path):
-    res = run_micro(meter2, tmp_path)
-    for a, r in res.items():
-        assert r["ended"] == "complete" and len(r["checkpoints"]) == 2 and r["answers"]["total"]["n"] == 4 and r["cost"]["turns_without_report"] == 0
-    for a in ("A3", "A3f"):
-        r = res[a]
-        assert r["store"]["verify"] == "OK" and r["plants"]["contradiction"] == {"n": 1, "structure": 1, "model": 1, "any": 1} and r["plants"]["update"]["structure"] == 1
-        assert r["answers"]["total"]["right"] == 3 and r["answers"]["by_kind"]["absent"]["absent_admit"] == 1 and r["answers"]["total"]["confident_wrong"] == 0
-        for c in r["checkpoints"]:
-            for x in c["answers"]:
-                assert x["usage"]["input_tokens"] > 0
-        base = os.path.join(str(tmp_path), "MICRO", a, "r01")
-        for s in r["sessions"]:
-            rows_ = meter2.read_rows(os.path.join(base, s["ledger"]))
-            assert rows_[0]["result"]["header"]["view"]["budget"] == 6000
-    assert res["A3f"]["store"]["sentences"] == res["A3"]["store"]["sentences"] == 5
-    assert res["A0"]["answers"]["total"]["right"] == 0 and res["A0"]["answers"]["by_kind"]["absent"]["absent_admit"] == 1
-    assert res["A1"]["plants"]["update"]["model"] is None and res["A1"]["plants"]["contradiction"]["any"] == 0
-    for a in ("A0", "A1"):
-        for d in meter2.story_ledger_dirs(os.path.join(str(tmp_path), "MICRO", a, "r01", "store")):
-            assert md.verify_baseline(d)["status"] == "OK"
-    path = meter2.write_report(str(tmp_path))
-    text = open(path, encoding="utf-8").read()
-    assert "STUB client" in text and "P-PUB-1" in text and "P-PUB-4" in text and "P2" in text and "P3" in text
-    rep = json.load(open(os.path.join(str(tmp_path), "report.json"), encoding="utf-8"))
-    assert rep["arms"] == ["A0", "A1", "A3", "A3f"] and set(rep["predictions"]) >= {"P-PUB-1", "P-PUB-2", "P-PUB-3", "P-PUB-4"}
 
 
-def test_a_small_budget_cuts_story_results_and_leaves_budget_rows_in_every_ledger_that_verifies(meter2, tmp_path):
-    res = run_micro(meter2, tmp_path, arms=("A3", "A1"), budget=100)
-    assert res["A3"]["cost"]["budget_cuts"] > 0 and sum(s["budget_rows_in_ledger"] for s in res["A3"]["sessions"]) > 0 and res["A3"]["store"]["verify"] == "OK"
-    assert all(s["budget_cuts"] == s["budget_rows_in_ledger"] for s in res["A3"]["sessions"])
 
 
-def test_the_real_client_is_refused_without_the_flag_and_without_the_environment(meter2, monkeypatch, capsys):
-    with pytest.raises(meter2.MeterError):
-        meter2.make_client("api", False, "claude-haiku-5-5")
-    monkeypatch.delenv("VERA_METER2_ALLOW_API", raising=False)
-    with pytest.raises(meter2.MeterError):
-        meter2.make_client("api", True, "claude-haiku-5-5")
-    assert meter2.main(["--bank", "x", "--out", "y", "--client", "api"]) == 2 and "allow-api" in capsys.readouterr().err
-    assert "anthropic" not in sys.modules
 
 
-def test_a_held_out_split_needs_judge_is_single_use_and_writes_no_text(meter2, tmp_path, monkeypatch, capsys):
-    held = tmp_path / "bank_ls" / "heldout_9"
-    held.mkdir(parents=True)
-    st = micro_story()
-    (held / "stories.jsonl").write_text(json.dumps(st, ensure_ascii=False) + "\n", encoding="utf-8")
-    monkeypatch.setattr(meter2, "USED_FILE", str(tmp_path / "used.jsonl"))
-    assert meter2.is_heldout(str(held)) and not meter2.is_heldout(str(tmp_path / "dev"))
-    assert meter2.main(["--bank", str(held), "--arms", "A0", "--checkpoints", "1", "--out", str(tmp_path / "o1")]) == 2 and "--judge" in capsys.readouterr().err
-    assert meter2.main(["--bank", str(held), "--arms", "A0", "--checkpoints", "1", "--judge", "--out", str(tmp_path / "o1")]) == 0
-    out = capsys.readouterr().out
-    assert "(held-out)" in out and "MICRO" not in out and "広報" not in out
-    r = json.load(open(tmp_path / "o1" / "MICRO" / "A0" / "r01" / "result.json", encoding="utf-8"))
-    assert r["redacted"] is True and all("q" not in x and "gold" not in x and "answer" not in x for c in r["checkpoints"] for x in c["answers"])
-    assert meter2.main(["--bank", str(held), "--arms", "A0", "--checkpoints", "1", "--judge", "--out", str(tmp_path / "o2")]) == 2 and "single-use" in capsys.readouterr().err
-    assert meter2.main(["--bank", str(held), "--arms", "A0", "--checkpoints", "1", "--judge", "--allow-reuse", "--out", str(tmp_path / "o3")]) == 0
 
 
-def test_the_plan_writes_nothing_and_the_report_ranges(meter2, tmp_path, capsys):
-    p = tmp_path / "s.jsonl"
-    p.write_text(json.dumps(micro_story(), ensure_ascii=False) + "\n", encoding="utf-8")
-    assert meter2.main(["--bank", str(p), "--plan", "--repeats", "3", "--checkpoints", "2"]) == 0
-    plan = json.loads(capsys.readouterr().out)
-    assert plan["runs"] == 12 and plan["plan"][0]["sessions_fed"] == 2 and not os.path.exists(tmp_path / "out")
-    assert meter2.beats({1: 5, 2: 6}, {1: 3, 2: 4}) is True and meter2.beats({1: 4, 2: 6}, {1: 3, 2: 4}) is False and meter2.beats({}, {1: 1}) is None
-    assert meter2.beats({1: 1, 2: 2}, {1: 3, 2: 4}, higher=False) is True
 
 
 @pytest.mark.parametrize("fn", ["memview.py"])

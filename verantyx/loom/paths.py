@@ -24,11 +24,12 @@ from typing import List, Optional
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
+# The corpora this repository ships (its test fixtures).  The research tree kept them under experiments/line3/...; the ledgers recorded there name that path, and the sha decides anyway.
 KNOWN_CORPORA = (
-    "experiments/line3/bank2/data/fulllead_sents.jsonl",
-    "experiments/line3/data/S300.jsonl",
-    "experiments/line3/data/S300_fulllead.jsonl",
-    "experiments/line3/data/S3000.jsonl",
+    "tests/fixtures/line3/bank2/data/fulllead_sents.jsonl",
+    "tests/fixtures/line3/data/S300.jsonl",
+    "tests/fixtures/line3/data/S300_fulllead.jsonl",
+    "tests/fixtures/line3/data/S3000.jsonl",
 )
 
 

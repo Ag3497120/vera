@@ -83,6 +83,16 @@ def test_anthropic_client_gets_the_key_from_the_environment_and_never_describes_
     assert "TESTSECRET" not in json.dumps(b.describe())
 
 
+def test_ready_builds_the_client_so_a_configuration_error_comes_before_any_run(monkeypatch):
+    for b in (make_backend("anthropic", client=ReplayClient([])), make_backend("openai", "m", client=FakeOpenAI([])), make_backend("json", "m", client=FakeChatText([]))):
+        assert b.ready() is None
+    monkeypatch.setitem(sys.modules, "openai", None)
+    for kind in ("openai", "json"):
+        with pytest.raises(BackendError) as e:
+            make_backend(kind, "m", "http://127.0.0.1:1/v1").ready()
+        assert e.value.code == "sdk_missing"
+
+
 def test_anthropic_without_the_sdk_or_a_key_is_a_typed_refusal(monkeypatch):
     monkeypatch.setitem(sys.modules, "anthropic", None)
     with pytest.raises(BackendError) as e:
@@ -325,3 +335,21 @@ def test_the_driver_client_forwards_extra_keywords_and_counts_calls():
     r = c.messages.create(model="m", max_tokens=9, system="S", tools=[{"name": "status", "description": "", "input_schema": {"type": "object"}}], tool_choice={"type": "any"},
                           messages=[{"role": "user", "content": "x"}], seed=7)
     assert fake.calls[0]["seed"] == 7 and c.calls == 1 and r.content[0].type == "tool_use"
+
+
+def test_the_sdks_are_imported_lazily_and_only_by_the_backends():
+    """The core (verantyx.loom, verantyx.line3) imports no SDK and no network module; in the harness package an SDK is imported only inside a function of a backend."""
+    import ast
+    root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    sdk = {"anthropic", "openai", "httpx", "requests", "urllib3", "socket", "http"}
+    for dp, dn, fn in os.walk(os.path.join(root, "verantyx")):
+        for f in fn:
+            if not f.endswith(".py"):
+                continue
+            path = os.path.join(dp, f)
+            tree = ast.parse(open(path, encoding="utf-8").read())
+            top = {a.name.split(".")[0] for n in tree.body if isinstance(n, ast.Import) for a in n.names} | {(n.module or "").split(".")[0] for n in tree.body if isinstance(n, ast.ImportFrom)}
+            assert not (top & sdk), "%s imports %s at module level" % (path, top & sdk)
+            anywhere = {a.name.split(".")[0] for n in ast.walk(tree) if isinstance(n, ast.Import) for a in n.names} | {(n.module or "").split(".")[0] for n in ast.walk(tree) if isinstance(n, ast.ImportFrom)}
+            if anywhere & {"anthropic", "openai"}:
+                assert os.path.basename(path) in ("claude.py", "openai_compat.py"), path

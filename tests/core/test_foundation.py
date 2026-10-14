@@ -706,7 +706,7 @@ def test_bytes_are_the_same_for_hash_seeds_0_1_12345():
     outs = []
     for seed in ("0", "1", "12345"):
         env = dict(os.environ, PYTHONHASHSEED=seed, PYTHONDONTWRITEBYTECODE="1", PYTHONPATH=ROOT)
-        r = subprocess.run([PY, "-c", _SEED_CODE % os.path.join(ROOT, "tests", "line3")], capture_output=True, text=True,
+        r = subprocess.run([PY, "-c", _SEED_CODE % os.path.join(ROOT, "tests", "core")], capture_output=True, text=True,
                            cwd=ROOT, env=env)
         assert r.returncode == 0, r.stderr
         outs.append(r.stdout.strip())

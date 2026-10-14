@@ -209,7 +209,7 @@ print(hashlib.sha256(b"|".join(out)).hexdigest())
 
 
 def test_hash_seed_independent():
-    code = HASH_SCRIPT % (ROOT, os.path.join(ROOT, "tests", "line3"), BIG + ORD + TWO)
+    code = HASH_SCRIPT % (ROOT, os.path.join(ROOT, "tests", "core"), BIG + ORD + TWO)
     res = set()
     for hs in ("0", "1", "12345"):
         env = dict(os.environ, PYTHONHASHSEED=hs)

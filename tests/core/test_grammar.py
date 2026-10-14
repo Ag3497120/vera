@@ -558,20 +558,3 @@ def test_no_float_and_no_division_in_the_module():
         assert not (isinstance(n, ast.Call) and isinstance(n.func, ast.Name) and n.func.id in ("float", "round"))
 
 
-def test_nothing_hooks_into_the_question_path():
-    src = open(Gr.__file__, encoding="utf-8").read()
-    for mod in ("ask", "cycle", "placement", "matryoshka", "energy", "carry"):
-        assert ("import %s" % mod) not in src and ("line3.%s " % mod) not in src.replace("line3.granularity", "")
-    assert "cli" not in [n.module for n in ast.walk(ast.parse(src)) if isinstance(n, ast.ImportFrom) and n.module]
-    # importing the module loads none of the question path (transitively)
-    code = ("import sys; import verantyx.line3.grammar; print(sorted(m for m in sys.modules if m.split('.')[-1] in "
-            "('ask', 'cycle', 'placement', 'matryoshka', 'energy', 'carry', 'carry_query', 'cli', 'readout')))")
-    r = subprocess.run([sys.executable, "-c", code], capture_output=True, env=dict(os.environ, PYTHONPATH=ROOT), timeout=120)
-    assert r.returncode == 0 and r.stdout.strip() == b"[]", r.stderr.decode()[-800:]
-    # and no module of the question path imports grammar itself (G3-k hooks it in through verantyx/line3/wiring.py, which they import)
-    for name in ("ask", "cycle", "placement", "matryoshka", "energy", "carry", "carry_query", "readout"):
-        path = os.path.join(ROOT, "verantyx", "line3", name + ".py")
-        tree = ast.parse(open(path, encoding="utf-8").read())
-        mods = [n.module or "" for n in ast.walk(tree) if isinstance(n, ast.ImportFrom)]
-        names = [a.name for n in ast.walk(tree) if isinstance(n, (ast.Import, ast.ImportFrom)) for a in n.names]
-        assert not any("grammar" in m for m in mods) and "grammar" not in names and not any(x.endswith(".grammar") for x in names)

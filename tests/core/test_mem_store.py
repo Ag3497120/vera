@@ -444,7 +444,7 @@ def test_the_cli_reports(tmp_path, capsys):
 
 _SCRIPT = r"""
 import sys, hashlib, os, json
-sys.path.insert(0, os.path.join(%(root)r, "tests", "line3"))
+sys.path.insert(0, os.path.join(%(root)r, "tests", "core"))
 from mem_common import STUB, new_store, write_all
 from test_mem_store import STORY
 import pathlib

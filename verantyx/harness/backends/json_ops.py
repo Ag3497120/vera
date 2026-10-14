@@ -118,6 +118,10 @@ class JsonOpsBackend:
         self.dropped_parts = 0
         self.last_response_model: Optional[str] = None
 
+    def ready(self) -> None:
+        if hasattr(self._t, "ready"):
+            self._t.ready()
+
     def tool_choice(self) -> Tuple[dict, bool]:
         return {"type": "any"}, False                                  # every turn is an array of ops; there is no server-side forcing
 

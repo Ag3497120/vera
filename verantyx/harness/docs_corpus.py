@@ -21,6 +21,8 @@ DOC_SUFFIXES = (".txt", ".md", ".markdown")
 MAX_DOC_BYTES = 8 * 1024 * 1024
 _END = "。！？!?"
 _CLOSERS = "」』）)】〕］]”\"'’"
+_OPEN = "「『（(【〔［["
+_CLOSE = "」』）)】〕］]"
 _MD_MARK = re.compile(r"^\s*(?:#{1,6}\s+|>+\s*|[-*+]\s+|\d{1,3}[.)]\s+)")
 _FENCE = re.compile(r"^\s*(```|~~~)")
 
@@ -47,11 +49,16 @@ def split_sentences(text: str) -> List[str]:
         if not line:
             continue
         buf: List[str] = []
+        depth = 0                                       # inside 「」 『』 （） ... a terminator does not end the sentence; a line break resets it
         i, n = 0, len(line)
         while i < n:
             ch = line[i]
             buf.append(ch)
-            if ch in _END:
+            if ch in _OPEN:
+                depth += 1
+            elif ch in _CLOSE and depth > 0:
+                depth -= 1
+            elif ch in _END and depth == 0:
                 while i + 1 < n and line[i + 1] in _END + _CLOSERS:
                     i += 1
                     buf.append(line[i])

@@ -256,9 +256,9 @@ def test_isolate_is_the_only_process_module_and_nothing_else_of_the_loom_imports
         else:
             assert not (names & {"subprocess", "isolate"}), "%s imports %s" % (fn, names & {"subprocess", "isolate"})
     # the CLI reaches it lazily, inside `--isolated` only
-    cli = open(os.path.join(ROOT, "verantyx", "cli.py"), encoding="utf-8").read()
-    assert "from .loom import isolate" in cli and cli.count("loom import isolate") == 1
-    top = [ln for ln in cli.splitlines() if ln.startswith("from .loom") or ln.startswith("import ")]
+    cli = open(os.path.join(ROOT, "verantyx", "harness", "loom_cli.py"), encoding="utf-8").read()
+    assert "from verantyx.loom import isolate" in cli and cli.count("loom import isolate") == 1
+    top = [ln for ln in cli.splitlines() if ln.startswith("from verantyx.loom") or ln.startswith("import ")]
     assert not any("isolate" in ln for ln in top)
 
 

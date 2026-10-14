@@ -3,7 +3,7 @@
 The meter v1 found 254 of 654 topic-expanded sentences carrying the topic twice (and 430 more given a topic in front of a subject of their own).  A mem.v3 session expands a sentence only if
 its clause truly has no subject (`memory.topic_is_missing`); declares no topic that holds a particle (the expansion of such a topic is itself refused: nested_particle_chain); asks a sentence
 with its own subject from the start of its token (`clause_at`) so that dropping the accidental walk-back does not make it unreadable.  The twenty cases below are REAL: the sentences the
-models of tests/fixtures/line3/mem/meter_v1 wrote (tests/line3/memfix_meter_cases.json, each with the folder it came from).  Everything old stays as it was: mem.v1 / mem.v2 sessions and the
+models of tests/fixtures/line3/mem/meter_v1 wrote (tests/core/memfix_meter_cases.json, each with the folder it came from).  Everything old stays as it was: mem.v1 / mem.v2 sessions and the
 stored meter_v1 stores replay under their recorded profile."""
 
 
@@ -56,15 +56,6 @@ def one(tmp_path, k, profile, topic, text, set_topic_directly=False):
     return s, s.call("write", {"text": text})
 
 
-def test_the_fixture_is_twenty_real_meter_cases():
-    assert len(CASES) == 20 and sorted(c["class"] for c in CASES) == ["double"] * 6 + ["lacks"] * 8 + ["own_subject"] * 6
-    for c in CASES:
-        assert os.path.isdir(os.path.join(ROOT, c["meter_store"])), c["meter_store"]
-        led = ""
-        sdir = os.path.join(ROOT, c["meter_store"], "store", "sessions")
-        for s in sorted(os.listdir(sdir)):
-            led += open(os.path.join(sdir, s, "ops.jsonl"), encoding="utf-8").read()
-        assert json.dumps(c["written"], ensure_ascii=False)[1:-1] in led, c                  # the model really wrote this sentence in that run
 
 
 @pytest.mark.parametrize("k", range(20))

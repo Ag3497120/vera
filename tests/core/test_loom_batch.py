@@ -1,7 +1,7 @@
 """LOOM-batch tests that outlive LOOM-span: the cap profiles (docs/LINE3_LOOM_DESIGN.md 4; L-LOOM-122).
 
 The batch seating `weave_sentence` of LOOM-batch (L-LOOM-123..126) was replaced by `weave_span` (LOOM-span); its live tests moved to
-tests/line3/test_loom_span.py (`weave_span`) and its REPLAY (legacy path) is tested there too.  What stays here: a run's caps are written into its
+tests/core/test_loom_span.py (`weave_span`) and its REPLAY (legacy path) is tested there too.  What stays here: a run's caps are written into its
 `begin` row, there are two named profiles, v1 = the first measurement and every ledger before LOOM-batch, v2 = what a new run gets (prose lookups 100,
 ops 200), and every old ledger replays with its own caps.  The toy corpus is written to a temp file, so these tests do not depend on the bank; the
 old-ledger tests read the stored runs (runs_h55, baseline_scripted) with the real corpus.
