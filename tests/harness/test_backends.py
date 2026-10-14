@@ -41,7 +41,7 @@ def test_the_registry_names_three_backends():
 
 
 def test_make_backend_refuses_with_typed_codes():
-    for args, code in ((("nope", "m"), "bad_backend"), (("openai", None), "no_model"), (("json", None), "no_model"), (("openai", "m", "ftp://x"), "bad_base_url")):
+    for args, code in ((("nope", "m"), "bad_backend"), (("openai", None), "no_model"), (("json", None), "no_model"), (("openai", "m", "ftp://x"), "bad_base_url"), (("openai", "m", "https://user:pw@host/v1"), "bad_base_url")):
         with pytest.raises(BackendError) as e:
             make_backend(*args)
         assert e.value.code == code

@@ -20,8 +20,13 @@ def make_backend(kind: str, model: Optional[str] = None, base_url: Optional[str]
     model = model or DEFAULT_MODELS.get(kind)
     if not model:
         raise BackendError("--model is required for the %s backend" % kind, "no_model")
-    if base_url is not None and not base_url.startswith(("http://", "https://")):
-        raise BackendError("--base-url must be an http(s) URL", "bad_base_url")
+    if base_url is not None:
+        from urllib.parse import urlsplit
+        u = urlsplit(base_url)
+        if u.scheme not in ("http", "https") or not u.netloc:
+            raise BackendError("--base-url must be an http(s) URL", "bad_base_url")
+        if u.username or u.password or "@" in u.netloc:
+            raise BackendError("--base-url must not carry credentials (the run folder records the URL); use the key environment variable", "bad_base_url")
     if kind == "anthropic":
         return AnthropicBackend(model, client, api_key_env=api_key_env, base_url=base_url, forced=tool_choice != "auto")
     if kind == "openai":
