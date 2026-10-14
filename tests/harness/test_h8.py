@@ -212,3 +212,68 @@ def test_the_sandbox_profile_lives_inside_the_package():
     from verantyx.loom import isolate
     here = os.path.dirname(os.path.abspath(isolate.__file__))
     assert str(isolate.PROFILE_PATH) == os.path.join(here, "loom_isolation_profile.sb") and isolate.PROFILE_PATH.is_file() and len(isolate.profile_sha()) == 64
+
+
+# -- the designer's follow-up: a later statement may retire an earlier one, never the reverse --------------------------------------
+def _sup(new_sid, old_sid):
+    return [("tool", "supersede", {"new_sid": new_sid, "old_sid": old_sid, "reason": "訂正"}), ("tool", "report", {"contradictions": []})]
+
+
+def test_a_supersede_the_wrong_way_round_is_refused_and_the_corrected_value_never_comes_back(tmp_path):
+    st = str(tmp_path / "s")
+    story = [w("担当は山本"), w("担当は鈴木に変更") , _sup(0, 1)]
+    msgs = ["担当は山本", "担当は鈴木に変更", "訂正です"]
+    r = rn.mem_say(st, msgs, oa(story))
+    assert r.committed
+    rows = [json.loads(ln) for ln in open(os.path.join(st, "sessions", "s0001", "ops.jsonl"), encoding="utf-8")]
+    assert not [x for x in rows if x["op"] == "supersede" and x["result"].get("ok")]                      # never executed (here the memory's own checks refuse it too)
+    q = "担当は何ですか"
+    a = rn.mem_ask(st, q, oa([[("tool", "recall", {"question": q})], [("tool", "weave_span", {"sid": 0, "tier": "WORD", "first": "山本", "last": "山本"})], [("tool", "emit", {})],
+                              [("tool", "abstain", {"type": "unknown"})]]))
+    assert a.text != "山本" and a.status == "refused"
+    b = rn.mem_ask(st, q, oa([[("tool", "recall", {"question": q})], [("tool", "weave_span", {"sid": 1, "tier": "WORD", "first": "鈴木", "last": "鈴木"})], [("tool", "emit", {})]]))
+    assert b.status == "answered" and b.text == "鈴木"
+    assert rn.verify_path(st)["status"] == "OK"
+
+
+def test_a_supersede_in_the_right_order_still_works_and_the_audit_catches_the_wrong_one(tmp_path):
+    from verantyx.loom import memdoor as md
+    st = str(tmp_path / "s")
+    story = [w("広報の担当は山本"), w("広報の担当は鈴木"), _sup(1, 0)]
+    assert rn.mem_say(st, ["広報の担当は山本", "広報の担当は鈴木", "鈴木が正しいです"], oa(story)).committed
+    rows = [json.loads(ln) for ln in open(os.path.join(st, "sessions", "s0001", "ops.jsonl"), encoding="utf-8")]
+    assert [x["result"]["ok"] for x in rows if x["op"] == "supersede"] == [True]
+    # the memory itself would accept the reverse (this is what the guard is for); the audit of `verify` calls it out
+    st2 = str(tmp_path / "t")
+    door = md.StructureDoor(st2, "notes", "m", profile=mem.PROFILE_V4, versions=dict(rn.MEM_BUNDLE))
+    door.harness(None, "user_turn", {"turn": "1-1", "text": "広報の担当は山本"})
+    door.harness(None, "user_turn", {"turn": "1-2", "text": "広報の担当は鈴木"})
+    assert door.call("write", {"text": "広報の担当は山本", "turn": "1-1"}).get("ok") and door.call("write", {"text": "広報の担当は鈴木", "turn": "1-2"}).get("ok")
+    assert door.call("supersede", {"new_sid": 0, "old_sid": 1, "reason": "逆"}).get("ok") is True
+    door.commit(); door.close()
+    v = rn.verify_path(st2)
+    assert v["status"] == "SUPERSEDE_ORDER" and v["problems"][0]["type"] == "supersede_order"
+
+
+def test_declare_topic_and_bridge_cannot_hide_or_retire_a_user_fact(tmp_path):
+    st = str(tmp_path / "s")
+    rep = ("tool", "report", {"contradictions": []})
+    story = [[("tool", "declare_topic", {"text": "甲案"}), ("tool", "write", {"text": "担当は山本"}), rep], [("tool", "declare_topic", {"text": "乙案"}), ("tool", "write", {"text": "担当は鈴木"}), rep]]
+    assert rn.mem_say(st, ["担当は山本", "担当は鈴木"], oa(story)).committed
+    q = "担当は何ですか"
+    a = rn.mem_ask(st, q, oa([[("tool", "recall", {"question": q})], [("tool", "weave_span", {"sid": 0, "tier": "WORD", "first": "山本", "last": "山本"})], [("tool", "emit", {})],
+                              [("tool", "abstain", {"type": "unknown"})]]))
+    assert a.status == "refused" and a.text is None                                                      # two topics split no contradiction into two answers
+
+
+def test_on_a_contested_pair_the_reverse_supersede_is_refused_by_the_harness_and_nothing_is_picked(tmp_path):
+    st = str(tmp_path / "s")
+    story = [w("広報の担当は山本"), w("広報の担当は鈴木"), _sup(0, 1)]                                       # the later statement (鈴木) retired by the earlier one (山本)
+    assert rn.mem_say(st, ["広報の担当は山本", "広報の担当は鈴木", "やっぱり山本です"], oa(story)).committed
+    rows = [json.loads(ln) for ln in open(os.path.join(st, "sessions", "s0001", "ops.jsonl"), encoding="utf-8")]
+    ref = [x for x in rows if x["op"] == "supersede_refused"]
+    assert len(ref) == 1 and ref[0]["args"] == {"turn": "1-3", "new_sid": 0, "reason": "supersede_order"} and not [x for x in rows if x["op"] == "supersede"]
+    q = "広報の担当は何ですか"
+    a = rn.mem_ask(st, q, oa([[("tool", "recall", {"question": q})], [("tool", "weave_span", {"sid": 0, "tier": "WORD", "first": "山本", "last": "山本"})], [("tool", "emit", {})],
+                              [("tool", "abstain", {"type": "contested"})]]))
+    assert a.status == "refused" and a.text is None and a.reason == "contested"

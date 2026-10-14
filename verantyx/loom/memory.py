@@ -131,7 +131,7 @@ ONE_FACT_GUIDANCE = ("1 回の write には事実を 1 つ、1 文で書く (one
                      "a value written together with other statements is kept as evidence but is never an answer.")
 TOPIC_FORBIDDEN = "のにでとをが"                                    # a mem.v3 topic holds none of the arm particles (L-MEM-58): with one inside, 「<topic>の…」 is a nested particle chain and EVERY expansion is refused
 LEAD_PARTICLES = "のにでとをがはもへ"                              # a particle in the lead-in of a clause (text from the start of its token up to the Y) means the clause already has its own subject
-SOURCE_OPS: Tuple[str, ...] = ("user_turn", "write_refused", "plugin_refused")                # vera-harness H8: what the USER said (a harness row, with its text, inside the hash chain) and a write the harness refused because it quotes no user turn
+SOURCE_OPS: Tuple[str, ...] = ("user_turn", "write_refused", "plugin_refused", "supersede_refused")                # vera-harness H8: what the USER said (a harness row, with its text, inside the hash chain) and a write the harness refused because it quotes no user turn
 USER_TURN_MAX = 2000
 FORCE_OPS: Tuple[str, ...] = ("report_forced", "report_missing")  # MEM-fix (L-MEM-62): the harness rows of a turn that ended without a report of its own (mem.v3 / membase.v2)
 FORCE_REASONS: Tuple[str, ...] = ("turn_limit", "no_tool_call", "cap_turn")      # "cap_turn" (PUB-H1, L-PUB-20): a turn the runaway cap ended is asked for its report too
@@ -1207,6 +1207,11 @@ def source_args(op: str, args: Any) -> dict:
         if not (isinstance(args, dict) and set(args) == {"turn", "text"} and isinstance(args["turn"], str) and TURN_RX.match(args["turn"])
                 and isinstance(args["text"], str) and 1 <= len(args["text"]) <= USER_TURN_MAX):
             raise ValueError("user_turn: arguments are turn (a turn id) and text (1 to %d characters)" % USER_TURN_MAX)
+        return dict(args)
+    if op == "supersede_refused":
+        if not (isinstance(args, dict) and set(args) == {"turn", "new_sid", "reason"} and isinstance(args["turn"], str) and TURN_RX.match(args["turn"]) and isinstance(args["new_sid"], int)
+                and not isinstance(args["new_sid"], bool) and args["reason"] == "supersede_order"):
+            raise ValueError("supersede_refused: arguments are turn, new_sid, reason (supersede_order)")
         return dict(args)
     if op == "plugin_refused":
         if not (isinstance(args, dict) and set(args) == {"kind", "name", "version", "code"} and all(isinstance(v, str) and len(v) <= 80 for v in args.values())):

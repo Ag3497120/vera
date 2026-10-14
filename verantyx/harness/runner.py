@@ -100,7 +100,42 @@ class UserSourceDoor:
             self.seen.append(nfc(self.messages[turn]))
         self.inner.set_turn(turn)
 
+    def _supersede_targets(self, a: dict) -> Optional[List[int]]:
+        """The sentences a `supersede` call WOULD retire (the live sentences of the old answer group), computed exactly as the memory does; None when the call is malformed (the memory refuses it itself)."""
+        try:
+            from verantyx.loom import memnotes as mn
+            from verantyx.loom import memrecall as mr
+            run = self.raw.session.run
+            new_sid = a["new_sid"]
+            if run.evidence_version is None or not isinstance(new_sid, int) or isinstance(new_sid, bool) or not 0 <= new_sid < len(run.rows) or ("old_sid" in a) == ("old_answer" in a):
+                return None
+            question = a["question"] if isinstance(a.get("question"), str) else (run.clause_of(new_sid) or {}).get("question")
+            if not question:
+                return None
+            j = mr.analyse(run.corpus_cur, question, run.evidence_version, True, bool(getattr(run.hook, "subject_guard", False)))
+            comps, sets = j["comps"], j["sets"]
+            of = {s: k for k, comp in enumerate(comps) for s in comp}
+            if "old_sid" in a:
+                if a["old_sid"] not in of:
+                    return None
+                old_k = of[a["old_sid"]]
+            else:
+                norm = mn.norm_answer(a["old_answer"])
+                hits = [k for k, comp in enumerate(comps) if any(norm in sets[s] for s in comp)]
+                if not norm or not hits:
+                    return None
+                old_k = hits[0]
+            return [s for s in comps[old_k] if s not in run.superseded]
+        except Exception:                                                   # anything odd: the memory's own checks decide
+            return None
+
     def call(self, tool: Any, args: Any = None) -> dict:
+        if tool == "supersede" and isinstance(args, dict):
+            targets = self._supersede_targets(args)
+            new_sid = args.get("new_sid")
+            if targets is not None and (any(s >= new_sid for s in targets) or (isinstance(args.get("old_sid"), int) and args["old_sid"] >= new_sid)):
+                self.raw.harness(None, "supersede_refused", {"turn": self.turn or "1-1", "new_sid": new_sid, "reason": "supersede_order"})
+                return {"ok": False, "refusal": "supersede_order", "detail": {"reason": "a later statement may replace an earlier one, never the other way round: new_sid must be later than every sentence it retires"}}
         if tool in ("write", "keep_unshaped"):
             text = args.get("text") if isinstance(args, dict) else None
             if isinstance(text, str) and not any(nfc(text) in u for u in self.seen):
@@ -121,19 +156,26 @@ def check_write_sources(store: str) -> List[Dict[str, Any]]:
         seen: List[str] = []
         has = False
         bad: List[int] = []
+        bad_sup: List[int] = []
         with open(f, encoding="utf-8") as fh:
             for ln in fh:
                 r = json.loads(ln)
                 if r.get("actor") == "harness" and r.get("op") == "user_turn":
                     has = True
                     seen.append(nfc(r["args"]["text"]))
+                elif r.get("actor") == "model" and r.get("op") == "supersede" and (r.get("result") or {}).get("ok") is True:
+                    new = (r.get("result") or {}).get("new_sid")
+                    if not isinstance(new, int) or any(not isinstance(x.get("sid"), int) or x["sid"] >= new for x in r["result"].get("superseded", [])):
+                        bad_sup.append(r.get("i"))
                 elif r.get("actor") == "model" and r.get("op") in ("write", "keep_unshaped") and (r.get("result") or {}).get("ok") is True and has:
                     t = (r.get("args") or {}).get("text")
                     if not isinstance(t, str) or not any(nfc(t) in u for u in seen):
                         bad.append(r.get("i"))
+        if bad_sup:
+            out.append({"session": n, "type": "supersede_order", "rows": bad_sup[:20]})
         if bad:
             out.append({"session": n, "type": "write_not_from_user", "rows": bad[:20]})
-        elif not has:
+        elif not has and not bad_sup:
             out.append({"session": n, "type": "unsourced_session"})
     return out
 
@@ -562,10 +604,10 @@ def _verify_base(path: str) -> dict:
         out = {"kind": k, "status": v["status"], "sessions": v.get("sessions"), "sentences": v.get("sentences"), "replay": v.get("replay"), "problems": v.get("problems")}
         if v["status"] == "OK":
             src = check_write_sources(path)
-            bad = [x for x in src if x["type"] == "write_not_from_user"]
+            bad = [x for x in src if x["type"] in ("write_not_from_user", "supersede_order")]
             out["unsourced_sessions"] = [x["session"] for x in src if x["type"] == "unsourced_session"]
             if bad:
-                out["status"], out["problems"] = "WRITE_NOT_FROM_USER", bad
+                out["status"], out["problems"] = ("SUPERSEDE_ORDER" if all(x["type"] == "supersede_order" for x in bad) else "WRITE_NOT_FROM_USER"), bad
         adir = os.path.join(path, "answers")
         if v["status"] == "OK" and os.path.isdir(adir):
             bad = []
