@@ -97,6 +97,9 @@ def cmd_mem(args: argparse.Namespace) -> int:
         elif a.reason == "contested":
             vals = a.detail.get("contested_values") or []
             print("%s（理由: contested、%s%s）" % (rn.REFUSAL_TEXT, rn.REASON_JA["contested"], "： " + " / ".join("「%s」" % v for v in vals) if vals else ""))
+            for c in a.detail.get("contested") or []:
+                if not c.get("sourced"):
+                    print("  「%s」 %s" % (c["value"], rn.UNSOURCED_MARK))
         else:
             print(a.render().splitlines()[0])
         for n in a.detail.get("annotations") or []:

@@ -49,7 +49,9 @@ MEM_MAX_CALLS = mdrv.MAX_CALLS_PER_TURN_V3
 REFUSAL_TEXT = "分かりません"
 UNSOURCED_MARK = "出所: 利用者の発言ではない（エージェントの記録）"
 
-REASON_JA = {                                         # the typed reason, said in Japanese; the token stays visible
+REASON_JA = {
+    "unrecorded_user_statement": "利用者がこの場所について別のことを言っていますが、記憶に入っていません",
+    "store_not_verified": "記憶の台帳が検証できません",                                         # the typed reason, said in Japanese; the token stays visible
     "no_record": "文書にその答えが書かれていません",
     "cannot_weave": "文書に関係する記述はありますが、引用の形にできませんでした",
     "unknown": "判断できませんでした",
@@ -131,6 +133,78 @@ def blocked_positions(message: str) -> set:
     return out
 
 
+def redact_user_text(text: str) -> Tuple[str, List[str]]:
+    """A user message as it may be recorded: every secret-shaped span (the ledger's own detector: sk-ant-, sk-, AKIA…, ghp_…, xox…, private keys, Bearer, key=value, and encoded variants)
+    is replaced by 「[redacted:<sha256-8 of the span>]」; the list of those sha256-8 is returned.  The reading, the whole-sentence rule and the ledger all see the redacted text only."""
+    from verantyx.ledger_events import _spans, redact as _redact
+    t = nfc(text)
+    shas: List[str] = []
+    for s0, e0, _n in reversed(_spans(t)):
+        h = hashlib.sha256(t[s0:e0].encode("utf-8")).hexdigest()[:8]
+        shas.append(h)
+        t = t[:s0] + "[redacted:%s]" % h + t[e0:]
+    if _redact(t)[1]:                                      # something shaped like a secret remains (an encoded variant): the whole message goes
+        h = hashlib.sha256(text.encode("utf-8")).hexdigest()[:8]
+        return "[redacted:%s]" % h, [h]
+    return t, list(reversed(shas))
+
+
+def clause_values(sentence: str) -> Dict[Tuple, str]:
+    """{position: value text} of the F1 / F2 clauses the memory reads in a sentence (a change clause's value is its new value)."""
+    try:
+        from verantyx.loom import memshape as ms
+        return {(c.shape, c.centre, tuple((a.particle, a.seat.text) for a in c.arms)): c.value.text for c in ms.exchange(sentence, ms.SHAPES_V4).clauses if c.shape in ("F1", "F2") and c.value is not None}
+    except Exception:
+        return {}
+
+
+def recorded_user_turns(store: str) -> List[Tuple[str, str]]:
+    """[(turn id, text)] of every user turn recorded in the committed sessions of a store, in order."""
+    out: List[Tuple[str, str]] = []
+    sd = os.path.join(store, "sessions")
+    for n in sorted(os.listdir(sd)) if os.path.isdir(sd) else []:
+        try:
+            for ln in open(os.path.join(sd, n, "ops.jsonl"), encoding="utf-8"):
+                if '"user_turn"' in ln:
+                    r = json.loads(ln)
+                    if r.get("op") == "user_turn":
+                        out.append((r["args"]["turn"], r["args"]["text"]))
+        except (OSError, ValueError):
+            continue
+    return out
+
+
+def unrecorded_statement(store: str, sids: Sequence[int], max_session: Optional[int] = None) -> Optional[str]:
+    """The recorded user turns are the source of truth; the model's writes only SELECT from them.  Read EVERY sentence of EVERY recorded user turn with the memory's reader: if one carries, at the
+    position of the answer, a value different from the answer's and is not a stored write the memory already accounts for, the model left out (or the memory refused) something the user said about
+    this place.  -> the turn id of the first such sentence, else None.  (Scope rules are not applied: the check is conservative.)"""
+    try:
+        rows = mem.MemStore(store).rows()
+    except Exception:
+        return None
+    stored: Dict[str, set] = {}
+    for r in rows:
+        if r.get("turn"):
+            stored.setdefault(r["turn"], set()).add(nfc(r["sent"]).strip().rstrip("。"))
+    ans: Dict[Tuple, str] = {}
+    for i in sids:
+        if isinstance(i, int) and 0 <= i < len(rows):
+            ans.update(clause_values(rows[i]["sent"]))
+    if not ans:
+        return None
+    for turn, text in recorded_user_turns(store):
+        k = turn_key(turn)
+        if max_session is not None and k is not None and k[0] > max_session:
+            continue
+        for sent in user_sentences(text):
+            if nfc(sent).strip().rstrip("。") in stored.get(turn, set()):
+                continue
+            for pos, val in clause_values(sent).items():
+                if pos in ans and nfc(val).strip() != nfc(ans[pos]).strip():
+                    return turn
+    return None
+
+
 def turn_key(turn: Any) -> Optional[Tuple[int, int]]:
     m = re.match(r"^(\d+)-(\d+)$", turn) if isinstance(turn, str) else None
     return (int(m.group(1)), int(m.group(2))) if m else None
@@ -204,6 +278,40 @@ def has_change_clause(text: str) -> bool:
         return False
 
 
+class UnrecordedGate:
+    """At `emit` of a memory answer run: the quote is read back; if a recorded user sentence at its position says something else and is not a stored write (`unrecorded_user_statement`), a
+    `statement_refused` row (with the turn) is written and the run closes with an `abstain`: nothing is emitted."""
+
+    def __init__(self, inner: Any, store: str) -> None:
+        self.inner, self.store = inner, store
+
+    def __getattr__(self, name: str) -> Any:
+        return getattr(self.__dict__["inner"], name)
+
+    def call(self, tool: Any, args: Any = None) -> dict:
+        if tool == "emit":
+            ra = dict(args) if isinstance(args, dict) else {}
+            r = self.inner.call("read", dict(ra))
+            if isinstance(r, dict) and r.get("ok") is True and not r.get("refusals"):
+                turn = unrecorded_statement(self.store, [e["sid"] for e in (r.get("evidence") or []) if isinstance(e, dict) and isinstance(e.get("sid"), int)])
+                if turn is not None:
+                    self.inner.harness(ra.get("run_id"), "statement_refused", {"turn": turn, "reason": "unrecorded_user_statement"})
+                    return self.inner.call("abstain", dict(ra, type="unknown"))
+        return self.inner.call(tool, args)
+
+
+def statement_refusal_of(run_dir: str) -> Optional[str]:
+    try:
+        for ln in open(os.path.join(run_dir, "ops.jsonl"), encoding="utf-8"):
+            if '"statement_refused"' in ln:
+                r = json.loads(ln)
+                if r.get("op") == "statement_refused":
+                    return r["args"]["turn"]
+    except (OSError, ValueError):
+        pass
+    return None
+
+
 class AnswerMarkGuard:
     """The MCP question phase: a successful `emit` result also says whether its source sentence(s) are the USER's words (`sourced`) and, if not, carries the same mark as the CLI / JSON / UI."""
 
@@ -215,6 +323,18 @@ class AnswerMarkGuard:
 
     def call(self, tool: Any, args: Any = None) -> dict:
         out = self.inner.call(tool, args)
+        if tool == "recall" and isinstance(out, dict) and isinstance(out.get("answers"), list):
+            try:
+                sourced = sourced_sessions(self.store)
+                rows = mem.MemStore(self.store).rows()
+                groups = []
+                for g in out["answers"]:
+                    sids = [o["sid"] for o in g.get("occurrences", []) if isinstance(o.get("sid"), int)]
+                    ok = bool(sids) and all(0 <= i < len(rows) and _session_of_source(rows[i].get("source")) in sourced for i in sids)
+                    groups.append(dict(g, sourced=ok, **({} if ok else {"mark": UNSOURCED_MARK})))
+                out = dict(out, answers=groups)
+            except Exception:
+                pass
         if tool == "emit" and isinstance(out, dict) and out.get("ok") is True:
             try:
                 snap = self.inner.snapshot if hasattr(self.inner, "snapshot") else None
@@ -265,8 +385,8 @@ class UserSourceDoor:
     earlier message cannot be re-quoted to look newer): a `write_refused` row (sha256, length) is recorded and the model gets `not_from_user`.  So no sentence the memory
     holds, and no value an answer can quote, is anything but the user's own words.  Wraps the door the driver calls; everything else is the inner door's."""
 
-    def __init__(self, inner: Any, raw: Any, messages: Dict[str, str], store: str = "") -> None:
-        self.inner, self.raw, self.messages, self.store = inner, raw, messages, store
+    def __init__(self, inner: Any, raw: Any, messages: Dict[str, str], store: str = "", redacted: Optional[Dict[str, List[str]]] = None) -> None:
+        self.inner, self.raw, self.messages, self.store, self.redacted = inner, raw, messages, store, redacted or {}
         self.turn: Optional[str] = None
         self.blocked: set = set()
 
@@ -276,7 +396,7 @@ class UserSourceDoor:
     def set_turn(self, turn: str) -> None:
         self.turn = turn
         if turn in self.messages:
-            self.raw.harness(None, "user_turn", {"turn": turn, "text": self.messages[turn]})
+            self.raw.harness(None, "user_turn", dict({"turn": turn, "text": self.messages[turn]}, **({"redacted": self.redacted[turn]} if self.redacted.get(turn) else {})))
             self.blocked = blocked_positions(self.messages[turn])
         self.inner.set_turn(turn)
 
@@ -587,6 +707,10 @@ class Answer:
             for k in ("last_refusal",):
                 if self.detail.get(k):
                     lines.append("最後の拒否: %s" % self.detail[k])
+            for c in self.detail.get("contested") or []:
+                lines.append("  食い違い: 「%s」%s" % (c["value"], "" if c.get("sourced") else "  " + UNSOURCED_MARK))
+            if self.detail.get("turn"):
+                lines.append("  利用者の発言（回 %s）が記憶に入っていません" % self.detail["turn"])
             if self.detail.get("plugin"):
                 lines.append("プラグイン: %s/%s %s（%s）" % (self.detail["plugin"]["kind"], self.detail["plugin"]["name"], self.detail["plugin"]["version"], self.detail["plugin"]["code"]))
         lines.append("run: %s" % self.run_dir)
@@ -770,6 +894,38 @@ def _ops_files(path: str, kind: str) -> List[str]:
     return out
 
 
+def check_answer_statements(store: str) -> List[Dict[str, Any]]:
+    """For every answer run of the store that EMITTED: a recorded user sentence (of the sessions its snapshot covered) at the answered position with another value, not a stored write, makes
+    the answer inconsistent with what the user said (`user_statement_not_recorded`).  (Answers refused at emit time have no emit and pass.)"""
+    out: List[Dict[str, Any]] = []
+    ad = os.path.join(store, "answers")
+    try:
+        rows = mem.MemStore(store).rows()
+    except Exception:
+        return out
+    for a in sorted(os.listdir(ad)) if os.path.isdir(ad) else []:
+        f = os.path.join(ad, a, "ops.jsonl")
+        sids: List[int] = []
+        n_snap = 0
+        try:
+            for ln in open(f, encoding="utf-8"):
+                r = json.loads(ln)
+                if r.get("op") == "begin":
+                    n_snap = int(((r.get("result") or {}).get("mem_answer") or {}).get("sentences") or 0)
+                if r.get("actor") == "model" and r.get("op") == "emit" and (r.get("result") or {}).get("ok") is True:
+                    sids = [e["sid"] for e in (r["result"].get("evidence") or []) if isinstance(e.get("sid"), int)]
+        except (OSError, ValueError):
+            continue
+        if not sids:
+            continue
+        sessions = [_session_of_source(r.get("source")) for r in rows[:n_snap]]
+        mx_s = max([x for x in sessions if x is not None], default=None)
+        t = unrecorded_statement(store, sids, mx_s)
+        if t is not None:
+            out.append({"answer": a, "type": "user_statement_not_recorded", "turn": t})
+    return out
+
+
 def plugin_mismatch(path: str, kind: Optional[str] = None) -> Optional[str]:
     """The plugins a run folder / store DECLARES (the `plugins` key of its harness_meta rows, inside the hash chain) against the registry: None if every one is installed at the declared
     version, else `unknown_plugin:<kind>/<name>`, `plugin_version:...` or `plugins_malformed`.  A run that declares nothing (older runs) has no mismatch."""
@@ -845,6 +1001,10 @@ def _verify_base(path: str) -> dict:
             out["answers"] = n
             if bad:
                 out["status"], out["problems"] = "ANSWER_NOT_VERIFIED", bad
+            else:
+                unrec = check_answer_statements(path)
+                if unrec:
+                    out["status"], out["problems"] = "USER_STATEMENT_NOT_RECORDED", unrec
         return out
     return {"kind": "unknown", "status": "NOT_A_RUN", "problems": [{"path": path}]}
 
@@ -929,9 +1089,12 @@ class MemSessionResult:
 def mem_say(store: str, messages: Sequence[str], backend: Backend, *, budget: int = mview.BUDGET_DEFAULT, speaker: str = "user", profile: str = MEMORY_PROFILE_DEFAULT) -> MemSessionResult:
     """One story session: the messages arrive one at a time, the model keeps what matters through `write` (one fact per write) and ends every turn with `report`.
     The session is committed to the store only if it completed."""
-    msgs = [m.strip() for m in messages if m and m.strip()]
-    if not msgs:
+    raw_msgs = [m.strip() for m in messages if m and m.strip()]
+    if not raw_msgs:
         raise HarnessError("no message to remember", "no_message")
+    red = [redact_user_text(m) for m in raw_msgs]
+    msgs = [r[0] for r in red]
+    redacted_of = {i: r[1] for i, r in enumerate(red) if r[1]}
     if any(len(m) > mem.USER_TURN_MAX for m in msgs):
         raise HarnessError("a message is longer than %d characters (the ledger records every user message whole)" % mem.USER_TURN_MAX, "message_too_long")
     backend.ready()
@@ -944,7 +1107,7 @@ def mem_say(store: str, messages: Sequence[str], backend: Backend, *, budget: in
     tools = md.api_tools(door.tool_names, strict)
     sn = door.begin_result["header"]["session_no"]
     turns = [("%d-%d" % (sn, i + 1), "[%d-%d] %s: %s" % (sn, i + 1, speaker, m)) for i, m in enumerate(msgs)]
-    src = UserSourceDoor(wd, door, {"%d-%d" % (sn, i + 1): m for i, m in enumerate(msgs)}, store)
+    src = UserSourceDoor(wd, door, {"%d-%d" % (sn, i + 1): m for i, m in enumerate(msgs)}, store, {"%d-%d" % (sn, i + 1): v for i, v in redacted_of.items()})
     client = DriverClient(backend)
     try:
         res = mdrv.run_story_session(client, src, model, prompting.mem_story_prompt(), mem_intro(wd, budget), turns, tools, tool_choice=choice, max_calls=MEM_MAX_CALLS,
@@ -971,6 +1134,10 @@ def mem_ask(store: str, question: str, backend: Backend, *, budget: int = mview.
     store = os.path.abspath(store)
     backend.ready()
     plug = resolve_plugins(backend, filters=gate_filters, profile=profile, note_kinds=note_kinds)
+    if os.path.isfile(os.path.join(store, "HEAD")):
+        vs = verify_path(store)
+        if vs["status"] != "OK":
+            return Answer("refused", store, question, reason="store_not_verified", detail={"status": vs["status"]}, verified=False, backend=backend.describe())
     try:
         snap = ma.write_snapshot(store, topics=False, crosses=True, versions=True)
     except Refuse as r:
@@ -980,6 +1147,7 @@ def mem_ask(store: str, question: str, backend: Backend, *, budget: int = mview.
     qd.harness(None, "harness_meta", {"plugins": plug["manifest"]})
     wd = mview.BudgetDoor(qd, budget, ledger=False)
     _, snap_rows = ma.read_snapshot(snap["path"])
+    wd = UnrecordedGate(wd, store)
     wd = FilterGate(wd, plug["filters"], question, lambda sid: {"text": snap_rows[sid].get("sent") or "", "source": snap_rows[sid].get("source") or ""} if 0 <= sid < len(snap_rows) else None)
     choice, strict = backend.tool_choice()
     tools = md.api_tools(qd.tool_names, strict, done=True)
@@ -997,9 +1165,13 @@ def mem_ask(store: str, question: str, backend: Backend, *, budget: int = mview.
         pr = plugin_refusal_of(run_dir)
         if pr is not None:
             ans.reason, ans.detail["plugin"] = "plugin_refused", pr
+        st_turn = statement_refusal_of(run_dir)
+        if st_turn is not None:
+            ans.reason, ans.detail["turn"] = "unrecorded_user_statement", st_turn
         if out.get("type") == "contested":
             choice_ = [r for r in out.get("recalls", []) if r["verdict"] == "CHOICE"]
             ans.detail["contested_values"] = [g[0] for g in choice_[-1]["answers"]] if choice_ else []
+            ans.detail["contested"] = _contested_sources(store, run_dir)
     else:
         ans.reason = "run_not_verified" if out.get("status") == "run_not_verified" else (res.ended if res.ended not in ("closed", "done") else "no_close")
         ans.verified = out.get("status") != "run_not_verified"
@@ -1010,6 +1182,27 @@ def mem_ask(store: str, question: str, backend: Backend, *, budget: int = mview.
     if notes:
         ans.detail["annotations"] = notes
     return ans
+
+
+def _contested_sources(store: str, run_dir: str) -> List[Dict[str, Any]]:
+    """The values of the last CHOICE the answer run recalled, each with its own `sourced` flag (the sentences of its group are the user's words or an agent's record)."""
+    try:
+        rows = mem.MemStore(store).rows()
+        sourced = sourced_sessions(store)
+        last = None
+        for ln in open(os.path.join(run_dir, "ops.jsonl"), encoding="utf-8"):
+            if '"recall"' in ln:
+                r = json.loads(ln)
+                if r.get("op") == "recall" and (r.get("result") or {}).get("verdict") == "CHOICE":
+                    last = r["result"]
+        out = []
+        for g in (last or {}).get("answers", []):
+            sids = [o["sid"] for o in g.get("occurrences", []) if isinstance(o.get("sid"), int)]
+            ok = bool(sids) and all(0 <= i < len(rows) and _session_of_source(rows[i].get("source")) in sourced for i in sids)
+            out.append({"value": (g.get("answers") or [g.get("text")])[0], "sourced": ok})
+        return out
+    except (OSError, ValueError, KeyError):
+        return []
 
 
 def _mem_sources(store: str, snap: dict, out: dict, run_dir: str) -> List[Dict[str, Any]]:

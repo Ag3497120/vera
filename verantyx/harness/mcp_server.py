@@ -53,8 +53,12 @@ def open_memory_door(store: str, phase: str, model: str, question: Optional[str]
 
 
 def serve_memory(store: str, phase: str = "story", model: str = "mcp-client", question: Optional[str] = None) -> int:
+    if phase == "question" and os.path.isfile(os.path.join(store, "HEAD")):
+        vs = rn.verify_path(store)
+        if vs["status"] != "OK":
+            raise rn.HarnessError("the store does not verify (%s): no answer is given from it" % vs["status"], "store_not_verified")
     door = open_memory_door(store, phase, model, question)
-    server = memmcp.build(rn.UnsourcedGuard(door, store) if phase == "story" else rn.AnswerMarkGuard(door, store))
+    server = memmcp.build(rn.UnsourcedGuard(door, store) if phase == "story" else rn.AnswerMarkGuard(rn.UnrecordedGate(door, store), store))
     if server is None:
         return 2
     try:

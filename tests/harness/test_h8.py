@@ -542,3 +542,112 @@ def test_the_research_memmcp_entry_refuses_without_the_explicit_flag(tmp_path, c
     from verantyx.loom import memmcp
     assert memmcp.main(["--store", str(tmp_path / "s"), "--arm", "notes"]) == 2
     assert "no harness guards" in capsys.readouterr().err and not (tmp_path / "s").exists()
+
+
+# -- round 5 ------------------------------------------------------------------------------------------------------------------------
+Q5 = "広報の担当は誰ですか"
+
+
+def _ask_val(st, sid, val, filters=None):
+    return rn.mem_ask(st, Q5, oa([[("tool", "recall", {"question": Q5})], [("tool", "weave_span", {"sid": sid, "tier": "WORD", "first": val, "last": val})], [("tool", "emit", {})],
+                                  [("tool", "abstain", {"type": "unknown"})]]))
+
+
+def test_p14_a_replacement_the_model_never_wrote_is_not_answered_over(tmp_path):
+    rep = ("tool", "report", {"contradictions": []})
+    st = str(tmp_path / "a")                                                                                # same session: turn 2 replaces, the model writes nothing
+    assert rn.mem_say(st, ["広報の担当は山本", "広報の担当は鈴木に変更です"], oa([w("広報の担当は山本"), [rep]])).committed
+    a = _ask_val(st, 0, "山本")
+    assert a.status == "refused" and a.text is None and a.reason == "unrecorded_user_statement" and a.detail["turn"] == "1-2"
+    rows = [json.loads(ln) for ln in open(os.path.join(a.run_dir, "ops.jsonl"), encoding="utf-8")]
+    assert "emit" not in [r["op"] for r in rows] and [r["args"] for r in rows if r["op"] == "statement_refused"] == [{"turn": "1-2", "reason": "unrecorded_user_statement"}]
+    assert "回 1-2" in a.render() and rn.verify_path(st)["status"] == "OK"
+    st2 = str(tmp_path / "b")                                                                               # across sessions
+    assert rn.mem_say(st2, ["広報の担当は山本"], oa([w("広報の担当は山本")])).committed
+    assert rn.mem_say(st2, ["広報の担当は鈴木です"], oa([[rep]])).committed
+    b = _ask_val(st2, 0, "山本")
+    assert b.status == "refused" and b.reason == "unrecorded_user_statement" and b.detail["turn"] == "2-1"
+
+
+def test_p14_a_recorded_statement_the_memory_accounts_for_does_not_block(tmp_path):
+    st = str(tmp_path / "s")
+    assert rn.mem_say(st, ["広報の担当は山本", "広報の担当は鈴木"], oa([w("広報の担当は山本"), w("広報の担当は鈴木")])).committed
+    a = rn.mem_ask(st, Q5, oa([[("tool", "recall", {"question": Q5})], [("tool", "abstain", {"type": "contested"})]]))
+    assert a.reason == "contested"                                                                          # both stored: a contest, not an omission
+    st2 = str(tmp_path / "t")
+    assert rn.mem_say(st2, ["広報の担当は山本", "経理の担当は佐藤"], oa([w("広報の担当は山本"), [("tool", "report", {"contradictions": []})]])).committed
+    assert _ask_val(st2, 0, "山本").status == "answered"                                                    # a statement at ANOTHER position is irrelevant
+
+
+def test_p14_verify_flags_an_emitted_answer_inconsistent_with_the_recorded_turns(tmp_path):
+    """An answer run made before the gate existed (or forged): the store has an emitted answer for a position where the user said something else that is not a stored write."""
+    st = str(tmp_path / "s")
+    rep = ("tool", "report", {"contradictions": []})
+    assert rn.mem_say(st, ["広報の担当は山本", "広報の担当は鈴木に変更です"], oa([w("広報の担当は山本"), [rep]])).committed
+    from verantyx.loom import memanswer as ma
+    from verantyx.loom import memdoor as md
+    snap = ma.write_snapshot(st, topics=False, crosses=True, versions=True)
+    qd = md.AnswerDoor(st, "notes", Q5, "m", snapshot=snap, answer_version=rn.MEM_ANSWER_VERSION)          # no UnrecordedGate: the raw door
+    qd.call("recall", {"question": Q5}); qd.call("weave_span", {"sid": 0, "tier": "WORD", "first": "山本", "last": "山本"})
+    assert qd.call("emit", {}).get("ok")
+    v = rn.verify_path(st)
+    assert v["status"] == "USER_STATEMENT_NOT_RECORDED" and v["problems"][0]["turn"] == "1-2"
+    assert rn.mem_ask(st, Q5, oa([])).reason == "store_not_verified"                                         # and from now on the store answers nothing
+
+
+# p15
+K = "sk-ant-api03-" + "A1b2C3d4E5f6G7h8I9j0" * 3
+
+
+@pytest.mark.parametrize("secret", [K, "AKIA" + "ABCDEFGHIJKLMNOP", "ghp_" + "a1B2c3D4e5F6g7H8i9J0k1L2m3N4o5P6q7R8", "xoxb-1234567890-abcdefghij"])
+def test_p15_a_secret_in_a_user_turn_is_recorded_as_a_redaction_and_nowhere_else(tmp_path, secret):
+    st = str(tmp_path / "s")
+    msg = "広報の鍵は" + secret + "。広報の担当は山本。"
+    assert rn.mem_say(st, [msg], oa([[("tool", "write", {"text": "広報の鍵は" + secret}), ("tool", "write", {"text": "広報の担当は山本"}), ("tool", "report", {"contradictions": []})]])).committed
+    for root, _, files in os.walk(st):
+        for f in files:
+            assert secret.encode() not in open(os.path.join(root, f), "rb").read(), f
+    rows = _rows_all(st)
+    ut = [x for x in rows if x["op"] == "user_turn"][0]["args"]
+    sha8 = hashlib.sha256(secret.encode()).hexdigest()[:8]
+    assert "[redacted:%s]" % sha8 in ut["text"] and ut["redacted"] == [sha8] and secret not in ut["text"]
+    assert [x["args"]["reason"] for x in rows if x["op"] == "write_refused"] == ["not_from_user"]         # the secret-bearing write is not a whole sentence of the redacted text
+    assert [r["sent"] for r in mem.MemStore(st).rows()] == ["広報の担当は山本"] and rn.verify_path(st)["status"] == "OK"
+    app = sv.App({"runs_dir": str(tmp_path / "runs"), "store": st})
+    assert secret not in json.dumps(sv.memory_view(app), ensure_ascii=False) + json.dumps(sv.ledger_view(st), ensure_ascii=False)
+
+
+# p16
+def test_p16_every_value_of_a_contested_list_carries_its_own_flag_and_the_mark(tmp_path, capsys):
+    from verantyx.harness import mcp_server as ms
+    from verantyx.harness import cli
+    st = str(tmp_path / "s")
+    assert rn.mem_say(st, ["広報の担当は山本"], oa([w("広報の担当は山本")])).committed
+    _mcp_session(st, [("write", {"text": "広報の担当は鈴木"})])
+    a = rn.mem_ask(st, Q5, oa([[("tool", "recall", {"question": Q5})], [("tool", "abstain", {"type": "contested"})]]))
+    assert a.reason == "contested" and a.detail["contested"] == [{"value": "山本", "sourced": True}, {"value": "鈴木", "sourced": False}] or sorted(a.detail["contested"], key=lambda c: c["value"]) == sorted([{"value": "山本", "sourced": True}, {"value": "鈴木", "sourced": False}], key=lambda c: c["value"])
+    txt = a.render()
+    assert "「鈴木」  " + rn.UNSOURCED_MARK in txt and "「山本」  " + rn.UNSOURCED_MARK not in txt
+    view = sv.answer_view(a, sv.App({"runs_dir": str(tmp_path / "runs")}))["detail"]["contested"]
+    assert {c["value"]: c["sourced"] for c in view} == {"山本": True, "鈴木": False}
+    door = ms.open_memory_door(st, "question", "mcp-client", Q5)
+    r = rn.AnswerMarkGuard(rn.UnrecordedGate(door, st), st).call("recall", {"question": Q5})
+    marks = {g["answers"][0]: (g["sourced"], g.get("mark")) for g in r["answers"]}
+    assert marks["山本"] == (True, None) and marks["鈴木"] == (False, rn.UNSOURCED_MARK)
+
+
+# 4
+def test_a_store_that_does_not_verify_answers_nothing_through_every_door(tmp_path):
+    from verantyx.harness import mcp_server as ms
+    st = str(tmp_path / "s")
+    assert rn.mem_say(st, ["広報の担当は山本"], oa([w("広報の担当は山本")])).committed
+    p = os.path.join(st, "sessions", "s0001", "ops.jsonl")
+    open(p, "w", encoding="utf-8").write(open(p, encoding="utf-8").read().replace("山本", "山木", 1))
+    assert rn.verify_path(st)["status"] != "OK"
+    a = rn.mem_ask(st, Q5, oa([]))
+    assert a.status == "refused" and a.reason == "store_not_verified" and a.detail["status"]
+    with pytest.raises(rn.HarnessError) as e:
+        ms.serve_memory(st, "question", "m", Q5)
+    assert e.value.code == "store_not_verified"
+    app = sv.App({"runs_dir": str(tmp_path / "runs"), "store": st})                                         # the UI goes through mem_ask
+    assert sv.answer_view(a, app)["reason"] == "store_not_verified"

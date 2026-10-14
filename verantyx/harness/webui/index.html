@@ -120,7 +120,9 @@ function renderTurn(t) {
   } else {
     box.append(el("div", {class: "refuse"}, "分かりません ", el("span", {class: "tag"}, a.reason || "unknown"), a.reason_ja ? "（" + a.reason_ja + "）" : ""));
     const d = a.detail || {};
-    if (d.contested_values) box.append(el("div", {class: "src"}, "食い違い: " + d.contested_values.map((v) => "「" + v + "」").join(" / ")));
+    if (d.contested) for (const c of d.contested) box.append(el("div", {class: "src"}, "食い違い: 「" + c.value + "」" + (c.sourced ? "" : "  出所: 利用者の発言ではない（エージェントの記録）")));
+    else if (d.contested_values) box.append(el("div", {class: "src"}, "食い違い: " + d.contested_values.map((v) => "「" + v + "」").join(" / ")));
+    if (d.turn) box.append(el("div", {class: "src"}, "利用者の発言（回 " + d.turn + "）が記憶に入っていません"));
     if (d.last_refusal) box.append(el("div", {class: "src"}, "最後の拒否: " + d.last_refusal));
     if (d.plugin) box.append(el("div", {class: "src"}, `プラグイン: ${d.plugin.kind}/${d.plugin.name} ${d.plugin.version}（${d.plugin.code}）`));
     if (d.error) box.append(el("div", {class: "err"}, d.error));

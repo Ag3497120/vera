@@ -231,7 +231,7 @@ def answer_view(ans: rn.Answer, app: App) -> Dict[str, Any]:
                          "reason_ja": rn.REASON_JA.get(ans.reason or "", ""), "verified": ans.verified, "free_text_dropped": ans.free_text_dropped, "backend": ans.backend,
                          "usage": ans.usage}
     det = {}
-    for k in ("last_refusal", "contested_values", "plugin", "annotations", "emit_refusals"):
+    for k in ("last_refusal", "contested_values", "contested", "turn", "status", "plugin", "annotations", "emit_refusals"):
         if ans.detail.get(k) is not None:
             det[k] = ans.detail[k]
     if ans.detail.get("error"):
