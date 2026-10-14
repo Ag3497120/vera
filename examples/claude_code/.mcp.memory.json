@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "vera-mem": {
+      "command": "vera",
+      "args": [
+        "mcp",
+        "--mode",
+        "memory",
+        "--store",
+        "./memory-store"
+      ]
+    }
+  }
+}

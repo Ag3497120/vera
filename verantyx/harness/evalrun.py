@@ -7,7 +7,7 @@ exact probe of the research tree (experiments/line3/loom/ev6/sweep.py), restrict
   wrong_admitting     answerable items for which the gate passes a stretch that is not a gold answer   (SAFETY: must not rise)
   unans_admitted      unanswerable items for which the gate passes ANY stretch                         (SAFETY: must not rise; 0 on every bank)
 
-  --quick   each item is swept only over the sentences of the articles named in its `evidence` / `subject` columns (the sentences the trap or the answer lives in): about a minute.
+  --quick   each item is swept only over the sentences of the articles named in its `evidence` / `subject` columns (the sentences the trap or the answer lives in): CI's job.
   (default) each item is swept over the whole 592-sentence corpus (the research tree's numbers): tens of CPU minutes, use --workers.
 
 MEMORY.  Two stores of the memory meter (MEM-T01, MEM-T03; the model's raw write calls are replayed into a fresh store, then the answer run -- memanswer.v17 -- is asked the ten questions

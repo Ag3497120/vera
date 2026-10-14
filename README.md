@@ -1,27 +1,158 @@
 # Vera Harness
 
-Run a model inside Vera so that its only output is a **quote from the record** or an honest **「分かりません」**, with every operation on a hash-chained, replayable ledger.
+**モデルは嘘をつかない代わりに、黙る。** Vera Harness は、モデル（Claude、DeepSeek、Ollama のローカルモデルなど）を Vera の中で動かし、その **出力を「記録の一字一句の引用」か「分かりません」だけ** にするハーネスです。根拠が読めない・食い違う・古い値のときは答えません。すべての操作はハッシュで連ねた台帳に残り、あとから同じ結果で再生して検証できます。
 
-> Status: tickets H0-H2 of `docs/HARNESS_DESIGN.md` (minimal tree, backends, runner and CLI). The full README, the eval set and the web UI follow (H3-H7).
+English: [README.en.md](README.en.md)
 
 ```
-pip install -e ".[anthropic,openai,mcp]"        # core: fugashi + unidic-lite, nothing else
-export ANTHROPIC_API_KEY=...                     # or VERA_OPENAI_API_KEY / OPENAI_API_KEY, or the macOS Keychain (see verantyx/harness/keys.py); a key is never printed or recorded
+vera ask --docs ./manuals "保守契約の窓口は何ですか"
+答え: 「総務部」
+根拠: 保守契約の窓口は総務部である。（保守契約#1）
+run: runs/ask-20261014-…
 
-vera ask --docs ./manuals "保守契約の更新期限はいつですか？"                  # quote + source sentence, or 分かりません + the typed reason
-vera ask --docs ./manuals --backend openai --model llama3.1 --base-url http://127.0.0.1:11434/v1 "…"     # Ollama / LM Studio / vLLM / DeepSeek
-vera ask --docs ./manuals --backend json --model tiny --base-url http://127.0.0.1:1234/v1 "…"          # a model without tool calling: it answers with a JSON array of ops
-vera mem --store ./memory --say "広報の担当は山本" --ask "広報の担当は何ですか"                              # a memory: one fact per message; two told answers are "contested"
-vera mcp --docs ./manuals --question "…" --runs-dir runs                                                 # Vera as the only exit of an agent (stdio MCP)
-vera verify runs/ask-…   &&   vera replay runs/ask-…                                                   # chain, then byte-for-byte replay
+vera ask --docs ./manuals "保守契約の解約手数料は何ですか"
+分かりません（理由: no_record、文書にその答えが書かれていません）
 ```
 
-How the output is forced (the guarantee does not depend on the model behaving):
+## これは何か / 何でないか
 
-* the model gets only the loom's tools (or the memory's); free text is **dropped**, only its sha256 and length are recorded (`free_text_dropped`);
-* a quote is shown only if the evidence gate (`evidence.v6`) passes it, and only from a ledger that verifies and replays identically;
-* all three backends (Anthropic, any OpenAI-compatible server, JSON ops) run through the same driver, the same server and the same ledger.
+**これは**: 出力経路を強制するハーネスです。モデルには Vera の道具だけを渡し、自由な文は捨て（長さとハッシュだけ残す）、答えは「文書（または記憶）のある 1 文の一字一句の引用で、Vera の門が通したもの」だけを見せます。門は既定で拒否します。中核は標準ライブラリと形態素解析（fugashi + unidic-lite）だけで、学習も外部通信もありません。
 
-Limits, stated plainly: Japanese only; an answer is a verbatim stretch of one sentence, so most questions come back as 「分かりません」; the memory answers only from one-fact-per-message sentences. The effect of the cross-structure geometry is **not** claimed here.
+**これでないもの**:
 
-MIT licensed. The import name stays `verantyx` so that ledgers made by the research tree replay unchanged.
+* 汎用のエージェント基盤ではありません（何でもプラグイン、ではない）。検証のためのハーネスです。
+* 真実の検査器ではありません。「文書にこう書いてある」ことは保証しますが、「文書が正しい」ことは保証しません。
+* モデルを賢くするものではありません。答えられる範囲はむしろ狭くなります。
+* 日本語専用です。英語の問いには答えません（門が拒否します）。
+* **構造体（十字の幾何）の効果は主張しません。** 記憶の「十字」「巣」は矛盾・更新を決定的に見つけるために使っていますが、それが平文ログ＋検索より良いという証拠は **ありません**（研究の計測では勝てていません）。これは研究であり、製品の主張ではありません。研究の履歴は同じリポジトリの `research` ブランチ（公開時に作成）にあります。
+
+## 測った数字（主張の表）
+
+すべて、このリポジトリの `vera eval` と CI で再計測できる数字、または研究ブランチの報告にある数字です。条件を必ず読んでください。
+
+| 主張 | 数字 | 条件・出典 |
+|---|---|---|
+| 答えのない問いで答えを出さない（出力の門 v6） | bank4 **0/60**、bank6 **0/34**、bank7 **0/47**、bank8 **0/50** | 各問いについて、対象文書の文の **1〜10 語の全区間** を門に通した掃引。答えのない問いで通る区間が 0。`vera eval` で再計測。bank8 の 0/50 は門 v2 時点の未見判定（のち v6 でも 0/50）。bank6〜8 はその後の規則の検討に使ったので、今は **回帰の固定セット** であって未見の試験ではない |
+| 実際のモデルで、答えのない問いへの確信した誤答 | **0/126** | Claude Haiku 5.5、門 v2、研究ブランチ `experiments/line3/loom/results_h55f` |
+| 記憶の答えで誤答 | **0** | 思い出しなし・言い換え・紛らわしい書き方・橋の攻撃など、研究の赤チームの全種。`experiments/line3/pub/m6c`。`vera eval` はそのうち 4 種（食い違いの片方を出す・置き換えられた値を出す・思い出さずに出す・橋で出す）を 2 つの記憶で再計測 |
+| 矛盾の検知 | 精度 **0.83**、仕掛けた 216 件中 **137 件** | 研究の計器（meter v1 の書き込みを流し直した報告 `pub/m5m6`）。検知であって答えではない |
+| 再生 | 保存した全台帳が **バイト一致** | CI。`PYTHONHASHSEED` 0 / 1 / 12345 の 3 通り |
+
+## 限界（先に読んでください）
+
+* **日本語のみ。**
+* **未見の問いで答えに届くのは約 1 割。** 残りは「分かりません」になります（引用できるのは、問いの形と文の形が合うときだけ）。誤答をしない代わりの設計上の代償です。答えのある問いのうち引用に届いた数（`vera eval` の reach）は、dev 10/69、bank6 3/26、bank7 1/32、bank8 3/35。
+* **答えのある問いでも、正しい語でない引用を通すことがある。** 門は「問いの形に合う文の中の、一語句の引用」を通すもので、正解かどうかは知りません（`vera eval` の「wrong answer admitted」: bank6 で 3 問、bank8 で 1 問。答えのない問いでは 0）。
+* **記憶は「1 回の書き込みに 1 つの事実を 1 文で」書いたものからしか答えません。** 「変わった」「延長」「XはYが担当」、同義語（場所 / 開催地）、別の書き込みでの撤回は読めません。出来事の文（「会議は東京で開く」）は、問いは読めても値を引用として出しません。
+* **実際のモデルでの測定は Claude Haiku 5.5（研究時）のみ。** DeepSeek / OpenAI 互換 / Ollama / JSON 方式のバックエンドは、偽のクライアントでの試験しかしていません。保証の本体は Vera 側（門・台帳）にあり、モデルの出来には依存しませんが、**モデルが弱いと「分かりません」が増えます**。
+* 台帳の **再生** は、台帳を作った CPython の x.y.z と、辞書由来のハッシュ（形態素辞書の版）が同じでなければ、`INPUTS`（再現できない）になります。ハッシュ連鎖の検証はどこでもできます。
+* 強制の段によって保証が違います（下の E1〜E3）。
+
+詳しくは [docs/SAFETY.md](docs/SAFETY.md)。
+
+## クイックスタート
+
+Python 3.10 以上。
+
+```
+git clone https://github.com/Ag3497120/vera && cd vera
+python -m venv .venv && . .venv/bin/activate
+pip install -e ".[anthropic,openai,mcp]"       # 中核は fugashi と unidic-lite だけ。SDK は使うものだけで良い
+vera --version
+```
+
+PyPI には公開していません（予定は未定）。API キーは **環境変数か macOS の鍵束** から読みます。画面にも台帳にも値は出ません。
+
+### Claude
+
+```
+export ANTHROPIC_API_KEY=...                       # または: security add-generic-password -s vera-harness -a anthropic -w
+vera ask --docs ./manuals "保守契約の窓口は何ですか"
+```
+
+既定のバックエンドが `anthropic`、モデルは `claude-haiku-5-5`（`--model` で変更）。
+
+### DeepSeek など OpenAI 互換の API
+
+```
+export DEEPSEEK_API_KEY=...
+vera ask --docs ./manuals --backend openai --model deepseek-chat --base-url https://api.deepseek.com --api-key-env DEEPSEEK_API_KEY "…"
+```
+
+モデル名は提供元の一覧を見てください。道具呼び出しを強制します。拒否するサーバーには `--tool-choice auto`（そのときも、ドライバが受け付けるのは道具呼び出しだけです）。
+
+### Ollama・LM Studio・vLLM（ローカル、キー不要）
+
+```
+vera ask --docs ./manuals --backend openai --model llama3.1 --base-url http://127.0.0.1:11434/v1 "…"       # Ollama
+vera ask --docs ./manuals --backend openai --model <id> --base-url http://127.0.0.1:1234/v1 "…"            # LM Studio
+```
+
+道具呼び出しのないモデルには JSON 方式: `--backend json`（モデルは操作の JSON 配列だけで答え、それ以外の出力は捨てます）。
+
+### 画面（ローカルのみ）
+
+```
+vera run --docs ./manuals            # http://127.0.0.1:3090/
+```
+
+会話（答えは引用と根拠の文、または「分かりません」と理由だけ）、操作の流れ、台帳のハッシュ連鎖と **Verify** ボタン、記憶の注記（SAME_SEAT / UPDATE / REVERSAL_X）と問いの位置の十字・巣、設定（バックエンド、キーの有無。値は出ません）。外部読み込みはありません。`127.0.0.1` 以外には `--allow-remote` を付けない限り待ち受けません（付けると、ポートに届く誰でもあなたの設定したバックエンドを使えます。付けないでください）。
+
+### 記憶
+
+```
+vera mem --store ./memory --say "広報の担当は山本" --say "広報の担当は田中" --ask "広報の担当は何ですか"
+分かりません（理由: contested、記録の中で答えが食い違っています： 「山本」 / 「田中」）
+```
+
+同じ席に別の値が 2 回言われたら、選ばず食い違いとして黙ります。同じフォルダは次の会話でも同じ記憶です。
+
+### 検証・再生・評価
+
+```
+vera verify runs/ask-…        # ハッシュ連鎖、次に再生（バイト単位の一致）
+vera replay runs/ask-…
+vera eval --quick             # 安全の主張を手元で再計測（モデルなし・通信なし）。安全の数字が記録より悪ければ終了コード 1
+```
+
+### MCP と Claude Code のサブエージェント
+
+```
+vera mcp --docs ./manuals --question "保守契約の窓口は何ですか" --runs-dir runs      # stdio の MCP サーバー（vera-loom）
+```
+
+サブエージェントの `tools:` を `mcp__vera-loom__*` の 20 個だけにすると、Vera がそのエージェントの唯一の出口になります。設定ファイルの一式は [examples/claude_code](examples/claude_code/)。**答えは Claude Code の画面ではなく `vera loom output runs/<run_id>` で取る**のが前提です（E2 の保証の範囲は下）。
+
+## 強制の段（E1〜E3）と、それぞれが保証すること
+
+| 段 | 何をするか | 保証する | 保証しない |
+|---|---|---|---|
+| **E1**（既定、全 OS）`vera ask / mem / run` | ドライバがモデルに Vera の道具だけを渡し、自由な文は捨て（`free_text_dropped`: 長さとハッシュ）、道具の名前が違えば拒否。見せるのは検証済み台帳の `emit` の文だけ | あなたが見る答えは、門が通した引用か「分かりません」だけ。台帳は連鎖と再生で確かめられる | モデルのプロセスを OS で囲むことはしない（モデルは API の向こうにいるので、ハーネスの外に出口はない） |
+| **E2**（Claude Code）`vera mcp` ＋サブエージェントの許可リスト | エージェントが使える道具を Vera の MCP の道具だけにする | エージェントの道具は Vera のものだけ。`vera loom output` は検証済みの `emit` 以外を出さない | Claude Code の会話記録にはエージェントの文が残り、親や人がそれを「答え」と読むのは止められない。答えは台帳から取る運用が前提 |
+| **E3**（macOS）`vera loom mcp --isolated` | MCP サーバーを `sandbox-exec` で囲む: 通信なし・exec なし・決めた場所以外の読み書きなし。起動前に同じ囲いでプローブを走らせ、通らなければ起動しない（終了コード 3） | サーバー（とその子）が外に出せない・書けない | クライアント（エージェント）側は囲まない。`sandbox-exec` は Apple が非推奨にしている。Linux の bubblewrap は未対応 |
+
+## プラグイン
+
+バックエンド・門のフィルタ・記憶の版・注記の種類を、Python の entry points（グループ `vera.plugins`）で足せます。標準の部品も同じ仕組みで登録されます。台帳は使ったプラグインとその版を記録し、入っていないプラグインの台帳は `verify` が **INPUTS**（再現できない）と言います。[docs/PLUGINS.md](docs/PLUGINS.md)、最小の例は [examples/plugins](examples/plugins/vera_example_plugin/)。
+
+## リポジトリ
+
+```
+verantyx/            パッケージ（import 名は台帳の再生互換のため維持）
+  harness/           バックエンド、runner、CLI、MCP、画面（webui/）、プラグイン、評価（evals/）
+  loom/              織機・門・記憶（変えていない）
+  line3/             文法層の最小部分
+examples/            docs_qa/（文書に問う）、memory/（作業ログの記憶）、claude_code/、plugins/
+docs/                ARCHITECTURE.md、SAFETY.md、LEDGER.md、PLUGINS.md
+tests/               ハーネスの試験、固定の台帳の再生
+```
+
+* [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — どこで何が起きるか
+* [docs/SAFETY.md](docs/SAFETY.md) — 主張・限界・脅威モデル
+* [docs/LEDGER.md](docs/LEDGER.md) — 台帳の形式と検証の状態
+
+研究の履歴（実験・設計書・計器の報告）は、同じリポジトリの **`research` ブランチ**（公開時に作成）にあります。そこで続けている「構造（十字の幾何）」についての主張は **研究であり、このハーネスの主張ではありません**。
+
+## ライセンス
+
+MIT

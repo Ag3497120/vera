@@ -1,0 +1,18 @@
+{
+  "mcpServers": {
+    "vera-loom": {
+      "command": "vera",
+      "args": [
+        "mcp",
+        "--docs",
+        "examples/docs_qa/manuals",
+        "--question",
+        "保守契約の窓口は何ですか",
+        "--question",
+        "経費精算システムの旧称は何ですか",
+        "--runs-dir",
+        "runs"
+      ]
+    }
+  }
+}
