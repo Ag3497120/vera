@@ -138,7 +138,8 @@ _OWN_MARK = re.compile(r"\[redacted:[0-9a-f]{8}\]")
 
 
 def _clean_for_reading(s0: str) -> str:
-    return re.sub(r"(?i)\bbearer\s*", "", _SECRET_LABEL.sub("", _OWN_MARK.sub("", s0))).strip()
+    from verantyx.harness import secretscan as ss
+    return re.sub(r"(?i)\bbearer\s*", "", ss._LABEL.sub("", ss._CLI.sub("", unicodedata.normalize("NFKC", _OWN_MARK.sub("", s0))))).strip()
 
 
 def reading_sentences(text: str) -> List[str]:
@@ -152,53 +153,29 @@ def reading_sentences(text: str) -> List[str]:
     return out
 
 
-_VALUE_STOP = re.compile(r"[\s\u3000-\u9fff\uf900-\ufaff\uff00-\uffef。、]")
-_SECRET_LABEL = re.compile(r"(?i)(?:api[_-]?key|apikey|access[_-]?key|private[_-]?key|client[_-]?secret|secret|passwd|password|pwd|token)[\"']?\s*[=:]\s*[\"']?")
 
 
 def redact_user_text(text: str) -> Tuple[str, List[str], bool]:
-    """A user message as it may be recorded: every secret-shaped span (the ledger's own detector: sk-ant-, sk-, AKIA…, ghp_…, xox…, private keys, Bearer, key=value, ...) is replaced by
-    「[redacted:<sha256-8 of the span>]」.  A `key=value` secret's value ends at white space, a CJK character or 。！？!? (so 「password=hunter2。広報の担当は…」 loses only `hunter2`).  -> (the text,
-    the sha256-8 list, LOSSY).  LOSSY is true when the redaction removed or changed a sentence boundary (a terminator disappeared or appeared), erased a whole sentence, or (the fail-safe) had to
-    drop the whole message: the reading of such a turn cannot be trusted, and the memory then answers nothing about places it could have spoken of (`redacted_turn_unreadable`)."""
+    """A user message as it may be recorded: every secret-shaped span (see `secretscan`: labels with = : は, CLI --password X, URL userinfo, sk-/Bearer/ghp_/AKIA…/xox…, full-width forms, any
+    length) is replaced by 「[redacted:<sha256-8 of the span>]」.  -> (the text, the sha256-8 list, LOSSY).  LOSSY is true when the redaction removed or changed a sentence boundary, erased a
+    whole sentence, left a sentence the reader cannot read once the marker is out, or (the fail-safe) had to drop the whole message: the reading of such a turn cannot be trusted, and the memory
+    then answers nothing about places it could have spoken of (`redacted_turn_unreadable`)."""
     from verantyx.ledger_events import _spans, _variant_stage
-    t = nfc(text)
-    spans = [[s0, e0] for s0, e0, name in _spans(t) if name != "kv_secret"]
-    for m in _SECRET_LABEL.finditer(t):                      # after a secret label: the ENTIRE ASCII run (! and ? stay inside), whatever its length
-        st = m.end()
-        stop = _VALUE_STOP.search(t, st)
-        en = stop.start() if stop is not None else len(t)
-        if en > st:
-            spans.append([st, en])
-    spans.sort()
-    merged: List[List[int]] = []
-    for s0, e0 in spans:
-        if merged and s0 <= merged[-1][1]:
-            merged[-1][1] = max(merged[-1][1], e0)
-        else:
-            merged.append([s0, e0])
-    shas: List[str] = []
-    for s0, e0 in reversed(merged):
-        h = hashlib.sha256(t[s0:e0].encode("utf-8")).hexdigest()[:8]
-        shas.append(h)
-        t = t[:s0] + "[redacted:%s]" % h + t[e0:]
+    from verantyx.harness import secretscan as ss
+    t0 = nfc(text)
+    t, shas = ss.redact(t0)
     rest = _OWN_MARK.sub("", t)
-    leftover = _variant_stage(rest)[1] > 0
-    for s0, e0, name in _spans(rest):                      # what the detector still finds once the harness's own markers are gone (a key=value whose value was only the rest of the sentence is no secret)
-        if name == "kv_secret":
-            m = _VALUE_STOP.search(rest, s0, e0)
-            e0 = m.start() if m is not None else e0
-            if e0 - s0 < 8:
-                continue
-        leftover = True
-    if leftover:                                           # a secret-shaped residue the markers do not explain: the whole message goes
+    leftover = _variant_stage(rest)[1] > 0 or any(name != "kv_secret" for _s, _e, name in _spans(rest))     # what the ledger's own detector still finds (encoded variants, ...): the whole message goes
+    if leftover:
         h = hashlib.sha256(text.encode("utf-8")).hexdigest()[:8]
         return "[redacted:%s]" % h, [h], True
     term = lambda x: [c for c in x if c in "。！？!?"]
     marked = [x for x in user_sentences(t) if "[redacted:" in x]
-    lossy = bool(shas) and (term(nfc(text)) != term(t) or any(not re.sub(r"[\s。！？!?、，,.]+", "", _clean_for_reading(x)) for x in marked)
-                            or any(not clause_values(_clean_for_reading(x)) for x in marked))          # a sentence the reader cannot read once the marker is out may have said anything
-    return t, list(reversed(shas)), lossy
+    tail_ok = re.compile(r"(?:^|[\s\u3000])(?:%s)?\[redacted:[0-9a-f]{8}\][。！？!?]*$" % ss._LABEL.pattern.replace("(?i)", ""), re.I)
+    lossy = bool(shas) and (term(t0) != term(t) or any(not re.sub(r"[\s。！？!?、，,.]+", "", _clean_for_reading(x)) for x in marked)
+                            or any(not tail_ok.search(unicodedata.normalize("NFKC", x)) for x in marked)       # a secret glued into the middle of a sentence can change what it says (「鈴木ではなく<secret>」)
+                            or any(not clause_values(_clean_for_reading(x)) for x in marked))
+    return t, shas, lossy
 
 
 def clause_values(sentence: str) -> Dict[Tuple, str]:
@@ -606,6 +583,13 @@ def check_write_sources(store: str) -> List[Dict[str, Any]]:
     return out
 
 
+def refuse_secret_in_question(question: str) -> None:
+    """A question is written into the begin row of its run: one that holds a secret-shaped span is refused BEFORE anything is created or sent (`secret_in_question`); the raw text is written nowhere."""
+    from verantyx.harness import secretscan as ss
+    if ss.find_spans(nfc(question or "")) or redact_user_text(question or "")[1]:
+        raise HarnessError("the question contains something shaped like a secret (a key, a password, a token...); it was not sent and not recorded: remove it and ask again", "secret_in_question")
+
+
 class HarnessError(Exception):
     """A typed refusal of the harness (`code` is a stable token)."""
 
@@ -875,6 +859,7 @@ def ask(question: str, docs: str, backend: Backend, runs_dir: str = DEFAULT_RUNS
     question = (question or "").strip()
     if not question:
         raise HarnessError("the question is empty", "bad_question")
+    refuse_secret_in_question(question)
     backend.ready()
     plug = resolve_plugins(backend, evidence=evidence, filters=gate_filters)
     try:
@@ -1224,6 +1209,7 @@ def mem_ask(store: str, question: str, backend: Backend, *, budget: int = mview.
     question = (question or "").strip()
     if not question:
         raise HarnessError("the question is empty", "bad_question")
+    refuse_secret_in_question(question)
     store = os.path.abspath(store)
     backend.ready()
     plug = resolve_plugins(backend, filters=gate_filters, profile=profile, note_kinds=note_kinds)

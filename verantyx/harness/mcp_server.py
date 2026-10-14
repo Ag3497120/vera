@@ -26,6 +26,8 @@ from verantyx.loom import mcp as lm
 
 def prepare_doc_tasks(docs: str, questions: Sequence[str], runs_dir: str) -> str:
     """Write the corpus of `docs` and a task bank (q1, q2, ...) under `runs_dir`; return the task bank path."""
+    for q in questions:
+        rn.refuse_secret_in_question(q)
     data, _ = dc.build_corpus(docs)
     runs_dir = os.path.abspath(runs_dir)
     corpus_path = os.path.join(runs_dir, "_corpora", dc.corpus_sha(data)[:16] + ".jsonl")
@@ -53,6 +55,8 @@ def open_memory_door(store: str, phase: str, model: str, question: Optional[str]
 
 
 def serve_memory(store: str, phase: str = "story", model: str = "mcp-client", question: Optional[str] = None) -> int:
+    if question:
+        rn.refuse_secret_in_question(question)
     if phase == "question" and os.path.isfile(os.path.join(store, "HEAD")):
         vs = rn.verify_path(store)
         if vs["status"] != "OK":

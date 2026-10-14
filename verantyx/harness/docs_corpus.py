@@ -18,6 +18,8 @@ import re
 import stat
 from typing import Dict, Iterable, List, Sequence, Tuple
 
+from verantyx.harness import secretscan
+
 DOC_SUFFIXES = (".txt", ".md", ".markdown")
 MAX_DOC_BYTES = 8 * 1024 * 1024
 _END = "。！？!?"
@@ -145,6 +147,7 @@ def build_rows(path: str) -> List[Dict[str, str]]:
         except UnicodeDecodeError as e:
             raise DocsError("%s is not UTF-8" % f, "docs_not_utf8") from e
         for k, s in enumerate(split_sentences(text)):
+            s = secretscan.redact(s)[0]                         # a secret-shaped span of a document is never copied into a run folder (see secretscan: what is and is not detected)
             rows.append({"sha": hashlib.sha256(s.encode("utf-8")).hexdigest(), "title": title, "sent": s, "source": "%s#%d" % (title, k)})
     if not rows:
         raise DocsError("the documents hold no sentence", "docs_empty")

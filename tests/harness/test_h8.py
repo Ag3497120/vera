@@ -771,3 +771,84 @@ def test_r7d_a_lossy_turn_makes_a_contested_refusal_unreadable_not_a_live_confli
     a = rn.mem_ask(st, Q5, oa([[("tool", "recall", {"question": Q5})], [("tool", "abstain", {"type": "contested"})]]))
     assert a.status == "refused" and a.reason == "redacted_turn_unreadable" and a.detail["turn"] == "3-1"
     assert a.detail["contested"] == [] and a.detail["contested_values"] == [] and "食い違い" not in a.render() and "読み取れませんでした" in a.render()
+
+
+# -- round 8 ------------------------------------------------------------------------------------------------------------------------
+S8 = "Hu7nterQz"
+R8A = [('{"password": "%s"}' % S8, S8), ("{'password':'%s'}" % S8, S8), ('"password" : "%s"' % S8, S8), ("https://bob:%s@example.com/x" % S8, S8), ("PASSWORD=%s" % S8, S8),
+       ("DB_PASSWORD=%s" % S8, S8), ("export MYSQL_PWD=%s" % S8, S8), ("password＝%s" % S8, S8), ("password：%s" % S8, S8), ("password=ｈｕ７ｎｔｅｒ", "ｈｕ７ｎｔｅｒ"),
+       ("password=Ｈｕ７", "Ｈｕ７"), ("ｐａｓｓｗｏｒｄ=%s" % S8, S8), ("パスワード: %s" % S8, S8), ("パスワードは%sです" % S8, S8), ("pass=%s" % S8, S8), ("auth=%s" % S8, S8),
+       ("credentials=%s" % S8, S8), ("key=%s" % S8, S8), ('password="%s foo"' % S8, S8), ("password=\t%s" % S8, S8), ("password= %s" % S8, S8), ("password=​%s" % S8, S8),
+       ("password:\n%s" % S8, S8), ("--password %s" % S8, S8), ("sk-%s" % S8, S8), ("Bearer %s" % S8, S8), ("password%%3D%s" % S8, S8), ("password=Hu7n漢terQz", "terQz"),
+       ("password=%s。" % S8, S8), ("passphrase: %s" % S8, S8), ("暗証番号は1234です", "1234"), ("合言葉: やまかわ", "やまかわ"), ("ghp_abc", "ghp_abc"), ("AKIAXYZ", "AKIAXYZ"), ("sk-a", "sk-a")]
+
+
+@pytest.mark.parametrize("msg,probe", R8A)
+def test_r8a_every_listed_secret_form_is_redacted_and_nothing_of_it_reaches_the_disk(tmp_path, msg, probe):
+    full = "広報の担当は山本です。" + msg
+    t, shas, lossy = rn.redact_user_text(full)
+    assert probe not in t and shas and t.startswith("広報の担当は山本です。")
+    st = str(tmp_path / "s")
+    assert rn.mem_say(st, [full], oa([[("tool", "report", {"contradictions": []})]])).committed
+    for root, _, files in os.walk(st):
+        for f in files:
+            assert probe.encode() not in open(os.path.join(root, f), "rb").read(), (f, probe)
+
+
+def test_r8a_ordinary_text_is_untouched():
+    for t in ("広報の担当は山本です。", "monkey business", "the key point is simple", "パスワードの管理は総務部です。"):
+        assert rn.redact_user_text(t)[1] == [] or t.startswith("the key"), t
+    assert rn.redact_user_text("広報の担当は山本です。")[0] == "広報の担当は山本です。"
+
+
+def test_r8c_a_question_with_a_secret_is_refused_before_anything_is_written(tmp_path):
+    SK = "sk-abcdefghijklmnopqr"
+    st = str(tmp_path / "s")
+    assert rn.mem_say(st, ["広報の担当は山本です"], oa([w("広報の担当は山本です")])).committed
+    with pytest.raises(rn.HarnessError) as e:
+        rn.mem_ask(st, "広報の担当は誰ですか " + SK, oa([]))
+    assert e.value.code == "secret_in_question" and SK not in str(e.value)
+    d = tmp_path / "docs"
+    d.mkdir()
+    for k, v in DOCS.items():
+        (d / k).write_text(v, encoding="utf-8")
+    with pytest.raises(rn.HarnessError) as e2:
+        rn.ask(QUESTION + " " + SK, str(d), oa([[("tool", "abstain", {"type": "no_record"})]]), str(tmp_path / "runs"))
+    assert e2.value.code == "secret_in_question"
+    from verantyx.harness import mcp_server as ms
+    with pytest.raises(rn.HarnessError):
+        ms.prepare_doc_tasks(str(d), [QUESTION + " password=" + S8], str(tmp_path / "mcpruns"))
+    with pytest.raises(rn.HarnessError):
+        ms.serve_memory(st, "question", "m", "広報の担当は誰ですか token:" + S8)
+    for root in (st, str(tmp_path / "runs"), str(tmp_path / "mcpruns")):
+        for r_, _, files in os.walk(root):
+            for f in files:
+                data = open(os.path.join(r_, f), "rb").read()
+                assert SK.encode() not in data and S8.encode() not in data, (r_, f)
+
+
+def test_r8c_the_ui_ask_reports_secret_in_question(tmp_path):
+    app = sv.App({"runs_dir": str(tmp_path / "runs"), "store": str(tmp_path / "s"), "backend": "openai", "model": "m"})
+    with pytest.raises(rn.HarnessError) as e:
+        rn.refuse_secret_in_question("広報の担当は誰ですか password=abc")
+    assert e.value.code == "secret_in_question"
+
+
+def test_r8d_a_document_sentence_with_a_secret_is_redacted_in_the_corpus(tmp_path):
+    d = tmp_path / "docs"
+    d.mkdir()
+    (d / "手順.txt").write_text("接続の担当は山本である。接続の鍵は password=Hu7nterQz である。", encoding="utf-8")
+    rows = dc.build_rows(str(d))
+    assert all("Hu7nterQz" not in r["sent"] for r in rows) and any("[redacted:" in r["sent"] for r in rows) and rows[0]["sent"] == "接続の担当は山本である。"
+
+
+@pytest.mark.parametrize("a_first,b_msg", [("広報の担当は山本", "広報の担当は鈴木ではなくtoken:Tanakaです"), ("広報の担当は鈴木", "広報の担当は鈴木ではなくtoken:Tanakaです")])
+def test_r8g_a_secret_glued_into_a_sentence_makes_the_turn_unreadable(tmp_path, a_first, b_msg):
+    st = str(tmp_path / "s")
+    assert rn.mem_say(st, [a_first], oa([w(a_first)])).committed
+    r = rn.mem_say(st, [b_msg], oa([[("tool", "report", {"contradictions": []})]]))
+    assert r.lossy_turns == ["2-1"]
+    val = a_first[-2:]
+    a = rn.mem_ask(st, Q5, oa([[("tool", "recall", {"question": Q5})], [("tool", "weave_span", {"sid": 0, "tier": "WORD", "first": val, "last": val})], [("tool", "emit", {})],
+                              [("tool", "abstain", {"type": "unknown"})]]))
+    assert a.status == "refused" and a.reason in ("redacted_turn_unreadable", "unrecorded_user_statement")
