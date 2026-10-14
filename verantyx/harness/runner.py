@@ -22,7 +22,7 @@ from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple
 
 from verantyx import __version__
 from verantyx.harness import docs_corpus as dc
-from verantyx.harness import keys, prompting
+from verantyx.harness import keys, plugins as pl, prompting
 from verantyx.harness.backends import Backend, BackendError, DriverClient
 from verantyx.ledger_events import LedgerError
 from verantyx.loom import driver as drv
@@ -42,6 +42,7 @@ TASK_ID = "ask/1"
 EVIDENCE_DEFAULT = "v6"
 MEM_BUNDLE = mem.V4_VERSIONS_M6D                  # shape.v4 + qwords.v2 + ask.v3 (PUB-M6d); the answer run is memanswer.v17
 MEM_ANSWER_VERSION = ma.ANSWER_V17
+MEMORY_PROFILE_DEFAULT = "m6d-v17"                 # the built-in memory_profile plugin that is MEM_BUNDLE + MEM_ANSWER_VERSION
 MEM_ANSWER_MAX_TURNS = 40
 MEM_MAX_CALLS = mdrv.MAX_CALLS_PER_TURN_V3
 REFUSAL_TEXT = "分かりません"
@@ -59,6 +60,7 @@ REASON_JA = {                                         # the typed reason, said i
     "done_without_close": "モデルが答えを出さずに終えました",
     "no_close": "モデルが答えを出さずに終えました",
     "run_not_verified": "台帳が検証できませんでした",
+    "plugin_refused": "プラグインのゲートが答えを通しませんでした",
 }
 
 
@@ -68,6 +70,82 @@ class HarnessError(Exception):
     def __init__(self, msg: str, code: str = "harness_error") -> None:
         super().__init__("%s: %s" % (code, msg))
         self.code = code
+
+
+# ------------------------------------------------------------------------------------------------------------
+# plugins: which ran (recorded in the ledger), the gate filters (refuse only), the note kinds (read only)
+# ------------------------------------------------------------------------------------------------------------
+def _plugin(kind: str, name: str) -> "pl.Plugin":
+    try:
+        return pl.registry().require(kind, name)
+    except pl.PluginError as e:
+        raise HarnessError(str(e), e.code) from e
+
+
+def resolve_plugins(backend: Any, *, evidence: Optional[str] = None, filters: Sequence[str] = (), profile: Optional[str] = None, note_kinds: Sequence[str] = ()) -> Dict[str, Any]:
+    """The plugins one run uses: {"used": [Plugin], "filters": [Plugin], "profile": MemoryProfile | None, "notes": [Plugin], "manifest": str}.  The backend and the built-in gate / profile are
+    recorded as plugins too (registered the same way); a backend object that no plugin of that name stands behind (an embedder's own) is simply not listed."""
+    reg = pl.registry()
+    used: List[pl.Plugin] = []
+    b = reg.get("backend", getattr(backend, "name", ""))
+    if b is not None:
+        used.append(b)
+    if evidence and evidence != "off":
+        used.append(_plugin("gate", "evidence.%s" % evidence))
+    flt = [_plugin("gate", n) for n in filters]
+    for f in flt:
+        if isinstance(f.obj, pl.LoomGate):
+            raise HarnessError("gate %s is one of the loom's evidence versions: select it with --evidence; --gate-filter takes a filter plugin" % f.name, "bad_plugin")
+    used += flt
+    prof = None
+    if profile:
+        pp = _plugin("memory_profile", profile)
+        used.append(pp)
+        prof = pp.obj
+    notes = [_plugin("note_kind", n) for n in note_kinds]
+    used += notes
+    return {"used": used, "filters": flt, "profile": prof, "notes": notes, "manifest": pl.manifest(used)}
+
+
+def apply_filters(ans: "Answer", filters: Sequence["pl.Plugin"]) -> "Answer":
+    """Run the gate filters on an answered Answer; the first that refuses turns it into 「分かりません」 (reason plugin_refused).  A filter can only refuse."""
+    if ans.status != "answered" or not filters:
+        return ans
+    hit = pl.apply_gate_filters(ans.question, ans.text or "", ans.sources, filters)
+    if hit is None:
+        return ans
+    p, code = hit
+    ans.status, ans.reason, ans.text, ans.sources, ans.output_sha = "refused", "plugin_refused", None, [], None
+    ans.detail["plugin"] = {"kind": p.kind, "name": p.name, "version": p.version, "code": code}
+    return ans
+
+
+def annotate_memory(store: str, notes: Sequence["pl.Plugin"]) -> List[Dict[str, Any]]:
+    """The notes of the note-kind plugins over the committed sentences of a memory (read only; a failing plugin yields one `error` note, never an exception)."""
+    out: List[Dict[str, Any]] = []
+    if not notes:
+        return out
+    rows = _store_rows(store)
+    for p in notes:
+        fn = getattr(p.obj, "annotate", None)
+        if fn is None:
+            continue
+        try:
+            got = list(fn(rows))
+        except Exception as e:
+            out.append({"kind": p.name, "version": p.version, "error": type(e).__name__})
+            continue
+        for n in got:
+            if isinstance(n, dict) and isinstance(n.get("sid"), int) and isinstance(n.get("text"), str):
+                out.append({"kind": p.name, "version": p.version, "sid": n["sid"], "text": n["text"][:300]})
+    return out
+
+
+def _store_rows(store: str) -> List[dict]:
+    try:
+        return mem.MemStore(store).rows()
+    except Exception:
+        return []
 
 
 # ------------------------------------------------------------------------------------------------------------
@@ -131,6 +209,8 @@ class Answer:
             for k in ("last_refusal",):
                 if self.detail.get(k):
                     lines.append("最後の拒否: %s" % self.detail[k])
+            if self.detail.get("plugin"):
+                lines.append("プラグイン: %s/%s %s（%s）" % (self.detail["plugin"]["kind"], self.detail["plugin"]["name"], self.detail["plugin"]["version"], self.detail["plugin"]["code"]))
         lines.append("run: %s" % self.run_dir)
         return "\n".join(lines)
 
@@ -198,12 +278,13 @@ def settle(run_dir: str, question: str, sents: Sequence[Dict[str, str]], corpus_
 
 
 def ask(question: str, docs: str, backend: Backend, runs_dir: str = DEFAULT_RUNS_DIR, *, evidence: str = EVIDENCE_DEFAULT, run_id: Optional[str] = None,
-        max_turns: Optional[int] = None) -> Answer:
+        max_turns: Optional[int] = None, gate_filters: Sequence[str] = ()) -> Answer:
     """One question over documents.  A record_only loom task with the evidence gate (`evidence.v6` by default)."""
     question = (question or "").strip()
     if not question:
         raise HarnessError("the question is empty", "bad_question")
     backend.ready()
+    plug = resolve_plugins(backend, evidence=evidence, filters=gate_filters)
     try:
         data, sents = dc.build_corpus(docs)
     except dc.DocsError as e:
@@ -223,7 +304,10 @@ def ask(question: str, docs: str, backend: Backend, runs_dir: str = DEFAULT_RUNS
     if not begun.get("ok"):
         raise HarnessError("begin refused: %s" % json.dumps(begun, ensure_ascii=False, sort_keys=True), "begin_refused")
     system = prompting.loom_prompt()
-    srv.harness(rid, "harness_meta", {"driver": "L2-api", "requested_model": model, "agent_definition_sha": prompting.sha(system)})
+    meta = {"driver": "L2-api", "requested_model": model, "agent_definition_sha": prompting.sha(system)}
+    if plug["used"]:
+        meta["plugins"] = plug["manifest"]
+    srv.harness(rid, "harness_meta", meta)
     choice, strict = backend.tool_choice()
     tools = drv.api_tools(loom_tool_objects(), strict, False)
     client = DriverClient(backend)
@@ -243,10 +327,10 @@ def ask(question: str, docs: str, backend: Backend, runs_dir: str = DEFAULT_RUNS
         rep["error"] = keys.redact(rep["error"])
     info = {"harness": "vera-harness %s" % __version__, "kind": "ask", "backend": backend.describe(), "question_chars": len(question), "evidence": evidence,
             "corpus_sha256": sha, "sentences": len(sents), "docs": docs if not os.path.isabs(docs) else os.path.basename(docs.rstrip("/")),
-            "system_prompt_sha256": prompting.sha(system), "tools": [t["name"] for t in tools], "driver_report": rep, "wall_driver_ns": wall}
+            "plugins": [x.ref() for x in plug["used"]], "system_prompt_sha256": prompting.sha(system), "tools": [t["name"] for t in tools], "driver_report": rep, "wall_driver_ns": wall}
     with open(os.path.join(run_dir, "harness.json"), "w", encoding="utf-8") as f:
         f.write(json.dumps(info, ensure_ascii=False, sort_keys=True, indent=1) + "\n")
-    ans = settle(run_dir, question, sents, local_corpus)
+    ans = apply_filters(settle(run_dir, question, sents, local_corpus), plug["filters"])
     ans.backend = backend.describe()
     ans.usage = dict(res.usage)
     if res.error:
@@ -289,8 +373,54 @@ def _corpus_mismatch(run_dir: str, corpus_path: Optional[str]) -> Optional[str]:
     return None if got == want else "corpus_sha_mismatch"
 
 
+def _ops_files(path: str, kind: str) -> List[str]:
+    p = os.path.abspath(path)
+    if kind in ("loom", "mem_answer"):
+        return [os.path.join(p, "ops.jsonl")]
+    out: List[str] = []
+    for sub in ("sessions", "answers"):
+        d = os.path.join(p, sub)
+        if os.path.isdir(d):
+            out += [os.path.join(d, n, "ops.jsonl") for n in sorted(os.listdir(d)) if os.path.isfile(os.path.join(d, n, "ops.jsonl"))]
+    return out
+
+
+def plugin_mismatch(path: str, kind: Optional[str] = None) -> Optional[str]:
+    """The plugins a run folder / store DECLARES (the `plugins` key of its harness_meta rows, inside the hash chain) against the registry: None if every one is installed at the declared
+    version, else `unknown_plugin:<kind>/<name>`, `plugin_version:...` or `plugins_malformed`.  A run that declares nothing (older runs) has no mismatch."""
+    k = kind or kind_of(path)
+    for f in _ops_files(path, k):
+        try:
+            with open(f, encoding="utf-8") as fh:
+                for ln in fh:
+                    if '"harness_meta"' not in ln or '"plugins"' not in ln:
+                        continue
+                    row = json.loads(ln)
+                    if row.get("op") != "harness_meta" or "plugins" not in row.get("args", {}):
+                        continue
+                    declared = pl.parse_manifest(row["args"]["plugins"])
+                    if declared is None:
+                        return "plugins_malformed"
+                    mm = pl.mismatch(declared)
+                    if mm:
+                        return mm
+        except (OSError, ValueError):
+            continue
+    return None
+
+
 def verify_path(path: str) -> dict:
-    """The chain, then the replay, of a run folder or a memory store: {"kind", "status", ...}.  status "OK" or a typed failure (TAMPERED, TORN_TAIL, REPLAY_DIFFERS, ...)."""
+    """The chain, then the replay, of a run folder or a memory store: {"kind", "status", ...}.  status "OK" or a typed failure (TAMPERED, TORN_TAIL, REPLAY_DIFFERS, ...).
+    A run that declares a plugin which is not installed (or at another version) is not OK: status REPLAY_INPUTS_MISMATCH, replay.status INPUTS, replay.mismatch the token."""
+    v = _verify_base(path)
+    if v["status"] == "OK":
+        mm = plugin_mismatch(path, v["kind"])
+        if mm:
+            v = dict(v, status="REPLAY_INPUTS_MISMATCH", replay={"status": "INPUTS", "mismatch": mm})
+    return v
+
+
+def _verify_base(path: str) -> dict:
     k = kind_of(path)
     if k == "loom":
         cp = _corpus_of(path)
@@ -328,7 +458,17 @@ def verify_path(path: str) -> dict:
 
 
 def replay_path(path: str) -> dict:
-    """Re-execute the run from its inputs and compare every row byte for byte: {"kind", "status": IDENTICAL | DIFFERS | INPUTS, "rows", "text", ...}."""
+    """Re-execute the run from its inputs and compare every row byte for byte: {"kind", "status": IDENTICAL | DIFFERS | INPUTS, "rows", "text", ...}.  INPUTS also when a declared
+    plugin is not installed at the declared version: the replay would not be a replay of the same conditions."""
+    r = _replay_base(path)
+    if r.get("status") == "IDENTICAL":
+        mm = plugin_mismatch(path, r.get("kind"))
+        if mm:
+            r = dict(r, status="INPUTS", identical=False, mismatch=mm)
+    return r
+
+
+def _replay_base(path: str) -> dict:
     k = kind_of(path)
     if k == "loom":
         cp = _corpus_of(path)
@@ -394,7 +534,7 @@ class MemSessionResult:
     error: Optional[str] = None
 
 
-def mem_say(store: str, messages: Sequence[str], backend: Backend, *, budget: int = mview.BUDGET_DEFAULT, speaker: str = "user") -> MemSessionResult:
+def mem_say(store: str, messages: Sequence[str], backend: Backend, *, budget: int = mview.BUDGET_DEFAULT, speaker: str = "user", profile: str = MEMORY_PROFILE_DEFAULT) -> MemSessionResult:
     """One story session: the messages arrive one at a time, the model keeps what matters through `write` (one fact per write) and ends every turn with `report`.
     The session is committed to the store only if it completed."""
     msgs = [m.strip() for m in messages if m and m.strip()]
@@ -402,8 +542,10 @@ def mem_say(store: str, messages: Sequence[str], backend: Backend, *, budget: in
         raise HarnessError("no message to remember", "no_message")
     backend.ready()
     model = backend.model
-    door = md.StructureDoor(store, "notes", model, profile=mem.PROFILE_V4, versions=dict(MEM_BUNDLE), view=mview.make_view(budget))
+    plug = resolve_plugins(backend, profile=profile)
+    door = md.StructureDoor(store, "notes", model, profile=plug["profile"].profile, versions=dict(plug["profile"].versions), view=mview.make_view(budget))
     wd = mview.BudgetDoor(door, budget, ledger=True)
+    door.harness(None, "harness_meta", {"plugins": plug["manifest"]})
     choice, strict = backend.tool_choice()
     tools = md.api_tools(door.tool_names, strict)
     sn = door.begin_result["header"]["session_no"]
@@ -424,7 +566,8 @@ def mem_say(store: str, messages: Sequence[str], backend: Backend, *, budget: in
                             free_text_dropped=res.text_blocks_dropped, error=keys.redact(res.error) if res.error else None)
 
 
-def mem_ask(store: str, question: str, backend: Backend, *, budget: int = mview.BUDGET_DEFAULT) -> Answer:
+def mem_ask(store: str, question: str, backend: Backend, *, budget: int = mview.BUDGET_DEFAULT, profile: str = MEMORY_PROFILE_DEFAULT, gate_filters: Sequence[str] = (),
+            note_kinds: Sequence[str] = ()) -> Answer:
     """One question over the committed memory: an answer run over a snapshot (memanswer.v17).  The answer is a quote of a remembered sentence, `contested` when two
     answers were told and nobody replaced one, or 「分かりません」."""
     question = (question or "").strip()
@@ -432,12 +575,14 @@ def mem_ask(store: str, question: str, backend: Backend, *, budget: int = mview.
         raise HarnessError("the question is empty", "bad_question")
     store = os.path.abspath(store)
     backend.ready()
+    plug = resolve_plugins(backend, filters=gate_filters, profile=profile, note_kinds=note_kinds)
     try:
         snap = ma.write_snapshot(store, topics=False, crosses=True, versions=True)
     except Refuse as r:
         return Answer("refused", store, question, reason=r.type, detail=dict(r.detail), verified=True, backend=backend.describe())
     model = backend.model
-    qd = md.AnswerDoor(store, "notes", question, model, snapshot=snap, answer_version=MEM_ANSWER_VERSION)
+    qd = md.AnswerDoor(store, "notes", question, model, snapshot=snap, answer_version=plug["profile"].answer_version)
+    qd.harness(None, "harness_meta", {"plugins": plug["manifest"]})
     wd = mview.BudgetDoor(qd, budget, ledger=False)
     choice, strict = backend.tool_choice()
     tools = md.api_tools(qd.tool_names, strict, done=True)
@@ -460,6 +605,10 @@ def mem_ask(store: str, question: str, backend: Backend, *, budget: int = mview.
         ans.verified = out.get("status") != "run_not_verified"
     if res.error:
         ans.detail["error"] = keys.redact(res.error)
+    ans = apply_filters(ans, plug["filters"])
+    notes = annotate_memory(store, plug["notes"])
+    if notes:
+        ans.detail["annotations"] = notes
     return ans
 
 

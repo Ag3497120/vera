@@ -6,6 +6,7 @@
         a memory: facts are kept one per write; a question is answered by a quote of what was kept, `contested` when two answers were told, or 「分かりません」
   vera mcp [--docs DIR --question Q ... | --tasks FILE | --mode memory --store DIR] [--runs-dir D]
         a stdio MCP server that makes Vera the only exit of an agent
+  vera plugins       the installed plugins (entry point group vera.plugins)
   vera verify RUN    the hash chain, then the replay (exit 0 only when both are OK)
   vera replay RUN    re-execute the run and compare every row byte for byte (exit 0 identical)
   vera eval [--quick]   re-measure the safety claims offline on the shipped eval sets; exit 1 if a safety number is worse than the frozen record
@@ -25,9 +26,10 @@ from typing import Any, Callable, List, Optional, Sequence
 from verantyx import __version__
 from verantyx.harness import keys
 from verantyx.harness import runner as rn
-from verantyx.harness.backends import BACKENDS, BackendError, make_backend
+from verantyx.harness.backends import BackendError, make_backend
 from verantyx.harness import loom_cli
 from verantyx.harness.evalrun import EvalError
+from verantyx.harness.plugins import PluginError
 from verantyx.ledger_events import LedgerError
 from verantyx.loom.state import Refuse
 
@@ -36,7 +38,7 @@ backend_factory: Callable[..., Any] = make_backend
 
 
 def _add_backend_args(p: argparse.ArgumentParser) -> None:
-    p.add_argument("--backend", choices=BACKENDS, default="anthropic", help="anthropic (Messages API), openai (any OpenAI-compatible server: DeepSeek, Ollama, LM Studio, vLLM, MLX), json (no tool calling: the model answers with a JSON array of ops)")
+    p.add_argument("--backend", default="anthropic", help="anthropic (Messages API), openai (any OpenAI-compatible server: DeepSeek, Ollama, LM Studio, vLLM, MLX), json (no tool calling: the model answers with a JSON array of ops), or a backend plugin (`vera plugins`)")
     p.add_argument("--model", default=None, help="model id (required for openai and json; default claude-haiku-5-5 for anthropic)")
     p.add_argument("--base-url", dest="base_url", default=None, help="OpenAI-compatible server, e.g. http://127.0.0.1:11434/v1 (Ollama), http://127.0.0.1:1234/v1 (LM Studio), https://api.deepseek.com")
     p.add_argument("--api-key-env", dest="api_key_env", default=None, help="name of the environment variable that holds the key (default: the provider's usual ones, then the macOS Keychain)")
@@ -56,7 +58,7 @@ def _emit(args: argparse.Namespace, ans: rn.Answer) -> None:
 
 
 def cmd_ask(args: argparse.Namespace) -> int:
-    ans = rn.ask(" ".join(args.question), args.docs, _backend(args), args.runs_dir, evidence=args.evidence)
+    ans = rn.ask(" ".join(args.question), args.docs, _backend(args), args.runs_dir, evidence=args.evidence, gate_filters=args.gate_filter or ())
     _emit(args, ans)
     return 0 if ans.status == "answered" else 1
 
@@ -71,7 +73,7 @@ def cmd_mem(args: argparse.Namespace) -> int:
     def flush(pending: List[str]) -> None:
         if not pending:
             return
-        r = rn.mem_say(store, pending, backend)
+        r = rn.mem_say(store, pending, backend, profile=args.memory_profile)
         print("記憶: %d 件を session %d に渡しました（%s%s）" % (r.messages, r.session, "保存" if r.committed else "保存されず: %s" % r.ended, "、報告なしの回 %s" % ",".join(r.turns_without_report) if r.turns_without_report else ""))
         if r.error:
             print("  エラー: %s" % r.error, file=sys.stderr)
@@ -79,18 +81,22 @@ def cmd_mem(args: argparse.Namespace) -> int:
 
     def question(q: str) -> None:
         nonlocal rc
-        a = rn.mem_ask(store, q, backend)
+        a = rn.mem_ask(store, q, backend, profile=args.memory_profile, gate_filters=args.gate_filter or (), note_kinds=args.note_kind or ())
         if getattr(args, "json", False):
             print(json.dumps(a.to_obj(), ensure_ascii=False, sort_keys=True))
         elif a.status == "answered":
             print("答え: 「%s」" % a.text)
             for s in a.sources:
                 print("根拠: %s" % s["text"])
+        elif a.reason == "plugin_refused":
+            print(a.render().splitlines()[0])
         elif a.reason == "contested":
             vals = a.detail.get("contested_values") or []
             print("%s（理由: contested、%s%s）" % (rn.REFUSAL_TEXT, rn.REASON_JA["contested"], "： " + " / ".join("「%s」" % v for v in vals) if vals else ""))
         else:
             print(a.render().splitlines()[0])
+        for n in a.detail.get("annotations") or []:
+            print("注記[%s]: %s" % (n["kind"], n.get("text", n.get("error"))))
         if a.status != "answered":
             rc = 1
 
@@ -179,6 +185,19 @@ def cmd_eval(args: argparse.Namespace) -> int:
     return 1 if (bad["safety"] or bad["capability"]) else 0
 
 
+def cmd_plugins(args: argparse.Namespace) -> int:
+    from verantyx.harness import plugins as pl
+    reg = pl.registry()
+    if args.json:
+        print(json.dumps({"plugins": reg.listing(), "errors": reg.errors}, ensure_ascii=False, sort_keys=True))
+        return 0
+    for p in reg.all():
+        print("%-15s %-16s %-8s %s%s" % (p.kind, p.name, p.version, "built-in" if p.builtin else "plugin (%s)" % p.origin, "  " + p.description if p.description else ""))
+    for e in reg.errors:
+        print("not loaded: %s: %s" % (e["origin"], e["error"]), file=sys.stderr)
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     ap = argparse.ArgumentParser(prog="vera", description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--version", action="version", version="vera-harness %s" % __version__)
@@ -189,6 +208,7 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--docs", required=True, help="a directory (recursive) or a file of .txt / .md documents")
     p.add_argument("--runs-dir", dest="runs_dir", default=rn.DEFAULT_RUNS_DIR, help="where the run folder is written (default ./runs)")
     p.add_argument("--evidence", choices=["v6", "v2", "v1", "v3", "v4", "v5"], default=rn.EVIDENCE_DEFAULT, help="the evidence gate (default v6)")
+    p.add_argument("--gate-filter", dest="gate_filter", action="append", help="a gate-filter plugin (repeatable; it can only refuse an answer the gate passed)")
     p.add_argument("--json", action="store_true")
     _add_backend_args(p)
     p.set_defaults(fn=cmd_ask)
@@ -197,6 +217,9 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--store", required=True, help="the memory folder (created if missing); the same folder is the same memory across sessions")
     p.add_argument("--say", action="append", help="a fact to keep (repeatable; they form one session). One fact, one sentence: 「広報の担当は山本」")
     p.add_argument("--ask", action="append", help="a question (repeatable), asked after the facts are kept")
+    p.add_argument("--memory-profile", dest="memory_profile", default=rn.MEMORY_PROFILE_DEFAULT, help="a memory_profile plugin (default %s)" % rn.MEMORY_PROFILE_DEFAULT)
+    p.add_argument("--gate-filter", dest="gate_filter", action="append", help="a gate-filter plugin (repeatable; it can only refuse)")
+    p.add_argument("--note-kind", dest="note_kind", action="append", help="a note_kind plugin (repeatable; read-only notes shown beside the answer)")
     p.add_argument("--json", action="store_true")
     _add_backend_args(p)
     p.set_defaults(fn=cmd_mem)
@@ -237,6 +260,10 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--json", action="store_true")
     p.set_defaults(fn=cmd_eval)
 
+    p = sub.add_parser("plugins", help="list the installed plugins (entry point group vera.plugins): backends, gates, memory profiles, note kinds")
+    p.add_argument("--json", action="store_true")
+    p.set_defaults(fn=cmd_plugins)
+
     loom_cli.add_parser(sub)
     return ap
 
@@ -246,7 +273,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     args = ap.parse_args(list(sys.argv[1:] if argv is None else argv))
     try:
         return int(args.fn(args))
-    except (rn.HarnessError, BackendError, Refuse, LedgerError, EvalError, ValueError) as e:
+    except (rn.HarnessError, BackendError, Refuse, LedgerError, EvalError, PluginError, ValueError) as e:
         print("vera: %s" % keys.redact(e), file=sys.stderr)
         return 2
     except KeyboardInterrupt:

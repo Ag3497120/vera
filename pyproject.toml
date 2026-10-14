@@ -26,6 +26,9 @@ all = ["anthropic>=0.40", "openai>=1.40", "mcp[cli]>=1.2,<2", "pytest>=8"]
 [project.scripts]
 vera = "verantyx.harness.cli:main"
 
+[project.entry-points."vera.plugins"]
+vera-builtin = "verantyx.harness.builtin_plugins:plugins"
+
 [tool.setuptools]
 include-package-data = true
 

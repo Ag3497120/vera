@@ -459,7 +459,7 @@ class Run:
             if not _SHA_RX.match(args["sha256"]) or args["chars"] < 0:
                 raise ValueError("%s: sha256 / chars malformed" % op)
         elif op == "harness_meta":
-            allowed = {"driver", "requested_model", "agent_definition_sha", "response_model"}
+            allowed = {"driver", "requested_model", "agent_definition_sha", "response_model", "plugins"}      # `plugins`: the canonical JSON of the plugins that ran (vera-harness H4); a string, like the rest
             if not args or set(args) - allowed or any(not isinstance(v, str) for v in args.values()):
                 raise ValueError("harness_meta: keys within %s, string values" % sorted(allowed))
             if "driver" in args and args["driver"] not in DRIVERS:
