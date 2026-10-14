@@ -36,6 +36,24 @@ _TOKEN_PATTERNS = (
     re.compile(r"-----BEGIN [A-Z ]*PRIVATE KEY-----[\s\S]*?(?:-----END [A-Z ]*PRIVATE KEY-----|\Z)"),
 )
 _END = re.compile(r"[%s。、]" % _WS)
+_PAIRS = {"(": ")", "[": "]", "{": "}", "「": "」", "『": "』", "【": "】", "〔": "〕", "〈": "〉", "《": "》", "“": "”", "‘": "’"}
+
+
+def _value_end(d: str, label_start: int, st: int) -> int:
+    """End of a value token that starts at `st`: white space, 。 or 、, or the closer of a bracket / quote that was OPEN where the label stood (「…（password: abc）ではなく…」 stops at the ）).  CJK
+    characters inside the token do not end it (password=Hu7n漢terQz)."""
+    stack: List[str] = []
+    for ch in d[:label_start]:
+        if ch in _PAIRS:
+            stack.append(_PAIRS[ch])
+        elif stack and ch == stack[-1]:
+            stack.pop()
+    closers = set(stack)
+    for i in range(st, len(d)):
+        c = d[i]
+        if c in closers or c in "。、\u200b\u200c\u200d\ufeff" or c.isspace():
+            return i
+    return len(d)
 _QUOTES = "\"'`“”‘’"
 
 
@@ -69,10 +87,9 @@ def find_spans(text: str) -> List[Tuple[int, int]]:
             st = m.end()
             if st < len(d) and d[st] in _QUOTES:                       # a quoted value runs to its closing quote
                 close = d.find(d[st], st + 1)
-                add(st, (close + 1) if close != -1 else (_END.search(d, st).start() if _END.search(d, st) else len(d)))
+                add(st, (close + 1) if close != -1 else _value_end(d, m.start(), st))
             else:
-                e = _END.search(d, st)
-                add(st, e.start() if e else len(d))
+                add(st, _value_end(d, m.start(), st))
     spans.sort()
     merged: List[List[int]] = []
     for s, e in spans:
@@ -98,6 +115,20 @@ def find_spans(text: str) -> List[Tuple[int, int]]:
 def marker(span_text: str) -> Tuple[str, str]:
     h = hashlib.sha256(span_text.encode("utf-8")).hexdigest()[:8]
     return "[redacted:%s]" % h, h
+
+
+def redact_ex(text: str) -> Tuple[str, List[str], bool]:
+    """Like `redact`, plus a flag: true when a replaced span contains a CJK character (the token boundary is then a guess: the caller treats the text as lossy)."""
+    shas: List[str] = []
+    cjk = False
+    t = text
+    for s, e in reversed(find_spans(text)):
+        span = t[s:e]
+        cjk = cjk or bool(re.search(r"[\u3040-\u30ff\u3400-\u9fff]", span))
+        m, h = marker(span)
+        shas.append(h)
+        t = t[:s] + m + t[e:]
+    return t, list(reversed(shas)), cjk
 
 
 def redact(text: str) -> Tuple[str, List[str]]:

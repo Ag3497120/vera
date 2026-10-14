@@ -852,3 +852,84 @@ def test_r8g_a_secret_glued_into_a_sentence_makes_the_turn_unreadable(tmp_path, 
     a = rn.mem_ask(st, Q5, oa([[("tool", "recall", {"question": Q5})], [("tool", "weave_span", {"sid": 0, "tier": "WORD", "first": val, "last": val})], [("tool", "emit", {})],
                               [("tool", "abstain", {"type": "unknown"})]]))
     assert a.status == "refused" and a.reason in ("redacted_turn_unreadable", "unrecorded_user_statement")
+
+
+# -- round 9 ------------------------------------------------------------------------------------------------------------------------
+def test_r9a_a_value_token_stops_at_the_closer_of_an_open_bracket_but_runs_through_cjk(tmp_path):
+    from verantyx.harness import secretscan as ss
+    t, _, cjk = ss.redact_ex("広報の担当は鈴木（password: abc）ではなく山本である。")
+    assert t.endswith("）ではなく山本である。") and "abc" not in t and cjk is False
+    assert ss.redact_ex("「password: x」と言った")[0].endswith("」と言った")
+    t, _, cjk = ss.redact_ex("password=Hu7n漢terQz。")
+    assert "Hu7n" not in t and "terQz" not in t and cjk is True and t.endswith("。")
+
+
+@pytest.mark.parametrize("msg", ["広報の担当は鈴木 token:abcではなく山本", "広報の担当は鈴木（password: abc）ではなく山本", "広報の担当は鈴木 key=x、ではない", "広報の担当は鈴木 pass:abc"])
+def test_r9a_a_user_sentence_with_a_marker_is_never_a_write_and_the_turn_is_lossy_unless_a_clean_tail(tmp_path, msg):
+    t, shas, lossy = rn.redact_user_text(msg)
+    st = str(tmp_path / "s")
+    r = rn.mem_say(st, [msg], oa([w("広報の担当は鈴木"), w(t)]))
+    rows = _rows_all(st)
+    assert not [x for x in rows if x["op"] == "write" and x["result"].get("ok")]                              # the redacted sentence is no write; the clean part is not a whole sentence
+    if "（" in msg or "、" in msg or "ではなく山本" in msg:
+        assert lossy is True and r.lossy_turns == ["1-1"]
+
+
+def test_r9a_the_tail_marker_after_whitespace_is_still_the_not_lossy_case():
+    t, shas, lossy = rn.redact_user_text("広報の担当は鈴木です api_key=xyz12345abc")
+    assert lossy is False and t.startswith("広報の担当は鈴木です api_key=[redacted:")
+
+
+def test_r9a_the_marker_sentence_cannot_be_written_even_when_it_equals_a_whole_sentence(tmp_path):
+    st = str(tmp_path / "s")
+    msg = "広報の担当は鈴木です api_key=xyz12345abc"
+    t, _, _ = rn.redact_user_text(msg)
+    assert rn.mem_say(st, [msg], oa([w(t)])).committed
+    rows = _rows_all(st)
+    assert [x["args"]["reason"] for x in rows if x["op"] == "write_refused"] == ["not_from_user"] and not [x for x in rows if x["op"] == "write"]
+
+
+def test_r9a_a_document_sentence_with_a_marker_is_not_quotable(tmp_path):
+    d = tmp_path / "docs"
+    d.mkdir()
+    (d / "広報.txt").write_text("広報の担当は山本である（password: abc）。経理の担当は佐藤である。", encoding="utf-8")
+    rows = dc.build_rows(str(d))
+    assert [r["sent"] for r in rows] == ["広報の担当は山本である（password: [redacted:%s]）。" % hashlib.sha256(b"abc").hexdigest()[:8], "経理の担当は佐藤である。"]
+    def go(sid, word, q, sub):
+        turns = [[("tool", "read_sentence", {"sid": sid})], [("tool", "weave_span", {"sid": sid, "tier": "RUN", "first": word, "last": word})], [("tool", "emit", {})], [("tool", "abstain", {"type": "no_record"})]]
+        return rn.ask(q, str(d), oa(turns), str(tmp_path / ("runs" + sub)))
+    a = go(0, "山本", "広報の担当は何ですか", "a")
+    assert a.status == "refused" and a.reason == "redacted_sentence" and a.text is None and "文書の一部を伏せたため" in a.render()
+    rows_ = [json.loads(ln) for ln in open(os.path.join(a.run_dir, "ops.jsonl"), encoding="utf-8")]
+    assert "emit" not in [x["op"] for x in rows_] and [x["args"]["reason"] for x in rows_ if x["op"] == "statement_refused"] == ["redacted_sentence"]
+    assert rn.verify_path(a.run_dir)["status"] == "OK"
+    b = go(1, "佐藤", "経理の担当は何ですか", "b")                                                                # a clean sentence of the same corpus still answers
+    assert b.status == "answered" and b.text == "佐藤"
+
+
+def test_r9b_document_file_names_and_directories_are_redacted_everywhere(tmp_path):
+    S = "Hu7nterQz"
+    dd = tmp_path / ("docs_password=" + S)
+    dd.mkdir()
+    (dd / ("token=" + S + ".txt")).write_text(list(DOCS.values())[0], encoding="utf-8")
+    runs = tmp_path / "runs"
+    a = rn.ask(QUESTION, str(dd), oa([[("tool", "abstain", {"type": "no_record"})]]), str(runs))
+    assert a.status == "refused"
+    for r_, ds, files in os.walk(str(runs)):
+        for n in list(ds) + files:
+            assert S not in n, n
+        for f in files:
+            assert S.encode() not in open(os.path.join(r_, f), "rb").read(), (r_, f)
+    rows = dc.build_rows(str(dd))
+    assert all(S not in r["source"] and S not in r["title"] for r in rows) and rows[0]["source"].startswith("token=[redacted:")
+    e = tmp_path / "e"
+    e.mkdir()
+    (e / "a").mkdir()
+    (e / "b").mkdir()
+    (e / "a" / "token=Hu7nterQz.txt").write_text("甲である。", encoding="utf-8")
+    (e / "b" / "token=Hu7nterQz.txt").write_text("乙である。", encoding="utf-8")
+    labels = [r["source"] for r in dc.build_rows(str(e))]
+    assert len(set(labels)) == 2 and not any(S in x for x in labels)                                        # the directory part keeps them apart
+    (e / "c").mkdir()
+    (e / "c" / "token=Hu7nterQz.md").write_text("丙である。", encoding="utf-8")
+    assert len(set(r["source"] for r in dc.build_rows(str(e)))) == 3

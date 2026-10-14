@@ -1211,8 +1211,8 @@ def source_args(op: str, args: Any) -> dict:
             raise ValueError("user_turn: arguments are turn (a turn id), text (1 to %d characters) and optionally redacted (the sha256-8 of each secret-shaped span replaced in the text)" % USER_TURN_MAX)
         return dict(args)
     if op == "statement_refused":
-        if not (isinstance(args, dict) and set(args) == {"turn", "reason"} and isinstance(args["turn"], str) and TURN_RX.match(args["turn"]) and args["reason"] in ("unrecorded_user_statement", "redacted_turn_unreadable")):
-            raise ValueError("statement_refused: arguments are turn and reason (unrecorded_user_statement | redacted_turn_unreadable)")
+        if not (isinstance(args, dict) and set(args) == {"turn", "reason"} and isinstance(args["turn"], str) and TURN_RX.match(args["turn"]) and args["reason"] in ("unrecorded_user_statement", "redacted_turn_unreadable", "redacted_sentence")):
+            raise ValueError("statement_refused: arguments are turn and reason (unrecorded_user_statement | redacted_turn_unreadable | redacted_sentence)")
         return dict(args)
     if op == "supersede_refused":
         if not (isinstance(args, dict) and set(args) == {"turn", "new_sid", "reason"} and isinstance(args["turn"], str) and TURN_RX.match(args["turn"]) and isinstance(args["new_sid"], int)

@@ -81,6 +81,11 @@ def _escape_title(t: str) -> str:
     return t.replace("#", "＃")
 
 
+def _safe_title(t: str) -> str:
+    """A title is a file name or a relative path: `#` is escaped and a secret-shaped span (see secretscan) is replaced, so it never reaches a source label, the corpus, harness.json or the screen."""
+    return secretscan.redact(_escape_title(t))[0]
+
+
 def list_documents(path: str) -> List[Tuple[str, str]]:
     """[(title, file path)] for a file or a directory (recursive, sorted by relative path).
 
@@ -94,7 +99,7 @@ def list_documents(path: str) -> List[Tuple[str, str]]:
             raise DocsError("%s: only %s documents are read" % (path, " / ".join(DOC_SUFFIXES)), "docs_bad_extension")
         if not stat.S_ISREG(os.stat(path).st_mode):
             raise DocsError("%s is not a regular file" % path, "docs_not_regular")
-        return [(_escape_title(os.path.splitext(os.path.basename(path))[0]) or "doc", path)]
+        return [(_safe_title(os.path.splitext(os.path.basename(path))[0]) or "doc", path)]
     if not os.path.isdir(path):
         raise DocsError("not a file or a directory: %s" % path, "docs_missing")
     root = os.path.realpath(path)
@@ -123,10 +128,10 @@ def list_documents(path: str) -> List[Tuple[str, str]]:
     out: List[Tuple[str, str]] = []
     for f, r, st, b in zip(files, rels, stems, bases):
         title = b if bases.count(b) == 1 else st if stems.count(st) == 1 else r
-        out.append((_escape_title(title) or "doc", f))
+        out.append((_safe_title(title) or "doc", f))
     titles = [t for t, _ in out]
     if len(set(titles)) != len(titles):                     # a collision that only appeared after escaping (料金#3.md and 料金＃3.md): the full relative path, with its extension
-        out = [(_escape_title(r) or "doc", f) for f, r in zip(files, rels)]
+        out = [(_safe_title(r) or "doc", f) for f, r in zip(files, rels)]
         titles = [t for t, _ in out]
         if len(set(titles)) != len(titles):
             raise DocsError("two documents cannot be told apart by name under %s" % path, "docs_ambiguous")

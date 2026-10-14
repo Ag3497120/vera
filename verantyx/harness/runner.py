@@ -23,7 +23,7 @@ from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple
 
 from verantyx import __version__
 from verantyx.harness import docs_corpus as dc
-from verantyx.harness import keys, plugins as pl, prompting
+from verantyx.harness import keys, plugins as pl, prompting, secretscan
 from verantyx.harness.backends import Backend, BackendError, DriverClient
 from verantyx.ledger_events import LedgerError
 from verantyx.loom import driver as drv
@@ -50,6 +50,7 @@ REFUSAL_TEXT = "分かりません"
 UNSOURCED_MARK = "出所: 利用者の発言ではない（エージェントの記録）"
 
 REASON_JA = {
+    "redacted_sentence": "文書の一部を伏せたため",
     "unrecorded_user_statement": "利用者がこの場所について別のことを言っていますが、記憶に入っていません",
     "redacted_turn_unreadable": "利用者の発言の一部が秘密の形として伏せられ、読み取れませんでした（この回より前のことには答えません）",
     "store_not_verified": "記憶の台帳が検証できません",                                         # the typed reason, said in Japanese; the token stays visible
@@ -163,7 +164,7 @@ def redact_user_text(text: str) -> Tuple[str, List[str], bool]:
     from verantyx.ledger_events import _spans, _variant_stage
     from verantyx.harness import secretscan as ss
     t0 = nfc(text)
-    t, shas = ss.redact(t0)
+    t, shas, cjk = ss.redact_ex(t0)
     rest = _OWN_MARK.sub("", t)
     leftover = _variant_stage(rest)[1] > 0 or any(name != "kv_secret" for _s, _e, name in _spans(rest))     # what the ledger's own detector still finds (encoded variants, ...): the whole message goes
     if leftover:
@@ -172,7 +173,7 @@ def redact_user_text(text: str) -> Tuple[str, List[str], bool]:
     term = lambda x: [c for c in x if c in "。！？!?"]
     marked = [x for x in user_sentences(t) if "[redacted:" in x]
     tail_ok = re.compile(r"(?:^|[\s\u3000])(?:%s)?\[redacted:[0-9a-f]{8}\][。！？!?]*$" % ss._LABEL.pattern.replace("(?i)", ""), re.I)
-    lossy = bool(shas) and (term(t0) != term(t) or any(not re.sub(r"[\s。！？!?、，,.]+", "", _clean_for_reading(x)) for x in marked)
+    lossy = bool(shas) and (cjk or term(t0) != term(t) or any(not re.sub(r"[\s。！？!?、，,.]+", "", _clean_for_reading(x)) for x in marked)
                             or any(not tail_ok.search(unicodedata.normalize("NFKC", x)) for x in marked)       # a secret glued into the middle of a sentence can change what it says (「鈴木ではなく<secret>」)
                             or any(not clause_values(_clean_for_reading(x)) for x in marked))
     return t, shas, lossy
@@ -336,6 +337,29 @@ def has_change_clause(text: str) -> bool:
         return False
 
 
+class DocRedactGate:
+    """Documents: a sentence that received a redaction marker is NOT QUOTABLE.  At `emit` the quote is read back; if any evidence sentence holds a marker, a `statement_refused`
+    (`redacted_sentence`) row is written and the run closes with an `abstain`: the answer would quote text whose boundaries the redaction may have moved."""
+
+    def __init__(self, inner: Any, sentences: Callable[[int], Optional[Dict[str, Any]]]) -> None:
+        self.inner, self.sentences = inner, sentences
+
+    def __getattr__(self, name: str) -> Any:
+        return getattr(self.__dict__["inner"], name)
+
+    def call(self, tool: Any, args: Any = None) -> dict:
+        if tool == "emit":
+            ra = dict(args) if isinstance(args, dict) else {}
+            r = self.inner.call("read", dict(ra))
+            if isinstance(r, dict) and r.get("ok") is True and not r.get("refusals"):
+                for e in r.get("evidence") or []:
+                    s = self.sentences(e["sid"]) if isinstance(e, dict) and isinstance(e.get("sid"), int) else None
+                    if s and "[redacted:" in s.get("text", ""):
+                        self.inner.harness(ra.get("run_id"), "statement_refused", {"turn": "-", "reason": "redacted_sentence"})
+                        return self.inner.call("abstain", dict(ra, type="unknown"))
+        return self.inner.call(tool, args)
+
+
 class UnrecordedGate:
     """At `emit` of a memory answer run: the quote is read back; if a recorded user sentence at its position says something else and is not a stored write (`unrecorded_user_statement`), a
     `statement_refused` row (with the turn) is written and the run closes with an `abstain`: nothing is emitted."""
@@ -487,7 +511,7 @@ class UserSourceDoor:
                 return {"ok": False, "refusal": "ambiguous_in_turn", "detail": {"reason": "this message says two things about the same place, or follows a fact with a sentence the memory cannot read (a correction?): nothing from it is kept for that place; ask the user to say it once, in one sentence"}}
         if tool in ("write", "keep_unshaped"):
             text = args.get("text") if isinstance(args, dict) else None
-            if isinstance(text, str) and not equals_whole_sentence(text, self.messages.get(self.turn or "", "")):
+            if isinstance(text, str) and ("[redacted:" in text or not equals_whole_sentence(text, self.messages.get(self.turn or "", ""))):         # a sentence that received a redaction marker can never be a memory write
                 self.raw.harness(None, "write_refused", {"turn": self.turn or "1-1", "sha256": hashlib.sha256(text.encode("utf-8")).hexdigest(), "chars": len(text), "reason": "not_from_user"})
                 return {"ok": False, "refusal": "not_from_user", "detail": {"reason": "a memory sentence must equal one whole sentence of the user's message of this turn; write it exactly as it was said, not a piece of it"}}
         if tool in ("write", "keep_unshaped") and isinstance(args, dict) and "turn" in args:
@@ -841,6 +865,9 @@ def settle(run_dir: str, question: str, sents: Sequence[Dict[str, str]], corpus_
             reason = r["args"].get("reason", "no_close")
     if refused_by is not None:
         reason, detail["plugin"] = "plugin_refused", refused_by
+    for r in rows:
+        if r["actor"] == "harness" and r["op"] == "statement_refused":
+            reason = r["args"]["reason"]
     refusals = [r for r in rows if r["actor"] == "model" and r["op"] == "emit" and r["result"].get("ok") is False]
     if refusals:
         res = refusals[-1]["result"]
@@ -865,7 +892,7 @@ def ask(question: str, docs: str, backend: Backend, runs_dir: str = DEFAULT_RUNS
     try:
         data, sents = dc.build_corpus(docs)
     except dc.DocsError as e:
-        raise HarnessError(str(e), e.code) from e
+        raise HarnessError(secretscan.redact(str(e))[0], e.code) from e
     sha = dc.corpus_sha(data)
     runs_dir = os.path.abspath(runs_dir)
     corpus_path = os.path.join(runs_dir, "_corpora", sha[:16] + ".jsonl")
@@ -890,6 +917,8 @@ def ask(question: str, docs: str, backend: Backend, runs_dir: str = DEFAULT_RUNS
     client = DriverClient(backend)
     t0 = time.monotonic_ns()
     gate = FilterGate(srv, plug["filters"], question, lambda sid: {"text": sents[sid]["sent"], "source": sents[sid]["source"]} if 0 <= sid < len(sents) else None)
+    if any("[redacted:" in x["sent"] for x in sents):                  # only a corpus that HAS a redacted sentence gets the read-back (other ledgers are unchanged)
+        gate = DocRedactGate(gate, lambda sid: {"text": sents[sid]["sent"]} if 0 <= sid < len(sents) else None)
     res = drv.run_episode(client, gate, rid, model, system, drv.first_message(begun), tools, tool_choice=choice, max_turns=max_turns or drv.MAX_TURNS["prose"])
     wall = time.monotonic_ns() - t0
     rm = getattr(backend, "last_response_model", None)
@@ -905,7 +934,7 @@ def ask(question: str, docs: str, backend: Backend, runs_dir: str = DEFAULT_RUNS
     if rep.get("error"):
         rep["error"] = safe_error(rep["error"])
     info = {"harness": "vera-harness %s" % __version__, "kind": "ask", "backend": backend.describe(), "question_chars": len(question), "evidence": evidence,
-            "corpus_sha256": sha, "sentences": len(sents), "docs": docs if not os.path.isabs(docs) else os.path.basename(docs.rstrip("/")),
+            "corpus_sha256": sha, "sentences": len(sents), "docs": secretscan.redact(docs if not os.path.isabs(docs) else os.path.basename(docs.rstrip("/")))[0],
             "plugins": [x.ref() for x in plug["used"]], "system_prompt_sha256": prompting.sha(system), "tools": [t["name"] for t in tools], "driver_report": rep, "wall_driver_ns": wall}
     with open(os.path.join(run_dir, "harness.json"), "w", encoding="utf-8") as f:
         f.write(json.dumps(info, ensure_ascii=False, sort_keys=True, indent=1) + "\n")
