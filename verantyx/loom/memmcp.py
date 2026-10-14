@@ -108,7 +108,7 @@ def build(door: Any):
 
     @reg
     def report(contradictions: List[List[str]], bugs: List[str] = [], turn: str = "") -> str:      # noqa: B006  (never mutated)
-        if turn and door.turn is None:
+        if turn and door.turn is None and not getattr(door, "unsourced", False):          # an unsourced (agent) session has no user turns: its rows carry NO turn
             door.set_turn(turn)
         a: Dict[str, Any] = {"contradictions": contradictions}
         if bugs:
@@ -174,7 +174,12 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     ap.add_argument("--phase", default="story", choices=("story", "question"))
     ap.add_argument("--model", default="mcp-client")
     ap.add_argument("--question", default=None)
+    ap.add_argument("--research-unguarded", dest="unguarded", action="store_true", help="REQUIRED: this entry has none of the vera-harness guards (user-sourced writes, ordering, marks); use `vera mcp --mode memory`")
     ns = ap.parse_args(list(sys.argv[1:] if argv is None else argv))
+    if not ns.unguarded:
+        print("python -m verantyx.loom.memmcp is the research entry and has no harness guards (an agent's writes are not the user's words and can retire facts). "
+              "Use `vera mcp --mode memory`, or pass --research-unguarded to run this one anyway.", file=sys.stderr)
+        return 2
     return serve(ns.store, ns.arm, ns.phase, ns.model, ns.question)
 
 

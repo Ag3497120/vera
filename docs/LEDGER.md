@@ -51,7 +51,7 @@ Only the text of a **successful `emit`** of a ledger that **verifies and replays
 | `REPLAY_INPUTS_MISMATCH` | the run cannot be replayed under the conditions it names: `replay.status` is **`INPUTS`** and `replay.mismatch` says which: `python_mismatch` (another CPython x.y.z), `loom_version_mismatch`, `corpus_sha_mismatch`, `space_sha_mismatch` / `adhesion_sha_mismatch` / `seats_sha_mismatch` (another dictionary), `corpus_unreadable`, `unknown_plugin:<kind>/<name>`, `plugin_code:<kind>/<name>` (same version, other source), `plugin_version:<kind>/<name>:<declared>!=<installed>`, `plugins_malformed` |
 | `WRITE_NOT_FROM_USER` | (a memory store) a stored write (or a write before the first user turn) is not equal to one whole sentence of the user turn it was written in |
 | `SUPERSEDE_ORDER` | (a memory store) an executed `supersede` retires a sentence that is not earlier than its `new_sid` |
-| `UNSOURCED_RETIRES_SOURCED` | (a memory store) a session with no user turns superseded a sentence of a user-sourced session |
+| `UNSOURCED_ORDER` | (a memory store) an executed `supersede` has an unsourced (agent) sentence as its new side or as a retired one, or an agent's write states a change |
 | `AMBIGUOUS_WRITE` | (a memory store) a stored write belongs to a position its user message left ambiguous (a self-correction) |
 | `NOT_A_RUN` | the path is not a run folder or a memory store |
 

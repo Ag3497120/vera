@@ -165,9 +165,47 @@ def supersede_targets(run: Any, a: dict) -> Optional[List[int]]:
         return None
 
 
-class UnsourcedGuard:
-    """The door of an MCP memory session (the agent's own claims, no user turns).  A `supersede` that would retire a sentence of a USER-SOURCED session is not executed: a `supersede_refused`
-    row (`unsourced_retires_sourced`) is written and the call is refused.  An agent can add its own record; it cannot take away what the user said."""
+def supersede_verdict(run: Any, args: dict, store: str) -> Optional[str]:
+    """THE rule for retirement: a sentence an AGENT wrote (a session with no user turns) never takes part in ordering or retirement.  A supersede runs only if its new side is user-sourced and every
+    retired sentence is user-sourced and from a strictly earlier user turn.  -> None (allowed / not decidable here: the memory's own checks decide), `unsourced_order` or `supersede_order`."""
+    try:
+        rows = run.rows
+        sourced = sourced_sessions(store)
+
+        def src(s: Any) -> bool:
+            return isinstance(s, int) and not isinstance(s, bool) and 0 <= s < len(rows) and _session_of_source(rows[s].get("source")) in sourced
+
+        def later(a: int, b: int) -> bool:
+            ka, kb = turn_key(rows[a].get("turn")), turn_key(rows[b].get("turn"))
+            return (ka > kb) if ka is not None and kb is not None else False
+        new = args.get("new_sid")
+        if not isinstance(new, int) or isinstance(new, bool) or not 0 <= new < len(rows):
+            return None
+        if not src(new):
+            return "unsourced_order"
+        olds = list(supersede_targets(run, args) or [])
+        if isinstance(args.get("old_sid"), int) and not isinstance(args.get("old_sid"), bool) and args["old_sid"] not in olds:
+            olds.append(args["old_sid"])
+        if any(0 <= o < len(rows) and not src(o) for o in olds):
+            return "unsourced_order"
+        if any(0 <= o < len(rows) and not later(new, o) for o in olds):
+            return "supersede_order"
+    except Exception:
+        return None
+    return None
+
+
+def has_change_clause(text: str) -> bool:
+    """The memory reads a CHANGE in this sentence (「担当は鈴木に変更」): a change clause replaces every earlier value at its position."""
+    try:
+        from verantyx.loom import memshape as ms
+        return any(c.change is not None for c in ms.exchange(text, ms.SHAPES_V4).clauses)
+    except Exception:
+        return False
+
+
+class AnswerMarkGuard:
+    """The MCP question phase: a successful `emit` result also says whether its source sentence(s) are the USER's words (`sourced`) and, if not, carries the same mark as the CLI / JSON / UI."""
 
     def __init__(self, inner: Any, store: str) -> None:
         self.inner, self.store = inner, store
@@ -176,13 +214,48 @@ class UnsourcedGuard:
         return getattr(self.__dict__["inner"], name)
 
     def call(self, tool: Any, args: Any = None) -> dict:
+        out = self.inner.call(tool, args)
+        if tool == "emit" and isinstance(out, dict) and out.get("ok") is True:
+            try:
+                snap = self.inner.snapshot if hasattr(self.inner, "snapshot") else None
+                rows = mem.MemStore(self.store).rows()
+                sourced = sourced_sessions(self.store)
+                sids = [e["sid"] for e in (out.get("evidence") or []) if isinstance(e.get("sid"), int)]
+                ok = bool(sids) and all(0 <= i < len(rows) and _session_of_source(rows[i].get("source")) in sourced for i in sids)
+            except Exception:
+                ok = False
+            out = dict(out, sourced=ok)
+            if not ok:
+                out["mark"] = UNSOURCED_MARK
+        return out
+
+
+class UnsourcedGuard:
+    """The door of an MCP memory session (the agent's own claims, no user turns).  An unsourced write NEVER takes part in ordering or retirement: its rows carry no turn (any `turn` argument is
+    stripped, `report` does not set one); a `supersede` is judged by `supersede_verdict` (an agent's sentence is never the new side, never a retired one); a write that reads as a CHANGE
+    (「…に変更」: it would replace the user's value) is refused.  An agent may add its record, which can CONTEST a user's value (the position becomes ambiguous and the memory abstains); it can never
+    answer over it.  Each refusal is a ledger row."""
+    unsourced = True
+
+    def __init__(self, inner: Any, store: str) -> None:
+        self.inner, self.store = inner, store
+
+    def __getattr__(self, name: str) -> Any:
+        return getattr(self.__dict__["inner"], name)
+
+    def call(self, tool: Any, args: Any = None) -> dict:
+        raw = self.inner
+        if isinstance(args, dict) and "turn" in args:
+            args = {k: v for k, v in args.items() if k != "turn"}
         if tool == "supersede" and isinstance(args, dict):
-            raw = self.inner
-            targets = supersede_targets(raw.session.run, args)
-            sourced = sourced_sessions(self.store)
-            if targets and any(_session_of_source(raw.session.run.rows[s].get("source")) in sourced for s in targets):
-                raw.harness(None, "supersede_refused", {"turn": "1-1", "new_sid": args.get("new_sid") if isinstance(args.get("new_sid"), int) else 0, "reason": "unsourced_retires_sourced"})
-                return {"ok": False, "refusal": "unsourced_retires_sourced", "detail": {"reason": "this session has no user turns: its records may not retire a sentence the user said"}}
+            why = supersede_verdict(raw.session.run, args, self.store)
+            if why:
+                raw.harness(None, "supersede_refused", {"turn": "1-1", "new_sid": args.get("new_sid") if isinstance(args.get("new_sid"), int) and not isinstance(args.get("new_sid"), bool) else 0, "reason": why})
+                return {"ok": False, "refusal": why, "detail": {"reason": "an agent's record takes no part in ordering or retirement"}}
+        if tool in ("write", "keep_unshaped") and isinstance(args, dict) and isinstance(args.get("text"), str) and has_change_clause(args["text"]):
+            t = args["text"]
+            raw.harness(None, "write_refused", {"turn": "1-1", "sha256": hashlib.sha256(t.encode("utf-8")).hexdigest(), "chars": len(t), "reason": "unsourced_order"})
+            return {"ok": False, "refusal": "unsourced_order", "detail": {"reason": "an agent's record may not state a change: it would replace what the user said"}}
         return self.inner.call(tool, args)
 
 
@@ -192,8 +265,8 @@ class UserSourceDoor:
     earlier message cannot be re-quoted to look newer): a `write_refused` row (sha256, length) is recorded and the model gets `not_from_user`.  So no sentence the memory
     holds, and no value an answer can quote, is anything but the user's own words.  Wraps the door the driver calls; everything else is the inner door's."""
 
-    def __init__(self, inner: Any, raw: Any, messages: Dict[str, str]) -> None:
-        self.inner, self.raw, self.messages = inner, raw, messages
+    def __init__(self, inner: Any, raw: Any, messages: Dict[str, str], store: str = "") -> None:
+        self.inner, self.raw, self.messages, self.store = inner, raw, messages, store
         self.turn: Optional[str] = None
         self.blocked: set = set()
 
@@ -221,11 +294,11 @@ class UserSourceDoor:
 
     def call(self, tool: Any, args: Any = None) -> dict:
         if tool == "supersede" and isinstance(args, dict):
-            targets = self._supersede_targets(args)
-            new_sid = args.get("new_sid")
-            if targets is not None and (any(not self._later(new_sid, s) for s in targets) or (isinstance(args.get("old_sid"), int) and not self._later(new_sid, args["old_sid"]))):
-                self.raw.harness(None, "supersede_refused", {"turn": self.turn or "1-1", "new_sid": new_sid, "reason": "supersede_order"})
-                return {"ok": False, "refusal": "supersede_order", "detail": {"reason": "a later statement may replace an earlier one, never the other way round: new_sid must be later than every sentence it retires"}}
+            why = supersede_verdict(self.raw.session.run, args, self.store)
+            if why:
+                nid = args.get("new_sid")
+                self.raw.harness(None, "supersede_refused", {"turn": self.turn or "1-1", "new_sid": nid if isinstance(nid, int) and not isinstance(nid, bool) else 0, "reason": why})
+                return {"ok": False, "refusal": why, "detail": {"reason": "a later user statement may replace an earlier one, never the other way round, and an agent's record takes no part"}}
         if tool in ("write", "keep_unshaped") and isinstance(args, dict) and isinstance(args.get("text"), str) and self.blocked and equals_whole_sentence(args["text"], self.messages.get(self.turn or "", "")):
             if (sentence_positions(args["text"]) or set()) & self.blocked:
                 text = args["text"]
@@ -297,14 +370,18 @@ def check_write_sources(store: str) -> List[Dict[str, Any]]:
                 blocked_by_turn[r["args"]["turn"]] = blocked_positions(r["args"]["text"])
             elif r.get("actor") == "model" and r.get("op") == "supersede" and (r.get("result") or {}).get("ok") is True:
                 new = (r.get("result") or {}).get("new_sid")
-                if not has and any(sess_of.get(x.get("sid")) in sourced for x in r["result"].get("superseded", []) if isinstance(x.get("sid"), int)):
-                    bad_unsrc.append(r.get("i"))                                    # an agent's claim retired a sentence the user said
-                a = turn_key(turn_of.get(new)) if isinstance(new, int) else None
-                for x in r["result"].get("superseded", []):
-                    b = turn_key(turn_of.get(x.get("sid"))) if isinstance(x.get("sid"), int) else None
-                    if not isinstance(new, int) or not isinstance(x.get("sid"), int) or (a is not None and b is not None and not a > b) or ((a is None or b is None) and x["sid"] >= new):
+                olds = [x.get("sid") for x in r["result"].get("superseded", [])]
+                issid = lambda v: isinstance(v, int) and not isinstance(v, bool)
+                if not issid(new) or any(not issid(o) for o in olds):
+                    bad_sup.append(r.get("i"))
+                elif sess_of.get(new) not in sourced or any(sess_of.get(o) not in sourced for o in olds):
+                    bad_unsrc.append(r.get("i"))                                    # an agent's sentence took part in ordering or retirement
+                else:
+                    a = turn_key(turn_of.get(new))
+                    if any(not (a is not None and turn_key(turn_of.get(o)) is not None and a > turn_key(turn_of.get(o))) for o in olds):
                         bad_sup.append(r.get("i"))
-                        break
+            elif not has and r.get("actor") == "model" and r.get("op") in ("write", "keep_unshaped") and (r.get("result") or {}).get("ok") is True and has_change_clause((r.get("args") or {}).get("text") or ""):
+                bad_unsrc.append(r.get("i"))                                        # an agent's write that states a change
             elif has and r.get("actor") == "model" and r.get("op") in ("write", "keep_unshaped") and (r.get("result") or {}).get("ok") is True:
                 t = (r.get("args") or {}).get("text")
                 tn = (r.get("result") or {}).get("turn") or (r.get("args") or {}).get("turn")
@@ -315,7 +392,7 @@ def check_write_sources(store: str) -> List[Dict[str, Any]]:
         if bad_sup:
             out.append({"session": n, "type": "supersede_order", "rows": bad_sup[:20]})
         if bad_unsrc:
-            out.append({"session": n, "type": "unsourced_retires_sourced", "rows": bad_unsrc[:20]})
+            out.append({"session": n, "type": "unsourced_order", "rows": bad_unsrc[:20]})
         if bad_amb:
             out.append({"session": n, "type": "ambiguous_write", "rows": bad_amb[:20]})
         if bad:
@@ -867,7 +944,7 @@ def mem_say(store: str, messages: Sequence[str], backend: Backend, *, budget: in
     tools = md.api_tools(door.tool_names, strict)
     sn = door.begin_result["header"]["session_no"]
     turns = [("%d-%d" % (sn, i + 1), "[%d-%d] %s: %s" % (sn, i + 1, speaker, m)) for i, m in enumerate(msgs)]
-    src = UserSourceDoor(wd, door, {"%d-%d" % (sn, i + 1): m for i, m in enumerate(msgs)})
+    src = UserSourceDoor(wd, door, {"%d-%d" % (sn, i + 1): m for i, m in enumerate(msgs)}, store)
     client = DriverClient(backend)
     try:
         res = mdrv.run_story_session(client, src, model, prompting.mem_story_prompt(), mem_intro(wd, budget), turns, tools, tool_choice=choice, max_calls=MEM_MAX_CALLS,

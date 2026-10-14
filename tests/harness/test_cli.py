@@ -212,6 +212,6 @@ def test_the_memory_mcp_server_commits_the_session_when_the_client_closes(tmp_pa
     import asyncio
     names, w1, rp = asyncio.run(go())
     assert {"write", "recall", "report", "keep_unshaped", "bridge", "supersede"} <= set(names) and "emit" not in names and "answer" not in names
-    assert w1.get("ok") is True and rp.get("ok") is True
+    assert w1.get("ok") is True and rp.get("ok") is False and rp["refusal"] == "no_turn"          # an agent session has no user turns: report cannot give a turn
     head = mem.MemStore(str(store)).head()
     assert head is not None and len(head["sessions"]) == 1 and head["sentences"] == 1

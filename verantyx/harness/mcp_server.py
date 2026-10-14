@@ -54,7 +54,7 @@ def open_memory_door(store: str, phase: str, model: str, question: Optional[str]
 
 def serve_memory(store: str, phase: str = "story", model: str = "mcp-client", question: Optional[str] = None) -> int:
     door = open_memory_door(store, phase, model, question)
-    server = memmcp.build(rn.UnsourcedGuard(door, store) if phase == "story" else door)
+    server = memmcp.build(rn.UnsourcedGuard(door, store) if phase == "story" else rn.AnswerMarkGuard(door, store))
     if server is None:
         return 2
     try:

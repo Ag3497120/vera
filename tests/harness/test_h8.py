@@ -443,9 +443,9 @@ def test_an_agents_record_cannot_retire_what_the_user_said_and_its_answers_carry
     st = str(tmp_path / "s")
     assert rn.mem_say(st, ["広報の担当は山本"], oa([w("広報の担当は山本")])).committed
     outs = _mcp_session(st, [("write", {"text": "広報の担当は鈴木"}), ("supersede", {"new_sid": 1, "old_sid": 0, "reason": "変更"})])
-    assert outs[0]["ok"] is True and outs[1]["ok"] is False and outs[1]["refusal"] == "unsourced_retires_sourced"
+    assert outs[0]["ok"] is True and outs[1]["ok"] is False and outs[1]["refusal"] == "unsourced_order"
     rows = _rows_all(st)
-    assert [x["args"]["reason"] for x in rows if x["op"] == "supersede_refused"] == ["unsourced_retires_sourced"] and not [x for x in rows if x["op"] == "supersede" and x["result"].get("ok")]
+    assert [x["args"]["reason"] for x in rows if x["op"] == "supersede_refused"] == ["unsourced_order"] and not [x for x in rows if x["op"] == "supersede" and x["result"].get("ok")]
     v = rn.verify_path(st)
     assert v["status"] == "OK" and v["unsourced_sessions"] == ["s0002"]
     q = "広報の担当は何ですか"
@@ -473,4 +473,72 @@ def test_the_audit_flags_an_unsourced_session_that_retired_a_user_sentence(tmp_p
     assert d.call("supersede", {"new_sid": 1, "old_sid": 0, "reason": "変更"}).get("ok")
     d.commit(); d.close()
     v = rn.verify_path(st)
-    assert v["status"] == "UNSOURCED_RETIRES_SOURCED" and v["problems"][0]["session"] == "s0002"
+    assert v["status"] == "UNSOURCED_ORDER" and v["problems"][0]["session"] == "s0002"
+
+
+# -- round 4: an unsourced write never takes part in ordering or retirement ----------------------------------------------------------
+def test_p10c_a_sourced_session_cannot_supersede_with_an_agents_sentence(tmp_path):
+    st = str(tmp_path / "s")
+    assert rn.mem_say(st, ["広報の担当は山本"], oa([w("広報の担当は山本")])).committed
+    outs = _mcp_session(st, [("write", {"text": "広報の担当は鈴木"})])
+    assert outs[0]["ok"]
+    rep = ("tool", "report", {"contradictions": []})
+    assert rn.mem_say(st, ["了解"], oa([[("tool", "supersede", {"new_sid": 1, "old_sid": 0, "reason": "変更"}), rep]])).committed
+    rows = _rows_all(st)
+    assert [x["args"]["reason"] for x in rows if x["op"] == "supersede_refused"] == ["unsourced_order"] and not [x for x in rows if x["op"] == "supersede" and x["result"].get("ok")]
+    q = "広報の担当は誰ですか"
+    a = rn.mem_ask(st, q, oa([[("tool", "recall", {"question": q})], [("tool", "weave_span", {"sid": 1, "tier": "WORD", "first": "鈴木", "last": "鈴木"})], [("tool", "emit", {})], [("tool", "abstain", {"type": "unknown"})]]))
+    assert a.status == "refused" and a.text is None                                                       # the agent's value contests the user's; it never answers over it
+    assert rn.verify_path(st)["status"] == "OK"
+
+
+def test_an_agents_change_clause_cannot_replace_the_users_value(tmp_path):
+    st = str(tmp_path / "s")
+    assert rn.mem_say(st, ["広報の担当は山本"], oa([w("広報の担当は山本")])).committed
+    outs = _mcp_session(st, [("write", {"text": "広報の担当は鈴木に変更"})])
+    assert outs[0]["ok"] is False and outs[0]["refusal"] == "unsourced_order"
+    assert [x["args"]["reason"] for x in _rows_all(st) if x["op"] == "write_refused"] == ["unsourced_order"]
+
+
+def test_an_unsourced_row_carries_no_turn_and_cannot_block_a_later_user_correction(tmp_path):              # p12
+    from verantyx.harness import mcp_server as ms
+    st = str(tmp_path / "s")
+    assert rn.mem_say(st, ["広報の担当は山本"], oa([w("広報の担当は山本")])).committed
+    d = ms.open_memory_door(st, "story", "mcp-client")
+    g = rn.UnsourcedGuard(d, st)
+    assert g.call("write", {"text": "広報の担当は鈴木", "turn": "99-1"})["ok"]                                # the turn argument is stripped
+    d.commit(); d.close()
+    assert [r.get("turn") for r in mem.MemStore(st).rows()] == ["1-1", None]
+    q = "広報の担当は誰ですか"
+    rep = ("tool", "report", {"contradictions": []})
+    assert rn.mem_say(st, ["広報の担当は田中"], oa([[("tool", "write", {"text": "広報の担当は田中"}), ("tool", "supersede", {"new_sid": 2, "old_sid": 1, "reason": "変更"}), rep]])).committed
+    for sid, v in ((0, "山本"), (1, "鈴木"), (2, "田中")):                                                    # nobody answers over anybody: the position is contested and the memory abstains
+        a = rn.mem_ask(st, q, oa([[("tool", "recall", {"question": q})], [("tool", "weave_span", {"sid": sid, "tier": "WORD", "first": v, "last": v})], [("tool", "emit", {})], [("tool", "abstain", {"type": "unknown"})]]))
+        assert a.status == "refused" and a.text is None
+    assert rn.verify_path(st)["status"] == "OK"
+
+
+def test_the_mcp_question_phase_emit_carries_sourced_and_the_mark(tmp_path):                             # p13
+    from verantyx.harness import mcp_server as ms
+    st = str(tmp_path / "s")
+    _mcp_session(st, [("write", {"text": "広報の担当は鈴木"})])
+    q = "広報の担当は誰ですか"
+    door = ms.open_memory_door(st, "question", "mcp-client", q)
+    g = rn.AnswerMarkGuard(door, st)
+    assert g.call("recall", {"question": q})["answers"]
+    assert g.call("weave_span", {"sid": 0, "tier": "WORD", "first": "鈴木", "last": "鈴木"})["ok"]
+    e = g.call("emit", {})
+    assert e["ok"] and e["sourced"] is False and e["mark"] == rn.UNSOURCED_MARK
+    st2 = str(tmp_path / "t")
+    assert rn.mem_say(st2, ["広報の担当は鈴木"], oa([w("広報の担当は鈴木")])).committed
+    d2 = ms.open_memory_door(st2, "question", "mcp-client", q)
+    g2 = rn.AnswerMarkGuard(d2, st2)
+    g2.call("recall", {"question": q}); g2.call("weave_span", {"sid": 0, "tier": "WORD", "first": "鈴木", "last": "鈴木"})
+    e2 = g2.call("emit", {})
+    assert e2["ok"] and e2["sourced"] is True and "mark" not in e2
+
+
+def test_the_research_memmcp_entry_refuses_without_the_explicit_flag(tmp_path, capsys):                  # p11
+    from verantyx.loom import memmcp
+    assert memmcp.main(["--store", str(tmp_path / "s"), "--arm", "notes"]) == 2
+    assert "no harness guards" in capsys.readouterr().err and not (tmp_path / "s").exists()
