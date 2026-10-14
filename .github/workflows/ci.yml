@@ -21,7 +21,7 @@ on:
 
 env:
   PYTHONDONTWRITEBYTECODE: "1"
-  PIP_CONSTRAINT: ".github/constraints.txt"
+  PIP_CONSTRAINT: "${{ github.workspace }}/.github/constraints.txt"
 
 jobs:
   plan:
