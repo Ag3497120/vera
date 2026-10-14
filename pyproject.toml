@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vera-harness"
+version = "0.1.0"
+description = "Vera Harness: run a model inside Vera so that its only output is a quote from the record (or an honest refusal), with every operation on a replayable, hash-chained ledger."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Verantyx" }]
+keywords = ["llm", "harness", "verification", "ledger", "japanese", "mcp", "grounded-answers"]
+dependencies = [
+    "fugashi>=1.5,<2",
+    "unidic-lite==1.0.8",
+]
+
+[project.optional-dependencies]
+anthropic = ["anthropic>=0.40"]
+openai = ["openai>=1.40"]
+mcp = ["mcp[cli]>=1.2,<2"]
+test = ["pytest>=8"]
+all = ["anthropic>=0.40", "openai>=1.40", "mcp[cli]>=1.2,<2", "pytest>=8"]
+
+[project.scripts]
+vera = "verantyx.harness.cli:main"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["verantyx*"]
+namespaces = false
+
+[tool.setuptools.package-data]
+verantyx = ["lang_data/*.json"]
+"verantyx.harness" = ["prompts/*.txt"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q -p no:cacheprovider"

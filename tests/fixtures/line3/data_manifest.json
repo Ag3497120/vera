@@ -1,0 +1,15 @@
+{
+ "files": {
+  "S300": {
+   "articles": 300,
+   "bytes": 87014,
+   "sha256": "3ffd821138937437a392b3a33ae5a8c54188751faceea31b223814013921b6c2"
+  },
+  "S3000": {
+   "articles": 3000,
+   "bytes": 857382,
+   "sha256": "36abce43a6c7a06e693e8e380e6beae486761eba6fd022f9328d5c30c2b716d0"
+  }
+ },
+ "note": "trimmed from the research manifest: only the two files this repository ships; local source paths removed"
+}
