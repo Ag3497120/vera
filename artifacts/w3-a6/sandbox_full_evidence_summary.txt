@@ -1,3 +1,0 @@
-bt_full ledger files: 320
-SANDBOX_CHECK rows: 56
-SANDBOX_SELFCHECK_FAILED rows: 55

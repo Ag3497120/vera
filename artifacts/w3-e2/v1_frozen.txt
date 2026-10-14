@@ -1,2 +1,0 @@
-frozen none SAME
-frozen r9 SAME

@@ -3,7 +3,7 @@
 The loom's Sandbox class confines the MCP server's file access in CODE; the harness's tests step runs text woven by a model.  Neither is a
 wall against a process that is already running.  This module puts the operating system around such a process:
 
-  mechanism   macOS `sandbox-exec` with the static profile tools/loom_isolation_profile.sb (deprecated by Apple, present and working here).
+  mechanism   macOS `sandbox-exec` with the static profile verantyx/loom/loom_isolation_profile.sb (deprecated by Apple, present and working here).
               The profile denies ALL network (inet, inet6 and unix-domain), fork and exec (but the one interpreter), every read outside the
               python runtime and the job's read roots, and every write outside the job's write roots.  Paths arrive as `-D` parameters, so the
               sha256 of the profile FILE names the rule set (`profile_sha`) and does not depend on the machine.
@@ -45,7 +45,7 @@ from typing import Dict, Iterable, List, Optional, Sequence, Tuple
 
 MECHANISM = "sandbox-exec"
 SANDBOX_EXEC = "/usr/bin/sandbox-exec"
-PROFILE_PATH = Path(__file__).resolve().parents[2] / "tools" / "loom_isolation_profile.sb"
+PROFILE_PATH = Path(__file__).resolve().parent / "loom_isolation_profile.sb"      # inside the package (and the wheel), next to this module
 PY_FLAGS = ("-s", "-S", "-P")                      # python -I -S minus the -E that would drop PYTHONHASHSEED (see the module docstring)
 N_RT, N_READ, N_LIST, N_WRITE = 20, 16, 4, 4        # slots of the profile; unused slots point at NOPLACE
 NOPLACE = "/private/var/empty/.loom-no-place"
@@ -70,7 +70,7 @@ def profile_bytes() -> bytes:
 
 
 def profile_sha() -> str:
-    """sha256 of the bytes of tools/loom_isolation_profile.sb: the same on every machine and every call (the paths are -D parameters)."""
+    """sha256 of the bytes of verantyx/loom/loom_isolation_profile.sb: the same on every machine and every call (the paths are -D parameters)."""
     return hashlib.sha256(profile_bytes()).hexdigest()
 
 
@@ -607,7 +607,8 @@ def server_policy(tasks_path: str, runs_dir: str, allow_roots: Iterable = ()) ->
     return Policy.make(read=read, write=[runs_dir], list=[str(repo)])
 
 
-def serve_isolated(tasks_path: str, runs_dir: str, allow_roots: Iterable = (), stability: str = "strict_npa") -> int:
+def serve_isolated(tasks_path: str, runs_dir: str, allow_roots: Iterable = (), stability: str = "strict_npa", evidence: str = "v6",
+                   subject_scope: str = "clause_or_title") -> int:
     """`vera loom mcp --isolated`: prove the profile (probe, same policy), then REPLACE this process by the server under sandbox-exec (os.execve:
     stdin / stdout stay the MCP pipes).  Returns only on refusal: 3 = the probe did not pass (nothing was started)."""
     tasks_path, runs_dir = _real(tasks_path), _real(runs_dir)
@@ -625,11 +626,11 @@ def serve_isolated(tasks_path: str, runs_dir: str, allow_roots: Iterable = (), s
         print(json.dumps({"status": "isolation_failed", "probe": res.report()}, sort_keys=True), file=sys.stderr)
         return 3
     repo = str(Path(__file__).resolve().parents[2])
-    args = ["loom", "mcp", "--tasks", tasks_path, "--runs-dir", runs_dir, "--stability", stability]
+    args = ["loom", "mcp", "--tasks", tasks_path, "--runs-dir", runs_dir, "--stability", stability, "--evidence", evidence, "--subject-scope", subject_scope]
     for r in allow:
         args += ["--allow-root", r]
     argv = launcher_argv(policy, "module", args=args, path=[repo] + site_dirs(),
-                         limits=SERVER_LIMITS, module="verantyx.cli")
+                         limits=SERVER_LIMITS, module="verantyx.harness.cli")
     env = clean_env(runs_dir, {"LOOM_ISOLATED": res.profile_sha})
     # cwd is NOT changed: the task bank's relative corpus / fixture paths resolve against it, exactly as without --isolated (a cwd the
     # profile does not allow to read can still be the base of a path whose real location is allowed)

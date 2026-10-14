@@ -1,1 +1,0 @@
-25 {('copula value is a predicate phrase',): 25}

@@ -1,3 +1,0 @@
-tests/reading_soundness/w3e2_p1.jsonl: OK
-tests/reading_soundness/w3e2_p2.jsonl: OK
-tests/reading_soundness/w3e2_p3.jsonl: OK

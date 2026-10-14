@@ -6,7 +6,7 @@
   LoomServer   several runs per process, keyed by run_id (L-LOOM-07).  `call(tool, args)` is the one door: it executes one op, appends exactly
                one row to that run's ledger (refused calls and read-only calls too) and returns the result.  Pure Python: the scripted weaver, the
                tests and the FastMCP wrapper all use it.  Nothing here knows the MCP SDK.
-  build/serve  the FastMCP stdio server named `vera-loom` (tool list = the 18 operations), the same pattern as verantyx/mcp_server.py but a
+  build/serve  the FastMCP stdio server named `vera-loom` (tool list = the 20 operations), the same pattern as verantyx/mcp_server.py but a
                separate module that does not touch the 126 tools of `vera mcp`.  The SDK is imported inside `build`, so this module imports
                without it.
 
@@ -21,19 +21,26 @@ import os
 import re
 import time
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Optional
+from typing import Any, Dict, Iterable, List, Optional, Union
 
 from verantyx.ledger_events import LedgerError, canonical, redact
+from verantyx.loom import evidence as evl
 from verantyx.loom import fixture as fx
 from verantyx.loom import ledger as lg
 from verantyx.loom import notes as notelib
 from verantyx.loom.ledger import SandboxError
+from verantyx.loom import paths
 from verantyx.loom.corpus import Corpus
+from verantyx.loom.memguard import holds_memory_rows
 from verantyx.loom.ops import MODEL_OPS, Run, check_task_against_index, normalize_task, refusal
 from verantyx.loom.read import DEFAULT_STABILITY, STABILITY_MODES
+from verantyx.loom.state import CAPS_PROFILES, CURRENT_CAPS
 
 _RUN_ID_RX = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$")
 _MODEL_RX = re.compile(r"^[^\x00-\x1f\x7f]{1,64}$")
+# the model-facing names of a tool's arguments -> the names the LEDGER stores (L-LOOM-145).  `from` is a Python keyword and cannot be a plain parameter of
+# an MCP tool function, so the model sees `first` / `last` (inclusive) and the one door (`LoomServer.call`) stores `from` / `to`, as every ledger since LOOM-span has them.
+DOOR_NAMES = {"weave_span": (("first", "from"), ("last", "to"))}
 MAX_BEGINS = 256                  # L-LOOM-44: runs one server process opens
 
 
@@ -80,9 +87,27 @@ class _Entry:
 
 class LoomServer:
     def __init__(self, tasks: Iterable[dict], runs_dir, allow_roots: Iterable = (), stability: str = DEFAULT_STABILITY,
-                 nonce: Optional[str] = None, max_begins: int = MAX_BEGINS) -> None:
+                 nonce: Optional[str] = None, max_begins: int = MAX_BEGINS, caps: str = CURRENT_CAPS, notes: str = notelib.NOTES_VERSION,
+                 evidence: str = "v6", subject_scope: str = evl.DEFAULT_SCOPE) -> None:
+        """`notes`: the notes definitions NEW runs of this server get (notes.v1 = CONFLICT / UNANCHORED / NO_RECORD, notes.v2 = + QUESTION_ECHO; L-LOOM-147).  It is
+        written into each run's `begin` row (v1 writes nothing, as before).  `caps`: the cap profile NEW runs of this server get (state.CAPS_PROFILES: "v1" = the first measurement's numbers, "v2" = the current
+        ones; L-LOOM-122).  It is written into each run's `begin` row; a run reloaded from its ledger keeps the profile it was recorded with.
+        `evidence`: the reader's evidence gate NEW prose runs of this server get (LOOM-evidence, L-LOOM-170): "v6" (evidence.v6, the default: v2 plus the refusal-only safety rules CH, SU, TW and NEG, a pure filter over the v2 verdict; L-LOOM-226), "v2" (evidence.v2, the reviewed rules without the filter), "v1" (evidence.v1, the first build), "v3"
+        (evidence.v3, the widened reach of docs/LINE3_LOOM_REACH_DESIGN.md: selectable, NOT the default until the held-out bank6 passes, OP-RE-2), "v4" (evidence.v4: v3 without the naming-verb rule R7 and with the subject-chain rule: selectable, NOT the default until the held-out bank7 passes, OP-PUB-6) "v5" (evidence.v5: v4 plus SU, a question whose subject phrase holds a piece the reader could not read is refused, and TW, the article title stands in for a subject word only as a whole word and a kind word alone is no subject: selectable, NOT the default) or "off" (no gate: the demo and the hand-built tests).  `subject_scope`: OP-EV-1, "clause_or_title" (owner: yes, the article title may stand in for the subject) or "clause".  Both are written into each
+        prose run's `begin` row; a run reloaded from its ledger keeps the profile it was recorded with."""
         if stability not in STABILITY_MODES:
             raise ValueError("stability must be one of %s" % (STABILITY_MODES,))
+        if caps not in CAPS_PROFILES:
+            raise ValueError("caps must be one of %s" % (sorted(CAPS_PROFILES),))
+        self.caps_profile = caps
+        if notes not in notelib.NOTES_VERSIONS:
+            raise ValueError("notes must be one of %s" % (notelib.NOTES_VERSIONS,))
+        self.notes_profile = notes
+        if evidence not in ("v1", "v2", "v3", "v4", "v5", "v6", "off"):
+            raise ValueError("evidence must be 'v1', 'v2', 'v3', 'v4', 'v5', 'v6' or 'off'")
+        if subject_scope not in evl.SUBJECT_SCOPES:
+            raise ValueError("subject_scope must be one of %s" % (evl.SUBJECT_SCOPES,))
+        self.evidence_profile: Optional[tuple] = None if evidence == "off" else (evl.PROFILE_NAMES[evidence], subject_scope)
         self.stability = stability
         self.nonce = nonce                                  # L-LOOM-45: None = reproducible ids (scripted runs); the MCP door passes os.urandom
         self.max_begins = max_begins
@@ -104,10 +129,11 @@ class LoomServer:
         self._seq = 0
 
     @classmethod
-    def from_file(cls, tasks_path, runs_dir, allow_roots: Iterable = (), stability: str = DEFAULT_STABILITY) -> "LoomServer":
+    def from_file(cls, tasks_path, runs_dir, allow_roots: Iterable = (), stability: str = DEFAULT_STABILITY, caps: str = CURRENT_CAPS,
+                  evidence: str = "v6", subject_scope: str = evl.DEFAULT_SCOPE) -> "LoomServer":
         """The task bank is read once, here, before any tool call (an operator file: it holds no gold)."""
         rows = [json.loads(ln) for ln in Path(tasks_path).read_text(encoding="utf-8").splitlines() if ln.strip()]
-        return cls(rows, runs_dir, allow_roots, stability)
+        return cls(rows, runs_dir, allow_roots, stability, caps=caps, evidence=evidence, subject_scope=subject_scope)
 
     tool_names = MODEL_OPS
 
@@ -134,9 +160,12 @@ class LoomServer:
             return refusal("bad_model_id", {"reason": "1 to 64 printable characters, no secret-shaped text"})
         task = self.tasks[task_id]
         try:
-            corpus = Corpus.load(self.sandbox.read_bytes(task["corpus"]))
+            data = self.sandbox.read_bytes(task["corpus"])
         except SandboxError:
             return refusal("path_outside_sandbox", {})
+        if holds_memory_rows(data):                           # MEM-a (L-MEM-02): a base corpus never holds the model's memory (a `mem:` row)
+            return refusal("memory_in_base", {})
+        corpus = Corpus.load(data)
         rid = run_id if run_id is not None else self._derive_run_id(task_id, model, corpus.corpus_sha)
         try:
             rdir = self.sandbox.run_dir(rid)
@@ -155,13 +184,14 @@ class LoomServer:
             bad = check_task_against_index(task, index)       # L-LOOM-80: the target file / explicit context names must exist in the fixture
             if bad is not None:
                 return refusal(bad["refusal"], bad["detail"])
-        run = Run(corpus, task, model, rid, self.stability, index)
+        run = Run(corpus, task, model, rid, self.stability, index, CAPS_PROFILES[self.caps_profile][task["lang"]], self.notes_profile,
+                  self.evidence_profile if task["lang"] == "prose" else None)
         led = lg.Ledger(rdir)
-        meta = {"corpus": str(Path(task["corpus"]).resolve()), "task_id": task_id, "isolated": self.isolation is not None}
+        meta = {"corpus": paths.meta_corpus(task["corpus"], rdir.parent), "corpus_sha": corpus.corpus_sha, "task_id": task_id, "isolated": self.isolation is not None}      # LOOM-path: relative to the repo root
         if self.isolation is not None:
             meta["isolation_profile_sha"] = self.isolation
         if index is not None:
-            meta["fixture"] = str(Path(task["fixture"]).resolve())
+            meta["fixture"] = paths.rel_to_root(task["fixture"])
         led.create(meta)
         with led.locked() as lk:
             body = run.begin_body()
@@ -217,6 +247,12 @@ class LoomServer:
         e = self._entry(rid)
         if e is None:
             return refusal("unknown_run", {"run_id": rid if isinstance(rid, str) else None})
+        if tool == "weave_span":                              # the model's names are first / last (inclusive); the ledger stores from / to (L-LOOM-145)
+            for door, stored in DOOR_NAMES["weave_span"]:
+                if door in args:
+                    if stored in args:
+                        return refusal("bad_args", {"field": door, "reason": "give %s, not %s as well" % (door, stored)})
+                    args[stored] = args.pop(door)
         return self._exec(e, "model", tool, args)
 
     def harness(self, run_id: str, op: str, args: dict, actor: str = "harness") -> dict:
@@ -299,21 +335,24 @@ def append_outside_row(run_dir, actor: str, op: str, args: dict, loader: lg.Load
 # ------------------------------------------------------------------------------------------------------------
 # the FastMCP wrapper
 # ------------------------------------------------------------------------------------------------------------
-def build(tasks_path, runs_dir, allow_roots: Iterable = (), stability: str = DEFAULT_STABILITY, nonce: Optional[str] = None):
+def build(tasks_path, runs_dir, allow_roots: Iterable = (), stability: str = DEFAULT_STABILITY, nonce: Optional[str] = None, caps: str = CURRENT_CAPS,
+          evidence: str = "v6", subject_scope: str = evl.DEFAULT_SCOPE, wrap=None):
     """The FastMCP server `vera-loom` WITHOUT running it (None if the SDK is missing).  `mcp.loom_server` is the LoomServer behind it."""
     try:
         from mcp.server.fastmcp import FastMCP
     except ImportError:
         print('MCP SDK not installed. Run:  pip install "mcp[cli]"')
         return None
-    server = LoomServer.from_file(tasks_path, runs_dir, allow_roots, stability)
+    server = LoomServer.from_file(tasks_path, runs_dir, allow_roots, stability, caps, evidence, subject_scope)
     server.isolation = isolation_claim()
     server.nonce = nonce if nonce is not None else os.urandom(16).hex()      # L-LOOM-45: a weaver cannot compute another weaver's run id
     mcp = FastMCP("vera-loom")
     mcp.loom_server = server
 
+    door = wrap(server) if wrap is not None else server          # vera-harness: the ONE answer gate (runner.DocRedactGate) stands between every MCP tool call and the server
+
     def out(tool: str, args: dict) -> str:
-        return json.dumps(server.call(tool, args), ensure_ascii=False, sort_keys=True)
+        return json.dumps(door.call(tool, args), ensure_ascii=False, sort_keys=True)
 
     @mcp.tool()
     def begin(task_id: str, model: str) -> str:
@@ -357,6 +396,15 @@ def build(tasks_path, runs_dir, allow_roots: Iterable = (), stability: str = DEF
         return out("seat_run", {"run_id": run_id, "cid": cid, "arm": arm, "uids": uids})
 
     @mcp.tool()
+    def weave_span(run_id: str, sid: int, tier: str, first: str, last: str) -> str:
+        """SPAN WEAVING in one call. Give a corpus sentence id you have read (read_sentence), a tier (RUN|WORD|CHAR) and the stretch you want, from the unit `first` to the unit `last` (both included), each written exactly as read_sentence lists that unit for the tier (plain text, no quotation marks; `last` is searched from `first` on). The loom makes record units for exactly those units and builds the chain of crosses whose read-out is that stretch WORD FOR WORD, linked at the end of the thread: a unit followed by one of の に で と を が goes on that particle's arm of the cross whose centre is the very next unit; units that touch each other become one-unit crosses in order; a unit followed by は is a topic centre. If the stretch is not expressible (a word the loom cannot write between two units, such as という or として, or a chain like AのBのC that needs one unit as both a centre and an arm unit) it is refused as span_inexpressible and nothing changes; weave a smaller stretch. Returns the crosses and seats it made and the text of the stretch (not the rest of the sentence). Record units only; one operation. Use `drop` to throw a cross away."""
+        # STRINGS ONLY in the schema: with `int | str` (anyOf) Haiku 5.5 sent every value as a string, 9 of 21 calls with the unit in literal quotation marks and
+        # 11 with an index as a digit string, and 20 of the 21 were refused (results_h55c0_aborted, L-LOOM-133).  The handler still takes an int (an index into
+        # read_sentence's unit list) from a programmatic caller.  `first` / `last` are the model's names; the LEDGER stores `from` / `to` (L-LOOM-145): the
+        # rename happens in LoomServer.call, the one door of both the MCP wrapper and the API driver.
+        return out("weave_span", {"run_id": run_id, "sid": sid, "tier": tier, "first": first, "last": last})
+
+    @mcp.tool()
     def unseat(run_id: str, cid: str, seat: str) -> str:
         """Take a unit off a seat; it goes back to the pool."""
         return out("unseat", {"run_id": run_id, "cid": cid, "seat": seat})
@@ -395,13 +443,18 @@ def build(tasks_path, runs_dir, allow_roots: Iterable = (), stability: str = DEF
         return out("unlink", {"run_id": run_id, "cid": cid})
 
     @mcp.tool()
+    def drop(run_id: str, cid: str) -> str:
+        """Throw a whole cross away: the cross and the units seated in it are removed (they are gone, not returned to the pool), and the cross leaves the thread if it was linked. One operation."""
+        return out("drop", {"run_id": run_id, "cid": cid})
+
+    @mcp.tool()
     def read(run_id: str) -> str:
-        """Dry run of emit: returns the text the thread reads as, the annotated segments, every refusal emit would give, and the stability of each cross. Nothing closes. `notes` may list structural observations (CONFLICT, UNANCHORED, NO_RECORD); they never block."""
+        """Dry run of emit: returns the text the thread reads as, the annotated segments, every refusal emit would give, and the stability of each cross. Nothing closes. `notes` may list structural observations (CONFLICT, UNANCHORED, NO_RECORD, QUESTION_ECHO: a unit that is a word of the question); they never block."""
         return out("read", {"run_id": run_id})
 
     @mcp.tool()
     def emit(run_id: str) -> str:
-        """Fix the output: the text the thread reads as. Refused with every reason if the structure is not sound (unstable cross, unlinked cross, empty centre, ...). A successful emit may carry `notes` (CONFLICT, UNANCHORED, NO_RECORD); they never block."""
+        """Fix the output: the text the thread reads as. Refused with every reason if the structure is not sound (unstable cross, unlinked cross, empty centre, no_evidence, ...). A successful emit may carry `notes` (CONFLICT, UNANCHORED, NO_RECORD, QUESTION_ECHO: a unit that is a word of the question); they never block."""
         return out("emit", {"run_id": run_id})
 
     @mcp.tool()
@@ -417,8 +470,8 @@ def build(tasks_path, runs_dir, allow_roots: Iterable = (), stability: str = DEF
     return mcp
 
 
-def serve(tasks_path, runs_dir, allow_roots: Iterable = (), stability: str = DEFAULT_STABILITY) -> int:
-    mcp = build(tasks_path, runs_dir, allow_roots, stability)
+def serve(tasks_path, runs_dir, allow_roots: Iterable = (), stability: str = DEFAULT_STABILITY, evidence: str = "v6", subject_scope: str = evl.DEFAULT_SCOPE, wrap=None) -> int:
+    mcp = build(tasks_path, runs_dir, allow_roots, stability, evidence=evidence, subject_scope=subject_scope, wrap=wrap)
     if mcp is None:
         return 2
     mcp.run()

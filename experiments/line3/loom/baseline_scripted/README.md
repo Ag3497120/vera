@@ -1,3 +1,0 @@
-# baseline_scripted
-
-These 30 runs (`runs/`) and their results (`results/`) were made by `harness.py run --driver scripted`. The scripts (`SPEC` in `harness.py`) are gold-informed: they were written with the gold of each task known, so every hit here (and the 7/7 of the `free_text` controls, which are the scripts' own words) is a check of the harness and of determinism, not a measurement of any model. The folders the MCP server and the subagent / api drivers write are `../runs/` and `../results/`, and no scripted run goes there. Regenerate with `PYTHONHASHSEED=0 python experiments/line3/loom/harness.py run --task I2-041 --mode record_only --driver scripted` (the default folders of the scripted driver are these).

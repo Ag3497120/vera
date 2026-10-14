@@ -1,1 +1,0 @@
-  30 22 of 22 units were not read and mapped; no job is routed

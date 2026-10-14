@@ -1,1 +1,0 @@
-tests/test_one_trace.py::test_every_default_integration_part_has_a_trace

@@ -38,7 +38,7 @@ DEFAULT_STABILITY = "strict_npa"
 ARM_ORDER: Tuple[str, ...] = tuple(sorted(AXES, key=lambda ax: SPEC.numerator(SPEC.arm_of_axis(ax))))
 CONSTRUCTED_PREFIX = "\u0000C:"                       # L-LOOM-19
 REFUSAL_ORDER: Tuple[str, ...] = (
-    "empty_thread", "unlinked_cross", "empty_centre", "leg_gap", "tier_mix", "constructed_forbidden", "unstable_cross",
+    "empty_thread", "unlinked_cross", "empty_centre", "leg_gap", "tier_mix", "constructed_forbidden", "no_evidence", "unstable_cross",
     "parse_error", "undefined_name", "import_not_allowed", "unsupported_construct", "cross_not_one_statement", "line_cross_mismatch", "layout_changed_tokens")
 KINDS = ("record", "constructed", "foundation", "layout")
 
@@ -233,6 +233,10 @@ def stability_of(run, cross: LoomCross, mode: str) -> dict:
 # ------------------------------------------------------------------------------------------------------------
 # the gate
 # ------------------------------------------------------------------------------------------------------------
+# L-LOOM-146.  What `unstable_cross` says about a cross that quotes a corpus sentence (made by `weave_span.v2`, unchanged since): no swap is listed.
+SPAN_UNSTABLE_ADVICE = ("this stretch is faithful to sentence %d but unstable under the key; a swap would change the quoted text, so none is offered: "
+                        "choose another stretch, or abstain")
+
 def _has_content(c: LoomCross) -> bool:
     return bool(c.uids())
 
@@ -277,15 +281,31 @@ def evaluate(run) -> dict:
                 if state.units[uid].kind == CONSTRUCTED:
                     add({"type": "constructed_forbidden", "cid": c.cid, "uid": uid}, pos)
 
+    evidence: List[dict] = []
+    if run.evidence is not None:                       # LOOM-evidence (L-LOOM-184): after constructed_forbidden, before unstable_cross; prose only (the profile is for prose runs)
+        from verantyx.loom import evidence as evl
+        g = evl.gate(run)
+        evidence = g["evidence"]
+        if g["refusal"] is not None:
+            add(g["refusal"])
+
     stab: List[dict] = []
     for pos, c in enumerate(linked):
         if not _has_content(c) and not c.topic:
             continue
         e = stability_of(run, c, mode)
+        if e["status"] == "unstable" and c.span is not None:
+            # L-LOOM-146: a cross `weave_span.v2` made and nobody changed quotes sentence `c.span` word for word; EVERY improving swap would change the quoted
+            # text, so none is offered.  The status stays "unstable" (the key is the key); only the advice differs.
+            e = dict(e, improving=[], best_swaps=[], improving_n=len(e["improving"]), span={"sid": c.span, "faithful": True})
         stab.append(e)
         if e["status"] == "unstable" and mode != "report":
-            add({"type": "unstable_cross", "cid": c.cid, "key": e["key"], "improving": e["improving"],
-                 "best_key": e["best_key"], "best_swaps": e["best_swaps"], "mode": mode}, pos)
+            r = {"type": "unstable_cross", "cid": c.cid, "key": e["key"], "improving": e["improving"],
+                 "best_key": e["best_key"], "best_swaps": e["best_swaps"], "mode": mode}
+            if c.span is not None:
+                r["span"] = e["span"]
+                r["advice"] = SPAN_UNSTABLE_ADVICE % c.span
+            add(r, pos)
 
     segs: List[dict] = []
     code_lang = any(c.lang == CODE for c in linked)
@@ -309,9 +329,16 @@ def evaluate(run) -> dict:
             for r in codelib.gate_refusals(text, run.code_index, run.context_names(), line_cids):
                 add(r, state.thread.index(r["cid"]) if "cid" in r else 0)
     annotate(run, segs)
+    joints = getattr(run, "joints", None)
+    if joints and not code_lang:                       # weave_span.v4 (PUB-M6c): the joiners . , - : / the source has between two touching units are written right after the unit (v2.4, not v24); only a v4 weave has any
+        for sg in segs:
+            j = joints.get(sg.get("uid"))
+            if j and sg["kind"] == RECORD:
+                sg["s"] = sg["s"] + j
+        text = "".join(s["s"] for s in segs)
     refusals.sort(key=lambda t: (t[0], t[1]))
     shares = {k: 0 for k in KINDS}
     for s in segs:
         shares[s["kind"]] += len(s["s"])
     return {"text": text, "annotated": segs, "refusals": [r for _, _, r in refusals], "stability": stab, "shares": shares,
-            "output_sha": hashlib.sha256(text.encode("utf-8")).hexdigest()}
+            "output_sha": hashlib.sha256(text.encode("utf-8")).hexdigest(), "evidence": evidence}

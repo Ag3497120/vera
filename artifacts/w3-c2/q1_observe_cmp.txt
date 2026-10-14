@@ -1,3 +1,0 @@
-observe seed 0: same
-observe seed 4242: same
-observe seed 1: same

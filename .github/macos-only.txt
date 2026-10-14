@@ -1,0 +1,2 @@
+# macOS-only tests (they run code inside sandbox-exec, which Linux runners lack).  Deselected on Linux CI; judged on a Mac.
+# One pytest node id per line.  Empty today: the OS-isolation tests of the research tree (test_loom_isolate, the sandboxed code tier) are not part of this tree yet (ticket H8).

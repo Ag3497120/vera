@@ -1,1 +1,0 @@
-data words scanned: 404; added lines scanned: 504; hits: 0

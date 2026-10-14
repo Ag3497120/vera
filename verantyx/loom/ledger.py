@@ -11,7 +11,8 @@ A run's folder is  <runs_root>/<run_id>/{ops.jsonl, HEAD, .lock, timing.jsonl, m
                 NO WALL-CLOCK TIME in a row (L-LOOM-15): that is what lets a replay reproduce the file byte for byte.
   HEAD          the sha of the last row (a pin; commit it, or pass `--head`, to catch a rewrite of the whole chain).
   timing.jsonl  {"i", "t_ns"} per row, OUTSIDE the chain (the recorder's runs/ idea).
-  meta.json     where the corpus lives (a path, never hashed) so that a replay can find it.
+  meta.json     where the corpus lives (never hashed): `corpus` relative to the repository root (absolute only for a file outside it) and its `corpus_sha`;
+                a replay finds the corpus by the sha recorded in the begin row, so a dead path in an old meta.json is only a pointer (verantyx/loom/paths.py).
 
 From verantyx/ledger_events.py only the pure functions are reused (canonical, GENESIS, redact via ops, LedgerError); the recorder's own
 ledger (.vera/ledger, ALL_KINDS pinned by the installed hooks) is never touched.
@@ -37,10 +38,14 @@ from typing import Callable, Dict, List, Optional, Tuple
 
 from verantyx.ledger_events import GENESIS, LedgerError, canonical
 from verantyx.loom import LOOM_VERSION
+from verantyx.loom import evidence as evl
 from verantyx.loom import fixture as fx
 from verantyx.loom import notes as notelib
+from verantyx.loom import paths
 from verantyx.loom.corpus import Corpus
+from verantyx.loom.memguard import holds_memory_rows
 from verantyx.loom.ops import Run, normalize_task
+from verantyx.loom.state import caps_profile_of
 
 ROW_KEYS = frozenset(("v", "i", "actor", "op", "args", "result", "state_sha", "prev", "sha"))
 ROW_KEYS_REDACTED = ROW_KEYS | {"redacted", "args_sha256"}
@@ -300,6 +305,41 @@ def header_mismatch(recorded: dict, fresh: dict) -> Optional[str]:
     return None
 
 
+def _read_one(loader: Loader, path: str) -> Tuple[Optional[bytes], Optional[str]]:
+    try:
+        return loader(path), None
+    except SandboxError:                                       # L-LOOM-48: a path outside the sandbox is a typed status, not a crash
+        return None, "corpus_outside_sandbox"
+    except OSError:
+        return None, "corpus_unreadable"
+
+
+def _resolve_corpus(loader: Loader, meta: dict, recorded_sha: Optional[str], run_dir: Optional[str] = None) -> Tuple[Optional[bytes], Optional[str]]:
+    """LOOM-path (L-LOOM-158): the corpus bytes of a run whose caller named no path.  The candidates (paths.candidates: meta.json's path, the same path under
+    this repository root, the registry of shipped corpora) are read through the loader in order and the first whose sha256 is the one the begin row recorded
+    wins; the path in meta.json is only a pointer.  (None, error) when none does: corpus_outside_sandbox when the loader refused every candidate it was
+    asked to read, corpus_sha_mismatch when meta.json's own path is a readable file that is not the recorded corpus, corpus_unresolved otherwise."""
+    recorded = meta.get("corpus")
+    first: Optional[bytes] = None
+    sandboxed = False
+    cands = paths.candidates(recorded if isinstance(recorded, str) else None)
+    if run_dir is not None:                                    # beside the run: the corpus the harness copies next to the ledger, and the shared store of corpora
+        rd = Path(run_dir)
+        cands += [str(rd / "corpus.jsonl")] + ([str(rd.parent / recorded)] if isinstance(recorded, str) and recorded and not os.path.isabs(recorded) else [])
+    for n, cand in enumerate(cands):
+        data, err = _read_one(loader, cand)
+        if data is None:
+            sandboxed = sandboxed or err == "corpus_outside_sandbox"
+            continue
+        if recorded_sha is None or hashlib.sha256(data).hexdigest() == recorded_sha:
+            return data, None
+        if n == 0 and recorded:
+            first = data
+    if first is not None:
+        return first, None                                     # the pointed-to file exists but is not the recorded corpus: replay reports corpus_sha_mismatch
+    return None, "corpus_outside_sandbox" if sandboxed else "corpus_unresolved"
+
+
 def replay(run_dir, corpus_path: Optional[str] = None, loader: Loader = default_loader) -> ReplayResult:
     out = ReplayResult()
     lines, unterminated = read_raw_lines(run_dir)
@@ -324,22 +364,21 @@ def replay(run_dir, corpus_path: Optional[str] = None, loader: Loader = default_
     except Exception:
         out.status, out.first_diff = "DIFFERS", {"i": 0, "field": "result"}
         return out
-    path = corpus_path or Ledger(run_dir).read_meta().get("corpus")
-    if not path:
-        out.status, out.mismatch = "INPUTS", "corpus_unresolved"
+    meta = Ledger(run_dir).read_meta()
+    if corpus_path:                                            # an explicit path is the caller's word: it is read as given (a wrong file is corpus_sha_mismatch)
+        data, err = _read_one(loader, corpus_path)
+    else:
+        data, err = _resolve_corpus(loader, meta, recorded_header.get("corpus_sha"), str(run_dir))
+    if data is None:
+        out.status, out.mismatch = "INPUTS", err
         return out
-    try:
-        data = loader(path)
-    except SandboxError:                                       # L-LOOM-48: a path outside the sandbox is a typed status, not a crash
-        out.status, out.mismatch = "INPUTS", "corpus_outside_sandbox"
-        return out
-    except OSError:
-        out.status, out.mismatch = "INPUTS", "corpus_unreadable"
+    if holds_memory_rows(data):                                  # MEM-a (L-MEM-02): a loom run's corpus never holds a `mem:` row
+        out.status, out.mismatch = "INPUTS", "memory_in_base"
         return out
     corpus = Corpus.load(data)
     index = None
     if recorded_header.get("code_index_sha") is not None:        # LOOM-code: rebuild the CODE index from the fixture the run names
-        froot = Ledger(run_dir).read_meta().get("fixture")
+        froot = paths.fixture_path(meta.get("fixture"))
         if not froot:
             out.status, out.mismatch = "INPUTS", "fixture_unresolved"
             return out
@@ -351,7 +390,23 @@ def replay(run_dir, corpus_path: Optional[str] = None, loader: Loader = default_
         except (OSError, ValueError):
             out.status, out.mismatch = "INPUTS", "fixture_unreadable"
             return out
-    run = Run(corpus, task, model, run_id, stability, index)
+    recorded_caps = res0["task"].get("caps")                    # L-LOOM-122: a run replays with the caps ITS begin row recorded (one of the known profiles)
+    if caps_profile_of(task["lang"], recorded_caps) is None:
+        out.status, out.mismatch = "INPUTS", "caps_unknown"
+        return out
+    recorded_notes = res0.get("notes_profile", notelib.NOTES_V1)       # L-LOOM-147: absent = notes.v1 (every ledger made before the echo note)
+    if recorded_notes not in notelib.NOTES_VERSIONS:
+        out.status, out.mismatch = "INPUTS", "notes_profile_unknown"
+        return out
+    evidence = None                                              # LOOM-evidence (L-LOOM-170): absent = no gate (every ledger before it); replay by the RECORDED profile
+    if "evidence_profile" in res0:
+        ep = res0["evidence_profile"]
+        if not (isinstance(ep, dict) and set(ep) == {"version", "subject_scope"} and ep["version"] in evl.EVIDENCE_VERSIONS and ep["subject_scope"] in evl.SUBJECT_SCOPES
+                and task["lang"] == "prose"):
+            out.status, out.mismatch = "INPUTS", "evidence_profile_unknown"
+            return out
+        evidence = (ep["version"], ep["subject_scope"])
+    run = Run(corpus, task, model, run_id, stability, index, recorded_caps, recorded_notes, evidence)
     mm = header_mismatch(recorded_header, run.header())
     if mm is not None:
         out.status, out.mismatch = "INPUTS", mm
@@ -385,7 +440,7 @@ def _replay_rows(out: ReplayResult, run: Run, rows: List[dict], lines: List[byte
         if line_of(row) != lines[idx] + b"\n" or (unterminated and idx == len(lines) - 1):
             out.status, out.first_diff = "DIFFERS", {"i": idx, "field": "bytes"}      # L-LOOM-43: the same dict, other bytes
             return
-        if row["actor"] == notelib.NOTE_ACTOR and row["op"] == notelib.NOTE_OP and row["args"].get("nv") != notelib.NOTES_VERSION:
+        if row["actor"] == notelib.NOTE_ACTOR and row["op"] == notelib.NOTE_OP and row["args"].get("nv") != run.notes_version:
             out.notes_stale.append(idx)
         run.advance(row)
         prev = row["sha"]

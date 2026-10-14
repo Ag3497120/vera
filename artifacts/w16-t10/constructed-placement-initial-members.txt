@@ -1,4 +1,0 @@
-._manifest.json
-manifest.json
-._placement.sqlite
-placement.sqlite

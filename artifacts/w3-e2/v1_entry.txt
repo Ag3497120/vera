@@ -1,3 +1,0 @@
-entry none SAME
-entry r8 SAME
-entry r9 SAME

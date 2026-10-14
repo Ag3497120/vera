@@ -1,4 +1,0 @@
-results.jsonl DIFF
-summary.txt same
-mismatches.tsv same
-labels.tsv DIFF

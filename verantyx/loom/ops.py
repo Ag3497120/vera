@@ -1,21 +1,26 @@
 """LOOM-a: the operations of the loom (docs/LINE3_LOOM_DESIGN.md 4) and Run.step, the one door through which a call becomes a row.
 
-THE 18 TOOLS (MODEL_OPS): begin lookup read_sentence add open_cross seat seat_run unseat swap extend topic set_depth link unlink
-read emit abstain status.  There is NO `rotate` (L-LOOM-01) and NO undo (L-LOOM-09).
+THE 20 TOOLS (MODEL_OPS): begin lookup read_sentence add open_cross seat seat_run weave_span unseat swap extend topic set_depth link unlink drop
+read emit abstain status.  There is NO `rotate` (L-LOOM-01) and NO undo (L-LOOM-09).  `weave_span` (LOOM-span, L-LOOM-130..) is the batch seating:
+ONE op that cuts a stretch of a corpus sentence into the units of a tier and builds the chain of crosses whose read-out equals that stretch WORD FOR
+WORD; `drop` removes a whole cross with its units.  `weave_sentence` (LOOM-batch, L-LOOM-123..126) is LEGACY: it is no longer a tool (a live call is
+`unknown_tool`), and its code stays only so that a ledger recorded with it (runs_h55b) still replays byte for byte (LEGACY_OPS, executed only while
+a ledger is being replayed).
 
 A call never raises to its caller: it returns {"ok": true, ...} or {"ok": false, "refusal": <type>, "detail": {...}}.  Every
 refusal is raised as `state.Refuse` BEFORE any mutation, so a refused call leaves the state exactly as it was (apart from the
 counter of its class).  Counters count every call of a class that was not itself refused by that class's cap, refused or not,
 so "caps fire exactly at the limit" and a run cannot spin on refusals for ever.
 
-THE CAPS (L-LOOM-08), per run: state-changing ops (add open_cross seat seat_run unseat swap extend topic set_depth link unlink),
+THE CAPS (L-LOOM-08), per run: state-changing ops (add open_cross seat seat_run weave_span unseat swap extend topic set_depth link unlink drop),
 lookups (lookup + read_sentence), reads, emit attempts, constructed units, crosses; chars per constructed unit.  `emit`, `abstain`
 and `status` are not capped, except `emit` by its own attempt cap.  After the run is closed every model call is `run_closed`.
 
 Run.step(actor, op, args) is what both the live server and the replay call: it executes the op, builds the body of the ledger row
 ({actor, op, args, result, state_sha}), and never looks at a clock.  A call whose arguments contain a secret-shaped string is
 refused `secret_shaped_unit` and its arguments are stored redacted (with the sha256 of the original arguments), so no secret
-reaches a row (design 5.1).
+reaches a row (design 5.1).  A `weave_span` row carries the version of the rule that derived its crosses in its args (`wv`, stamped by
+`step`, L-LOOM-135), so a later change of the rule can never turn an old ledger into REPLAY_DIFFERS.
 """
 from __future__ import annotations
 
@@ -30,27 +35,38 @@ from verantyx.ledger_events import GENESIS, args_sha256, redact_obj
 from verantyx.line3 import foundation as fd
 from verantyx.loom import LOOM_VERSION
 from verantyx.loom import code as codelib
+from verantyx.loom import evidence as evl
 from verantyx.loom import notes as notelib
 from verantyx.loom import read as rd
 from verantyx.loom.code import CodeIndex
 from verantyx.loom.corpus import Corpus
-from verantyx.loom.state import (ABSTAIN_TYPES, ALL_TIERS, ARG_STR_CAP, ARGS_CHARS_CAP, AXES, CAPS, CENTRE, CODE, CODE_TIER, CONSTRUCTED, GUARD_CAPS, LANGS, MODES,
-                                 PROSE, PROSE_TIERS, RECORD, LoomCross, LoomState, Refuse, canonical, fmt_seat, parse_seat, sha256_text)
+from verantyx.loom.state import (SPEC, ABSTAIN_TYPES, ALL_TIERS, ARG_STR_CAP, ARGS_CHARS_CAP, AXES, CAPS, CAPS_PROFILES, CENTRE, CODE, CODE_TIER, CONSTRUCTED,
+                                 GUARD_CAPS, LANGS, MODES, PROSE, PROSE_TIERS, RECORD, LoomCross, LoomState, Refuse, caps_profile_of, canonical, fmt_seat,
+                                 parse_seat, sha256_text)
 
-MODEL_OPS: Tuple[str, ...] = ("begin", "lookup", "read_sentence", "add", "open_cross", "seat", "seat_run", "unseat", "swap", "extend",
-                              "topic", "set_depth", "link", "unlink", "read", "emit", "abstain", "status")
-HARNESS_OPS: Tuple[str, ...] = ("abandoned", "free_text_dropped", "free_text_control", "harness_meta")
+MODEL_OPS: Tuple[str, ...] = ("begin", "lookup", "read_sentence", "add", "open_cross", "seat", "seat_run", "weave_span", "unseat", "swap",
+                              "extend", "topic", "set_depth", "link", "unlink", "drop", "read", "emit", "abstain", "status")
+LEGACY_OPS: Tuple[str, ...] = ("weave_sentence",)       # no longer tools; executed ONLY while a recorded ledger is replayed (L-LOOM-136)
+HARNESS_OPS: Tuple[str, ...] = ("abandoned", "free_text_dropped", "free_text_control", "harness_meta", "plugin_refused", "statement_refused")
 HUMAN_OPS: Tuple[str, ...] = ("grade",)
 LOOP_OPS: Tuple[str, ...] = ("attest", "audit_verdict", "stacked")                  # design 6.1 / 11: rows appended by later tickets
 ALL_OPS: Tuple[str, ...] = MODEL_OPS + HARNESS_OPS + HUMAN_OPS + LOOP_OPS
 LOOM_OPS: Tuple[str, ...] = (notelib.NOTE_OP,)                                      # LOOM-notes: rows the loom itself writes (actor "loom")
 ACTORS: Tuple[str, ...] = ("model", "harness", "human", notelib.NOTE_ACTOR)
 
-STATE_CHANGING: Tuple[str, ...] = ("add", "open_cross", "seat", "seat_run", "unseat", "swap", "extend", "topic", "set_depth", "link", "unlink")
+STATE_CHANGING: Tuple[str, ...] = ("add", "open_cross", "seat", "seat_run", "weave_span", "weave_sentence", "unseat", "swap", "extend", "topic",
+                                    "set_depth", "link", "unlink", "drop")                       # weave_sentence: legacy rows of old ledgers
 CLASS_OF: Dict[str, str] = dict({op: "ops" for op in STATE_CHANGING},
                                 lookup="lookups", read_sentence="lookups", read="reads", emit="emit_attempts")
 CAP_REFUSAL: Dict[str, str] = {"ops": "ops_cap", "lookups": "lookup_cap", "reads": "read_cap", "emit_attempts": "emit_cap"}
 
+WEAVE_SPAN_V1 = "weave_span.v1"
+WEAVE_SPAN_V2 = "weave_span.v2"         # = v1, and the crosses it makes carry the sid they quote (`LoomCross.span`), which the gate reads (L-LOOM-146)
+WEAVE_SPAN_V3 = "weave_span.v3"         # = v2, and each cross it makes also carries `quote` = (w, sid, tier, i0, i1), which the evidence gate reads (LOOM-evidence, L-LOOM-183)
+WEAVE_SPAN_V4 = "weave_span.v4"         # = v3, and a stretch whose units are joined only by the joiners . , - : / inside a token (v2.4, 6.5万円, 3.2.0-rc2, 6/14) reads out as the SOURCE slice, joiners included (PUB-M6c, L-PUB-65)
+WEAVE_SPAN_WV = WEAVE_SPAN_V3            # the CURRENT rule that derives a weave_span's crosses (L-LOOM-135); stamped into the args of every new weave_span row
+READOUT_JOINERS = ".,-:/"     # weave_span.v4: the joiners the evidence gate lets hold inside a token (evidence.JOINERS has more); the owner's list (2026-10-13)
+SPEC_ARMS: Tuple[str, ...] = tuple(SPEC.arms)                  # the particle of each arm, in AXES order (LoomCross puts SPEC.arms[ai] on arm ai)
 DRIVERS = ("L1-subagent", "L2-api", "scripted")
 GRADES = ("pass", "fail", "unclear")
 _SHA_RX = re.compile(r"^[0-9a-f]{64}$")
@@ -70,6 +86,25 @@ RULES: Dict[str, Any] = {
     "units": "record units are exactly the corpus's units of a tier; constructed units are marked and only allowed in constructed_allowed.",
     "abstain": ["no_record", "cannot_weave", "unknown"],
 }
+# LOOM-evidence (L-LOOM-170): added to the `rules` of a `begin` row ONLY when the run has an evidence profile (a ledger without one keeps the rules it was recorded with)
+EVIDENCE_RULE = ("A prose answer is a quotation: only an unchanged weave_span quote can be emitted (a hand-built or constructed unit is refused). Find the corpus "
+                 "sentence that states the answer, weave exactly the stretch that answers, and emit. The loom reads the clause around your stretch: it has to hold the "
+                 "subject words of the question (`question.subject`; or the sentence's article title), must not contain a word of the question, and has to be attached "
+                 "as the question asks (`question.slot`: the particle after the answer and the head word `question.slot.head`; or, for a question 「XのYは何」, read as "
+                 "「Y は A」 / 「A は … Y」). A refusal `no_evidence` names what is missing; a sentence that only mentions the topic is not an answer.")
+# evidence.v2 (L-LOOM-191..): the same rules + the extent of the answer + one answer.  evidence.v1 runs keep the text above (it is hashed in their begin row).
+EVIDENCE_RULE_V2 = (EVIDENCE_RULE + " Quote one stretch that is a whole word or phrase of the sentence: not a piece glued to a neighbouring word, not a stretch across a comma, a "
+                    "bracket or a particle (は を に で が と も); and exactly one such quote may stand in the thread. A question with no subject word cannot be answered.")
+# evidence.v3 (L-LOOM-201..): the v2 text + one sentence for the widened reach (docs/LINE3_LOOM_REACH_DESIGN.md §7.1).  Selectable; not the default (OP-RE-2).
+EVIDENCE_RULE_V3 = EVIDENCE_RULE_V2 + " " + evl.V3_RULE_SENTENCE
+# evidence.v4 (L-LOOM-212..): the v2 text + the v4 sentence (v3 without the naming-verb rule, with the subject-chain rule).  Selectable; not the default (OP-PUB-6).
+EVIDENCE_RULE_V4 = EVIDENCE_RULE_V2 + " " + evl.V4_RULE_SENTENCE
+# evidence.v5 (L-LOOM-219..): the v2 text + the v5 sentence (v4 plus the unreadable-subject and title-whole-word rules).  Selectable; not the default.
+EVIDENCE_RULE_V5 = EVIDENCE_RULE_V2 + " " + evl.V5_RULE_SENTENCE
+# evidence.v6 (L-LOOM-226..): the v2 text + the v6 sentence (the refusal-only safety rules: chain, unreadable subject, title whole word, polarity).  The DEFAULT.
+EVIDENCE_RULE_V6 = EVIDENCE_RULE_V2 + " " + evl.V6_RULE_SENTENCE
+EVIDENCE_RULES = {evl.EVIDENCE_V1: EVIDENCE_RULE, evl.EVIDENCE_V2: EVIDENCE_RULE_V2, evl.EVIDENCE_V3: EVIDENCE_RULE_V3, evl.EVIDENCE_V4: EVIDENCE_RULE_V4, evl.EVIDENCE_V5: EVIDENCE_RULE_V5,
+                  evl.EVIDENCE_V6: EVIDENCE_RULE_V6}
 
 
 # ------------------------------------------------------------------------------------------------------------
@@ -143,10 +178,11 @@ def check_task_against_index(task: dict, index: CodeIndex) -> Optional[dict]:
     return None
 
 
-def task_view(task: dict) -> dict:
-    """What `begin` returns and what the row stores: the task WITHOUT paths (no absolute path in a hashed row) and with the caps."""
+def task_view(task: dict, caps: Optional[Dict[str, int]] = None) -> dict:
+    """What `begin` returns and what the row stores: the task WITHOUT paths (no absolute path in a hashed row) and with the caps (the run's own;
+    the current profile when none is given)."""
     view = {"task_id": task["task_id"], "text": task["text"], "lang": task["lang"], "mode": task["mode"], "tiers": list(task["tiers"]),
-            "caps": dict(CAPS[task["lang"]])}
+            "caps": dict(caps if caps is not None else CAPS[task["lang"]])}
     for k in ("target", "tests", "context_names"):         # code only, and only when the task has them: a prose row 0 is unchanged
         if k in task:
             view[k] = task[k]
@@ -173,7 +209,7 @@ def _long_str(o: Any) -> bool:
 def _oversize(args: Any) -> bool:
     """L-LOOM-44: the arguments of a call are stored verbatim only while the canonical JSON has at most ARGS_CHARS_CAP characters and no
     string (value or key) has more than ARG_STR_CAP; otherwise the row holds their sha256 and length (`truncated`) and the call is
-    refused `args_too_large`.  Every legitimate call of the 18 tools is far below both."""
+    refused `args_too_large`.  Every legitimate call of the 20 tools is far below both."""
     try:
         if len(canonical(args)) > ARGS_CHARS_CAP:
             return True
@@ -196,10 +232,14 @@ def _args(a: dict, spec: Dict[str, Tuple[Any, bool]]) -> dict:
                 raise Refuse("bad_args", {"field": name, "reason": "missing"})
             continue
         v = a[name]
-        ok = (isinstance(v, list) and all(isinstance(x, str) for x in v)) if typ == "strs" else \
-             (isinstance(v, int) and not isinstance(v, bool)) if typ is int else isinstance(v, typ)
+        if isinstance(typ, tuple):                                  # a union such as (int, str): a bool is never an int here
+            ok = isinstance(v, typ) and not (isinstance(v, bool) and bool not in typ)
+        else:
+            ok = (isinstance(v, list) and all(isinstance(x, str) for x in v)) if typ == "strs" else \
+                 (isinstance(v, int) and not isinstance(v, bool)) if typ is int else isinstance(v, typ)
         if not ok:
-            raise Refuse("bad_args", {"field": name, "reason": "expected %s" % ("list of str" if typ == "strs" else typ.__name__)})
+            raise Refuse("bad_args", {"field": name, "reason": "expected %s" % ("list of str" if typ == "strs" else
+                                                                                  " or ".join(t.__name__ for t in typ) if isinstance(typ, tuple) else typ.__name__)})
         out[name] = v
     return out
 
@@ -208,8 +248,17 @@ def _args(a: dict, spec: Dict[str, Tuple[Any, bool]]) -> dict:
 # the run
 # ------------------------------------------------------------------------------------------------------------
 class Run:
+    EXTRA_OPS: Tuple[str, ...] = ()                    # MEM-d: model ops a SUBCLASS adds to MODEL_OPS (the answer run's `recall`); none for the ordinary loom
+    ABSTAIN: Tuple[str, ...] = ABSTAIN_TYPES           # MEM-d: the abstain types a run accepts (the answer run adds `contested`)
+
     def __init__(self, corpus: Corpus, task: dict, model: str, run_id: str, stability_mode: str = rd.DEFAULT_STABILITY,
-                 code_index: Optional[CodeIndex] = None) -> None:
+                 code_index: Optional[CodeIndex] = None, caps: Optional[Dict[str, int]] = None, notes_version: Optional[str] = None,
+                 evidence: Optional[Tuple[str, str]] = None) -> None:
+        """`caps`: the cap set of this run for its language, None = the current profile (a new run).  Replay passes the set the `begin` row recorded;
+        it must be exactly one of the known profiles (L-LOOM-122).  `notes_version`: the notes definitions of this run (None = the current, a new run;
+        replay passes what the `begin` row named, notes.v1 when it names none: L-LOOM-147).  `evidence`: (version, subject_scope) of the evidence gate (LOOM-evidence,
+        L-LOOM-170), None = no gate (the default of a bare Run and of every ledger recorded before the gate: they replay by the rule they were recorded under);
+        a profile is for PROSE runs only (a code task ignores it)."""
         if stability_mode not in rd.STABILITY_MODES:
             raise ValueError("stability must be one of %s" % (rd.STABILITY_MODES,))
         self.corpus = corpus
@@ -219,9 +268,25 @@ class Run:
         self.run_id = run_id
         self.lang = self.task["lang"]
         self.mode = self.task["mode"]
-        self.caps = dict(CAPS[self.lang])
+        if caps is not None and caps_profile_of(self.lang, caps) is None:
+            raise ValueError("caps: not a known cap profile (%s)" % (sorted(CAPS_PROFILES),))
+        self.caps = dict(caps if caps is not None else CAPS[self.lang])
         self.stability_mode = stability_mode
+        if notes_version is not None and notes_version not in notelib.NOTES_VERSIONS:
+            raise ValueError("notes_version must be one of %s" % (notelib.NOTES_VERSIONS,))
+        self.notes_version = notes_version if notes_version is not None else notelib.NOTES_VERSION
         self.state = LoomState(self.lang)
+        self.evidence: Optional[Tuple[str, str]] = None
+        self.question_units: Optional[evl.QuestionUnits] = None
+        if evidence is not None and self.lang == PROSE:
+            if not (isinstance(evidence, (tuple, list)) and len(evidence) == 2 and evidence[0] in evl.EVIDENCE_VERSIONS and evidence[1] in evl.SUBJECT_SCOPES):
+                raise ValueError("evidence: (version, subject_scope) with version in %s and scope in %s" % (evl.EVIDENCE_VERSIONS, evl.SUBJECT_SCOPES))
+            self.evidence = (evidence[0], evidence[1])
+            self.question_units = evl.question_units(self.task["text"])          # the loom's own cut of the question, recomputed here and never read back from a row
+        self.weave_wv = WEAVE_SPAN_WV      # the rule a weave_span with no `wv` gets (stamped into its row): weave_span.v3; a subclass (the answer run v4) sets weave_span.v4
+        self.joints: Dict[str, str] = {}   # weave_span.v4: {uid of a unit: the joiners the source has right after it}; NOT hashed, re-derived by replay; `read.evaluate` writes them after the unit
+        self.weaves: List[dict] = []       # LOOM-evidence: the `weave_span.v3` weaves of this run {w, sid, tier, i0, i1, cids}; NOT hashed, re-derived by replay
+        self._nweaves = 0
         self.i = 0                         # the index of the next row
         self.head = GENESIS                # the sha of the last row
         # LOOM-notes: NOT part of the hashed state.  Rebuilt by step() on live calls and on replay alike, so both see the same history.
@@ -246,7 +311,13 @@ class Run:
         return sorted(names)
 
     def begin_body(self) -> dict:
-        res = {"ok": True, "run_id": self.run_id, "task": task_view(self.task), "rules": RULES, "header": self.header()}
+        res = {"ok": True, "run_id": self.run_id, "task": task_view(self.task, self.caps), "rules": RULES, "header": self.header()}
+        if self.notes_version != notelib.NOTES_V1:          # notes.v1 runs (every ledger before L-LOOM-147) have no such key: their begin rows are as they were
+            res["notes_profile"] = self.notes_version
+        if self.evidence is not None:                       # LOOM-evidence: no such keys in a run without the gate (every ledger before it), so those rows are as they were
+            res["rules"] = dict(RULES, evidence=EVIDENCE_RULES[self.evidence[0]])
+            res["evidence_profile"] = {"version": self.evidence[0], "subject_scope": self.evidence[1]}
+            res["question"] = evl.begin_question_obj6(self.question_units, self.evidence[1], self.evidence[0])      # read-only, recomputed by the loom (L-LOOM-185): a forged row cannot replay
         return {"actor": "model", "op": "begin", "args": {"task_id": self.task["task_id"], "model": self.model}, "result": res,
                 "state_sha": self.state.sha()}
 
@@ -283,7 +354,7 @@ class Run:
         if st.closed is not None:
             return "closed_calls" if st.guards["closed_calls"] >= GUARD_CAPS["closed_calls"] else None
         if op == "abstain" and st.guards["abstain_refused"] >= GUARD_CAPS["abstain_refused"]:
-            valid = isinstance(args, dict) and set(args) == {"type"} and args["type"] in ABSTAIN_TYPES
+            valid = isinstance(args, dict) and set(args) == {"type"} and args["type"] in self.ABSTAIN
             return None if valid else "abstain_refused"
         return None
 
@@ -291,7 +362,7 @@ class Run:
         extra: Dict[str, Any] = {}
         n = 0
         trunc = False
-        blocked = self._guard_blocked(op, args) if isinstance(op, str) and op in MODEL_OPS else None
+        blocked = self._guard_blocked(op, args) if self._executable(op) else None
         if replay_extra is not None:
             stored = args
             extra = dict(replay_extra)
@@ -310,17 +381,19 @@ class Run:
             stored, n = redact_obj(args)
             if n:
                 extra = {"redacted": n, "args_sha256": args_sha256(args)}
+            if op == "weave_span" and isinstance(stored, dict) and "wv" not in stored:
+                stored = dict(stored, wv=self.weave_wv)           # the rule version that derives this row's crosses (L-LOOM-135); the handler defaults to it
         try:
             if blocked is not None:
                 raise Refuse("cap_exceeded", {"guard": blocked, "limit": GUARD_CAPS[blocked]})
-            if op == "begin" or op not in MODEL_OPS:
+            if op == "begin" or not self._executable(op):
                 raise Refuse("unknown_tool", {"tool": op if isinstance(op, str) else None})
             self._precheck(op)
             if trunc:
                 raise Refuse("args_too_large", {"chars": extra["args_chars"], "limit": ARGS_CHARS_CAP, "string_limit": ARG_STR_CAP})
             if n:
                 raise Refuse("secret_shaped_unit", {"redacted": n})
-            result = HANDLERS[op](self, args, self.i)
+            result = self._handler(op)(self, args, self.i)
         except Refuse as r:
             result = refusal(r.type, r.detail)
             if op == "abstain" and r.type not in ("run_closed", "cap_exceeded"):
@@ -328,6 +401,14 @@ class Run:
         body = {"actor": "model", "op": op, "args": stored, "result": result, "state_sha": self.state.sha()}
         body.update(extra)
         return body
+
+    def _executable(self, op: Any) -> bool:
+        """A model op the run executes: a tool (MODEL_OPS), or a LEGACY op while a recorded ledger is being replayed (never on a live call)."""
+        return isinstance(op, str) and (op in MODEL_OPS or op in self.EXTRA_OPS or (self.replaying and op in LEGACY_OPS))
+
+    def _handler(self, op: str):
+        """The handler of an executable op (MEM-d: a subclass may override it for its EXTRA_OPS and for the ops whose rule it changes)."""
+        return HANDLERS[op]
 
     def _precheck(self, op: str) -> None:
         st = self.state
@@ -348,7 +429,7 @@ class Run:
             raise ValueError("op %r is not a row of actor %r" % (op, actor))
         if actor == notelib.NOTE_ACTOR:
             # the loom's own row.  Its content is DERIVED (the args of a live call are ignored), so a forged note row cannot replay as itself.
-            if self.replaying and args.get("nv") != notelib.NOTES_VERSION:
+            if self.replaying and args.get("nv") != self.notes_version:
                 # recorded under another definition of the notes (L-LOOM-106): accepted AS RECORDED when its shape is right; the replay reports
                 # it (`notes_stale`) instead of comparing it with what the current definitions would say
                 prev = self._prev
@@ -361,7 +442,7 @@ class Run:
             notes = self.notes_due()
             if not notes:
                 raise ValueError("note: no notes are due after the previous row")
-            return {"actor": actor, "op": op, "args": {"after": self.i - 1, "of": self._prev[1], "notes": notes, "nv": notelib.NOTES_VERSION},
+            return {"actor": actor, "op": op, "args": {"after": self.i - 1, "of": self._prev[1], "notes": notes, "nv": self.notes_version},
                     "result": {"ok": True}, "state_sha": self.state.sha()}
         args = dict(args)
         if op == "abandoned":
@@ -378,11 +459,19 @@ class Run:
             if not _SHA_RX.match(args["sha256"]) or args["chars"] < 0:
                 raise ValueError("%s: sha256 / chars malformed" % op)
         elif op == "harness_meta":
-            allowed = {"driver", "requested_model", "agent_definition_sha", "response_model"}
+            allowed = {"driver", "requested_model", "agent_definition_sha", "response_model", "plugins"}      # `plugins`: the canonical JSON of the plugins that ran (vera-harness H4); a string, like the rest
             if not args or set(args) - allowed or any(not isinstance(v, str) for v in args.values()):
                 raise ValueError("harness_meta: keys within %s, string values" % sorted(allowed))
             if "driver" in args and args["driver"] not in DRIVERS:
                 raise ValueError("harness_meta: driver must be one of %s" % (DRIVERS,))
+        elif op == "plugin_refused":                      # vera-harness H8: a gate-filter plugin refused the answer the loom's gate had passed (the run is then closed by an abstain)
+            _need(args, {"kind": str, "name": str, "version": str, "code": str}, op)
+            if set(args) != {"kind", "name", "version", "code"} or any(len(v) > 80 for v in args.values()):
+                raise ValueError("plugin_refused: kind, name, version, code (short strings)")
+        elif op == "statement_refused":                   # vera-harness H8: a recorded user statement at the answered position says something else and is not a stored write
+            _need(args, {"turn": str, "reason": str}, op)
+            if set(args) != {"turn", "reason"} or args["reason"] not in ("unrecorded_user_statement", "redacted_turn_unreadable", "redacted_sentence") or len(args["turn"]) > 16:
+                raise ValueError("statement_refused: turn, reason (unrecorded_user_statement)")
         elif op == "grade":
             _need(args, {"grade": str, "grader": str}, op)
             if args["grade"] not in GRADES:
@@ -583,6 +672,281 @@ def h_seat_run(run: Run, a: dict, i: int) -> dict:
     return {"ok": True, "cid": cross.cid, "arm": arm, "seated": [{"seat": fmt_seat(arm, kk), "uid": uid} for uid, kk in zip(uids, ks)]}
 
 
+def _arm_of(name: str) -> str:
+    """An arm named as an axis ("+x") or as its particle ("の"): the axis.  Anything else: bad_args."""
+    if name in AXES:
+        return name
+    if name in SPEC_ARMS:
+        return AXES[SPEC_ARMS.index(name)]
+    raise Refuse("bad_args", {"field": "arms", "reason": "an axis such as +x or one of が を と で に の"})
+
+
+def _unit_index(units: List[str], v: Any, which: str, lo: int = 0) -> int:
+    """`from` / `to` of weave_span: an index into the sentence's units of the tier (0-based, as `read_sentence` lists them), or a unit surface
+    (the first unit at or after `lo` with that surface).  Raises `unit_not_in_sentence` (a surface that is no unit of the sentence) or
+    `span_out_of_range` (an index outside the sentence); NEITHER returns the sentence's units: what a refused call says is only what was asked."""
+    if isinstance(v, int):
+        if not 0 <= v < len(units):
+            raise Refuse("span_out_of_range", {"which": which, "index": v})
+        return v
+    for j in range(lo, len(units)):
+        if units[j] == v:
+            return j
+    raise Refuse("unit_not_in_sentence", {"which": which, "text": v[:32],
+                                          "hint": "write the unit exactly as read_sentence lists it for this tier, plain text without quotation marks"})
+
+
+def _weave_span_v1(run: Run, sid: int, tier: str, f: Any, t: Any) -> dict:
+    """`weave_span.v1`: the rule of `_weave_span_core` with no marker on the crosses (the h55c ledgers name it; they replay by it forever)."""
+    return _weave_span_core(run, sid, tier, f, t, WEAVE_SPAN_V1, False)
+
+
+def _weave_span_v2(run: Run, sid: int, tier: str, f: Any, t: Any) -> dict:
+    """`weave_span.v2` (L-LOOM-146): EXACTLY v1, and each cross it makes remembers the sid of the sentence it quotes (`LoomCross.span`), so that the gate
+    can say "faithful to sentence N, unstable under the key" and offer no swap for it (every improving swap would change the quoted text).  The marker is
+    not hashed and not in the ledger: replay derives it from the row's `wv`."""
+    return _weave_span_core(run, sid, tier, f, t, WEAVE_SPAN_V2, True)
+
+
+def _weave_span_v3(run: Run, sid: int, tier: str, f: Any, t: Any) -> dict:
+    """`weave_span.v3` (LOOM-evidence, L-LOOM-183): EXACTLY v2, and each cross it makes also carries `quote` = (w, sid, tier, i0, i1), w = the 1-based count of v3 weaves of
+    the run, and the run remembers the weave (`Run.weaves`).  The evidence gate reads them: a quotation is a weave whose crosses are all still unchanged, linked and in order.
+    Like `span`, the marker is not hashed and not in the ledger: replay derives it from the row's `wv`, so a ledger recorded under v1 / v2 replays by its own rule."""
+    return _weave_span_core(run, sid, tier, f, t, WEAVE_SPAN_V3, True, True)
+
+
+def _weave_span_v4(run: Run, sid: int, tier: str, f: Any, t: Any) -> dict:
+    """`weave_span.v4` (PUB-M6c, owner 2026-10-13 「元の文のその範囲をそのまま出す」): EXACTLY v3 (the same crosses, the same markers), and where two touching units of the stretch have between them nothing
+    but the joiners . , - : / (6 . 5, 3 . 2 . 0 - rc2, 6 / 14), the unit before the gap remembers them (`Run.joints`) and `read` writes them right after it.  The read-out of such a stretch is the source slice
+    character for character (v2.4, 6.5万円); every other punctuation is dropped as before, so a stretch with a quote mark or a bracket is NOT its own read-out and stays unquotable.  A ledger recorded
+    under v1..v3 replays by its own rule: it never has a joint."""
+    return _weave_span_core(run, sid, tier, f, t, WEAVE_SPAN_V4, True, True, True)
+
+
+def _weave_span_core(run: Run, sid: int, tier: str, f: Any, t: Any, wv: str, mark: bool, quote: bool = False, joiners: bool = False) -> dict:
+    """The rule `weave_span.v1` / `.v2` (L-LOOM-130..134).  A STRETCH of corpus sentence `sid` -- the units `from` .. `to` (both included) of the tier -- becomes
+    a chain of crosses whose read-out is that stretch word for word.  Between two neighbouring units of the stretch the sentence has a GAP (its letters
+    only: punctuation, quotes, spaces and 「・」 are not letters and the loom writes none of them; the T9 normaliser drops only whitespace and 「・」/「·」,
+    so a stretch with quotes or hyphens in it is NOT its own read-out under T9 -- the read-out equals the stretch's units verbatim with letters-only gaps, L-LOOM-144):
+      ""            the units touch (ハッシュ+表, カール+マルクス, 1981+年): the next unit starts a new cross; the crosses are linked in order
+      an arm particle (の に で と を が)   HEAD-FINAL: the unit goes on that particle's arm of the cross whose CENTRE is the very next unit
+      は            the unit is the centre of a cross marked topic (it reads 東京は)
+      anything else (という, として, とも, でも, ...)   the loom cannot write it: REFUSED `span_inexpressible`
+    So a cross is (at most one arm unit) + centre (+ は).  Two arm-particle gaps in a row (日本の大学の学生, 東京で日本の首都) would need the middle unit to be
+    an arm unit AND a centre, or two units on one arm (the read rule has ONE particle per arm): REFUSED `span_inexpressible`, nothing changed.
+    The units are record units (uid and provenance exactly as `add` gives them), made in sentence order, ONLY for the stretch.  Each cross is
+    L = 1 (centre only) or L = 2 (one data seat per arm: the attached unit is on `<arm>:0`).  The crosses are linked at the end of the thread."""
+    st = run.state
+    units = list(run.corpus.tier(tier).sentence_units[sid])
+    i0 = _unit_index(units, f, "from")
+    i1 = _unit_index(units, t, "to", i0)
+    if i1 < i0:
+        raise Refuse("bad_span", {"from": i0, "to": i1, "reason": "to is before from"})
+    held = {st.crosses[cid].tier for cid in st.thread if st.crosses[cid].uids()}
+    if held and held != {tier}:
+        raise Refuse("tier_mix", {"tier": tier, "thread_tiers": sorted(held)})
+    ok, gaps = run.corpus.span_gaps(tier, sid, i0, i1)
+    surf = units[i0:i1 + 1]
+    n = len(surf)
+    if not ok:
+        raise Refuse("span_inexpressible", {"reason": "unit_is_not_the_text", "from": i0, "to": i1})
+    kinds: List[Optional[str]] = []                                # per gap: an axis (arm particle), "topic", or None (touching)
+    for k, g in enumerate(gaps):
+        if g == "":
+            kinds.append(None)
+        elif g in SPEC_ARMS:
+            kinds.append(AXES[SPEC_ARMS.index(g)])
+        elif g == SPEC.centre:
+            kinds.append("topic")
+        else:
+            raise Refuse("span_inexpressible", {"reason": "gap_is_not_a_particle", "between": [surf[k], surf[k + 1]], "gap": g[:16]})
+    for k in range(n - 2):
+        if kinds[k] in AXES and kinds[k + 1] in AXES:
+            raise Refuse("span_inexpressible", {"reason": "nested_particle_chain", "units": [surf[k], surf[k + 1], surf[k + 2]],
+                                                "particles": [gaps[k], gaps[k + 1]]})
+    plan: List[Tuple[int, Optional[int], bool]] = []              # (centre k, attached unit k or None, topic)
+    for k in range(n):
+        if k < n - 1 and kinds[k] in AXES:
+            continue                                              # this unit is an arm unit of the cross of unit k + 1
+        att = k - 1 if k > 0 and kinds[k - 1] in AXES else None
+        plan.append((k, att, k < n - 1 and kinds[k] == "topic"))
+    text = "".join(surf[k] + (gaps[k] if k < n - 1 else "") for k in range(n))
+    read = "".join((surf[att] + gaps[att] if att is not None else "") + surf[k] + (SPEC.centre if top else "") for k, att, top in plan)
+    joint: Dict[int, str] = {}                                    # weave_span.v4: the raw gap after unit k when it is only joiners and the units touch
+    if joiners:
+        idx = run.corpus.spans()
+        sps = idx.spans(tier, sid)
+        src = idx.text(sid)
+        for k in range(n - 1):
+            raw = src[sps[i0 + k][1]:sps[i0 + k + 1][0]]
+            if raw != "" and gaps[k] == "" and all(ch in READOUT_JOINERS for ch in raw):
+                joint[k] = raw
+        if joint:
+            text = "".join(surf[k] + joint.get(k, "") + (gaps[k] if k < n - 1 else "") for k in range(n))
+            read = "".join((surf[att] + gaps[att] if att is not None else "") + surf[k] + joint.get(k, "") + (SPEC.centre if top else "") for k, att, top in plan)
+    if read != text:                                              # cannot happen by construction; kept so that "word for word" is checked, not assumed
+        raise Refuse("span_inexpressible", {"reason": "readout_differs", "from": i0, "to": i1})
+    if len(st.crosses) + len(plan) > run.caps["crosses"]:
+        raise Refuse("cross_cap", {"limit": run.caps["crosses"], "needed": len(plan)})
+    # -- from here on the op changes the state (it cannot refuse any more) --------------------------------------------------------------------
+    uid_of: Dict[int, str] = {}
+    for k, surface in enumerate(surf):
+        post = run.corpus.postings(tier, surface)
+        uid_of[k] = st.new_unit(surface, RECORD, tier, {"tier": tier, "n": len(post), "sids": list(post)}).uid
+    out_crosses: List[dict] = []
+    if quote:
+        run._nweaves += 1
+        run.weaves.append({"w": run._nweaves, "sid": sid, "tier": tier, "i0": i0, "i1": i1, "cids": []})
+    for k, j in joint.items():
+        run.joints[uid_of[k]] = j
+    for k, att, top in plan:
+        cross = st.new_cross(tier, 1 if att is None else 2)
+        st.place(cross, None, None, uid_of[k])
+        seated: List[dict] = []
+        if att is not None:
+            ax = kinds[att]
+            st.place(cross, ax, 0, uid_of[att])
+            seated.append({"seat": fmt_seat(ax, 0), "uid": uid_of[att], "surface": surf[att], "particle": gaps[att]})
+        cross.topic = top
+        cross.span = sid if mark else None
+        if quote:
+            cross.quote = (run._nweaves, sid, tier, i0, i1)
+            run.weaves[-1]["cids"].append(cross.cid)
+        st.thread.append(cross.cid)
+        cross.linked = True
+        out_crosses.append({"cid": cross.cid, "L": cross.L, "centre": {"uid": uid_of[k], "surface": surf[k]}, "seated": seated, "topic": top})
+    return {"ok": True, "wv": wv, "sid": sid, "tier": tier, "from": i0, "to": i1, "text": text, "crosses": out_crosses, "thread": list(st.thread)}
+
+
+WEAVE_SPAN_RULES = {WEAVE_SPAN_V1: _weave_span_v1, WEAVE_SPAN_V2: _weave_span_v2, WEAVE_SPAN_V3: _weave_span_v3, WEAVE_SPAN_V4: _weave_span_v4}                # rule version -> the rule; a new version is ADDED here, an old one is never edited or removed
+
+
+def h_weave_span(run: Run, a: dict, i: int) -> dict:
+    """LOOM-span (L-LOOM-130..): `weave_span(sid, tier, from, to)`, ONE op (one count against `ops`, one ledger row).  The stretch of corpus sentence
+    `sid` from unit `from` to unit `to` of `tier` (each an index into the units `read_sentence` lists, 0-based, or a unit surface) becomes the chain of
+    crosses of the rule `wv` (default and only: weave_span.v1, see `_weave_span_v1`), linked in sentence order.  Record units only.  The result
+    names the crosses and seats it made and the text of the stretch; it does NOT return the units of the rest of the sentence and does NOT run
+    `read` (use `read`, which is counted).  `wv` is not a field of the tool: `Run.step` stamps it into the stored args; replay executes the rule
+    the row names.  Refusals (all before anything is touched): not_prose, tier_not_in_task, unknown_sid, unit_not_in_sentence, span_out_of_range,
+    bad_span, tier_mix, span_inexpressible, cross_cap, bad_args."""
+    a = _args(a, {"sid": (int, True), "tier": (str, True), "from": ((int, str), True), "to": ((int, str), True), "wv": (str, False)})
+    rule = WEAVE_SPAN_RULES.get(a.get("wv", run.weave_wv))
+    if rule is None:
+        raise Refuse("bad_args", {"field": "wv", "reason": "unknown rule version"})
+    if run.lang != PROSE:
+        raise Refuse("not_prose", {"tool": "weave_span"})
+    tier = _task_tier(run, a["tier"])
+    sid = a["sid"]
+    if not 0 <= sid < run.corpus.n_sentences:
+        raise Refuse("unknown_sid", {"sid": sid, "n": run.corpus.n_sentences})
+    return rule(run, sid, tier, a["from"], a["to"])
+
+
+def h_drop(run: Run, a: dict, i: int) -> dict:
+    """LOOM-span: `drop(cid)` removes a whole cross and the units seated in it (one op, one row); the cross leaves the thread if it was linked.  The
+    registry forgets the removed units and cross: their uids and cid are never made again (state `made`).  Units that are in the pool stay."""
+    a = _args(a, {"cid": (str, True)})
+    st = run.state
+    cross = st.cross(a["cid"])
+    surfaces = {uid: st.units[uid].surface for uid in cross.uids()}
+    uids = st.drop_cross(cross)
+    return {"ok": True, "cid": a["cid"], "removed": [{"uid": u, "surface": surfaces[u]} for u in uids], "thread": list(st.thread)}
+
+
+def h_weave_sentence(run: Run, a: dict, i: int) -> dict:
+    """LEGACY (LOOM-batch, L-LOOM-123..126; no longer a tool: Run._executable lets it run ONLY while a recorded ledger is replayed).  Its code is
+    kept EXACTLY as it was, rule `weave_sentence.v1` (implicit: its rows carry no `wv`), so the ledgers recorded with it (runs_h55b) still verify
+    and replay byte for byte.  It was replaced by `weave_span` because it seated units a particle does not govern and packed same-particle units
+    on one arm; and its refusal `centre_not_in_sentence` and its result returned the whole sentence's units for free.  Do not call it, do not fix it.
+
+    BATCH SEATING, one op (one count against `ops`, one ledger row).
+
+    weave_sentence(sid, tier, centre, arms?, pos?).  The loom cuts corpus sentence `sid` into the record units of `tier` (the units
+    `read_sentence` shows), opens a prose cross on the first unit whose surface is `centre`, and seats every OTHER unit of the sentence on the arm
+    of the particle that immediately follows it in the sentence, by the grammar layer's evidence (`Corpus.particle_after`): a unit followed by
+    の goes to the の arm, followed by に to the に arm, and so on, the units of one arm in sentence order (outer -> inner, the reading order of
+    seat_run).  A unit followed by none of the six arm particles (は, a copula, nothing, a unit of another kind) stays UNSEATED; so does a unit whose
+    arm is excluded by `arms`, and a unit that does not fit (an arm holds at most max_L - 1 units: the OUTERMOST ones, the earliest in the
+    sentence, are left out).  Every unit of the sentence becomes a record unit (uid, provenance exactly as `add` gives it), in sentence order, so
+    the unseated ones can be placed later with `seat`.  The cross is linked to the thread (at `pos`, default the end).  L = (most units on one arm)
+    + 2, i.e. one spare data seat per arm, at most max_L.  Only record units are used (no constructed unit, in either mode).  Nothing is gated here:
+    the result carries the read-out `rd.evaluate` gives now (text, every refusal an emit would give, the stability), computed WITHOUT counting a
+    `read`.  Refusals are raised before anything is touched: not_prose, tier_not_in_task, unknown_sid, tier_mix, cross_cap, bad_pos,
+    centre_not_in_sentence, bad_args."""
+    a = _args(a, {"sid": (int, True), "tier": (str, True), "centre": (str, True), "arms": ("strs", False), "pos": (int, False)})
+    st = run.state
+    if run.lang != PROSE:
+        raise Refuse("not_prose", {"tool": "weave_sentence"})
+    tier = _task_tier(run, a["tier"])
+    sid = a["sid"]
+    if not 0 <= sid < run.corpus.n_sentences:
+        raise Refuse("unknown_sid", {"sid": sid, "n": run.corpus.n_sentences})
+    allowed = None
+    if "arms" in a:
+        if not a["arms"]:
+            raise Refuse("bad_args", {"field": "arms", "reason": "at least one arm, or leave it out"})
+        allowed = {_arm_of(n) for n in a["arms"]}
+    held = {run.state.crosses[cid].tier for cid in st.thread if run.state.crosses[cid].uids()}
+    if held and held != {tier}:
+        raise Refuse("tier_mix", {"tier": tier, "thread_tiers": sorted(held)})
+    if len(st.crosses) >= run.caps["crosses"]:
+        raise Refuse("cross_cap", {"limit": run.caps["crosses"]})
+    pos = a.get("pos", len(st.thread))
+    if not 0 <= pos <= len(st.thread):
+        raise Refuse("bad_pos", {"pos": pos, "thread_length": len(st.thread)})
+    units = list(run.corpus.tier(tier).sentence_units[sid])
+    if a["centre"] not in units:
+        raise Refuse("centre_not_in_sentence", {"sid": sid, "tier": tier, "centre": a["centre"], "units": units})
+    ci = units.index(a["centre"])
+    spans = run.corpus.spans().spans(tier, sid)
+    follow = run.corpus.particle_after(tier, sid)
+    # the plan (pure; nothing touched yet): per unit its following particle and the arm it is entitled to
+    plan: List[Tuple[int, Optional[str], Optional[str]]] = []                     # (index, particle or None, axis or None)
+    for idx in range(len(units)):
+        if idx == ci:
+            continue
+        p = follow.get(tuple(spans[idx]))
+        plan.append((idx, p, AXES[SPEC_ARMS.index(p)] if p in SPEC_ARMS else None))
+    room = run.caps["max_L"] - 1
+    why: Dict[int, str] = {}
+    by_arm: Dict[str, List[int]] = {ax: [] for ax in AXES}
+    for idx, p, ax in plan:
+        if ax is None:
+            why[idx] = "no_arm_particle"
+        elif allowed is not None and ax not in allowed:
+            why[idx] = "arm_not_allowed"
+        else:
+            by_arm[ax].append(idx)
+    for ax in AXES:
+        if len(by_arm[ax]) > room:
+            for idx in by_arm[ax][:len(by_arm[ax]) - room]:
+                why[idx] = "arm_full"
+            by_arm[ax] = by_arm[ax][len(by_arm[ax]) - room:]
+    L = min(run.caps["max_L"], max([len(v) for v in by_arm.values()]) + 2)
+    # -- from here on the op changes the state (it cannot refuse any more) ----------------------------------------------------------------
+    uid_of: Dict[int, str] = {}
+    for idx, surf in enumerate(units):
+        post = run.corpus.postings(tier, surf)
+        uid_of[idx] = st.new_unit(surf, RECORD, tier, {"tier": tier, "n": len(post), "sids": list(post)}).uid
+    cross = st.new_cross(tier, L)
+    st.place(cross, None, None, uid_of[ci])
+    seated: List[dict] = []
+    for ax in AXES:
+        idxs = by_arm[ax]
+        ks = [cross.inner_k - len(idxs) + 1 + j for j in range(len(idxs))]
+        for idx, k in zip(idxs, ks):
+            st.place(cross, ax, k, uid_of[idx])
+            seated.append({"seat": fmt_seat(ax, k), "uid": uid_of[idx], "surface": units[idx], "particle": SPEC_ARMS[AXES.index(ax)]})
+    st.thread.insert(pos, cross.cid)
+    cross.linked = True
+    pmap = {idx: p for idx, p, _ in plan}
+    unseated = [{"uid": uid_of[idx], "surface": units[idx], "followed_by": pmap[idx], "why": why[idx]} for idx in sorted(why)]
+    ev = rd.evaluate(run)
+    return {"ok": True, "cid": cross.cid, "sid": sid, "tier": tier, "L": L, "centre": {"uid": uid_of[ci], "surface": units[ci]},
+            "seated": seated, "unseated": unseated, "thread": list(st.thread),
+            "readout": {"text": ev["text"], "refusals": ev["refusals"], "stability": ev["stability"]}}
+
+
 def _full_seat(cross: LoomCross, name: str) -> Tuple[Optional[str], Optional[int]]:
     arm, k = parse_seat(name)
     if arm is not None and k is None:
@@ -626,6 +990,9 @@ def h_topic(run: Run, a: dict, i: int) -> dict:
     cross = run.state.cross(a["cid"])
     if cross.lang != PROSE:
         raise Refuse("not_prose", {"cid": cross.cid})
+    if cross.topic != a["on"]:
+        cross.span = None                                  # no longer the quoted stretch (L-LOOM-146)
+        cross.quote = None
     cross.topic = a["on"]
     return {"ok": True, "cid": cross.cid, "topic": cross.topic}
 
@@ -669,8 +1036,10 @@ def h_unlink(run: Run, a: dict, i: int) -> dict:
 def h_read(run: Run, a: dict, i: int) -> dict:
     _args(a, {})
     ev = rd.evaluate(run)
-    return {"ok": True, "text": ev["text"], "annotated": ev["annotated"], "refusals": ev["refusals"], "stability": ev["stability"],
-            "shares": ev["shares"]}
+    out = {"ok": True, "text": ev["text"], "annotated": ev["annotated"], "refusals": ev["refusals"], "stability": ev["stability"], "shares": ev["shares"]}
+    if run.evidence is not None:                           # LOOM-evidence: the rule version and what the gate read (absent in a run without the gate)
+        out.update(ev=run.evidence[0], evidence=ev["evidence"])
+    return out
 
 
 def h_emit(run: Run, a: dict, i: int) -> dict:
@@ -679,14 +1048,17 @@ def h_emit(run: Run, a: dict, i: int) -> dict:
     if ev["refusals"]:
         raise Refuse(ev["refusals"][0]["type"], {"refusals": ev["refusals"], "stability": ev["stability"]})
     run.state.closed = ["emitted", ev["output_sha"]]
-    return {"ok": True, "status": "emitted", "text": ev["text"], "annotated": ev["annotated"], "output_sha": ev["output_sha"],
-            "shares": ev["shares"], "stability": ev["stability"]}
+    out = {"ok": True, "status": "emitted", "text": ev["text"], "annotated": ev["annotated"], "output_sha": ev["output_sha"],
+           "shares": ev["shares"], "stability": ev["stability"]}
+    if run.evidence is not None:
+        out.update(ev=run.evidence[0], evidence=ev["evidence"])
+    return out
 
 
 def h_abstain(run: Run, a: dict, i: int) -> dict:
     a = _args(a, {"type": (str, True)})
-    if a["type"] not in ABSTAIN_TYPES:
-        raise Refuse("bad_type", {"type": a["type"][:32], "allowed": list(ABSTAIN_TYPES)})      # L-LOOM-44: never echo more than 32 chars
+    if a["type"] not in run.ABSTAIN:
+        raise Refuse("bad_type", {"type": a["type"][:32], "allowed": list(run.ABSTAIN)})      # L-LOOM-44: never echo more than 32 chars
     run.state.closed = ["abstained", a["type"]]
     return {"ok": True, "status": "abstained", "type": a["type"]}
 
@@ -711,5 +1083,6 @@ def h_status(run: Run, a: dict, i: int) -> dict:
 
 
 HANDLERS = {"lookup": h_lookup, "read_sentence": h_read_sentence, "add": h_add, "open_cross": h_open_cross, "seat": h_seat,
-            "seat_run": h_seat_run, "unseat": h_unseat, "swap": h_swap, "extend": h_extend, "topic": h_topic, "set_depth": h_set_depth,
-            "link": h_link, "unlink": h_unlink, "read": h_read, "emit": h_emit, "abstain": h_abstain, "status": h_status}
+            "seat_run": h_seat_run, "weave_span": h_weave_span, "weave_sentence": h_weave_sentence, "unseat": h_unseat, "swap": h_swap, "extend": h_extend,
+            "topic": h_topic, "set_depth": h_set_depth, "link": h_link, "unlink": h_unlink, "drop": h_drop, "read": h_read, "emit": h_emit,
+            "abstain": h_abstain, "status": h_status}

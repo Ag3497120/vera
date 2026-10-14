@@ -1,3 +1,0 @@
-raw files compared: 23 results rows: 25 25
-summary equal (after stripping clocks): True
-differences: 0

@@ -1,5 +1,0 @@
-permission 26
-scope 13
-choice 14
-order 17
-none 35

@@ -1,2 +1,0 @@
-off n 161 161 diff 0 []
-fake n 161 161 diff 0 []

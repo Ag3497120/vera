@@ -1,2 +1,0 @@
-artifacts/w16-t6/synth/cases.jsonl: OK
-artifacts/w16-t6/synth/expected.jsonl: OK

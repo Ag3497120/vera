@@ -1,0 +1,4 @@
+{
+ "corpus": "tests/fixtures/line3/bank2/data/fulllead_sents.jsonl",
+ "task_id": "bank2/I2-001.constructed_allowed"
+}

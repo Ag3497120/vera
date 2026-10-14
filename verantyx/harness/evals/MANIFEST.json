@@ -1,0 +1,12 @@
+{
+ "files": {
+  "bank2.tsv": "da1154978bb2123b9af7fcffece83b2ad7d3267dee1a27f12bcef2ee0a447baf",
+  "bank4.tsv": "07c7c9b1acd52e657f4ee111a2c9a58d4fadd412caafa9f002f970f1f3bf89cb",
+  "bank6.tsv": "d3c093a3f07d7a067ca0dcf00c6d5c8aef5952de49d271385d325aa4eac4d989",
+  "bank7.tsv": "efafdb9ed93336b4b903de56b8ad0cde1a663729c1c343768d67927de4eaaab2",
+  "bank8.tsv": "26751d7af2c8513d7e4b2c434571ed6c90baec6c2cd2a1f12625bbfe17e63621",
+  "fulllead_sents.jsonl": "45efdaedb7abc8f43762ea0c237fca709b7a7b11710203fdeed7ab60c446cefe",
+  "memory.json": "a3e66636bdb67851415f73b91455166783416782e93357b83fbe38784767d807"
+ },
+ "schema": "vera-eval-manifest-1"
+}

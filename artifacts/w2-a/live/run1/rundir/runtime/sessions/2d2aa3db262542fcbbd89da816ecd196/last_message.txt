@@ -1,2 +1,0 @@
-{"type":"CLAIM","task":"Greeter","evidence":"Created greet.py to print `Hello, <name>!` using the first command-line argument."}
-{"type":"DONE"}

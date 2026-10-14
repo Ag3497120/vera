@@ -1,7 +1,7 @@
 """LOOM-f: the L2 API driver (docs/LINE3_LOOM_DESIGN.md 7.1 L2, 7.2, 7.3, 9.3).  A manual tool-use loop in which the model's ONLY path to
 anything is a tool call on the loom.
 
-WHAT THE DRIVER FORWARDS.  Its `tools` are the loom tools (the 17 after `begin`; the harness has begun the run) plus `done` and nothing else.
+WHAT THE DRIVER FORWARDS.  Its `tools` are the loom tools (the 19 after `begin`; the harness has begun the run) plus `done` and nothing else.
 Every `tool_use` block of an assistant turn is executed in block order against `LoomServer.call` (one ledger row each) with the driver's own
 `run_id` (a `run_id` the model passes is overwritten: it cannot reach another run), and all results go back in ONE user message.  Every `text`
 block of every assistant turn is DROPPED from the output path: its sha256 and length become one `free_text_dropped` row, and the text is
@@ -26,6 +26,12 @@ CONTROL (`control=True`, design 9.3 / 10.1): the one place where free text is th
 state-changing op, no emit, no done), `tool_choice` is `auto`, the text blocks of a turn that also carries tool calls are dropped like any
 other, and the text of the final tool-less turn is returned as `control_text` (the harness stores it as `free_text_control`).
 
+THE RUNAWAY CAP (PUB-H1, cap.v1; L-PUB-01..).  Every NEW run gets `RUNAWAY_CAPS_V1`: at most `repeat` (8) CONSECUTIVE calls of the same tool with the same arguments and at most `status`
+(20) calls of `status` per run.  The call that would exceed a cap is NOT executed (no row, no state); the run ends with the harness row `abandoned` whose reason is `cap_repeat` / `cap_status`
+(and whose args name the cap version, the tool and the count), the episode ends with that reason, the rest of the turn is not run (`calls_skipped_after_cap`).  The cap is the same for
+every arm and every mode (a control too).  It lives in the driver only: no ledger row kind is new, so every stored ledger replays as before and a run made before the cap simply has no
+such row; `caps=None` drives without it (what an older run was driven with).  Background: one gate-v2 run called `status` ~145 times to the 160-turn limit and used 57 % of the tokens.
+
 This module imports no SDK and no network module (the confined package imports none; test_loom_enforce reads the imports).  The real client is
 made by the harness (`experiments/line3/loom/harness.py: make_anthropic_client`, `anthropic` imported there, not here).  `ReplayClient` is the
 fake client of the tests: it replays a recorded script of turns and checks what the driver sends.
@@ -38,7 +44,9 @@ from dataclasses import dataclass, field
 from types import SimpleNamespace
 from typing import Any, Dict, Iterable, List, Optional, Sequence, Tuple
 
-MAX_TURNS = {"prose": 60, "code": 200}
+# L-LOOM-127 (LOOM-batch): prose 60 -> 160.  With the prose lookup cap at 100, 60 turns would end a run before its lookups did (the first
+# measurement's I2-025 record_only ended at exactly 60).  A turn may carry several calls; the caps, not this, are what bounds a run.
+MAX_TURNS = {"prose": 160, "code": 200}
 NO_TOOL_LIMIT = 3
 MAX_TOKENS = 4096
 REMINDER = ("Your last turn had no tool call. Text is discarded. Continue only by calling a tool: build the structure and call emit, "
@@ -55,6 +63,71 @@ DONE_TOOL = {"name": "done",
              "input_schema": {"type": "object", "properties": {}, "additionalProperties": False}}
 
 CONTROL_TOOLS = ("lookup", "read_sentence")
+
+# PUB-H1: the runaway cap.  Versioned: a run driven with it carries `caps` in its driver report; a run before it has none and its ledger is unchanged.
+CAP_VERSION = "cap.v1"
+CAP_REPEAT = 8                    # at most this many CONSECUTIVE calls of the same tool with the same arguments
+CAP_STATUS = 20                   # at most this many `status` calls per run (per delivered message in a story session: see memdriver)
+CAP_REASONS = ("cap_repeat", "cap_status")
+
+
+@dataclass(frozen=True)
+class RunawayCaps:
+    repeat: int = CAP_REPEAT
+    status: int = CAP_STATUS
+    version: str = CAP_VERSION
+
+    def to_obj(self) -> dict:
+        return {"version": self.version, "repeat": self.repeat, "status": self.status}
+
+
+RUNAWAY_CAPS_V1 = RunawayCaps()
+
+
+class CapTracker:
+    """The state of the runaway cap of one run (or of one delivered message of a story session: `reset`).  `admit(name, inp)` is asked BEFORE a call is executed and returns None (run it:
+    it is counted) or the reason (`cap_repeat` / `cap_status`) of the call that must not run.  A refused or failed call counts like any other: a model repeating a refused call is the runaway.
+    The arguments are compared as canonical JSON of what the model sent (the driver's own `run_id` is not part of them); `cap_repeat` is judged before `cap_status`."""
+
+    def __init__(self, caps: Optional[RunawayCaps]) -> None:
+        self.caps = caps
+        self.hit: Optional[dict] = None
+        self.reset()
+
+    def reset(self) -> None:
+        self._last: Optional[Tuple[Any, str]] = None
+        self._streak = 0
+        self._status = 0
+
+    @staticmethod
+    def _key(name: Any, inp: Any) -> Tuple[Any, str]:
+        a = {k: v for k, v in inp.items() if k != "run_id"} if isinstance(inp, dict) else {}
+        return (name if isinstance(name, str) else None, json.dumps(a, ensure_ascii=False, sort_keys=True, default=str))
+
+    def admit(self, name: Any, inp: Any) -> Optional[str]:
+        if self.caps is None:
+            return None
+        key = self._key(name, inp)
+        streak = self._streak + 1 if key == self._last else 1
+        status = self._status + (1 if key[0] == "status" else 0)
+        reason = None
+        if streak > self.caps.repeat:
+            reason = "cap_repeat"
+        elif status > self.caps.status:
+            reason = "cap_status"
+        if reason is not None:
+            self.hit = {"reason": reason, "tool": key[0], "n": streak if reason == "cap_repeat" else status}
+            return reason
+        self._last, self._streak, self._status = key, streak, status
+        return None
+
+    def abandon_args(self) -> dict:
+        """The args of the `abandoned` row of the call that hit a cap (only after `admit` returned a reason)."""
+        h = self.hit or {}
+        out: Dict[str, Any] = {"reason": h.get("reason"), "cap": self.caps.version if self.caps else None, "n": h.get("n")}
+        if h.get("tool") is not None:
+            out["tool"] = h["tool"]
+        return out
 
 
 def forced_choice_accepted(model: str) -> bool:
@@ -105,41 +178,50 @@ def _get(b: Any, k: str, default: Any = None) -> Any:
 
 @dataclass
 class DriverResult:
-    ended: str = "?"                                  # closed | done | max_turns | no_tool_call | api_error | control_answer
+    ended: str = "?"                                  # closed | done | max_turns | no_tool_call | api_error | control_answer | cap_repeat | cap_status
     turns: int = 0
     tool_calls: int = 0
     text_blocks_dropped: int = 0
     thinking_dropped: Dict[str, Any] = field(default_factory=lambda: {"n": 0, "chars": 0, "sha256": []})   # thinking blocks: hash + length only, never a ledger row
     calls_skipped_after_close: int = 0
+    calls_skipped_after_cap: int = 0
+    caps: Optional[dict] = None                       # the runaway cap this run was driven with (None: driven without one)
+    cap_hit: Optional[dict] = None                    # {"reason", "tool", "n"} of the call that ended the run, else None
     tool_less_turns: int = 0
     response_models: List[str] = field(default_factory=list)
     stop_reasons: List[str] = field(default_factory=list)
     control_text: Optional[str] = None
     error: Optional[str] = None
     tool_choice: Optional[dict] = None
+    usage: Dict[str, int] = field(default_factory=lambda: {"calls": 0, "input_tokens": 0, "output_tokens": 0,
+                                                            "cache_read_input_tokens": 0, "cache_creation_input_tokens": 0})   # what the API reports; testimony
 
     def to_obj(self) -> dict:
         return {k: getattr(self, k) for k in ("ended", "turns", "tool_calls", "text_blocks_dropped", "thinking_dropped", "calls_skipped_after_close",
                                               "tool_less_turns", "response_models",
-                                              "stop_reasons", "error", "tool_choice")} | {"control_text_chars": None if self.control_text is None else len(self.control_text)}
+                                              "stop_reasons", "error", "tool_choice", "usage")} | (
+            {} if self.caps is None else {"caps": self.caps, "cap_hit": self.cap_hit, "calls_skipped_after_cap": self.calls_skipped_after_cap}) | {"control_text_chars": None if self.control_text is None else len(self.control_text)}
 
 
 def first_message(begin_result: dict) -> str:
-    """The first user turn: the `begin` result (task text, mode, caps, rules) as JSON.  No gold is anywhere in it."""
+    """The first user turn: the `begin` result (task text, mode, caps, rules; with the evidence gate also the loom's own cut of the question, `question`,
+    read-only: L-LOOM-185) as JSON.  No gold is anywhere in it."""
     return ("The run has been begun for you; the run id is supplied by the system, never pass it. This is the result of begin:\n"
-            + json.dumps({k: begin_result[k] for k in ("task", "rules") if k in begin_result}, ensure_ascii=False, sort_keys=True))
+            + json.dumps({k: begin_result[k] for k in ("task", "rules", "question") if k in begin_result}, ensure_ascii=False, sort_keys=True))
 
 
 def run_episode(client: Any, server: Any, run_id: str, model: str, system: str, user_message: str, tools: Sequence[dict], *,
                 tool_choice: Optional[dict] = None, max_turns: int = MAX_TURNS["prose"], max_tokens: int = MAX_TOKENS, control: bool = False,
-                extra: Optional[dict] = None) -> DriverResult:
-    """Drive one episode.  `client.messages.create(**kwargs)` returns an object (or dict) with `content` (blocks of type text / tool_use / ...),
+                extra: Optional[dict] = None, caps: Optional[RunawayCaps] = RUNAWAY_CAPS_V1) -> DriverResult:
+    """Drive one episode.  `caps` (PUB-H1): the runaway cap every new run gets (`RUNAWAY_CAPS_V1`); None drives without it, as a run before the cap was driven.  `client.messages.create(**kwargs)` returns an object (or dict) with `content` (blocks of type text / tool_use / ...),
     `stop_reason`, `model`.  `server` is a LoomServer: `call`, `harness`, `closed`."""
     res = DriverResult()
     choice = tool_choice if tool_choice is not None else ({"type": "auto"} if control else {"type": "any"})
     if control:
         choice = {"type": "auto"}
     res.tool_choice = choice
+    tracker = CapTracker(caps)
+    res.caps = None if caps is None else caps.to_obj()
     messages: List[dict] = [{"role": "user", "content": user_message}]
     allowed = {t["name"] for t in tools}
 
@@ -170,6 +252,12 @@ def run_episode(client: Any, server: Any, run_id: str, model: str, system: str, 
             abandon("api_error")
             return res
         res.turns += 1
+        res.usage["calls"] += 1
+        us = _get(resp, "usage")
+        for k in ("input_tokens", "output_tokens", "cache_read_input_tokens", "cache_creation_input_tokens"):
+            v = _get(us, k) if us is not None else None
+            if isinstance(v, int) and not isinstance(v, bool):
+                res.usage[k] += v
         content = list(_get(resp, "content", []) or [])
         res.stop_reasons.append(str(_get(resp, "stop_reason", "")))
         rm = _get(resp, "model")
@@ -204,6 +292,15 @@ def run_episode(client: Any, server: Any, run_id: str, model: str, system: str, 
                 break
             name = _get(tu, "name")
             inp = _get(tu, "input")
+            if not (name == "done" and not control):                              # `done` ends the episode and is no tool call of the loom: it is not counted
+                why = tracker.admit(name, inp)
+                if why is not None:                                               # PUB-H1: the runaway cap: this call does not run; the run ends with an explicit row
+                    res.calls_skipped_after_cap += len(uses) - k
+                    res.cap_hit = dict(tracker.hit or {})
+                    res.ended = why
+                    if server.closed(run_id) is None:
+                        server.harness(run_id, "abandoned", tracker.abandon_args())
+                    return res
             if name == "done" and not control:
                 res.tool_calls += 1
                 results.append({"type": "tool_result", "tool_use_id": _get(tu, "id"), "content": json.dumps({"ok": True})})

@@ -1,2 +1,0 @@
-ingest_ms
-elapsed_ms

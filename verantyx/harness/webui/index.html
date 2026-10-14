@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="vera-token" content="__VERA_TOKEN__">
+<title>Vera Harness</title>
+<style>
+:root{--bg:#f6f6f3;--panel:#fff;--ink:#1b1d20;--mute:#6a6f76;--line:#dcdcd6;--accent:#1f5fbf;--ok:#1a7a3c;--bad:#b3261e;--warn:#9a6700;--code:#f0f0ea}
+@media (prefers-color-scheme:dark){:root{--bg:#15171a;--panel:#1d2024;--ink:#e8e8e4;--mute:#9aa0a6;--line:#33373c;--accent:#7fb0ff;--ok:#5fcf86;--bad:#ff8a80;--warn:#e0b04a;--code:#262a2f}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 system-ui,-apple-system,"Hiragino Sans","Noto Sans JP",sans-serif}
+header{display:flex;gap:12px;align-items:baseline;flex-wrap:wrap;padding:10px 16px;border-bottom:1px solid var(--line);background:var(--panel)}
+header h1{font-size:17px;margin:0}
+header .sub{color:var(--mute);font-size:13px}
+header .chip{margin-left:auto;font-size:12px;color:var(--mute)}
+main{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:12px;padding:12px 16px;max-width:1500px;margin:0 auto}
+@media (max-width:860px){main{grid-template-columns:1fr}}
+section{background:var(--panel);border:1px solid var(--line);border-radius:8px;display:flex;flex-direction:column;min-height:0}
+section>h2{font-size:13px;margin:0;padding:8px 12px;border-bottom:1px solid var(--line);color:var(--mute);font-weight:600}
+.body{padding:10px 12px;overflow:auto;max-height:68vh}
+.tabs{display:flex;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.tabs button{background:none;border:0;border-bottom:2px solid transparent;color:var(--mute);padding:8px 12px;font:inherit;font-size:13px;cursor:pointer}
+.tabs button[aria-selected=true]{color:var(--ink);border-bottom-color:var(--accent)}
+.turn{border:1px solid var(--line);border-radius:6px;margin:0 0 10px;padding:8px 10px;cursor:pointer}
+.turn.sel{outline:2px solid var(--accent)}
+.q{font-weight:600}
+.quote{margin:6px 0 2px;padding:6px 10px;border-left:3px solid var(--ok);background:var(--code);font-size:16px}
+.src{font-size:12.5px;color:var(--mute);margin:2px 0}
+.refuse{margin:6px 0 2px;padding:6px 10px;border-left:3px solid var(--warn);background:var(--code)}
+.tag{display:inline-block;font:12px ui-monospace,Menlo,monospace;background:var(--code);border-radius:4px;padding:1px 6px;margin-right:4px}
+.mute{color:var(--mute);font-size:12.5px}
+textarea,input,select{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:6px 8px;max-width:100%}
+textarea{width:100%;resize:vertical}
+button.act{font:inherit;background:var(--accent);color:#fff;border:0;border-radius:6px;padding:6px 14px;cursor:pointer}
+@media (prefers-color-scheme:dark){button.act{color:#10151c}}
+button.act[disabled]{opacity:.5;cursor:wait}
+button.sub{font:inherit;background:none;border:1px solid var(--line);color:var(--ink);border-radius:6px;padding:5px 10px;cursor:pointer}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:6px 0}
+table{border-collapse:collapse;width:100%;font-size:12.5px}
+th,td{border-bottom:1px solid var(--line);padding:3px 6px;text-align:left;vertical-align:top}
+td.m{font-family:ui-monospace,Menlo,monospace;word-break:break-all}
+td.op{font-family:ui-monospace,Menlo,monospace;white-space:nowrap}
+tr.badlink td{background:rgba(179,38,30,.15)}
+.ok{color:var(--ok)}.bad{color:var(--bad)}.warn{color:var(--warn)}
+pre{background:var(--code);padding:8px;border-radius:6px;overflow:auto;font-size:12.5px;white-space:pre-wrap}
+label.f{display:grid;grid-template-columns:150px 1fr;gap:8px;align-items:center;margin:6px 0}
+@media (max-width:560px){label.f{grid-template-columns:1fr}}
+.note{border:1px solid var(--line);border-radius:6px;padding:6px 8px;margin:6px 0}
+.err{color:var(--bad);margin:6px 0}
+</style>
+</head>
+<body>
+<header>
+  <h1>Vera Harness</h1>
+  <span class="sub">答えは記録の引用か「分かりません」だけ。全操作はハッシュで連ねた台帳に残る。</span>
+  <span class="chip" id="chip"></span>
+</header>
+<main>
+  <section aria-label="会話">
+    <h2>会話 <span class="mute">/ conversation</span></h2>
+    <div class="body" id="turns"></div>
+    <div style="padding:10px 12px;border-top:1px solid var(--line)">
+      <div class="row">
+        <label><input type="radio" name="mode" value="docs" checked> 文書に問う</label>
+        <label><input type="radio" name="mode" value="memory"> 記憶に問う</label>
+        <label><input type="radio" name="mode" value="say"> 記憶に覚えさせる</label>
+      </div>
+      <textarea id="input" rows="3" placeholder="質問（1 文）／ 覚えさせる事実（1 行に 1 つ、1 文で）"></textarea>
+      <div class="row"><button class="act" id="go">送る</button><span class="mute" id="busy"></span></div>
+      <div class="err" id="err" role="alert"></div>
+    </div>
+  </section>
+  <section aria-label="詳細">
+    <div class="tabs" role="tablist" id="tabs"></div>
+    <div class="body" id="panel"></div>
+  </section>
+</main>
+<script>
+"use strict";
+const TOKEN = document.querySelector('meta[name="vera-token"]').content;
+const S = {state: null, sel: null, tab: "trace", busy: false};
+const TABS = [["trace", "操作の流れ"], ["ledger", "台帳"], ["memory", "記憶"], ["settings", "設定"]];
+
+function el(tag, attrs, ...kids) {
+  const e = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs || {})) {
+    if (k === "class") e.className = v; else if (k.startsWith("on")) e.addEventListener(k.slice(2), v); else if (v !== null && v !== undefined && v !== false) e.setAttribute(k, v === true ? "" : v);
+  }
+  for (const c of kids.flat()) if (c !== null && c !== undefined && c !== false) e.append(c.nodeType ? c : document.createTextNode(String(c)));
+  return e;
+}
+async function api(path, body) {
+  const opt = {headers: {"X-Vera-Token": TOKEN}};
+  if (body !== undefined) { opt.method = "POST"; opt.headers["Content-Type"] = "application/json"; opt.body = JSON.stringify(body); }
+  const r = await fetch(path, opt);
+  const j = await r.json().catch(() => ({error: "bad response"}));
+  if (!r.ok) throw new Error(j.error || r.statusText);
+  return j;
+}
+const clear = (n) => { while (n.firstChild) n.removeChild(n.firstChild); return n; };
+const short = (s, n) => (s ? String(s).slice(0, n || 10) : "");
+
+// ---- conversation: the answer is a quote with its source sentence, or 分かりません and the typed reason; nothing else of the model is rendered ----
+function renderTurn(t) {
+  const box = el("div", {class: "turn" + (S.sel === t.id ? " sel" : ""), onclick: () => { S.sel = t.id; renderTurns(); renderPanel(); }});
+  if (t.mode === "say") {
+    box.append(el("div", {class: "q"}, "覚えさせた: ", t.messages.join(" / ")),
+      el("div", {class: "mute"}, `session ${t.session}、${t.kept} 件。` + (t.committed ? "保存しました" : "保存されませんでした: " + t.ended) + (t.error ? " — " + t.error : "")),
+      (t.redacted && t.redacted.length) ? el("div", {class: "src"}, "注意: 発言（回 " + t.redacted.join(", ") + "）の秘密の形の部分を伏せて記録しました。") : null,
+      (t.lossy && t.lossy.length) ? el("div", {class: "refuse"}, "注意: 発言（回 " + t.lossy.join(", ") + "）は伏せた結果、一部が読み取れませんでした。この回より前の事項への問いには答えません。") : null);
+    return box;
+  }
+  const a = t.answer;
+  box.append(el("div", {class: "q"}, (t.mode === "memory" ? "記憶: " : "文書: ") + t.question));
+  if (a.status === "answered") {
+    box.append(el("div", {class: "quote"}, "「" + a.text + "」"));
+    for (const s of a.sources) {
+      box.append(el("div", {class: "src"}, "根拠: " + s.text + (s.source ? "（" + s.source + "）" : "")));
+      if (s.sourced === false) box.append(el("div", {class: "refuse"}, "出所: 利用者の発言ではない（エージェントの記録）"));
+    }
+  } else {
+    box.append(el("div", {class: "refuse"}, "分かりません ", el("span", {class: "tag"}, a.reason || "unknown"), a.reason_ja ? "（" + a.reason_ja + "）" : ""));
+    const d = a.detail || {};
+    if (d.contested) for (const c of d.contested) box.append(el("div", {class: "src"}, "食い違い: 「" + c.value + "」" + (c.sourced ? "" : "  出所: 利用者の発言ではない（エージェントの記録）")));
+    else if (d.contested_values) box.append(el("div", {class: "src"}, "食い違い: " + d.contested_values.map((v) => "「" + v + "」").join(" / ")));
+    if (d.turn) box.append(el("div", {class: "src"}, "利用者の発言（回 " + d.turn + "）が記憶に入っていません"));
+    if (d.last_refusal) box.append(el("div", {class: "src"}, "最後の拒否: " + d.last_refusal));
+    if (d.plugin) box.append(el("div", {class: "src"}, `プラグイン: ${d.plugin.kind}/${d.plugin.name} ${d.plugin.version}（${d.plugin.code}）`));
+    if (d.error) box.append(el("div", {class: "err"}, d.error));
+  }
+  for (const n of (a.detail || {}).annotations || []) box.append(el("div", {class: "src"}, `注記[${n.kind}] ${n.text || n.error || ""}`));
+  box.append(el("div", {class: "mute"}, a.verified ? el("span", {class: "ok"}, "台帳は検証済み") : el("span", {class: "bad"}, "未検証"),
+    ` · モデルの自由な文 ${a.free_text_dropped || 0} 件を破棄 · `, (a.backend || {}).backend || "", " ", (a.backend || {}).model || ""));
+  return box;
+}
+function renderTurns() {
+  const n = clear(document.getElementById("turns"));
+  const ts = S.state.turns;
+  if (!ts.length) n.append(el("p", {class: "mute"}, "まだ会話がありません。設定タブで文書の場所（または記憶の保存先）を決め、質問してください。数字は信じる前に台帳で確かめられます。"));
+  for (const t of ts) n.append(renderTurn(t));
+  n.scrollTop = n.scrollHeight;
+}
+
+// ---- tabs ----
+function renderTabs() {
+  const n = clear(document.getElementById("tabs"));
+  for (const [id, label] of TABS) n.append(el("button", {role: "tab", "aria-selected": S.tab === id ? "true" : "false", onclick: () => { S.tab = id; renderTabs(); renderPanel(); }}, label));
+}
+const selTurn = () => S.state.turns.find((t) => t.id === S.sel) || [...S.state.turns].reverse().find((t) => t.answer && t.answer.run) || null;
+async function renderPanel() {
+  const p = clear(document.getElementById("panel"));
+  try {
+    if (S.tab === "settings") return renderSettings(p);
+    if (S.tab === "memory") return await renderMemory(p);
+    const t = selTurn();
+    if (!t || !t.answer || !t.answer.run) { p.append(el("p", {class: "mute"}, "会話の中の質問を選ぶと、その実行の操作の流れと台帳がここに出ます。")); return; }
+    const j = await api("/api/ledger?run=" + encodeURIComponent(t.answer.run));
+    if (S.tab === "trace") return renderTrace(p, j);
+    return renderLedger(p, j, t.answer.run);
+  } catch (e) { p.append(el("div", {class: "err"}, String(e.message || e))); }
+}
+function renderTrace(p, j) {
+  p.append(el("p", {class: "mute"}, `${j.rows.length} 行。モデルの自由な文は内容を持たず、長さとハッシュだけが残ります。`));
+  const tb = el("table", {}, el("tr", {}, ["#", "誰が", "操作", "内容"].map((h) => el("th", {}, h))));
+  for (const r of j.rows) tb.append(el("tr", {}, el("td", {}, r.i), el("td", {}, r.actor), el("td", {class: "op"}, r.op + (r.ok === false ? " ✗" : "")), el("td", {class: r.ok === false ? "bad" : ""}, r.what)));
+  p.append(tb);
+}
+function renderLedger(p, j, run) {
+  const res = el("div", {class: "note", id: "vres"}, "Verify を押すと、ハッシュ連鎖と再生（バイト単位の一致）を確かめます。");
+  p.append(el("div", {class: "row"}, el("button", {class: "act", id: "vbtn", onclick: async (ev) => {
+    ev.target.disabled = true;
+    try {
+      const v = await api("/api/verify", {run});
+      const ok = v.status === "OK";
+      clear(res).append(el("b", {class: ok ? "ok" : "bad"}, v.status), ` ${v.kind || ""} rows=${v.rows ?? "-"}`);
+      if (v.replay && v.replay.status) res.append(el("div", {}, "replay: ", v.replay.status, v.replay.mismatch ? "  (" + v.replay.mismatch + ")" : ""));
+      if (v.status === "REPLAY_INPUTS_MISMATCH") res.append(el("div", {class: "warn"}, "INPUTS: 台帳が宣言した入力（文書・プラグイン）がここにありません。OK とは言えません。"));
+      for (const x of v.problems || []) res.append(el("div", {class: "bad"}, JSON.stringify(x)));
+    } catch (e) { clear(res).append(el("span", {class: "bad"}, String(e.message || e))); }
+    ev.target.disabled = false;
+  }}, "Verify"), el("span", {class: "mute"}, "head: " + short(j.head, 16))), res);
+  const tb = el("table", {}, el("tr", {}, ["#", "操作", "sha", "prev", "鎖"].map((h) => el("th", {}, h))));
+  let prev = null;
+  for (const r of j.rows) {
+    const linked = prev === null || r.prev === prev;
+    tb.append(el("tr", {class: linked ? "" : "badlink"}, el("td", {}, r.i), el("td", {class: "op"}, r.actor + "/" + r.op), el("td", {class: "m"}, short(r.sha, 12)), el("td", {class: "m"}, short(r.prev, 12)), el("td", {class: linked ? "ok" : "bad"}, linked ? "✓" : "✗")));
+    prev = r.sha;
+  }
+  p.append(tb);
+}
+async function renderMemory(p) {
+  const m = await api("/api/memory");
+  if (!m.present) { p.append(el("p", {class: "mute"}, "記憶の保存先がまだ空です。設定で store を決め、「記憶に覚えさせる」で事実を渡してください。")); return; }
+  p.append(el("p", {}, `記憶 ${m.n_sentences} 文。`, Object.entries(m.counts).map(([k, v]) => el("span", {class: "tag"}, k + " " + v))));
+  const t = selTurn();
+  if (t && t.mode === "memory" && t.answer && t.answer.run) {
+    const pv = await api("/api/position?run=" + encodeURIComponent(t.answer.run));
+    p.append(el("h3", {}, "問いの位置の十字と巣: " + t.question));
+    if (!pv.positions.length) p.append(el("p", {class: "mute"}, "この問いは位置に当たりませんでした（想起が空）。"));
+    for (const x of pv.positions) {
+      p.append(el("div", {class: "note"}, el("b", {}, x.text || x.position[1]), x.cross ? el("pre", {}, x.cross) : null,
+        el("div", {class: "mute"}, "履歴: " + (x.history.map((h) => `${h.value}(s${h.sid}${h.kind === "first" ? "" : " " + h.kind})`).join(" → ") || "なし")),
+        x.nests.length ? el("div", {class: "mute"}, "巣: " + x.nests.map((n) => `${n.topic}（${n.members}）`).join("、")) : null));
+    }
+  }
+  p.append(el("h3", {}, "注記"));
+  if (!m.notes.length) p.append(el("p", {class: "mute"}, "注記はありません。"));
+  for (const n of m.notes) {
+    p.append(el("div", {class: "note"}, el("span", {class: "tag"}, n.type), n.text, (n.earlier || []).map((e) => el("div", {class: "src"}, "← s" + e.sid + " " + e.text))));
+  }
+  if (m.nests.length) { p.append(el("h3", {}, "巣")); for (const n of m.nests) p.append(el("div", {class: "src"}, `${n.topic}（中心 ${n.centre}、${n.members} 文）`)); }
+  p.append(el("h3", {}, "覚えている文"));
+  const tb = el("table", {});
+  for (const s of m.sentences) tb.append(el("tr", {}, el("td", {class: "m"}, "s" + s.sid), el("td", {class: "m"}, s.turn || ""), el("td", {}, s.text)));
+  p.append(tb);
+}
+function renderSettings(p) {
+  const st = S.state, c = st.config, ch = st.choices;
+  const f = {};
+  const field = (key, label, node) => { f[key] = node; return el("label", {class: "f"}, label, node); };
+  const ro = (v) => el("input", {type: "text", value: v == null ? "" : v, readonly: true, disabled: true});
+  const sel = (opts, cur) => { const s = el("select", {}); for (const o of opts) s.append(el("option", {value: o, selected: o === cur}, o)); return s; };
+  const txt = (v) => el("input", {type: "text", value: v == null ? "" : v});
+  const checks = (key, opts, cur) => { const d = el("div", {}); f[key] = d; for (const o of opts) d.append(el("label", {style: "margin-right:12px"}, el("input", {type: "checkbox", value: o, checked: cur.includes(o)}), " " + o)); return d; };
+  p.append(el("p", {class: "mute"}, "API キーはここでは入力も表示もできません。環境変数か macOS の鍵束から読みます（値は決して画面・台帳に出ません）。"));
+  const kt = el("table", {}, el("tr", {}, ["提供元", "キー", "出どころ", "環境変数 / 鍵束"].map((h) => el("th", {}, h))));
+  for (const [prov, k] of Object.entries(st.keys)) kt.append(el("tr", {}, el("td", {}, prov), el("td", {class: k.present ? "ok" : "warn"}, k.present ? "あり" : "なし"), el("td", {}, k.source || "-"), el("td", {class: "m"}, k.env.join(", ") + (k.keychain ? " / " + k.keychain : ""))));
+  p.append(kt, el("p", {class: "mute"}, "ローカルの Ollama / LM Studio などはキー不要です。"));
+  p.append(field("backend", "バックエンド（コマンドラインのみ）", ro(c.backend)), field("model", "モデル", txt(c.model)), field("base_url", "base URL（コマンドラインのみ）", ro(c.base_url)),
+    field("api_key_env", "鍵の環境変数名（コマンドラインのみ）", ro(c.api_key_env)), field("tool_choice", "ツール強制", sel(["required", "auto"], c.tool_choice)),
+    field("temperature", "temperature", txt(c.temperature)), field("evidence", "引用の門", sel(ch.evidence, c.evidence)),
+    field("docs", "文書（コマンドラインのみ）", ro(c.docs)), field("store", "記憶の保存先（コマンドラインのみ）", ro(c.store)), field("runs_dir", "実行の保存先（コマンドラインのみ）", ro(c.runs_dir)),
+    field("memory_profile", "記憶の版", sel(ch.memory_profile, c.memory_profile)),
+    el("div", {}, "ゲートフィルタ: ", checks("gate_filters", ch.gate_filters, c.gate_filters)), el("div", {}, "注記の種類: ", checks("note_kinds", ch.note_kinds.filter((n) => !["same_seat", "update", "reversal_x", "enumeration"].includes(n)), c.note_kinds)));
+  const msg = el("span", {class: "mute"});
+  p.append(el("div", {class: "row"}, el("button", {class: "act", onclick: async () => {
+    const patch = {};
+    for (const k of ["model", "tool_choice", "evidence", "memory_profile"]) patch[k] = f[k].value;
+    patch.temperature = f.temperature.value === "" ? null : Number(f.temperature.value);
+    for (const k of ["gate_filters", "note_kinds"]) patch[k] = [...f[k].querySelectorAll("input:checked")].map((i) => i.value);
+    try { const r = await api("/api/config", patch); S.state.config = r.config; msg.textContent = "保存しました"; refreshChip(); } catch (e) { msg.textContent = String(e.message || e); }
+  }}, "保存"), msg));
+  p.append(el("h3", {}, "プラグイン"));
+  const pt = el("table", {});
+  for (const x of st.plugins) pt.append(el("tr", {}, el("td", {}, x.kind), el("td", {class: "m"}, x.name), el("td", {}, x.version), el("td", {}, x.builtin ? "標準" : x.origin)));
+  p.append(pt);
+  for (const e of st.plugin_errors) p.append(el("div", {class: "err"}, `読めなかったプラグイン ${e.origin}: ${e.error}`));
+}
+function refreshChip() { const c = S.state.config; document.getElementById("chip").textContent = `${c.backend}${c.model ? " · " + c.model : ""}${S.state.remote ? " · REMOTE" : ""}`; }
+
+// ---- send ----
+async function send() {
+  const input = document.getElementById("input"), mode = document.querySelector("input[name=mode]:checked").value;
+  const text = input.value.trim();
+  if (!text || S.busy) return;
+  S.busy = true; document.getElementById("go").disabled = true; document.getElementById("busy").textContent = "実行中…（モデルを呼んでいます）"; document.getElementById("err").textContent = "";
+  try {
+    const r = mode === "say" ? await api("/api/say", {messages: text.split("\n").map((x) => x.trim()).filter(Boolean)}) : await api("/api/ask", {mode, question: text});
+    S.state.turns.push(r.turn); S.sel = r.turn.id; input.value = "";
+    if (mode === "memory") S.tab = "memory"; else if (mode === "docs") S.tab = "trace";
+    renderTurns(); renderTabs(); renderPanel();
+  } catch (e) { document.getElementById("err").textContent = String(e.message || e); }
+  S.busy = false; document.getElementById("go").disabled = false; document.getElementById("busy").textContent = "";
+}
+document.getElementById("go").addEventListener("click", send);
+document.getElementById("input").addEventListener("keydown", (e) => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) send(); });
+(async function init() {
+  try { S.state = await api("/api/state"); } catch (e) { document.body.append(el("p", {class: "err"}, String(e.message || e))); return; }
+  refreshChip(); renderTabs(); renderTurns(); renderPanel();
+})();
+</script>
+</body>
+</html>

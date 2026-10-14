@@ -1,0 +1,190 @@
+{
+ "full": {
+  "gate_sets": {
+   "bank6": {
+    "admitted_ids": [],
+    "answerable": 26,
+    "reach": 3,
+    "reach_ids": [
+     "B6-A05",
+     "B6-A13",
+     "B6-A27"
+    ],
+    "unans_admitted": 0,
+    "unanswerable": 34,
+    "wrong_admitting": 3,
+    "wrong_ids": [
+     "B6-A05",
+     "B6-A20",
+     "B6-A27"
+    ]
+   },
+   "bank7": {
+    "admitted_ids": [],
+    "answerable": 32,
+    "reach": 1,
+    "reach_ids": [
+     "B7-A23"
+    ],
+    "unans_admitted": 0,
+    "unanswerable": 47,
+    "wrong_admitting": 0,
+    "wrong_ids": []
+   },
+   "bank8": {
+    "admitted_ids": [],
+    "answerable": 35,
+    "reach": 3,
+    "reach_ids": [
+     "B8b-A05",
+     "B8b-A07",
+     "B8b-A19"
+    ],
+    "unans_admitted": 0,
+    "unanswerable": 50,
+    "wrong_admitting": 1,
+    "wrong_ids": [
+     "B8b-A28"
+    ]
+   },
+   "dev": {
+    "admitted_ids": [],
+    "answerable": 69,
+    "reach": 10,
+    "reach_ids": [
+     "I2-003",
+     "I2-004",
+     "I2-005",
+     "I2-006",
+     "I2-013",
+     "I2-014",
+     "I2-018",
+     "R2-I005",
+     "R2-I007",
+     "R2-I017"
+    ],
+    "unans_admitted": 0,
+    "unanswerable": 60,
+    "wrong_admitting": 0,
+    "wrong_ids": []
+   }
+  }
+ },
+ "gate": "evidence.v6",
+ "memory": {
+  "capability": {
+   "contested_refused": 0,
+   "emitted_right": 4,
+   "exact": 11,
+   "questions": 20,
+   "reached": 12
+  },
+  "notes": {
+   "REVERSAL_X": {
+    "false_alarms": 0,
+    "firings": 0,
+    "hits": 0,
+    "plants": 4,
+    "plants_found": 0
+   },
+   "SAME_SEAT": {
+    "false_alarms": 4,
+    "firings": 11,
+    "hits": 7,
+    "plants": 12,
+    "plants_found": 7
+   },
+   "UPDATE": {
+    "false_alarms": 0,
+    "firings": 0,
+    "hits": 0,
+    "plants": 6,
+    "plants_found": 0
+   }
+  },
+  "safety": {
+   "emitted_bridged_choice": 0,
+   "emitted_contested": 0,
+   "emitted_old": 0,
+   "emitted_wrong": 0,
+   "one_side_emitted": 0
+  },
+  "stores": [
+   "MEM-T01",
+   "MEM-T03"
+  ]
+ },
+ "quick": {
+  "gate_sets": {
+   "bank6": {
+    "admitted_ids": [],
+    "answerable": 26,
+    "reach": 3,
+    "reach_ids": [
+     "B6-A05",
+     "B6-A13",
+     "B6-A27"
+    ],
+    "unans_admitted": 0,
+    "unanswerable": 34,
+    "wrong_admitting": 3,
+    "wrong_ids": [
+     "B6-A05",
+     "B6-A20",
+     "B6-A27"
+    ]
+   },
+   "bank7": {
+    "admitted_ids": [],
+    "answerable": 32,
+    "reach": 1,
+    "reach_ids": [
+     "B7-A23"
+    ],
+    "unans_admitted": 0,
+    "unanswerable": 47,
+    "wrong_admitting": 0,
+    "wrong_ids": []
+   },
+   "bank8": {
+    "admitted_ids": [],
+    "answerable": 35,
+    "reach": 3,
+    "reach_ids": [
+     "B8b-A05",
+     "B8b-A07",
+     "B8b-A19"
+    ],
+    "unans_admitted": 0,
+    "unanswerable": 50,
+    "wrong_admitting": 1,
+    "wrong_ids": [
+     "B8b-A28"
+    ]
+   },
+   "dev": {
+    "admitted_ids": [],
+    "answerable": 69,
+    "reach": 10,
+    "reach_ids": [
+     "I2-003",
+     "I2-004",
+     "I2-005",
+     "I2-006",
+     "I2-013",
+     "I2-014",
+     "I2-018",
+     "R2-I005",
+     "R2-I007",
+     "R2-I017"
+    ],
+    "unans_admitted": 0,
+    "unanswerable": 60,
+    "wrong_admitting": 0,
+    "wrong_ids": []
+   }
+  }
+ },
+ "schema": "vera-eval-expected-1",
+ "v6_digest": "3efb08c90a81338de9c3afaaa7354f0da099af552eef9a41a53e88634dbae83e"
+}

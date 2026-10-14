@@ -1,2 +1,0 @@
-[]
-('declared_dsl', 'declared_text') ('same', 'distinct') ('same', 'distinct', 'undeclared')

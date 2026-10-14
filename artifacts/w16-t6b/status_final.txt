@@ -1,4 +1,0 @@
- M docs/ATTEST.md
- M verantyx/attest.py
-?? artifacts/w16-t6b/
-?? tests/test_w16t6b_ledger_verify.py

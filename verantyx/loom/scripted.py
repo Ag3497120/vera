@@ -87,6 +87,19 @@ def weave_tokyo(w: ScriptedWeaver) -> dict:
     return w.call("emit")                                                                        # 16
 
 
+def weave_tokyo_batch(w: ScriptedWeaver, sid: int, tier: str = "WORD", first: str = "東京", last: str = "首都") -> dict:
+    """LOOM-span: 「東京は日本の首都」 from ONE evidence sentence (the sentence 「東京は日本の首都です」, id `sid`) with the span weaving.
+    read_sentence; weave_span from 東京 to 首都: the gap after 東京 is は (a topic cross, 東京は), the gap after 日本 is の (日本 on the の arm of the cross
+    whose centre is 首都): two crosses, linked in order, that read 東京は日本の首都 word for word; emit.  Four model rows after `begin`, ONE of them
+    state-changing (`weave_span`), instead of the sixteen (fifteen ops) of `weave_tokyo`."""
+    w.begin()
+    w.call("read_sentence", sid=sid)
+    r = w.call("weave_span", sid=sid, tier=tier, **{"from": first, "to": last})
+    if not r.get("ok"):
+        return r
+    return w.call("emit")
+
+
 def say_only(w: ScriptedWeaver, text: str = "答えは東京です") -> None:
     """The enforcement control (T-LOOM-30): a weaver that begins, answers in free text, and stops."""
     w.begin()

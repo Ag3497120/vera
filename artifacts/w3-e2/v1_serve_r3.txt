@@ -1,2 +1,0 @@
-serve strict SAME
-rows 310 (wc:      310)

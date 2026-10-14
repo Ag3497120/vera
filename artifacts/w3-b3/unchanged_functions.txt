@@ -1,3 +1,0 @@
-verantyx/semantic_read.py changed ['_read_ja'] removed []
-verantyx/semantic_reader.py changed [] removed []
-verantyx/event_cross.py changed ['Filler', '_check', 'build_crosses'] removed []

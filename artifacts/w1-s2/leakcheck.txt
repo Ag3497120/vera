@@ -1,2 +1,0 @@
-leakcheck: scanned_files=160 leaks=0
-exit=0

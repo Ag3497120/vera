@@ -1,6 +1,0 @@
-rows=4149
-entry none SAME
-rows=4149
-entry r8 SAME
-rows=4149
-entry r9 SAME

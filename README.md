@@ -1,135 +1,160 @@
-# Vera (line 3) — a deterministic Japanese question-answering structure with no training
+# Vera Harness
 
-Vera is a weekend-scale research project: can a structure built **only from the sentences of a corpus** — no neural network, no embeddings, no weights, no random numbers — answer questions about that corpus, show where every candidate came from, and stay silent when it has no evidence?
+**モデルは嘘をつかない代わりに、黙る。** Vera Harness は、モデル（Claude、DeepSeek、Ollama のローカルモデルなど）を Vera の中で動かし、その **出力を「記録の一字一句の引用」か「分かりません」だけ** にするハーネスです。根拠が読めない・食い違う・古い値のときは答えません。すべての操作はハッシュで連ねた台帳に残り、あとから同じ結果で再生して検証できます。
 
-The short answer today: **it answers fewer questions than a simple keyword search, it never answers with confidence when it is wrong, and every number below is reproducible byte for byte.** This README states what has been measured, what has not, and how to rerun it.
+English: [README.en.md](README.en.md)
 
-(日本語: 設計上の判断はすべて `ops/decisions/` に逐語で、実装上の判断は `docs/LINE3_LOCAL_DECISIONS.md` に番号付きで記録しています。)
+```
+vera ask --docs ./manuals "保守契約の窓口は何ですか"
+答え: 「総務部」
+根拠: 保守契約の窓口は総務部である。（保守契約#1）
+run: runs/ask-20261014-…
 
-## What it is
+vera ask --docs ./manuals "保守契約の解約手数料は何ですか"
+分かりません（理由: no_record、文書にその答えが書かれていません）
+```
 
-- Each sentence of the corpus is cut into units at three granularities (RUN / WORD / CHAR) and placed on a **stereo cross** (an orthoplex: a centre and six arms, ±x ±y ±z, each arm a row of seats).
-- Placement is exact: the stability of a cross is a rational number (Python `Fraction`), the moves are the 24 rotations of the cube and seat swaps, and placement stops at a fixed point.
-- A question is placed the same way; a candidate is accepted only when three independent ratios (section walk, edge flow, placement binding) agree. Otherwise the output is a **typed abstention** (`CHOICE` = a list the user can reject, `UNKNOWN_*` = no candidate).
-- Every candidate carries its **provenance**: a corpus record, a testimony, or a constructed unit, down to the sentence ids.
-- Sliding windows read two neighbouring sentences of one article; layers pack unstable crosses into a larger cross; the **combined list** shows the flat read, the layers and the windows as separately labelled blocks (nothing is merged across sources).
-- Same corpus + same question ⇒ the same bytes on an M-series Mac, an Intel Mac and an x86 Linux CI runner (`tools/determinism_probe.py`, `PYTHONHASHSEED` 0 / 1 / 12345).
+## これは何か / 何でないか
 
-3D views (three.js):
+**これは**: 出力経路を強制するハーネスです。モデルには Vera の道具だけを渡し、自由な文は捨て（長さとハッシュだけ残す）、答えは「文書（または記憶）のある 1 文の一字一句の引用で、Vera の門が通したもの」だけを見せます。門は既定で拒否します。中核は標準ライブラリと形態素解析（fugashi + unidic-lite）だけで、学習も外部通信もありません。
 
-- one stereo cross, with its arms and seats: <https://claude.ai/artifact/CqAGojmogqLyhSDBU3Dozb>
-- the whole structure built from the 592-sentence corpus — the three sovereigns, the layer-1 nests, the sliding windows, the grammar layer and the carry tower (exported with `tools/export_structure_json.py`, see `docs/LINE3_STRUCTURE_OVERVIEW.md`): <https://claude.ai/artifact/BZEvuMkGYR7UhG7AUymPh2>
+**これでないもの**:
 
-![A single stereo cross: a centre, six arms of seats, each seat with its source sentence](docs/media/stereo_cross_v1.gif)
+* 汎用のエージェント基盤ではありません（何でもプラグイン、ではない）。検証のためのハーネスです。
+* 真実の検査器ではありません。「文書にこう書いてある」ことは保証しますが、「文書が正しい」ことは保証しません。
+* モデルを賢くするものではありません。答えられる範囲はむしろ狭くなります。
+* 日本語専用です。英語の問いには答えません（門が拒否します）。
+* **構造体（十字の幾何）の効果は主張しません。** 記憶の「十字」「巣」は矛盾・更新を決定的に見つけるために使っていますが、それが平文ログ＋検索より良いという証拠は **ありません**（研究の計測では勝てていません）。これは研究であり、製品の主張ではありません。研究の履歴は同じリポジトリの `research` ブランチ（公開時に作成）にあります。
 
-![The whole built structure: sovereign tiers, layer-1 nests, sliding windows, grammar layer](docs/media/structure_overview_v2.gif)
+## 測った数字（主張の表）
 
-The single-cross page is `docs/media/stereo_cross_v1.html`; the overview page is built by `tools/build_structure_overview.py`. The recordings are made by `tools/record_structure_video.js` (headless Chrome + ffmpeg; see its header).
+すべて、このリポジトリの `vera eval` と CI で再計測できる数字、または研究ブランチの報告にある数字です。条件を必ず読んでください。
 
-## Measured numbers (all with denominators)
+| 主張 | 数字 | 条件・出典 |
+|---|---|---|
+| 答えのない問いで答えを出さない（出力の門 v6） | bank4 **0/60**、bank6 **0/34**、bank7 **0/47**、bank8 **0/50** | 各問いについて、対象文書の文の **1〜10 語の全区間** を門に通した掃引。答えのない問いで通る区間が 0。`vera eval` で再計測。bank8 の 0/50 は門 v2 時点の未見判定（のち v6 でも 0/50）。bank6〜8 はその後の規則の検討に使ったので、今は **回帰の固定セット** であって未見の試験ではない |
+| 実際のモデルで、答えのない問いへの確信した誤答 | **0/126** | Claude Haiku 5.5、門 v2、研究ブランチ `experiments/line3/loom/results_h55f` |
+| 記憶の答えで誤答 | **0** | **【研究の数字】** 思い出しなし・言い換え・紛らわしい書き方・橋の攻撃など、研究の赤チームの全種。`experiments/line3/pub/m6c`。`vera eval` はそのうち 4 種（食い違いの片方を出す・置き換えられた値を出す・思い出さずに出す・橋で出す）を 2 つの記憶で再計測 |
+| 矛盾の検知 | **【研究の数字】** 精度 0.83、仕掛けた 216 件中 137 件。**このリポジトリの `vera eval`（出荷した 2 つの記憶 MEM-T01・T03、20 問）の数字: SAME_SEAT 11 回発火のうち仕掛けに当たったのは 7、誤報 4、仕掛け 12 件中 7 件を発見。UPDATE は 0/6、REVERSAL_X は 0/4（読めない）。20 問のうち引用で正しく答えたのは 4 問（到達 12、うち食い違いは正しく黙る）** | 研究の計器（meter v1 の書き込みを流し直した報告 `pub/m5m6`）と、出荷した評価の数字は条件が違い、後者の方が小さい。検知であって答えではない |
+| 再生 | 保存した全台帳が **バイト一致** | CI。`PYTHONHASHSEED` 0 / 1 / 12345 の 3 通り |
 
-Corpus `fulllead`: 592 lead sentences of Japanese Wikipedia articles. Question bank `bank2`: 128 items written by a separate system that never saw Vera's code (`experiments/line3/bank2/`); 69 are answerable from the corpus, 25 are deliberately unanswerable. Baselines: B1 = keyword lookup of one sentence; B2 = keyword lookup plus the next sentence. "Gold in a candidate" = the correct answer appears in at least one entry of the list.
+## 限界（先に読んでください）
 
-| system (fulllead, bank2) | answerable 69: gold in a candidate | single answer, wrong | unanswerable 25: confident wrong answer |
+* **日本語のみ。**
+* **答えに届くのは約 1 割。** この数字は **モデルを使わない、門だけの掃引**（各問いの対象文書の全区間を門に通して、正解の語句が通る問いを数えたもの）で、当時の開発用・検証用の問題集（dev、bank6〜8）に対するもの。モデルを入れた到達率ではなく、未見の問題での測定でもありません。残りは「分かりません」になります（引用できるのは、問いの形と文の形が合うときだけ）。誤答をしない代わりの設計上の代償です。答えのある問いのうち引用に届いた数（`vera eval` の reach）は、dev 10/69、bank6 3/26、bank7 1/32、bank8 3/35。
+* **答えのある問いでも、正しい語でない引用を通すことがある。** 門は「問いの形に合う文の中の、一語句の引用」を通すもので、正解かどうかは知りません（`vera eval` の「wrong answer admitted」: bank6 で 3 問、bank8 で 1 問。答えのない問いでは 0）。
+* **記憶の書き込みは、利用者の発言の一字一句の引用だけです。** `vera mem` / 画面では、利用者の各発言が台帳のハッシュ連鎖に本文つきで記録され（`user_turn` 行）、モデルの `write` は、いま届いている利用者の発言の **1 文まるごと**（。！？と発言の終わりだけで区切る。NFC。末尾の。は省略可）と等しいときだけ実行されます。文の一部分は不可（「山本ではない」→「山本」を防ぐ）。違えば `not_from_user` で拒否されて（`write_refused` 行）記憶に入りません。`vera verify` は保存された書き込みのすべてを、書かれた回の発言と突き合わせます（`WRITE_NOT_FROM_USER`）。回の名前はモデルが決められないので、古い発言を引用し直して新しく見せることはできません。MCP 経由（`vera mcp --mode memory`）の書き込みはエージェント自身の主張で、この規則の外です（verify は `unsourced_sessions` として報告）。**その文から引用した答えには「出所: 利用者の発言ではない（エージェントの記録）」と表示します**（上の「引用」の保証は利用者の発言の答えについてのものです）。**1 つの規則: エージェント（出所のない）の書き込みは、順序づけにも退ける操作にも一切加わりません。** その行には回の名前がなく（`turn` 引数は捨てる）、`supersede` は、置き換える側が利用者の発言で、退けられる文がすべて利用者の発言かつ厳密に前の回のときだけ実行されます（違えば `unsourced_order`、どのセッションからでも）。「…に変更」と読める書き込みも拒否します。`verify` は全セッションで再確認します（`UNSOURCED_ORDER`）。エージェントの値は利用者の値と **争う**（その場所はあいまいになり、記憶は黙る）ことはできても、上書きして答えることはできません。したがって、あとから利用者がエージェントの記録を訂正しても、争いのままです。MCP の質問段階の `emit` の結果にも `sourced` と上の印が付きます。研究用の `python -m verantyx.loom.memmcp` にはこれらの守りがなく、`--research-unguarded` なしでは起動しません。文の区切りは。！？と発言の終わりだけで、改行では区切りません（改行で並べた事実は、各行を。で終えてください）。**1 つの発言の中の言い直し**で `ambiguous_in_turn`（その場所の書き込みをすべて拒否）になるのは、次の 2 つだけです: 同じ場所を読める文が 2 つ以上ある、または事実の直後に **読めない文** が来る。ほかの言い直し（「山本。広報担当は鈴木です。」「…訂正します、広報の担当者は鈴木です。」「…今は鈴木です。」など、別の形・別の場所として読まれるもの）は **読み取りの範囲の限界** で、保証ではありません。「？」は条件と結果を切り離します（「もし予算が通れば？広報の担当は鈴木。」は後半が事実として入る）。1 文で 1 回だけ言ってください。**記録された利用者の発言が真の出所です**: 答えの前に、記録された全発言の全文を記憶と同じ読み手で読み、答えの場所について別のことを言う文が（モデルが書かなかった・拒否されたために）記憶に入っていなければ、答えは出さず `unrecorded_user_statement`（回の名前つき）で黙ります。台帳が検証できない記憶は何も答えません（`store_not_verified`）。発言・質問・文書の文の中の秘密の形（ラベル付きの password / token / key など、`sk-` `Bearer` `ghp_` `AKIA` など、URL の user:pass。全角も可。検出する形の正確な一覧は docs/SAFETY.md）は `[redacted:sha256-8]` に置き換えてから記録・読み取りします。**ラベルも既知の接頭辞もない秘密（文中の裸のパスワード、カード番号など）は検出しません。Vera には入力しないでください。** 質問に秘密の形があれば `secret_in_question` で、何も書かず送らずに断ります（普通は、その部分だけを失います。文の区切りが消えた・文が丸ごと消えた・発言全体を落とした場合は `redaction_lossy` として記録し、その回より前の事項への問いは `redacted_turn_unreadable` で答えません。say の結果・CLI・画面がそれを知らせます）。食い違いの一覧は、あとの利用者の発言で置き換えられた値を現在の値として出しません。食い違いの一覧では、各値に出所の旗と印が付きます。
+* `declare_topic`・`bridge` はモデルが付けるラベルで、答えとして引用されず、事実を退けたり並べ替えたりできません。`supersede` は、置き換える側が、退けられる文より **厳密に後の回** の発言のときだけ実行され（逆順は `supersede_refused`、`vera verify` が再確認 `SUPERSEDE_ORDER`）。
+* **記憶は「1 回の書き込みに 1 つの事実を 1 文で」書いたものからしか答えません。** 「変わった」「延長」「XはYが担当」、同義語（場所 / 開催地）、別の書き込みでの撤回は読めません。出来事の文（「会議は東京で開く」）は、問いは読めても値を引用として出しません。
+* **実際のモデルでの測定は Claude Haiku 5.5（研究時）のみ。** DeepSeek / OpenAI 互換 / Ollama / JSON 方式のバックエンドは、偽のクライアントでの試験しかしていません。保証の本体は Vera 側（門・台帳）にあり、モデルの出来には依存しませんが、**モデルが弱いと「分かりません」が増えます**。
+* 台帳の **再生** は、出荷した固定の台帳（`tests/fixtures/ledgers`）は **CPython 3.11.14 でしか再生できません**（CI はそれに固定）。あなたが作った台帳は、あなたの Python で再生できます。台帳の再生は、台帳を作った CPython の x.y.z と、辞書由来のハッシュ（形態素辞書の版）が同じでなければ、`INPUTS`（再現できない）になります。ハッシュ連鎖の検証はどこでもできます。
+* 強制の段によって保証が違います（下の E1〜E3）。
+
+詳しくは [docs/SAFETY.md](docs/SAFETY.md)。
+
+## クイックスタート
+
+Python 3.10 以上。
+
+```
+git clone https://github.com/Ag3497120/vera && cd vera
+python -m venv .venv && . .venv/bin/activate
+pip install -e ".[anthropic,openai,mcp]"       # 中核は fugashi と unidic-lite だけ。SDK は使うものだけで良い
+vera --version
+```
+
+PyPI には公開していません（予定は未定）。API キーは **環境変数か macOS の鍵束** から読みます。画面にも台帳にも値は出ません。
+
+### Claude
+
+```
+export ANTHROPIC_API_KEY=...                       # または: security add-generic-password -s vera-harness -a anthropic -w
+vera ask --docs ./manuals "保守契約の窓口は何ですか"
+```
+
+既定のバックエンドが `anthropic`、モデルは `claude-haiku-5-5`（`--model` で変更）。
+
+### DeepSeek など OpenAI 互換の API
+
+```
+export DEEPSEEK_API_KEY=...
+vera ask --docs ./manuals --backend openai --model deepseek-chat --base-url https://api.deepseek.com --api-key-env DEEPSEEK_API_KEY "…"
+```
+
+モデル名は提供元の一覧を見てください。道具呼び出しを強制します。拒否するサーバーには `--tool-choice auto`（そのときも、ドライバが受け付けるのは道具呼び出しだけです）。
+
+### Ollama・LM Studio・vLLM（ローカル、キー不要）
+
+```
+vera ask --docs ./manuals --backend openai --model llama3.1 --base-url http://127.0.0.1:11434/v1 "…"       # Ollama
+vera ask --docs ./manuals --backend openai --model <id> --base-url http://127.0.0.1:1234/v1 "…"            # LM Studio
+```
+
+道具呼び出しのないモデルには JSON 方式: `--backend json`（モデルは操作の JSON 配列だけで答え、それ以外の出力は捨てます）。
+
+### 画面（ローカルのみ）
+
+```
+vera run --docs ./manuals            # http://127.0.0.1:3090/
+```
+
+会話（答えは引用と根拠の文、または「分かりません」と理由だけ）、操作の流れ、台帳のハッシュ連鎖と **Verify** ボタン、記憶の注記（SAME_SEAT / UPDATE / REVERSAL_X）と問いの位置の十字・巣、設定（バックエンド、キーの有無。値は出ません）。外部読み込みはありません。ループバック（127.0.0.0/8、::1）以外には待ち受けません。`--allow-remote` は、この版ではありません（指定すると拒否します）。base URL・鍵の環境変数名・文書・保存先は **コマンドラインでだけ** 決められ、画面には読み取り専用で出ます。
+
+### 記憶
+
+```
+vera mem --store ./memory --say "広報の担当は山本" --say "広報の担当は田中" --ask "広報の担当は何ですか"
+分かりません（理由: contested、記録の中で答えが食い違っています： 「山本」 / 「田中」）
+```
+
+同じ席に別の値が 2 回言われたら、選ばず食い違いとして黙ります。同じフォルダは次の会話でも同じ記憶です。
+
+### 検証・再生・評価
+
+```
+vera verify runs/ask-…        # ハッシュ連鎖、次に再生（バイト単位の一致）
+vera replay runs/ask-…
+vera eval --quick             # 安全の主張を手元で再計測（モデルなし・通信なし）。安全の数字が記録より悪ければ終了コード 1
+```
+
+### MCP と Claude Code のサブエージェント
+
+```
+vera mcp --docs ./manuals --question "保守契約の窓口は何ですか" --runs-dir runs      # stdio の MCP サーバー（vera-loom）
+```
+
+サブエージェントの `tools:` を `mcp__vera-loom__*` の 20 個だけにすると、Vera がそのエージェントの唯一の出口になります。設定ファイルの一式は [examples/claude_code](examples/claude_code/)。**答えは Claude Code の画面ではなく `vera loom output runs/<run_id>` で取る**のが前提です（E2 の保証の範囲は下）。
+
+## 強制の段（E1〜E3）と、それぞれが保証すること
+
+| 段 | 何をするか | 保証する | 保証しない |
 |---|---|---|---|
-| **Vera combined list (standard)** | **32 / 69** | 0 | **0 / 25** |
-| Vera flat cross only | 19 / 69 | 1 | 0 / 25 |
-| B1 keyword search | 47 / 69 | — | 14 / 25 |
-| B2 keyword + next sentence | 57 / 69 | — | 7 / 25 |
+| **E1**（既定、全 OS）`vera ask / mem / run` | ドライバがモデルに Vera の道具だけを渡し、自由な文は捨て（`free_text_dropped`: 長さとハッシュ）、道具の名前が違えば拒否。見せるのは検証済み台帳の `emit` の文だけ | あなたが見る答えは、門が通した引用か「分かりません」だけ。台帳は連鎖と再生で確かめられる | モデルのプロセスを OS で囲むことはしない（モデルは API の向こうにいるので、ハーネスの外に出口はない） |
+| **E2**（Claude Code）`vera mcp` ＋サブエージェントの許可リスト | エージェントが使える道具を Vera の MCP の道具だけにする | エージェントの道具は Vera のものだけ。`vera loom output` は検証済みの `emit` 以外を出さない | Claude Code の会話記録にはエージェントの文が残り、親や人がそれを「答え」と読むのは止められない。答えは台帳から取る運用が前提 |
+| **E3**（macOS）`vera loom mcp --isolated` | MCP サーバーを `sandbox-exec` で囲む: 通信なし・exec なし・決めた場所以外の読み書きなし。起動前に同じ囲いでプローブを走らせ、通らなければ起動しない（終了コード 3） | サーバー（とその子）が外に出せない・書けない | クライアント（エージェント）側は囲まない。`sandbox-exec` は Apple が非推奨にしている。Linux の bubblewrap は未対応 |
 
-Source: `experiments/line3/g3/combined/results/ci/standard_live_run37928419541.md` (run on GitHub Actions) and `experiments/line3/t10/results/summary.md`.
+## プラグイン
 
-Vera's lists are long: the median combined list has about 70 entries. Vera is **not** better than search at finding the answer; it is better than search at not inventing one.
+バックエンド・門のフィルタ・記憶の版・注記の種類を、Python の entry points（グループ `vera.plugins`）で足せます。標準の部品も同じ仕組みで登録されます。台帳は使ったプラグインとその版を記録し、入っていないプラグインの台帳は `verify` が **INPUTS**（再現できない）と言います。[docs/PLUGINS.md](docs/PLUGINS.md)、最小の例は [examples/plugins](examples/plugins/vera_example_plugin/)。
 
-`bank3`, 91 questions of kinds the system was never tuned on (`experiments/line3/t11/results/summary.md`, fast preset):
+## リポジトリ
 
-| kind | n | Vera gold in a candidate | B2 keyword |
-|---|---|---|---|
-| two facts across sentences | 14 | 4 | 8 |
-| paraphrase | 20 | 3 | 12 |
-| unknown (altered) word | 18 | 6 | 16 |
-| summary choice | 10 | 1 | (lookup 9) |
-
-A 3,000-sentence corpus (`S3000`), flat read, fast preset, on a 4-core CI runner: cross-sentence 1 / 9, unanswerable 25: 5 abstained, 18 lists, 2 confident wrong; median 221 s per question (`experiments/line3/t10/results/ci/`).
-
-## What it does not do
-
-- It does not beat keyword search (32 vs 57 of 69).
-- It does not handle paraphrase or unknown words well (3 / 20, 6 / 18).
-- It is slow: minutes per question; a 3,000-sentence corpus takes about 3 hours to place on a 4-core runner.
-- It does not generate text. Answers are units of the corpus (an "assembled" block joins spans for display only and is never counted).
-- It has not been shown to **grow**: every measurement so far places the whole corpus at once. Growing by stacking documents onto a thin initial placement is the project's thesis and is unmeasured.
-- Japanese only (MeCab via `fugashi` + `unidic-lite` for the WORD tier).
-
-## Try it
-
-```bash
-pip install -e ".[ja]"
-export PYTHONHASHSEED=0 PYTHONPATH=.
+```
+verantyx/            パッケージ（import 名は台帳の再生互換のため維持）
+  harness/           バックエンド、runner、CLI、MCP、画面（webui/）、プラグイン、評価（evals/）
+  loom/              織機・門・記憶（変えていない）
+  line3/             文法層の最小部分
+examples/            docs_qa/（文書に問う）、memory/（作業ログの記憶）、claude_code/、plugins/
+docs/                ARCHITECTURE.md、SAFETY.md、LEDGER.md、PLUGINS.md
+tests/               ハーネスの試験、固定の台帳の再生
 ```
 
-Build the placement caches for the 300-sentence sample corpus, then ask (`--data` is a jsonl of `{"sent": ..., "source": ...}` lines):
+* [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — どこで何が起きるか
+* [docs/SAFETY.md](docs/SAFETY.md) — 主張・限界・脅威モデル
+* [docs/LEDGER.md](docs/LEDGER.md) — 台帳の形式と検証の状態
 
-```bash
-python -m verantyx.cli line3 build --data experiments/line3/data/S300.jsonl --cache /tmp/vera-s300 --structure flat --workers 2
-```
+研究の履歴（実験・設計書・計器の報告）は、同じリポジトリの **`research` ブランチ**（公開時に作成）にあります。そこで続けている「構造（十字の幾何）」についての主張は **研究であり、このハーネスの主張ではありません**。
 
-```bash
-python -m verantyx.cli line3 ask --data experiments/line3/data/S300.jsonl --cache /tmp/vera-s300 --structure flat --effort fast --question "遊眠は日本の何ですか"
-```
+## ライセンス
 
-What to expect from the sample: `S300` is one lead sentence from each of 300 different pages, so the sliding windows (`--structure combined`) do not apply to it — they need articles (`source` of the form `title#i`, as in `experiments/line3/bank2/data/fulllead_sents.jsonl`). Placing the three tiers of `S300` took 22 minutes with two workers on an M-series laptop. At `--effort fast` the reader looks at a handful of crosses per tier and reports how many it left unread (the `部分読み` line), so most questions end in a labelled list or a typed abstention; the numbers in the tables above come from `fulllead` at the `standard` preset.
-
-`--format json` prints the full record (candidates with provenance, the three ratios, the abstention type, the read order). `--show-thought` prints the trace. Placing a corpus is the slow part; it is cached per tier.
-
-Tests (about a thousand, including golden outputs that pin the bytes):
-
-```bash
-python -m pytest tests/line3 -q
-```
-
-Sweeps run on GitHub Actions (`.github/workflows/line3-sweep.yml`): probe → per-tier caches → N shards → summary; the result files above were produced there.
-
-## The loom: the model's only output channel (new, 2026-10-11)
-
-The owner's current direction. An AI model is put in a sandbox where the **only** way to produce output is to operate Vera's structure: look up units in the corpus, add its own words (marked *constructed*), seat them on stereo crosses, link crosses into a thread, read, and `emit`. The read-out of the structure *is* the output. Every operation is a row of a hash-chained ledger; `vera loom replay` reproduces the output byte for byte and `verify` refuses any edited ledger.
-
-What exists (all merged, 526 tests at three hash seeds):
-
-- 18 operations as an MCP server (`vera loom mcp`); typed refusals; per-run caps; no undo.
-- The emit gate uses Vera's own placement key: a cross must be stable under (n, p, a), and a refusal names the swap that would fix it. 「日本が首都」 is refused, 「日本の首都」 passes. Modes `record_only` (constructed words refused) and `constructed_allowed` (passed through with their mark).
-- Worked example: 「東京は日本の首都です」 is three WORD crosses; in `record_only` the output is 「東京は日本の首都」 because です is not in the corpus.
-- A CODE tier: Python tokens looked up in a small fixture repo with `path:line:col`, one statement per cross, gates for parse / definition-first / imports / an allow-listed construct subset; the tests step runs the woven code under a macOS `sandbox-exec` profile (no network, no fork/exec, reads limited to the fixture copy and the runtime, writes to a scratch folder only), with an eight-property probe run inside the same sandbox as the gate.
-- Non-blocking typed notes `CONFLICT` / `UNANCHORED` / `NO_RECORD` appended after a read or emit.
-- Enforcement layers: subagent definitions whose only tools are the loom's (`.claude/agents/loom-weaver*.md`, `.mcp.json`), an API driver that forwards nothing but tool calls (tested with a fake client only — no API key here), process isolation, and the emit gate.
-
-What has **not** been done: **no real model has been run through the loom yet.** Every result in `experiments/line3/loom/baseline_scripted/` comes from deterministic scripts that were written knowing the answers; they prove the plumbing, not any capability. The code gates are not a safety wall (`import typing` then `typing.sys…` passes them; the OS sandbox is what contains it), and the fixture's tests are placeholders until held-out tests exist. Design: `docs/LINE3_LOOM_DESIGN.md`; operator steps: `docs/LOOM_SANDBOX.md`.
-
-## How the project is run
-
-- The owner decides every meaning-level question personally; each decision is recorded verbatim in `ops/decisions/2026-10-06_line3_faithful_build.md`.
-- Implementation choices are numbered (`L-nnn`) and appended to `docs/LINE3_LOCAL_DECISIONS.md`; design notes are in `docs/LINE3_*.md`.
-- Question banks are written by a separate model that does not see the code; their hashes are recorded at intake. Negative results are kept in the same tables as positive ones.
-- Code is written by AI agents under review; the owner's original algorithm is the specification.
-
-## Repository map
-
-| path | what |
-|---|---|
-| `verantyx/line3/` | placement, ask, cycle, layers (matryoshka), carry, granularity, grammar, sliding windows, combined list |
-| `verantyx/cli.py` | `line3 build` / `line3 ask` |
-| `tests/line3/` | unit tests and golden outputs |
-| `experiments/line3/` | every measurement with its raw records and summaries (t8 … t11, bank2, bank3, g2, g3) |
-| `docs/LINE3_*.md` | design documents and the numbered local decisions |
-| `ops/decisions/` | the owner's decisions, verbatim |
-| `tools/` | determinism probe, CI summariser, remote helpers |
-
-Older material in this repository (the pre-line-3 alpha, `docs/README_alpha_dev.md`, `public_overlay/`) describes earlier systems and is kept for the record.
-
-## License
-
-MIT (see `LICENSE`).
-
----
-
-The English in this README was written with the help of an AI.
+MIT

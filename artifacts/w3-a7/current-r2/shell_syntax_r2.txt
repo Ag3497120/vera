@@ -1,2 +1,0 @@
-trial_batch.sh: syntax OK
-generate_and_collect.sh: syntax OK

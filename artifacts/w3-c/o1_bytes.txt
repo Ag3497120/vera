@@ -1,2 +1,0 @@
-checked 97, mismatch 0
-hash seeds 0, 4242, each case run twice per seed

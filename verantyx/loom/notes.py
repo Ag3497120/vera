@@ -3,10 +3,11 @@ and the self-correction metrics of layer (3), computed from the ledger.
 
 THREE LAYERS, NEVER MIXED
   (1) prevention   the typed refusals of the core (unchanged; notes never add, remove or reorder a refusal)
-  (2) notes        this module: a thread-wide consistency pass at `read` / `emit` that does NOT block.  It returns a list of typed notes;
+  (2) notes        this module: a thread-wide consistency pass at `read` / `emit` and, since LOOM-span (L-LOOM-137), after an ok `weave_span` (a batch weave puts a whole chain in at once and
+                   nothing else reads it back), that does NOT block.  It returns a list of typed notes;
                    the text, the output_sha and the refusals are untouched, and so are the bytes of every row up to the first note row
                    (later rows keep op / args / result but not `i`, `prov.at`, `state_sha`: L-LOOM-95).  The notes travel in the RESULT of
-                   `read` / `emit` (a top-level key `notes`, absent when there are none, never inside `annotated`) and in a row of their
+                   `read` / `emit` / `weave_span` (a top-level key `notes`, absent when there are none, never inside `annotated`) and in a row of their
                    own, op `loom_note`, actor `loom`, appended right AFTER the read / emit row (mcp.LoomServer._exec; replay re-derives
                    and checks it; the row carries `nv` = NOTES_VERSION).
   (3) noticing     `self_corrections(rows)`: what the model did that can be read as noticing, observed from the ledger only.
@@ -35,6 +36,10 @@ THE NOTES (exact definitions; L-LOOM-95..)
                    (what the unit is in the code): definition_name (a name the thread binds: def / class / parameter / assignment target /
                    import alias), use_of_thread_name (a use of a name the thread binds), literal (a number or string token), fallback
                    (anything else).  Only `fallback` is counted as ungrounded by note_summary.
+  QUESTION_ECHO prose (notes.v2 only; a run whose begin row names notes.v1 never has it)  A unit seated in a LINKED cross, record or constructed, of at least
+                   MIN_ECHO_CHARS = 2 characters, whose surface (NFKC, casefold) occurs as a substring of the question text of the task (NFKC, casefold).
+                   The answer should not repeat the words of the question; the note POINTS at the unit (cid, seat, uid, unit) and never blocks.  It reads the
+                   task text and the thread only: no gold, no corpus, no clock.  A thread that is a quotation of the corpus (weave_span) is flagged unit by unit.
 
 Every list is sorted without any set / dict iteration order: (type order, thread position, cid, seat order).  Nothing here reads a
 clock, a path or the environment.
@@ -52,11 +57,15 @@ from verantyx.loom import read as rd
 from verantyx.loom.state import AXES, CENTRE, CODE, CONSTRUCTED, PROSE, RECORD, SPEC, LoomCross, canonical, fmt_seat
 
 CONFLICT, UNANCHORED, NO_RECORD = "CONFLICT", "UNANCHORED", "NO_RECORD"
-NOTE_TYPES: Tuple[str, ...] = (CONFLICT, UNANCHORED, NO_RECORD)
+QUESTION_ECHO = "QUESTION_ECHO"                                  # L-LOOM-147 (notes.v2): a prose thread unit that is a word of the question itself
+NOTE_TYPES: Tuple[str, ...] = (CONFLICT, UNANCHORED, NO_RECORD, QUESTION_ECHO)
 NOTE_OP = "loom_note"
-NOTES_VERSION = "notes.v1"                                       # the definitions of the notes above; stored in every new note row as `nv`
+NOTES_V1, NOTES_V2 = "notes.v1", "notes.v2"                      # v2 = v1 + QUESTION_ECHO.  A run uses ONE version for its whole life: its `begin` row names it
+NOTES_VERSIONS: Tuple[str, ...] = (NOTES_V1, NOTES_V2)           # (`notes_profile`, absent = v1), so a ledger recorded under v1 still has no echo note due on any row
+NOTES_VERSION = NOTES_V2                                         # what a NEW run gets; stored in every new note row as `nv` (a run's rows carry its own version)
+MIN_ECHO_CHARS = 2                                               # a one-character unit (年 in 何年) is never an echo
 NOTE_ACTOR = "loom"
-NOTE_AFTER_OPS: Tuple[str, ...] = ("read", "emit")           # the model rows a note row can follow
+NOTE_AFTER_OPS: Tuple[str, ...] = ("read", "emit", "weave_span")           # the model rows a note row can follow (LOOM-span: a weave is a structure change that nothing else reads back)
 ARM_PARTICLES: Tuple[str, ...] = tuple(SPEC.arms)             # the six arm particles; は (the centre relation) is not one of them
 
 
@@ -383,6 +392,33 @@ def no_record(run, linked: Sequence[LoomCross]) -> List[dict]:
     return out
 
 
+def _fold(s: str) -> str:
+    return unicodedata.normalize("NFKC", s).casefold()
+
+
+def question_echo(run, linked: Sequence[LoomCross]) -> List[dict]:
+    """QUESTION_ECHO (prose, notes.v2): the linked-thread units of >= MIN_ECHO_CHARS characters that occur in the question text."""
+    q = _fold(run.task["text"])
+    state = run.state
+    out: List[dict] = []
+    for pos, c in enumerate(linked):
+        if c.lang != PROSE:
+            continue
+        cells: List[Tuple[str, str]] = []
+        if c.centre is not None:
+            cells.append((CENTRE, c.centre))
+        for ax in rd.ARM_ORDER:
+            arm = c.arms[AXES.index(ax)]
+            for k in range(0, c.inner_k + 1):
+                if arm[k] is not None:
+                    cells.append((fmt_seat(ax, k), arm[k]))
+        for idx, (seat, uid) in enumerate(cells):
+            surf = state.units[uid].surface
+            if len(surf) >= MIN_ECHO_CHARS and _fold(surf) in q:
+                out.append({"type": QUESTION_ECHO, "cid": c.cid, "seat": seat, "uid": uid, "unit": surf, "_pos": pos, "_arm": idx})
+    return out
+
+
 # ------------------------------------------------------------------------------------------------------------
 # the pass
 # ------------------------------------------------------------------------------------------------------------
@@ -395,6 +431,8 @@ def compute(run) -> List[dict]:
     if run.lang == PROSE:
         found += conflicts_prose(run, linked)
         found += unanchored(run, linked)
+        if run.notes_version != NOTES_V1:
+            found += question_echo(run, linked)
     else:
         found += conflicts_code(run, linked)
     found += no_record(run, linked)
@@ -409,8 +447,8 @@ _NON_RECOVERABLE = frozenset(("run_closed", "unknown_tool", "cap_exceeded", "ops
 
 
 def _model_ops():
-    from verantyx.loom.ops import MODEL_OPS                 # lazily: ops imports this module
-    return MODEL_OPS
+    from verantyx.loom.ops import LEGACY_OPS, MODEL_OPS     # lazily: ops imports this module
+    return MODEL_OPS + LEGACY_OPS                           # a refusal of a legacy op in an old ledger still counts
 
 
 def self_corrections(rows: Sequence[dict]) -> dict:
@@ -476,7 +514,7 @@ def is_ungrounded(note: dict) -> bool:
 
 
 def note_observations(rows: Sequence[dict]) -> List[dict]:
-    """One observation per ok model `read` / `emit` row: {i, op, notes} where notes are those of the note row that follows it directly
+    """One observation per ok model `read` / `emit` / `weave_span` row: {i, op, notes} where notes are those of the note row that follows it directly
     ([] when none follows)."""
     obs: List[dict] = []
     for k, r in enumerate(rows):

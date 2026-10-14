@@ -1,4 +1,0 @@
-data fulllead_sents.jsonl sentences=592 sha=45efdaedb7ab  (full file sha 45efdaedb7ab)  seats_sha=a2083d453637
-adhesion built in 0.2s: {'RUN': (1914, 1714), 'WORD': (1707, 1296), 'CHAR': (1046, 528)}
-RUN done: on wall 1601.0s cpu 6387.8s
-WORD done: on wall 2908.7s cpu 11612.8s

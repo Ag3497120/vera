@@ -35,12 +35,35 @@ MODES = ("record_only", "constructed_allowed")
 ABSTAIN_TYPES = ("no_record", "cannot_weave", "unknown")
 
 # design 3.1 / 4: the limits and caps (L-LOOM-08).  A run has at most one successful emit, so a per-run cap bounds the ops behind it.
-CAPS: Dict[str, Dict[str, int]] = {
+# L-LOOM-122 (LOOM-batch): the caps come in PROFILES, because a run's caps are written into its `begin` row and an old ledger must replay with the
+# caps it was recorded with.  "v1" = the numbers of the first real-model measurement (and of every ledger made before LOOM-batch); "v2" = the numbers a
+# NEW run gets: prose lookups 30 -> 100 and prose ops 120 -> 200.  Nothing else changed (code caps, reads, emit attempts, constructed, crosses, L).
+CAPS_V1: Dict[str, Dict[str, int]] = {
     PROSE: {"ops": 120, "lookups": 30, "reads": 20, "emit_attempts": 5, "constructed": 12, "unit_chars": 8,
             "max_L": 5, "crosses": 24, "max_depth": 8},
     CODE: {"ops": 400, "lookups": 60, "reads": 40, "emit_attempts": 8, "constructed": 60, "unit_chars": 40,
            "max_L": 8, "crosses": 60, "max_depth": 8},
 }
+CAPS_V2: Dict[str, Dict[str, int]] = {
+    PROSE: dict(CAPS_V1[PROSE], ops=200, lookups=100),
+    CODE: dict(CAPS_V1[CODE]),
+}
+CAPS_PROFILES: Dict[str, Dict[str, Dict[str, int]]] = {"v1": CAPS_V1, "v2": CAPS_V2}
+CURRENT_CAPS = "v2"
+CAPS: Dict[str, Dict[str, int]] = CAPS_PROFILES[CURRENT_CAPS]          # what a new run gets
+
+
+def caps_profile_of(lang: str, caps: object) -> Optional[str]:
+    """The name of the profile whose caps for `lang` are EXACTLY `caps` (the dict a `begin` row recorded), else None.  Replay accepts only a
+    recorded cap set that is one of the known profiles: a forged row cannot buy itself another limit."""
+    if not isinstance(caps, dict):
+        return None
+    for name, prof in CAPS_PROFILES.items():
+        if lang in prof and prof[lang] == caps:
+            return name
+    return None
+
+
 COUNTERS: Tuple[str, ...] = ("ops", "lookups", "reads", "emit_attempts", "constructed")
 # L-LOOM-44: what a refused call may cost the ledger.  The argument of a call is stored only while it is small (the design's unit-size
 # limits: lookup text 32, constructed unit 8 / 40, model id 64); and the calls that no cap of 4 / 3.2 counts are themselves counted.
@@ -115,7 +138,7 @@ class Unit:
 # ------------------------------------------------------------------------------------------------------------
 class LoomCross:
     """geometry.Cross + {cid, tier, lang, topic, depth, linked}.  Cells: uid | foundation token | None."""
-    __slots__ = ("cid", "tier", "lang", "L", "depth", "topic", "linked", "centre", "arms")
+    __slots__ = ("cid", "tier", "lang", "L", "depth", "topic", "linked", "centre", "arms", "span", "quote")
 
     def __init__(self, cid: str, tier: str, lang: str, L: int, depth: int = 0) -> None:
         self.cid = cid
@@ -126,6 +149,10 @@ class LoomCross:
         self.topic = False
         self.linked = False
         self.centre: Optional[str] = None
+        self.span: Optional[int] = None                    # LOOM-span (L-LOOM-146): the sid of the corpus sentence this cross quotes, while it is still exactly what
+        #                                                    `weave_span.v2` made (any seat / topic change clears it).  NOT in to_obj: it is derived by replay, never hashed.
+        self.quote: Optional[Tuple[int, int, str, int, int]] = None      # LOOM-evidence (L-LOOM-183): (w, sid, tier, i0, i1) of the `weave_span.v3` that made this cross, while nobody has
+        #                                                    changed it (cleared exactly where `span` is).  NOT in to_obj: derived by replay from the row, never hashed.
         self.arms: List[List[Optional[str]]] = [[None] * L for _ in AXES]
         if lang == PROSE:
             for ai, p in enumerate(SPEC.arms):
@@ -210,6 +237,8 @@ class LoomState:
         self.lang = lang
         self.units: Dict[str, Unit] = {}
         self.crosses: Dict[str, LoomCross] = {}
+        self._nu = 0                                       # units / crosses ever made: a uid / cid is never reused after `drop` (LOOM-span)
+        self._nc = 0
         self.thread: List[str] = []
         self.closed: Optional[List[str]] = None            # ["emitted", output_sha] | ["abstained", type] | ["abandoned", reason]
         self.counters: Dict[str, int] = {k: 0 for k in COUNTERS}
@@ -217,14 +246,27 @@ class LoomState:
 
     # -- registry ------------------------------------------------------------------------------------------------
     def new_unit(self, surface: str, kind: str, tier: Optional[str], prov: dict) -> Unit:
-        uid = "u%d" % (len(self.units) + 1)
+        self._nu += 1
+        uid = "u%d" % self._nu
         u = self.units[uid] = Unit(uid, surface, kind, tier, prov)
         return u
 
     def new_cross(self, tier: str, L: int, depth: int = 0) -> LoomCross:
-        cid = "c%d" % (len(self.crosses) + 1)
+        self._nc += 1
+        cid = "c%d" % self._nc
         c = self.crosses[cid] = LoomCross(cid, tier, self.lang, L, depth)
         return c
+
+    def drop_cross(self, cross: LoomCross) -> List[str]:
+        """LOOM-span `drop`: remove a whole cross and the units seated in it (the registry forgets them; their uids are never made again).
+        Takes the cross out of the thread if it is linked.  Returns the removed uids in seat order.  Callers validate first."""
+        uids = cross.uids()
+        for uid in uids:
+            del self.units[uid]
+        if cross.cid in self.thread:
+            self.thread.remove(cross.cid)
+        del self.crosses[cross.cid]
+        return uids
 
     def unit(self, uid) -> Unit:
         u = self.units.get(uid) if isinstance(uid, str) else None
@@ -240,17 +282,23 @@ class LoomState:
 
     # -- seating primitives (callers validate first) ---------------------------------------------------------------
     def place(self, cross: LoomCross, arm: Optional[str], k: Optional[int], uid: str) -> None:
+        cross.span = None                                  # no longer exactly the quoted stretch (weave_span.v2 sets it again AFTER it has placed)
+        cross.quote = None
         cross.put(arm, k, uid)
         self.units[uid].seated = [cross.cid, fmt_seat(arm, k)]
 
     def lift(self, cross: LoomCross, arm: Optional[str], k: Optional[int]) -> str:
         uid = cross.get(arm, k)
+        cross.span = None
+        cross.quote = None
         cross.put(arm, k, None)
         self.units[uid].seated = None
         return uid
 
     def swap(self, cross: LoomCross, a: Tuple[Optional[str], Optional[int]], b: Tuple[Optional[str], Optional[int]]) -> None:
         va, vb = cross.get(*a), cross.get(*b)
+        cross.span = None
+        cross.quote = None
         cross.put(a[0], a[1], vb)
         cross.put(b[0], b[1], va)
         if vb is not None:
@@ -272,10 +320,13 @@ class LoomState:
 
     # -- bytes -----------------------------------------------------------------------------------------------------
     def to_obj(self) -> dict:
-        return {"units": {uid: u.to_obj() for uid, u in self.units.items()},
-                "crosses": {cid: c.to_obj() for cid, c in self.crosses.items()},
-                "thread": list(self.thread), "closed": None if self.closed is None else list(self.closed),
-                "counters": dict(self.counters), "guards": dict(self.guards)}
+        obj = {"units": {uid: u.to_obj() for uid, u in self.units.items()},
+               "crosses": {cid: c.to_obj() for cid, c in self.crosses.items()},
+               "thread": list(self.thread), "closed": None if self.closed is None else list(self.closed),
+               "counters": dict(self.counters), "guards": dict(self.guards)}
+        if self._nu != len(self.units) or self._nc != len(self.crosses):        # only after a `drop`: every state made before LOOM-span hashes as it did
+            obj["made"] = {"units": self._nu, "crosses": self._nc}
+        return obj
 
     def sha(self) -> str:
         return sha256_text(canonical(self.to_obj()))
