@@ -630,7 +630,7 @@ def serve_isolated(tasks_path: str, runs_dir: str, allow_roots: Iterable = (), s
     for r in allow:
         args += ["--allow-root", r]
     argv = launcher_argv(policy, "module", args=args, path=[repo] + site_dirs(),
-                         limits=SERVER_LIMITS, module="verantyx.cli")
+                         limits=SERVER_LIMITS, module="verantyx.harness.cli")
     env = clean_env(runs_dir, {"LOOM_ISOLATED": res.profile_sha})
     # cwd is NOT changed: the task bank's relative corpus / fixture paths resolve against it, exactly as without --isolated (a cwd the
     # profile does not allow to read can still be the base of a path whose real location is allowed)

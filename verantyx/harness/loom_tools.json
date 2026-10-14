@@ -1,0 +1,525 @@
+[
+ {
+  "description": "Start a run. Returns run_id, the task text, the mode and the rules. `model` is your own model id (testimony, at most 64 chars). The only way to answer is to build Vera's structure and call emit; plain text is discarded.",
+  "inputSchema": {
+   "properties": {
+    "model": {
+     "title": "Model",
+     "type": "string"
+    },
+    "task_id": {
+     "title": "Task Id",
+     "type": "string"
+    }
+   },
+   "required": [
+    "task_id",
+    "model"
+   ],
+   "title": "beginArguments",
+   "type": "object"
+  },
+  "name": "begin"
+ },
+ {
+  "description": "Find a corpus unit by exact surface (no substring search). tier: RUN | WORD | CHAR | any. Returns n, every sentence id, and the first 5 sentences.",
+  "inputSchema": {
+   "properties": {
+    "run_id": {
+     "title": "Run Id",
+     "type": "string"
+    },
+    "text": {
+     "title": "Text",
+     "type": "string"
+    },
+    "tier": {
+     "title": "Tier",
+     "type": "string"
+    }
+   },
+   "required": [
+    "run_id",
+    "text",
+    "tier"
+   ],
+   "title": "lookupArguments",
+   "type": "object"
+  },
+  "name": "lookup"
+ },
+ {
+  "description": "Read one corpus sentence by id, with the units it holds in each tier.",
+  "inputSchema": {
+   "properties": {
+    "run_id": {
+     "title": "Run Id",
+     "type": "string"
+    },
+    "sid": {
+     "title": "Sid",
+     "type": "integer"
+    }
+   },
+   "required": [
+    "run_id",
+    "sid"
+   ],
+   "title": "read_sentenceArguments",
+   "type": "object"
+  },
+  "name": "read_sentence"
+ },
+ {
+  "description": "Add a unit to the pool. kind=record: text must be exactly a unit of `tier` (RUN|WORD|CHAR). kind=constructed: your own word, marked as yours, only if the mode allows it (1-8 chars, not a corpus unit). Returns the uid.",
+  "inputSchema": {
+   "properties": {
+    "kind": {
+     "title": "Kind",
+     "type": "string"
+    },
+    "run_id": {
+     "title": "Run Id",
+     "type": "string"
+    },
+    "text": {
+     "title": "Text",
+     "type": "string"
+    },
+    "tier": {
+     "default": "",
+     "title": "Tier",
+     "type": "string"
+    }
+   },
+   "required": [
+    "run_id",
+    "text",
+    "kind"
+   ],
+   "title": "addArguments",
+   "type": "object"
+  },
+  "name": "add"
+ },
+ {
+  "description": "Open a cross of arm length L (prose 1-5, code 1-8). In a prose cross the innermost seat of each arm holds the foundation particle (の に で と を が) and is never yours. depth is for code lines only.",
+  "inputSchema": {
+   "properties": {
+    "L": {
+     "title": "L",
+     "type": "integer"
+    },
+    "depth": {
+     "default": 0,
+     "title": "Depth",
+     "type": "integer"
+    },
+    "run_id": {
+     "title": "Run Id",
+     "type": "string"
+    },
+    "tier": {
+     "title": "Tier",
+     "type": "string"
+    }
+   },
+   "required": [
+    "run_id",
+    "tier",
+    "L"
+   ],
+   "title": "open_crossArguments",
+   "type": "object"
+  },
+  "name": "open_cross"
+ },
+ {
+  "description": "Seat a unit. seat = 'centre' or '<arm>:<k>' (k=0 is the outer end), or a bare arm such as '+x' for the innermost empty seat of that arm.",
+  "inputSchema": {
+   "properties": {
+    "cid": {
+     "title": "Cid",
+     "type": "string"
+    },
+    "run_id": {
+     "title": "Run Id",
+     "type": "string"
+    },
+    "seat": {
+     "title": "Seat",
+     "type": "string"
+    },
+    "uid": {
+     "title": "Uid",
+     "type": "string"
+    }
+   },
+   "required": [
+    "run_id",
+    "cid",
+    "seat",
+    "uid"
+   ],
+   "title": "seatArguments",
+   "type": "object"
+  },
+  "name": "seat"
+ },
+ {
+  "description": "Seat several units on one arm IN THE ORDER THEY ARE READ (prose: outer to inner, ending next to the particle; code: inner to outer).",
+  "inputSchema": {
+   "properties": {
+    "arm": {
+     "title": "Arm",
+     "type": "string"
+    },
+    "cid": {
+     "title": "Cid",
+     "type": "string"
+    },
+    "run_id": {
+     "title": "Run Id",
+     "type": "string"
+    },
+    "uids": {
+     "items": {
+      "type": "string"
+     },
+     "title": "Uids",
+     "type": "array"
+    }
+   },
+   "required": [
+    "run_id",
+    "cid",
+    "arm",
+    "uids"
+   ],
+   "title": "seat_runArguments",
+   "type": "object"
+  },
+  "name": "seat_run"
+ },
+ {
+  "description": "SPAN WEAVING in one call. Give a corpus sentence id you have read (read_sentence), a tier (RUN|WORD|CHAR) and the stretch you want, from the unit `first` to the unit `last` (both included), each written exactly as read_sentence lists that unit for the tier (plain text, no quotation marks; `last` is searched from `first` on). The loom makes record units for exactly those units and builds the chain of crosses whose read-out is that stretch WORD FOR WORD, linked at the end of the thread: a unit followed by one of の に で と を が goes on that particle's arm of the cross whose centre is the very next unit; units that touch each other become one-unit crosses in order; a unit followed by は is a topic centre. If the stretch is not expressible (a word the loom cannot write between two units, such as という or として, or a chain like AのBのC that needs one unit as both a centre and an arm unit) it is refused as span_inexpressible and nothing changes; weave a smaller stretch. Returns the crosses and seats it made and the text of the stretch (not the rest of the sentence). Record units only; one operation. Use `drop` to throw a cross away.",
+  "inputSchema": {
+   "properties": {
+    "first": {
+     "title": "First",
+     "type": "string"
+    },
+    "last": {
+     "title": "Last",
+     "type": "string"
+    },
+    "run_id": {
+     "title": "Run Id",
+     "type": "string"
+    },
+    "sid": {
+     "title": "Sid",
+     "type": "integer"
+    },
+    "tier": {
+     "title": "Tier",
+     "type": "string"
+    }
+   },
+   "required": [
+    "run_id",
+    "sid",
+    "tier",
+    "first",
+    "last"
+   ],
+   "title": "weave_spanArguments",
+   "type": "object"
+  },
+  "name": "weave_span"
+ },
+ {
+  "description": "Take a unit off a seat; it goes back to the pool.",
+  "inputSchema": {
+   "properties": {
+    "cid": {
+     "title": "Cid",
+     "type": "string"
+    },
+    "run_id": {
+     "title": "Run Id",
+     "type": "string"
+    },
+    "seat": {
+     "title": "Seat",
+     "type": "string"
+    }
+   },
+   "required": [
+    "run_id",
+    "cid",
+    "seat"
+   ],
+   "title": "unseatArguments",
+   "type": "object"
+  },
+  "name": "unseat"
+ },
+ {
+  "description": "Exchange two data seats of one cross; either may be empty (then it is a move).",
+  "inputSchema": {
+   "properties": {
+    "cid": {
+     "title": "Cid",
+     "type": "string"
+    },
+    "run_id": {
+     "title": "Run Id",
+     "type": "string"
+    },
+    "seat_a": {
+     "title": "Seat A",
+     "type": "string"
+    },
+    "seat_b": {
+     "title": "Seat B",
+     "type": "string"
+    }
+   },
+   "required": [
+    "run_id",
+    "cid",
+    "seat_a",
+    "seat_b"
+   ],
+   "title": "swapArguments",
+   "type": "object"
+  },
+  "name": "swap"
+ },
+ {
+  "description": "Grow a cross to arm length L2 by adding empty outer seats to every arm.",
+  "inputSchema": {
+   "properties": {
+    "L2": {
+     "title": "L2",
+     "type": "integer"
+    },
+    "cid": {
+     "title": "Cid",
+     "type": "string"
+    },
+    "run_id": {
+     "title": "Run Id",
+     "type": "string"
+    }
+   },
+   "required": [
+    "run_id",
+    "cid",
+    "L2"
+   ],
+   "title": "extendArguments",
+   "type": "object"
+  },
+  "name": "extend"
+ },
+ {
+  "description": "Mark a prose cross as a topic: は is read right after its centre word.",
+  "inputSchema": {
+   "properties": {
+    "cid": {
+     "title": "Cid",
+     "type": "string"
+    },
+    "on": {
+     "title": "On",
+     "type": "boolean"
+    },
+    "run_id": {
+     "title": "Run Id",
+     "type": "string"
+    }
+   },
+   "required": [
+    "run_id",
+    "cid",
+    "on"
+   ],
+   "title": "topicArguments",
+   "type": "object"
+  },
+  "name": "topic"
+ },
+ {
+  "description": "Set the indentation depth (0-8) of a code cross.",
+  "inputSchema": {
+   "properties": {
+    "cid": {
+     "title": "Cid",
+     "type": "string"
+    },
+    "depth": {
+     "title": "Depth",
+     "type": "integer"
+    },
+    "run_id": {
+     "title": "Run Id",
+     "type": "string"
+    }
+   },
+   "required": [
+    "run_id",
+    "cid",
+    "depth"
+   ],
+   "title": "set_depthArguments",
+   "type": "object"
+  },
+  "name": "set_depth"
+ },
+ {
+  "description": "Add a cross to the thread at position pos (default: the end). Crosses are read in thread order.",
+  "inputSchema": {
+   "properties": {
+    "cid": {
+     "title": "Cid",
+     "type": "string"
+    },
+    "pos": {
+     "default": -1,
+     "title": "Pos",
+     "type": "integer"
+    },
+    "run_id": {
+     "title": "Run Id",
+     "type": "string"
+    }
+   },
+   "required": [
+    "run_id",
+    "cid"
+   ],
+   "title": "linkArguments",
+   "type": "object"
+  },
+  "name": "link"
+ },
+ {
+  "description": "Remove a cross from the thread; its units stay seated.",
+  "inputSchema": {
+   "properties": {
+    "cid": {
+     "title": "Cid",
+     "type": "string"
+    },
+    "run_id": {
+     "title": "Run Id",
+     "type": "string"
+    }
+   },
+   "required": [
+    "run_id",
+    "cid"
+   ],
+   "title": "unlinkArguments",
+   "type": "object"
+  },
+  "name": "unlink"
+ },
+ {
+  "description": "Throw a whole cross away: the cross and the units seated in it are removed (they are gone, not returned to the pool), and the cross leaves the thread if it was linked. One operation.",
+  "inputSchema": {
+   "properties": {
+    "cid": {
+     "title": "Cid",
+     "type": "string"
+    },
+    "run_id": {
+     "title": "Run Id",
+     "type": "string"
+    }
+   },
+   "required": [
+    "run_id",
+    "cid"
+   ],
+   "title": "dropArguments",
+   "type": "object"
+  },
+  "name": "drop"
+ },
+ {
+  "description": "Dry run of emit: returns the text the thread reads as, the annotated segments, every refusal emit would give, and the stability of each cross. Nothing closes. `notes` may list structural observations (CONFLICT, UNANCHORED, NO_RECORD, QUESTION_ECHO: a unit that is a word of the question); they never block.",
+  "inputSchema": {
+   "properties": {
+    "run_id": {
+     "title": "Run Id",
+     "type": "string"
+    }
+   },
+   "required": [
+    "run_id"
+   ],
+   "title": "readArguments",
+   "type": "object"
+  },
+  "name": "read"
+ },
+ {
+  "description": "Fix the output: the text the thread reads as. Refused with every reason if the structure is not sound (unstable cross, unlinked cross, empty centre, no_evidence, ...). A successful emit may carry `notes` (CONFLICT, UNANCHORED, NO_RECORD, QUESTION_ECHO: a unit that is a word of the question); they never block.",
+  "inputSchema": {
+   "properties": {
+    "run_id": {
+     "title": "Run Id",
+     "type": "string"
+    }
+   },
+   "required": [
+    "run_id"
+   ],
+   "title": "emitArguments",
+   "type": "object"
+  },
+  "name": "emit"
+ },
+ {
+  "description": "Close the run without an output. type: no_record | cannot_weave | unknown.",
+  "inputSchema": {
+   "properties": {
+    "run_id": {
+     "title": "Run Id",
+     "type": "string"
+    },
+    "type": {
+     "title": "Type",
+     "type": "string"
+    }
+   },
+   "required": [
+    "run_id",
+    "type"
+   ],
+   "title": "abstainArguments",
+   "type": "object"
+  },
+  "name": "abstain"
+ },
+ {
+  "description": "The thread, the crosses and their seats, the pool, the counters and the caps.",
+  "inputSchema": {
+   "properties": {
+    "run_id": {
+     "title": "Run Id",
+     "type": "string"
+    }
+   },
+   "required": [
+    "run_id"
+   ],
+   "title": "statusArguments",
+   "type": "object"
+  },
+  "name": "status"
+ }
+]
