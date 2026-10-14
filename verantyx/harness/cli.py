@@ -8,7 +8,7 @@
         a stdio MCP server that makes Vera the only exit of an agent
   vera verify RUN    the hash chain, then the replay (exit 0 only when both are OK)
   vera replay RUN    re-execute the run and compare every row byte for byte (exit 0 identical)
-  vera eval          the small eval set that re-measures the safety claims (arrives with H5)
+  vera eval [--quick]   re-measure the safety claims offline on the shipped eval sets; exit 1 if a safety number is worse than the frozen record
   vera loom ...      low-level loom commands (mcp | replay | verify | output | note | close | demo)
 
 Keys: environment (ANTHROPIC_API_KEY, VERA_OPENAI_API_KEY / OPENAI_API_KEY) or the macOS Keychain.  A key is never printed or recorded.
@@ -27,6 +27,7 @@ from verantyx.harness import keys
 from verantyx.harness import runner as rn
 from verantyx.harness.backends import BACKENDS, BackendError, make_backend
 from verantyx.harness import loom_cli
+from verantyx.harness.evalrun import EvalError
 from verantyx.ledger_events import LedgerError
 from verantyx.loom.state import Refuse
 
@@ -160,12 +161,22 @@ def cmd_replay(args: argparse.Namespace) -> int:
 
 
 def cmd_eval(args: argparse.Namespace) -> int:
-    root = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "evals")
-    if not os.path.isdir(root):
-        print("vera eval: the eval sets (bank4 / bank6 / bank7 / bank8 and meter v1, small versions) arrive with ticket H5; nothing to run yet.", file=sys.stderr)
-        return 3
-    print("vera eval: evals/ exists but the runner is not wired yet (ticket H5).", file=sys.stderr)
-    return 3
+    from verantyx.harness import evalrun as er
+    sets = [] if args.memory_only else (args.set or list(er.GATE_SETS))
+    workers = args.workers if args.workers else min(4, os.cpu_count() or 1)
+    m = er.measure(args.quick, sets, not args.no_memory, workers=workers, limit=args.limit, only=args.item)
+    expected = er.load_expected(args.expected)
+    bad = er.compare(m, expected)
+    if args.freeze:
+        rec = er.freeze_record(m, er.load_expected(args.freeze))
+        with open(args.freeze, "w", encoding="utf-8") as f:
+            f.write(json.dumps(rec, ensure_ascii=False, sort_keys=True, indent=1) + "\n")
+        print("vera eval: record written to %s" % args.freeze, file=sys.stderr)
+    if args.json:
+        print(json.dumps(dict(m, regressions=bad), ensure_ascii=False, sort_keys=True))
+    else:
+        print(er.render(m, expected, bad))
+    return 1 if (bad["safety"] or bad["capability"]) else 0
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -213,8 +224,17 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--json", action="store_true")
     p.set_defaults(fn=cmd_replay)
 
-    p = sub.add_parser("eval", help="re-measure the safety claims on the small eval set (arrives with H5)")
-    p.add_argument("--set", default=None)
+    p = sub.add_parser("eval", help="re-measure the safety claims offline (gate on the question banks, memory red teams) and compare with the frozen record")
+    p.add_argument("--quick", action="store_true", help="sweep each item over its own articles only (CI; about a minute) instead of the whole corpus")
+    p.add_argument("--set", action="append", choices=["dev", "bank6", "bank7", "bank8"], help="a gate set (repeatable; default all four)")
+    p.add_argument("--no-memory", dest="no_memory", action="store_true", help="skip the memory red teams")
+    p.add_argument("--memory-only", dest="memory_only", action="store_true", help="only the memory red teams")
+    p.add_argument("--workers", type=int, default=0, help="processes for the gate sweep (default min(4, cpus))")
+    p.add_argument("--expected", default=None, help="the record to compare with (default: the one shipped in the package)")
+    p.add_argument("--freeze", default=None, metavar="FILE", help="write the numbers measured now into FILE as the new record (accepting them)")
+    p.add_argument("--limit", type=int, default=None, help="only the first N items / questions (a smoke test; the comparison is then not meaningful)")
+    p.add_argument("--item", action="append", help="only this item id / memory task id (repeatable)")
+    p.add_argument("--json", action="store_true")
     p.set_defaults(fn=cmd_eval)
 
     loom_cli.add_parser(sub)
@@ -226,7 +246,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     args = ap.parse_args(list(sys.argv[1:] if argv is None else argv))
     try:
         return int(args.fn(args))
-    except (rn.HarnessError, BackendError, Refuse, LedgerError, ValueError) as e:
+    except (rn.HarnessError, BackendError, Refuse, LedgerError, EvalError, ValueError) as e:
         print("vera: %s" % keys.redact(e), file=sys.stderr)
         return 2
     except KeyboardInterrupt:

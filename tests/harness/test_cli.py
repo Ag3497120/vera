@@ -105,11 +105,6 @@ def test_verify_and_replay_commands(docs, tmp_path, use, capsys):
     assert rc == 1 and out.startswith("NOT_A_RUN")
 
 
-def test_eval_is_a_stub_until_h5(capsys):
-    rc, out, err = run(["eval"], capsys)
-    assert rc == 3 and "H5" in err
-
-
 def test_version_flag(capsys):
     with pytest.raises(SystemExit) as e:
         cli.main(["--version"])

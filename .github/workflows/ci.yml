@@ -6,6 +6,8 @@
 # tests    the whole suite (tests/core = the loom and the grammar layer, tests/harness = backends, runner, CLI), sharded by file, under PYTHONHASHSEED 0, 1 and 12345.
 #          Linux has no sandbox-exec: node ids listed in .github/macos-only.txt are deselected (none today).
 # replay   every stored ledger under tests/fixtures/ledgers: chain, then replay byte for byte (tools/verify_fixtures.py), under the same three seeds.
+# eval     `vera eval --quick` (verantyx/harness/evalrun.py): the gate on the shipped banks (bank2+4, 6, 7, 8) and the memory red teams, offline, compared with the frozen record
+#          (verantyx/harness/evals/expected.json); exit 1 when a safety number is worse.  Under the same three seeds.  The measured record is uploaded (a candidate to freeze).
 # install  a clean venv: `pip install .`, `vera --version`, `vera --help`, `vera verify` of a fixture; the package data (prompts, tool schemas, grammar data) must be inside the wheel.
 name: ci
 
@@ -84,6 +86,32 @@ jobs:
           name: replay-seed${{ matrix.seed }}
           path: replay.txt
 
+  eval:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        seed: [0, 1, 12345]
+    env:
+      PYTHONHASHSEED: ${{ matrix.seed }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.11.14" }
+      - run: python -m pip install --quiet -e .
+      - name: vera eval --quick
+        run: |
+          cp verantyx/harness/evals/expected.json /tmp/candidate.json
+          vera eval --quick --workers 4 --freeze /tmp/candidate.json | tee eval.txt
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eval-seed${{ matrix.seed }}
+          path: |
+            eval.txt
+            /tmp/candidate.json
+
   install:
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -105,6 +133,10 @@ jobs:
           for n in ("loom_record_only", "mem_story", "mem_question"):
               assert base.joinpath("prompts", n + ".txt").read_text(encoding="utf-8")
           assert r.files("verantyx").joinpath("lang_data", "ja_grammar.json").read_text(encoding="utf-8")
+          assert r.files("verantyx.harness").joinpath("evals", "expected.json").read_text(encoding="utf-8")
+          assert r.files("verantyx.harness").joinpath("webui", "index.html").read_text(encoding="utf-8")
           from verantyx.harness.cli import main
           print("package data ok")
           PY
+          rc=0; /tmp/venv/bin/vera eval --quick --set bank6 --item B6-U35 --no-memory --workers 1 > /tmp/eval.txt || rc=$?
+          tail -3 /tmp/eval.txt; [ "$rc" -le 1 ]    # 1 = the single item is below the record's reach: the point here is that the shipped files are found
