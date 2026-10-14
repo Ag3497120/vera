@@ -46,7 +46,7 @@ def test_a_fabricated_write_is_refused_and_the_memory_never_answers_it(tmp_path)
 
 def test_a_write_that_quotes_the_user_goes_through_in_nfc_and_a_piece_of_a_longer_message_too(tmp_path):
     st = str(tmp_path / "s")
-    user = unicodedata.normalize("NFD", "パンフの担当は鈴木です。連絡は金曜にします")                          # the user's text arrives decomposed
+    user = unicodedata.normalize("NFD", "パンフの担当は鈴木。連絡は金曜にします")                          # the user's text arrives decomposed
     assert rn.mem_say(st, [user], oa([w(unicodedata.normalize("NFC", "パンフの担当は鈴木"))])).committed
     a = rn.mem_ask(st, "パンフの担当は何ですか", oa([[("tool", "recall", {"question": "パンフの担当は何ですか"})], [("tool", "weave_span", {"sid": 0, "tier": "WORD", "first": "鈴木", "last": "鈴木"})], [("tool", "emit", {})]]))
     assert a.status == "answered" and a.text == "鈴木"
@@ -74,7 +74,8 @@ def test_verify_checks_every_stored_write_against_the_recorded_turns(tmp_path):
     st = str(tmp_path / "s")
     door = md.StructureDoor(st, "notes", "m", profile=mem.PROFILE_V4, versions=dict(rn.MEM_BUNDLE))
     door.harness(None, "user_turn", {"turn": "1-1", "text": "広報の担当は山本"})
-    assert door.call("write", {"text": "広報の担当は鈴木", "turn": "1-1"}).get("ok")                      # a forged write the wrapper did not stop
+    door.set_turn("1-1")
+    assert door.call("write", {"text": "広報の担当は鈴木"}).get("ok")                                      # a forged write the wrapper did not stop
     door.commit(); door.close()
     v = rn.verify_path(st)
     assert v["status"] == "WRITE_NOT_FROM_USER" and v["problems"][0]["type"] == "write_not_from_user"
@@ -248,7 +249,10 @@ def test_a_supersede_in_the_right_order_still_works_and_the_audit_catches_the_wr
     door = md.StructureDoor(st2, "notes", "m", profile=mem.PROFILE_V4, versions=dict(rn.MEM_BUNDLE))
     door.harness(None, "user_turn", {"turn": "1-1", "text": "広報の担当は山本"})
     door.harness(None, "user_turn", {"turn": "1-2", "text": "広報の担当は鈴木"})
-    assert door.call("write", {"text": "広報の担当は山本", "turn": "1-1"}).get("ok") and door.call("write", {"text": "広報の担当は鈴木", "turn": "1-2"}).get("ok")
+    door.set_turn("1-1")
+    assert door.call("write", {"text": "広報の担当は山本"}).get("ok")
+    door.set_turn("1-2")
+    assert door.call("write", {"text": "広報の担当は鈴木"}).get("ok")
     assert door.call("supersede", {"new_sid": 0, "old_sid": 1, "reason": "逆"}).get("ok") is True
     door.commit(); door.close()
     v = rn.verify_path(st2)
@@ -277,3 +281,95 @@ def test_on_a_contested_pair_the_reverse_supersede_is_refused_by_the_harness_and
     a = rn.mem_ask(st, q, oa([[("tool", "recall", {"question": q})], [("tool", "weave_span", {"sid": 0, "tier": "WORD", "first": "山本", "last": "山本"})], [("tool", "emit", {})],
                               [("tool", "abstain", {"type": "contested"})]]))
     assert a.status == "refused" and a.text is None and a.reason == "contested"
+
+
+# -- round 2 ------------------------------------------------------------------------------------------------------------------------
+@pytest.mark.parametrize("msg", ["広報の担当は山本ではない", "田中さんは『担当は鈴木』と言ったが間違いだ", "もし予算が通れば広報の担当は山本になる", "広報の担当は山本ですか？", "経理は佐藤です。広報の担当は山本さんの後任が決まるまで未定"])
+def test_a_piece_of_a_sentence_never_becomes_a_fact(tmp_path, msg):                                      # p5: negation, quotation, condition, question, mid-sentence cut
+    st = str(tmp_path / "s")
+    piece = "担当は鈴木" if "鈴木" in msg else "広報の担当は山本"
+    assert rn.mem_say(st, [msg], oa([w(piece)])).committed
+    rows = [json.loads(ln) for ln in open(os.path.join(st, "sessions", "s0001", "ops.jsonl"), encoding="utf-8")]
+    assert [x["op"] for x in rows if x["op"].endswith("_refused")] == ["write_refused"] and not [x for x in rows if x["op"] == "write"]
+
+
+def test_a_whole_sentence_of_a_longer_message_is_fine_with_or_without_the_final_maru(tmp_path):
+    from verantyx.harness.runner import equals_whole_sentence as eq
+    assert eq("広報の担当は山本", "広報の担当は山本。") and eq("広報の担当は山本。", "広報の担当は山本") and eq("経理は佐藤", "経理は佐藤です。\n広報の担当は山本") is False
+    assert eq("広報の担当は山本", "経理は佐藤です。\n広報の担当は山本") and eq("広報の担当は山本", "あ！広報の担当は山本？") is False and not eq("", "x")
+
+
+def test_requoting_an_earlier_turn_cannot_retire_a_later_correction(tmp_path):                       # p5 requote_supersede
+    st = str(tmp_path / "s")
+    rep = ("tool", "report", {"contradictions": []})
+    story = [w("広報の担当は山本"), w("広報の担当は鈴木"), [("tool", "write", {"text": "広報の担当は山本"}), ("tool", "supersede", {"new_sid": 2, "old_sid": 1, "reason": "訂正"}), rep]]
+    assert rn.mem_say(st, ["広報の担当は山本", "広報の担当は鈴木に変わりました", "了解"], oa(story)).committed
+    rows = [json.loads(ln) for ln in open(os.path.join(st, "sessions", "s0001", "ops.jsonl"), encoding="utf-8")]
+    assert [x["args"]["text"] for x in rows if x["op"] == "write" and x["result"].get("ok")] == ["広報の担当は山本"]          # the second write was not a whole sentence of turn 2
+    assert not [x for x in rows if x["op"] == "supersede" and x["result"].get("ok")]
+    assert rn.verify_path(st)["status"] == "OK"
+
+
+def test_the_model_cannot_name_the_turn_a_write_was_said_in(tmp_path):
+    st = str(tmp_path / "s")
+    assert rn.mem_say(st, ["広報の担当は山本", "広報の担当は鈴木"], oa([w("広報の担当は山本"), [("tool", "write", {"text": "広報の担当は山本", "turn": "1-1"}), ("tool", "report", {"contradictions": []})]])).committed
+    rows = [json.loads(ln) for ln in open(os.path.join(st, "sessions", "s0001", "ops.jsonl"), encoding="utf-8")]
+    assert [x["op"] for x in rows if x["op"].endswith("_refused")] == ["write_refused"]
+
+
+def test_the_audit_flags_a_write_before_the_first_user_turn_and_a_write_that_is_not_its_turns_sentence(tmp_path):    # d5
+    from verantyx.loom import memdoor as md
+    st = str(tmp_path / "s")
+    door = md.StructureDoor(st, "notes", "m", profile=mem.PROFILE_V4, versions=dict(rn.MEM_BUNDLE))
+    door.set_turn("1-1")
+    assert door.call("write", {"text": "広報の担当は鈴木"}).get("ok")                                      # before any user turn
+    door.harness(None, "user_turn", {"turn": "1-2", "text": "広報の担当は山本ではない"})
+    door.set_turn("1-2")
+    assert door.call("write", {"text": "広報の担当は山本"}).get("ok")                                      # a piece of the sentence
+    door.commit(); door.close()
+    v = rn.verify_path(st)
+    assert v["status"] == "WRITE_NOT_FROM_USER" and v["problems"][0]["rows"] and len(v["problems"][0]["rows"]) == 2
+
+
+def test_the_backend_cannot_be_switched_from_the_page(tmp_path):                                         # p6
+    app = sv.App({"runs_dir": str(tmp_path / "runs"), "backend": "openai", "base_url": "https://api.deepseek.com", "model": "deepseek-chat"})
+    with pytest.raises(sv.ServerError) as e:
+        app.set_config({"backend": "anthropic", "model": "claude-x"})
+    assert e.value.code == "locked_setting" and app.config["backend"] == "openai"
+    app.set_config({"model": "deepseek-reasoner"})                                                       # the model may change within the same backend
+
+
+def test_the_memory_panel_never_shows_a_model_chosen_topic(tmp_path):                                    # p7
+    SEC = "秘密モデル文"
+    st = str(tmp_path / "s")
+    rep = ("tool", "report", {"contradictions": []})
+    assert rn.mem_say(st, ["広報の担当は山本", "広報の担当は鈴木"], oa([[("tool", "declare_topic", {"text": SEC}), ("tool", "write", {"text": "広報の担当は山本"}), rep],
+                                                                      [("tool", "write", {"text": "広報の担当は鈴木"}), rep]])).committed
+    app = sv.App({"runs_dir": str(tmp_path / "runs"), "store": st})
+    assert SEC not in json.dumps(sv.memory_view(app), ensure_ascii=False) and SEC not in json.dumps(sv.ledger_view(st), ensure_ascii=False)
+
+
+def test_labels_that_collide_after_escaping_are_refused_and_extension_collisions_get_the_path(tmp_path):         # d5
+    d = tmp_path / "d"
+    d.mkdir()
+    (d / "料金#3.md").write_text("料金は三である。", encoding="utf-8")
+    (d / "料金＃3.md").write_text("料金は四である。", encoding="utf-8")
+    with pytest.raises(dc.DocsError) as e:
+        dc.build_rows(str(d))
+    assert e.value.code == "docs_ambiguous"                                                              # no name can tell them apart: refused, not guessed
+    e2 = tmp_path / "e"
+    e2.mkdir()
+    (e2 / "x.md").write_text("イクスは一である。", encoding="utf-8")
+    (e2 / "x.md.txt").write_text("イクスは二である。", encoding="utf-8")
+    labels = [r["source"] for r in dc.build_rows(str(e2))]
+    assert len(set(labels)) == len(labels) == 2
+
+
+def test_a_single_file_link_is_checked_by_the_extension_of_its_target(tmp_path):                         # d5
+    tgt = tmp_path / "secret.pdf"
+    tgt.write_text("外。", encoding="utf-8")
+    link = tmp_path / "doc.txt"
+    os.symlink(str(tgt), str(link))
+    with pytest.raises(dc.DocsError) as e:
+        dc.build_rows(str(link))
+    assert e.value.code == "docs_bad_extension"

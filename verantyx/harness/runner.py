@@ -80,14 +80,40 @@ def nfc(s: str) -> str:
     return unicodedata.normalize("NFC", s)
 
 
+_SENT_END = re.compile(r"(?<=[。！？!?])|\n")
+
+
+def user_sentences(text: str) -> List[str]:
+    """The sentences of a user message: split after 。！？ (and !?) and at line breaks; NFC; surrounding white space removed.  Nothing else is split (a bracket or a quote does not end a sentence)."""
+    out = []
+    for part in _SENT_END.split(nfc(text)):
+        p = part.strip()
+        if p:
+            out.append(p)
+    return out
+
+
+def equals_whole_sentence(write: str, text: str) -> bool:
+    """A memory write must EQUAL one whole sentence of the user message (NFC; a trailing 。 is optional on either side): never a piece of one.  A piece can invert what was said
+    (「山本ではない」 -> 「山本」), turn a question or a condition into an assertion, or cut a quotation."""
+    w = nfc(write).strip()
+    wc = w[:-1] if w.endswith("。") else w
+    return bool(wc) and any((s[:-1] if s.endswith("。") else s) == wc for s in user_sentences(text))
+
+
+def turn_key(turn: Any) -> Optional[Tuple[int, int]]:
+    m = re.match(r"^(\d+)-(\d+)$", turn) if isinstance(turn, str) else None
+    return (int(m.group(1)), int(m.group(2))) if m else None
+
+
 class UserSourceDoor:
     """The memory's source rule.  The USER's messages are rows of the session's hash chain (`user_turn`, with their text), recorded when each is delivered; a `write` / `keep_unshaped` whose text
-    is not a verbatim (NFC) substring of a message delivered so far is NOT executed: a `write_refused` row (sha256, length) is recorded and the model gets `not_from_user`.  So no sentence the memory
+    does not EQUAL one whole sentence (see `equals_whole_sentence`) of the message of the turn being delivered is NOT executed (a write's time is therefore the user's turn it was said in: an
+    earlier message cannot be re-quoted to look newer): a `write_refused` row (sha256, length) is recorded and the model gets `not_from_user`.  So no sentence the memory
     holds, and no value an answer can quote, is anything but the user's own words.  Wraps the door the driver calls; everything else is the inner door's."""
 
     def __init__(self, inner: Any, raw: Any, messages: Dict[str, str]) -> None:
         self.inner, self.raw, self.messages = inner, raw, messages
-        self.seen: List[str] = []
         self.turn: Optional[str] = None
 
     def __getattr__(self, name: str) -> Any:
@@ -97,7 +123,6 @@ class UserSourceDoor:
         self.turn = turn
         if turn in self.messages:
             self.raw.harness(None, "user_turn", {"turn": turn, "text": self.messages[turn]})
-            self.seen.append(nfc(self.messages[turn]))
         self.inner.set_turn(turn)
 
     def _supersede_targets(self, a: dict) -> Optional[List[int]]:
@@ -129,53 +154,75 @@ class UserSourceDoor:
         except Exception:                                                   # anything odd: the memory's own checks decide
             return None
 
+    def _later(self, new_sid: int, old_sid: int) -> bool:
+        """`new_sid` was said in a strictly LATER user turn than `old_sid` (by the turn each sentence was written in; the slide order only when a turn is unknown)."""
+        try:
+            rows = self.raw.session.run.rows
+            a, b = turn_key(rows[new_sid].get("turn")), turn_key(rows[old_sid].get("turn"))
+        except Exception:
+            return False
+        return (a > b) if a is not None and b is not None else new_sid > old_sid
+
     def call(self, tool: Any, args: Any = None) -> dict:
         if tool == "supersede" and isinstance(args, dict):
             targets = self._supersede_targets(args)
             new_sid = args.get("new_sid")
-            if targets is not None and (any(s >= new_sid for s in targets) or (isinstance(args.get("old_sid"), int) and args["old_sid"] >= new_sid)):
+            if targets is not None and (any(not self._later(new_sid, s) for s in targets) or (isinstance(args.get("old_sid"), int) and not self._later(new_sid, args["old_sid"]))):
                 self.raw.harness(None, "supersede_refused", {"turn": self.turn or "1-1", "new_sid": new_sid, "reason": "supersede_order"})
                 return {"ok": False, "refusal": "supersede_order", "detail": {"reason": "a later statement may replace an earlier one, never the other way round: new_sid must be later than every sentence it retires"}}
         if tool in ("write", "keep_unshaped"):
             text = args.get("text") if isinstance(args, dict) else None
-            if isinstance(text, str) and not any(nfc(text) in u for u in self.seen):
+            if isinstance(text, str) and not equals_whole_sentence(text, self.messages.get(self.turn or "", "")):
                 self.raw.harness(None, "write_refused", {"turn": self.turn or "1-1", "sha256": hashlib.sha256(text.encode("utf-8")).hexdigest(), "chars": len(text), "reason": "not_from_user"})
-                return {"ok": False, "refusal": "not_from_user", "detail": {"reason": "a memory sentence must be a verbatim piece of what the user said in a delivered message; write the fact exactly as it was said"}}
+                return {"ok": False, "refusal": "not_from_user", "detail": {"reason": "a memory sentence must equal one whole sentence of the user's message of this turn; write it exactly as it was said, not a piece of it"}}
+        if tool in ("write", "keep_unshaped") and isinstance(args, dict) and "turn" in args:
+            args = dict(args, turn=self.turn)                                    # the model never names the turn a sentence was said in
         return self.inner.call(tool, args)
 
 
 def check_write_sources(store: str) -> List[Dict[str, Any]]:
-    """The audit of a memory store: in every session that recorded user turns, every ok `write` / `keep_unshaped` quotes (NFC substring) a user turn recorded EARLIER in that session.
-    -> the problems ([] = fine).  A session with no `user_turn` row (an MCP client's: its writes are the agent's own claims) is reported as `unsourced_session`, not as a failure."""
+    """The audit of a memory store.  In every session that recorded user turns: every ok `write` / `keep_unshaped` EQUALS one whole sentence of the user turn it was written in (the row's
+    `turn`, recorded earlier in that session; a write before the first user turn fails); every executed `supersede` retires only sentences written in strictly earlier turns than its `new_sid`.
+    -> the problems ([] = fine).  A session with no `user_turn` row (an MCP client's: its writes are the agent's own claims) is reported as `unsourced_session`, not as a failure; its supersedes
+    are still audited."""
     out: List[Dict[str, Any]] = []
+    try:
+        mrows = mem.MemStore(store).rows()
+    except Exception:
+        mrows = []
+    turn_of = {i: r.get("turn") for i, r in enumerate(mrows)}
     sd = os.path.join(store, "sessions")
     for n in sorted(os.listdir(sd)) if os.path.isdir(sd) else []:
         f = os.path.join(sd, n, "ops.jsonl")
         if not os.path.isfile(f):
             continue
-        seen: List[str] = []
-        has = False
+        with open(f, encoding="utf-8") as fh:
+            rows = [json.loads(ln) for ln in fh if ln.strip()]
+        has = any(r.get("actor") == "harness" and r.get("op") == "user_turn" for r in rows)
+        users: Dict[str, str] = {}
         bad: List[int] = []
         bad_sup: List[int] = []
-        with open(f, encoding="utf-8") as fh:
-            for ln in fh:
-                r = json.loads(ln)
-                if r.get("actor") == "harness" and r.get("op") == "user_turn":
-                    has = True
-                    seen.append(nfc(r["args"]["text"]))
-                elif r.get("actor") == "model" and r.get("op") == "supersede" and (r.get("result") or {}).get("ok") is True:
-                    new = (r.get("result") or {}).get("new_sid")
-                    if not isinstance(new, int) or any(not isinstance(x.get("sid"), int) or x["sid"] >= new for x in r["result"].get("superseded", [])):
+        for r in rows:
+            if r.get("actor") == "harness" and r.get("op") == "user_turn":
+                users[r["args"]["turn"]] = r["args"]["text"]
+            elif r.get("actor") == "model" and r.get("op") == "supersede" and (r.get("result") or {}).get("ok") is True:
+                new = (r.get("result") or {}).get("new_sid")
+                a = turn_key(turn_of.get(new)) if isinstance(new, int) else None
+                for x in r["result"].get("superseded", []):
+                    b = turn_key(turn_of.get(x.get("sid"))) if isinstance(x.get("sid"), int) else None
+                    if not isinstance(new, int) or not isinstance(x.get("sid"), int) or (a is not None and b is not None and not a > b) or ((a is None or b is None) and x["sid"] >= new):
                         bad_sup.append(r.get("i"))
-                elif r.get("actor") == "model" and r.get("op") in ("write", "keep_unshaped") and (r.get("result") or {}).get("ok") is True and has:
-                    t = (r.get("args") or {}).get("text")
-                    if not isinstance(t, str) or not any(nfc(t) in u for u in seen):
-                        bad.append(r.get("i"))
+                        break
+            elif has and r.get("actor") == "model" and r.get("op") in ("write", "keep_unshaped") and (r.get("result") or {}).get("ok") is True:
+                t = (r.get("args") or {}).get("text")
+                tn = (r.get("result") or {}).get("turn") or (r.get("args") or {}).get("turn")
+                if not isinstance(t, str) or tn not in users or not equals_whole_sentence(t, users[tn]):
+                    bad.append(r.get("i"))
         if bad_sup:
             out.append({"session": n, "type": "supersede_order", "rows": bad_sup[:20]})
         if bad:
             out.append({"session": n, "type": "write_not_from_user", "rows": bad[:20]})
-        elif not has and not bad_sup:
+        elif not has:
             out.append({"session": n, "type": "unsourced_session"})
     return out
 

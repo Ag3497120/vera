@@ -49,7 +49,7 @@ Only the text of a **successful `emit`** of a ledger that **verifies and replays
 | `HEAD_MISMATCH` | the last row is not the sha pinned in `HEAD` / `--head` |
 | `REPLAY_DIFFERS` | the chain is intact but the operations do not reproduce the recorded results (a server bug or a forged result) |
 | `REPLAY_INPUTS_MISMATCH` | the run cannot be replayed under the conditions it names: `replay.status` is **`INPUTS`** and `replay.mismatch` says which: `python_mismatch` (another CPython x.y.z), `loom_version_mismatch`, `corpus_sha_mismatch`, `space_sha_mismatch` / `adhesion_sha_mismatch` / `seats_sha_mismatch` (another dictionary), `corpus_unreadable`, `unknown_plugin:<kind>/<name>`, `plugin_code:<kind>/<name>` (same version, other source), `plugin_version:<kind>/<name>:<declared>!=<installed>`, `plugins_malformed` |
-| `WRITE_NOT_FROM_USER` | (a memory store) a stored write is not a substring of any user turn recorded earlier in its session |
+| `WRITE_NOT_FROM_USER` | (a memory store) a stored write (or a write before the first user turn) is not equal to one whole sentence of the user turn it was written in |
 | `SUPERSEDE_ORDER` | (a memory store) an executed `supersede` retires a sentence that is not earlier than its `new_sid` |
 | `NOT_A_RUN` | the path is not a run folder or a memory store |
 

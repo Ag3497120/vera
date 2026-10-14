@@ -169,7 +169,7 @@ def test_a_run_that_declares_no_plugins_has_no_mismatch(reg, docs, tmp_path):
 # -- memory: profile, note kinds, the answer run's declaration --------------------------------------------------------------------
 def test_memory_profile_note_kind_and_filter_are_recorded_and_checked(reg, tmp_path):
     store = str(tmp_path / "store")
-    r = rn.mem_say(store, ["広報の担当は山本です"], oa(STORY_ONE), profile="m6c-v17")
+    r = rn.mem_say(store, ["広報の担当は山本"], oa(STORY_ONE), profile="m6c-v17")
     assert r.committed
     a = rn.mem_ask(store, "広報の担当は何ですか", oa(ANSWER_FIRST), profile="m6c-v17", note_kinds=["mentions-yamamoto"], gate_filters=["no-digits"])
     assert a.status == "answered" and a.text == "山本" and a.detail["annotations"] == [{"kind": "mentions-yamamoto", "version": "1.0", "sid": 0, "text": "山本が出ます"}]

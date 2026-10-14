@@ -201,7 +201,7 @@ ANSWER_FIRST = [[("tool", "recall", {"question": "広報の担当は何ですか
 
 def test_a_memory_session_keeps_one_fact_per_write_and_answers_with_the_quote(tmp_path):
     store = str(tmp_path / "store")
-    r = rn.mem_say(store, ["広報の担当は山本です"], oa(STORY_ONE))
+    r = rn.mem_say(store, ["広報の担当は山本"], oa(STORY_ONE))
     assert r.committed and r.session == 1 and r.reports == [{"turn": "1-1", "contradictions": [], "bugs": [], "i": r.reports[0]["i"]}]
     a = rn.mem_ask(store, "広報の担当は何ですか", oa(ANSWER_FIRST))
     assert a.status == "answered" and a.text == "山本" and a.verified and a.sources[0]["text"] == "広報の担当は山本"

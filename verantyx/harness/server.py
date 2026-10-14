@@ -102,7 +102,7 @@ def render_page(token: str) -> Tuple[bytes, str]:
 # ------------------------------------------------------------------------------------------------------------
 # the state of one `vera run`
 # ------------------------------------------------------------------------------------------------------------
-LOCKED_KEYS = ("base_url", "api_key_env", "docs", "store", "runs_dir")        # command line only: the page shows them read-only (a token holder must not be able to point the backend, or the name of a secret, anywhere)
+LOCKED_KEYS = ("backend", "base_url", "api_key_env", "docs", "store", "runs_dir")        # command line only: the page shows them read-only (a token holder must not be able to point the backend, or the name of a secret, anywhere)
 CONFIG_KEYS = ("backend", "model", "base_url", "api_key_env", "tool_choice", "temperature", "evidence", "docs", "store", "runs_dir", "memory_profile", "gate_filters", "note_kinds")
 _ENV_RX = re.compile(r"^[A-Za-z_][A-Za-z0-9_]{0,63}$")
 
@@ -322,6 +322,11 @@ def ledger_view(path: str) -> Dict[str, Any]:
     return {"kind": rn.kind_of(path), "rows": rows, "head": head, "files": len(files)}
 
 
+def hash_label(s: str) -> str:
+    """A model-chosen label (a declared topic) shown as `str:<sha8>/<length>`: a person does not read model text there."""
+    return "str:%s/%d" % (hashlib.sha256(str(s).encode("utf-8")).hexdigest()[:8], len(str(s)))
+
+
 def memory_view(app: App) -> Dict[str, Any]:
     store = app.config.get("store")
     if not store or not os.path.isdir(os.path.join(store, "sessions")):
@@ -335,7 +340,7 @@ def memory_view(app: App) -> Dict[str, Any]:
         cites = [e.get("sid") for e in (n.get("earlier") or []) if isinstance(e, dict)]
         notes.append({"type": n.get("type"), "sid": sid, "turn": n.get("turn"), "text": rows[sid]["sent"] if isinstance(sid, int) and 0 <= sid < len(rows) else None,
                       "earlier": [{"sid": c, "text": rows[c]["sent"]} for c in cites if isinstance(c, int) and 0 <= c < len(rows)], "relation": n.get("relation"), "reason": n.get("reason")})
-    nests = [{"topic": n.topic, "centre": n.centre, "members": len(n.members)} for n in ix.nests]
+    nests = [{"topic": hash_label(n.topic), "centre": hash_label(n.centre), "members": len(n.members)} for n in ix.nests]
     return {"present": True, "sentences": [{"sid": i, "turn": r.get("turn"), "text": r["sent"]} for i, r in enumerate(rows[:500])], "n_sentences": len(rows), "notes": notes, "nests": nests,
             "counts": {t: sum(1 for n in notes if n["type"] == t) for t in ("SAME_SEAT", "UPDATE", "REVERSAL_X", "ENUMERATION")}}
 
@@ -365,7 +370,7 @@ def position_view(app: App, run_path: str) -> Dict[str, Any]:
         position = mx._position(pos)
         c = ix.cross(position[0], position[1])
         hist = [{"value": e.value, "sid": e.sid, "kind": e.kind} for e in ix.history_full(position)]
-        nests = [{"topic": n.topic, "centre": n.centre, "members": len(n.members)} for n in ix.nests if n.centre == position[1]]
+        nests = [{"topic": hash_label(n.topic), "centre": hash_label(n.centre), "members": len(n.members)} for n in ix.nests if n.centre == position[1]]
         out.append({"position": pos, "text": mx.position_text(position), "cross": mx.render_cross(c) if c is not None else None, "history": hist, "nests": nests})
     return {"positions": out}
 

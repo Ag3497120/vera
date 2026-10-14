@@ -220,7 +220,7 @@ function renderSettings(p) {
   const kt = el("table", {}, el("tr", {}, ["提供元", "キー", "出どころ", "環境変数 / 鍵束"].map((h) => el("th", {}, h))));
   for (const [prov, k] of Object.entries(st.keys)) kt.append(el("tr", {}, el("td", {}, prov), el("td", {class: k.present ? "ok" : "warn"}, k.present ? "あり" : "なし"), el("td", {}, k.source || "-"), el("td", {class: "m"}, k.env.join(", ") + (k.keychain ? " / " + k.keychain : ""))));
   p.append(kt, el("p", {class: "mute"}, "ローカルの Ollama / LM Studio などはキー不要です。"));
-  p.append(field("backend", "バックエンド", sel(ch.backend, c.backend)), field("model", "モデル", txt(c.model)), field("base_url", "base URL（コマンドラインのみ）", ro(c.base_url)),
+  p.append(field("backend", "バックエンド（コマンドラインのみ）", ro(c.backend)), field("model", "モデル", txt(c.model)), field("base_url", "base URL（コマンドラインのみ）", ro(c.base_url)),
     field("api_key_env", "鍵の環境変数名（コマンドラインのみ）", ro(c.api_key_env)), field("tool_choice", "ツール強制", sel(["required", "auto"], c.tool_choice)),
     field("temperature", "temperature", txt(c.temperature)), field("evidence", "引用の門", sel(ch.evidence, c.evidence)),
     field("docs", "文書（コマンドラインのみ）", ro(c.docs)), field("store", "記憶の保存先（コマンドラインのみ）", ro(c.store)), field("runs_dir", "実行の保存先（コマンドラインのみ）", ro(c.runs_dir)),
@@ -229,7 +229,7 @@ function renderSettings(p) {
   const msg = el("span", {class: "mute"});
   p.append(el("div", {class: "row"}, el("button", {class: "act", onclick: async () => {
     const patch = {};
-    for (const k of ["backend", "model", "tool_choice", "evidence", "memory_profile"]) patch[k] = f[k].value;
+    for (const k of ["model", "tool_choice", "evidence", "memory_profile"]) patch[k] = f[k].value;
     patch.temperature = f.temperature.value === "" ? null : Number(f.temperature.value);
     for (const k of ["gate_filters", "note_kinds"]) patch[k] = [...f[k].querySelectorAll("input:checked")].map((i) => i.value);
     try { const r = await api("/api/config", patch); S.state.config = r.config; msg.textContent = "保存しました"; refreshChip(); } catch (e) { msg.textContent = String(e.message || e); }

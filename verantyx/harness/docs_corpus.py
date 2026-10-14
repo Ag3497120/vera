@@ -88,7 +88,7 @@ def list_documents(path: str) -> List[Tuple[str, str]]:
     * the title of a document (and so the label of its sentences, `<title>#<n>`) is its file name without the extension; when two documents would share a title it is their relative path
       (without, then with the extension), so every label names exactly one sentence of one file.  `#` in a name is escaped."""
     if os.path.exists(path) and not os.path.isdir(path):
-        if not path.lower().endswith(DOC_SUFFIXES):
+        if not (path.lower().endswith(DOC_SUFFIXES) and os.path.realpath(path).lower().endswith(DOC_SUFFIXES)):      # the extension of the file it really is, too (a link named .txt to a .pdf)
             raise DocsError("%s: only %s documents are read" % (path, " / ".join(DOC_SUFFIXES)), "docs_bad_extension")
         if not stat.S_ISREG(os.stat(path).st_mode):
             raise DocsError("%s is not a regular file" % path, "docs_not_regular")
@@ -122,6 +122,12 @@ def list_documents(path: str) -> List[Tuple[str, str]]:
     for f, r, st, b in zip(files, rels, stems, bases):
         title = b if bases.count(b) == 1 else st if stems.count(st) == 1 else r
         out.append((_escape_title(title) or "doc", f))
+    titles = [t for t, _ in out]
+    if len(set(titles)) != len(titles):                     # a collision that only appeared after escaping (料金#3.md and 料金＃3.md): the full relative path, with its extension
+        out = [(_escape_title(r) or "doc", f) for f, r in zip(files, rels)]
+        titles = [t for t, _ in out]
+        if len(set(titles)) != len(titles):
+            raise DocsError("two documents cannot be told apart by name under %s" % path, "docs_ambiguous")
     return out
 
 

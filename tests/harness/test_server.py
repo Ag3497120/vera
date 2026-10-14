@@ -140,11 +140,11 @@ def test_a_key_value_never_appears_only_whether_one_is_present(web, monkeypatch)
 
 def test_settings_are_validated_and_the_dangerous_ones_are_command_line_only(web):
     call, app = web
-    for k, v in (("base_url", "https://attacker.example/v1"), ("api_key_env", "HOME"), ("docs", "/etc"), ("store", "/tmp/x"), ("runs_dir", "/tmp/y")):      # the exfiltration probe (H8 p3)
+    for k, v in (("backend", "json"), ("base_url", "https://attacker.example/v1"), ("api_key_env", "HOME"), ("docs", "/etc"), ("store", "/tmp/x"), ("runs_dir", "/tmp/y")):      # the exfiltration probe (H8 p3)
         st, _, body = call("POST", "/api/config", {k: v})
         assert st == 403 and body["code"] == "locked_setting", k
     assert app.config["docs"] != "/etc" and app.config["base_url"] is None and app.config["api_key_env"] is None
-    assert call("POST", "/api/config", {"backend": "nonesuch"})[0] == 400
+    assert call("POST", "/api/config", {"backend": "anthropic"})[0] == 403 and app.config["backend"] == "openai"      # a provider switch would send one provider's key to another's base URL (H8 p6)
     assert call("POST", "/api/config", {"evidence": "v9"})[0] == 400
     assert call("POST", "/api/config", {"gate_filters": ["evidence.v6"]})[0] == 400                      # a loom gate is not a filter
     st, _, body = call("POST", "/api/config", {"temperature": 0.2, "evidence": "v2"})
@@ -228,7 +228,7 @@ def test_only_one_run_at_a_time_and_bad_input_is_a_typed_error(web):
 def test_memory_say_ask_notes_and_the_position_of_the_question(web):
     call, app = web
     call.set(STORY_ONE)
-    st, _, body = call("POST", "/api/say", {"messages": ["広報の担当は山本です"]})
+    st, _, body = call("POST", "/api/say", {"messages": ["広報の担当は山本"]})
     assert st == 200 and body["turn"]["committed"] is True and body["turn"]["session"] == 1
     call.set(ANSWER_FIRST)
     st, _, body = call("POST", "/api/ask", {"mode": "memory", "question": "広報の担当は何ですか"})
