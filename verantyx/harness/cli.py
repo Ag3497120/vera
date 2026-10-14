@@ -6,6 +6,7 @@
         a memory: facts are kept one per write; a question is answered by a quote of what was kept, `contested` when two answers were told, or 「分かりません」
   vera mcp [--docs DIR --question Q ... | --tasks FILE | --mode memory --store DIR] [--runs-dir D]
         a stdio MCP server that makes Vera the only exit of an agent
+  vera run [--port 3090]   the local web UI on 127.0.0.1 (conversation, trace, ledger + Verify, memory notes, settings)
   vera plugins       the installed plugins (entry point group vera.plugins)
   vera verify RUN    the hash chain, then the replay (exit 0 only when both are OK)
   vera replay RUN    re-execute the run and compare every row byte for byte (exit 0 identical)
@@ -30,6 +31,7 @@ from verantyx.harness.backends import BackendError, make_backend
 from verantyx.harness import loom_cli
 from verantyx.harness.evalrun import EvalError
 from verantyx.harness.plugins import PluginError
+from verantyx.harness import server as srv
 from verantyx.ledger_events import LedgerError
 from verantyx.loom.state import Refuse
 
@@ -185,6 +187,25 @@ def cmd_eval(args: argparse.Namespace) -> int:
     return 1 if (bad["safety"] or bad["capability"]) else 0
 
 
+def cmd_run(args: argparse.Namespace) -> int:
+    srv.backend_factory = backend_factory                          # the fake client of a test reaches the server through here
+    cfg = {"backend": args.backend, "model": args.model, "base_url": args.base_url, "api_key_env": args.api_key_env, "tool_choice": args.tool_choice, "temperature": args.temperature,
+           "evidence": args.evidence.replace("evidence.", ""), "docs": args.docs, "store": os.path.abspath(args.store) if args.store else None, "runs_dir": args.runs_dir,
+           "memory_profile": args.memory_profile}
+
+    def ready(server: Any) -> None:
+        host, port = server.server_address[:2]
+        url = "http://%s:%d/" % ("[%s]" % host if ":" in host else host, port)
+        print("vera run: %s   (Ctrl-C to stop)" % url, flush=True)
+        if args.allow_remote:
+            print("WARNING: --allow-remote: anyone who can reach this port can use your configured backend and read your runs.", file=sys.stderr, flush=True)
+        if args.open:
+            import webbrowser
+            webbrowser.open(url)
+
+    return srv.serve(args.host, args.port, cfg, args.allow_remote, ready)
+
+
 def cmd_plugins(args: argparse.Namespace) -> int:
     from verantyx.harness import plugins as pl
     reg = pl.registry()
@@ -260,6 +281,19 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--json", action="store_true")
     p.set_defaults(fn=cmd_eval)
 
+    p = sub.add_parser("run", help="the local web UI (127.0.0.1 only): conversation, operation trace, ledger with Verify, memory notes, settings")
+    p.add_argument("--host", default="127.0.0.1", help="loopback address to bind (default 127.0.0.1; anything else is refused unless --allow-remote)")
+    p.add_argument("--port", type=int, default=srv.DEFAULT_PORT, help="default %d (0 = any free port)" % srv.DEFAULT_PORT)
+    p.add_argument("--allow-remote", dest="allow_remote", action="store_true", help="DANGEROUS: bind a non-loopback address; anyone who can reach the port can use your backend")
+    p.add_argument("--open", action="store_true", help="open the page in the browser")
+    p.add_argument("--docs", default=None, help="documents for 文書に問う (can also be set in the page)")
+    p.add_argument("--store", default=None, help="memory folder (can also be set in the page)")
+    p.add_argument("--runs-dir", dest="runs_dir", default=rn.DEFAULT_RUNS_DIR)
+    p.add_argument("--evidence", choices=["v6", "v2", "v1", "v3", "v4", "v5"], default=rn.EVIDENCE_DEFAULT)
+    p.add_argument("--memory-profile", dest="memory_profile", default=rn.MEMORY_PROFILE_DEFAULT)
+    _add_backend_args(p)
+    p.set_defaults(fn=cmd_run)
+
     p = sub.add_parser("plugins", help="list the installed plugins (entry point group vera.plugins): backends, gates, memory profiles, note kinds")
     p.add_argument("--json", action="store_true")
     p.set_defaults(fn=cmd_plugins)
@@ -273,7 +307,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     args = ap.parse_args(list(sys.argv[1:] if argv is None else argv))
     try:
         return int(args.fn(args))
-    except (rn.HarnessError, BackendError, Refuse, LedgerError, EvalError, PluginError, ValueError) as e:
+    except (rn.HarnessError, BackendError, Refuse, LedgerError, EvalError, PluginError, srv.ServerError, ValueError) as e:
         print("vera: %s" % keys.redact(e), file=sys.stderr)
         return 2
     except KeyboardInterrupt:
