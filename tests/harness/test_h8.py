@@ -373,3 +373,104 @@ def test_a_single_file_link_is_checked_by_the_extension_of_its_target(tmp_path):
     with pytest.raises(dc.DocsError) as e:
         dc.build_rows(str(link))
     assert e.value.code == "docs_bad_extension"
+
+
+# -- round 3 ------------------------------------------------------------------------------------------------------------------------
+def _rows_all(st):
+    out = []
+    for n in sorted(os.listdir(os.path.join(st, "sessions"))):
+        out += [json.loads(ln) for ln in open(os.path.join(st, "sessions", n, "ops.jsonl"), encoding="utf-8")]
+    return out
+
+
+@pytest.mark.parametrize("msg,piece", [("広報の担当は山本\nではありません。", "広報の担当は山本"), ("広報の担当は山本\nですか？", "広報の担当は山本"), ("予算が通れば\n広報の担当は山本", "広報の担当は山本"),
+                                      ("田中さんによると\n広報の担当は鈴木\nとのことですが誤りです。", "広報の担当は鈴木")])
+def test_a_line_break_is_not_a_sentence_boundary(tmp_path, msg, piece):                                  # p8
+    from verantyx.harness.runner import user_sentences
+    assert len(user_sentences(msg)) == 1 and "\n" in user_sentences(msg)[0]
+    st = str(tmp_path / "s")
+    assert rn.mem_say(st, [msg], oa([w(piece)])).committed
+    rows = _rows_all(st)
+    assert [x["op"] for x in rows if x["op"].endswith("_refused")] == ["write_refused"] and not [x for x in rows if x["op"] == "write"]
+    assert rn.mem_ask(st, "広報の担当は誰ですか", oa([])).reason == "empty_store"
+    assert rn.verify_path(st)["status"] == "OK"
+
+
+def test_sentences_end_only_at_the_terminators_or_the_end_of_the_message():
+    from verantyx.harness.runner import user_sentences
+    assert user_sentences("甲です。\n乙です！丙") == ["甲です。", "乙です！", "丙"]
+
+
+def test_a_self_correction_in_one_message_stores_nothing_for_that_place(tmp_path):                      # p9 iya / self_correct_full
+    for i, (msg, ws) in enumerate([("広報の担当は山本。いや、鈴木です。", ["広報の担当は山本"]), ("広報の担当は山本。広報の担当は鈴木です。", ["広報の担当は山本", "広報の担当は鈴木です"])]):
+        st = str(tmp_path / ("s%d" % i))
+        assert rn.mem_say(st, [msg], oa([[("tool", "write", {"text": t}) for t in ws] + [("tool", "report", {"contradictions": []})]])).committed
+        rows = _rows_all(st)
+        refs = [x["args"]["reason"] for x in rows if x["op"] == "write_refused"]
+        assert refs and set(refs) == {"ambiguous_in_turn"} and not [x for x in rows if x["op"] == "write" and x["result"].get("ok")]
+        assert rn.verify_path(st)["status"] == "OK"
+
+
+def test_a_message_that_is_unambiguous_still_stores_and_a_different_place_in_the_same_message_is_fine(tmp_path):
+    st = str(tmp_path / "s")
+    assert rn.mem_say(st, ["広報の担当は山本。経理の担当は佐藤。"], oa([[("tool", "write", {"text": "広報の担当は山本"}), ("tool", "write", {"text": "経理の担当は佐藤"}), ("tool", "report", {"contradictions": []})]])).committed
+    assert [r["sent"] for r in mem.MemStore(st).rows()] == ["広報の担当は山本", "経理の担当は佐藤"]
+
+
+def test_the_audit_flags_an_ambiguous_write_in_a_forged_session(tmp_path):
+    from verantyx.loom import memdoor as md
+    st = str(tmp_path / "s")
+    door = md.StructureDoor(st, "notes", "m", profile=mem.PROFILE_V4, versions=dict(rn.MEM_BUNDLE))
+    door.harness(None, "user_turn", {"turn": "1-1", "text": "広報の担当は山本。いや、鈴木です。"})
+    door.set_turn("1-1")
+    assert door.call("write", {"text": "広報の担当は山本"}).get("ok")
+    door.commit(); door.close()
+    v = rn.verify_path(st)
+    assert v["status"] == "AMBIGUOUS_WRITE" and v["problems"][0]["type"] == "ambiguous_write"
+
+
+# unsourced (MCP) sessions: p9
+def _mcp_session(st, calls):
+    from verantyx.harness import mcp_server as ms
+    d = ms.open_memory_door(st, "story", "mcp-client")
+    g = rn.UnsourcedGuard(d, st)
+    outs = [g.call(*c) for c in calls]
+    d.commit(); d.close()
+    return outs
+
+
+def test_an_agents_record_cannot_retire_what_the_user_said_and_its_answers_carry_the_mark(tmp_path):
+    st = str(tmp_path / "s")
+    assert rn.mem_say(st, ["広報の担当は山本"], oa([w("広報の担当は山本")])).committed
+    outs = _mcp_session(st, [("write", {"text": "広報の担当は鈴木"}), ("supersede", {"new_sid": 1, "old_sid": 0, "reason": "変更"})])
+    assert outs[0]["ok"] is True and outs[1]["ok"] is False and outs[1]["refusal"] == "unsourced_retires_sourced"
+    rows = _rows_all(st)
+    assert [x["args"]["reason"] for x in rows if x["op"] == "supersede_refused"] == ["unsourced_retires_sourced"] and not [x for x in rows if x["op"] == "supersede" and x["result"].get("ok")]
+    v = rn.verify_path(st)
+    assert v["status"] == "OK" and v["unsourced_sessions"] == ["s0002"]
+    q = "広報の担当は何ですか"
+    a = rn.mem_ask(st, q, oa([[("tool", "recall", {"question": q})], [("tool", "weave_span", {"sid": 1, "tier": "WORD", "first": "鈴木", "last": "鈴木"})], [("tool", "emit", {})],
+                              [("tool", "abstain", {"type": "contested"})]]))
+    assert a.status == "refused" and a.reason == "contested"                                              # both stand; neither retired the other
+    # an answer quoted from the agent's record is marked everywhere
+    st2 = str(tmp_path / "t")
+    _mcp_session(st2, [("write", {"text": "広報の担当は鈴木"})])
+    b = rn.mem_ask(st2, q, oa([[("tool", "recall", {"question": q})], [("tool", "weave_span", {"sid": 0, "tier": "WORD", "first": "鈴木", "last": "鈴木"})], [("tool", "emit", {})]]))
+    assert b.status == "answered" and b.sources[0]["sourced"] is False
+    assert rn.UNSOURCED_MARK == "出所: 利用者の発言ではない（エージェントの記録）" and rn.UNSOURCED_MARK in b.render()
+    assert sv.answer_view(b, sv.App({"runs_dir": str(tmp_path / "runs")}))["sources"][0]["sourced"] is False
+    c = rn.mem_ask(str(tmp_path / "s"), q, oa([[("tool", "recall", {"question": q})], [("tool", "weave_span", {"sid": 0, "tier": "WORD", "first": "山本", "last": "山本"})], [("tool", "emit", {})],
+                                                [("tool", "abstain", {"type": "unknown"})]]))
+    assert rn.UNSOURCED_MARK not in c.render()
+
+
+def test_the_audit_flags_an_unsourced_session_that_retired_a_user_sentence(tmp_path):
+    from verantyx.loom import memdoor as md
+    st = str(tmp_path / "s")
+    assert rn.mem_say(st, ["広報の担当は山本"], oa([w("広報の担当は山本")])).committed
+    d = md.StructureDoor(st, "notes", "m", profile=mem.PROFILE_V4, versions=dict(rn.MEM_BUNDLE))      # no guard: what an unguarded MCP client could do
+    d.call("write", {"text": "広報の担当は鈴木"})
+    assert d.call("supersede", {"new_sid": 1, "old_sid": 0, "reason": "変更"}).get("ok")
+    d.commit(); d.close()
+    v = rn.verify_path(st)
+    assert v["status"] == "UNSOURCED_RETIRES_SOURCED" and v["problems"][0]["session"] == "s0002"

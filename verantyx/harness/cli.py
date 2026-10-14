@@ -90,6 +90,8 @@ def cmd_mem(args: argparse.Namespace) -> int:
             print("答え: 「%s」" % a.text)
             for s in a.sources:
                 print("根拠: %s" % s["text"])
+                if s.get("sourced") is False:
+                    print(rn.UNSOURCED_MARK)
         elif a.reason == "plugin_refused":
             print(a.render().splitlines()[0])
         elif a.reason == "contested":

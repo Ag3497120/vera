@@ -227,7 +227,7 @@ class App:
 # ------------------------------------------------------------------------------------------------------------
 def answer_view(ans: rn.Answer, app: App) -> Dict[str, Any]:
     """What the page may show of an Answer: the quote and its source sentences, or 「分かりません」 with the typed reason.  Nothing the model wrote as prose exists in an Answer."""
-    d: Dict[str, Any] = {"status": ans.status, "text": ans.text, "sources": [{"text": s.get("text"), "source": s.get("source")} for s in ans.sources], "reason": ans.reason,
+    d: Dict[str, Any] = {"status": ans.status, "text": ans.text, "sources": [dict({"text": s.get("text"), "source": s.get("source")}, **({"sourced": s["sourced"]} if s.get("sourced") is not None else {})) for s in ans.sources], "reason": ans.reason,
                          "reason_ja": rn.REASON_JA.get(ans.reason or "", ""), "verified": ans.verified, "free_text_dropped": ans.free_text_dropped, "backend": ans.backend,
                          "usage": ans.usage}
     det = {}

@@ -1210,8 +1210,8 @@ def source_args(op: str, args: Any) -> dict:
         return dict(args)
     if op == "supersede_refused":
         if not (isinstance(args, dict) and set(args) == {"turn", "new_sid", "reason"} and isinstance(args["turn"], str) and TURN_RX.match(args["turn"]) and isinstance(args["new_sid"], int)
-                and not isinstance(args["new_sid"], bool) and args["reason"] == "supersede_order"):
-            raise ValueError("supersede_refused: arguments are turn, new_sid, reason (supersede_order)")
+                and not isinstance(args["new_sid"], bool) and args["reason"] in ("supersede_order", "unsourced_retires_sourced")):
+            raise ValueError("supersede_refused: arguments are turn, new_sid, reason (supersede_order | unsourced_retires_sourced)")
         return dict(args)
     if op == "plugin_refused":
         if not (isinstance(args, dict) and set(args) == {"kind", "name", "version", "code"} and all(isinstance(v, str) and len(v) <= 80 for v in args.values())):
@@ -1219,8 +1219,8 @@ def source_args(op: str, args: Any) -> dict:
         return dict(args)
     if not (isinstance(args, dict) and set(args) == {"turn", "sha256", "chars", "reason"} and isinstance(args["turn"], str) and TURN_RX.match(args["turn"])
             and isinstance(args["sha256"], str) and re.match(r"^[0-9a-f]{64}$", args["sha256"]) and isinstance(args["chars"], int) and not isinstance(args["chars"], bool)
-            and args["chars"] >= 0 and args["reason"] == "not_from_user"):
-        raise ValueError("write_refused: arguments are turn, sha256, chars, reason (not_from_user)")
+            and args["chars"] >= 0 and args["reason"] in ("not_from_user", "ambiguous_in_turn")):
+        raise ValueError("write_refused: arguments are turn, sha256, chars, reason (not_from_user | ambiguous_in_turn)")
     return dict(args)
 
 

@@ -113,7 +113,10 @@ function renderTurn(t) {
   box.append(el("div", {class: "q"}, (t.mode === "memory" ? "記憶: " : "文書: ") + t.question));
   if (a.status === "answered") {
     box.append(el("div", {class: "quote"}, "「" + a.text + "」"));
-    for (const s of a.sources) box.append(el("div", {class: "src"}, "根拠: " + s.text + (s.source ? "（" + s.source + "）" : "")));
+    for (const s of a.sources) {
+      box.append(el("div", {class: "src"}, "根拠: " + s.text + (s.source ? "（" + s.source + "）" : "")));
+      if (s.sourced === false) box.append(el("div", {class: "refuse"}, "出所: 利用者の発言ではない（エージェントの記録）"));
+    }
   } else {
     box.append(el("div", {class: "refuse"}, "分かりません ", el("span", {class: "tag"}, a.reason || "unknown"), a.reason_ja ? "（" + a.reason_ja + "）" : ""));
     const d = a.detail || {};
