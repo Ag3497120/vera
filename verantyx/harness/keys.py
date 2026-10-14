@@ -3,7 +3,7 @@ folder, a ledger row, a result file, a log or an error message (`redact` removes
 
 Order, per provider:
   anthropic   env ANTHROPIC_API_KEY, then the macOS Keychain item (service "vera-harness", account "anthropic"; the research tree's
-              ("vera-loom", "anthropic") is read as a fallback).
+              the research tree's ("vera-loom", "anthropic") item is NOT read: copy it yourself if you want it).
   openai      env VERA_OPENAI_API_KEY, then OPENAI_API_KEY, then the Keychain item ("vera-harness", "openai").
               A local OpenAI-compatible server (Ollama, LM Studio, vLLM, an MLX server) needs no key: with a base URL and no key the placeholder
               "not-needed" is sent.
@@ -25,7 +25,7 @@ ENV_ORDER: Dict[str, Tuple[str, ...]] = {
     "openai": ("VERA_OPENAI_API_KEY", "OPENAI_API_KEY"),
 }
 KEYCHAIN_ITEMS: Dict[str, Tuple[Tuple[str, str], ...]] = {
-    "anthropic": ((KEYCHAIN_SERVICE, "anthropic"), ("vera-loom", "anthropic")),
+    "anthropic": ((KEYCHAIN_SERVICE, "anthropic"),),
     "openai": ((KEYCHAIN_SERVICE, "openai"),),
 }
 LOCAL_PLACEHOLDER = "not-needed"

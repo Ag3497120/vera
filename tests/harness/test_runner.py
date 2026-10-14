@@ -235,7 +235,7 @@ def test_a_session_that_fails_is_not_committed(tmp_path):
             self.chat = type("C", (), {"completions": type("X", (), {"create": staticmethod(lambda **kw: (_ for _ in ()).throw(RuntimeError("down")))})})()
     store = str(tmp_path / "store")
     r = rn.mem_say(store, ["広報の担当は山本"], make_backend("openai", "m", client=Boom()))
-    assert not r.committed and r.ended == "api_error" and "down" in (r.error or "")
+    assert not r.committed and r.ended == "api_error" and (r.error or "").startswith("RuntimeError: details withheld") and "down" not in (r.error or "")
     assert rn.mem_ask(store, "広報の担当は何ですか", oa([])).reason == "empty_store"
 
 

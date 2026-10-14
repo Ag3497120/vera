@@ -197,8 +197,6 @@ def cmd_run(args: argparse.Namespace) -> int:
         host, port = server.server_address[:2]
         url = "http://%s:%d/" % ("[%s]" % host if ":" in host else host, port)
         print("vera run: %s   (Ctrl-C to stop)" % url, flush=True)
-        if args.allow_remote:
-            print("WARNING: --allow-remote: anyone who can reach this port can use your configured backend and read your runs.", file=sys.stderr, flush=True)
         if args.open:
             import webbrowser
             webbrowser.open(url)
@@ -282,9 +280,9 @@ def build_parser() -> argparse.ArgumentParser:
     p.set_defaults(fn=cmd_eval)
 
     p = sub.add_parser("run", help="the local web UI (127.0.0.1 only): conversation, operation trace, ledger with Verify, memory notes, settings")
-    p.add_argument("--host", default="127.0.0.1", help="loopback address to bind (default 127.0.0.1; anything else is refused unless --allow-remote)")
+    p.add_argument("--host", default="127.0.0.1", help="loopback address to bind (default 127.0.0.1; anything else is refused)")
     p.add_argument("--port", type=int, default=srv.DEFAULT_PORT, help="default %d (0 = any free port)" % srv.DEFAULT_PORT)
-    p.add_argument("--allow-remote", dest="allow_remote", action="store_true", help="DANGEROUS: bind a non-loopback address; anyone who can reach the port can use your backend")
+    p.add_argument("--allow-remote", dest="allow_remote", action="store_true", help="not available in this version (refused): remote access would need an authentication the UI does not have")
     p.add_argument("--open", action="store_true", help="open the page in the browser")
     p.add_argument("--docs", default=None, help="documents for 文書に問う (can also be set in the page)")
     p.add_argument("--store", default=None, help="memory folder (can also be set in the page)")

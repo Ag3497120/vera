@@ -93,10 +93,13 @@ def test_a_plugin_is_one_more_entry_point_and_cannot_shadow_a_builtin(reg):
 def test_the_manifest_is_canonical_and_the_mismatch_tokens_are_typed(reg):
     used = [reg.get("gate", "no-digits"), reg.get("backend", "openai"), reg.get("gate", "no-digits")]
     m = pl.manifest(used)
-    assert json.loads(m) == [{"kind": "backend", "name": "openai", "version": "0.1.0"}, {"kind": "gate", "name": "no-digits", "version": "1.0"}]
+    dg = reg.get("gate", "no-digits").digest
+    assert len(dg) == 64 and reg.get("backend", "openai").digest == ""                                   # a plugin's code digest is recorded; the built-ins are named by version
+    assert json.loads(m) == [{"kind": "backend", "name": "openai", "version": "0.1.0"}, {"kind": "gate", "name": "no-digits", "version": "1.0", "digest": dg}]
     assert pl.mismatch(pl.parse_manifest(m), reg) is None and pl.mismatch(None, reg) is None
     assert pl.mismatch([{"kind": "gate", "name": "zzz", "version": "1"}], reg) == "unknown_plugin:gate/zzz"
     assert pl.mismatch([{"kind": "gate", "name": "no-digits", "version": "0.9"}], reg) == "plugin_version:gate/no-digits:0.9!=1.0"
+    assert pl.mismatch([{"kind": "gate", "name": "no-digits", "version": "1.0", "digest": "0" * 64}], reg).startswith("plugin_code:gate/no-digits")      # same name and version, other code
     assert pl.parse_manifest("not json") is None and pl.parse_manifest('[{"kind": 1}]') is None
 
 
@@ -105,7 +108,7 @@ def test_a_gate_filter_can_only_refuse_and_the_ledger_records_it(reg, docs, tmp_
     a = rn.ask(QUESTION, docs, oa(CLEAN), str(tmp_path / "r1"), gate_filters=["no-digits"])
     assert a.status == "answered" and a.text == "松風庵"                                    # no digit in the quote: the filter passes it
     meta = [json.loads(ln) for ln in open(os.path.join(a.run_dir, "ops.jsonl"), encoding="utf-8")][1]
-    declared = json.loads(meta["args"]["plugins"])
+    declared = [{k: v for k, v in d.items() if k != "digest"} for d in json.loads(meta["args"]["plugins"])]
     assert {"kind": "gate", "name": "no-digits", "version": "1.0"} in declared and {"kind": "gate", "name": "evidence.v6", "version": "1"} in declared
     assert {"kind": "backend", "name": "openai", "version": "0.1.0"} in declared
     assert rn.verify_path(a.run_dir)["status"] == "OK" and rn.replay_path(a.run_dir)["status"] == "IDENTICAL"
@@ -171,7 +174,7 @@ def test_memory_profile_note_kind_and_filter_are_recorded_and_checked(reg, tmp_p
     a = rn.mem_ask(store, "広報の担当は何ですか", oa(ANSWER_FIRST), profile="m6c-v17", note_kinds=["mentions-yamamoto"], gate_filters=["no-digits"])
     assert a.status == "answered" and a.text == "山本" and a.detail["annotations"] == [{"kind": "mentions-yamamoto", "version": "1.0", "sid": 0, "text": "山本が出ます"}]
     rows = [json.loads(ln) for ln in open(os.path.join(a.run_dir, "ops.jsonl"), encoding="utf-8")]
-    declared = [json.loads(x["args"]["plugins"]) for x in rows if x["op"] == "harness_meta"][0]
+    declared = [{k: v for k, v in d.items() if k != "digest"} for d in [json.loads(x["args"]["plugins"]) for x in rows if x["op"] == "harness_meta"][0]]
     assert {"kind": "memory_profile", "name": "m6c-v17", "version": "1"} in declared and {"kind": "note_kind", "name": "mentions-yamamoto", "version": "1.0"} in declared
     assert rn.verify_path(store)["status"] == "OK" and rn.verify_path(a.run_dir)["status"] == "OK"
     pl.set_registry(pl.discover([]))
@@ -208,3 +211,28 @@ def test_vera_plugins_lists_builtins_and_installed_plugins(reg, capsys):
     assert cli.main(["plugins", "--json"]) == 0
     j = json.loads(capsys.readouterr().out)
     assert {p["name"] for p in j["plugins"]} >= {"anthropic", "evidence.v6", "no-digits", "m6d-v17"} and j["errors"] == []
+
+
+# -- H8: a refusal is IN the ledger; the code digest is compared ---------------------------------------------------------------------
+def test_a_filter_refusal_is_written_to_the_ledger_and_the_run_closes_with_an_abstain(reg, docs, tmp_path):
+    from verantyx.loom import ledger as lg
+    b = rn.ask(QUESTION, docs, oa(CLEAN), str(tmp_path / "r"), gate_filters=["refuse-all"])
+    rows = [json.loads(ln) for ln in open(os.path.join(b.run_dir, "ops.jsonl"), encoding="utf-8")]
+    ops = [r["op"] for r in rows]
+    assert "plugin_refused" in ops and "emit" not in ops and ops[-2:] == ["plugin_refused", "abstain"] or "abstain" in ops
+    pr = [r for r in rows if r["op"] == "plugin_refused"][0]["args"]
+    assert pr["name"] == "refuse-all" and pr["code"] == "never"
+    assert b.status == "refused" and b.reason == "plugin_refused" and b.detail["plugin"]["name"] == "refuse-all"
+    out = lg.emitted_output(b.run_dir, corpus_path=os.path.join(b.run_dir, "corpus.jsonl"))
+    assert out["status"] != "emitted" and "text" not in out                                      # `vera loom output` has nothing to print
+    assert rn.verify_path(b.run_dir)["status"] == "OK" and rn.replay_path(b.run_dir)["status"] == "IDENTICAL"
+
+
+def test_a_plugin_with_the_same_name_and_version_but_other_code_says_INPUTS(reg, docs, tmp_path):
+    a = rn.ask(QUESTION, docs, oa(CLEAN), str(tmp_path / "runs"), gate_filters=["no-digits"])
+    assert rn.verify_path(a.run_dir)["status"] == "OK"
+    other = pl.discover([EP("mine", lambda: [pl.Plugin("gate", "no-digits", "1.0", refuse_all, "", False, "", "f" * 64)])])
+    other.get("gate", "no-digits")                                                                  # installed under the same name and version
+    pl.set_registry(other)
+    v = rn.verify_path(a.run_dir)
+    assert v["status"] == "REPLAY_INPUTS_MISMATCH" and v["replay"]["mismatch"].startswith("plugin_")

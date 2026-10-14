@@ -15,6 +15,7 @@ import hashlib
 import json
 import os
 import re
+import stat
 from typing import Dict, Iterable, List, Sequence, Tuple
 
 DOC_SUFFIXES = (".txt", ".md", ".markdown")
@@ -73,23 +74,55 @@ def split_sentences(text: str) -> List[str]:
     return out
 
 
+def _escape_title(t: str) -> str:
+    """A '#' in a file name would be read as the sentence-number separator of the source label (料金#3.md would collide with 料金.md); it becomes the full-width ＃."""
+    return t.replace("#", "＃")
+
+
 def list_documents(path: str) -> List[Tuple[str, str]]:
-    """[(title, file path)] for a file or a directory (recursive, sorted by relative path)."""
-    if os.path.isfile(path):
-        files = [path]
-    elif os.path.isdir(path):
-        files = []
-        for dp, dn, fn in os.walk(path):
-            dn[:] = sorted(d for d in dn if not d.startswith("."))
-            for f in sorted(fn):
-                if f.lower().endswith(DOC_SUFFIXES) and not f.startswith("."):
-                    files.append(os.path.join(dp, f))
-        files.sort(key=lambda p: os.path.relpath(p, path))
-    else:
+    """[(title, file path)] for a file or a directory (recursive, sorted by relative path).
+
+    * only regular files with an allowed extension (.txt .md .markdown); a FIFO, a device or a socket is skipped (opening a FIFO would hang);
+    * a symbolic link is followed only when its target is a regular file INSIDE the documents root: a link that points outside is refused (`docs_symlink_outside`), never read;
+    * a single FILE given as the documents must have an allowed extension and be a regular file too (`docs_bad_extension`, `docs_not_regular`);
+    * the title of a document (and so the label of its sentences, `<title>#<n>`) is its file name without the extension; when two documents would share a title it is their relative path
+      (without, then with the extension), so every label names exactly one sentence of one file.  `#` in a name is escaped."""
+    if os.path.exists(path) and not os.path.isdir(path):
+        if not path.lower().endswith(DOC_SUFFIXES):
+            raise DocsError("%s: only %s documents are read" % (path, " / ".join(DOC_SUFFIXES)), "docs_bad_extension")
+        if not stat.S_ISREG(os.stat(path).st_mode):
+            raise DocsError("%s is not a regular file" % path, "docs_not_regular")
+        return [(_escape_title(os.path.splitext(os.path.basename(path))[0]) or "doc", path)]
+    if not os.path.isdir(path):
         raise DocsError("not a file or a directory: %s" % path, "docs_missing")
+    root = os.path.realpath(path)
+    files: List[str] = []
+    for dp, dn, fn in os.walk(path):                       # os.walk does not descend into symbolic links to directories
+        dn[:] = sorted(d for d in dn if not d.startswith("."))
+        for f in sorted(fn):
+            if not (f.lower().endswith(DOC_SUFFIXES) and not f.startswith(".")):
+                continue
+            full = os.path.join(dp, f)
+            real = os.path.realpath(full)
+            if os.path.islink(full) and not (real == root or real.startswith(root + os.sep)):
+                raise DocsError("%s is a symbolic link to %s, outside the documents folder" % (full, real), "docs_symlink_outside")
+            try:
+                if not stat.S_ISREG(os.stat(real).st_mode):
+                    continue
+            except OSError:
+                continue
+            files.append(full)
+    files.sort(key=lambda p: os.path.relpath(p, path))
     if not files:
         raise DocsError("no .txt / .md document under %s" % path, "docs_empty")
-    return [(os.path.splitext(os.path.basename(f))[0], f) for f in files]
+    rels = [os.path.relpath(f, path).replace(os.sep, "/") for f in files]
+    stems = [os.path.splitext(r)[0] for r in rels]
+    bases = [os.path.basename(x) for x in stems]
+    out: List[Tuple[str, str]] = []
+    for f, r, st, b in zip(files, rels, stems, bases):
+        title = b if bases.count(b) == 1 else st if stems.count(st) == 1 else r
+        out.append((_escape_title(title) or "doc", f))
+    return out
 
 
 def build_rows(path: str) -> List[Dict[str, str]]:
@@ -98,10 +131,13 @@ def build_rows(path: str) -> List[Dict[str, str]]:
         if os.path.getsize(f) > MAX_DOC_BYTES:
             raise DocsError("%s is larger than %d bytes" % (f, MAX_DOC_BYTES), "docs_too_large")
         try:
-            text = open(f, encoding="utf-8").read()
+            with open(f, "rb") as fh:
+                raw = fh.read(MAX_DOC_BYTES + 1)
+            if len(raw) > MAX_DOC_BYTES:
+                raise DocsError("%s is larger than %d bytes" % (f, MAX_DOC_BYTES), "docs_too_large")
+            text = raw.decode("utf-8")
         except UnicodeDecodeError as e:
             raise DocsError("%s is not UTF-8" % f, "docs_not_utf8") from e
-        title = re.sub(r"#\d+$", "", title) or "doc"
         for k, s in enumerate(split_sentences(text)):
             rows.append({"sha": hashlib.sha256(s.encode("utf-8")).hexdigest(), "title": title, "sent": s, "source": "%s#%d" % (title, k)})
     if not rows:

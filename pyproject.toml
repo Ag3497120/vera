@@ -39,6 +39,7 @@ namespaces = false
 
 [tool.setuptools.package-data]
 verantyx = ["lang_data/*.json"]
+"verantyx.loom" = ["*.sb"]
 "verantyx.harness" = ["prompts/*.txt", "loom_tools.json", "evals/*", "webui/*"]
 
 [tool.pytest.ini_options]

@@ -65,19 +65,25 @@ def web(tmp_path, monkeypatch, docs):
 
 
 # -- the address -------------------------------------------------------------------------------------------------------------------
-def test_only_loopback_addresses_are_bound_unless_allowed():
-    for h in ("127.0.0.1", "localhost", "::1", "127.0.0.5"):
+def test_only_loopback_addresses_are_bound_and_there_is_no_remote_mode():
+    for h in ("127.0.0.1", "localhost", "::1", "127.0.0.5", "::ffff:127.0.0.1"):
         assert sv.check_bind(h)
-    for h in ("0.0.0.0", "", "192.168.1.5", "example.com", "::"):
+    for h in ("0.0.0.0", "", "192.168.1.5", "example.com", "::", "::ffff:10.0.0.1", "LOCALHOST", "127.0.0.1 "):
         with pytest.raises(sv.ServerError) as e:
             sv.check_bind(h)
         assert e.value.code == "bind_refused"
-    assert sv.check_bind("0.0.0.0", allow_remote=True) == "0.0.0.0"
+        with pytest.raises(sv.ServerError):
+            sv.check_bind(h, allow_remote=True)                                                          # the flag does not open anything
+    with pytest.raises(sv.ServerError) as e:
+        sv.make_server("127.0.0.1", 0, sv.App({}), allow_remote=True)
+    assert e.value.code == "bind_refused"
 
 
 def test_the_command_refuses_a_foreign_address(capsys):
     assert cli.main(["run", "--host", "0.0.0.0", "--port", "0"]) == 2
     assert "refusing to bind" in capsys.readouterr().err
+    assert cli.main(["run", "--allow-remote", "--port", "0"]) == 2
+    assert "not available" in capsys.readouterr().err
 
 
 # -- the page ----------------------------------------------------------------------------------------------------------------------
@@ -127,21 +133,31 @@ def test_a_key_value_never_appears_only_whether_one_is_present(web, monkeypatch)
     assert st == 200 and SECRET not in text and body["keys"]["anthropic"] == {"present": True, "source": "environment", "env": ["ANTHROPIC_API_KEY"], "keychain": "vera-harness / anthropic"}
     assert body["keys"]["openai"]["present"] is False
     keys._remember(SECRET)
-    st, _, body = call("POST", "/api/config", {"api_key_env": SECRET})                                  # a key typed where a variable NAME belongs
-    assert st == 400 and SECRET not in json.dumps(body) and "NAME" in body["error"]
+    st, _, body = call("POST", "/api/config", {"api_key_env": SECRET})                                  # the variable NAME is a command-line setting: nothing typed here is accepted
+    assert st == 403 and SECRET not in json.dumps(body) and body["code"] == "locked_setting"
     assert call("POST", "/api/config", {"api_key": SECRET})[0] == 400                                   # there is no setting that takes a key
 
 
-def test_settings_are_validated(web):
+def test_settings_are_validated_and_the_dangerous_ones_are_command_line_only(web):
     call, app = web
-    assert call("POST", "/api/config", {"base_url": "http://user:pw@127.0.0.1:11434/v1"})[0] == 400
-    assert call("POST", "/api/config", {"base_url": "ftp://x"})[0] == 400
+    for k, v in (("base_url", "https://attacker.example/v1"), ("api_key_env", "HOME"), ("docs", "/etc"), ("store", "/tmp/x"), ("runs_dir", "/tmp/y")):      # the exfiltration probe (H8 p3)
+        st, _, body = call("POST", "/api/config", {k: v})
+        assert st == 403 and body["code"] == "locked_setting", k
+    assert app.config["docs"] != "/etc" and app.config["base_url"] is None and app.config["api_key_env"] is None
     assert call("POST", "/api/config", {"backend": "nonesuch"})[0] == 400
     assert call("POST", "/api/config", {"evidence": "v9"})[0] == 400
-    assert call("POST", "/api/config", {"docs": "/no/such/place"})[0] == 400
     assert call("POST", "/api/config", {"gate_filters": ["evidence.v6"]})[0] == 400                      # a loom gate is not a filter
-    st, _, body = call("POST", "/api/config", {"base_url": "http://127.0.0.1:11434/v1", "temperature": 0.2, "evidence": "v2"})
-    assert st == 200 and body["config"]["base_url"] == "http://127.0.0.1:11434/v1" and body["config"]["evidence"] == "v2"
+    st, _, body = call("POST", "/api/config", {"temperature": 0.2, "evidence": "v2"})
+    assert st == 200 and body["config"]["evidence"] == "v2"
+    assert "locked" in call("GET", "/api/state")[2] and "base_url" in call("GET", "/api/state")[2]["locked"]
+
+
+def test_every_loopback_spelling_of_the_host_header_is_accepted_and_nothing_else(web):
+    call, app = web
+    for h in ("127.0.0.1", "localhost", "127.0.0.2", "[::1]", "[::ffff:127.0.0.1]"):
+        assert call("GET", "/api/state", host="%s:%d" % (h, call.port))[0] == 200, h
+    for h in ("evil.example:%d", "127.0.0.1.evil.example:%d", "10.0.0.1:%d", "[::ffff:10.0.0.1]:%d", "127.0.0.1:1%d"):
+        assert call("GET", "/api/state", host=h % call.port)[0] == 421, h
 
 
 def test_a_run_key_cannot_leave_the_runs_and_the_store(web, tmp_path):
@@ -204,7 +220,7 @@ def test_only_one_run_at_a_time_and_bad_input_is_a_typed_error(web):
         assert st == 409 and body["code"] == "busy"
     finally:
         app.run_lock.release()
-    app.set_config({"docs": None})
+    app.config["docs"] = None
     assert call("POST", "/api/ask", {"mode": "docs", "question": QUESTION})[2]["code"] == "no_docs"
 
 

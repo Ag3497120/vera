@@ -187,7 +187,7 @@ class LoomServer:
         run = Run(corpus, task, model, rid, self.stability, index, CAPS_PROFILES[self.caps_profile][task["lang"]], self.notes_profile,
                   self.evidence_profile if task["lang"] == "prose" else None)
         led = lg.Ledger(rdir)
-        meta = {"corpus": paths.rel_to_root(task["corpus"]), "corpus_sha": corpus.corpus_sha, "task_id": task_id, "isolated": self.isolation is not None}      # LOOM-path: relative to the repo root
+        meta = {"corpus": paths.meta_corpus(task["corpus"], rdir.parent), "corpus_sha": corpus.corpus_sha, "task_id": task_id, "isolated": self.isolation is not None}      # LOOM-path: relative to the repo root
         if self.isolation is not None:
             meta["isolation_profile_sha"] = self.isolation
         if index is not None:

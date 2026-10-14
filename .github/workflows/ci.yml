@@ -135,6 +135,8 @@ jobs:
           assert r.files("verantyx").joinpath("lang_data", "ja_grammar.json").read_text(encoding="utf-8")
           assert r.files("verantyx.harness").joinpath("evals", "expected.json").read_text(encoding="utf-8")
           assert r.files("verantyx.harness").joinpath("webui", "index.html").read_text(encoding="utf-8")
+          from verantyx.loom import isolate
+          assert isolate.PROFILE_PATH.is_file() and len(isolate.profile_sha()) == 64 and "site-packages" in str(isolate.PROFILE_PATH), isolate.PROFILE_PATH    # the sandbox profile is in the wheel
           from verantyx.harness.cli import main
           print("package data ok")
           PY

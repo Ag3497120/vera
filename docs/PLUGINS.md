@@ -12,7 +12,7 @@ The point of the harness is that the model's only output is a quote from the rec
 | kind | object | what it can do | what it cannot do |
 |---|---|---|---|
 | `backend` | factory `(model, base_url=None, *, client=None, api_key_env=None, tool_choice="required", temperature=None) -> Backend` | add a model driver (see `verantyx/harness/backends/base.py`: one request in, one Anthropic-shaped turn out) | bypass the driver: whatever it returns still goes through the same loom server and ledger; free text is dropped |
-| `gate` | a *filter* `(question, answer, sources) -> None \| code` | refuse an answer the loom's gate already passed (the answer becomes 「分かりません」, reason `plugin_refused`, your code) | let through anything the loom's gate refused. A filter that raises, or returns something odd, refuses (fail closed) |
+| `gate` | a *filter* `(question, answer, sources) -> None \| code` | refuse an answer the loom's gate already passed. At `emit` the quote is read back, your filter runs, and on a refusal a `plugin_refused` row (kind, name, version, code) goes into the ledger and the run closes with an `abstain`: no emitted output exists, `vera loom output` prints nothing; the person sees 「分かりません」, reason `plugin_refused` | let through anything the loom's gate refused. A filter that raises, or returns something odd, refuses (fail closed) |
 | `memory_profile` | `MemoryProfile(versions, answer_version, profile)` | select which of the loom's *own* versioned memory bundles `vera mem` runs | add a version the loom does not implement |
 | `note_kind` | `NoteKind(annotate)` with `annotate(sentences) -> [{"sid", "text"}]` | read the committed memory sentences and show notes beside an answer | change an answer. Its notes are shown, never used |
 
@@ -54,13 +54,13 @@ A plugin cannot replace another (a name that is taken is refused, so nothing can
 
 ## The ledger records which plugins ran
 
-The first `harness_meta` row of a run (inside the hash chain) carries `plugins`: `[{"kind","name","version"}, ...]`, canonical JSON, sorted. It lists the backend, the evidence gate,
+The first `harness_meta` row of a run (inside the hash chain) carries `plugins`: `[{"kind","name","version"}, ...]`, canonical JSON, sorted; a non-built-in plugin also carries a `digest`, the sha256 of the source file of its entry-point module (not of what that module imports). It lists the backend, the evidence gate,
 the memory profile, and every filter and note kind you selected. Memory session and answer runs carry it too.
 
 `vera verify` and `vera replay` compare that list with what is installed:
 
 * every declared plugin installed at the declared version: the normal chain and replay checks decide;
-* a declared plugin that is not installed (`unknown_plugin:gate/no-contact-info`) or installed at another version (`plugin_version:gate/no-contact-info:0.1.0!=0.2.0`):
+* a declared plugin that is not installed (`unknown_plugin:gate/no-contact-info`) installed at another version (`plugin_version:gate/no-contact-info:0.1.0!=0.2.0`) or with the same version but other source (`plugin_code:gate/no-contact-info:…`):
   `vera verify` reports `REPLAY_INPUTS_MISMATCH` with `replay.status` = **INPUTS**, `vera replay` reports `INPUTS` (exit 2). It never passes silently: the answer you were shown depended on code you
   do not have;
 * a ledger that declares nothing (made before plugins existed) is not a mismatch;

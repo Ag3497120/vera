@@ -314,7 +314,7 @@ def _read_one(loader: Loader, path: str) -> Tuple[Optional[bytes], Optional[str]
         return None, "corpus_unreadable"
 
 
-def _resolve_corpus(loader: Loader, meta: dict, recorded_sha: Optional[str]) -> Tuple[Optional[bytes], Optional[str]]:
+def _resolve_corpus(loader: Loader, meta: dict, recorded_sha: Optional[str], run_dir: Optional[str] = None) -> Tuple[Optional[bytes], Optional[str]]:
     """LOOM-path (L-LOOM-158): the corpus bytes of a run whose caller named no path.  The candidates (paths.candidates: meta.json's path, the same path under
     this repository root, the registry of shipped corpora) are read through the loader in order and the first whose sha256 is the one the begin row recorded
     wins; the path in meta.json is only a pointer.  (None, error) when none does: corpus_outside_sandbox when the loader refused every candidate it was
@@ -322,7 +322,11 @@ def _resolve_corpus(loader: Loader, meta: dict, recorded_sha: Optional[str]) -> 
     recorded = meta.get("corpus")
     first: Optional[bytes] = None
     sandboxed = False
-    for n, cand in enumerate(paths.candidates(recorded if isinstance(recorded, str) else None)):
+    cands = paths.candidates(recorded if isinstance(recorded, str) else None)
+    if run_dir is not None:                                    # beside the run: the corpus the harness copies next to the ledger, and the shared store of corpora
+        rd = Path(run_dir)
+        cands += [str(rd / "corpus.jsonl")] + ([str(rd.parent / recorded)] if isinstance(recorded, str) and recorded and not os.path.isabs(recorded) else [])
+    for n, cand in enumerate(cands):
         data, err = _read_one(loader, cand)
         if data is None:
             sandboxed = sandboxed or err == "corpus_outside_sandbox"
@@ -364,7 +368,7 @@ def replay(run_dir, corpus_path: Optional[str] = None, loader: Loader = default_
     if corpus_path:                                            # an explicit path is the caller's word: it is read as given (a wrong file is corpus_sha_mismatch)
         data, err = _read_one(loader, corpus_path)
     else:
-        data, err = _resolve_corpus(loader, meta, recorded_header.get("corpus_sha"))
+        data, err = _resolve_corpus(loader, meta, recorded_header.get("corpus_sha"), str(run_dir))
     if data is None:
         out.status, out.mismatch = "INPUTS", err
         return out

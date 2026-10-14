@@ -16,6 +16,7 @@ import json
 import os
 import re
 import time
+import unicodedata
 from dataclasses import dataclass, field
 from types import SimpleNamespace
 from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple
@@ -61,7 +62,80 @@ REASON_JA = {                                         # the typed reason, said i
     "no_close": "モデルが答えを出さずに終えました",
     "run_not_verified": "台帳が検証できませんでした",
     "plugin_refused": "プラグインのゲートが答えを通しませんでした",
+    "not_from_user": "利用者の発言の引用でない書き込みを拒否しました",
 }
+
+
+def safe_error(text: object) -> str:
+    """An error shown to a person: the exception class (and an HTTP status when the SDK message starts with `Error code: NNN`), a fixed message, NOTHING else.  The text of an API error can carry
+    raw model output (an OpenAI-compatible server echoes the tool call it could not parse), which would be model text reaching the reader outside emit / abstain."""
+    t = str(text or "")
+    m = re.match(r"^([A-Za-z_][A-Za-z0-9_.]{0,63}):\s*(?:Error code:\s*(\d{3}))?", t)
+    kind = m.group(1) if m else "Error"
+    status = " (HTTP %s)" % m.group(2) if m and m.group(2) else ""
+    return "%s%s: details withheld (an API error can carry raw model output)" % (kind, status)
+
+
+def nfc(s: str) -> str:
+    return unicodedata.normalize("NFC", s)
+
+
+class UserSourceDoor:
+    """The memory's source rule.  The USER's messages are rows of the session's hash chain (`user_turn`, with their text), recorded when each is delivered; a `write` / `keep_unshaped` whose text
+    is not a verbatim (NFC) substring of a message delivered so far is NOT executed: a `write_refused` row (sha256, length) is recorded and the model gets `not_from_user`.  So no sentence the memory
+    holds, and no value an answer can quote, is anything but the user's own words.  Wraps the door the driver calls; everything else is the inner door's."""
+
+    def __init__(self, inner: Any, raw: Any, messages: Dict[str, str]) -> None:
+        self.inner, self.raw, self.messages = inner, raw, messages
+        self.seen: List[str] = []
+        self.turn: Optional[str] = None
+
+    def __getattr__(self, name: str) -> Any:
+        return getattr(self.__dict__["inner"], name)
+
+    def set_turn(self, turn: str) -> None:
+        self.turn = turn
+        if turn in self.messages:
+            self.raw.harness(None, "user_turn", {"turn": turn, "text": self.messages[turn]})
+            self.seen.append(nfc(self.messages[turn]))
+        self.inner.set_turn(turn)
+
+    def call(self, tool: Any, args: Any = None) -> dict:
+        if tool in ("write", "keep_unshaped"):
+            text = args.get("text") if isinstance(args, dict) else None
+            if isinstance(text, str) and not any(nfc(text) in u for u in self.seen):
+                self.raw.harness(None, "write_refused", {"turn": self.turn or "1-1", "sha256": hashlib.sha256(text.encode("utf-8")).hexdigest(), "chars": len(text), "reason": "not_from_user"})
+                return {"ok": False, "refusal": "not_from_user", "detail": {"reason": "a memory sentence must be a verbatim piece of what the user said in a delivered message; write the fact exactly as it was said"}}
+        return self.inner.call(tool, args)
+
+
+def check_write_sources(store: str) -> List[Dict[str, Any]]:
+    """The audit of a memory store: in every session that recorded user turns, every ok `write` / `keep_unshaped` quotes (NFC substring) a user turn recorded EARLIER in that session.
+    -> the problems ([] = fine).  A session with no `user_turn` row (an MCP client's: its writes are the agent's own claims) is reported as `unsourced_session`, not as a failure."""
+    out: List[Dict[str, Any]] = []
+    sd = os.path.join(store, "sessions")
+    for n in sorted(os.listdir(sd)) if os.path.isdir(sd) else []:
+        f = os.path.join(sd, n, "ops.jsonl")
+        if not os.path.isfile(f):
+            continue
+        seen: List[str] = []
+        has = False
+        bad: List[int] = []
+        with open(f, encoding="utf-8") as fh:
+            for ln in fh:
+                r = json.loads(ln)
+                if r.get("actor") == "harness" and r.get("op") == "user_turn":
+                    has = True
+                    seen.append(nfc(r["args"]["text"]))
+                elif r.get("actor") == "model" and r.get("op") in ("write", "keep_unshaped") and (r.get("result") or {}).get("ok") is True and has:
+                    t = (r.get("args") or {}).get("text")
+                    if not isinstance(t, str) or not any(nfc(t) in u for u in seen):
+                        bad.append(r.get("i"))
+        if bad:
+            out.append({"session": n, "type": "write_not_from_user", "rows": bad[:20]})
+        elif not has:
+            out.append({"session": n, "type": "unsourced_session"})
+    return out
 
 
 class HarnessError(Exception):
@@ -105,6 +179,44 @@ def resolve_plugins(backend: Any, *, evidence: Optional[str] = None, filters: Se
     notes = [_plugin("note_kind", n) for n in note_kinds]
     used += notes
     return {"used": used, "filters": flt, "profile": prof, "notes": notes, "manifest": pl.manifest(used)}
+
+
+class FilterGate:
+    """Gate-filter plugins at the moment of `emit`, so that the LEDGER says what happened.  When the model calls `emit`, the quote is first read back (`read`: the text and the evidence the loom's gate
+    would pass); if a filter refuses it, a `plugin_refused` harness row (kind, name, version, code) is written and the run is closed with `abstain` instead: the ledger holds no emitted output,
+    and `vera loom output` has nothing to print.  A filter can only turn an emit into an abstain.  Everything else is the inner server's / door's."""
+
+    def __init__(self, inner: Any, filters: Sequence["pl.Plugin"], question: str, sentences: Callable[[int], Optional[Dict[str, Any]]]) -> None:
+        self.inner, self.filters, self.question, self.sentences = inner, list(filters), question, sentences
+
+    def __getattr__(self, name: str) -> Any:
+        return getattr(self.__dict__["inner"], name)
+
+    def call(self, tool: Any, args: Any = None) -> dict:
+        if tool == "emit" and self.filters:
+            ra = dict(args) if isinstance(args, dict) else {}
+            r = self.inner.call("read", dict(ra))
+            if isinstance(r, dict) and r.get("ok") is True and not r.get("refusals") and isinstance(r.get("text"), str):
+                srcs = [s for s in (self.sentences(e["sid"]) for e in (r.get("evidence") or []) if isinstance(e, dict) and isinstance(e.get("sid"), int)) if s]
+                hit = pl.apply_gate_filters(self.question, r["text"], srcs, self.filters)
+                if hit is not None:
+                    p, code = hit
+                    self.inner.harness(ra.get("run_id"), "plugin_refused", {"kind": p.kind, "name": p.name, "version": p.version, "code": code})
+                    return self.inner.call("abstain", dict(ra, type="unknown"))
+        return self.inner.call(tool, args)
+
+
+def plugin_refusal_of(run_dir: str) -> Optional[Dict[str, str]]:
+    """The `plugin_refused` row of a run's ledger, if any."""
+    try:
+        for ln in open(os.path.join(run_dir, "ops.jsonl"), encoding="utf-8"):
+            if '"plugin_refused"' in ln:
+                r = json.loads(ln)
+                if r.get("op") == "plugin_refused":
+                    return dict(r["args"])
+    except (OSError, ValueError):
+        pass
+    return None
 
 
 def apply_filters(ans: "Answer", filters: Sequence["pl.Plugin"]) -> "Answer":
@@ -260,11 +372,16 @@ def settle(run_dir: str, question: str, sents: Sequence[Dict[str, str]], corpus_
     if o["status"] == "run_not_verified":
         return Answer("refused", run_dir, question, reason="run_not_verified", detail={"verify": o.get("verify"), "problems": o.get("problems")}, verified=False, free_text_dropped=dropped)
     reason, detail = "no_close", {}
+    refused_by = None
     for r in rows:
+        if r["actor"] == "harness" and r["op"] == "plugin_refused":
+            refused_by = dict(r["args"])
         if r["actor"] == "model" and r["op"] == "abstain" and r["result"].get("ok") is True:
             reason = r["result"].get("type") or "unknown"
         elif r["actor"] == "harness" and r["op"] == "abandoned":
             reason = r["args"].get("reason", "no_close")
+    if refused_by is not None:
+        reason, detail["plugin"] = "plugin_refused", refused_by
     refusals = [r for r in rows if r["actor"] == "model" and r["op"] == "emit" and r["result"].get("ok") is False]
     if refusals:
         res = refusals[-1]["result"]
@@ -312,11 +429,13 @@ def ask(question: str, docs: str, backend: Backend, runs_dir: str = DEFAULT_RUNS
     tools = drv.api_tools(loom_tool_objects(), strict, False)
     client = DriverClient(backend)
     t0 = time.monotonic_ns()
-    res = drv.run_episode(client, srv, rid, model, system, drv.first_message(begun), tools, tool_choice=choice, max_turns=max_turns or drv.MAX_TURNS["prose"])
+    gate = FilterGate(srv, plug["filters"], question, lambda sid: {"text": sents[sid]["sent"], "source": sents[sid]["source"]} if 0 <= sid < len(sents) else None)
+    res = drv.run_episode(client, gate, rid, model, system, drv.first_message(begun), tools, tool_choice=choice, max_turns=max_turns or drv.MAX_TURNS["prose"])
     wall = time.monotonic_ns() - t0
     rm = getattr(backend, "last_response_model", None)
-    if isinstance(rm, str) and rm:
-        srv.harness(rid, "harness_meta", {"response_model": rm[:200]})
+    if isinstance(rm, str) and rm:                                       # what the SERVER says it ran is a claim: recorded as is only when it is the requested model (or its dated form), else as a hash
+        ok_rm = rm == model or rm.startswith(model + "-") or model.startswith(rm + "-")
+        srv.harness(rid, "harness_meta", {"response_model": rm[:200] if ok_rm else "unverified:" + hashlib.sha256(rm.encode("utf-8")).hexdigest()[:16]})
     if srv.closed(rid) is None:
         srv.harness(rid, "abandoned", {"reason": "no_close"})
     run_dir = str(srv.run_dir(rid))
@@ -324,7 +443,7 @@ def ask(question: str, docs: str, backend: Backend, runs_dir: str = DEFAULT_RUNS
     _write_once(local_corpus, data)
     rep = res.to_obj()
     if rep.get("error"):
-        rep["error"] = keys.redact(rep["error"])
+        rep["error"] = safe_error(rep["error"])
     info = {"harness": "vera-harness %s" % __version__, "kind": "ask", "backend": backend.describe(), "question_chars": len(question), "evidence": evidence,
             "corpus_sha256": sha, "sentences": len(sents), "docs": docs if not os.path.isabs(docs) else os.path.basename(docs.rstrip("/")),
             "plugins": [x.ref() for x in plug["used"]], "system_prompt_sha256": prompting.sha(system), "tools": [t["name"] for t in tools], "driver_report": rep, "wall_driver_ns": wall}
@@ -334,7 +453,7 @@ def ask(question: str, docs: str, backend: Backend, runs_dir: str = DEFAULT_RUNS
     ans.backend = backend.describe()
     ans.usage = dict(res.usage)
     if res.error:
-        ans.detail["error"] = keys.redact(res.error)
+        ans.detail["error"] = safe_error(res.error)
     return ans
 
 
@@ -441,6 +560,12 @@ def _verify_base(path: str) -> dict:
     if k == "mem_store":
         v = mem.verify_store(path, mem.FROM_HEADER)
         out = {"kind": k, "status": v["status"], "sessions": v.get("sessions"), "sentences": v.get("sentences"), "replay": v.get("replay"), "problems": v.get("problems")}
+        if v["status"] == "OK":
+            src = check_write_sources(path)
+            bad = [x for x in src if x["type"] == "write_not_from_user"]
+            out["unsourced_sessions"] = [x["session"] for x in src if x["type"] == "unsourced_session"]
+            if bad:
+                out["status"], out["problems"] = "WRITE_NOT_FROM_USER", bad
         adir = os.path.join(path, "answers")
         if v["status"] == "OK" and os.path.isdir(adir):
             bad = []
@@ -540,6 +665,8 @@ def mem_say(store: str, messages: Sequence[str], backend: Backend, *, budget: in
     msgs = [m.strip() for m in messages if m and m.strip()]
     if not msgs:
         raise HarnessError("no message to remember", "no_message")
+    if any(len(m) > mem.USER_TURN_MAX for m in msgs):
+        raise HarnessError("a message is longer than %d characters (the ledger records every user message whole)" % mem.USER_TURN_MAX, "message_too_long")
     backend.ready()
     model = backend.model
     plug = resolve_plugins(backend, profile=profile)
@@ -550,9 +677,10 @@ def mem_say(store: str, messages: Sequence[str], backend: Backend, *, budget: in
     tools = md.api_tools(door.tool_names, strict)
     sn = door.begin_result["header"]["session_no"]
     turns = [("%d-%d" % (sn, i + 1), "[%d-%d] %s: %s" % (sn, i + 1, speaker, m)) for i, m in enumerate(msgs)]
+    src = UserSourceDoor(wd, door, {"%d-%d" % (sn, i + 1): m for i, m in enumerate(msgs)})
     client = DriverClient(backend)
     try:
-        res = mdrv.run_story_session(client, wd, model, prompting.mem_story_prompt(), mem_intro(wd, budget), turns, tools, tool_choice=choice, max_calls=MEM_MAX_CALLS,
+        res = mdrv.run_story_session(client, src, model, prompting.mem_story_prompt(), mem_intro(wd, budget), turns, tools, tool_choice=choice, max_calls=MEM_MAX_CALLS,
                                      force_report=True, caps=drv.RUNAWAY_CAPS_V1)
         committed = res.ended == "complete"
         if committed:
@@ -563,7 +691,7 @@ def mem_say(store: str, messages: Sequence[str], backend: Backend, *, budget: in
     rows = [lg._parse_line(ln) for ln in lg.read_raw_lines(ledger_dir)[0]]
     return MemSessionResult(session=sn, run_id=door.run_id, messages=len(msgs), committed=committed, ended=res.ended, reports=md.reports_of(rows),
                             turns_without_report=[t["turn"] for t in res.turns if t["report"] is None], store=store, usage=dict(res.usage),
-                            free_text_dropped=res.text_blocks_dropped, error=keys.redact(res.error) if res.error else None)
+                            free_text_dropped=res.text_blocks_dropped, error=safe_error(res.error) if res.error else None)
 
 
 def mem_ask(store: str, question: str, backend: Backend, *, budget: int = mview.BUDGET_DEFAULT, profile: str = MEMORY_PROFILE_DEFAULT, gate_filters: Sequence[str] = (),
@@ -584,6 +712,8 @@ def mem_ask(store: str, question: str, backend: Backend, *, budget: int = mview.
     qd = md.AnswerDoor(store, "notes", question, model, snapshot=snap, answer_version=plug["profile"].answer_version)
     qd.harness(None, "harness_meta", {"plugins": plug["manifest"]})
     wd = mview.BudgetDoor(qd, budget, ledger=False)
+    _, snap_rows = ma.read_snapshot(snap["path"])
+    wd = FilterGate(wd, plug["filters"], question, lambda sid: {"text": snap_rows[sid].get("sent") or "", "source": snap_rows[sid].get("source") or ""} if 0 <= sid < len(snap_rows) else None)
     choice, strict = backend.tool_choice()
     tools = md.api_tools(qd.tool_names, strict, done=True)
     client = DriverClient(backend)
@@ -594,9 +724,12 @@ def mem_ask(store: str, question: str, backend: Backend, *, budget: int = mview.
     ans = Answer("refused", run_dir, question, backend=backend.describe(), usage=dict(res.usage), free_text_dropped=res.text_blocks_dropped)
     if out.get("status") == "emitted":
         ans.status, ans.text, ans.output_sha, ans.verified = "answered", out["text"], out.get("output_sha"), True
-        ans.sources = _mem_sources(store, snap, out)
+        ans.sources = _mem_sources(store, snap, out, run_dir)
     elif out.get("status") == "abstained":
         ans.reason, ans.verified = out.get("type") or "unknown", True
+        pr = plugin_refusal_of(run_dir)
+        if pr is not None:
+            ans.reason, ans.detail["plugin"] = "plugin_refused", pr
         if out.get("type") == "contested":
             choice_ = [r for r in out.get("recalls", []) if r["verdict"] == "CHOICE"]
             ans.detail["contested_values"] = [g[0] for g in choice_[-1]["answers"]] if choice_ else []
@@ -604,7 +737,7 @@ def mem_ask(store: str, question: str, backend: Backend, *, budget: int = mview.
         ans.reason = "run_not_verified" if out.get("status") == "run_not_verified" else (res.ended if res.ended not in ("closed", "done") else "no_close")
         ans.verified = out.get("status") != "run_not_verified"
     if res.error:
-        ans.detail["error"] = keys.redact(res.error)
+        ans.detail["error"] = safe_error(res.error)
     ans = apply_filters(ans, plug["filters"])
     notes = annotate_memory(store, plug["notes"])
     if notes:
@@ -612,16 +745,20 @@ def mem_ask(store: str, question: str, backend: Backend, *, budget: int = mview.
     return ans
 
 
-def _mem_sources(store: str, snap: dict, out: dict) -> List[Dict[str, Any]]:
-    """The remembered sentences that contain the answer (a lookup in the snapshot, not a model's claim)."""
+def _mem_sources(store: str, snap: dict, out: dict, run_dir: str) -> List[Dict[str, Any]]:
+    """The remembered sentence(s) the answer was quoted from: the sentence ids of the successful `emit` row of the answer run's own ledger (its `evidence`), looked up in the snapshot.  Never a
+    search for the value text: two facts with the same value are two different sources."""
     try:
         _, rows = ma.read_snapshot(snap["path"])
-    except (OSError, Refuse, ValueError):
+        sids: List[int] = []
+        for ln in open(os.path.join(run_dir, "ops.jsonl"), encoding="utf-8"):
+            r = json.loads(ln)
+            if r.get("actor") == "model" and r.get("op") == "emit" and (r.get("result") or {}).get("ok") is True:
+                sids = [e["sid"] for e in (r["result"].get("evidence") or []) if isinstance(e.get("sid"), int)]
+    except (OSError, Refuse, ValueError, KeyError):
         return []
-    text = out.get("text") or ""
     found = []
-    for i, r in enumerate(rows):
-        s = r.get("sent") or r.get("text") or ""
-        if text and text in s:
-            found.append({"sid": i, "source": r.get("source") or "", "text": s})
+    for i in sids:
+        if 0 <= i < len(rows):
+            found.append({"sid": i, "source": rows[i].get("source") or "", "text": rows[i].get("sent") or rows[i].get("text") or "", "turn": rows[i].get("turn")})
     return found[:3]

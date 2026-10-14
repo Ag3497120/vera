@@ -12,7 +12,7 @@ Every run of Vera Harness is a folder of append-only, hash-chained rows. `vera v
 |---|---|---|
 | `ops.jsonl` | one canonical-JSON row per call, append-only | yes (it *is* the chain) |
 | `HEAD` | the sha of the last row (a pin; commit it, or pass `--head`, to catch a rewrite of the whole chain) | pin |
-| `meta.json` | where the corpus lives and its sha256 (a pointer, never hashed) | no |
+| `meta.json` | where the corpus lives (relative to the repository or to the runs folder; an absolute path only for a corpus outside both) and its sha256 (a pointer, never hashed) | no |
 | `corpus.jsonl` | the exact corpus bytes the run began on, beside the ledger so that the folder can be moved | its sha256 is in the `begin` row |
 | `harness.json` | what the harness recorded for you: backend (name, model, base URL; never a key), prompt sha, plugins, driver report, usage | no (informational) |
 | `timing.jsonl` | `{i, t_ns}` per row | no. Wall-clock time is kept **out** of the chain so that a replay can reproduce the file byte for byte |
@@ -29,7 +29,7 @@ A memory store (`vera mem --store S`) is `S/{HEAD, memory.jsonl, sessions/s0001/
 * **canonical JSON**: sorted keys, no spaces, UTF-8; `verify` requires every line to *be* the canonical serialisation of its row.
 * a row whose arguments held a secret-shaped string is stored redacted (`redacted`, `args_sha256`); one whose arguments were too large is stored as `truncated` + `args_sha256` + `args_chars`.
 * `actor "model"`: an operation of the model, executed by the loom server (the 20 tools: `begin lookup read_sentence … weave_span … emit abstain status`; memory: `write recall report …`). A refused call is a row too (`result.ok = false`, a typed `refusal`). A call to a tool that does not exist is **not** a row: no state changes.
-* `actor "harness"`: `free_text_dropped` (the model wrote prose: only its sha256 and character count are kept), `harness_meta` (driver, requested/response model, system-prompt sha, **`plugins`**: the canonical JSON of the plugins that ran), `abandoned` (the run was left open: a typed reason such as `api_error`, `max_turns`, `no_tool_call`, `cap_repeat`).
+* `actor "harness"`: `free_text_dropped` (the model wrote prose: only its sha256 and character count are kept), `user_turn` (a memory session: what the **user** said, with its text, when it was delivered), `write_refused` (a model `write` that quoted no user turn: sha256 and length only), `plugin_refused` (a gate-filter plugin turned an emit into an abstain), `harness_meta` (driver, requested/response model, system-prompt sha, **`plugins`**: the canonical JSON of the plugins that ran, each with name, version and, for non-built-in plugins, a `digest` of its source), `abandoned` (the run was left open: a typed reason such as `api_error`, `max_turns`, `no_tool_call`, `cap_repeat`).
 * the first row is `begin`; its result holds the **header**: loom version, Python implementation and exact version, `corpus_sha`, and the hashes of the space, the adhesion tables and the seats (derived from the tokenizer's dictionary), plus the evidence profile (`evidence.v6`, subject scope) the run was started under. A replay uses the profile the begin row recorded, so changing the default later never changes what an old run means.
 
 ## What is shown to a person
@@ -48,7 +48,8 @@ Only the text of a **successful `emit`** of a ledger that **verifies and replays
 | `TORN_TAIL` | the last line is incomplete (a crash while writing). Nothing after it can be trusted |
 | `HEAD_MISMATCH` | the last row is not the sha pinned in `HEAD` / `--head` |
 | `REPLAY_DIFFERS` | the chain is intact but the operations do not reproduce the recorded results (a server bug or a forged result) |
-| `REPLAY_INPUTS_MISMATCH` | the run cannot be replayed under the conditions it names: `replay.status` is **`INPUTS`** and `replay.mismatch` says which: `python_mismatch` (another CPython x.y.z), `loom_version_mismatch`, `corpus_sha_mismatch`, `space_sha_mismatch` / `adhesion_sha_mismatch` / `seats_sha_mismatch` (another dictionary), `corpus_unreadable`, `unknown_plugin:<kind>/<name>`, `plugin_version:<kind>/<name>:<declared>!=<installed>`, `plugins_malformed` |
+| `REPLAY_INPUTS_MISMATCH` | the run cannot be replayed under the conditions it names: `replay.status` is **`INPUTS`** and `replay.mismatch` says which: `python_mismatch` (another CPython x.y.z), `loom_version_mismatch`, `corpus_sha_mismatch`, `space_sha_mismatch` / `adhesion_sha_mismatch` / `seats_sha_mismatch` (another dictionary), `corpus_unreadable`, `unknown_plugin:<kind>/<name>`, `plugin_code:<kind>/<name>` (same version, other source), `plugin_version:<kind>/<name>:<declared>!=<installed>`, `plugins_malformed` |
+| `WRITE_NOT_FROM_USER` | (a memory store) a stored write is not a substring of any user turn recorded earlier in its session |
 | `NOT_A_RUN` | the path is not a run folder or a memory store |
 
 The chain is always checked first: a tampered ledger says `TAMPERED` whatever else is missing. `INPUTS` is never reported as `OK`.

@@ -42,6 +42,18 @@ def rel_to_root(path, root: Path = REPO_ROOT) -> str:
         return str(p)
 
 
+def meta_corpus(path, runs_root=None) -> str:
+    """What meta.json records for a corpus: relative to the repository root when inside it; else, when it lies inside the folder that holds the runs (the harness keeps its corpora in
+    `<runs>/_corpora/`), relative to THAT folder (`ledger._resolve_corpus` looks there); else the absolute path as before.  So a shared runs folder does not carry the user's home directory."""
+    r = rel_to_root(path)
+    if os.path.isabs(r) and runs_root is not None:
+        try:
+            return Path(r).relative_to(Path(runs_root).resolve()).as_posix()
+        except ValueError:
+            pass
+    return r
+
+
 def _under_root(path: str, root: Path) -> str:
     return path if os.path.isabs(path) else str(Path(root) / path)
 

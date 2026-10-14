@@ -47,7 +47,7 @@ from verantyx.loom.state import (SPEC, ABSTAIN_TYPES, ALL_TIERS, ARG_STR_CAP, AR
 MODEL_OPS: Tuple[str, ...] = ("begin", "lookup", "read_sentence", "add", "open_cross", "seat", "seat_run", "weave_span", "unseat", "swap",
                               "extend", "topic", "set_depth", "link", "unlink", "drop", "read", "emit", "abstain", "status")
 LEGACY_OPS: Tuple[str, ...] = ("weave_sentence",)       # no longer tools; executed ONLY while a recorded ledger is replayed (L-LOOM-136)
-HARNESS_OPS: Tuple[str, ...] = ("abandoned", "free_text_dropped", "free_text_control", "harness_meta")
+HARNESS_OPS: Tuple[str, ...] = ("abandoned", "free_text_dropped", "free_text_control", "harness_meta", "plugin_refused")
 HUMAN_OPS: Tuple[str, ...] = ("grade",)
 LOOP_OPS: Tuple[str, ...] = ("attest", "audit_verdict", "stacked")                  # design 6.1 / 11: rows appended by later tickets
 ALL_OPS: Tuple[str, ...] = MODEL_OPS + HARNESS_OPS + HUMAN_OPS + LOOP_OPS
@@ -464,6 +464,10 @@ class Run:
                 raise ValueError("harness_meta: keys within %s, string values" % sorted(allowed))
             if "driver" in args and args["driver"] not in DRIVERS:
                 raise ValueError("harness_meta: driver must be one of %s" % (DRIVERS,))
+        elif op == "plugin_refused":                      # vera-harness H8: a gate-filter plugin refused the answer the loom's gate had passed (the run is then closed by an abstain)
+            _need(args, {"kind": str, "name": str, "version": str, "code": str}, op)
+            if set(args) != {"kind", "name", "version", "code"} or any(len(v) > 80 for v in args.values()):
+                raise ValueError("plugin_refused: kind, name, version, code (short strings)")
         elif op == "grade":
             _need(args, {"grade": str, "grader": str}, op)
             if args["grade"] not in GRADES:

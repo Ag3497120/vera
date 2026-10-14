@@ -17,6 +17,7 @@ conditions), never a silent OK.  A broken plugin (an import error, a malformed o
 """
 from __future__ import annotations
 
+import hashlib
 import importlib
 import json
 import re
@@ -67,12 +68,16 @@ class Plugin:
     description: str = ""
     builtin: bool = False
     origin: str = ""
+    digest: str = ""                       # sha256 of the source of the module that provides the plugin (non-built-in plugins): the ledger records it, verify compares it
 
     def key(self) -> Tuple[str, str]:
         return (self.kind, self.name)
 
     def ref(self) -> Dict[str, str]:
-        return {"kind": self.kind, "name": self.name, "version": self.version}
+        d = {"kind": self.kind, "name": self.name, "version": self.version}
+        if self.digest:
+            d["digest"] = self.digest
+        return d
 
 
 def _validate(p: Plugin) -> None:
@@ -130,7 +135,7 @@ class Registry:
             try:
                 if not isinstance(p, Plugin):
                     raise PluginError("an entry point must give Plugin objects, not %s" % type(p).__name__, "bad_plugin")
-                self.register(Plugin(p.kind, p.name, p.version, p.obj, p.description, builtin, origin))
+                self.register(Plugin(p.kind, p.name, p.version, p.obj, p.description, builtin, origin, "" if builtin else p.digest or code_digest(provider, p.obj)))
             except PluginError as e:
                 self.errors.append({"origin": origin, "error": str(e)})
 
@@ -152,6 +157,22 @@ class Registry:
 
     def listing(self) -> List[Dict[str, Any]]:
         return [{"kind": p.kind, "name": p.name, "version": p.version, "builtin": p.builtin, "origin": p.origin, "description": p.description} for p in self.all()]
+
+
+def code_digest(provider: Any, obj: Any) -> str:
+    """sha256 of the source file of the module that defines the entry point (else the object): what the plugin IS, beyond its name and version.  "" when the source cannot be found."""
+    import inspect
+    import sys
+    for o in (provider, obj):
+        mod = sys.modules.get(getattr(o, "__module__", "") or "")
+        try:
+            f = inspect.getsourcefile(mod) if mod is not None else None
+            if f:
+                with open(f, "rb") as fh:
+                    return hashlib.sha256(fh.read()).hexdigest()
+        except (OSError, TypeError):
+            continue
+    return ""
 
 
 class _EP:
@@ -225,8 +246,8 @@ def set_registry(reg: Optional[Registry]) -> None:
 # ------------------------------------------------------------------------------------------------------------
 def manifest(used: Sequence[Plugin]) -> str:
     """The canonical JSON of the plugins that run, sorted, without duplicates: the string of the `plugins` key of the first harness_meta row."""
-    refs = sorted({(p.kind, p.name, p.version) for p in used})
-    s = json.dumps([{"kind": k, "name": n, "version": v} for k, n, v in refs], ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+    refs = sorted({(p.kind, p.name, p.version, p.digest) for p in used})
+    s = json.dumps([dict({"kind": k, "name": n, "version": v}, **({"digest": d} if d else {})) for k, n, v, d in refs], ensure_ascii=False, sort_keys=True, separators=(",", ":"))
     if len(s) > MANIFEST_MAX:
         raise PluginError("too many plugins for one ledger row", "bad_plugin")
     return s
@@ -242,7 +263,7 @@ def parse_manifest(s: Any) -> Optional[List[Dict[str, str]]]:
         return None
     out = []
     for e in v:
-        if not (isinstance(e, dict) and set(e) == {"kind", "name", "version"} and all(isinstance(x, str) for x in e.values())):
+        if not (isinstance(e, dict) and set(e) in ({"kind", "name", "version"}, {"kind", "name", "version", "digest"}) and all(isinstance(x, str) for x in e.values())):
             return None
         out.append(e)
     return out
@@ -260,6 +281,8 @@ def mismatch(declared: Optional[Sequence[Dict[str, str]]], reg: Optional[Registr
             return "unknown_plugin:%s/%s" % (e["kind"], e["name"])
         if p.version != e["version"]:
             return "plugin_version:%s/%s:%s!=%s" % (e["kind"], e["name"], e["version"], p.version)
+        if e.get("digest") and p.digest != e["digest"]:
+            return "plugin_code:%s/%s:the installed source is not the source that ran" % (e["kind"], e["name"])
     return None
 
 

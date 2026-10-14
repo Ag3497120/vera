@@ -131,6 +131,8 @@ ONE_FACT_GUIDANCE = ("1 回の write には事実を 1 つ、1 文で書く (one
                      "a value written together with other statements is kept as evidence but is never an answer.")
 TOPIC_FORBIDDEN = "のにでとをが"                                    # a mem.v3 topic holds none of the arm particles (L-MEM-58): with one inside, 「<topic>の…」 is a nested particle chain and EVERY expansion is refused
 LEAD_PARTICLES = "のにでとをがはもへ"                              # a particle in the lead-in of a clause (text from the start of its token up to the Y) means the clause already has its own subject
+SOURCE_OPS: Tuple[str, ...] = ("user_turn", "write_refused", "plugin_refused")                # vera-harness H8: what the USER said (a harness row, with its text, inside the hash chain) and a write the harness refused because it quotes no user turn
+USER_TURN_MAX = 2000
 FORCE_OPS: Tuple[str, ...] = ("report_forced", "report_missing")  # MEM-fix (L-MEM-62): the harness rows of a turn that ended without a report of its own (mem.v3 / membase.v2)
 FORCE_REASONS: Tuple[str, ...] = ("turn_limit", "no_tool_call", "cap_turn")      # "cap_turn" (PUB-H1, L-PUB-20): a turn the runaway cap ended is asked for its report too
 CAP_OPS: Tuple[str, ...] = ("cap_turn",)                          # PUB-H1 (L-PUB-14): the harness row of a turn that the runaway cap ended; written only by a run driven with cap.v1 (mem.v3 / membase.v2), never by an older one
@@ -610,6 +612,8 @@ class MemRun(Run):
                 raise ValueError("note: no notes are due after the previous row")
             return {"actor": actor, "op": op, "args": {"after": self.i - 1, "of": self._prev[1], "notes": notes, "nv": self.notes_profile},
                     "result": {"ok": True}, "state_sha": self.mem_state_sha()}
+        if actor == "harness" and op in SOURCE_OPS:
+            return {"actor": actor, "op": op, "args": source_args(op, args), "result": {"ok": True}, "state_sha": self.mem_state_sha()}
         if actor == "harness" and op in FORCE_OPS:             # MEM-fix (L-MEM-62): only a mem.v3 session has them; any other session refuses them as it always did
             if not self.v3:
                 raise ValueError("op %r is not a row of actor %r" % (op, actor))
@@ -1195,6 +1199,24 @@ def report_result(a: dict) -> dict:
     if len(bugs) > REPORT_MAX_BUGS or not all(isinstance(b, str) and 1 <= len(b) <= ARG_STR_CAP for b in bugs):
         raise Refuse("bad_report", {"field": "bugs", "reason": "at most %d strings of 1 to %d characters" % (REPORT_MAX_BUGS, ARG_STR_CAP)})
     return {"ok": True, "turn": a["turn"], "contradictions": sorted(pairs), "bugs": list(bugs)}
+
+
+def source_args(op: str, args: Any) -> dict:
+    """The args of a `user_turn` {turn, text} or `write_refused` {turn, sha256, chars, reason} harness row (vera-harness H8).  Raises ValueError on a malformed one."""
+    if op == "user_turn":
+        if not (isinstance(args, dict) and set(args) == {"turn", "text"} and isinstance(args["turn"], str) and TURN_RX.match(args["turn"])
+                and isinstance(args["text"], str) and 1 <= len(args["text"]) <= USER_TURN_MAX):
+            raise ValueError("user_turn: arguments are turn (a turn id) and text (1 to %d characters)" % USER_TURN_MAX)
+        return dict(args)
+    if op == "plugin_refused":
+        if not (isinstance(args, dict) and set(args) == {"kind", "name", "version", "code"} and all(isinstance(v, str) and len(v) <= 80 for v in args.values())):
+            raise ValueError("plugin_refused: kind, name, version, code (short strings)")
+        return dict(args)
+    if not (isinstance(args, dict) and set(args) == {"turn", "sha256", "chars", "reason"} and isinstance(args["turn"], str) and TURN_RX.match(args["turn"])
+            and isinstance(args["sha256"], str) and re.match(r"^[0-9a-f]{64}$", args["sha256"]) and isinstance(args["chars"], int) and not isinstance(args["chars"], bool)
+            and args["chars"] >= 0 and args["reason"] == "not_from_user"):
+        raise ValueError("write_refused: arguments are turn, sha256, chars, reason (not_from_user)")
+    return dict(args)
 
 
 def force_args(args: Any) -> dict:

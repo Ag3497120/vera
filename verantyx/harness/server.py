@@ -54,21 +54,26 @@ class ServerError(Exception):
 # ------------------------------------------------------------------------------------------------------------
 # the address
 # ------------------------------------------------------------------------------------------------------------
-def check_bind(host: str, allow_remote: bool = False) -> str:
-    """The address to bind.  Loopback only (127.0.0.0/8, ::1, the name localhost) unless `allow_remote`; anything else, including 0.0.0.0 and the empty string, is refused."""
+def _loopback_ip(host: str) -> Optional[str]:
+    """The canonical loopback address named by `host` ('127.0.0.0/8', '::1', '::ffff:127.x.y.z', the name localhost), else None."""
     if host == "localhost":
         return "127.0.0.1"
     try:
         ip = ipaddress.ip_address(host)
     except ValueError:
-        if allow_remote and host:
-            return host
-        raise ServerError("refusing to bind %r: vera run listens on 127.0.0.1 only (use --allow-remote to expose it, which lets anyone who can reach the port use your configured backend)" % host,
-                          "bind_refused", 2) from None
-    if ip.is_loopback or allow_remote:
+        return None
+    if getattr(ip, "ipv4_mapped", None) is not None and ip.ipv4_mapped.is_loopback:
         return host
-    raise ServerError("refusing to bind %s: vera run listens on 127.0.0.1 only (use --allow-remote to expose it, which lets anyone who can reach the port use your configured backend)" % host,
-                      "bind_refused", 2)
+    return host if ip.is_loopback else None
+
+
+def check_bind(host: str, allow_remote: bool = False) -> str:
+    """The address to bind: loopback only.  `--allow-remote` does not exist in this version (a token embedded in a page that any network client can GET is no protection): any other address, including
+    0.0.0.0 and the empty string, is refused."""
+    ip = _loopback_ip(host)
+    if ip is None:
+        raise ServerError("refusing to bind %r: vera run listens on loopback only (127.0.0.0/8, ::1). Remote access is not available in this version" % host, "bind_refused", 2)
+    return ip if host == "localhost" else host
 
 
 # ------------------------------------------------------------------------------------------------------------
@@ -97,6 +102,7 @@ def render_page(token: str) -> Tuple[bytes, str]:
 # ------------------------------------------------------------------------------------------------------------
 # the state of one `vera run`
 # ------------------------------------------------------------------------------------------------------------
+LOCKED_KEYS = ("base_url", "api_key_env", "docs", "store", "runs_dir")        # command line only: the page shows them read-only (a token holder must not be able to point the backend, or the name of a secret, anywhere)
 CONFIG_KEYS = ("backend", "model", "base_url", "api_key_env", "tool_choice", "temperature", "evidence", "docs", "store", "runs_dir", "memory_profile", "gate_filters", "note_kinds")
 _ENV_RX = re.compile(r"^[A-Za-z_][A-Za-z0-9_]{0,63}$")
 
@@ -122,6 +128,8 @@ class App:
         for k, v in patch.items():
             if k not in CONFIG_KEYS:
                 raise ServerError("unknown setting %r" % k)
+            if k in LOCKED_KEYS:
+                raise ServerError("%s can be set only on the command line of `vera run`" % k, "locked_setting", 403)
             if k in ("model", "base_url", "api_key_env", "docs", "store", "runs_dir", "temperature") and v in ("", None):
                 new[k] = None if k != "runs_dir" else rn.DEFAULT_RUNS_DIR
                 continue
@@ -241,8 +249,32 @@ def _short(v: Any, n: int = 140) -> str:
     return s if len(s) <= n else s[: n - 1] + "…"
 
 
+_CLOSED = {"tier": {"RUN", "WORD", "CHAR", "any"}, "type": {"no_record", "cannot_weave", "unknown", "contested"}, "kind": {"record", "constructed"}, "slot": {"の", "に", "で", "と", "を", "が", "は"}}
+
+
+def safe_args(a: Any, key: str = "", depth: int = 0) -> Any:
+    """The arguments of a model call as the trace may show them: integers, booleans and null as they are; a string only when it is one of a closed vocabulary for its key; every other string
+    (the model chose it: a search text, a unit, a topic, free words) as `str:<first 8 hex of sha256>/<length>`.  A person never reads model-chosen text here."""
+    if isinstance(a, (bool, int)) or a is None:
+        return a
+    if isinstance(a, float):
+        return "float"
+    if isinstance(a, str):
+        if key in _CLOSED and a in _CLOSED[key]:
+            return a
+        return "str:%s/%d" % (hashlib.sha256(a.encode("utf-8")).hexdigest()[:8], len(a))
+    if depth >= 3:
+        return "…"
+    if isinstance(a, list):
+        return [safe_args(x, key, depth + 1) for x in a[:20]]
+    if isinstance(a, dict):
+        return {str(k)[:24] if isinstance(k, str) and re.match(r"^[A-Za-z_]{1,24}$", k) else "key": safe_args(v, k if isinstance(k, str) else "", depth + 1) for k, v in list(a.items())[:20]}
+    return "?"
+
+
 def trace_rows(ops_path: str) -> List[Dict[str, Any]]:
-    """The operation trace of a ledger: one line per row, what was asked and what the structure answered (never prose of the model: free text is only a hash and a length)."""
+    """The operation trace of a ledger: one line per row, what was asked and what the structure answered.  Text of the RECORD (an emitted quote, a woven stretch) is shown; anything the MODEL
+    chose is shown only as a hash and a length (`safe_args`); free text is only a hash and a length in the ledger itself."""
     out = []
     with open(ops_path, encoding="utf-8") as f:
         for ln in f:
@@ -252,22 +284,28 @@ def trace_rows(ops_path: str) -> List[Dict[str, Any]]:
             a, res, op = r.get("args") or {}, r.get("result") or {}, r.get("op")
             ok = res.get("ok")
             if op == "emit":
-                what = ("「%s」" % res.get("text")) if ok else "refused: %s" % _short(res.get("refusal") or res.get("detail"), 100)
-            elif op == "abstain":
-                what = "type=%s" % a.get("type")
+                what = ("「%s」" % res.get("text")) if ok else "refused: %s" % _short(safe_args(res.get("refusal") if isinstance(res.get("refusal"), str) and re.match(r"^[a-z_]{1,40}$", res.get("refusal")) else "?"), 100)
+            elif op == "weave_span" and ok:
+                what = "woven (record) 「%s」" % res.get("text")
             elif op == "free_text_dropped":
                 what = "dropped %s chars (sha256 %s…)" % (a.get("chars"), str(a.get("sha256"))[:12])
+            elif op == "user_turn":
+                what = "user turn %s: %s" % (a.get("turn"), "str:%s/%d" % (hashlib.sha256(str(a.get("text")).encode("utf-8")).hexdigest()[:8], len(str(a.get("text")))))
             elif op == "harness_meta":
-                shown = {k: v for k, v in a.items() if k not in ("agent_definition_sha", "plugins")}
+                shown = {k: v for k, v in a.items() if k not in ("agent_definition_sha", "plugins", "response_model", "requested_model")}
                 declared = pl.parse_manifest(a.get("plugins")) if "plugins" in a else None
                 if declared:
                     shown["plugins"] = ", ".join("%s/%s@%s" % (e["kind"], e["name"], e["version"]) for e in declared)
+                if "response_model" in a:
+                    shown["response_model"] = "(server claim, unverified)" if str(a["response_model"]).startswith("unverified:") else "matches the requested model"
                 what = _short(shown, 300)
             elif ok is False:
-                what = "%s  →  refused: %s" % (_short(a, 80), _short(res.get("refusal"), 60))
+                rf = res.get("refusal")
+                what = "%s  →  refused: %s" % (_short(safe_args(a), 80), rf if isinstance(rf, str) and re.match(r"^[a-z_]{1,40}$", rf) else "?")
             else:
-                what = _short(a, 160)
-            out.append({"i": r.get("i"), "actor": r.get("actor"), "op": op, "ok": ok, "what": what, "sha": r.get("sha"), "prev": r.get("prev"), "session": os.path.basename(os.path.dirname(ops_path))})
+                what = _short(safe_args(a), 160)
+            out.append({"i": r.get("i"), "actor": r.get("actor"), "op": op if isinstance(op, str) and re.match(r"^[a-z_]{1,32}$", op) else "?", "ok": ok, "what": what, "sha": r.get("sha"), "prev": r.get("prev"),
+                        "session": os.path.basename(os.path.dirname(ops_path))})
     return out
 
 
@@ -356,7 +394,6 @@ class Handler(BaseHTTPRequestHandler):
     protocol_version = "HTTP/1.1"
 
     app: App
-    allow_remote: bool = False
 
     def log_message(self, fmt: str, *args: Any) -> None:               # no access log: paths and queries stay out of the terminal
         pass
@@ -390,13 +427,18 @@ class Handler(BaseHTTPRequestHandler):
         else:
             self._json(500, {"error": "internal error (%s)" % type(e).__name__, "code": "internal"})
 
-    def _own_hosts(self) -> List[str]:
+    def _host_ok(self, host: str) -> bool:
+        """The Host header names this server: a loopback name or address (127.0.0.0/8, ::1, ::ffff:127.x, localhost) and this port."""
         port = self.server.server_address[1]
-        return ["127.0.0.1:%d" % port, "localhost:%d" % port, "[::1]:%d" % port]
+        m = re.match(r"^(\[[0-9A-Fa-f:.]+\]|[^:\[\]]+):(\d{1,5})$", host or "")
+        if not m or int(m.group(2)) != port:
+            return False
+        h = m.group(1)
+        return _loopback_ip(h[1:-1] if h.startswith("[") else h) is not None and (h.startswith("[") or ":" not in h)
 
     def _check_request(self, api: bool) -> None:
         host = self.headers.get("Host", "")
-        if not self.allow_remote and host not in self._own_hosts():
+        if not self._host_ok(host):
             raise ServerError("unexpected Host header", "bad_host", 421)
         origin = self.headers.get("Origin")
         if origin is not None and origin != "http://" + host:
@@ -471,7 +513,7 @@ class Handler(BaseHTTPRequestHandler):
             return {"version": __version__, "config": app.public_config(), "keys": app.key_status(), "turns": app.turns[-100:],
                     "choices": {"backend": reg.names("backend"), "gate_filters": [n for n in reg.names("gate") if not isinstance(reg.get("gate", n).obj, pl.LoomGate)],
                                 "memory_profile": reg.names("memory_profile"), "note_kinds": reg.names("note_kind"), "evidence": ["v1", "v2", "v3", "v4", "v5", "v6"]},
-                    "plugins": reg.listing(), "plugin_errors": reg.errors, "remote": self.allow_remote}
+                    "plugins": reg.listing(), "plugin_errors": reg.errors, "remote": False, "locked": list(LOCKED_KEYS)}
         if path == "/api/runs":
             return {"runs": list_runs(app)}
         if path == "/api/trace":
@@ -549,8 +591,10 @@ class VeraServer(ThreadingHTTPServer):
 
 
 def make_server(host: str, port: int, app: App, allow_remote: bool = False) -> VeraServer:
-    host = check_bind(host, allow_remote)
-    handler = type("BoundHandler", (Handler,), {"app": app, "allow_remote": allow_remote})
+    if allow_remote:
+        raise ServerError("--allow-remote is not available in this version", "bind_refused", 2)
+    host = check_bind(host)
+    handler = type("BoundHandler", (Handler,), {"app": app})
     return VeraServer((host, port), handler, app)
 
 
