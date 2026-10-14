@@ -71,6 +71,49 @@
   }
  },
  "gate": "evidence.v6",
+ "memory": {
+  "capability": {
+   "contested_refused": 0,
+   "emitted_right": 4,
+   "exact": 11,
+   "questions": 20,
+   "reached": 12
+  },
+  "notes": {
+   "REVERSAL_X": {
+    "false_alarms": 0,
+    "firings": 0,
+    "hits": 0,
+    "plants": 4,
+    "plants_found": 0
+   },
+   "SAME_SEAT": {
+    "false_alarms": 4,
+    "firings": 11,
+    "hits": 7,
+    "plants": 12,
+    "plants_found": 7
+   },
+   "UPDATE": {
+    "false_alarms": 0,
+    "firings": 0,
+    "hits": 0,
+    "plants": 6,
+    "plants_found": 0
+   }
+  },
+  "safety": {
+   "emitted_bridged_choice": 0,
+   "emitted_contested": 0,
+   "emitted_old": 0,
+   "emitted_wrong": 0,
+   "one_side_emitted": 0
+  },
+  "stores": [
+   "MEM-T01",
+   "MEM-T03"
+  ]
+ },
  "quick": {
   "gate_sets": {
    "bank6": {
@@ -143,5 +186,5 @@
   }
  },
  "schema": "vera-eval-expected-1",
- "v6_digest": "c79d0d4fed0bc9432fe71b063a6204c471add5605ee376866d8916b9fe8fab8f"
+ "v6_digest": "3efb08c90a81338de9c3afaaa7354f0da099af552eef9a41a53e88634dbae83e"
 }
