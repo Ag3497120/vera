@@ -41,7 +41,7 @@ def prepare_doc_tasks(docs: str, questions: Sequence[str], runs_dir: str) -> str
 
 
 def serve_loom(tasks: str, runs_dir: str, evidence: str = rn.EVIDENCE_DEFAULT, subject_scope: str = "clause_or_title", allow_roots: Sequence[str] = ()) -> int:
-    return lm.serve(tasks, runs_dir, list(allow_roots), evidence=evidence, subject_scope=subject_scope)
+    return lm.serve(tasks, runs_dir, list(allow_roots), evidence=evidence, subject_scope=subject_scope, wrap=rn.DocRedactGate)
 
 
 def open_memory_door(store: str, phase: str, model: str, question: Optional[str] = None) -> Any:

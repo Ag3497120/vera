@@ -338,25 +338,35 @@ def has_change_clause(text: str) -> bool:
 
 
 class DocRedactGate:
-    """Documents: a sentence that received a redaction marker is NOT QUOTABLE.  At `emit` the quote is read back; if any evidence sentence holds a marker, a `statement_refused`
-    (`redacted_sentence`) row is written and the run closes with an `abstain`: the answer would quote text whose boundaries the redaction may have moved."""
+    """THE answer gate of every document entry (`vera ask`, the UI, `vera mcp` over documents): a sentence that received a redaction marker is NOT QUOTABLE.  At `emit`, when the corpus of the run
+    holds any marked sentence, the quote is read back; if an evidence sentence holds a marker, a `statement_refused` (`redacted_sentence`) row is written and the run closes with an `abstain`.
+    The corpus is found through the server (`_entry(run_id).run.corpus`), so the same wrapper serves one run (`ask`) and a multi-task MCP server.  Corpora without a marker are untouched
+    (no extra row)."""
 
-    def __init__(self, inner: Any, sentences: Callable[[int], Optional[Dict[str, Any]]]) -> None:
-        self.inner, self.sentences = inner, sentences
+    def __init__(self, inner: Any) -> None:
+        self.inner = inner
 
     def __getattr__(self, name: str) -> Any:
         return getattr(self.__dict__["inner"], name)
 
+    def _sentences(self, run_id: Any) -> Optional[List[str]]:
+        try:
+            ent = self.inner._entry(run_id)
+            sents = [x[0] for x in ent.run.corpus.space.sentences]
+        except Exception:
+            return None
+        return sents if any("[redacted:" in x for x in sents) else None
+
     def call(self, tool: Any, args: Any = None) -> dict:
-        if tool == "emit":
-            ra = dict(args) if isinstance(args, dict) else {}
-            r = self.inner.call("read", dict(ra))
-            if isinstance(r, dict) and r.get("ok") is True and not r.get("refusals"):
-                for e in r.get("evidence") or []:
-                    s = self.sentences(e["sid"]) if isinstance(e, dict) and isinstance(e.get("sid"), int) else None
-                    if s and "[redacted:" in s.get("text", ""):
-                        self.inner.harness(ra.get("run_id"), "statement_refused", {"turn": "-", "reason": "redacted_sentence"})
-                        return self.inner.call("abstain", dict(ra, type="unknown"))
+        if tool == "emit" and isinstance(args, dict):
+            sents = self._sentences(args.get("run_id"))
+            if sents is not None:
+                r = self.inner.call("read", dict(args))
+                if isinstance(r, dict) and r.get("ok") is True and not r.get("refusals"):
+                    for e in r.get("evidence") or []:
+                        if isinstance(e, dict) and isinstance(e.get("sid"), int) and 0 <= e["sid"] < len(sents) and "[redacted:" in sents[e["sid"]]:
+                            self.inner.harness(args.get("run_id"), "statement_refused", {"turn": "-", "reason": "redacted_sentence"})
+                            return self.inner.call("abstain", dict(args, type="unknown"))
         return self.inner.call(tool, args)
 
 
@@ -917,8 +927,7 @@ def ask(question: str, docs: str, backend: Backend, runs_dir: str = DEFAULT_RUNS
     client = DriverClient(backend)
     t0 = time.monotonic_ns()
     gate = FilterGate(srv, plug["filters"], question, lambda sid: {"text": sents[sid]["sent"], "source": sents[sid]["source"]} if 0 <= sid < len(sents) else None)
-    if any("[redacted:" in x["sent"] for x in sents):                  # only a corpus that HAS a redacted sentence gets the read-back (other ledgers are unchanged)
-        gate = DocRedactGate(gate, lambda sid: {"text": sents[sid]["sent"]} if 0 <= sid < len(sents) else None)
+    gate = DocRedactGate(gate)                                           # the one answer gate (see its docstring); a no-op for a corpus without a marked sentence
     res = drv.run_episode(client, gate, rid, model, system, drv.first_message(begun), tools, tool_choice=choice, max_turns=max_turns or drv.MAX_TURNS["prose"])
     wall = time.monotonic_ns() - t0
     rm = getattr(backend, "last_response_model", None)

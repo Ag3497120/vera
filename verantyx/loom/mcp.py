@@ -336,7 +336,7 @@ def append_outside_row(run_dir, actor: str, op: str, args: dict, loader: lg.Load
 # the FastMCP wrapper
 # ------------------------------------------------------------------------------------------------------------
 def build(tasks_path, runs_dir, allow_roots: Iterable = (), stability: str = DEFAULT_STABILITY, nonce: Optional[str] = None, caps: str = CURRENT_CAPS,
-          evidence: str = "v6", subject_scope: str = evl.DEFAULT_SCOPE):
+          evidence: str = "v6", subject_scope: str = evl.DEFAULT_SCOPE, wrap=None):
     """The FastMCP server `vera-loom` WITHOUT running it (None if the SDK is missing).  `mcp.loom_server` is the LoomServer behind it."""
     try:
         from mcp.server.fastmcp import FastMCP
@@ -349,8 +349,10 @@ def build(tasks_path, runs_dir, allow_roots: Iterable = (), stability: str = DEF
     mcp = FastMCP("vera-loom")
     mcp.loom_server = server
 
+    door = wrap(server) if wrap is not None else server          # vera-harness: the ONE answer gate (runner.DocRedactGate) stands between every MCP tool call and the server
+
     def out(tool: str, args: dict) -> str:
-        return json.dumps(server.call(tool, args), ensure_ascii=False, sort_keys=True)
+        return json.dumps(door.call(tool, args), ensure_ascii=False, sort_keys=True)
 
     @mcp.tool()
     def begin(task_id: str, model: str) -> str:
@@ -468,8 +470,8 @@ def build(tasks_path, runs_dir, allow_roots: Iterable = (), stability: str = DEF
     return mcp
 
 
-def serve(tasks_path, runs_dir, allow_roots: Iterable = (), stability: str = DEFAULT_STABILITY, evidence: str = "v6", subject_scope: str = evl.DEFAULT_SCOPE) -> int:
-    mcp = build(tasks_path, runs_dir, allow_roots, stability, evidence=evidence, subject_scope=subject_scope)
+def serve(tasks_path, runs_dir, allow_roots: Iterable = (), stability: str = DEFAULT_STABILITY, evidence: str = "v6", subject_scope: str = evl.DEFAULT_SCOPE, wrap=None) -> int:
+    mcp = build(tasks_path, runs_dir, allow_roots, stability, evidence=evidence, subject_scope=subject_scope, wrap=wrap)
     if mcp is None:
         return 2
     mcp.run()

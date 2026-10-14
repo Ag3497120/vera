@@ -933,3 +933,125 @@ def test_r9b_document_file_names_and_directories_are_redacted_everywhere(tmp_pat
     (e / "c").mkdir()
     (e / "c" / "token=Hu7nterQz.md").write_text("丙である。", encoding="utf-8")
     assert len(set(r["source"] for r in dc.build_rows(str(e)))) == 3
+
+
+# -- round 10: every answer entry point goes through the shared gates --------------------------------------------------------------------
+R10_DOC = "広報の担当は鈴木である（token: x。y）。"
+R10_Q = "広報の担当は誰ですか"
+
+
+def _r10_docs(tmp_path):
+    d = tmp_path / "r10docs"
+    d.mkdir(exist_ok=True)
+    (d / "a.txt").write_text(R10_DOC + "\n", encoding="utf-8")
+    return str(d)
+
+
+def _r10_script():
+    return [[("tool", "read_sentence", {"sid": 0})], [("tool", "weave_span", {"sid": 0, "tier": "WORD", "first": "鈴木", "last": "鈴木"})], [("tool", "emit", {})], [("tool", "abstain", {"type": "no_record"})]]
+
+
+def _entry_cli_ask(tmp_path):
+    a = rn.ask(R10_Q, _r10_docs(tmp_path), oa(_r10_script()), str(tmp_path / "runs_cli"))
+    return a.status, a.text
+
+
+def _entry_ui_ask(tmp_path):
+    import http.client
+    import threading
+    d = _r10_docs(tmp_path)
+    app = sv.App({"backend": "openai", "model": "m", "docs": d, "runs_dir": str(tmp_path / "runs_ui")})
+    server = sv.make_server("127.0.0.1", 0, app)
+    threading.Thread(target=server.serve_forever, daemon=True).start()
+    old = sv.backend_factory
+    sv.backend_factory = lambda kind, model, base_url, **kw: make_backend("openai", model or "m", base_url, client=FakeOpenAI(_r10_script()))
+    try:
+        port = server.server_address[1]
+        c = http.client.HTTPConnection("127.0.0.1", port, timeout=60)
+        c.request("POST", "/api/ask", body=json.dumps({"mode": "docs", "question": R10_Q}), headers={"Host": "127.0.0.1:%d" % port, "X-Vera-Token": app.token, "Content-Type": "application/json"})
+        ans = json.loads(c.getresponse().read().decode("utf-8"))["turn"]["answer"]
+    finally:
+        sv.backend_factory = old
+        server.shutdown()
+        server.server_close()
+    return ans["status"], ans["text"]
+
+
+def _entry_mcp_loom(tmp_path):
+    import asyncio
+    pytest.importorskip("mcp")
+    from verantyx.harness import mcp_server as ms
+    from verantyx.loom import mcp as lm
+    got = {}
+    old = lm.serve
+    lm.serve = lambda *a, **kw: got.update(kw) or 0                                                          # capture what `vera mcp` hands the loom server
+    try:
+        ms.serve_loom(ms.prepare_doc_tasks(_r10_docs(tmp_path), [R10_Q], str(tmp_path / "runs_mcp")), str(tmp_path / "runs_mcp"))
+    finally:
+        lm.serve = old
+    assert got.get("wrap") is rn.DocRedactGate                                                                 # the shared gate is what serve_loom installs
+    server = lm.build(ms.prepare_doc_tasks(_r10_docs(tmp_path), [R10_Q], str(tmp_path / "runs_mcp")), str(tmp_path / "runs_mcp"), wrap=got["wrap"])
+
+    def call(name, **kw):
+        out = asyncio.run(server.call_tool(name, kw))
+        blocks = out[0] if isinstance(out, tuple) else out
+        return json.loads(blocks[0].text)
+    rid = call("begin", task_id="q1", model="m")["run_id"]
+    call("read_sentence", run_id=rid, sid=0)
+    call("weave_span", run_id=rid, sid=0, tier="WORD", first="鈴木", last="鈴木")
+    e = call("emit", run_id=rid)
+    return ("answered", e.get("text")) if e.get("ok") and "text" in e else ("refused", None)
+
+
+def _entry_mem_ask(tmp_path):
+    st = str(tmp_path / "m1")
+    rn.mem_say(st, [R10_DOC], oa([w(R10_DOC), w("広報の担当は鈴木である")]))                                      # the marked sentence can never be a memory write
+    a = rn.mem_ask(st, R10_Q, oa([[("tool", "recall", {"question": R10_Q})], [("tool", "weave_span", {"sid": 0, "tier": "WORD", "first": "鈴木", "last": "鈴木"})], [("tool", "emit", {})], [("tool", "abstain", {"type": "unknown"})]]))
+    return a.status, a.text
+
+
+def _entry_mcp_memory_question(tmp_path):
+    from verantyx.harness import mcp_server as ms
+    st = str(tmp_path / "m2")
+    rn.mem_say(st, [R10_DOC], oa([w(R10_DOC), w("広報の担当は鈴木である")]))
+    if not os.path.isfile(os.path.join(st, "HEAD")):
+        return "refused", None                                                                                  # nothing was ever stored
+    from verantyx.loom.state import Refuse
+    try:
+        door = ms.open_memory_door(st, "question", "mcp-client", R10_Q)
+    except Refuse:
+        return "refused", None                                                                                  # an empty memory has nothing to answer from
+    g = rn.AnswerMarkGuard(rn.UnrecordedGate(door, st), st)
+    g.call("recall", {"question": R10_Q})
+    g.call("weave_span", {"sid": 0, "tier": "WORD", "first": "鈴木", "last": "鈴木"})
+    e = g.call("emit", {})
+    return ("answered", e.get("text")) if e.get("ok") else ("refused", None)
+
+
+ANSWER_ENTRY_POINTS = {"cli_ask": _entry_cli_ask, "ui_ask": _entry_ui_ask, "mcp_loom": _entry_mcp_loom, "mem_ask": _entry_mem_ask, "mcp_memory_question": _entry_mcp_memory_question}
+
+
+@pytest.mark.parametrize("name", sorted(ANSWER_ENTRY_POINTS))
+def test_r10_every_answer_entry_point_refuses_a_quote_from_a_marked_sentence(tmp_path, name):
+    status, text = ANSWER_ENTRY_POINTS[name](tmp_path)
+    assert status == "refused" and text is None, name
+
+
+def test_r10_the_enumeration_covers_every_answer_entry_of_the_package():
+    """New answer doors must be added to ANSWER_ENTRY_POINTS: the entries are exactly the functions that start a loom run for a person or serve a loom / answer door."""
+    import inspect
+    from verantyx.harness import mcp_server as ms
+    from verantyx.loom import mcp as lm
+    users = {n for n, f in inspect.getmembers(rn, inspect.isfunction) if f.__module__ == rn.__name__ and n in ("ask", "mem_ask")}
+    assert users == {"ask", "mem_ask"}
+    assert "wrap" in inspect.signature(lm.build).parameters and "wrap" in inspect.signature(lm.serve).parameters
+    assert "DocRedactGate" in inspect.getsource(ms.serve_loom) and "AnswerMarkGuard" in inspect.getsource(ms.serve_memory) and "UnrecordedGate" in inspect.getsource(ms.serve_memory)
+    assert set(ANSWER_ENTRY_POINTS) == {"cli_ask", "ui_ask", "mcp_loom", "mem_ask", "mcp_memory_question"}
+
+
+def test_r10_a_clean_document_still_answers_through_the_same_gate(tmp_path):
+    d = tmp_path / "clean"
+    d.mkdir()
+    (d / "a.txt").write_text("広報の担当は鈴木である。\\n", encoding="utf-8")
+    a = rn.ask(R10_Q, str(d), oa([[("tool", "read_sentence", {"sid": 0})], [("tool", "weave_span", {"sid": 0, "tier": "WORD", "first": "鈴木", "last": "鈴木"})], [("tool", "emit", {})]]), str(tmp_path / "r"))
+    assert a.status == "answered" and a.text == "鈴木"

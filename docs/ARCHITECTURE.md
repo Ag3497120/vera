@@ -48,7 +48,8 @@ The import name `verantyx` is kept so ledgers made by the research tree replay u
 3. **Episode.** The backend is asked for turns until the model closes the run (`emit` or `abstain`) or a cap trips. The model can `lookup` a unit, `read_sentence`, and `weave_span(sid, tier, first, last)`: a quote of exactly that stretch, built from the sentence's own units. Then `emit`.
 4. **The gate** reads the clause around the quoted stretch with Vera's own grammar and passes it only if that sentence answers *this* question: the subject, the asked slot, the particle after the answer, not a word of the question itself, not a negated or glued fragment (rules CH, SU, TW, NEG on top of v2). **It refuses by default**; every refusal has typed codes the model sees and a person can read.
 5. **Settle.** `ledger.emitted_output` verifies the chain and the replay first; only then is the text of the successful `emit` read. The source sentences are looked up in the corpus (a lookup, not the model's claim).
-6. **Filters.** Gate-filter plugins (if any) may still refuse the answer; they cannot add anything.
+6. **One gate for every document entry.** `runner.DocRedactGate` wraps the loom server in `vera ask`, the UI and `vera mcp` (via `loom.mcp.build(wrap=…)`): a sentence that received a redaction marker is never quotable (`redacted_sentence`). A test enumerates every answer entry point and checks each one.
+7. **Filters.** Gate-filter plugins (if any) may still refuse the answer; they cannot add anything.
 
 If the model writes prose instead of calling a tool, the prose is hashed and dropped. If it never closes the run, the run is `abandoned` and the person sees 「分かりません」 with the reason.
 
