@@ -349,7 +349,8 @@ def test_the_sdks_are_imported_lazily_and_only_by_the_backends():
             path = os.path.join(dp, f)
             tree = ast.parse(open(path, encoding="utf-8").read())
             top = {a.name.split(".")[0] for n in tree.body if isinstance(n, ast.Import) for a in n.names} | {(n.module or "").split(".")[0] for n in tree.body if isinstance(n, ast.ImportFrom)}
-            assert not (top & sdk), "%s imports %s at module level" % (path, top & sdk)
+            allowed = {"http"} if path.endswith(os.path.join("verantyx", "harness", "server.py")) else set()   # the local web UI is a stdlib http.server bound to loopback (vera run); still no SDK
+            assert not ((top & sdk) - allowed), "%s imports %s at module level" % (path, (top & sdk) - allowed)
             anywhere = {a.name.split(".")[0] for n in ast.walk(tree) if isinstance(n, ast.Import) for a in n.names} | {(n.module or "").split(".")[0] for n in ast.walk(tree) if isinstance(n, ast.ImportFrom)}
             if anywhere & {"anthropic", "openai"}:
                 assert os.path.basename(path) in ("claude.py", "openai_compat.py"), path
