@@ -470,7 +470,7 @@ class Run:
                 raise ValueError("plugin_refused: kind, name, version, code (short strings)")
         elif op == "statement_refused":                   # vera-harness H8: a recorded user statement at the answered position says something else and is not a stored write
             _need(args, {"turn": str, "reason": str}, op)
-            if set(args) != {"turn", "reason"} or args["reason"] != "unrecorded_user_statement" or len(args["turn"]) > 16:
+            if set(args) != {"turn", "reason"} or args["reason"] not in ("unrecorded_user_statement", "redacted_turn_unreadable") or len(args["turn"]) > 16:
                 raise ValueError("statement_refused: turn, reason (unrecorded_user_statement)")
         elif op == "grade":
             _need(args, {"grade": str, "grader": str}, op)

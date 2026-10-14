@@ -651,3 +651,75 @@ def test_a_store_that_does_not_verify_answers_nothing_through_every_door(tmp_pat
     assert e.value.code == "store_not_verified"
     app = sv.App({"runs_dir": str(tmp_path / "runs"), "store": st})                                         # the UI goes through mem_ask
     assert sv.answer_view(a, app)["reason"] == "store_not_verified"
+
+
+# -- round 6 ------------------------------------------------------------------------------------------------------------------------
+def _setup_replaced(tmp_path, name, msg, write):
+    st = str(tmp_path / name)
+    assert rn.mem_say(st, ["広報の担当は山本"], oa([w("広報の担当は山本")])).committed
+    r = rn.mem_say(st, [msg], oa([w(write)]))
+    assert r.committed
+    return st, r
+
+
+def test_r6a_a_key_value_secret_stops_at_the_end_of_its_sentence_and_the_correction_survives(tmp_path):
+    t, shas, lossy = rn.redact_user_text("広報の担当は鈴木です。password=hunter2abc。")
+    assert t == "広報の担当は鈴木です。password=[redacted:%s]。" % hashlib.sha256(b"hunter2abc").hexdigest()[:8] and len(shas) == 1
+    t2, _, _ = rn.redact_user_text("広報の担当は鈴木です。api_key=abcdefgh1234。経理は佐藤です。")
+    assert t2.startswith("広報の担当は鈴木です。api_key=[redacted:") and t2.endswith("。経理は佐藤です。")
+    st, r = _setup_replaced(tmp_path, "tail", "広報の担当は鈴木です api_key=xyz12345abc", "広報の担当は鈴木です")
+    assert r.redacted_turns == ["2-1"] and r.lossy_turns == []                                              # a span in the middle of a sentence is not lossy
+    a = _ask_val(st, 0, "山本")
+    assert a.status == "refused" and a.reason == "unrecorded_user_statement" and a.detail["turn"] == "2-1"   # the correction is still READ (marker and label are not part of what was said)
+    assert rn.verify_path(st)["status"] == "OK"
+
+
+@pytest.mark.parametrize("msg", ["secret: abcdefgh1234。広報の担当は鈴木です", "sk-ant-api03-" + "A" * 24 + "。広報の担当は鈴木です"])
+def test_r6a_a_redaction_that_erases_a_whole_sentence_marks_the_turn_lossy_and_earlier_answers_refuse(tmp_path, msg):
+    st, r = _setup_replaced(tmp_path, "lossy", msg, "広報の担当は鈴木です")
+    assert r.redacted_turns == ["2-1"] and r.lossy_turns == ["2-1"]
+    ut = [x for x in _rows_all(st) if x["op"] == "user_turn"][-1]["args"]
+    assert ut["redaction_lossy"] is True and ut["redacted"]
+    a = _ask_val(st, 0, "山本")
+    assert a.status == "refused" and a.reason == "redacted_turn_unreadable" and a.detail["turn"] == "2-1" and "redacted_turn_unreadable" in a.render() + str(a.detail) + a.reason
+    rows = [json.loads(ln) for ln in open(os.path.join(a.run_dir, "ops.jsonl"), encoding="utf-8")]
+    assert "emit" not in [x["op"] for x in rows] and [x["args"]["reason"] for x in rows if x["op"] == "statement_refused"] == ["redacted_turn_unreadable"]
+    assert rn.verify_path(st)["status"] == "OK"
+
+
+def test_r6a_the_whole_message_fallback_and_a_removed_terminator_are_lossy_but_ordinary_redaction_is_not():
+    t, shas, lossy = rn.redact_user_text("広報の鍵は sk-" + "a" * 24 + " です。")
+    assert "[redacted:" in t and lossy is False                                                             # a span inside a sentence, boundaries intact
+    assert rn.redact_user_text("普通の文です。")[2] is False and rn.redact_user_text("普通の文です。")[1] == []
+
+
+def test_r6a_lossy_turns_are_reported_by_the_say_result_the_cli_and_the_ui_turn(tmp_path, capsys):
+    from verantyx.harness import cli
+    st = str(tmp_path / "s")
+    r = rn.mem_say(st, ["secret: abcdefgh1234。広報の担当は鈴木です"], oa([[("tool", "report", {"contradictions": []})]]))
+    assert r.lossy_turns == ["1-1"] and r.redacted_turns == ["1-1"]
+    cli.backend_factory = lambda kind, model, base_url, **kw: make_backend("openai", model or "m", base_url, client=FakeOpenAI([[("tool", "report", {"contradictions": []})]]))
+    try:
+        rc = cli.main(["mem", "--store", str(tmp_path / "t"), "--backend", "openai", "--model", "m", "--say", "secret: abcdefgh1234。広報の担当は鈴木です"])
+    finally:
+        from verantyx.harness.backends import make_backend as mb
+        cli.backend_factory = mb
+    out = capsys.readouterr().out
+    assert "読み取れませんでした" in out and "redacted_turn_unreadable" in out
+    page = sv._page_source()
+    assert "t.lossy" in page and "読み取れませんでした" in page and "t.redacted" in page                    # the page tells the user (the say turn carries `redacted` and `lossy`)
+
+
+def test_r6c_a_contested_list_never_presents_a_replaced_value_as_current(tmp_path):
+    from verantyx.harness import mcp_server as ms
+    st = str(tmp_path / "s")
+    assert rn.mem_say(st, ["広報の担当は山本"], oa([w("広報の担当は山本")])).committed
+    _mcp_session(st, [("write", {"text": "広報の担当は鈴木"})])
+    assert rn.mem_say(st, ["広報の担当は田中です"], oa([[("tool", "report", {"contradictions": []})]])).committed        # the user replaced both; the model wrote nothing
+    a = rn.mem_ask(st, Q5, oa([[("tool", "recall", {"question": Q5})], [("tool", "abstain", {"type": "contested"})]]))
+    assert a.status == "refused" and a.reason == "unrecorded_user_statement" and a.detail["turn"] == "3-1"
+    assert all(c.get("replaced_in") == "3-1" for c in a.detail["contested"]) and a.detail["contested_values"] == []
+    txt = a.render()
+    assert txt.count("置き換え済み") == 2 and "現在の値ではありません" in txt
+    view = sv.answer_view(a, sv.App({"runs_dir": str(tmp_path / "runs")}))["detail"]
+    assert all(c["replaced_in"] == "3-1" for c in view["contested"])

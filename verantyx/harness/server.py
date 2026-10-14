@@ -559,7 +559,7 @@ class Handler(BaseHTTPRequestHandler):
             if not c.get("store"):
                 raise ServerError("set the memory store first", "no_store")
             r = rn.mem_say(c["store"], msgs, app.backend(), profile=c["memory_profile"])
-            turn = {"id": len(app.turns), "mode": "say", "messages": msgs, "session": r.session, "committed": r.committed, "ended": r.ended, "kept": r.messages,
+            turn = {"id": len(app.turns), "mode": "say", "messages": [rn.redact_user_text(m)[0] for m in msgs], "session": r.session, "committed": r.committed, "ended": r.ended, "kept": r.messages, "redacted": r.redacted_turns, "lossy": r.lossy_turns,
                     "error": keys.redact(r.error) if r.error else None}
             app.turns.append(turn)
             return {"turn": turn}

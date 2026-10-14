@@ -106,7 +106,9 @@ function renderTurn(t) {
   const box = el("div", {class: "turn" + (S.sel === t.id ? " sel" : ""), onclick: () => { S.sel = t.id; renderTurns(); renderPanel(); }});
   if (t.mode === "say") {
     box.append(el("div", {class: "q"}, "覚えさせた: ", t.messages.join(" / ")),
-      el("div", {class: "mute"}, `session ${t.session}、${t.kept} 件。` + (t.committed ? "保存しました" : "保存されませんでした: " + t.ended) + (t.error ? " — " + t.error : "")));
+      el("div", {class: "mute"}, `session ${t.session}、${t.kept} 件。` + (t.committed ? "保存しました" : "保存されませんでした: " + t.ended) + (t.error ? " — " + t.error : "")),
+      (t.redacted && t.redacted.length) ? el("div", {class: "src"}, "注意: 発言（回 " + t.redacted.join(", ") + "）の秘密の形の部分を伏せて記録しました。") : null,
+      (t.lossy && t.lossy.length) ? el("div", {class: "refuse"}, "注意: 発言（回 " + t.lossy.join(", ") + "）は伏せた結果、一部が読み取れませんでした。この回より前の事項への問いには答えません。") : null);
     return box;
   }
   const a = t.answer;

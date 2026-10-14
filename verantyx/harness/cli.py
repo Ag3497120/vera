@@ -77,6 +77,10 @@ def cmd_mem(args: argparse.Namespace) -> int:
             return
         r = rn.mem_say(store, pending, backend, profile=args.memory_profile)
         print("記憶: %d 件を session %d に渡しました（%s%s）" % (r.messages, r.session, "保存" if r.committed else "保存されず: %s" % r.ended, "、報告なしの回 %s" % ",".join(r.turns_without_report) if r.turns_without_report else ""))
+        if r.redacted_turns:
+            print("注意: 発言（回 %s）の秘密の形の部分を [redacted:…] に置き換えて記録しました。" % ", ".join(r.redacted_turns))
+        if r.lossy_turns:
+            print("注意: 発言（回 %s）は伏せた結果、一部が読み取れませんでした。この回より前の事項への問いには、記憶は答えません（redacted_turn_unreadable）。" % ", ".join(r.lossy_turns))
         if r.error:
             print("  エラー: %s" % r.error, file=sys.stderr)
         pending.clear()
@@ -100,6 +104,8 @@ def cmd_mem(args: argparse.Namespace) -> int:
             for c in a.detail.get("contested") or []:
                 if not c.get("sourced"):
                     print("  「%s」 %s" % (c["value"], rn.UNSOURCED_MARK))
+                if c.get("replaced_in"):
+                    print("  「%s」 置き換え済み（回 %s の発言が記憶に入っていません）: 現在の値ではありません" % (c["value"], c["replaced_in"]))
         else:
             print(a.render().splitlines()[0])
         for n in a.detail.get("annotations") or []:

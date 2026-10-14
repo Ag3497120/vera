@@ -51,6 +51,7 @@ UNSOURCED_MARK = "出所: 利用者の発言ではない（エージェントの
 
 REASON_JA = {
     "unrecorded_user_statement": "利用者がこの場所について別のことを言っていますが、記憶に入っていません",
+    "redacted_turn_unreadable": "利用者の発言の一部が秘密の形として伏せられ、読み取れませんでした（この回より前のことには答えません）",
     "store_not_verified": "記憶の台帳が検証できません",                                         # the typed reason, said in Japanese; the token stays visible
     "no_record": "文書にその答えが書かれていません",
     "cannot_weave": "文書に関係する記述はありますが、引用の形にできませんでした",
@@ -133,20 +134,57 @@ def blocked_positions(message: str) -> set:
     return out
 
 
-def redact_user_text(text: str) -> Tuple[str, List[str]]:
-    """A user message as it may be recorded: every secret-shaped span (the ledger's own detector: sk-ant-, sk-, AKIA…, ghp_…, xox…, private keys, Bearer, key=value, and encoded variants)
-    is replaced by 「[redacted:<sha256-8 of the span>]」; the list of those sha256-8 is returned.  The reading, the whole-sentence rule and the ledger all see the redacted text only."""
-    from verantyx.ledger_events import _spans, redact as _redact
+_OWN_MARK = re.compile(r"\[redacted:[0-9a-f]{8}\]")
+_LABEL = re.compile(r"(?i)(?:api[_-]?key|token|secret|password)[\"']?\s*[=:]\s*[\"']?")
+
+
+def reading_sentences(text: str) -> List[str]:
+    """The sentences of a recorded user turn AS THE READER SHOULD SEE THEM: a redaction marker (and the `key=` label in front of it) is not part of what the user said about a place, so it is
+    taken out before reading (「広報の担当は鈴木です api_key=[redacted:…]」 is read as 「広報の担当は鈴木です」)."""
+    out = []
+    for s0 in user_sentences(text):
+        c = _LABEL.sub("", _OWN_MARK.sub("", s0)).strip() if "[redacted:" in s0 else s0
+        if c:
+            out.append(c)
+    return out
+
+
+_VALUE_STOP = re.compile(r"[\u3000-\u9fff\uf900-\ufaff\uff00-\uffef。！？!?]")
+
+
+def redact_user_text(text: str) -> Tuple[str, List[str], bool]:
+    """A user message as it may be recorded: every secret-shaped span (the ledger's own detector: sk-ant-, sk-, AKIA…, ghp_…, xox…, private keys, Bearer, key=value, ...) is replaced by
+    「[redacted:<sha256-8 of the span>]」.  A `key=value` secret's value ends at white space, a CJK character or 。！？!? (so 「password=hunter2。広報の担当は…」 loses only `hunter2`).  -> (the text,
+    the sha256-8 list, LOSSY).  LOSSY is true when the redaction removed or changed a sentence boundary (a terminator disappeared or appeared), erased a whole sentence, or (the fail-safe) had to
+    drop the whole message: the reading of such a turn cannot be trusted, and the memory then answers nothing about places it could have spoken of (`redacted_turn_unreadable`)."""
+    from verantyx.ledger_events import _spans, _variant_stage
     t = nfc(text)
     shas: List[str] = []
-    for s0, e0, _n in reversed(_spans(t)):
+    for s0, e0, name in reversed(_spans(t)):
+        if name == "kv_secret":
+            m = _VALUE_STOP.search(t, s0, e0)
+            if m is not None:
+                e0 = m.start()
+            if e0 - s0 < 1:
+                continue
         h = hashlib.sha256(t[s0:e0].encode("utf-8")).hexdigest()[:8]
         shas.append(h)
         t = t[:s0] + "[redacted:%s]" % h + t[e0:]
-    if _redact(t)[1]:                                      # something shaped like a secret remains (an encoded variant): the whole message goes
+    rest = _OWN_MARK.sub("", t)
+    leftover = _variant_stage(rest)[1] > 0
+    for s0, e0, name in _spans(rest):                      # what the detector still finds once the harness's own markers are gone (a key=value whose value was only the rest of the sentence is no secret)
+        if name == "kv_secret":
+            m = _VALUE_STOP.search(rest, s0, e0)
+            e0 = m.start() if m is not None else e0
+            if e0 - s0 < 8:
+                continue
+        leftover = True
+    if leftover:                                           # a secret-shaped residue the markers do not explain: the whole message goes
         h = hashlib.sha256(text.encode("utf-8")).hexdigest()[:8]
-        return "[redacted:%s]" % h, [h]
-    return t, list(reversed(shas))
+        return "[redacted:%s]" % h, [h], True
+    term = lambda x: [c for c in x if c in "。！？!?"]
+    lossy = bool(shas) and (term(nfc(text)) != term(t) or any(not re.sub(r"[\s。！？!?、，,.]+", "", _LABEL.sub("", _OWN_MARK.sub("", x))) for x in user_sentences(t) if "[redacted:" in x))
+    return t, list(reversed(shas)), lossy
 
 
 def clause_values(sentence: str) -> Dict[Tuple, str]:
@@ -174,6 +212,35 @@ def recorded_user_turns(store: str) -> List[Tuple[str, str]]:
     return out
 
 
+def lossy_block(store: str, sids: Sequence[int]) -> Optional[str]:
+    """The first recorded turn marked `redaction_lossy` that is NOT earlier than the turn an answer's source sentence was said in (an unsourced sentence has no turn: any lossy turn blocks): the
+    turn that could have said something else about this place and cannot be read.  -> its turn id, else None."""
+    lossy: List[str] = []
+    sd = os.path.join(store, "sessions")
+    for n in sorted(os.listdir(sd)) if os.path.isdir(sd) else []:
+        try:
+            for ln in open(os.path.join(sd, n, "ops.jsonl"), encoding="utf-8"):
+                if '"redaction_lossy"' in ln:
+                    r = json.loads(ln)
+                    if r.get("op") == "user_turn" and r["args"].get("redaction_lossy"):
+                        lossy.append(r["args"]["turn"])
+        except (OSError, ValueError):
+            continue
+    if not lossy:
+        return None
+    try:
+        rows = mem.MemStore(store).rows()
+    except Exception:
+        return lossy[0]
+    for t in lossy:
+        kt = turn_key(t)
+        for i in sids:
+            ka = turn_key(rows[i].get("turn")) if isinstance(i, int) and 0 <= i < len(rows) else None
+            if ka is None or kt is None or ka <= kt:
+                return t
+    return None
+
+
 def unrecorded_statement(store: str, sids: Sequence[int], max_session: Optional[int] = None) -> Optional[str]:
     """The recorded user turns are the source of truth; the model's writes only SELECT from them.  Read EVERY sentence of EVERY recorded user turn with the memory's reader: if one carries, at the
     position of the answer, a value different from the answer's and is not a stored write the memory already accounts for, the model left out (or the memory refused) something the user said about
@@ -196,7 +263,7 @@ def unrecorded_statement(store: str, sids: Sequence[int], max_session: Optional[
         k = turn_key(turn)
         if max_session is not None and k is not None and k[0] > max_session:
             continue
-        for sent in user_sentences(text):
+        for sent in reading_sentences(text):
             if nfc(sent).strip().rstrip("。") in stored.get(turn, set()):
                 continue
             for pos, val in clause_values(sent).items():
@@ -293,20 +360,23 @@ class UnrecordedGate:
             ra = dict(args) if isinstance(args, dict) else {}
             r = self.inner.call("read", dict(ra))
             if isinstance(r, dict) and r.get("ok") is True and not r.get("refusals"):
-                turn = unrecorded_statement(self.store, [e["sid"] for e in (r.get("evidence") or []) if isinstance(e, dict) and isinstance(e.get("sid"), int)])
+                sids = [e["sid"] for e in (r.get("evidence") or []) if isinstance(e, dict) and isinstance(e.get("sid"), int)]
+                turn, why = lossy_block(self.store, sids), "redacted_turn_unreadable"
+                if turn is None:
+                    turn, why = unrecorded_statement(self.store, sids), "unrecorded_user_statement"
                 if turn is not None:
-                    self.inner.harness(ra.get("run_id"), "statement_refused", {"turn": turn, "reason": "unrecorded_user_statement"})
+                    self.inner.harness(ra.get("run_id"), "statement_refused", {"turn": turn, "reason": why})
                     return self.inner.call("abstain", dict(ra, type="unknown"))
         return self.inner.call(tool, args)
 
 
-def statement_refusal_of(run_dir: str) -> Optional[str]:
+def statement_refusal_of(run_dir: str) -> Optional[Tuple[str, str]]:
     try:
         for ln in open(os.path.join(run_dir, "ops.jsonl"), encoding="utf-8"):
             if '"statement_refused"' in ln:
                 r = json.loads(ln)
                 if r.get("op") == "statement_refused":
-                    return r["args"]["turn"]
+                    return r["args"]["turn"], r["args"]["reason"]
     except (OSError, ValueError):
         pass
     return None
@@ -385,8 +455,8 @@ class UserSourceDoor:
     earlier message cannot be re-quoted to look newer): a `write_refused` row (sha256, length) is recorded and the model gets `not_from_user`.  So no sentence the memory
     holds, and no value an answer can quote, is anything but the user's own words.  Wraps the door the driver calls; everything else is the inner door's."""
 
-    def __init__(self, inner: Any, raw: Any, messages: Dict[str, str], store: str = "", redacted: Optional[Dict[str, List[str]]] = None) -> None:
-        self.inner, self.raw, self.messages, self.store, self.redacted = inner, raw, messages, store, redacted or {}
+    def __init__(self, inner: Any, raw: Any, messages: Dict[str, str], store: str = "", redacted: Optional[Dict[str, List[str]]] = None, lossy: Optional[set] = None) -> None:
+        self.inner, self.raw, self.messages, self.store, self.redacted, self.lossy = inner, raw, messages, store, redacted or {}, lossy or set()
         self.turn: Optional[str] = None
         self.blocked: set = set()
 
@@ -396,7 +466,7 @@ class UserSourceDoor:
     def set_turn(self, turn: str) -> None:
         self.turn = turn
         if turn in self.messages:
-            self.raw.harness(None, "user_turn", dict({"turn": turn, "text": self.messages[turn]}, **({"redacted": self.redacted[turn]} if self.redacted.get(turn) else {})))
+            self.raw.harness(None, "user_turn", dict({"turn": turn, "text": self.messages[turn]}, **({"redacted": self.redacted[turn]} if self.redacted.get(turn) else {}), **({"redaction_lossy": True} if turn in self.lossy else {})))
             self.blocked = blocked_positions(self.messages[turn])
         self.inner.set_turn(turn)
 
@@ -708,7 +778,8 @@ class Answer:
                 if self.detail.get(k):
                     lines.append("最後の拒否: %s" % self.detail[k])
             for c in self.detail.get("contested") or []:
-                lines.append("  食い違い: 「%s」%s" % (c["value"], "" if c.get("sourced") else "  " + UNSOURCED_MARK))
+                lines.append("  食い違い: 「%s」%s%s" % (c["value"], "" if c.get("sourced") else "  " + UNSOURCED_MARK,
+                                                    "  （置き換え済み: 回 %s の発言が記憶に入っていません。現在の値ではありません）" % c["replaced_in"] if c.get("replaced_in") else ""))
             if self.detail.get("turn"):
                 lines.append("  利用者の発言（回 %s）が記憶に入っていません" % self.detail["turn"])
             if self.detail.get("plugin"):
@@ -923,6 +994,10 @@ def check_answer_statements(store: str) -> List[Dict[str, Any]]:
         t = unrecorded_statement(store, sids, mx_s)
         if t is not None:
             out.append({"answer": a, "type": "user_statement_not_recorded", "turn": t})
+        else:
+            t = lossy_block(store, sids)
+            if t is not None:
+                out.append({"answer": a, "type": "redacted_turn_unreadable", "turn": t})
     return out
 
 
@@ -1004,7 +1079,7 @@ def _verify_base(path: str) -> dict:
             else:
                 unrec = check_answer_statements(path)
                 if unrec:
-                    out["status"], out["problems"] = "USER_STATEMENT_NOT_RECORDED", unrec
+                    out["status"], out["problems"] = ("REDACTED_TURN_UNREADABLE" if all(x["type"] == "redacted_turn_unreadable" for x in unrec) else "USER_STATEMENT_NOT_RECORDED"), unrec
         return out
     return {"kind": "unknown", "status": "NOT_A_RUN", "problems": [{"path": path}]}
 
@@ -1084,6 +1159,8 @@ class MemSessionResult:
     usage: Dict[str, int] = field(default_factory=dict)
     free_text_dropped: int = 0
     error: Optional[str] = None
+    redacted_turns: List[str] = field(default_factory=list)          # turns in which a secret-shaped span was replaced
+    lossy_turns: List[str] = field(default_factory=list)             # turns the redaction made unreadable (see redact_user_text)
 
 
 def mem_say(store: str, messages: Sequence[str], backend: Backend, *, budget: int = mview.BUDGET_DEFAULT, speaker: str = "user", profile: str = MEMORY_PROFILE_DEFAULT) -> MemSessionResult:
@@ -1095,6 +1172,7 @@ def mem_say(store: str, messages: Sequence[str], backend: Backend, *, budget: in
     red = [redact_user_text(m) for m in raw_msgs]
     msgs = [r[0] for r in red]
     redacted_of = {i: r[1] for i, r in enumerate(red) if r[1]}
+    lossy_of = {i for i, r in enumerate(red) if r[2]}
     if any(len(m) > mem.USER_TURN_MAX for m in msgs):
         raise HarnessError("a message is longer than %d characters (the ledger records every user message whole)" % mem.USER_TURN_MAX, "message_too_long")
     backend.ready()
@@ -1107,7 +1185,7 @@ def mem_say(store: str, messages: Sequence[str], backend: Backend, *, budget: in
     tools = md.api_tools(door.tool_names, strict)
     sn = door.begin_result["header"]["session_no"]
     turns = [("%d-%d" % (sn, i + 1), "[%d-%d] %s: %s" % (sn, i + 1, speaker, m)) for i, m in enumerate(msgs)]
-    src = UserSourceDoor(wd, door, {"%d-%d" % (sn, i + 1): m for i, m in enumerate(msgs)}, store, {"%d-%d" % (sn, i + 1): v for i, v in redacted_of.items()})
+    src = UserSourceDoor(wd, door, {"%d-%d" % (sn, i + 1): m for i, m in enumerate(msgs)}, store, {"%d-%d" % (sn, i + 1): v for i, v in redacted_of.items()}, {"%d-%d" % (sn, i + 1) for i in lossy_of})
     client = DriverClient(backend)
     try:
         res = mdrv.run_story_session(client, src, model, prompting.mem_story_prompt(), mem_intro(wd, budget), turns, tools, tool_choice=choice, max_calls=MEM_MAX_CALLS,
@@ -1121,7 +1199,8 @@ def mem_say(store: str, messages: Sequence[str], backend: Backend, *, budget: in
     rows = [lg._parse_line(ln) for ln in lg.read_raw_lines(ledger_dir)[0]]
     return MemSessionResult(session=sn, run_id=door.run_id, messages=len(msgs), committed=committed, ended=res.ended, reports=md.reports_of(rows),
                             turns_without_report=[t["turn"] for t in res.turns if t["report"] is None], store=store, usage=dict(res.usage),
-                            free_text_dropped=res.text_blocks_dropped, error=safe_error(res.error) if res.error else None)
+                            free_text_dropped=res.text_blocks_dropped, error=safe_error(res.error) if res.error else None,
+                            redacted_turns=["%d-%d" % (sn, i + 1) for i in sorted(redacted_of)], lossy_turns=["%d-%d" % (sn, i + 1) for i in sorted(lossy_of)])
 
 
 def mem_ask(store: str, question: str, backend: Backend, *, budget: int = mview.BUDGET_DEFAULT, profile: str = MEMORY_PROFILE_DEFAULT, gate_filters: Sequence[str] = (),
@@ -1165,13 +1244,17 @@ def mem_ask(store: str, question: str, backend: Backend, *, budget: int = mview.
         pr = plugin_refusal_of(run_dir)
         if pr is not None:
             ans.reason, ans.detail["plugin"] = "plugin_refused", pr
-        st_turn = statement_refusal_of(run_dir)
-        if st_turn is not None:
-            ans.reason, ans.detail["turn"] = "unrecorded_user_statement", st_turn
+        st = statement_refusal_of(run_dir)
+        if st is not None:
+            ans.reason, ans.detail["turn"] = st[1], st[0]
         if out.get("type") == "contested":
             choice_ = [r for r in out.get("recalls", []) if r["verdict"] == "CHOICE"]
             ans.detail["contested_values"] = [g[0] for g in choice_[-1]["answers"]] if choice_ else []
             ans.detail["contested"] = _contested_sources(store, run_dir)
+            stale = [c["replaced_in"] for c in ans.detail["contested"] if c.get("replaced_in")]
+            if stale:                                       # the list is not the truth about this place: say so, and keep only the values still standing
+                ans.reason, ans.detail["turn"] = "unrecorded_user_statement", stale[0]
+                ans.detail["contested_values"] = [c["value"] for c in ans.detail["contested"] if not c.get("replaced_in")]
     else:
         ans.reason = "run_not_verified" if out.get("status") == "run_not_verified" else (res.ended if res.ended not in ("closed", "done") else "no_close")
         ans.verified = out.get("status") != "run_not_verified"
@@ -1199,7 +1282,11 @@ def _contested_sources(store: str, run_dir: str) -> List[Dict[str, Any]]:
         for g in (last or {}).get("answers", []):
             sids = [o["sid"] for o in g.get("occurrences", []) if isinstance(o.get("sid"), int)]
             ok = bool(sids) and all(0 <= i < len(rows) and _session_of_source(rows[i].get("source")) in sourced for i in sids)
-            out.append({"value": (g.get("answers") or [g.get("text")])[0], "sourced": ok})
+            ent = {"value": (g.get("answers") or [g.get("text")])[0], "sourced": ok}
+            t = unrecorded_statement(store, sids)
+            if t is not None:
+                ent["replaced_in"] = t                       # a later user sentence at this place says something else and is not stored: never present this value as current
+            out.append(ent)
         return out
     except (OSError, ValueError, KeyError):
         return []

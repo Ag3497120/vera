@@ -1204,14 +1204,15 @@ def report_result(a: dict) -> dict:
 def source_args(op: str, args: Any) -> dict:
     """The args of a `user_turn` {turn, text} or `write_refused` {turn, sha256, chars, reason} harness row (vera-harness H8).  Raises ValueError on a malformed one."""
     if op == "user_turn":
-        if not (isinstance(args, dict) and set(args) in ({"turn", "text"}, {"turn", "text", "redacted"}) and isinstance(args["turn"], str) and TURN_RX.match(args["turn"])
+        if not (isinstance(args, dict) and set(args) <= {"turn", "text", "redacted", "redaction_lossy"} and {"turn", "text"} <= set(args) and isinstance(args["turn"], str) and TURN_RX.match(args["turn"])
                 and isinstance(args["text"], str) and 1 <= len(args["text"]) <= USER_TURN_MAX
-                and ("redacted" not in args or (isinstance(args["redacted"], list) and len(args["redacted"]) <= 20 and all(isinstance(x, str) and re.match(r"^[0-9a-f]{8}$", x) for x in args["redacted"])))):
+                and ("redacted" not in args or (isinstance(args["redacted"], list) and len(args["redacted"]) <= 20 and all(isinstance(x, str) and re.match(r"^[0-9a-f]{8}$", x) for x in args["redacted"])))
+                and ("redaction_lossy" not in args or args["redaction_lossy"] is True)):
             raise ValueError("user_turn: arguments are turn (a turn id), text (1 to %d characters) and optionally redacted (the sha256-8 of each secret-shaped span replaced in the text)" % USER_TURN_MAX)
         return dict(args)
     if op == "statement_refused":
-        if not (isinstance(args, dict) and set(args) == {"turn", "reason"} and isinstance(args["turn"], str) and TURN_RX.match(args["turn"]) and args["reason"] == "unrecorded_user_statement"):
-            raise ValueError("statement_refused: arguments are turn (the user turn whose statement is not recorded) and reason (unrecorded_user_statement)")
+        if not (isinstance(args, dict) and set(args) == {"turn", "reason"} and isinstance(args["turn"], str) and TURN_RX.match(args["turn"]) and args["reason"] in ("unrecorded_user_statement", "redacted_turn_unreadable")):
+            raise ValueError("statement_refused: arguments are turn and reason (unrecorded_user_statement | redacted_turn_unreadable)")
         return dict(args)
     if op == "supersede_refused":
         if not (isinstance(args, dict) and set(args) == {"turn", "new_sid", "reason"} and isinstance(args["turn"], str) and TURN_RX.match(args["turn"]) and isinstance(args["new_sid"], int)
