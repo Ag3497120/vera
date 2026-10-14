@@ -687,9 +687,9 @@ def test_r6a_a_redaction_that_erases_a_whole_sentence_marks_the_turn_lossy_and_e
     assert rn.verify_path(st)["status"] == "OK"
 
 
-def test_r6a_the_whole_message_fallback_and_a_removed_terminator_are_lossy_but_ordinary_redaction_is_not():
+def test_r6a_an_unreadable_redacted_sentence_is_lossy_but_ordinary_text_is_not():
     t, shas, lossy = rn.redact_user_text("広報の鍵は sk-" + "a" * 24 + " です。")
-    assert "[redacted:" in t and lossy is False                                                             # a span inside a sentence, boundaries intact
+    assert "[redacted:" in t and lossy is True                                                              # the sentence cannot be read once the span is out: it may have said anything
     assert rn.redact_user_text("普通の文です。")[2] is False and rn.redact_user_text("普通の文です。")[1] == []
 
 
@@ -723,3 +723,51 @@ def test_r6c_a_contested_list_never_presents_a_replaced_value_as_current(tmp_pat
     assert txt.count("置き換え済み") == 2 and "現在の値ではありません" in txt
     view = sv.answer_view(a, sv.App({"runs_dir": str(tmp_path / "runs")}))["detail"]
     assert all(c["replaced_in"] == "3-1" for c in view["contested"])
+
+
+# -- round 7 ------------------------------------------------------------------------------------------------------------------------
+@pytest.mark.parametrize("secret", ["Hunter2!Secret99", "hunter2", "abc", "p?ss!w0rd?", "x"])
+def test_r7b_the_whole_ascii_run_after_a_secret_label_is_redacted_whatever_its_length(tmp_path, secret):
+    for label in ("password=", "passwd:", "pwd = ", "secret:", "token=", "api_key=", "apikey:", "access_key=", "private_key=", "client_secret=", "PASSWORD='", "Token:\""):
+        t, shas, _ = rn.redact_user_text("広報の担当は山本です。" + label + secret + "。")
+        assert secret not in t and len(shas) == 1 and t.startswith("広報の担当は山本です。") and "[redacted:" in t, (label, t)
+    st = str(tmp_path / "s")
+    assert rn.mem_say(st, ["広報の担当は山本です。password=" + secret], oa([[("tool", "report", {"contradictions": []})]])).committed
+    for x in _rows_all(st):
+        if x["op"] == "user_turn":
+            assert secret not in x["args"]["text"] and "password=[redacted:" in x["args"]["text"]
+    big = secret if len(secret) >= 8 else None
+    for root, _, files in os.walk(st):
+        for f in files:
+            data = open(os.path.join(root, f), "rb").read()
+            if big:                                                                                  # no fragment of a long secret anywhere (hashes cannot contain these by accident)
+                for frag in (big, big[:5], big[-5:], "Secret99", "Hunter"):
+                    if frag in big:
+                        assert frag.encode() not in data, (f, frag)
+
+
+def test_r7b_the_value_stops_at_whitespace_cjk_and_the_japanese_comma():
+    t, _, _ = rn.redact_user_text("広報の担当は鈴木です token=abc123!? 以上")
+    assert t.endswith(" 以上") and "abc123" not in t
+    t, _, _ = rn.redact_user_text("鍵はpassword=Abc!9、次の話")
+    assert t.endswith("、次の話") and "Abc" not in t
+
+
+def test_r7b_a_bearer_next_to_a_fact_still_lets_the_correction_be_read_or_refuses(tmp_path):
+    st, r = _setup_replaced(tmp_path, "b", "広報の担当は鈴木です Bearer " + "x" * 24, "広報の担当は鈴木です")
+    a = _ask_val(st, 0, "山本")
+    assert a.status == "refused" and a.reason in ("unrecorded_user_statement", "redacted_turn_unreadable")
+    st2, r2 = _setup_replaced(tmp_path, "p", "広報の担当は鈴木です（鍵 sk-abcdefghijklmnopqr）", "広報の担当は鈴木です")
+    assert _ask_val(st2, 0, "山本").status == "refused"
+
+
+@pytest.mark.parametrize("later", ["secret=ＡＢＣＤＥＦＧＨＩＪ広報の担当は田中", "token=abcd1234efgh。広報の担当は田中", "password=abcdefgh12。"])
+def test_r7d_a_lossy_turn_makes_a_contested_refusal_unreadable_not_a_live_conflict(tmp_path, later):
+    st = str(tmp_path / "s")
+    assert rn.mem_say(st, ["広報の担当は山本"], oa([w("広報の担当は山本")])).committed
+    _mcp_session(st, [("write", {"text": "広報の担当は鈴木"})])
+    r = rn.mem_say(st, [later], oa([[("tool", "report", {"contradictions": []})]]))
+    assert r.lossy_turns == ["3-1"]
+    a = rn.mem_ask(st, Q5, oa([[("tool", "recall", {"question": Q5})], [("tool", "abstain", {"type": "contested"})]]))
+    assert a.status == "refused" and a.reason == "redacted_turn_unreadable" and a.detail["turn"] == "3-1"
+    assert a.detail["contested"] == [] and a.detail["contested_values"] == [] and "食い違い" not in a.render() and "読み取れませんでした" in a.render()

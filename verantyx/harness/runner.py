@@ -135,7 +135,10 @@ def blocked_positions(message: str) -> set:
 
 
 _OWN_MARK = re.compile(r"\[redacted:[0-9a-f]{8}\]")
-_LABEL = re.compile(r"(?i)(?:api[_-]?key|token|secret|password)[\"']?\s*[=:]\s*[\"']?")
+
+
+def _clean_for_reading(s0: str) -> str:
+    return re.sub(r"(?i)\bbearer\s*", "", _SECRET_LABEL.sub("", _OWN_MARK.sub("", s0))).strip()
 
 
 def reading_sentences(text: str) -> List[str]:
@@ -143,13 +146,14 @@ def reading_sentences(text: str) -> List[str]:
     taken out before reading (「広報の担当は鈴木です api_key=[redacted:…]」 is read as 「広報の担当は鈴木です」)."""
     out = []
     for s0 in user_sentences(text):
-        c = _LABEL.sub("", _OWN_MARK.sub("", s0)).strip() if "[redacted:" in s0 else s0
+        c = _clean_for_reading(s0) if "[redacted:" in s0 else s0
         if c:
             out.append(c)
     return out
 
 
-_VALUE_STOP = re.compile(r"[\u3000-\u9fff\uf900-\ufaff\uff00-\uffef。！？!?]")
+_VALUE_STOP = re.compile(r"[\s\u3000-\u9fff\uf900-\ufaff\uff00-\uffef。、]")
+_SECRET_LABEL = re.compile(r"(?i)(?:api[_-]?key|apikey|access[_-]?key|private[_-]?key|client[_-]?secret|secret|passwd|password|pwd|token)[\"']?\s*[=:]\s*[\"']?")
 
 
 def redact_user_text(text: str) -> Tuple[str, List[str], bool]:
@@ -159,14 +163,22 @@ def redact_user_text(text: str) -> Tuple[str, List[str], bool]:
     drop the whole message: the reading of such a turn cannot be trusted, and the memory then answers nothing about places it could have spoken of (`redacted_turn_unreadable`)."""
     from verantyx.ledger_events import _spans, _variant_stage
     t = nfc(text)
+    spans = [[s0, e0] for s0, e0, name in _spans(t) if name != "kv_secret"]
+    for m in _SECRET_LABEL.finditer(t):                      # after a secret label: the ENTIRE ASCII run (! and ? stay inside), whatever its length
+        st = m.end()
+        stop = _VALUE_STOP.search(t, st)
+        en = stop.start() if stop is not None else len(t)
+        if en > st:
+            spans.append([st, en])
+    spans.sort()
+    merged: List[List[int]] = []
+    for s0, e0 in spans:
+        if merged and s0 <= merged[-1][1]:
+            merged[-1][1] = max(merged[-1][1], e0)
+        else:
+            merged.append([s0, e0])
     shas: List[str] = []
-    for s0, e0, name in reversed(_spans(t)):
-        if name == "kv_secret":
-            m = _VALUE_STOP.search(t, s0, e0)
-            if m is not None:
-                e0 = m.start()
-            if e0 - s0 < 1:
-                continue
+    for s0, e0 in reversed(merged):
         h = hashlib.sha256(t[s0:e0].encode("utf-8")).hexdigest()[:8]
         shas.append(h)
         t = t[:s0] + "[redacted:%s]" % h + t[e0:]
@@ -183,7 +195,9 @@ def redact_user_text(text: str) -> Tuple[str, List[str], bool]:
         h = hashlib.sha256(text.encode("utf-8")).hexdigest()[:8]
         return "[redacted:%s]" % h, [h], True
     term = lambda x: [c for c in x if c in "。！？!?"]
-    lossy = bool(shas) and (term(nfc(text)) != term(t) or any(not re.sub(r"[\s。！？!?、，,.]+", "", _LABEL.sub("", _OWN_MARK.sub("", x))) for x in user_sentences(t) if "[redacted:" in x))
+    marked = [x for x in user_sentences(t) if "[redacted:" in x]
+    lossy = bool(shas) and (term(nfc(text)) != term(t) or any(not re.sub(r"[\s。！？!?、，,.]+", "", _clean_for_reading(x)) for x in marked)
+                            or any(not clause_values(_clean_for_reading(x)) for x in marked))          # a sentence the reader cannot read once the marker is out may have said anything
     return t, list(reversed(shas)), lossy
 
 
@@ -781,7 +795,7 @@ class Answer:
                 lines.append("  食い違い: 「%s」%s%s" % (c["value"], "" if c.get("sourced") else "  " + UNSOURCED_MARK,
                                                     "  （置き換え済み: 回 %s の発言が記憶に入っていません。現在の値ではありません）" % c["replaced_in"] if c.get("replaced_in") else ""))
             if self.detail.get("turn"):
-                lines.append("  利用者の発言（回 %s）が記憶に入っていません" % self.detail["turn"])
+                lines.append(("  利用者の発言（回 %s）は一部が秘密の形として伏せられ、読み取れませんでした" if self.reason == "redacted_turn_unreadable" else "  利用者の発言（回 %s）が記憶に入っていません") % self.detail["turn"])
             if self.detail.get("plugin"):
                 lines.append("プラグイン: %s/%s %s（%s）" % (self.detail["plugin"]["kind"], self.detail["plugin"]["name"], self.detail["plugin"]["version"], self.detail["plugin"]["code"]))
         lines.append("run: %s" % self.run_dir)
@@ -1252,7 +1266,11 @@ def mem_ask(store: str, question: str, backend: Backend, *, budget: int = mview.
             ans.detail["contested_values"] = [g[0] for g in choice_[-1]["answers"]] if choice_ else []
             ans.detail["contested"] = _contested_sources(store, run_dir)
             stale = [c["replaced_in"] for c in ans.detail["contested"] if c.get("replaced_in")]
-            if stale:                                       # the list is not the truth about this place: say so, and keep only the values still standing
+            unreadable = [c["lossy_turn"] for c in ans.detail["contested"] if c.get("lossy_turn")]
+            if unreadable:                                   # a user turn that could have spoken of this place was redacted beyond reading: no list of values is presented as the live conflict
+                ans.reason, ans.detail["turn"] = "redacted_turn_unreadable", unreadable[0]
+                ans.detail["contested"], ans.detail["contested_values"] = [], []
+            elif stale:                                       # the list is not the truth about this place: say so, and keep only the values still standing
                 ans.reason, ans.detail["turn"] = "unrecorded_user_statement", stale[0]
                 ans.detail["contested_values"] = [c["value"] for c in ans.detail["contested"] if not c.get("replaced_in")]
     else:
@@ -1283,6 +1301,9 @@ def _contested_sources(store: str, run_dir: str) -> List[Dict[str, Any]]:
             sids = [o["sid"] for o in g.get("occurrences", []) if isinstance(o.get("sid"), int)]
             ok = bool(sids) and all(0 <= i < len(rows) and _session_of_source(rows[i].get("source")) in sourced for i in sids)
             ent = {"value": (g.get("answers") or [g.get("text")])[0], "sourced": ok}
+            lt = lossy_block(store, sids)
+            if lt is not None:
+                ent["lossy_turn"] = lt
             t = unrecorded_statement(store, sids)
             if t is not None:
                 ent["replaced_in"] = t                       # a later user sentence at this place says something else and is not stored: never present this value as current
