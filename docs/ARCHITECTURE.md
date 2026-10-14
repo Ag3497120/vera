@@ -69,6 +69,6 @@ A run is a pure function of its inputs: the ledger bytes do not depend on `PYTHO
 
 ## Tests and CI
 
-`tests/core` (the loom, the grammar, the memory; 40-odd files ported from the research tree) and `tests/harness` (backends with fake clients, runner, CLI, plugins, the web server on an ephemeral port, the examples, `vera eval`) run in CI on Python 3.11.14 under three hash seeds, sharded. `tools/verify_fixtures.py` replays every stored ledger under `tests/fixtures/ledgers`. A job runs `vera eval --quick`. A clean-venv install job builds the wheel and checks that the package data (prompts, tool schemas, grammar data, evals, web page) is inside it. No job uses an API key or the network.
+`tests/core` (the loom, the grammar, the memory; about 50 files ported from the research tree) and `tests/harness` (backends with fake clients, runner, CLI, plugins, the web server on an ephemeral port, the examples, `vera eval`) run in CI on Python 3.11.14 under three hash seeds, sharded. `tools/verify_fixtures.py` replays every stored ledger under `tests/fixtures/ledgers`. A job runs `vera eval --quick`. A clean-venv install job builds the wheel and checks that the package data (prompts, tool schemas, grammar data, evals, web page) is inside it. No job uses an API key or the network.
 
 The English text was written with the help of AI.
