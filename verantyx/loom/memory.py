@@ -114,10 +114,12 @@ def check_versions(versions: Optional[Dict[str, str]]) -> Dict[str, str]:
     v = dict(V4_VERSIONS_V2)
     for k, x in (versions or {}).items():
         if k == "index":                                          # PUB-M8: optional; the crosses' own version is the default and is not carried
-            if x not in (INDEX_CROSS, INDEX_FLAT):
-                raise Refuse("bad_policy", {"policy": "versions", "value": "index", "allowed": [INDEX_CROSS, INDEX_FLAT]})
-            if x == INDEX_FLAT:
-                v["index"] = x
+            try:
+                g = mx.Geometry.parse(x)                              # ABLATE: cross.v2 | flat.v1 | the canonical geo.v1:-<switch>... profile
+            except ValueError:
+                raise Refuse("bad_policy", {"policy": "versions", "value": "index", "allowed": [INDEX_CROSS, INDEX_FLAT, "%s:-<%s>..." % (mx.GEOMETRY_VERSION, "|".join(mx.GEO_COMPONENTS))]})
+            if not g.crosses:
+                v["index"] = g.version()
             continue
         if k not in v:
             raise Refuse("bad_policy", {"policy": "versions", "value": k, "allowed": sorted(v)})
@@ -349,8 +351,9 @@ class MemRun(Run):
         self.versions: Dict[str, str] = check_versions(versions) if self.v4 else {}
         self.shape_version: str = self.versions.get("shape", ms.SHAPES_V2)
         self.ask_version: str = self.versions.get("ask", mask.ASK_VERSION)
-        self.flat: bool = self.versions.get("index") == INDEX_FLAT        # PUB-M8: the flat table (A3f)
-        self.builder = mx.IndexBuilder(self.shape_version, self.flat) if self.v4 else None
+        self.geo: "mx.Geometry" = mx.Geometry.parse(self.versions.get("index"))      # ABLATE: the geometry profile (all on = the crosses, all off = the flat table of PUB-M8)
+        self.flat: bool = self.geo.flat                                  # PUB-M8: the flat table (A3f)
+        self.builder = mx.IndexBuilder(self.shape_version, geometry=self.geo) if self.v4 else None
         if view is not None and not self.v4:
             raise Refuse("bad_policy", {"policy": "view", "value": "only a mem.v4 session has a view", "allowed": []})
         self.view: Optional[Dict[str, Any]] = None if view is None else mview.check_view(view)        # PUB-M7: {version, budget, lines}, recorded in the begin row
@@ -476,8 +479,8 @@ class MemRun(Run):
                 h["qwords"] = {"version": self.versions["qwords"], "sha": qw.QWORDS_SHAS[self.versions["qwords"]]}        # PUB-M6: the question-word tank (frozen)
                 h["detect"] = {"version": mdt.DETECT_VERSION}                              # PUB-M5: the detections on the crosses
                 h["ask"] = {"version": self.ask_version}                                   # PUB-M6: recall on the crosses
-                if self.flat:
-                    h["index"] = {"version": INDEX_FLAT}                                    # PUB-M8: the flat table (absent for the crosses: every stored header is as it was)
+                if not self.geo.crosses:
+                    h["index"] = self.geo.header()                                          # PUB-M8: the flat table {"version": flat.v1}; ABLATE: a partial profile {"version": geo.v1:-..., "off": [...]} (absent for the crosses: every stored header is as it was)
                 if self.view is not None:
                     h["view"] = dict(self.view)                                             # PUB-M7: the model-facing view and the per-turn budget (characters of tool results a turn may be delivered)
             self._begin_header = h
@@ -1348,8 +1351,8 @@ def session_versions(run_dir) -> Optional[Dict[str, str]]:
         return None
     try:
         v = {"shape": hdr["shape"]["version"], "qwords": hdr["qwords"]["version"], "ask": hdr["ask"]["version"]}
-        if isinstance(hdr.get("index"), dict) and hdr["index"].get("version") == INDEX_FLAT:      # PUB-M8: only the flat table says so; the crosses' bundle is the three keys, as before
-            v["index"] = INDEX_FLAT
+        if isinstance(hdr.get("index"), dict) and isinstance(hdr["index"].get("version"), str):   # PUB-M8: only a non-crosses index says so; the crosses' bundle is the three keys, as before
+            v["index"] = mx.Geometry.parse(hdr["index"]["version"]).version()
         return v
     except (KeyError, TypeError):
         return None
@@ -1543,7 +1546,7 @@ class MemStore:
             decls += session_nest_decls(self.sessions_dir / e["run_id"])
             brs += session_bridges(self.sessions_dir / e["run_id"])
             vs = session_versions(self.sessions_dir / e["run_id"]) or vs
-        return mx.build_index(rows, decls, sup, shape_version=(vs or V4_VERSIONS_V2)["shape"], bridges=brs, flat=(vs or {}).get("index") == INDEX_FLAT)
+        return mx.build_index(rows, decls, sup, shape_version=(vs or V4_VERSIONS_V2)["shape"], bridges=brs, geometry=(vs or {}).get("index"))
 
     def replay(self, self_question: Any = FROM_HEADER) -> "MemReplay":
         return replay_store(self.path, self_question)
@@ -1731,7 +1734,7 @@ def replay_store(path, self_question: Any = FROM_HEADER) -> MemReplay:
         if not rows or rows[-1]["op"] != "commit" or rows[-1]["result"].get("ok") is not True:
             out.status, out.first_diff = "DIFFERS", {"session": e["run_id"], "i": len(rows) - 1, "field": "commit_missing"}
             return out
-        if run.v4 and mx.build_index(run.rows, run.decls, run.superseded, shape_version=run.shape_version, bridges=run.bridge_log, flat=run.flat).index_sha != run.builder.index().index_sha:     # the memory crosses must be rebuilt identically from H alone
+        if run.v4 and mx.build_index(run.rows, run.decls, run.superseded, shape_version=run.shape_version, bridges=run.bridge_log, geometry=run.geo).index_sha != run.builder.index().index_sha:     # the memory crosses must be rebuilt identically from H alone
             out.status, out.first_diff = "DIFFERS", {"session": e["run_id"], "i": None, "field": "index"}
             return out
         H = list(run.rows)

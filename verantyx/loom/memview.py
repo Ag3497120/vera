@@ -86,7 +86,7 @@ def _cap(kind: str, key: str, lines: List[str], limit: int) -> dict:
     return {"ok": True, "view": VIEW_V1, "kind": kind, "of": key, "lines": [_clip(x) for x in lines], "total": total, "omitted": max(0, total - limit)}
 
 
-def _seat_line(s: Any, flat: bool, depth: int = 0) -> str:
+def _seat_line(s: Any, flat: bool, depth: int = 0) -> str:                  # `flat` = the index has no key (ABLATE: `not geo.key`)
     pv = s.prov
     out = "%s%s#%d %s s%d %s S%d %s" % ("  " * (depth + 1), s.slot, s.rank + 1, s.phrase, pv.sid, _turn(pv.turn, pv.sid), pv.session, pv.origin)
     if not flat and s.slot in mx.ARMS:
@@ -103,7 +103,7 @@ def _seat_line(s: Any, flat: bool, depth: int = 0) -> str:
 
 
 def _cross_lines(ix: Any, c: Any) -> List[str]:
-    flat = bool(getattr(ix, "flat", False))
+    flat = not getattr(getattr(ix, "geo", None), "key", True)
     sids = []
     for o in c.occurrences:
         if o.sid not in sids:
@@ -139,7 +139,7 @@ def view_centre(ix: Any, phrase: str, limit: int) -> dict:
 def view_nest(ix: Any, topic: str, limit: int) -> dict:
     """view_nest(topic): the nest of the topic (the crosses' index) or, for the flat table, the rows whose topic column is the topic."""
     lines: List[str] = []
-    if getattr(ix, "flat", False):
+    if not getattr(getattr(ix, "geo", None), "nests", True):
         rows = [c for c in ix.clauses if c.tank is not None and c.open_nest == topic]
         lines.append("T %s rows=%d (topic column of the flat table; no nest)" % (topic, len(rows)))
         for c in rows:

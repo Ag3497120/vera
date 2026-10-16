@@ -49,6 +49,7 @@ for p in (ROOT, HERE):
 from verantyx.loom import driver as drv                       # noqa: E402
 from verantyx.loom import ledger as lg                        # noqa: E402
 from verantyx.loom import memanswer as ma                     # noqa: E402
+from verantyx.loom import memcross as mx                      # noqa: E402
 from verantyx.loom import memdoor as md                       # noqa: E402
 from verantyx.loom import memdriver as mdrv                   # noqa: E402
 from verantyx.loom import memory as mem                       # noqa: E402
@@ -64,9 +65,26 @@ ANSWER_MAX_TURNS = 40
 ARMS: Dict[str, dict] = {
     "A0": {"arm": "context", "flat": False, "label": "context only"},
     "A1": {"arm": "log", "flat": False, "label": "log + grep"},
-    "A3": {"arm": "notes", "flat": False, "label": "structure (crosses)"},
-    "A3f": {"arm": "notes", "flat": True, "label": "flat table (no geometry)"},
+    "A3": {"arm": "notes", "flat": False, "index": None, "label": "structure (crosses)", "no_key_route": False},
+    "A3f": {"arm": "notes", "flat": True, "index": mem.INDEX_FLAT, "label": "flat table (no geometry)", "no_key_route": True},
 }
+GEO_ARM_NAMES = "A3-no<%s> (leave one out of A3), A3f-plus<%s> (add one to A3f)" % ("|".join(mx.GEO_COMPONENTS), "|".join(mx.GEO_COMPONENTS))
+
+
+def arm_spec(key: str) -> dict:
+    """The spec of an arm.  A0 / A1 / A3 / A3f are the four of the meter; the ABLATION arms (ticket C, L-PUB-140..) are named `A3-no<component>` (A3 with ONE geometry switch off) and
+    `A3f-plus<component>` (the flat table with ONE switch on).  For `ladder` and `arms` -- which are read only by the key -- `A3f-plus<component>` also switches the key on (the key with that component
+    alone), and `A3f-pluskey` is the key with plain weights and the arm's seat pooled (see memcross.Geometry).  Every ablation arm reads the SAME prompts as A3 (the geometry is not described to the model)."""
+    if key in ARMS:
+        return ARMS[key]
+    g = mx.variant_geometry(key)
+    if g is not None:
+        c = key[len("A3-no"):] if key.startswith("A3-no") else key[len("A3f-plus"):]
+        label = "A3 without %s" % c if key.startswith("A3-no") else "flat table plus %s%s" % (c, " (with the key)" if c in mx.KEY_ONLY else "")
+        return {"arm": "notes", "flat": g.flat, "index": None if g.crosses else g.version(), "label": label, "no_key_route": not g.swap, "geometry": g}
+    raise MeterError("unknown arm %r (A0, A1, A3, A3f, %s)" % (key, GEO_ARM_NAMES))
+
+
 BUNDLES = {"m6c": mem.V4_VERSIONS_M6C, "m6d": mem.V4_VERSIONS_M6D}
 ANSWER_VERSION = ma.ANSWER_V17
 USED_FILE = os.path.join(HERE, "used_heldout.jsonl")
@@ -136,13 +154,13 @@ def intro_text(door: Any, story: dict, s: int, budget: int) -> str:
 # ------------------------------------------------------------------------------------------------------------
 def versions_of(arm_key: str, bundle: str) -> Dict[str, str]:
     v = dict(BUNDLES[bundle])
-    if ARMS[arm_key]["flat"]:
-        v["index"] = mem.INDEX_FLAT
+    if arm_spec(arm_key).get("index"):
+        v["index"] = arm_spec(arm_key)["index"]
     return v
 
 
 def story_door(arm_key: str, store: str, model: str, session_no: int, budget: int, bundle: str) -> Tuple[Any, Any]:
-    a = ARMS[arm_key]
+    a = arm_spec(arm_key)
     if a["arm"] in md.STRUCTURE_ARMS:
         door = md.StructureDoor(store, a["arm"], model, profile=mem.PROFILE_V4, versions=versions_of(arm_key, bundle), view=mview.make_view(budget))
     else:
@@ -151,7 +169,7 @@ def story_door(arm_key: str, store: str, model: str, session_no: int, budget: in
 
 
 def story_tool_specs(arm_key: str) -> Optional[dict]:
-    return md.TOOL_SPECS_V3 if ARMS[arm_key]["arm"] in ("log",) else None
+    return md.TOOL_SPECS_V3 if arm_spec(arm_key)["arm"] in ("log",) else None
 
 
 # ------------------------------------------------------------------------------------------------------------
@@ -166,7 +184,7 @@ def first_question_message(door: Any, begin_result: dict) -> str:
 
 def ask_checkpoint(story: dict, cp: dict, arm_key: str, repeat: int, *, client: Any, model: str, store: str, run_dir: str, budget: int, bundle: str, choice: dict, strict: bool,
                    redact: bool) -> dict:
-    a = ARMS[arm_key]
+    a = arm_spec(arm_key)
     qs = [(k, q) for k, q in enumerate(story["questions"]) if q["checkpoint"] == cp["index"]]
     order = question_order(story["id"], cp["index"], repeat, len(qs))
     snap = None
@@ -258,7 +276,7 @@ def zero_cost() -> dict:
 
 def run_one(story: dict, arm_key: str, repeat: int, *, client: Any, model: str, out_root: str, budget: int = DEFAULT_BUDGET, bundle: str = "m6d", n_checkpoints: int = 4,
             redact: bool = False, client_kind: str = "stub", max_calls: int = MAX_CALLS) -> dict:
-    a = ARMS[arm_key]
+    a = arm_spec(arm_key)
     structure = a["arm"] in md.STRUCTURE_ARMS
     run_dir = os.path.join(out_root, story["id"], arm_key, "r%02d" % repeat)
     if os.path.exists(run_dir):
@@ -272,8 +290,10 @@ def run_one(story: dict, arm_key: str, repeat: int, *, client: Any, model: str, 
     t0 = time.monotonic_ns()
     result: Dict[str, Any] = {"schema": SCHEMA, "story": story["id"], "arm": arm_key, "arm_label": a["label"], "repeat": repeat, "model": model, "client": client_kind, "budget": budget,
                               "bundle": bundle if structure else None, "answer_version": ANSWER_VERSION if structure else None, "profile": mem.PROFILE_V4 if structure else md.BASELINE_V3,
-                              "checkpoints_run": [c["index"] for c in cps], "last_session": last_session, "redacted": redact, "prompts": {ph: P.prompt_shas()[ph][arm_key] for ph in ("story", "question")},
+                              "checkpoints_run": [c["index"] for c in cps], "last_session": last_session, "redacted": redact, "prompts": {ph: P.prompt_shas()[ph][P.prompt_arm(arm_key)] for ph in ("story", "question")},
                               "sessions": [], "checkpoints": [], "ended": "?"}
+    if arm_key not in ARMS:
+        result["geometry"] = {"version": a["index"] or mx.CROSS_VERSION, "off": list(a["geometry"].off)}      # ABLATE: the profile of this arm (the four arms of the meter have no such field)
     cost = zero_cost()
     for s in range(last_session + 1):
         door, wd = story_door(arm_key, store, model, s + 1, budget, bundle)
@@ -331,7 +351,7 @@ def run_one(story: dict, arm_key: str, repeat: int, *, client: Any, model: str, 
         h = mem.MemStore(store).head()
         result["store"] = {"verify": v["status"], "sentences": 0 if h is None else h["sentences"], "sessions": 0 if h is None else len(h["sessions"])}
     det = detections(store, structure)
-    result["plants"] = S.score_plants(story, last_session, det, structure, a["flat"])
+    result["plants"] = S.score_plants(story, last_session, det, structure, a.get("no_key_route", False))
     # the per-run answer score is the sum of the checkpoint scores (each answer carries its class already)
     tot = {"n": 0, **{c: 0 for c in S.CLASSES}, "false_contested": 0}
     kinds: Dict[str, Any] = {k: {"n": 0, **{c: 0 for c in S.CLASSES}} for k in S.ANSWER_KINDS}
@@ -456,7 +476,8 @@ def metrics(results: Sequence[dict], arm: str) -> Dict[str, Dict[int, int]]:
 
 def build_report(root: str) -> dict:
     results = load_results(root)
-    arms = [k for k in ARMS if any(r["arm"] == k for r in results)]
+    present = {r["arm"] for r in results}
+    arms = [k for k in ARMS if k in present] + sorted(k for k in present if k not in ARMS)
     M = {a: metrics(results, a) for a in arms}
     reps = sorted({r["repeat"] for r in results})
     stories = sorted({r["story"] for r in results})
@@ -505,7 +526,7 @@ def write_report(root: str) -> str:
     L: List[str] = []
     L.append("# Meter v2 report (long stories, equal per-turn budget)")
     L.append("")
-    L.append("Stories: %s. Repeats: %s. Arms: %s. Runs: %d." % (", ".join(rep["stories"]), rep["repeats"], ", ".join("%s (%s)" % (a, ARMS[a]["label"]) for a in arms), rep["n_runs"]))
+    L.append("Stories: %s. Repeats: %s. Arms: %s. Runs: %d." % (", ".join(rep["stories"]), rep["repeats"], ", ".join("%s (%s)" % (a, arm_spec(a)["label"]) for a in arms), rep["n_runs"]))
     if rep["client_is_stub"]:
         L.append("")
         L.append("**These runs used the deterministic STUB client: the numbers measure the harness, not a model. Tokens are estimates. No verdict below is a result about structure vs log.**")
@@ -605,8 +626,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             raise MeterError("--bank and --out are required")
         arms = [x for x in ns.arms.split(",") if x]
         for x in arms:
-            if x not in ARMS:
-                raise MeterError("unknown arm %r (A0, A1, A3, A3f)" % x)
+            arm_spec(x)                                                    # raises MeterError for an unknown arm
         client = None if ns.plan else make_client(ns.client, ns.allow_api, ns.model)       # refuses (--client api without --allow-api) before anything is read, registered or run
         held = is_heldout(ns.bank)
         if held and not ns.judge and not ns.plan:

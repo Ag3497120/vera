@@ -50,6 +50,8 @@ from verantyx.loom.state import SPEC, canonical, sha256_text
 
 CROSS_VERSION = "cross.v2"      # cross.v1 (PUB-M2..M4) + seat scope, `context` members, notes, bridges (no cross.v1 data was ever recorded with a model)
 FLAT_VERSION = "flat.v1"        # PUB-M8 (A3f): the FLAT TABLE index -- the same exchanger, tanks, seats, provenance, notes and answer path, with the geometry taken out (see `IndexBuilder(flat=True)`)
+GEOMETRY_VERSION = "geo.v1"     # ABLATE (ticket C): the geometry PROFILE -- six independent switches, each OFF = the flat table's behaviour for that component only (see `Geometry`)
+GEO_COMPONENTS: Tuple[str, ...] = ("nests", "slide", "key", "swap", "ladder", "arms")
 TANKS: Tuple[str, ...] = ("F1", "F2", "F3", "F4")
 F0_TANK = "F0"
 ARMS: Tuple[str, ...] = tuple(SPEC.arms)                  # の に で と を が: the ladder order of foundation.LADDER[1:]
@@ -68,12 +70,128 @@ Position = Tuple[str, str, Path]
 # ------------------------------------------------------------------------------------------------------------
 # the key of a seat, the origin of its words (against the history before its sentence)
 # ------------------------------------------------------------------------------------------------------------
-def seat_key(corpus: Any, slot: str, centre_head: str, seat_head: str) -> Tuple[int, int, int]:
+# ------------------------------------------------------------------------------------------------------------
+# the geometry profile (ticket C, docs/LINE3_PUBLIC_DESIGN.md 4.10)
+# ------------------------------------------------------------------------------------------------------------
+@dataclass(frozen=True)
+class Geometry:
+    """Which parts of the cross geometry the index uses.  ALL ON = the crosses (cross.v2, A3, the default, byte for byte as before); ALL OFF = the flat table (flat.v1, A3f, byte for byte as before).
+    Each switch changes ONE component and nothing else:
+      nests   the topic nest (declare, F4 completion by the nest centre, seat scope = nest id)  | OFF: a plain topic column (scope = the topic string, no completion)
+      slide   the order edges [sid-1, sid, session flag] of the slide order                    | OFF: no edge (a position lists its values in sid order, which it does in both)
+      key     the (n, p, a) key that orders the seats of an arm (and a seat's frozen key)       | OFF: key (0, 0, 0): sid order, ties by clause, then sequence
+      swap    the key swap on a REVERSAL_X note and the loom's old REVERSAL (key route) note   | OFF: the pair direction is compared, `key` null, the old note is not shown
+      ladder  the golden / Fibonacci weight of the arm in `a` of the key                        | OFF: weight 1 for every arm.  Used only when `key` is on.
+      arms    the particle -> arm assignment: a seat is read on the arm of ITS particle         | OFF: one unordered arm list: the seat's adhesion is pooled over the six arm particles.  Used only when `key` is on.
+    The version string is canonical: cross.v2 (all on), flat.v1 (all off), else geo.v1:-<switch>-<switch>... (the OFF ones, in GEO_COMPONENTS order)."""
+    nests: bool = True
+    slide: bool = True
+    key: bool = True
+    swap: bool = True
+    ladder: bool = True
+    arms: bool = True
+
+    @staticmethod
+    def of_off(off: Iterable[str]) -> "Geometry":
+        off = tuple(off)
+        for x in off:
+            if x not in GEO_COMPONENTS:
+                raise ValueError("unknown geometry component %r (one of %s)" % (x, ", ".join(GEO_COMPONENTS)))
+        return Geometry(**{c: c not in off for c in GEO_COMPONENTS})
+
+    @staticmethod
+    def flat_table() -> "Geometry":
+        return Geometry.of_off(GEO_COMPONENTS)
+
+    @staticmethod
+    def parse(version: Optional[str]) -> "Geometry":
+        """None / cross.v2 -> all on; flat.v1 -> all off; the canonical geo.v1:-a-b string -> those off.  ValueError for anything else (and for a non-canonical spelling)."""
+        if version is None or version == CROSS_VERSION:
+            return Geometry()
+        if version == FLAT_VERSION:
+            return Geometry.flat_table()
+        pre = GEOMETRY_VERSION + ":"
+        if isinstance(version, str) and version.startswith(pre + "-"):
+            g = Geometry.of_off(version[len(pre) + 1:].split("-"))
+            if g.version() == version:
+                return g
+        raise ValueError("not a geometry version: %r" % (version,))
+
+    @property
+    def off(self) -> Tuple[str, ...]:
+        return tuple(c for c in GEO_COMPONENTS if not getattr(self, c))
+
+    @property
+    def flat(self) -> bool:
+        return len(self.off) == len(GEO_COMPONENTS)
+
+    @property
+    def crosses(self) -> bool:
+        return not self.off
+
+    def version(self) -> str:
+        if self.crosses:
+            return CROSS_VERSION
+        if self.flat:
+            return FLAT_VERSION
+        return GEOMETRY_VERSION + ":" + "".join("-" + c for c in self.off)
+
+    def header(self) -> Optional[dict]:
+        """The `header.index` block of a begin row: None for the crosses (absent, as before), {"version": flat.v1} for the flat table (as before), else the version and the switches that are off."""
+        if self.crosses:
+            return None
+        if self.flat:
+            return {"version": FLAT_VERSION}
+        return {"version": self.version(), "off": list(self.off)}
+
+
+KEY_ONLY: Tuple[str, ...] = ("ladder", "arms")          # read only by the key: their add-one-in variants switch the key on as well
+
+
+def variant_geometry(name: str) -> Optional[Geometry]:
+    """The geometry of a named arm of the ablation (ticket C): A3 (all on), A3f (all off), `A3-no<component>` (A3 with one switch off, leave-one-out), `A3f-plus<component>` (the flat table with one switch on,
+    add-one-in; for `ladder` and `arms`, which only the key reads, the key is switched on too, so that the variant is the key with that component alone).  None for any other name."""
+    if name == "A3":
+        return Geometry()
+    if name == "A3f":
+        return Geometry.flat_table()
+    for pre, loo in (("A3-no", True), ("A3f-plus", False)):
+        if name.startswith(pre) and name[len(pre):] in GEO_COMPONENTS:
+            c = name[len(pre):]
+            if loo:
+                return Geometry.of_off([c])
+            on = (c, "key") if c in KEY_ONLY else (c,)
+            return Geometry.of_off([x for x in GEO_COMPONENTS if x not in on])
+    return None
+
+
+def ablation_variants() -> Tuple[str, ...]:
+    """A3, A3f, then the six leave-one-out arms and the six add-one-in arms, in GEO_COMPONENTS order."""
+    return ("A3", "A3f") + tuple("A3-no" + c for c in GEO_COMPONENTS) + tuple("A3f-plus" + c for c in GEO_COMPONENTS)
+
+
+def as_geometry(geometry: Any = None, flat: bool = False) -> Geometry:
+    """A Geometry from a Geometry, a version string, or (legacy) the `flat` bool."""
+    if isinstance(geometry, Geometry):
+        return geometry
+    if geometry is not None:
+        return Geometry.parse(geometry)
+    return Geometry.flat_table() if flat else Geometry()
+
+
+def seat_key(corpus: Any, slot: str, centre_head: str, seat_head: str, ladder: bool = True, arms_on: bool = True) -> Tuple[int, int, int]:
     """(n, p, a) of a seat against `corpus` = C_<sid.  An arm: `read.loom_key` of the cross L = 2 {centre; the seat outermost on its arm; the six foundation tokens innermost} -- the very key the loom reads a
     woven cross with (n, p from the contracted cross's edges, a = numerator(particle) * adj(seat, particle); the centre's は term is the topic mark's and is not counted).  は (a value): (n, p) of the pair
     in READING ORDER (the centre first) and a = numerator(は) * adj(centre, は).  quantity / object_bare: (n, p) of the pair (seat first, then the centre), a = 0.  A word that is not in the space has weight 0
-    (L-52): an event's centre is a dictionary form, which is a surface in the space only if it was written so."""
+    (L-52): an event's centre is a dictionary form, which is a surface in the space only if it was written so.
+    ABLATE: `ladder` False = every arm weighs 1 in `a` (no golden / Fibonacci weight); `arms_on` False = no particle -> arm assignment: the seat's adhesion is pooled over the six arm particles (an unordered list).
+    (n, p) are the same either way (after the contraction of the foundation they do not depend on the arm); with both True this is the key as it always was."""
     t, adh, w = corpus.tier("WORD"), corpus.adhesion["WORD"], corpus.weights("WORD")
+    if not (ladder and arms_on) and (slot in ARMS or slot == VALUE):
+        n, p, _ = seat_key(corpus, slot, centre_head, seat_head)
+        if slot == VALUE:
+            return (n, p, int((SPEC.numerator(VALUE) if ladder else 1) * adh.adj(centre_head, VALUE)))
+        return (n, p, int(sum((SPEC.numerator(q) if ladder else 1) * adh.adj(seat_head, q) for q in (SPEC.arms if not arms_on else (slot,)))))
     if slot in ARMS:
         arms: List[List[Optional[str]]] = [[None, fd.token(p)] for p in SPEC.arms]
         arms[SPEC.arms.index(slot)][0] = seat_head
@@ -455,9 +573,10 @@ class IndexBuilder:
     """The fold.  `declare` / `add_row` / `supersede` / `bridge` are called in the order of the ledger; `index()` is the derived `MemIndex` (cached until the next call).  Everything is kept per part with its
     cached view and canonical JSON, so a call dirties only what it touched."""
 
-    def __init__(self, shape_version: str = ms.SHAPES_V2, flat: bool = False) -> None:
+    def __init__(self, shape_version: str = ms.SHAPES_V2, flat: bool = False, geometry: Any = None) -> None:
         self.shape_version = shape_version
-        self.flat = bool(flat)                               # PUB-M8: the flat table (no nests, no slide edges, no (n, p, a) key, no key swap); False = the crosses, byte for byte as before
+        self.geo = as_geometry(geometry, flat)               # ABLATE: the geometry profile; all on = the crosses (byte for byte as before), all off = the flat table of PUB-M8 (A3f, byte for byte as before)
+        self.flat = self.geo.flat
         self._topic: Dict[int, str] = {}                     # flat only: session -> the topic declared in it, a PLAIN COLUMN (it is the scope of the seats, nothing more)
         self.n = 0
         self._sessions: List[int] = []
@@ -495,7 +614,7 @@ class IndexBuilder:
         head = topic_head(topic)
         if head is None:
             raise ValueError("a topic needs a word unit")
-        if self.flat:                                        # PUB-M8: no nest.  The topic is a plain column: the scope of the seats written after it in this session (a string, no structure)
+        if not self.geo.nests:                               # PUB-M8: no nest.  The topic is a plain column: the scope of the seats written after it in this session (a string, no structure)
             reopened = self._topic.get(session) == topic
             self._topic[session] = topic
             self._ver += 1
@@ -549,7 +668,7 @@ class IndexBuilder:
         return e
 
     def open_nest_id(self, session: int) -> Optional[str]:
-        if self.flat:
+        if not self.geo.nests:
             return None                                      # PUB-M8: there is no nest to prefer
         nr = self._open.get(session)
         return None if nr is None else nr.id
@@ -591,7 +710,7 @@ class IndexBuilder:
             self._sess[-1][2] = sid
         else:
             self._sess.append([session, sid, sid])
-        if sid > 0 and not self.flat:                         # PUB-M8: the flat table has no slide order (updates are read by sid order only)
+        if sid > 0 and self.geo.slide:                        # PUB-M8: the flat table has no slide order (updates are read by sid order only)
             self._edges.append("[%d,%d,%d]" % (sid - 1, sid, 1 if self._sessions[sid - 1] != session else 0))
         self._ver += 1
         self.last_notes = []
@@ -602,7 +721,7 @@ class IndexBuilder:
             self._f0_json.append(canonical(e.to_obj()))
         nr = self._open.get(session)
         open_id = None if nr is None else nr.id
-        if self.flat:
+        if not self.geo.nests:
             nr, open_id = None, self._topic.get(session)      # PUB-M8: the topic column is the scope; no nest completes an F4 clause
         out: List[ClauseRec] = []
         notes: List[dict] = []
@@ -660,7 +779,7 @@ class IndexBuilder:
             self._seat_n[tank] += 1
             seat_head = units[-1] if units else phrase
             r = _Rec(slot=slot, phrase=phrase, units=tuple(units), sid=sid, k=k, seq=self._seq, turn=turn, session=session, origin=origin_of(corpus, units),
-                     key=(0, 0, 0) if self.flat else seat_key(corpus, slot, centre_head, seat_head), path=p, children=[], via=v, nest=nid, change=change, surface=phrase, scope=open_id, written=written)
+                     key=seat_key(corpus, slot, centre_head, seat_head, self.geo.ladder, self.geo.arms) if self.geo.key else (0, 0, 0), path=p, children=[], via=v, nest=nid, change=change, surface=phrase, scope=open_id, written=written)
             for a in sub:
                 r.children.append((a.particle, rec(a.particle, a.seat.text, a.seat.units, seat_head, a.arms, v, nid, None, p + ((slot, phrase),), a.written)))
             return r
@@ -701,7 +820,7 @@ class IndexBuilder:
             notes += self._det.observe_event(tank=tank, centre=c.centre or "", arms=[(a.particle, a.seat.text) for a in arms], scope=open_id, sid=sid, k=k, turn=turn)
         for rl in _relations(c, arms, tank):
             notes += self._det.observe_relation(kind=rl[0], label=rl[1], first=rl[2], second=rl[3], particle=rl[4], first_units=rl[5], second_units=rl[6], sid=sid, k=k, turn=turn,
-                                                judge=None if self.flat else (lambda particle, fu, su: pair_key(corpus, particle, fu, su) if fu and su else None))
+                                                judge=(lambda particle, fu, su: pair_key(corpus, particle, fu, su) if fu and su else None) if self.geo.swap else None)
         return (ClauseRec(sid, k, session, turn, c.shape, tank, c.centre, c.text, via, nest_id, open_id, path, None if c.value is None else c.value.text, ch,
                           tuple(a.text for a in c.adverbial), None), notes)
 
@@ -766,7 +885,7 @@ class IndexBuilder:
         return '{"bridges":[%s],"clauses":[%s],"edges":[%s],"f0":[%s],"n":%d,"nests":[%s],"notes":[%s],"positions":[%s],"sessions":%s,"shape":%s,"tanks":%s,"v":%s}' % (
             ",".join(canonical(b.to_obj()) for b in self._bridges), ",".join(self._clause_json), ",".join(self._edges), ",".join(self._f0_json), self.n,
             ",".join(self._nest_json(nr) for nr in self._nests), ",".join(self._note_json), ",".join(self._pos_json(p) for p in self._pos_order), canonical(self._sess),
-            canonical(self.shape_version), tanks, canonical(FLAT_VERSION if self.flat else CROSS_VERSION))
+            canonical(self.shape_version), tanks, canonical(self.geo.version()))
 
     def _snapshot(self) -> "MemIndex":
         crosses = tuple(self._cross_view(self._crosses[k]) for k in self._cross_order)
@@ -775,7 +894,7 @@ class IndexBuilder:
         sha = sha256_text(self._assemble())
         return MemIndex(self.shape_version, self.n, tuple(self._sessions), crosses, tuple(self._f0), nests, tuple(self._clauses), dict(self._marks),
                         hist={p: self._pos[p].entries for p in self._pos_order}, positions=tuple(self._pos_order), notes=tuple(self._notes), bridges=tuple(self._bridges),
-                        counts=counts, sha=sha, flat=self.flat)
+                        counts=counts, sha=sha, geometry=self.geo)
 
 
 def _relations(c: ms.Clause, arms: Sequence[ms.Arm], tank: str) -> List[tuple]:
@@ -814,8 +933,9 @@ class MemIndex:
 
     def __init__(self, shape_version: str, n: int, sessions: Tuple[int, ...], crosses: Tuple[Cross, ...], f0: Tuple[F0Entry, ...], nests: Tuple[Nest, ...],
                  clauses: Tuple[ClauseRec, ...], marks: Dict[int, Mark], *, hist: Dict[Position, Tuple[Entry, ...]], positions: Tuple[Position, ...], notes: Tuple[dict, ...] = (),
-                 bridges: Tuple[Bridge, ...] = (), counts: Optional[dict] = None, sha: Optional[str] = None, flat: bool = False) -> None:
-        self.flat = bool(flat)
+                 bridges: Tuple[Bridge, ...] = (), counts: Optional[dict] = None, sha: Optional[str] = None, flat: bool = False, geometry: Any = None) -> None:
+        self.geo = as_geometry(geometry, flat)
+        self.flat = self.geo.flat
         self.shape_version, self.n, self.sessions = shape_version, n, sessions
         self.crosses, self.f0, self.nests, self.clauses = crosses, f0, nests, clauses
         self.notes, self.bridges = notes, bridges
@@ -843,7 +963,7 @@ class MemIndex:
     @property
     def edges(self) -> Tuple[Tuple[int, int, int], ...]:
         if self._edges is None:
-            self._edges = () if self.flat else tuple((i, i + 1, 1 if self.sessions[i] != self.sessions[i + 1] else 0) for i in range(self.n - 1))
+            self._edges = () if not self.geo.slide else tuple((i, i + 1, 1 if self.sessions[i] != self.sessions[i + 1] else 0) for i in range(self.n - 1))
         return self._edges
 
     def seats(self, cross: Cross, arm_path: Any) -> Tuple[Seat, ...]:
@@ -981,7 +1101,7 @@ class MemIndex:
                 sess.append([s, i, i])
             else:
                 sess[-1][2] = i
-        return {"v": FLAT_VERSION if self.flat else CROSS_VERSION, "shape": self.shape_version, "n": self.n, "sessions": sess,
+        return {"v": self.geo.version(), "shape": self.shape_version, "n": self.n, "sessions": sess,
                 "tanks": [[t, [c.to_obj() for c in self.tank(t)]] for t in TANKS], "f0": [e.to_obj() for e in self.f0], "nests": [n.to_obj() for n in self.nests],
                 "clauses": [c.to_obj() for c in self.clauses], "edges": [list(e) for e in self.edges],
                 "positions": [[t, c, [list(p) for p in path], [e.to_obj() for e in self._hist[(t, c, path)]]] for t, c, path in self.positions],
@@ -1063,10 +1183,10 @@ def render_cross(c: Cross) -> str:
 # the pure function of H (the FULL REBUILD: replay / verify run it and require it to equal the incremental index byte for byte)
 # ------------------------------------------------------------------------------------------------------------
 def build_index(rows: Sequence[dict], decls: Sequence[dict] = (), superseded: Optional[Dict[int, dict]] = None, shape_version: str = ms.SHAPES_V2,
-                bridges: Sequence[dict] = (), flat: bool = False) -> MemIndex:
+                bridges: Sequence[dict] = (), flat: bool = False, geometry: Any = None) -> MemIndex:
     """The index of the memory rows `rows` (each {sent, source, kind?, turn?, unshaped?}), the topic declarations `decls` ([{session, at, topic}]: `at` = how many sentences H held when it was declared),
     the supersede marks `superseded` ({sid: {by, reason, session}}) and the bridges `bridges` ([{session, at, qword, phrase}]).  Builds the memory corpus of every prefix itself (Corpus, never Corpus.load)."""
-    b = IndexBuilder(shape_version, flat)
+    b = IndexBuilder(shape_version, flat, geometry)
     order = sorted(range(len(decls)), key=lambda i: (decls[i]["at"], i))
     di = 0
     prev = Corpus(b"")

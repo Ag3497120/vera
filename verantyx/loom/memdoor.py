@@ -278,7 +278,7 @@ class StructureDoor(_Door):
         res = self.session.call(tool, a)
         res = _blind(res) if self.arm == "blind" else res
         if self.view is not None and tool in ("write",) + mem.V4_OPS:                     # PUB-M7: the model sees the short lines; the ledger row keeps the full result
-            res = mview.compact_write(self.session.run.builder.index(), res, drop_key_route=self.session.run.flat)
+            res = mview.compact_write(self.session.run.builder.index(), res, drop_key_route=not self.session.run.geo.swap)
         return res
 
     def harness(self, run_id: Any, op: str, args: dict) -> dict:

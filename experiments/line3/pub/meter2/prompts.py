@@ -66,8 +66,13 @@ When `emit` or `abstain` has succeeded the run is closed. Stop.""",
 QUESTION["A3f"] = QUESTION["A3"]
 
 
+def prompt_arm(arm: str) -> str:
+    """The arm whose prompt a run reads: the ablation arms (A3-no<c>, A3f-plus<c>, ticket C) read A3's text (the geometry is not described to the model)."""
+    return "A3" if arm.startswith(("A3-no", "A3f-plus")) else arm
+
+
 def system_prompt(arm: str, phase: str) -> str:
-    return (STORY if phase == "story" else QUESTION)[arm]
+    return (STORY if phase == "story" else QUESTION)[prompt_arm(arm)]
 
 
 def prompt_shas() -> Dict[str, Dict[str, str]]:
