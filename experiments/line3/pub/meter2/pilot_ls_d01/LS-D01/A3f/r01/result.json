@@ -1,0 +1,2035 @@
+{
+ "answer_version": "memanswer.v17",
+ "answers": {
+  "by_kind": {
+   "absent": {
+    "absent_admit": 8,
+    "abstain": 0,
+    "confident_wrong": 0,
+    "n": 8,
+    "over_broad": 0,
+    "right": 0
+   },
+   "contested": {
+    "absent_admit": 0,
+    "abstain": 2,
+    "confident_wrong": 4,
+    "n": 12,
+    "over_broad": 0,
+    "right": 6
+   },
+   "present": {
+    "absent_admit": 0,
+    "abstain": 9,
+    "confident_wrong": 0,
+    "n": 12,
+    "over_broad": 0,
+    "right": 3
+   },
+   "updated": {
+    "absent_admit": 0,
+    "abstain": 6,
+    "confident_wrong": 2,
+    "n": 8,
+    "over_broad": 0,
+    "right": 0
+   }
+  },
+  "right_per_mille": 225,
+  "total": {
+   "absent_admit": 8,
+   "abstain": 17,
+   "confident_wrong": 6,
+   "false_contested": 2,
+   "n": 40,
+   "over_broad": 0,
+   "right": 9
+  }
+ },
+ "arm": "A3f",
+ "arm_label": "flat table (no geometry)",
+ "budget": 6000,
+ "bundle": "m6d",
+ "checkpoints": [
+  {
+   "after_session": 3,
+   "answers": [
+    {
+     "abstain_type": "no_record",
+     "answer": {
+      "kind": "none",
+      "values": []
+     },
+     "answer_kind": "none",
+     "answer_status": "abstained",
+     "api_calls": 7,
+     "budget_cuts": 0,
+     "budget_omitted": 0,
+     "capped": false,
+     "class": "abstain",
+     "ended": "closed",
+     "false_contested": false,
+     "form": "rephrased",
+     "gold": "413",
+     "index": 8,
+     "kind": "present",
+     "q": "職員休憩室へつなぐ内線は何番ですか？",
+     "tool_calls": 10,
+     "usage": {
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "calls": 7,
+      "input_tokens": 44707,
+      "output_tokens": 577
+     }
+    },
+    {
+     "abstain_type": "contested",
+     "answer": {
+      "kind": "contested",
+      "values": [
+       "2032年10月2日",
+       "2032年10月4日"
+      ]
+     },
+     "answer_kind": "contested",
+     "answer_status": "abstained",
+     "api_calls": 6,
+     "budget_cuts": 0,
+     "budget_omitted": 0,
+     "capped": false,
+     "class": "confident_wrong",
+     "ended": "closed",
+     "false_contested": true,
+     "form": "same",
+     "gold": "2032年10月4日",
+     "index": 7,
+     "kind": "updated",
+     "q": "認証端末の設置日は何日ですか？",
+     "tool_calls": 6,
+     "usage": {
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "calls": 6,
+      "input_tokens": 36895,
+      "output_tokens": 269
+     }
+    },
+    {
+     "abstain_type": "contested",
+     "answer": {
+      "kind": "contested",
+      "values": [
+       "2032年9月22日",
+       "2032年9月24日"
+      ]
+     },
+     "answer_kind": "contested",
+     "answer_status": "abstained",
+     "api_calls": 5,
+     "budget_cuts": 0,
+     "budget_omitted": 0,
+     "capped": false,
+     "class": "confident_wrong",
+     "ended": "closed",
+     "false_contested": true,
+     "form": "rephrased",
+     "gold": "2032年9月24日",
+     "index": 3,
+     "kind": "updated",
+     "q": "棚ラベルの確認作業はいつまでですか？",
+     "tool_calls": 6,
+     "usage": {
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "calls": 5,
+      "input_tokens": 30398,
+      "output_tokens": 281
+     }
+    },
+    {
+     "abstain_type": "contested",
+     "answer": {
+      "kind": "contested",
+      "values": [
+       "120人",
+       "96人"
+      ]
+     },
+     "answer_kind": "contested",
+     "answer_status": "abstained",
+     "api_calls": 4,
+     "budget_cuts": 0,
+     "budget_omitted": 0,
+     "capped": false,
+     "class": "right",
+     "ended": "closed",
+     "false_contested": false,
+     "form": "rephrased",
+     "gold": "矛盾: 120人 と 96人",
+     "index": 9,
+     "kind": "contested",
+     "q": "大閲覧室でイベントを受け入れる人数は何人ですか？",
+     "tool_calls": 6,
+     "usage": {
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "calls": 4,
+      "input_tokens": 23028,
+      "output_tokens": 325
+     }
+    },
+    {
+     "abstain_type": "no_record",
+     "answer": {
+      "kind": "none",
+      "values": []
+     },
+     "answer_kind": "none",
+     "answer_status": "abstained",
+     "api_calls": 15,
+     "budget_cuts": 9,
+     "budget_omitted": 4128,
+     "capped": false,
+     "class": "absent_admit",
+     "ended": "closed",
+     "false_contested": false,
+     "form": "absent",
+     "gold": "記録なし",
+     "index": 6,
+     "kind": "absent",
+     "q": "寄贈資料に押す蔵書印は何人で作業しますか？",
+     "tool_calls": 23,
+     "usage": {
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "calls": 15,
+      "input_tokens": 122014,
+      "output_tokens": 1317
+     }
+    },
+    {
+     "abstain_type": "contested",
+     "answer": {
+      "kind": "contested",
+      "values": [
+       "2032年10月15日",
+       "2032年10月16日"
+      ]
+     },
+     "answer_kind": "contested",
+     "answer_status": "abstained",
+     "api_calls": 8,
+     "budget_cuts": 0,
+     "budget_omitted": 0,
+     "capped": false,
+     "class": "right",
+     "ended": "closed",
+     "false_contested": false,
+     "form": "rephrased",
+     "gold": "矛盾: 2032年10月15日 と 2032年10月16日",
+     "index": 5,
+     "kind": "contested",
+     "q": "最初の蔵書の搬出日はいつですか？",
+     "tool_calls": 9,
+     "usage": {
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "calls": 8,
+      "input_tokens": 51878,
+      "output_tokens": 451
+     }
+    },
+    {
+     "abstain_type": "no_record",
+     "answer": {
+      "kind": "none",
+      "values": []
+     },
+     "answer_kind": "none",
+     "answer_status": "abstained",
+     "api_calls": 19,
+     "budget_cuts": 13,
+     "budget_omitted": 6817,
+     "capped": false,
+     "class": "absent_admit",
+     "ended": "closed",
+     "false_contested": false,
+     "form": "absent",
+     "gold": "記録なし",
+     "index": 2,
+     "kind": "absent",
+     "q": "屋外返却ポストの夜間点検を誰が受け持ちますか？",
+     "tool_calls": 26,
+     "usage": {
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "calls": 19,
+      "input_tokens": 165379,
+      "output_tokens": 1412
+     }
+    },
+    {
+     "abstain_type": "contested",
+     "answer": {
+      "kind": "contested",
+      "values": []
+     },
+     "answer_kind": "contested",
+     "answer_status": "abstained",
+     "api_calls": 8,
+     "budget_cuts": 0,
+     "budget_omitted": 0,
+     "capped": false,
+     "class": "confident_wrong",
+     "ended": "closed",
+     "false_contested": false,
+     "form": "rephrased",
+     "gold": "矛盾: 2032年11月7日 と 2032年11月8日",
+     "index": 1,
+     "kind": "contested",
+     "q": "新館を開ける日はいつですか？",
+     "tool_calls": 8,
+     "usage": {
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "calls": 8,
+      "input_tokens": 49364,
+      "output_tokens": 486
+     }
+    },
+    {
+     "abstain_type": "no_record",
+     "answer": {
+      "kind": "none",
+      "values": []
+     },
+     "answer_kind": "none",
+     "answer_status": "abstained",
+     "api_calls": 7,
+     "budget_cuts": 0,
+     "budget_omitted": 0,
+     "capped": false,
+     "class": "abstain",
+     "ended": "closed",
+     "false_contested": false,
+     "form": "rephrased",
+     "gold": "6時40分",
+     "index": 4,
+     "kind": "present",
+     "q": "北側搬入口の鍵は何時に開けますか？",
+     "tool_calls": 8,
+     "usage": {
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "calls": 7,
+      "input_tokens": 43253,
+      "output_tokens": 509
+     }
+    },
+    {
+     "abstain_type": null,
+     "answer": {
+      "kind": "value",
+      "values": [
+       "2032年10月3日"
+      ]
+     },
+     "answer_kind": "value",
+     "answer_status": "emitted",
+     "api_calls": 5,
+     "budget_cuts": 0,
+     "budget_omitted": 0,
+     "capped": false,
+     "class": "right",
+     "ended": "closed",
+     "false_contested": false,
+     "form": "same",
+     "gold": "2032年10月3日",
+     "index": 0,
+     "kind": "present",
+     "q": "認証端末の検収日はいつですか？",
+     "tool_calls": 5,
+     "usage": {
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "calls": 5,
+      "input_tokens": 27329,
+      "output_tokens": 326
+     }
+    }
+   ],
+   "checkpoint": 0,
+   "n": 10,
+   "score": {
+    "absent": {
+     "absent_admit": 2,
+     "abstain": 0,
+     "confident_wrong": 0,
+     "n": 2,
+     "over_broad": 0,
+     "right": 0
+    },
+    "contested": {
+     "absent_admit": 0,
+     "abstain": 0,
+     "confident_wrong": 1,
+     "n": 3,
+     "over_broad": 0,
+     "right": 2
+    },
+    "present": {
+     "absent_admit": 0,
+     "abstain": 2,
+     "confident_wrong": 0,
+     "n": 3,
+     "over_broad": 0,
+     "right": 1
+    },
+    "right_rate": 300,
+    "total": {
+     "absent_admit": 2,
+     "abstain": 2,
+     "confident_wrong": 3,
+     "false_contested": 2,
+     "n": 10,
+     "over_broad": 0,
+     "right": 3
+    },
+    "updated": {
+     "absent_admit": 0,
+     "abstain": 0,
+     "confident_wrong": 2,
+     "n": 2,
+     "over_broad": 0,
+     "right": 0
+    }
+   }
+  },
+  {
+   "after_session": 7,
+   "answers": [
+    {
+     "abstain_type": "no_record",
+     "answer": {
+      "kind": "none",
+      "values": []
+     },
+     "answer_kind": "none",
+     "answer_status": "abstained",
+     "api_calls": 10,
+     "budget_cuts": 2,
+     "budget_omitted": 281,
+     "capped": false,
+     "class": "abstain",
+     "ended": "closed",
+     "false_contested": false,
+     "form": "rephrased",
+     "gold": "2032年10月30日",
+     "index": 13,
+     "kind": "updated",
+     "q": "本の庭開きの会場準備は何日ですか？",
+     "tool_calls": 18,
+     "usage": {
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "calls": 10,
+      "input_tokens": 71217,
+      "output_tokens": 1035
+     }
+    },
+    {
+     "abstain_type": null,
+     "answer": {
+      "kind": "value",
+      "values": [
+       "8時15分"
+      ]
+     },
+     "answer_kind": "value",
+     "answer_status": "emitted",
+     "api_calls": 5,
+     "budget_cuts": 0,
+     "budget_omitted": 0,
+     "capped": false,
+     "class": "confident_wrong",
+     "ended": "closed",
+     "false_contested": false,
+     "form": "same",
+     "gold": "矛盾: 8時15分 と 8時30分",
+     "index": 19,
+     "kind": "contested",
+     "q": "早番の出勤時刻は何時ですか？",
+     "tool_calls": 5,
+     "usage": {
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "calls": 5,
+      "input_tokens": 27227,
+      "output_tokens": 320
+     }
+    },
+    {
+     "abstain_type": "contested",
+     "answer": {
+      "kind": "contested",
+      "values": [
+       "2032年10月31日",
+       "2032年11月1日"
+      ]
+     },
+     "answer_kind": "contested",
+     "answer_status": "abstained",
+     "api_calls": 3,
+     "budget_cuts": 0,
+     "budget_omitted": 0,
+     "capped": false,
+     "class": "right",
+     "ended": "closed",
+     "false_contested": false,
+     "form": "rephrased",
+     "gold": "矛盾: 2032年10月31日 と 2032年11月1日",
+     "index": 11,
+     "kind": "contested",
+     "q": "珪戸分室を閉じるのは何日ですか？",
+     "tool_calls": 4,
+     "usage": {
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "calls": 3,
+      "input_tokens": 16582,
+      "output_tokens": 239
+     }
+    },
+    {
+     "abstain_type": "no_record",
+     "answer": {
+      "kind": "none",
+      "values": []
+     },
+     "answer_kind": "none",
+     "answer_status": "abstained",
+     "api_calls": 7,
+     "budget_cuts": 0,
+     "budget_omitted": 0,
+     "capped": false,
+     "class": "abstain",
+     "ended": "closed",
+     "false_contested": false,
+     "form": "rephrased",
+     "gold": "26枚",
+     "index": 18,
+     "kind": "present",
+     "q": "連絡カードは何枚配布しますか？",
+     "tool_calls": 8,
+     "usage": {
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "calls": 7,
+      "input_tokens": 42668,
+      "output_tokens": 497
+     }
+    },
+    {
+     "abstain_type": "no_record",
+     "answer": {
+      "kind": "none",
+      "values": []
+     },
+     "answer_kind": "none",
+     "answer_status": "abstained",
+     "api_calls": 13,
+     "budget_cuts": 4,
+     "budget_omitted": 2215,
+     "capped": false,
+     "class": "abstain",
+     "ended": "closed",
+     "false_contested": false,
+     "form": "rephrased",
+     "gold": "矛盾: 486,000円 と 512,000円",
+     "index": 15,
+     "kind": "contested",
+     "q": "台車調達にいくら計上していますか？",
+     "tool_calls": 19,
+     "usage": {
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "calls": 13,
+      "input_tokens": 98371,
+      "output_tokens": 1014
+     }
+    },
+    {
+     "abstain_type": null,
+     "answer": {
+      "kind": "value",
+      "values": [
+       "24名"
+      ]
+     },
+     "answer_kind": "value",
+     "answer_status": "emitted",
+     "api_calls": 5,
+     "budget_cuts": 0,
+     "budget_omitted": 0,
+     "capped": false,
+     "class": "right",
+     "ended": "closed",
+     "false_contested": false,
+     "form": "same",
+     "gold": "24名",
+     "index": 14,
+     "kind": "present",
+     "q": "イベント午後枠の定員は何人ですか？",
+     "tool_calls": 5,
+     "usage": {
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "calls": 5,
+      "input_tokens": 27108,
+      "output_tokens": 318
+     }
+    },
+    {
+     "abstain_type": "no_record",
+     "answer": {
+      "kind": "none",
+      "values": []
+     },
+     "answer_kind": "none",
+     "answer_status": "abstained",
+     "api_calls": 9,
+     "budget_cuts": 0,
+     "budget_omitted": 0,
+     "capped": false,
+     "class": "abstain",
+     "ended": "closed",
+     "false_contested": false,
+     "form": "rephrased",
+     "gold": "340箱",
+     "index": 10,
+     "kind": "present",
+     "q": "一般書の移送箱は何箱ですか？",
+     "tool_calls": 10,
+     "usage": {
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "calls": 9,
+      "input_tokens": 56573,
+      "output_tokens": 607
+     }
+    },
+    {
+     "abstain_type": "no_record",
+     "answer": {
+      "kind": "none",
+      "values": []
+     },
+     "answer_kind": "none",
+     "answer_status": "abstained",
+     "api_calls": 10,
+     "budget_cuts": 0,
+     "budget_omitted": 0,
+     "capped": false,
+     "class": "absent_admit",
+     "ended": "closed",
+     "false_contested": false,
+     "form": "absent",
+     "gold": "記録なし",
+     "index": 12,
+     "kind": "absent",
+     "q": "携帯型拡大鏡の手入れは誰が受け持ちますか？",
+     "tool_calls": 12,
+     "usage": {
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "calls": 10,
+      "input_tokens": 67311,
+      "output_tokens": 694
+     }
+    },
+    {
+     "abstain_type": "no_record",
+     "answer": {
+      "kind": "none",
+      "values": []
+     },
+     "answer_kind": "none",
+     "answer_status": "abstained",
+     "api_calls": 7,
+     "budget_cuts": 0,
+     "budget_omitted": 0,
+     "capped": false,
+     "class": "abstain",
+     "ended": "closed",
+     "false_contested": false,
+     "form": "rephrased",
+     "gold": "2032年10月22日",
+     "index": 17,
+     "kind": "updated",
+     "q": "参加希望を送る期限は何日ですか？",
+     "tool_calls": 12,
+     "usage": {
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "calls": 7,
+      "input_tokens": 43908,
+      "output_tokens": 673
+     }
+    },
+    {
+     "abstain_type": "no_record",
+     "answer": {
+      "kind": "none",
+      "values": []
+     },
+     "answer_kind": "none",
+     "answer_status": "abstained",
+     "api_calls": 16,
+     "budget_cuts": 9,
+     "budget_omitted": 4358,
+     "capped": false,
+     "class": "absent_admit",
+     "ended": "closed",
+     "false_contested": false,
+     "form": "absent",
+     "gold": "記録なし",
+     "index": 16,
+     "kind": "absent",
+     "q": "読み聞かせ代読補助には何人を置きますか？",
+     "tool_calls": 23,
+     "usage": {
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "calls": 16,
+      "input_tokens": 127127,
+      "output_tokens": 1247
+     }
+    }
+   ],
+   "checkpoint": 1,
+   "n": 10,
+   "score": {
+    "absent": {
+     "absent_admit": 2,
+     "abstain": 0,
+     "confident_wrong": 0,
+     "n": 2,
+     "over_broad": 0,
+     "right": 0
+    },
+    "contested": {
+     "absent_admit": 0,
+     "abstain": 1,
+     "confident_wrong": 1,
+     "n": 3,
+     "over_broad": 0,
+     "right": 1
+    },
+    "present": {
+     "absent_admit": 0,
+     "abstain": 2,
+     "confident_wrong": 0,
+     "n": 3,
+     "over_broad": 0,
+     "right": 1
+    },
+    "right_rate": 200,
+    "total": {
+     "absent_admit": 2,
+     "abstain": 5,
+     "confident_wrong": 1,
+     "false_contested": 0,
+     "n": 10,
+     "over_broad": 0,
+     "right": 2
+    },
+    "updated": {
+     "absent_admit": 0,
+     "abstain": 2,
+     "confident_wrong": 0,
+     "n": 2,
+     "over_broad": 0,
+     "right": 0
+    }
+   }
+  },
+  {
+   "after_session": 11,
+   "answers": [
+    {
+     "abstain_type": "no_record",
+     "answer": {
+      "kind": "none",
+      "values": []
+     },
+     "answer_kind": "none",
+     "answer_status": "abstained",
+     "api_calls": 8,
+     "budget_cuts": 0,
+     "budget_omitted": 0,
+     "capped": false,
+     "class": "abstain",
+     "ended": "closed",
+     "false_contested": false,
+     "form": "same",
+     "gold": "1,400部",
+     "index": 24,
+     "kind": "present",
+     "q": "広報チラシの印刷部数はいくつですか？",
+     "tool_calls": 8,
+     "usage": {
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "calls": 8,
+      "input_tokens": 48334,
+      "output_tokens": 390
+     }
+    },
+    {
+     "abstain_type": "no_record",
+     "answer": {
+      "kind": "none",
+      "values": []
+     },
+     "answer_kind": "none",
+     "answer_status": "abstained",
+     "api_calls": 7,
+     "budget_cuts": 0,
+     "budget_omitted": 0,
+     "capped": false,
+     "class": "abstain",
+     "ended": "closed",
+     "false_contested": false,
+     "form": "rephrased",
+     "gold": "5段",
+     "index": 20,
+     "kind": "present",
+     "q": "児童コーナーの書架は何段ですか？",
+     "tool_calls": 8,
+     "usage": {
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "calls": 7,
+      "input_tokens": 42348,
+      "output_tokens": 494
+     }
+    },
+    {
+     "abstain_type": "no_record",
+     "answer": {
+      "kind": "none",
+      "values": []
+     },
+     "answer_kind": "none",
+     "answer_status": "abstained",
+     "api_calls": 7,
+     "budget_cuts": 0,
+     "budget_omitted": 0,
+     "capped": false,
+     "class": "abstain",
+     "ended": "closed",
+     "false_contested": false,
+     "form": "rephrased",
+     "gold": "矛盾: 2032年10月26日 と 2032年10月24日",
+     "index": 21,
+     "kind": "contested",
+     "q": "西側看板の取り付けは何日に予定されていますか？",
+     "tool_calls": 12,
+     "usage": {
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "calls": 7,
+      "input_tokens": 42648,
+      "output_tokens": 701
+     }
+    },
+    {
+     "abstain_type": "no_record",
+     "answer": {
+      "kind": "none",
+      "values": []
+     },
+     "answer_kind": "none",
+     "answer_status": "abstained",
+     "api_calls": 19,
+     "budget_cuts": 9,
+     "budget_omitted": 4085,
+     "capped": false,
+     "class": "absent_admit",
+     "ended": "closed",
+     "false_contested": false,
+     "form": "absent",
+     "gold": "記録なし",
+     "index": 26,
+     "kind": "absent",
+     "q": "ボランティア用昼食は何食用意しますか？",
+     "tool_calls": 26,
+     "usage": {
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "calls": 19,
+      "input_tokens": 160864,
+      "output_tokens": 1361
+     }
+    },
+    {
+     "abstain_type": "no_record",
+     "answer": {
+      "kind": "none",
+      "values": []
+     },
+     "answer_kind": "none",
+     "answer_status": "abstained",
+     "api_calls": 6,
+     "budget_cuts": 0,
+     "budget_omitted": 0,
+     "capped": false,
+     "class": "abstain",
+     "ended": "closed",
+     "false_contested": false,
+     "form": "rephrased",
+     "gold": "3台",
+     "index": 28,
+     "kind": "present",
+     "q": "停電用に予備する蓄電池はいくつありますか？",
+     "tool_calls": 7,
+     "usage": {
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "calls": 6,
+      "input_tokens": 35267,
+      "output_tokens": 397
+     }
+    },
+    {
+     "abstain_type": "contested",
+     "answer": {
+      "kind": "contested",
+      "values": []
+     },
+     "answer_kind": "contested",
+     "answer_status": "abstained",
+     "api_calls": 3,
+     "budget_cuts": 0,
+     "budget_omitted": 0,
+     "capped": false,
+     "class": "confident_wrong",
+     "ended": "closed",
+     "false_contested": false,
+     "form": "rephrased",
+     "gold": "矛盾: 19時00分 と 20時00分",
+     "index": 25,
+     "kind": "contested",
+     "q": "貸出系を止めるのは何時ですか？",
+     "tool_calls": 4,
+     "usage": {
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "calls": 3,
+      "input_tokens": 15810,
+      "output_tokens": 175
+     }
+    },
+    {
+     "abstain_type": "no_record",
+     "answer": {
+      "kind": "none",
+      "values": []
+     },
+     "answer_kind": "none",
+     "answer_status": "abstained",
+     "api_calls": 20,
+     "budget_cuts": 12,
+     "budget_omitted": 6165,
+     "capped": false,
+     "class": "absent_admit",
+     "ended": "closed",
+     "false_contested": false,
+     "form": "absent",
+     "gold": "記録なし",
+     "index": 22,
+     "kind": "absent",
+     "q": "読書テラスの雨天時はどの風速で閉めますか？",
+     "tool_calls": 28,
+     "usage": {
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "calls": 20,
+      "input_tokens": 171929,
+      "output_tokens": 1508
+     }
+    },
+    {
+     "abstain_type": "contested",
+     "answer": {
+      "kind": "contested",
+      "values": [
+       "研修室藍",
+       "会議室C"
+      ]
+     },
+     "answer_kind": "contested",
+     "answer_status": "abstained",
+     "api_calls": 4,
+     "budget_cuts": 0,
+     "budget_omitted": 0,
+     "capped": false,
+     "class": "right",
+     "ended": "closed",
+     "false_contested": false,
+     "form": "rephrased",
+     "gold": "矛盾: 研修室藍 と 会議室C",
+     "index": 29,
+     "kind": "contested",
+     "q": "ボランティア説明会はどの部屋で開きますか？",
+     "tool_calls": 5,
+     "usage": {
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "calls": 4,
+      "input_tokens": 22468,
+      "output_tokens": 228
+     }
+    },
+    {
+     "abstain_type": null,
+     "answer": {
+      "kind": "none",
+      "values": []
+     },
+     "answer_kind": "none",
+     "answer_status": "open",
+     "api_calls": 40,
+     "budget_cuts": 29,
+     "budget_omitted": 14159,
+     "capped": false,
+     "class": "abstain",
+     "ended": "max_turns",
+     "false_contested": false,
+     "form": "rephrased",
+     "gold": "2032年10月19日",
+     "index": 27,
+     "kind": "updated",
+     "q": "展示写真の許可確認を終える日を教えてください？",
+     "tool_calls": 43,
+     "usage": {
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "calls": 40,
+      "input_tokens": 371289,
+      "output_tokens": 2166
+     }
+    },
+    {
+     "abstain_type": "no_record",
+     "answer": {
+      "kind": "none",
+      "values": []
+     },
+     "answer_kind": "none",
+     "answer_status": "abstained",
+     "api_calls": 4,
+     "budget_cuts": 0,
+     "budget_omitted": 0,
+     "capped": false,
+     "class": "abstain",
+     "ended": "closed",
+     "false_contested": false,
+     "form": "rephrased",
+     "gold": "120分",
+     "index": 23,
+     "kind": "updated",
+     "q": "新任向け研修は何分で組みますか？",
+     "tool_calls": 5,
+     "usage": {
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "calls": 4,
+      "input_tokens": 21730,
+      "output_tokens": 253
+     }
+    }
+   ],
+   "checkpoint": 2,
+   "n": 10,
+   "score": {
+    "absent": {
+     "absent_admit": 2,
+     "abstain": 0,
+     "confident_wrong": 0,
+     "n": 2,
+     "over_broad": 0,
+     "right": 0
+    },
+    "contested": {
+     "absent_admit": 0,
+     "abstain": 1,
+     "confident_wrong": 1,
+     "n": 3,
+     "over_broad": 0,
+     "right": 1
+    },
+    "present": {
+     "absent_admit": 0,
+     "abstain": 3,
+     "confident_wrong": 0,
+     "n": 3,
+     "over_broad": 0,
+     "right": 0
+    },
+    "right_rate": 100,
+    "total": {
+     "absent_admit": 2,
+     "abstain": 6,
+     "confident_wrong": 1,
+     "false_contested": 0,
+     "n": 10,
+     "over_broad": 0,
+     "right": 1
+    },
+    "updated": {
+     "absent_admit": 0,
+     "abstain": 2,
+     "confident_wrong": 0,
+     "n": 2,
+     "over_broad": 0,
+     "right": 0
+    }
+   }
+  },
+  {
+   "after_session": 15,
+   "answers": [
+    {
+     "abstain_type": "no_record",
+     "answer": {
+      "kind": "none",
+      "values": []
+     },
+     "answer_kind": "none",
+     "answer_status": "abstained",
+     "api_calls": 8,
+     "budget_cuts": 0,
+     "budget_omitted": 0,
+     "capped": false,
+     "class": "abstain",
+     "ended": "closed",
+     "false_contested": false,
+     "form": "rephrased",
+     "gold": "22台",
+     "index": 33,
+     "kind": "updated",
+     "q": "増便分として用意する台車は何台ですか？",
+     "tool_calls": 13,
+     "usage": {
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "calls": 8,
+      "input_tokens": 54832,
+      "output_tokens": 671
+     }
+    },
+    {
+     "abstain_type": "no_record",
+     "answer": {
+      "kind": "none",
+      "values": []
+     },
+     "answer_kind": "none",
+     "answer_status": "abstained",
+     "api_calls": 8,
+     "budget_cuts": 0,
+     "budget_omitted": 0,
+     "capped": false,
+     "class": "abstain",
+     "ended": "closed",
+     "false_contested": false,
+     "form": "rephrased",
+     "gold": "若草色",
+     "index": 38,
+     "kind": "present",
+     "q": "優先席を示す色は何ですか？",
+     "tool_calls": 9,
+     "usage": {
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "calls": 8,
+      "input_tokens": 49376,
+      "output_tokens": 504
+     }
+    },
+    {
+     "abstain_type": "no_record",
+     "answer": {
+      "kind": "none",
+      "values": []
+     },
+     "answer_kind": "none",
+     "answer_status": "abstained",
+     "api_calls": 15,
+     "budget_cuts": 10,
+     "budget_omitted": 6364,
+     "capped": false,
+     "class": "abstain",
+     "ended": "closed",
+     "false_contested": false,
+     "form": "rephrased",
+     "gold": "17時50分",
+     "index": 37,
+     "kind": "updated",
+     "q": "玄関照明の動作確認は何時に行いますか？",
+     "tool_calls": 20,
+     "usage": {
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "calls": 15,
+      "input_tokens": 124432,
+      "output_tokens": 1013
+     }
+    },
+    {
+     "abstain_type": "contested",
+     "answer": {
+      "kind": "contested",
+      "values": [
+       "7時20分",
+       "7時35分"
+      ]
+     },
+     "answer_kind": "contested",
+     "answer_status": "abstained",
+     "api_calls": 4,
+     "budget_cuts": 0,
+     "budget_omitted": 0,
+     "capped": false,
+     "class": "right",
+     "ended": "closed",
+     "false_contested": false,
+     "form": "rephrased",
+     "gold": "矛盾: 7時20分 と 7時35分",
+     "index": 35,
+     "kind": "contested",
+     "q": "書架を運ぶ便の出発予定は何時ですか？",
+     "tool_calls": 5,
+     "usage": {
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "calls": 4,
+      "input_tokens": 22579,
+      "output_tokens": 228
+     }
+    },
+    {
+     "abstain_type": "no_record",
+     "answer": {
+      "kind": "none",
+      "values": []
+     },
+     "answer_kind": "none",
+     "answer_status": "abstained",
+     "api_calls": 8,
+     "budget_cuts": 0,
+     "budget_omitted": 0,
+     "capped": false,
+     "class": "abstain",
+     "ended": "closed",
+     "false_contested": false,
+     "form": "rephrased",
+     "gold": "18時40分",
+     "index": 30,
+     "kind": "present",
+     "q": "蔵書検索画面の切替は何時に始まりますか？",
+     "tool_calls": 10,
+     "usage": {
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "calls": 8,
+      "input_tokens": 54580,
+      "output_tokens": 548
+     }
+    },
+    {
+     "abstain_type": "contested",
+     "answer": {
+      "kind": "contested",
+      "values": [
+       "45",
+       "48"
+      ]
+     },
+     "answer_kind": "contested",
+     "answer_status": "abstained",
+     "api_calls": 4,
+     "budget_cuts": 0,
+     "budget_omitted": 0,
+     "capped": false,
+     "class": "confident_wrong",
+     "ended": "closed",
+     "false_contested": false,
+     "form": "rephrased",
+     "gold": "矛盾: 45% と 48%",
+     "index": 31,
+     "kind": "contested",
+     "q": "郷土資料箱に保つ湿度の上限を教えてください？",
+     "tool_calls": 4,
+     "usage": {
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "calls": 4,
+      "input_tokens": 24257,
+      "output_tokens": 238
+     }
+    },
+    {
+     "abstain_type": "no_record",
+     "answer": {
+      "kind": "none",
+      "values": []
+     },
+     "answer_kind": "none",
+     "answer_status": "abstained",
+     "api_calls": 17,
+     "budget_cuts": 10,
+     "budget_omitted": 6025,
+     "capped": false,
+     "class": "absent_admit",
+     "ended": "closed",
+     "false_contested": false,
+     "form": "absent",
+     "gold": "記録なし",
+     "index": 36,
+     "kind": "absent",
+     "q": "遅番巡回の終了確認は誰が署名しますか？",
+     "tool_calls": 21,
+     "usage": {
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "calls": 17,
+      "input_tokens": 141507,
+      "output_tokens": 1138
+     }
+    },
+    {
+     "abstain_type": "no_record",
+     "answer": {
+      "kind": "none",
+      "values": []
+     },
+     "answer_kind": "none",
+     "answer_status": "abstained",
+     "api_calls": 18,
+     "budget_cuts": 10,
+     "budget_omitted": 3598,
+     "capped": false,
+     "class": "absent_admit",
+     "ended": "closed",
+     "false_contested": false,
+     "form": "absent",
+     "gold": "記録なし",
+     "index": 32,
+     "kind": "absent",
+     "q": "展示窓の照明は何ルクスまで上げますか？",
+     "tool_calls": 26,
+     "usage": {
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "calls": 18,
+      "input_tokens": 149553,
+      "output_tokens": 1412
+     }
+    },
+    {
+     "abstain_type": "contested",
+     "answer": {
+      "kind": "contested",
+      "values": [
+       "9時40分",
+       "10時00分"
+      ]
+     },
+     "answer_kind": "contested",
+     "answer_status": "abstained",
+     "api_calls": 6,
+     "budget_cuts": 0,
+     "budget_omitted": 0,
+     "capped": false,
+     "class": "right",
+     "ended": "closed",
+     "false_contested": false,
+     "form": "rephrased",
+     "gold": "矛盾: 9時40分 と 10時00分",
+     "index": 39,
+     "kind": "contested",
+     "q": "開館式でリボンを切る時刻は何時ですか？",
+     "tool_calls": 8,
+     "usage": {
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "calls": 6,
+      "input_tokens": 36751,
+      "output_tokens": 451
+     }
+    },
+    {
+     "abstain_type": null,
+     "answer": {
+      "kind": "value",
+      "values": [
+       "3年"
+      ]
+     },
+     "answer_kind": "value",
+     "answer_status": "emitted",
+     "api_calls": 5,
+     "budget_cuts": 0,
+     "budget_omitted": 0,
+     "capped": false,
+     "class": "right",
+     "ended": "closed",
+     "false_contested": false,
+     "form": "same",
+     "gold": "3年",
+     "index": 34,
+     "kind": "present",
+     "q": "新館カードの有効期間は何年ですか？",
+     "tool_calls": 5,
+     "usage": {
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "calls": 5,
+      "input_tokens": 27057,
+      "output_tokens": 317
+     }
+    }
+   ],
+   "checkpoint": 3,
+   "n": 10,
+   "score": {
+    "absent": {
+     "absent_admit": 2,
+     "abstain": 0,
+     "confident_wrong": 0,
+     "n": 2,
+     "over_broad": 0,
+     "right": 0
+    },
+    "contested": {
+     "absent_admit": 0,
+     "abstain": 0,
+     "confident_wrong": 1,
+     "n": 3,
+     "over_broad": 0,
+     "right": 2
+    },
+    "present": {
+     "absent_admit": 0,
+     "abstain": 2,
+     "confident_wrong": 0,
+     "n": 3,
+     "over_broad": 0,
+     "right": 1
+    },
+    "right_rate": 300,
+    "total": {
+     "absent_admit": 2,
+     "abstain": 4,
+     "confident_wrong": 1,
+     "false_contested": 0,
+     "n": 10,
+     "over_broad": 0,
+     "right": 3
+    },
+    "updated": {
+     "absent_admit": 0,
+     "abstain": 2,
+     "confident_wrong": 0,
+     "n": 2,
+     "over_broad": 0,
+     "right": 0
+    }
+   }
+  }
+ ],
+ "checkpoints_run": [
+  0,
+  1,
+  2,
+  3
+ ],
+ "client": "api",
+ "cost": {
+  "api_calls": 723,
+  "budget_cuts": 117,
+  "budget_omitted_chars": 58195,
+  "input_tokens": 6228687,
+  "output_tokens": 60397,
+  "question_api_calls": 380,
+  "question_input_tokens": 2789948,
+  "reports_forced": 0,
+  "reports_missing": 0,
+  "story_input_tokens": 3438739,
+  "tool_calls": 1053,
+  "turns": 160,
+  "turns_capped": 0,
+  "turns_without_report": 0
+ },
+ "ended": "complete",
+ "last_session": 15,
+ "model": "claude-haiku-5-5",
+ "notes_counts": {
+  "ENUMERATION": 30,
+  "REVERSAL": 2,
+  "REVERSAL_X": 2,
+  "SAME_QUESTION": 6,
+  "SAME_SEAT": 7,
+  "UPDATE": 8
+ },
+ "plants": {
+  "contradiction": {
+   "any": 6,
+   "model": 6,
+   "n": 12,
+   "structure": 5
+  },
+  "false": {
+   "model_false_pairs": 0,
+   "structure_list_trap": 0,
+   "structure_unmatched": 2
+  },
+  "reversal": {
+   "any": 2,
+   "model": 2,
+   "n": 4,
+   "structure": 2
+  },
+  "update": {
+   "any": 8,
+   "model": 0,
+   "n": 8,
+   "structure": 8
+  }
+ },
+ "profile": "mem.v4",
+ "prompts": {
+  "question": "e17b2ce7b6ddf94f5dece34b57926b92ea3eee828b2e29fde0f5c8cf6fa7fc56",
+  "story": "16cbbaccd41a60fbb53ab4353774bcc556d310dfa3e2d37e1912126a607af683"
+ },
+ "redacted": false,
+ "repeat": 1,
+ "reports": {
+  "pairs": [
+   [
+    "1-4",
+    "3-2"
+   ],
+   [
+    "1-5",
+    "6-2"
+   ],
+   [
+    "1-9",
+    "2-9"
+   ],
+   [
+    "11-3",
+    "15-2"
+   ],
+   [
+    "12-3",
+    "16-2"
+   ],
+   [
+    "4-2",
+    "4-3"
+   ],
+   [
+    "5-9",
+    "6-9"
+   ],
+   [
+    "8-3",
+    "10-2"
+   ]
+  ],
+  "supersedes": 0
+ },
+ "schema": "meter2-1",
+ "sessions": [
+  {
+   "api_calls": 21,
+   "budget_cuts": 0,
+   "budget_omitted_chars": 0,
+   "budget_rows_in_ledger": 0,
+   "chars_by_tool": {
+    "declare_topic": 237,
+    "write": 1223
+   },
+   "committed": true,
+   "ended": "complete",
+   "ledger": "store/sessions/s0001",
+   "messages": 10,
+   "reports_missing": [],
+   "run_id": "s0001",
+   "session": 1,
+   "tool_calls": 23,
+   "turns_capped": [],
+   "turns_forced": [],
+   "turns_without_report": [],
+   "usage": {
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "calls": 21,
+    "input_tokens": 168377,
+    "output_tokens": 1321
+   }
+  },
+  {
+   "api_calls": 13,
+   "budget_cuts": 0,
+   "budget_omitted_chars": 0,
+   "budget_rows_in_ledger": 0,
+   "chars_by_tool": {
+    "declare_topic": 238,
+    "write": 658
+   },
+   "committed": true,
+   "ended": "complete",
+   "ledger": "store/sessions/s0002",
+   "messages": 10,
+   "reports_missing": [],
+   "run_id": "s0002",
+   "session": 2,
+   "tool_calls": 17,
+   "turns_capped": [],
+   "turns_forced": [],
+   "turns_without_report": [],
+   "usage": {
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "calls": 13,
+    "input_tokens": 96546,
+    "output_tokens": 1018
+   }
+  },
+  {
+   "api_calls": 31,
+   "budget_cuts": 0,
+   "budget_omitted_chars": 0,
+   "budget_rows_in_ledger": 0,
+   "chars_by_tool": {
+    "declare_topic": 238,
+    "keep_unshaped": 314,
+    "recall": 1260,
+    "status": 1310,
+    "write": 4836
+   },
+   "committed": true,
+   "ended": "complete",
+   "ledger": "store/sessions/s0003",
+   "messages": 10,
+   "reports_missing": [],
+   "run_id": "s0003",
+   "session": 3,
+   "tool_calls": 40,
+   "turns_capped": [],
+   "turns_forced": [],
+   "turns_without_report": [],
+   "usage": {
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "calls": 31,
+    "input_tokens": 353893,
+    "output_tokens": 2336
+   }
+  },
+  {
+   "api_calls": 18,
+   "budget_cuts": 0,
+   "budget_omitted_chars": 0,
+   "budget_rows_in_ledger": 0,
+   "chars_by_tool": {
+    "declare_topic": 236,
+    "recall": 587,
+    "supersede": 221,
+    "view": 1747,
+    "write": 1082
+   },
+   "committed": true,
+   "ended": "complete",
+   "ledger": "store/sessions/s0004",
+   "messages": 10,
+   "reports_missing": [],
+   "run_id": "s0004",
+   "session": 4,
+   "tool_calls": 28,
+   "turns_capped": [],
+   "turns_forced": [],
+   "turns_without_report": [],
+   "usage": {
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "calls": 18,
+    "input_tokens": 161089,
+    "output_tokens": 1655
+   }
+  },
+  {
+   "api_calls": 16,
+   "budget_cuts": 0,
+   "budget_omitted_chars": 0,
+   "budget_rows_in_ledger": 0,
+   "chars_by_tool": {
+    "declare_topic": 238,
+    "write": 533
+   },
+   "committed": true,
+   "ended": "complete",
+   "ledger": "store/sessions/s0005",
+   "messages": 10,
+   "reports_missing": [],
+   "run_id": "s0005",
+   "session": 5,
+   "tool_calls": 17,
+   "turns_capped": [],
+   "turns_forced": [],
+   "turns_without_report": [],
+   "usage": {
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "calls": 16,
+    "input_tokens": 120041,
+    "output_tokens": 984
+   }
+  },
+  {
+   "api_calls": 32,
+   "budget_cuts": 0,
+   "budget_omitted_chars": 0,
+   "budget_rows_in_ledger": 0,
+   "chars_by_tool": {
+    "declare_topic": 238,
+    "keep_unshaped": 231,
+    "recall": 2143,
+    "supersede": 482,
+    "view": 922,
+    "write": 2447
+   },
+   "committed": true,
+   "ended": "complete",
+   "ledger": "store/sessions/s0006",
+   "messages": 10,
+   "reports_missing": [],
+   "run_id": "s0006",
+   "session": 6,
+   "tool_calls": 38,
+   "turns_capped": [],
+   "turns_forced": [],
+   "turns_without_report": [],
+   "usage": {
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "calls": 32,
+    "input_tokens": 336661,
+    "output_tokens": 2430
+   }
+  },
+  {
+   "api_calls": 23,
+   "budget_cuts": 0,
+   "budget_omitted_chars": 0,
+   "budget_rows_in_ledger": 0,
+   "chars_by_tool": {
+    "declare_topic": 238,
+    "keep_unshaped": 90,
+    "write": 2137
+   },
+   "committed": true,
+   "ended": "complete",
+   "ledger": "store/sessions/s0007",
+   "messages": 10,
+   "reports_missing": [],
+   "run_id": "s0007",
+   "session": 7,
+   "tool_calls": 24,
+   "turns_capped": [],
+   "turns_forced": [],
+   "turns_without_report": [],
+   "usage": {
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "calls": 23,
+    "input_tokens": 190140,
+    "output_tokens": 1367
+   }
+  },
+  {
+   "api_calls": 18,
+   "budget_cuts": 0,
+   "budget_omitted_chars": 0,
+   "budget_rows_in_ledger": 0,
+   "chars_by_tool": {
+    "declare_topic": 238,
+    "write": 936
+   },
+   "committed": true,
+   "ended": "complete",
+   "ledger": "store/sessions/s0008",
+   "messages": 10,
+   "reports_missing": [],
+   "run_id": "s0008",
+   "session": 8,
+   "tool_calls": 19,
+   "turns_capped": [],
+   "turns_forced": [],
+   "turns_without_report": [],
+   "usage": {
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "calls": 18,
+    "input_tokens": 138901,
+    "output_tokens": 1115
+   }
+  },
+  {
+   "api_calls": 32,
+   "budget_cuts": 0,
+   "budget_omitted_chars": 0,
+   "budget_rows_in_ledger": 0,
+   "chars_by_tool": {
+    "declare_topic": 236,
+    "keep_unshaped": 178,
+    "status": 1310,
+    "write": 9566
+   },
+   "committed": true,
+   "ended": "complete",
+   "ledger": "store/sessions/s0009",
+   "messages": 10,
+   "reports_missing": [],
+   "run_id": "s0009",
+   "session": 9,
+   "tool_calls": 84,
+   "turns_capped": [],
+   "turns_forced": [],
+   "turns_without_report": [],
+   "usage": {
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "calls": 32,
+    "input_tokens": 438248,
+    "output_tokens": 4871
+   }
+  },
+  {
+   "api_calls": 31,
+   "budget_cuts": 0,
+   "budget_omitted_chars": 0,
+   "budget_rows_in_ledger": 0,
+   "chars_by_tool": {
+    "declare_topic": 239,
+    "keep_unshaped": 174,
+    "view": 392,
+    "write": 8335
+   },
+   "committed": true,
+   "ended": "complete",
+   "ledger": "store/sessions/s0010",
+   "messages": 10,
+   "reports_missing": [],
+   "run_id": "s0010",
+   "session": 10,
+   "tool_calls": 68,
+   "turns_capped": [],
+   "turns_forced": [],
+   "turns_without_report": [],
+   "usage": {
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "calls": 31,
+    "input_tokens": 363994,
+    "output_tokens": 4015
+   }
+  },
+  {
+   "api_calls": 28,
+   "budget_cuts": 0,
+   "budget_omitted_chars": 0,
+   "budget_rows_in_ledger": 0,
+   "chars_by_tool": {
+    "declare_topic": 485,
+    "keep_unshaped": 924,
+    "write": 8869
+   },
+   "committed": true,
+   "ended": "complete",
+   "ledger": "store/sessions/s0011",
+   "messages": 10,
+   "reports_missing": [],
+   "run_id": "s0011",
+   "session": 11,
+   "tool_calls": 85,
+   "turns_capped": [],
+   "turns_forced": [],
+   "turns_without_report": [],
+   "usage": {
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "calls": 28,
+    "input_tokens": 384047,
+    "output_tokens": 5085
+   }
+  },
+  {
+   "api_calls": 10,
+   "budget_cuts": 0,
+   "budget_omitted_chars": 0,
+   "budget_rows_in_ledger": 0,
+   "chars_by_tool": {
+    "declare_topic": 239,
+    "write": 883
+   },
+   "committed": true,
+   "ended": "complete",
+   "ledger": "store/sessions/s0012",
+   "messages": 10,
+   "reports_missing": [],
+   "run_id": "s0012",
+   "session": 12,
+   "tool_calls": 17,
+   "turns_capped": [],
+   "turns_forced": [],
+   "turns_without_report": [],
+   "usage": {
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "calls": 10,
+    "input_tokens": 76808,
+    "output_tokens": 790
+   }
+  },
+  {
+   "api_calls": 15,
+   "budget_cuts": 0,
+   "budget_omitted_chars": 0,
+   "budget_rows_in_ledger": 0,
+   "chars_by_tool": {
+    "declare_topic": 237,
+    "write": 606
+   },
+   "committed": true,
+   "ended": "complete",
+   "ledger": "store/sessions/s0013",
+   "messages": 10,
+   "reports_missing": [],
+   "run_id": "s0013",
+   "session": 13,
+   "tool_calls": 16,
+   "turns_capped": [],
+   "turns_forced": [],
+   "turns_without_report": [],
+   "usage": {
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "calls": 15,
+    "input_tokens": 112795,
+    "output_tokens": 936
+   }
+  },
+  {
+   "api_calls": 15,
+   "budget_cuts": 0,
+   "budget_omitted_chars": 0,
+   "budget_rows_in_ledger": 0,
+   "chars_by_tool": {
+    "declare_topic": 239,
+    "write": 369
+   },
+   "committed": true,
+   "ended": "complete",
+   "ledger": "store/sessions/s0014",
+   "messages": 10,
+   "reports_missing": [],
+   "run_id": "s0014",
+   "session": 14,
+   "tool_calls": 15,
+   "turns_capped": [],
+   "turns_forced": [],
+   "turns_without_report": [],
+   "usage": {
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "calls": 15,
+    "input_tokens": 109260,
+    "output_tokens": 876
+   }
+  },
+  {
+   "api_calls": 26,
+   "budget_cuts": 0,
+   "budget_omitted_chars": 0,
+   "budget_rows_in_ledger": 0,
+   "chars_by_tool": {
+    "declare_topic": 247,
+    "keep_unshaped": 3349,
+    "read_sentence": 162,
+    "view": 398,
+    "write": 1008
+   },
+   "committed": true,
+   "ended": "complete",
+   "ledger": "store/sessions/s0015",
+   "messages": 10,
+   "reports_missing": [],
+   "run_id": "s0015",
+   "session": 15,
+   "tool_calls": 57,
+   "turns_capped": [],
+   "turns_forced": [],
+   "turns_without_report": [],
+   "usage": {
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "calls": 26,
+    "input_tokens": 281127,
+    "output_tokens": 3914
+   }
+  },
+  {
+   "api_calls": 14,
+   "budget_cuts": 0,
+   "budget_omitted_chars": 0,
+   "budget_rows_in_ledger": 0,
+   "chars_by_tool": {
+    "declare_topic": 239,
+    "view": 390,
+    "write": 462
+   },
+   "committed": true,
+   "ended": "complete",
+   "ledger": "store/sessions/s0016",
+   "messages": 10,
+   "reports_missing": [],
+   "run_id": "s0016",
+   "session": 16,
+   "tool_calls": 15,
+   "turns_capped": [],
+   "turns_forced": [],
+   "turns_without_report": [],
+   "usage": {
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "calls": 14,
+    "input_tokens": 106812,
+    "output_tokens": 894
+   }
+  }
+ ],
+ "store": {
+  "sentences": 294,
+  "sessions": 16,
+  "verify": "OK"
+ },
+ "story": "LS-D01",
+ "wall_ns": 960629039208
+}

@@ -1,0 +1,546 @@
+{
+ "P2": false,
+ "P3": false,
+ "arms": [
+  "A0",
+  "A1",
+  "A3",
+  "A3f"
+ ],
+ "client_is_stub": false,
+ "metrics": {
+  "A0": {
+   "api_calls": {
+    "1": 201
+   },
+   "budget_cuts": {
+    "1": 0
+   },
+   "budget_omitted_chars": {
+    "1": 0
+   },
+   "contra_any": {
+    "1": 1
+   },
+   "contra_model": {
+    "1": 1
+   },
+   "contra_n": {
+    "1": 12
+   },
+   "contra_structure": {
+    "1": 0
+   },
+   "false_model_pairs": {
+    "1": 3
+   },
+   "false_structure_list_trap": {
+    "1": 0
+   },
+   "false_structure_unmatched": {
+    "1": 0
+   },
+   "input_tokens": {
+    "1": 450140
+   },
+   "n_absent": {
+    "1": 8
+   },
+   "n_contested": {
+    "1": 12
+   },
+   "n_present": {
+    "1": 12
+   },
+   "n_updated": {
+    "1": 8
+   },
+   "output_tokens": {
+    "1": 12554
+   },
+   "q_absent_admit": {
+    "1": 8
+   },
+   "q_abstain": {
+    "1": 32
+   },
+   "q_confident_wrong": {
+    "1": 0
+   },
+   "q_false_contested": {
+    "1": 0
+   },
+   "q_n": {
+    "1": 40
+   },
+   "q_over_broad": {
+    "1": 0
+   },
+   "q_right": {
+    "1": 0
+   },
+   "reversal_any": {
+    "1": 0
+   },
+   "reversal_model": {
+    "1": 0
+   },
+   "reversal_n": {
+    "1": 4
+   },
+   "reversal_structure": {
+    "1": 0
+   },
+   "right_absent": {
+    "1": 8
+   },
+   "right_contested": {
+    "1": 0
+   },
+   "right_per_mille": {
+    "1": 0
+   },
+   "right_present": {
+    "1": 0
+   },
+   "right_updated": {
+    "1": 0
+   },
+   "tool_calls": {
+    "1": 201
+   },
+   "turns": {
+    "1": 160
+   },
+   "turns_capped": {
+    "1": 0
+   },
+   "update_any": {
+    "1": 0
+   },
+   "update_model": {},
+   "update_n": {
+    "1": 8
+   },
+   "update_structure": {
+    "1": 0
+   },
+   "wrong_absent": {
+    "1": 0
+   },
+   "wrong_contested": {
+    "1": 0
+   },
+   "wrong_present": {
+    "1": 0
+   },
+   "wrong_updated": {
+    "1": 0
+   }
+  },
+  "A1": {
+   "api_calls": {
+    "1": 680
+   },
+   "budget_cuts": {
+    "1": 169
+   },
+   "budget_omitted_chars": {
+    "1": 67958
+   },
+   "contra_any": {
+    "1": 12
+   },
+   "contra_model": {
+    "1": 12
+   },
+   "contra_n": {
+    "1": 12
+   },
+   "contra_structure": {
+    "1": 0
+   },
+   "false_model_pairs": {
+    "1": 1
+   },
+   "false_structure_list_trap": {
+    "1": 0
+   },
+   "false_structure_unmatched": {
+    "1": 0
+   },
+   "input_tokens": {
+    "1": 3968429
+   },
+   "n_absent": {
+    "1": 8
+   },
+   "n_contested": {
+    "1": 12
+   },
+   "n_present": {
+    "1": 12
+   },
+   "n_updated": {
+    "1": 8
+   },
+   "output_tokens": {
+    "1": 64288
+   },
+   "q_absent_admit": {
+    "1": 8
+   },
+   "q_abstain": {
+    "1": 2
+   },
+   "q_confident_wrong": {
+    "1": 10
+   },
+   "q_false_contested": {
+    "1": 0
+   },
+   "q_n": {
+    "1": 40
+   },
+   "q_over_broad": {
+    "1": 0
+   },
+   "q_right": {
+    "1": 20
+   },
+   "reversal_any": {
+    "1": 0
+   },
+   "reversal_model": {
+    "1": 0
+   },
+   "reversal_n": {
+    "1": 4
+   },
+   "reversal_structure": {
+    "1": 0
+   },
+   "right_absent": {
+    "1": 8
+   },
+   "right_contested": {
+    "1": 2
+   },
+   "right_per_mille": {
+    "1": 500
+   },
+   "right_present": {
+    "1": 11
+   },
+   "right_updated": {
+    "1": 7
+   },
+   "tool_calls": {
+    "1": 854
+   },
+   "turns": {
+    "1": 160
+   },
+   "turns_capped": {
+    "1": 0
+   },
+   "update_any": {
+    "1": 0
+   },
+   "update_model": {},
+   "update_n": {
+    "1": 8
+   },
+   "update_structure": {
+    "1": 0
+   },
+   "wrong_absent": {
+    "1": 0
+   },
+   "wrong_contested": {
+    "1": 8
+   },
+   "wrong_present": {
+    "1": 1
+   },
+   "wrong_updated": {
+    "1": 1
+   }
+  },
+  "A3": {
+   "api_calls": {
+    "1": 710
+   },
+   "budget_cuts": {
+    "1": 104
+   },
+   "budget_omitted_chars": {
+    "1": 58018
+   },
+   "contra_any": {
+    "1": 6
+   },
+   "contra_model": {
+    "1": 4
+   },
+   "contra_n": {
+    "1": 12
+   },
+   "contra_structure": {
+    "1": 5
+   },
+   "false_model_pairs": {
+    "1": 0
+   },
+   "false_structure_list_trap": {
+    "1": 0
+   },
+   "false_structure_unmatched": {
+    "1": 0
+   },
+   "input_tokens": {
+    "1": 5760534
+   },
+   "n_absent": {
+    "1": 8
+   },
+   "n_contested": {
+    "1": 12
+   },
+   "n_present": {
+    "1": 12
+   },
+   "n_updated": {
+    "1": 8
+   },
+   "output_tokens": {
+    "1": 53282
+   },
+   "q_absent_admit": {
+    "1": 8
+   },
+   "q_abstain": {
+    "1": 16
+   },
+   "q_confident_wrong": {
+    "1": 9
+   },
+   "q_false_contested": {
+    "1": 5
+   },
+   "q_n": {
+    "1": 40
+   },
+   "q_over_broad": {
+    "1": 0
+   },
+   "q_right": {
+    "1": 7
+   },
+   "reversal_any": {
+    "1": 3
+   },
+   "reversal_model": {
+    "1": 3
+   },
+   "reversal_n": {
+    "1": 4
+   },
+   "reversal_structure": {
+    "1": 3
+   },
+   "right_absent": {
+    "1": 8
+   },
+   "right_contested": {
+    "1": 4
+   },
+   "right_per_mille": {
+    "1": 175
+   },
+   "right_present": {
+    "1": 3
+   },
+   "right_updated": {
+    "1": 0
+   },
+   "tool_calls": {
+    "1": 925
+   },
+   "turns": {
+    "1": 160
+   },
+   "turns_capped": {
+    "1": 0
+   },
+   "update_any": {
+    "1": 8
+   },
+   "update_model": {
+    "1": 0
+   },
+   "update_n": {
+    "1": 8
+   },
+   "update_structure": {
+    "1": 8
+   },
+   "wrong_absent": {
+    "1": 0
+   },
+   "wrong_contested": {
+    "1": 4
+   },
+   "wrong_present": {
+    "1": 2
+   },
+   "wrong_updated": {
+    "1": 3
+   }
+  },
+  "A3f": {
+   "api_calls": {
+    "1": 723
+   },
+   "budget_cuts": {
+    "1": 117
+   },
+   "budget_omitted_chars": {
+    "1": 58195
+   },
+   "contra_any": {
+    "1": 6
+   },
+   "contra_model": {
+    "1": 6
+   },
+   "contra_n": {
+    "1": 12
+   },
+   "contra_structure": {
+    "1": 5
+   },
+   "false_model_pairs": {
+    "1": 0
+   },
+   "false_structure_list_trap": {
+    "1": 0
+   },
+   "false_structure_unmatched": {
+    "1": 2
+   },
+   "input_tokens": {
+    "1": 6228687
+   },
+   "n_absent": {
+    "1": 8
+   },
+   "n_contested": {
+    "1": 12
+   },
+   "n_present": {
+    "1": 12
+   },
+   "n_updated": {
+    "1": 8
+   },
+   "output_tokens": {
+    "1": 60397
+   },
+   "q_absent_admit": {
+    "1": 8
+   },
+   "q_abstain": {
+    "1": 17
+   },
+   "q_confident_wrong": {
+    "1": 6
+   },
+   "q_false_contested": {
+    "1": 2
+   },
+   "q_n": {
+    "1": 40
+   },
+   "q_over_broad": {
+    "1": 0
+   },
+   "q_right": {
+    "1": 9
+   },
+   "reversal_any": {
+    "1": 2
+   },
+   "reversal_model": {
+    "1": 2
+   },
+   "reversal_n": {
+    "1": 4
+   },
+   "reversal_structure": {
+    "1": 2
+   },
+   "right_absent": {
+    "1": 8
+   },
+   "right_contested": {
+    "1": 6
+   },
+   "right_per_mille": {
+    "1": 225
+   },
+   "right_present": {
+    "1": 3
+   },
+   "right_updated": {
+    "1": 0
+   },
+   "tool_calls": {
+    "1": 1053
+   },
+   "turns": {
+    "1": 160
+   },
+   "turns_capped": {
+    "1": 0
+   },
+   "update_any": {
+    "1": 8
+   },
+   "update_model": {
+    "1": 0
+   },
+   "update_n": {
+    "1": 8
+   },
+   "update_structure": {
+    "1": 8
+   },
+   "wrong_absent": {
+    "1": 0
+   },
+   "wrong_contested": {
+    "1": 4
+   },
+   "wrong_present": {
+    "1": 0
+   },
+   "wrong_updated": {
+    "1": 2
+   }
+  }
+ },
+ "n_runs": 4,
+ "predictions": {
+  "P-PUB-1": true,
+  "P-PUB-2": false,
+  "P-PUB-3": true,
+  "P-PUB-4": false
+ },
+ "repeats": [
+  1
+ ],
+ "stories": [
+  "LS-D01"
+ ]
+}

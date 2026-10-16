@@ -1,0 +1,2 @@
+LS-D01 A3f r01 complete  plants(any) c=6/12 r=2/4 u=8/8  answers right=9/40 wrong=6  tokens in=6228687 out=60397
+experiments/line3/pub/meter2/pilot_ls_d01/report.md

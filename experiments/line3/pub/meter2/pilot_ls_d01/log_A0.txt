@@ -1,0 +1,2 @@
+LS-D01 A0  r01 complete  plants(any) c=1/12 r=0/4 u=0/8  answers right=0/40 wrong=0  tokens in=450140 out=12554
+experiments/line3/pub/meter2/pilot_ls_d01/report.md
