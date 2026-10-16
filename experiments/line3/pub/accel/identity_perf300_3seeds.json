@@ -1,0 +1,101 @@
+{
+ "check": true,
+ "identical": true,
+ "modes": "py,inc,c",
+ "results": {
+  "perf:300": {
+   "c/seed0": {
+    "digest": "817a354beeea24771c1ec88c401acd7bf4f17760d39c4e9dde70308c3a7d0e5c",
+    "index_sha": "d6b269752d765fc1358a4c1bc3c85c6c494b54480e0c29778706ddda34c336ce",
+    "seconds": 40.2,
+    "store_sha": "1ed86e13f0de07e0a993723fa5b3e760b4eec8e8d49ead0ced408c263800dbdf",
+    "verify": [
+     "OK",
+     "IDENTICAL"
+    ]
+   },
+   "c/seed1": {
+    "digest": "817a354beeea24771c1ec88c401acd7bf4f17760d39c4e9dde70308c3a7d0e5c",
+    "index_sha": "d6b269752d765fc1358a4c1bc3c85c6c494b54480e0c29778706ddda34c336ce",
+    "seconds": 41.0,
+    "store_sha": "1ed86e13f0de07e0a993723fa5b3e760b4eec8e8d49ead0ced408c263800dbdf",
+    "verify": [
+     "OK",
+     "IDENTICAL"
+    ]
+   },
+   "c/seed12345": {
+    "digest": "817a354beeea24771c1ec88c401acd7bf4f17760d39c4e9dde70308c3a7d0e5c",
+    "index_sha": "d6b269752d765fc1358a4c1bc3c85c6c494b54480e0c29778706ddda34c336ce",
+    "seconds": 38.1,
+    "store_sha": "1ed86e13f0de07e0a993723fa5b3e760b4eec8e8d49ead0ced408c263800dbdf",
+    "verify": [
+     "OK",
+     "IDENTICAL"
+    ]
+   },
+   "inc/seed0": {
+    "digest": "817a354beeea24771c1ec88c401acd7bf4f17760d39c4e9dde70308c3a7d0e5c",
+    "index_sha": "d6b269752d765fc1358a4c1bc3c85c6c494b54480e0c29778706ddda34c336ce",
+    "seconds": 39.4,
+    "store_sha": "1ed86e13f0de07e0a993723fa5b3e760b4eec8e8d49ead0ced408c263800dbdf",
+    "verify": [
+     "OK",
+     "IDENTICAL"
+    ]
+   },
+   "inc/seed1": {
+    "digest": "817a354beeea24771c1ec88c401acd7bf4f17760d39c4e9dde70308c3a7d0e5c",
+    "index_sha": "d6b269752d765fc1358a4c1bc3c85c6c494b54480e0c29778706ddda34c336ce",
+    "seconds": 39.5,
+    "store_sha": "1ed86e13f0de07e0a993723fa5b3e760b4eec8e8d49ead0ced408c263800dbdf",
+    "verify": [
+     "OK",
+     "IDENTICAL"
+    ]
+   },
+   "inc/seed12345": {
+    "digest": "817a354beeea24771c1ec88c401acd7bf4f17760d39c4e9dde70308c3a7d0e5c",
+    "index_sha": "d6b269752d765fc1358a4c1bc3c85c6c494b54480e0c29778706ddda34c336ce",
+    "seconds": 38.1,
+    "store_sha": "1ed86e13f0de07e0a993723fa5b3e760b4eec8e8d49ead0ced408c263800dbdf",
+    "verify": [
+     "OK",
+     "IDENTICAL"
+    ]
+   },
+   "py/seed0": {
+    "digest": "817a354beeea24771c1ec88c401acd7bf4f17760d39c4e9dde70308c3a7d0e5c",
+    "index_sha": "d6b269752d765fc1358a4c1bc3c85c6c494b54480e0c29778706ddda34c336ce",
+    "seconds": 38.9,
+    "store_sha": "1ed86e13f0de07e0a993723fa5b3e760b4eec8e8d49ead0ced408c263800dbdf",
+    "verify": [
+     "OK",
+     "IDENTICAL"
+    ]
+   },
+   "py/seed1": {
+    "digest": "817a354beeea24771c1ec88c401acd7bf4f17760d39c4e9dde70308c3a7d0e5c",
+    "index_sha": "d6b269752d765fc1358a4c1bc3c85c6c494b54480e0c29778706ddda34c336ce",
+    "seconds": 39.8,
+    "store_sha": "1ed86e13f0de07e0a993723fa5b3e760b4eec8e8d49ead0ced408c263800dbdf",
+    "verify": [
+     "OK",
+     "IDENTICAL"
+    ]
+   },
+   "py/seed12345": {
+    "digest": "817a354beeea24771c1ec88c401acd7bf4f17760d39c4e9dde70308c3a7d0e5c",
+    "index_sha": "d6b269752d765fc1358a4c1bc3c85c6c494b54480e0c29778706ddda34c336ce",
+    "seconds": 40.3,
+    "store_sha": "1ed86e13f0de07e0a993723fa5b3e760b4eec8e8d49ead0ced408c263800dbdf",
+    "verify": [
+     "OK",
+     "IDENTICAL"
+    ]
+   }
+  }
+ },
+ "seeds": "0,1,12345",
+ "verify": false
+}

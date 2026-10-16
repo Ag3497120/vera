@@ -1,0 +1,49 @@
+{
+ "batches": [
+  {
+   "seconds_per_write": 0.0154,
+   "writes_so_far": 100
+  },
+  {
+   "seconds_per_write": 0.0385,
+   "writes_so_far": 200
+  },
+  {
+   "seconds_per_write": 0.0638,
+   "writes_so_far": 300
+  },
+  {
+   "seconds_per_write": 0.0931,
+   "writes_so_far": 400
+  },
+  {
+   "seconds_per_write": 0.1265,
+   "writes_so_far": 500
+  },
+  {
+   "seconds_per_write": 0.1613,
+   "writes_so_far": 600
+  },
+  {
+   "seconds_per_write": 0.2028,
+   "writes_so_far": 700
+  },
+  {
+   "seconds_per_write": 0.2453,
+   "writes_so_far": 800
+  },
+  {
+   "seconds_per_write": 0.2946,
+   "writes_so_far": 900
+  },
+  {
+   "seconds_per_write": 0.3476,
+   "writes_so_far": 1000
+  }
+ ],
+ "index_sha": "8e16ff95cd7a9d726a721a8b856595cbf2599d7ac067f80d174615d4d96daee0",
+ "mode": "py",
+ "n": 1000,
+ "store_sha": "b42d8b269bf523de4eda1f8eb07f47dd8c1289a9d8e11ebe070ba06a8c5e3087",
+ "total_seconds": 213.0
+}

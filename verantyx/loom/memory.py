@@ -1856,5 +1856,10 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     return code
 
 
+# VERA_ACCEL=py|inc|c (default py: the plain code above, untouched).  The one dispatch hook of verantyx/accel (L-PUB-160..): it wraps `build_corpus`, `rows_bytes`, `MemRun.mem_state_sha`.
+from verantyx import accel as _accel  # noqa: E402
+_accel.install(sys.modules[__name__])
+
+
 if __name__ == "__main__":
     raise SystemExit(main())
