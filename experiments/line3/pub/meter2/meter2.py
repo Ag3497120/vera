@@ -37,7 +37,9 @@ import importlib.util
 import json
 import os
 import sys
+import re
 import time
+import unicodedata
 from typing import Any, Dict, List, Optional, Sequence, Tuple
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -66,7 +68,111 @@ ARMS: Dict[str, dict] = {
     "A1": {"arm": "log", "flat": False, "label": "log + grep"},
     "A3": {"arm": "notes", "flat": False, "label": "structure (crosses)"},
     "A3f": {"arm": "notes", "flat": True, "label": "flat table (no geometry)"},
+    "A1v": {"arm": "log", "flat": False, "label": "log + grep, raw message appended by the harness (arms.v2 only)"},
 }
+ARM_VERSION = P.ARM_VERSION_V1                                  # the default: the pilot's arms (arms.v1); arms.v2 = verbatim whole-sentence writes + A1v (L-PUB-175)
+MAX_LOAD = 12.0                                                 # the runner pauses while the 1-minute load average is above this
+TOKEN_CAP: Optional[int] = None                                 # --max-input-tokens: the runner stops (MeterError) when the input tokens of all runs of the process pass it
+SPENT = {"input_tokens": 0}
+
+
+def pause_while_loaded(max_load: Optional[float], *, sleep: Any = time.sleep, getload: Any = None, log: Any = None, poll: float = 30.0) -> int:
+    """Block while the 1-minute load average is above `max_load` (None: never).  -> the number of polls that waited.  Called before every story session and every question of a run."""
+    getload = getload or (lambda: os.getloadavg()[0])
+    n = 0
+    while max_load is not None and getload() > max_load:
+        n += 1
+        if log is not None:
+            log("load %.1f > %.1f: pausing %.0fs" % (getload(), max_load, poll))
+        sleep(poll)
+    return n
+
+
+def check_token_cap() -> None:
+    if TOKEN_CAP is not None and SPENT["input_tokens"] > TOKEN_CAP:
+        raise MeterError("input token cap reached (%d > %d): the run stops" % (SPENT["input_tokens"], TOKEN_CAP))
+
+
+_SENT_END = re.compile(r"(?<=[。！？!?])")
+
+
+def message_sentences(text: str) -> List[str]:
+    """The sentences of a story message: split ONLY after 。！？ (and !?), the last one ends with the message; NFC; surrounding white space removed (the public harness's `user_sentences`)."""
+    out = []
+    for part in _SENT_END.split(unicodedata.normalize("NFC", text)):
+        q = part.strip()
+        if q:
+            out.append(q)
+    return out
+
+
+def equals_whole_sentence(write: str, text: str) -> bool:
+    """A memory write must EQUAL one whole sentence of the message (NFC; a trailing 。 is optional on either side): never a piece of one (the public harness's rule)."""
+    w = unicodedata.normalize("NFC", write).strip()
+    wc = w[:-1] if w.endswith("。") else w
+    return bool(wc) and any((x[:-1] if x.endswith("。") else x) == wc for x in message_sentences(text))
+
+
+class VerbatimDoor:
+    """arms.v2, A3 and A3f identically: the model's writes are VERBATIM WHOLE SENTENCES of the message just delivered (it chooses which; it never rewords) and a declared topic is a piece of the story's own words (the
+    project title or a message of this session so far).  A refused call stores nothing and is not a row of the memory (it is counted in `gate`, and the model gets the refusal).  Everything else is delegated."""
+
+    def __init__(self, door: Any, messages: Dict[str, str], title: str) -> None:
+        self.__dict__["inner"] = door
+        self.messages = messages
+        self.title = unicodedata.normalize("NFC", title or "")
+        self.turn: Optional[str] = None
+        self.seen: List[str] = []
+        self.gate = {"writes_refused": 0, "topics_refused": 0, "writes_ok": 0}
+
+    def __getattr__(self, name: str) -> Any:
+        return getattr(self.__dict__["inner"], name)
+
+    def set_turn(self, turn: str) -> None:
+        self.turn = turn
+        self.seen.append(unicodedata.normalize("NFC", self.messages.get(turn, "")))
+        self.inner.set_turn(turn)
+
+    def call(self, tool: Any, args: Any = None) -> dict:
+        text = args.get("text") if isinstance(args, dict) else None
+        if tool in ("write", "keep_unshaped") and isinstance(text, str):
+            if not equals_whole_sentence(text, self.messages.get(self.turn or "", "")):
+                self.gate["writes_refused"] += 1
+                return {"ok": False, "refusal": "not_verbatim", "detail": {"reason": "a memory sentence must equal one whole sentence of the message of this turn, copied exactly (the closing 。 is optional); choose a sentence, never reword or cut it"}}
+            self.gate["writes_ok"] += 1
+        elif tool == "declare_topic" and isinstance(text, str):
+            t = unicodedata.normalize("NFC", text).strip()
+            if not t or not (t in self.title or any(t in m for m in self.seen)):
+                self.gate["topics_refused"] += 1
+                return {"ok": False, "refusal": "topic_not_from_story", "detail": {"reason": "a topic must be a piece of the story's own words: of the project title or of a message of this session"}}
+        return self.inner.call(tool, args)
+
+
+class AutoLogDoor:
+    """A1v: at the start of every message the harness appends each sentence of it to the log as `<turn> <sentence>` (the same line shape as A1's, at most 64 characters), so the log is the raw story and the model
+    writes nothing.  The `log_append` rows are the harness's, recorded through the door of the log (the model has no such tool in A1v).  Everything else is delegated."""
+
+    def __init__(self, door: Any, messages: Dict[str, str]) -> None:
+        self.__dict__["inner"] = door
+        self.messages = messages
+        self.appended = 0
+
+    def __getattr__(self, name: str) -> Any:
+        return getattr(self.__dict__["inner"], name)
+
+    def intro(self) -> dict:
+        d = dict(self.inner.intro())
+        if isinstance(d.get("tools"), list):
+            d["tools"] = [t for t in d["tools"] if not (t == "log_append" or (isinstance(t, dict) and t.get("name") == "log_append"))]
+        return d
+
+    def set_turn(self, turn: str) -> None:
+        self.inner.set_turn(turn)
+        for sent in message_sentences(self.messages.get(turn, "")):
+            r = self.inner.call("log_append", {"text": ("%s %s" % (turn, sent))[:64]})
+            if isinstance(r, dict) and r.get("ok") is False:
+                raise MeterError("A1v: the harness's log_append was refused: %s" % (r.get("refusal"),))
+            self.appended += 1
 BUNDLES = {"m6c": mem.V4_VERSIONS_M6C, "m6d": mem.V4_VERSIONS_M6D}
 ANSWER_VERSION = ma.ANSWER_V18
 USED_FILE = os.path.join(HERE, "used_heldout.jsonl")
@@ -141,13 +247,25 @@ def versions_of(arm_key: str, bundle: str) -> Dict[str, str]:
     return v
 
 
-def story_door(arm_key: str, store: str, model: str, session_no: int, budget: int, bundle: str) -> Tuple[Any, Any]:
+def story_door(arm_key: str, store: str, model: str, session_no: int, budget: int, bundle: str, arm_version: str = P.ARM_VERSION_V1, messages: Optional[Dict[str, str]] = None,
+               title: str = "") -> Tuple[Any, Any]:
+    """-> (the memory / log door, the door the driver talks to).  arms.v2: A3 / A3f are wrapped by `VerbatimDoor`, A1v by `AutoLogDoor` (inside the budget door, so the harness's own calls spend no budget)."""
     a = ARMS[arm_key]
     if a["arm"] in md.STRUCTURE_ARMS:
         door = md.StructureDoor(store, a["arm"], model, profile=mem.PROFILE_V4, versions=versions_of(arm_key, bundle), view=mview.make_view(budget))
     else:
         door = md.BaselineDoor(store, a["arm"], "story", model, session_no=session_no, version=md.BASELINE_V3, budget=budget)
-    return door, mview.BudgetDoor(door, budget, ledger=True)
+    inner: Any = door
+    if arm_version == P.ARM_VERSION_V2 and a["arm"] in md.STRUCTURE_ARMS:
+        inner = VerbatimDoor(door, messages or {}, title)
+    elif arm_key == "A1v":
+        inner = AutoLogDoor(door, messages or {})
+    return door, mview.BudgetDoor(inner, budget, ledger=True)
+
+
+def story_tool_names(arm_key: str, names: Sequence[str]) -> Tuple[str, ...]:
+    """The tool names offered to the model: A1v has no `log_append` (the harness fills the log)."""
+    return tuple(n for n in names if not (arm_key == "A1v" and n == "log_append"))
 
 
 def story_tool_specs(arm_key: str) -> Optional[dict]:
@@ -165,7 +283,7 @@ def first_question_message(door: Any, begin_result: dict) -> str:
 
 
 def ask_checkpoint(story: dict, cp: dict, arm_key: str, repeat: int, *, client: Any, model: str, store: str, run_dir: str, budget: int, bundle: str, choice: dict, strict: bool,
-                   redact: bool) -> dict:
+                   redact: bool, max_load: Optional[float] = None) -> dict:
     a = ARMS[arm_key]
     qs = [(k, q) for k, q in enumerate(story["questions"]) if q["checkpoint"] == cp["index"]]
     order = question_order(story["id"], cp["index"], repeat, len(qs))
@@ -176,6 +294,8 @@ def ask_checkpoint(story: dict, cp: dict, arm_key: str, repeat: int, *, client: 
     scored: List[dict] = []
     for j in order:
         k, q = qs[j]
+        pause_while_loaded(max_load, log=print)
+        check_token_cap()
         if a["arm"] in md.STRUCTURE_ARMS:
             qd = md.AnswerDoor(store, a["arm"], q["q"], model, snapshot=snap, answer_version=ANSWER_VERSION)
             wd = mview.BudgetDoor(qd, budget, ledger=False)                         # an answer run is a loom run: its ledger is not extended; the cuts are in the result
@@ -191,6 +311,7 @@ def ask_checkpoint(story: dict, cp: dict, arm_key: str, repeat: int, *, client: 
         cls = S.classify(ans, q)
         scored.append({"q": q, "answer": ans})
         e = er.to_obj()
+        SPENT["input_tokens"] += e["usage"].get("input_tokens", 0)
         row = {"index": k, "kind": S.question_kind(q), "form": q.get("form"), "class": cls, "answer_kind": ans["kind"], "false_contested": S.false_contested(ans, q),
                "ended": e.get("ended"), "usage": e["usage"], "tool_calls": e.get("tool_calls", 0), "api_calls": e["usage"].get("calls", 0),
                "capped": bool(e.get("cap_hit")), "budget_cuts": len(wd.events), "budget_omitted": sum(x["omitted"] for x in wd.events)}
@@ -257,9 +378,13 @@ def zero_cost() -> dict:
 
 
 def run_one(story: dict, arm_key: str, repeat: int, *, client: Any, model: str, out_root: str, budget: int = DEFAULT_BUDGET, bundle: str = "m6d", n_checkpoints: int = 4,
-            redact: bool = False, client_kind: str = "stub", max_calls: int = MAX_CALLS) -> dict:
+            redact: bool = False, client_kind: str = "stub", max_calls: int = MAX_CALLS, arm_version: str = P.ARM_VERSION_V1, max_load: Optional[float] = None) -> dict:
     a = ARMS[arm_key]
     structure = a["arm"] in md.STRUCTURE_ARMS
+    if arm_version not in P.ARM_VERSIONS:
+        raise MeterError("unknown arm version %r" % arm_version)
+    if arm_key == "A1v" and arm_version != P.ARM_VERSION_V2:
+        raise MeterError("A1v exists only in arm version %s" % P.ARM_VERSION_V2)
     run_dir = os.path.join(out_root, story["id"], arm_key, "r%02d" % repeat)
     if os.path.exists(run_dir):
         raise MeterError("run folder exists (never overwritten): %s" % run_dir)
@@ -272,14 +397,19 @@ def run_one(story: dict, arm_key: str, repeat: int, *, client: Any, model: str, 
     t0 = time.monotonic_ns()
     result: Dict[str, Any] = {"schema": SCHEMA, "story": story["id"], "arm": arm_key, "arm_label": a["label"], "repeat": repeat, "model": model, "client": client_kind, "budget": budget,
                               "bundle": bundle if structure else None, "answer_version": ANSWER_VERSION if structure else None, "profile": mem.PROFILE_V4 if structure else md.BASELINE_V3,
-                              "checkpoints_run": [c["index"] for c in cps], "last_session": last_session, "redacted": redact, "prompts": {ph: P.prompt_shas()[ph][arm_key] for ph in ("story", "question")},
+                              "checkpoints_run": [c["index"] for c in cps], "last_session": last_session, "redacted": redact, "arm_version": arm_version, "prompts": {ph: P.prompt_shas(arm_version)[ph][arm_key] for ph in ("story", "question")},
+                              "log_written_by": ("harness (raw message, arms.v2)" if arm_key == "A1v" else "model (its own words, at most 64 characters a line)" if arm_key == "A1" else None),
+                              "writes_verbatim": bool(structure and arm_version == P.ARM_VERSION_V2), "max_load": max_load,
                               "sessions": [], "checkpoints": [], "ended": "?"}
     cost = zero_cost()
     for s in range(last_session + 1):
-        door, wd = story_door(arm_key, store, model, s + 1, budget, bundle)
-        tools = md.api_tools(door.tool_names, strict, specs=story_tool_specs(arm_key))
+        pause_while_loaded(max_load, log=print)
+        check_token_cap()
+        msgs = {S.turn_id(s, i): story["sessions"][s][i]["text"] for i in range(len(story["sessions"][s]))}
+        door, wd = story_door(arm_key, store, model, s + 1, budget, bundle, arm_version, msgs, story.get("title") or "")
+        tools = md.api_tools(story_tool_names(arm_key, door.tool_names), strict, specs=story_tool_specs(arm_key))
         turns = [(S.turn_id(s, i), render(story, s, i)) for i in range(len(story["sessions"][s]))]
-        res = mdrv.run_story_session(client, wd, model, P.system_prompt(arm_key, "story"), intro_text(wd, story, s, budget), turns, tools, tool_choice=choice, max_calls=max_calls,
+        res = mdrv.run_story_session(client, wd, model, P.system_prompt(arm_key, "story", arm_version), intro_text(wd, story, s, budget), turns, tools, tool_choice=choice, max_calls=max_calls,
                                      force_report=True, caps=drv.RUNAWAY_CAPS_V1)
         committed = None
         if res.ended == "complete":
@@ -293,7 +423,8 @@ def run_one(story: dict, arm_key: str, repeat: int, *, client: Any, model: str, 
                 "usage": st["usage"], "turns_capped": [h["turn"] for h in res.cap_hits], "turns_without_report": [t["turn"] for t in res.turns if t["report"] is None],
                 "turns_forced": [t["turn"] for t in res.turns if t.get("forced")], "reports_missing": [t["turn"] for t in res.turns if t["ended"] == "report_missing"],
                 "budget_cuts": len(wd.events), "budget_omitted_chars": sum(x["omitted"] for x in wd.events), "budget_rows_in_ledger": sum(1 for r in rows if r["op"] == "budget_turn"),
-                "ledger": os.path.relpath(str(ldir), run_dir), "chars_by_tool": dict(sorted(wd.tool_chars.items()))}
+                "ledger": os.path.relpath(str(ldir), run_dir), "chars_by_tool": dict(sorted(wd.tool_chars.items())), "gate": dict(getattr(wd.inner, "gate", {})) or None}
+        SPENT["input_tokens"] += st["usage"]["input_tokens"]
         result["sessions"].append(sess)
         cost["api_calls"] += st["api_calls"]
         cost["tool_calls"] += st["tool_calls"]
@@ -312,7 +443,7 @@ def run_one(story: dict, arm_key: str, repeat: int, *, client: Any, model: str, 
             break
         if s in cp_at:
             cpr = ask_checkpoint(story, cp_at[s], arm_key, repeat, client=client, model=model, store=store, run_dir=run_dir, budget=budget, bundle=bundle, choice=choice, strict=strict,
-                                 redact=redact)
+                                 redact=redact, max_load=max_load)
             result["checkpoints"].append(cpr)
             for x in cpr["answers"]:
                 cost["api_calls"] += x["api_calls"]
@@ -555,6 +686,32 @@ def write_report(root: str) -> str:
         L.append("| %s | %s | %s |" % (pid, text, {True: "confirmed", False: "not confirmed", None: "not decidable"}[v]))
     L.append("")
     L.append("Asymmetry of A1 (see the module doc): its answer is a closed value scored by exact match, not a gate-passed quote.")
+    L.append("")
+    L.append("## Arm version and who writes the memory")
+    L.append("")
+    vers = sorted({r.get("arm_version") or "arms.v1" for r in results})
+    L.append("Arm version(s) in these runs: %s. arms.v1 = the pilot's arms (the model writes its own words). arms.v2 = A3 / A3f writes must be VERBATIM WHOLE SENTENCES of the delivered message (a refused write stores nothing), "
+             "declared topics must be pieces of the story's own words, A3 and A3f identically; A0 / A1 unchanged; A1v = A1 with the raw message appended to the log by the harness." % ", ".join(vers))
+    L.append("")
+    L.append("**A1's log is MODEL-WRITTEN** (the model chooses and words every line, at most 64 characters): its recall is bounded by what the model chose to write. A1v's log is the raw story (every sentence, appended automatically), "
+             "so A1 vs A1v measures the cost of the model's own log writing.")
+    gates = [(r["arm"], r["repeat"], sum((x.get("gate") or {}).get("writes_ok", 0) for x in r["sessions"]), sum((x.get("gate") or {}).get("writes_refused", 0) for x in r["sessions"]),
+              sum((x.get("gate") or {}).get("topics_refused", 0) for x in r["sessions"])) for r in results if r.get("writes_verbatim")]
+    if gates:
+        L.append("")
+        L.append("Verbatim gate (writes accepted by the gate / refused as not verbatim / topics refused): " + "; ".join("%s r%02d %d / %d / %d" % g for g in gates) + ".")
+    upd = [r for r in results if any(a.get("kind") == "updated" for c in r["checkpoints"] for a in c["answers"])]
+    if upd:
+        L.append("")
+        L.append("## Updated questions, one by one (class; abstain type)")
+        L.append("")
+        L.append("| arm | repeat | question index | class | answer status |")
+        L.append("|---|---|---|---|---|")
+        for r in sorted(upd, key=lambda r: (arms.index(r["arm"]), r["repeat"])):
+            for c in r["checkpoints"]:
+                for a in c["answers"]:
+                    if a.get("kind") == "updated":
+                        L.append("| %s | %d | %s%s | %s | %s |" % (r["arm"], r["repeat"], a["index"], (" " + a["q"]) if a.get("q") else "", a["class"], a.get("abstain_type") or a.get("answer_status") or a["answer_kind"]))
     path = os.path.join(root, "report.md")
     with open(path, "w", encoding="utf-8") as f:
         f.write("\n".join(L) + "\n")
@@ -583,6 +740,9 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     ap.add_argument("--bank", default=None, help="a bank_ls split folder or its stories.jsonl")
     ap.add_argument("--story", default=None, help="comma-separated story ids (default: all)")
     ap.add_argument("--arms", default="A0,A1,A3,A3f")
+    ap.add_argument("--arm-version", default=P.ARM_VERSION_V1, choices=P.ARM_VERSIONS, help="arms.v2: verbatim whole-sentence writes for A3 / A3f, and the arm A1v (log filled by the harness)")
+    ap.add_argument("--max-load", type=float, default=MAX_LOAD, help="pause while the 1-minute load average is above this (default 12)")
+    ap.add_argument("--max-input-tokens", type=int, default=None, help="stop when the input tokens of the process pass this")
     ap.add_argument("--repeats", type=int, default=1)
     ap.add_argument("--checkpoints", type=int, default=4, help="feed the story up to the K-th checkpoint (default 4 = all)")
     ap.add_argument("--budget", type=int, default=DEFAULT_BUDGET)
@@ -603,10 +763,12 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             return 0
         if not ns.bank or (not ns.out and not ns.plan):
             raise MeterError("--bank and --out are required")
+        global TOKEN_CAP
+        TOKEN_CAP = ns.max_input_tokens
         arms = [x for x in ns.arms.split(",") if x]
         for x in arms:
             if x not in ARMS:
-                raise MeterError("unknown arm %r (A0, A1, A3, A3f)" % x)
+                raise MeterError("unknown arm %r (A0, A1, A3, A3f, A1v)" % x)
         client = None if ns.plan else make_client(ns.client, ns.allow_api, ns.model)       # refuses (--client api without --allow-api) before anything is read, registered or run
         held = is_heldout(ns.bank)
         if held and not ns.judge and not ns.plan:
@@ -628,7 +790,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         for story in stories:
             for rep in range(1, ns.repeats + 1):
                 for arm in arms:
-                    r = run_one(story, arm, rep, client=client, model=ns.model, out_root=ns.out, budget=ns.budget, bundle=ns.bundle, n_checkpoints=ns.checkpoints, redact=redact, client_kind=ns.client)
+                    r = run_one(story, arm, rep, client=client, model=ns.model, out_root=ns.out, budget=ns.budget, bundle=ns.bundle, n_checkpoints=ns.checkpoints, redact=redact, client_kind=ns.client, arm_version=ns.arm_version, max_load=ns.max_load)
                     tot = r["answers"]["total"]
                     print("%s %-3s r%02d %s  plants(any) c=%d/%d r=%d/%d u=%d/%d  answers right=%d/%d wrong=%d  tokens in=%d out=%d%s" % (
                         story["id"] if not held else "(held-out)", arm, rep, r["ended"], r["plants"]["contradiction"]["any"], r["plants"]["contradiction"]["n"], r["plants"]["reversal"]["any"],

@@ -50,6 +50,33 @@ Use the notes and `view` to decide: a note is a signal, not a verdict; check it 
 }
 STORY["A3f"] = STORY["A3"]
 
+# arms.v2 (the revision cycle after the pilot, L-PUB-175): A0 / A1 unchanged; A1v = A1 with the raw message appended to the log by the harness; A3 / A3f write VERBATIM WHOLE SENTENCES (the same rule the public harness uses).
+STORY["A1v"] = COMMON + """
+## Your tools
+- The log is filled FOR YOU: every sentence of every message is appended to the plain text log automatically, as a line `<turn id> <sentence>` (e.g. 「1-2 備品の期限は水曜」). You do not write the log. The log is the only thing that survives the end of the session.
+- `log_grep(terms, max_lines)`: the lines that contain any of up to 4 terms (the lines with most terms first), at most `max_lines` (1-30), each with its number and session.
+- `log_read(start, end)`: lines `start` to `end` by number (at most 30 per call).
+- `report(contradictions, bugs)`.
+Search the log before you decide: that is how you can notice that a new message disagrees with an old line.
+"""
+STORY_V2_A3 = COMMON + """
+## Your tools
+- `declare_topic(text)` once at the start of the session, before the first fact: what the project is about, a noun phrase (at most 24 characters) COPIED from the story's own words: a phrase of the project title given in the session intro, or of a message. A topic that is not a piece of those words is refused. Use the same topic in every session. A sentence you write with no subject of its own belongs to the open topic.
+- `write(text)`: keep ONE sentence of the message you were just given. `text` must be EXACTLY one whole sentence of that message, copied character for character (the closing 。 is optional); a write that is not is refused and stores nothing. You choose WHICH sentences to keep (many sentences are only colour: skip them); you never paraphrase, shorten, merge, split or reword a sentence, and you never write a sentence of an earlier message or the `[turn] speaker:` prefix.
+  A sentence the structure cannot read is refused with the reason: if you still want it kept, `keep_unshaped(text)` keeps that SAME whole sentence as plain text (searchable, but it fires no note).
+  The result is a few lines: `+ F1 centre [arms] = value` is what the sentence put into the memory; a line starting with `!` is a NOTE: `! SAME_SEAT` = the memory now holds two values at one place (the turns are listed),
+  `! REVERSAL_X` = the same pair in opposite roles, `~ UPDATE` = a change clause, `. ENUMERATION` = information only (two owners of one attribute). Notes never block a write.
+- `view(centre)`: the memory's crosses whose centre is that phrase (e.g. 期限), every seat with the sentence and turn that wrote it; `view_nest(topic)`: the clauses under a declared topic. At most 40 lines.
+- `recall(question)`: ask 「X の Y は何ですか」: ANSWER / UPDATED (latest value + history) / CHOICE (two values nobody resolved) / NONE. `bridge(question_word, memory_phrase)` maps a word of a question to a phrase the memory uses.
+- `supersede(new_sid, reason, old_sid | old_answer)`: when a later sentence REPLACES an earlier one (an explicit change), say so; recall then answers with the newest. A real contradiction is left alone.
+- `read_sentence(sid)`, `lookup(text, tier)`, `status()`, `report(contradictions, bugs)`.
+Use the notes and `view` to decide: a note is a signal, not a verdict; check it against the rules of `report` above.
+"""
+
+ARM_VERSION_V1 = "arms.v1"
+ARM_VERSION_V2 = "arms.v2"
+ARM_VERSIONS = (ARM_VERSION_V1, ARM_VERSION_V2)
+
 QUESTION = {
     "A0": """You answer ONE question about a project. You have NO tool but `answer`. `answer(kind, values)`: kind `value` with values=[the answer] if you know it; `contested` with two values if you know two different answers were stated;
 `none` with values=[] if you cannot answer. Do not guess: a wrong answer is worse than `none`. Each value at most 32 characters. Plain text is discarded unread.""",
@@ -64,11 +91,15 @@ for something that is not recorded). A fact that was explicitly CHANGED later is
 When `emit` or `abstain` has succeeded the run is closed. Stop.""",
 }
 QUESTION["A3f"] = QUESTION["A3"]
+QUESTION["A1v"] = QUESTION["A1"]
 
 
-def system_prompt(arm: str, phase: str) -> str:
+def system_prompt(arm: str, phase: str, arm_version: str = ARM_VERSION_V1) -> str:
+    if phase == "story" and arm_version == ARM_VERSION_V2 and arm in ("A3", "A3f"):
+        return STORY_V2_A3
     return (STORY if phase == "story" else QUESTION)[arm]
 
 
-def prompt_shas() -> Dict[str, Dict[str, str]]:
-    return {ph: {a: hashlib.sha256(system_prompt(a, ph).encode("utf-8")).hexdigest() for a in ("A0", "A1", "A3", "A3f")} for ph in ("story", "question")}
+def prompt_shas(arm_version: str = ARM_VERSION_V1) -> Dict[str, Dict[str, str]]:
+    arms = ("A0", "A1", "A3", "A3f") + (("A1v",) if arm_version == ARM_VERSION_V2 else ())
+    return {ph: {a: hashlib.sha256(system_prompt(a, ph, arm_version).encode("utf-8")).hexdigest() for a in arms} for ph in ("story", "question")}
