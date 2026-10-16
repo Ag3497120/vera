@@ -718,3 +718,73 @@ def test_v17_begin_row_and_replay(tmp_path):
     assert a.begin_result["mem_answer"]["version"] == "memanswer.v17" and a.begin_result["mem_answer"]["guard"] == "ansguard.v15"
     r = ma.replay_answer(a.ledger.dir)
     assert r.run.v17 and r.run.v16
+
+
+# ---- memanswer.v18: a topic written two ways (differing by 「の」 / spaces only) is ONE scope (the meter v2 pilot, L-PUB-170) ----
+V18 = ma.ANSWER_V18
+
+
+def _rec18(p, v=V18):
+    r = ma.AnswerSession(p, Q, "o", answer_version=v).call("recall", {"question": Q})
+    return r["verdict"], sorted(a for g in r["answers"] for a in g["answers"])
+
+
+def test_v18_the_pilot_shape_one_topic_two_wordings_updates(tmp_path):
+    for n, sess in enumerate((
+        [[("T", "新製品の開発"), "認証の期限は3日だ"], [("T", "新製品開発"), "認証の期限は5日に変更"]],
+        [[("T", "新製品の開発"), "認証の期限は3日だ"], [("T", "新製品 開発"), "認証の期限は3日から5日に変更"]],
+        [[("T", "新製品の開発"), "認証の期限は3日だ"], [("T", "新製品の開発"), "認証の期限は5日に変更"]],
+    )):
+        p = store_sessions(tmp_path, sess, "w%d" % n)
+        assert _rec18(p) == ("UPDATED", ["5日"]), (n, _rec18(p))
+        assert [t for (_s, t, _v) in attack(p, Q, 2, version=V18)] == ["5日"], n
+    p = store_sessions(tmp_path, [[("T", "新製品の開発"), "認証の期限は3日だ"], [("T", "新製品開発"), "認証の期限は5日に変更"]], "v17")
+    assert _rec18(p, V17)[0] == "CHOICE"                                       # v17 replays as it was
+    assert attack(p, Q, 2, version=V17) == []
+
+
+def test_v18_distinct_topics_stay_distinct_scopes(tmp_path):
+    for n, (t1, t2) in enumerate((("旧製品", "新製品"), ("新製品の開発", "新製品の開発計画"), ("製品Aの開発", "製品Bの開発"), ("旧の製品", "新の製品"))):
+        p = store_sessions(tmp_path, [[("T", t1), "認証の期限は3日だ"], [("T", t2), "認証の期限は5日に変更"]], "d%d" % n)
+        verdict, answers = _rec18(p)
+        assert verdict == "CHOICE" and answers == ["3日", "5日"], (n, verdict, answers)
+        assert attack(p, Q, 2, version=V18) == [], n
+
+
+def test_v18_the_v17_battery_still_blocks(tmp_path):
+    for n, sess in enumerate((
+        [["認証の期限は3日だ"], [T, "認証の期限は5日だ"], ["認証の期限を5日から7日に変更"], [T, "認証の期限は7日に変更"]],
+        [["認証の期限は3日だ"], [T, "認証の期限は5日だ"], ["認証の期限を5日から7日に変更"]],
+        [["認証の期限は3日だ"], [T, "認証の期限は7日だ"], ["認証の期限を7日から7日に変更"]],
+        [["認証の期限は3日だ"], [T, "認証の期限は7日だ"], ["認証の期限を4日から7日に変更"]],
+        [[T, "認証の期限は3日だ"], ["認証の期限は7日だ", "認証の期限を3日から5日に変更"]],
+        [["認証の期限は3日だ", ("T", "新製品"), "認証の期限を3日から5日に変更"]],
+    )):
+        p = store_sessions(tmp_path, sess, "b%d" % n)
+        verdict, answers = _rec18(p)
+        assert verdict == "CHOICE" and "3日" in answers, (n, verdict, answers)
+        assert [t for (_s, t, _v) in attack(p, Q, sum(1 for ws in sess for w in ws if not isinstance(w, tuple)), version=V18)] == [], n
+
+
+def test_v18_a_merged_scope_still_needs_the_old_value_to_be_live(tmp_path):
+    for n, ch in enumerate(("認証の期限を4日から5日に変更", "認証の期限を次回3日から5日に変更", "認証の期限を5日から5日に変更", "認証の期限は5日に変更し忘れた")):
+        p = store_sessions(tmp_path, [[("T", "新製品の開発"), "認証の期限は3日だ"], [("T", "新製品開発"), ch]], "m%d" % n)
+        verdict, answers = _rec18(p)
+        assert "3日" in answers and verdict in ("CHOICE", "ANSWER"), (n, verdict, answers)
+        assert [t for (_s, t, _v) in attack(p, Q, 2, version=V18) if t != "3日"] == [], n
+
+
+def test_v18_a_contested_side_in_a_merged_scope_stays(tmp_path):
+    p = store_sessions(tmp_path, [[("T", "新製品の開発"), "認証の期限は3日だ", "認証の期限は4日だ"], [("T", "新製品開発"), "認証の期限を3日から5日に変更"]], "c")
+    verdict, answers = _rec18(p)
+    assert verdict == "CHOICE" and answers == ["4日", "5日"], (verdict, answers)
+    assert attack(p, Q, 3, version=V18) == []
+
+
+def test_v18_begin_row_and_replay(tmp_path):
+    p = store_sessions(tmp_path, [[("T", "新製品の開発"), "認証の期限は3日だ"], [("T", "新製品開発"), "認証の期限は5日に変更"]], "r")
+    a = ma.AnswerSession(p, Q, "o", answer_version=V18)
+    assert a.begin_result["mem_answer"]["version"] == "memanswer.v18" and a.begin_result["mem_answer"]["guard"] == "ansguard.v16"
+    a.call("recall", {"question": Q})
+    r = ma.replay_answer(a.ledger.dir)
+    assert r.run.v18 and r.run.v17 and r.run.v16

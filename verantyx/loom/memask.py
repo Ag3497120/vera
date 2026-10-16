@@ -270,6 +270,51 @@ def _attribute_route(index: mx.MemIndex, qy: Query, text: str, bridges: Optional
     return None, [], looked
 
 
+# ------------------------------------------------------------------------------------------------------------
+# memanswer.v18 (L-PUB-170): the scope of a statement is its TOPIC, and a topic written two ways is one scope
+# ------------------------------------------------------------------------------------------------------------
+def topic_key18(topic: str) -> str:
+    """The identity of a declared topic for scoping: NFKC, whitespace and the particle 「の」 removed.  「燈架新館の開館準備」 and 「燈架新館開館準備」 are one topic; 「旧製品」 and 「新製品」 stay two.  Nothing else is
+    folded (no stemming, no synonym), so two topics merge only when they differ by 「の」 / spaces alone."""
+    t = unicodedata.normalize("NFKC", topic)
+    return "".join(ch for ch in t if ch != "の" and not ch.isspace())
+
+
+class ScopeCanonIndex:
+    """A read-only view of a MemIndex for memanswer.v18: `history_full` returns the entries with their scope replaced by the representative scope of the topic (the first nest id / topic string, in index order, whose
+    `topic_key18` is the same).  Everything else is delegated.  The wrapped (cached, shared) index is never changed."""
+
+    def __init__(self, ix: Any) -> None:
+        self._ix = ix
+        self._map: Optional[Dict[Optional[str], Optional[str]]] = None
+        self._h: Dict[Any, Tuple[mx.Entry, ...]] = {}
+
+    def __getattr__(self, name: str) -> Any:
+        return getattr(self._ix, name)
+
+    def _scope_map(self) -> Dict[Optional[str], Optional[str]]:
+        if self._map is None:
+            rep: Dict[str, str] = {}
+            m: Dict[Optional[str], Optional[str]] = {}
+            for n in self._ix.nests:
+                m[n.id] = rep.setdefault(topic_key18(n.topic), n.id)
+            for p in self._ix.positions:
+                for e in self._ix.history_full(p):
+                    if e.scope is not None and e.scope not in m:
+                        m[e.scope] = rep.setdefault(topic_key18(e.scope), e.scope)
+            self._map = m
+        return self._map
+
+    def history_full(self, position: Any) -> Tuple[mx.Entry, ...]:
+        es = self._ix.history_full(position)
+        key = mx._position(position)
+        got = self._h.get(key)
+        if got is None:
+            m = self._scope_map()
+            got = self._h[key] = tuple(e if e.scope is None else replace(e, scope=m.get(e.scope, e.scope)) for e in es)
+        return got
+
+
 def _event_entries(index: mx.MemIndex, qy: Query, open_nest: Optional[str]) -> List[mx.Entry]:
     by_clause: Dict[Tuple[int, int], Dict[str, List[mx.Seat]]] = {}
     for tank in ("F3", "F4"):                                      # an event no nest completed stays in the F4 tank

@@ -50,7 +50,7 @@ ANSWER_V2 = "memanswer.v2"          # MEM-fix (L-MEM-59 / 60): the answer run ho
 ANSWER_V3 = "memanswer.v3"          # PUB-M6: the answer run of a mem.v4 store: `recall` reads the memory CROSSES (memask), rebuilt from the snapshot and the file `crosses_<sha12>.json` (nest declarations + bridges) it is paired with
 ANSWER_V4 = "memanswer.v4"          # PUB-M6c: memanswer.v3 + the versions of the store (shape / ask / qwords, in the crosses file) + `bridge` in the run + weave_span.v4 (the source slice is emitted) + `contested_value`
 ANSWER_V5 = "memanswer.v5"          # PUB-M6e: memanswer.v4 with every emit-time safety decision made FROM THE INDEX and the TASK QUESTION, never from the recalls the model chose to make (the review of a6970cd3..67fe932f)
-ANSWER_VERSIONS: Tuple[str, ...] = (ANSWER_VERSION, ANSWER_V2, ANSWER_V3, ANSWER_V4, ANSWER_V5, "memanswer.v6", "memanswer.v7", "memanswer.v8", "memanswer.v9", "memanswer.v10", "memanswer.v11", "memanswer.v12", "memanswer.v13", "memanswer.v14", "memanswer.v15", "memanswer.v16", "memanswer.v17")
+ANSWER_VERSIONS: Tuple[str, ...] = (ANSWER_VERSION, ANSWER_V2, ANSWER_V3, ANSWER_V4, ANSWER_V5, "memanswer.v6", "memanswer.v7", "memanswer.v8", "memanswer.v9", "memanswer.v10", "memanswer.v11", "memanswer.v12", "memanswer.v13", "memanswer.v14", "memanswer.v15", "memanswer.v16", "memanswer.v17", "memanswer.v18")
 ANSWER_V6 = "memanswer.v6"          # PUB-M6f: memanswer.v5 + no completion through a bridge of the run, a CHOICE the run's bridge collapses stays contested, `unindexed_value`
 ANSWER_V7 = "memanswer.v7"          # PUB-M6g (designer): DEFAULT-DENY emit -- the task question recalled WITHOUT the run's bridges must have exactly one live value and the quote must be exactly an occurrence of it
 ANSWER_V8 = "memanswer.v8"          # PUB-M6h: memanswer.v7 with the identity of a value = the value AS WRITTEN (NFC only; 「・」 and spaces are part of it) and a quote that must equal its source text
@@ -63,10 +63,12 @@ ANSWER_V14 = "memanswer.v14"        # PUB-M6n (designer): the one-fact test cove
 ANSWER_V15 = "memanswer.v15"        # PUB-M6o: v14 + one 「<old>から」 seat in a change clause is covered; the display never cuts inside a bracket pair
 ANSWER_V16 = "memanswer.v16"        # PUB-M6p (designer): a change counts only if its old value EQUALS a live value the memory holds at the same position; display closes bracket pairs
 ANSWER_V17 = "memanswer.v17"        # PUB-M6q: v16 with the confirmation and the fold PER SCOPE everywhere, and a change replaces only the live value it names (a contested position keeps its other sides)
-V4_PLUS: Tuple[str, ...] = (ANSWER_V4, ANSWER_V5, ANSWER_V6, ANSWER_V7, ANSWER_V8, ANSWER_V9, ANSWER_V10, ANSWER_V11, ANSWER_V12, ANSWER_V13, ANSWER_V14, ANSWER_V15, ANSWER_V16, ANSWER_V17)
+ANSWER_V18 = "memanswer.v18"        # PUB-M6r (L-PUB-170): v17 + a topic written two ways (differing by 「の」 / spaces only) is ONE scope, so a change in the later wording replaces the value of the earlier one
+V4_PLUS: Tuple[str, ...] = (ANSWER_V4, ANSWER_V5, ANSWER_V6, ANSWER_V7, ANSWER_V8, ANSWER_V9, ANSWER_V10, ANSWER_V11, ANSWER_V12, ANSWER_V13, ANSWER_V14, ANSWER_V15, ANSWER_V16, ANSWER_V17, ANSWER_V18)
 ALL5, ALL6, ALL7, ALL8, ALL9, ALL10, ALL11, ALL12, ALL13, ALL14, ALL15, ALL16 = (V4_PLUS[1:], V4_PLUS[2:], V4_PLUS[3:], V4_PLUS[4:], V4_PLUS[5:], V4_PLUS[6:], V4_PLUS[7:], V4_PLUS[8:], V4_PLUS[9:], V4_PLUS[10:], V4_PLUS[11:], V4_PLUS[12:])      # the versions that include v5 ... v12
 GUARD_V3 = "ansguard.v1"            # PUB-M6b (L-PUB-54..57; memanswer.v3 only, no v3 ledger was ever recorded with a model): weave_span refuses a stretch that is not verbatim and a value the recall replaced; emit may hand the gate a completed question
 GUARD_V4 = "ansguard.v2"            # PUB-M6c (memanswer.v4): ansguard.v1 with the joiner-aware verbatim check + an emit of one value of a same-seat CHOICE is refused `contested_value`
+GUARD_V18 = "ansguard.v16"          # PUB-M6r (memanswer.v18), see L-PUB-170
 GUARD_V17 = "ansguard.v15"          # PUB-M6q (memanswer.v17), see L-PUB-118
 GUARD_V16 = "ansguard.v14"          # PUB-M6p (memanswer.v16), see L-PUB-116
 GUARD_V15 = "ansguard.v13"          # PUB-M6o (memanswer.v15), see L-PUB-114
@@ -358,7 +360,7 @@ class AnswerRun(Run):
 
     def __init__(self, corpus: Corpus, rows: Sequence[dict], store_id: str, snapshot_name_: str, question: str, model: str, run_id: str,
                  topics: Optional[Sequence[str]] = None, topics_file: Optional[str] = None, crosses: Optional[Tuple[str, Sequence[dict], Sequence[dict]]] = None,
-                 evidence: Optional[Tuple[str, str]] = None, versions: Optional[Dict[str, str]] = None, v5: bool = False, v6: bool = False, v7: bool = False, v8: bool = False, v9: bool = False, v10: bool = False, v11: bool = False, v12: bool = False, v13: bool = False, v14: bool = False, v15: bool = False, v16: bool = False, v17: bool = False) -> None:
+                 evidence: Optional[Tuple[str, str]] = None, versions: Optional[Dict[str, str]] = None, v5: bool = False, v6: bool = False, v7: bool = False, v8: bool = False, v9: bool = False, v10: bool = False, v11: bool = False, v12: bool = False, v13: bool = False, v14: bool = False, v15: bool = False, v16: bool = False, v17: bool = False, v18: bool = False) -> None:
         mg.check_memory_rows(rows)
         task = {"task_id": ANSWER_TASK_ID, "text": question, "lang": "prose", "mode": "record_only", "tiers": ["WORD"]}
         super().__init__(corpus, task, model, run_id, DEFAULT_STABILITY, None, None, notelib.NOTES_VERSION, tuple(evidence if evidence is not None else ANSWER_EVIDENCE))
@@ -372,7 +374,8 @@ class AnswerRun(Run):
         self.topics_file = topics_file
         self.v3 = crosses is not None                     # memanswer.v3: recall reads the memory crosses of a mem.v4 store (memanswer.v4 too)
         self.v4 = versions is not None                    # memanswer.v4 (and v5): + the store's versions, `bridge`, weave_span.v4, contested_value
-        self.v17 = bool(v17)                              # memanswer.v17 (L-PUB-118)
+        self.v18 = bool(v18)                              # memanswer.v18 (L-PUB-170)
+        self.v17 = bool(v17) or self.v18                  # memanswer.v17 (L-PUB-118)
         self.v16 = bool(v16) or self.v17                              # memanswer.v16 (L-PUB-116)
         self.v15 = bool(v15) or self.v16                              # memanswer.v15 (L-PUB-114)
         self.v14 = bool(v14) or self.v15                              # memanswer.v14 (L-PUB-111)
@@ -419,7 +422,7 @@ class AnswerRun(Run):
             if ix is None:
                 ix = _INDEX_CACHE[key] = mx.build_index(self.rows, self.decls, self.superseded, shape_version=self.versions["shape"], bridges=self.bridges,
                                                            flat=self.versions.get("index") == mem.INDEX_FLAT)
-            self._index = ix
+            self._index = mask.ScopeCanonIndex(ix) if self.v18 else ix        # memanswer.v18: one scope per topic (the cached index is shared and never changed)
         return self._index
 
     def begin_body(self) -> dict:
@@ -436,8 +439,8 @@ class AnswerRun(Run):
             res["mem_answer"].update(crosses_file=self.crosses_file, ask=mask.ASK_VERSION, cross=mx.CROSS_VERSION, guard=GUARD_V3, complete=mask.COMPLETE_VERSION)
             res["rules"] = dict(res["rules"], recall=ANSWER_RULES_V3["recall"])
         if self.v4:
-            res["mem_answer"]["version"] = ANSWER_V17 if self.v17 else ANSWER_V16 if self.v16 else ANSWER_V15 if self.v15 else ANSWER_V14 if self.v14 else ANSWER_V13 if self.v13 else ANSWER_V12 if self.v12 else ANSWER_V11 if self.v11 else ANSWER_V10 if self.v10 else ANSWER_V9 if self.v9 else ANSWER_V8 if self.v8 else ANSWER_V7 if self.v7 else ANSWER_V6 if self.v6 else ANSWER_V5 if self.v5 else ANSWER_V4
-            res["mem_answer"].update(ask=self.versions["ask"], qwords=self.versions["qwords"], shape=self.versions["shape"], guard=GUARD_V17 if self.v17 else GUARD_V16 if self.v16 else GUARD_V15 if self.v15 else GUARD_V14 if self.v14 else GUARD_V13 if self.v13 else GUARD_V12 if self.v12 else GUARD_V11 if self.v11 else GUARD_V10 if self.v10 else GUARD_V9 if self.v9 else GUARD_V8 if self.v8 else GUARD_V7 if self.v7 else GUARD_V6 if self.v6 else GUARD_V5 if self.v5 else GUARD_V4, readout=ops.WEAVE_SPAN_V4,
+            res["mem_answer"]["version"] = ANSWER_V18 if self.v18 else ANSWER_V17 if self.v17 else ANSWER_V16 if self.v16 else ANSWER_V15 if self.v15 else ANSWER_V14 if self.v14 else ANSWER_V13 if self.v13 else ANSWER_V12 if self.v12 else ANSWER_V11 if self.v11 else ANSWER_V10 if self.v10 else ANSWER_V9 if self.v9 else ANSWER_V8 if self.v8 else ANSWER_V7 if self.v7 else ANSWER_V6 if self.v6 else ANSWER_V5 if self.v5 else ANSWER_V4
+            res["mem_answer"].update(ask=self.versions["ask"], qwords=self.versions["qwords"], shape=self.versions["shape"], guard=GUARD_V18 if self.v18 else GUARD_V17 if self.v17 else GUARD_V16 if self.v16 else GUARD_V15 if self.v15 else GUARD_V14 if self.v14 else GUARD_V13 if self.v13 else GUARD_V12 if self.v12 else GUARD_V11 if self.v11 else GUARD_V10 if self.v10 else GUARD_V9 if self.v9 else GUARD_V8 if self.v8 else GUARD_V7 if self.v7 else GUARD_V6 if self.v6 else GUARD_V5 if self.v5 else GUARD_V4, readout=ops.WEAVE_SPAN_V4,
                                      bridge_cap=BRIDGE_CAP, evidence=self.evidence[0])
             res["rules"] = dict(res["rules"], recall=ANSWER_RULES_V4["recall"], bridge=ANSWER_RULES_V4["bridge"])
             if self.v5:
@@ -859,7 +862,7 @@ class AnswerSession:
             run_id = "a%04d" % k
         if not _RUN_RX.match(run_id) or (d / run_id).exists():
             raise Refuse("bad_run_id", {"run_id": run_id})
-        self.run = AnswerRun(Corpus(data), rows, snap["store_id"], snap["name"], question, model, run_id, topics, topics_file, crosses, evidence, versions, answer_version in ALL5, answer_version in ALL6, answer_version in ALL7, answer_version in ALL8, answer_version in ALL9, answer_version in ALL10, answer_version in ALL11 + (), answer_version in ALL12, answer_version in ALL13, answer_version in ALL14, answer_version in ALL15, answer_version in ALL16, answer_version == ANSWER_V17)
+        self.run = AnswerRun(Corpus(data), rows, snap["store_id"], snap["name"], question, model, run_id, topics, topics_file, crosses, evidence, versions, answer_version in ALL5, answer_version in ALL6, answer_version in ALL7, answer_version in ALL8, answer_version in ALL9, answer_version in ALL10, answer_version in ALL11 + (), answer_version in ALL12, answer_version in ALL13, answer_version in ALL14, answer_version in ALL15, answer_version in ALL16, answer_version in (ANSWER_V17, ANSWER_V18), answer_version == ANSWER_V18)
         self.ledger = lg.Ledger(d / run_id)
         meta = {"store": snap["store_id"], "mode": "memory_answer", "snapshot": snap["name"], "corpus_sha": hashlib.sha256(data).hexdigest()}
         if want_topics:
@@ -976,7 +979,7 @@ def replay_answer(run_dir, store_path=None) -> ReplayResult:
     ep = res0.get("evidence_profile")                    # the gate the run was recorded with (a run before PUB-M6c: evidence.v2)
     evidence = (ep["version"], ep["subject_scope"]) if isinstance(ep, dict) and "version" in ep and "subject_scope" in ep else LEGACY_EVIDENCE
     try:
-        run = AnswerRun(Corpus(data), srows, str(ma["store_id"]), str(ma["snapshot"]), question, model, run_id, topics, topics_file, crosses, evidence, versions, ma["version"] in ALL5, ma["version"] in ALL6, ma["version"] in ALL7, ma["version"] in ALL8, ma["version"] in ALL9, ma["version"] in ALL10, ma["version"] in ALL11, ma["version"] in ALL12, ma["version"] in ALL13, ma["version"] in ALL14, ma["version"] in ALL15, ma["version"] in ALL16, ma["version"] == ANSWER_V17)
+        run = AnswerRun(Corpus(data), srows, str(ma["store_id"]), str(ma["snapshot"]), question, model, run_id, topics, topics_file, crosses, evidence, versions, ma["version"] in ALL5, ma["version"] in ALL6, ma["version"] in ALL7, ma["version"] in ALL8, ma["version"] in ALL9, ma["version"] in ALL10, ma["version"] in ALL11, ma["version"] in ALL12, ma["version"] in ALL13, ma["version"] in ALL14, ma["version"] in ALL15, ma["version"] in ALL16, ma["version"] in (ANSWER_V17, ANSWER_V18), ma["version"] == ANSWER_V18)
     except (Refuse, ValueError):
         out.status, out.mismatch = "INPUTS", "snapshot_unverified"
         return out

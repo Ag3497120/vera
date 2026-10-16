@@ -16,8 +16,8 @@ THE ARMS (what each one is; the differing functions of A3f are listed in docs/LI
       ASYMMETRY (stated, not hidden): the log arm cannot use the loom's output gate (there is no evidence gate over a free log).  Its answer is the closed `answer(kind, values)` of the meter v1: a value of at most 32
       characters that is NOT required to be a quote of the log, scored by exact match (NFKC, case and space folded) against the gold -- more permissive than the structure arms' `weave_span` + `emit` (a verbatim quote
       passed by the gate).  Where the log arm is wrong, it is wrong with no gate; where the structure arm abstains for the gate's reasons, the log arm may be right.  So a structure win on right answers is conservative.
-  A3  mem.v4 + the bundle `--bundle` (default m6d: shape.v4, ask.v3, qwords.v2) + `view.v1`; the answer run memanswer.v17 over the crosses.
-  A3f the same, with `versions.index = flat.v1`: the same exchanger, write acceptance, provenance, notes and answer path (memanswer.v17) over a FLAT TABLE (no nests, no slide edges, no (n, p, a) key, no key swap).
+  A3  mem.v4 + the bundle `--bundle` (default m6d: shape.v4, ask.v3, qwords.v2) + `view.v1`; the answer run memanswer.v18 over the crosses.
+  A3f the same, with `versions.index = flat.v1`: the same exchanger, write acceptance, provenance, notes and answer path (memanswer.v18) over a FLAT TABLE (no nests, no slide edges, no (n, p, a) key, no key swap).
 
 THE CLIENT.  `--client stub` (default): the deterministic stub of `stub_client.py` (no network, no API; estimated tokens).  `--client api` needs `--allow-api` AND is refused unless the environment variable
 VERA_METER2_ALLOW_API=1 is set: both default OFF; the SDK is imported only in that branch.  Nothing here runs the API by itself.
@@ -68,7 +68,7 @@ ARMS: Dict[str, dict] = {
     "A3f": {"arm": "notes", "flat": True, "label": "flat table (no geometry)"},
 }
 BUNDLES = {"m6c": mem.V4_VERSIONS_M6C, "m6d": mem.V4_VERSIONS_M6D}
-ANSWER_VERSION = ma.ANSWER_V17
+ANSWER_VERSION = ma.ANSWER_V18
 USED_FILE = os.path.join(HERE, "used_heldout.jsonl")
 
 
